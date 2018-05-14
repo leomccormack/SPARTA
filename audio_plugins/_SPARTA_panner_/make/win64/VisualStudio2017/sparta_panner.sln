@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2017
+
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_panner - VST", "sparta_panner_VST.vcxproj", "{C4438A43-EB43-B2A1-6BBC-CA236E44500E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AD4E2C71-5FD2-1C60-BB48-F1510F031B1B} = {AD4E2C71-5FD2-1C60-BB48-F1510F031B1B}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_panner - Shared Code", "sparta_panner_SharedCode.vcxproj", "{AD4E2C71-5FD2-1C60-BB48-F1510F031B1B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4438A43-EB43-B2A1-6BBC-CA236E44500E}.Debug|x64.ActiveCfg = Debug|x64
+		{C4438A43-EB43-B2A1-6BBC-CA236E44500E}.Debug|x64.Build.0 = Debug|x64
+		{C4438A43-EB43-B2A1-6BBC-CA236E44500E}.Release|x64.ActiveCfg = Release|x64
+		{C4438A43-EB43-B2A1-6BBC-CA236E44500E}.Release|x64.Build.0 = Release|x64
+		{AD4E2C71-5FD2-1C60-BB48-F1510F031B1B}.Debug|x64.ActiveCfg = Debug|x64
+		{AD4E2C71-5FD2-1C60-BB48-F1510F031B1B}.Debug|x64.Build.0 = Debug|x64
+		{AD4E2C71-5FD2-1C60-BB48-F1510F031B1B}.Release|x64.ActiveCfg = Release|x64
+		{AD4E2C71-5FD2-1C60-BB48-F1510F031B1B}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

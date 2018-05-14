@@ -1,0 +1,69 @@
+SDKs/modules
+SDKs/VST3_SDK
+audio_plugins/_SPARTA_ambiDEC_/obj
+audio_plugins/_SPARTA_ambiENC_/obj
+audio_plugins/_SPARTA_array2sh_/obj
+audio_plugins/_SPARTA_beamformer_/obj
+audio_plugins/_SPARTA_binauraliser_/obj
+audio_plugins/_SPARTA_mcDelay_/obj
+audio_plugins/_SPARTA_mcEQ_/obj
+audio_plugins/_SPARTA_panner_/obj
+audio_plugins/_SPARTA_powermap_/obj
+audio_plugins/_SPARTA_rotator_/obj
+audio_plugins/_SPARTA_sldoa_/obj
+audio_plugins/_SPARTA_upmix_/obj
+lib
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual C++ cache files
+ipch/
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+*.VC.db-shm
+*.VC.db-wal
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
