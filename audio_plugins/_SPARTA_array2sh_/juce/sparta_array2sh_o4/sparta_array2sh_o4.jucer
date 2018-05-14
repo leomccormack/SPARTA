@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="lfkRjX" name="sparta_array2sh_o4" projectType="audioplug"
+              version="1.0.0" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
+              buildVST="1" buildAU="0" pluginName="sparta_array2sh_o4" pluginDesc="sparta_array2sh_o4"
+              pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ASO4"
+              pluginChannelConfigs="{25, 25}, {26, 25}, {27, 25}, {28, 25}, {29, 25}, {30, 25}, {31, 25}, {32, 25}, {33, 25}, {34, 25}, {35, 25}, {36, 25}, {37, 25}, {38, 25}, {39, 25}, {40, 25}, {41, 25}, {42, 25}, {43, 25}, {44, 25}, {45, 25}, {46, 25}, {47, 25}, {48, 25}, {49, 25}, {50, 25}, {51, 25}, {52, 25}, {53, 25}, {54, 25}, {55, 25}, {56, 25}, {57, 25}, {58, 25}, {59, 25}, {60, 25}, {61, 25}, {62, 25}, {63, 25}, {64, 25}"
+              pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
+              pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
+              pluginAUExportPrefix="sparta_array2sh_o4AU" pluginRTASCategory=""
+              aaxIdentifier="com.yourcompany.array2sh" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
+              jucerVersion="5.3.0" buildVST3="0" buildRTAS="0" buildAAX="0"
+              pluginManufacturerEmail="support@yourcompany.com" defines="SH_ORDER = 4&#10;FRAME_SIZE = 256"
+              companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
+              userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
+              buildAUv3="0" pluginIsMidiEffectPlugin="0" displaySplashScreen="0"
+              reportAppUsage="0" splashScreenColour="Dark" buildStandalone="0"
+              enableIAA="0" cppLanguageStandard="11" companyCopyright="Aalto">
+  <MAINGROUP id="imnfnp" name="sparta_array2sh_o4">
+    <FILE id="ZLV3HS" name="anaview_window.cpp" compile="1" resource="0"
+          file="../../src/anaview_window.cpp"/>
+    <FILE id="Gx0uv2" name="anaview_window.h" compile="0" resource="0"
+          file="../../src/anaview_window.h"/>
+    <FILE id="Wrmrij" name="anaview.cpp" compile="1" resource="0" file="../../src/anaview.cpp"/>
+    <FILE id="iuRwRG" name="anaview.h" compile="0" resource="0" file="../../src/anaview.h"/>
+    <FILE id="vAvkVP" name="eqview.cpp" compile="1" resource="0" file="../../src/eqview.cpp"/>
+    <FILE id="JUmNfW" name="eqview.h" compile="0" resource="0" file="../../src/eqview.h"/>
+    <FILE id="zfdyjH" name="eqview_window.cpp" compile="1" resource="0"
+          file="../../src/eqview_window.cpp"/>
+    <FILE id="zPpCYG" name="eqview_window.h" compile="0" resource="0" file="../../src/eqview_window.h"/>
+    <FILE id="Ln0EQr" name="sensorCoordsView.cpp" compile="1" resource="0"
+          file="../../src/sensorCoordsView.cpp"/>
+    <FILE id="uGAfwa" name="sensorCoordsView.h" compile="0" resource="0"
+          file="../../src/sensorCoordsView.h"/>
+    <FILE id="dgOUES" name="PluginEditor.cpp" compile="1" resource="0"
+          file="../../src/PluginEditor.cpp"/>
+    <FILE id="ow8jF2" name="PluginEditor.h" compile="0" resource="0" file="../../src/PluginEditor.h"/>
+    <FILE id="RWFDzb" name="PluginProcessor.cpp" compile="1" resource="0"
+          file="../../src/PluginProcessor.cpp"/>
+    <FILE id="knImr8" name="PluginProcessor.h" compile="0" resource="0"
+          file="../../src/PluginProcessor.h"/>
+    <GROUP id="{852092EF-4330-B24D-C525-31695232772D}" name="array2sh">
+      <GROUP id="{EAFA9357-2682-46F4-42C3-6AA0BA2964B1}" name="Header Files">
+        <FILE id="CuLH6c" name="array2sh.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include/array2sh.h"/>
+        <FILE id="JKlQrk" name="array2sh_internal.h" compile="0" resource="0"
+              file="../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.h"/>
+        <FILE id="FWLT5L" name="array2sh_database.h" compile="0" resource="0"
+              file="../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_database.h"/>
+      </GROUP>
+      <GROUP id="{94FB4157-79AF-9C3A-10D6-93A882AA9A61}" name="Source Files">
+        <FILE id="WQd3fq" name="array2sh.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh.c"/>
+        <FILE id="fgNVlN" name="array2sh_internal.c" compile="1" resource="0"
+              file="../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"/>
+        <FILE id="ZshYCl" name="array2sh_database.c" compile="1" resource="0"
+              file="../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_database.c"/>
+      </GROUP>
+    </GROUP>
+    <GROUP id="{F0127264-82A7-51E9-A342-BABDD0E8F7D3}" name="Spatial_Audio_Framework">
+      <GROUP id="{169DC757-A267-AFB9-77A1-1A07B38D7AAD}" name="framework">
+        <GROUP id="{F6337497-9A96-07BA-C1CC-53E53F650893}" name="include">
+          <FILE id="f0lh8p" name="afSTFTlib.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/include/afSTFTlib.h"/>
+          <FILE id="Cn3HRF" name="saf.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/include/saf.h"/>
+          <FILE id="CCFKyk" name="saf_cdf4sap.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/include/saf_cdf4sap.h"/>
+          <FILE id="Kpekil" name="saf_hoa.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/include/saf_hoa.h"/>
+          <FILE id="C2MF0L" name="saf_hrir.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/include/saf_hrir.h"/>
+          <FILE id="WK4w3Z" name="saf_sh.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/include/saf_sh.h"/>
+          <FILE id="UcJQy1" name="saf_sofa_reader.h" compile="0" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/include/saf_sofa_reader.h"/>
+          <FILE id="AMwDzL" name="saf_utilities.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/include/saf_utilities.h"/>
+          <FILE id="l2nmDA" name="saf_vbap.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/include/saf_vbap.h"/>
+        </GROUP>
+        <GROUP id="{F1CB603C-CECA-C348-89A4-1D4F0FB7A4B3}" name="saf_afstft">
+          <FILE id="lJaJnt" name="afSTFT_protoFilter.h" compile="0" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_afstft/afSTFT_protoFilter.h"/>
+          <FILE id="jKfCLs" name="afSTFTlib.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_afstft/afSTFTlib.c"/>
+          <FILE id="YjaFqC" name="fft4g.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_afstft/fft4g.c"/>
+          <FILE id="YILbxX" name="fft4g.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_afstft/fft4g.h"/>
+          <FILE id="z0ROnu" name="vecTools.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_afstft/vecTools.c"/>
+          <FILE id="Kx3wMB" name="vecTools.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_afstft/vecTools.h"/>
+        </GROUP>
+        <GROUP id="{A82D6B4F-6D1D-AE9C-0941-184DADDE22A7}" name="saf_cdf4sap">
+          <FILE id="yU6Okt" name="saf_cdf4sap.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_cdf4sap/saf_cdf4sap.c"/>
+        </GROUP>
+        <GROUP id="{B3124517-0CFF-5B23-8E96-841F26C92FB2}" name="saf_hoa">
+          <FILE id="DgO1vl" name="saf_hoa.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_hoa/saf_hoa.c"/>
+          <FILE id="Y9nNIy" name="saf_hoa_internal.c" compile="1" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_hoa/saf_hoa_internal.c"/>
+          <FILE id="R4Ojb0" name="saf_hoa_internal.h" compile="0" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_hoa/saf_hoa_internal.h"/>
+        </GROUP>
+        <GROUP id="{F251385D-BB70-D9F8-8D66-949E1CBED2AF}" name="saf_hrir">
+          <FILE id="ctQsV2" name="saf_hrir.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_hrir/saf_hrir.c"/>
+          <FILE id="BS7ILg" name="saf_hrir_internal.c" compile="1" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_hrir/saf_hrir_internal.c"/>
+          <FILE id="riyG2q" name="saf_hrir_internal.h" compile="0" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_hrir/saf_hrir_internal.h"/>
+        </GROUP>
+        <GROUP id="{7DB8E640-A791-424F-4AB8-6487783E7495}" name="saf_sh">
+          <FILE id="vDB7BA" name="saf_sh.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_sh/saf_sh.c"/>
+          <FILE id="u4aCDu" name="saf_sh_internal.c" compile="1" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_sh/saf_sh_internal.c"/>
+          <FILE id="VUxcUi" name="saf_sh_internal.h" compile="0" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_sh/saf_sh_internal.h"/>
+        </GROUP>
+        <GROUP id="{E7876A94-D18E-4F47-B97D-CBC1DBB7BCD3}" name="saf_utilities">
+          <FILE id="PMZdcL" name="saf_calloc.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_calloc.c"/>
+          <FILE id="OgxlAb" name="saf_calloc.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_calloc.h"/>
+          <FILE id="iP4D0f" name="saf_complex.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_complex.c"/>
+          <FILE id="JWET9V" name="saf_complex.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_complex.h"/>
+          <FILE id="Z2rXkR" name="saf_free.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_free.c"/>
+          <FILE id="Zbtruz" name="saf_free.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_free.h"/>
+          <FILE id="wYvTrm" name="saf_loudspeaker_presets.c" compile="1" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_loudspeaker_presets.c"/>
+          <FILE id="NT0ADv" name="saf_loudspeaker_presets.h" compile="0" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_loudspeaker_presets.h"/>
+          <FILE id="HrUV51" name="saf_malloc.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_malloc.c"/>
+          <FILE id="U5PzHn" name="saf_malloc.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_malloc.h"/>
+          <FILE id="hAFFQk" name="saf_sensorarray_presets.c" compile="1" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sensorarray_presets.c"/>
+          <FILE id="qusOcm" name="saf_sensorarray_presets.h" compile="0" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sensorarray_presets.h"/>
+          <FILE id="qy1z02" name="saf_veclib.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_veclib.c"/>
+          <FILE id="Aw17NQ" name="saf_veclib.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_veclib.h"/>
+        </GROUP>
+        <GROUP id="{86332B77-234A-F72F-138C-E7DC5C763F87}" name="saf_vbap">
+          <FILE id="QizxZw" name="saf_vbap.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_vbap/saf_vbap.c"/>
+          <FILE id="ClUB0l" name="saf_vbap_internal.c" compile="1" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_vbap/saf_vbap_internal.c"/>
+          <FILE id="gVwosT" name="saf_vbap_internal.h" compile="0" resource="0"
+                file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_vbap/saf_vbap_internal.h"/>
+        </GROUP>
+      </GROUP>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <VS2017 targetFolder="../../make/win64/VisualStudio2017/sparta_array2sh_o4"
+            externalLibraries="mkl_intel_lp64.lib&#10;mkl_sequential.lib &#10;mkl_core.lib">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" binaryPath="../../../../lib/Win64_Debug"
+                       targetName="sparta_array2sh_o4d" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
+                       libraryPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win"
+                       intermediatesPath="../../../../obj/sparta_array2sh_o4/Win64_Debug"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="sparta_array2sh_o4" binaryPath="../../../../lib/Win64_Release"
+                       headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
+                       libraryPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win"
+                       intermediatesPath="../../../../obj/sparta_array2sh_o4/Win64_Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_video" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_opengl" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_graphics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_events" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_cryptography" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_core" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
+      </MODULEPATHS>
+    </VS2017>
+    <VS2015 targetFolder="../../make/win64/VisualStudio2015/sparta_array2sh_o4"
+            vstFolder="C://SDKs/VST3 SDK" externalLibraries="mkl_intel_lp64.lib&#10;mkl_sequential.lib &#10;mkl_core.lib"
+            extraLinkerFlags="" extraCompilerFlags="" IPPLibrary="" vst3Folder="../../../../SDKs/VST3_SDK/"
+            windowsTargetPlatformVersion="8.1">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="1" optimisation="1" targetName="sparta_array2sh_o4d"
+                       binaryPath="../../../../lib/Win64_Debug" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
+                       libraryPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win"
+                       intermediatesPath="../../../../obj/sparta_array2sh_o4/Win64_Debug"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="0" optimisation="3" targetName="sparta_array2sh_o4"
+                       headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
+                       binaryPath="../../../../lib/Win64_Release" libraryPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win"
+                       intermediatesPath="../../../../obj/sparta_array2sh_o4/Win64_Release"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
+                       linkTimeOptimisation="1"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_video" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_opengl" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_graphics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_events" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_cryptography" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_core" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
+      </MODULEPATHS>
+    </VS2015>
+    <XCODE_MAC targetFolder="../../make/MacOSX/Xcode/sparta_array2sh_o4/" vstFolder="../../../SDKs/VST3 SDK"
+               vst3Folder="../../../../SDKs/VST3_SDK/">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_array2sh_o4d"
+                       binaryPath="" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include"
+                       osxArchitecture="64BitIntel" osxCompatibility="10.9 SDK" enablePluginBinaryCopyStep="1"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="sparta_array2sh_o4"
+                       binaryPath="" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include"
+                       osxArchitecture="64BitIntel" osxCompatibility="10.9 SDK" enablePluginBinaryCopyStep="1"
+                       linkTimeOptimisation="1"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_video" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_opengl" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_graphics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_events" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_cryptography" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_core" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULES id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_core" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_cryptography" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_events" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_video" showAllCode="1" useLocalCopy="0"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_USE_CAMERA="0"/>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+    <OSX/>
+  </LIVE_SETTINGS>
+</JUCERPROJECT>
