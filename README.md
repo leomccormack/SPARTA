@@ -22,7 +22,7 @@ And can be obtained from
 * [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework) - For the internal code used by the plug-ins
 * [VST3_SDK](https://www.steinberg.net/en/company/developers.html) - The VST SDK
 
-Windows users must also install Intel's MKL, which can be freely aquired from
+Windows users must also install Intel's MKL, which can be freely acquired from
 * [Intel MKL](https://software.intel.com/en-us/articles/free-ipsxe-tools-and-libraries)
 
 ### Installing
@@ -35,14 +35,14 @@ audio_plugins/_SPARTA_X_/make/
 
 ## Authors
 
-* **Leo McCormack** - C/C++ programmer and DSP engineer (contact: leo.mccormack@aalto.fi)
-* **Symeon Delikaris-Manias** - DSP engineer
-* **Archontis Politis** - DSP engineer
-* **Ville Pulkki** - Ideas man
+* **Leo McCormack** - C/C++ programmer and DSP researcher (contact: leo.mccormack@aalto.fi)
+* **Symeon Delikaris-Manias** - DSP researcher
+* **Archontis Politis** -  DSP researcher
+* **Ville Pulkki** - DSP researcher
 
 
 ## License
 
-This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GPLv3 License - see the [LICENSE](LICENSE) file for details
 
 
