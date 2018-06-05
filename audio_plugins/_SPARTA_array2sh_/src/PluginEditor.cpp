@@ -275,7 +275,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     regTypeCB->setItemEnabled(1, false); /* disable DaS */
 
     /* Presets */
-    presetCB->setTextWhenNothingSelected (TRANS("(+[   ]: :)")); /* portable playstation depiction */
+    presetCB->setTextWhenNothingSelected (TRANS("Default"));
 #ifdef ENABLE_AALTO_HYDROPHONE_PRESET
     presetCB->addItem (TRANS("Aalto Hydro"), PRESET_AALTO_HYDROPHONE);
 #endif
@@ -288,8 +288,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 #ifdef ENABLE_SOUND_FIELD_SPS200_PRESET
     presetCB->addItem (TRANS("Sound-field SPS200"), PRESET_SOUND_FIELD_SPS200);
 #endif
-#ifdef ENABLE_ZYLIA_PRESET
-    presetCB->addItem (TRANS("Zylia"), PRESET_ZYLIA);
+#ifdef ENABLE_ZYLIA_1D_PRESET
+    presetCB->addItem (TRANS("Zylia 1D"), PRESET_ZYLIA_1D);
 #endif
 #ifdef ENABLE_EIGENMIKE32_PRESET
     presetCB->addItem (TRANS("Eigenmike32"), PRESET_EIGENMIKE32);

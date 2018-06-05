@@ -176,12 +176,11 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
     array2sh_init(hA2sh, sampleRate);
 
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         memset(ringBufferInputs[i], 0, FRAME_SIZE*sizeof(float));
-    }
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         memset(ringBufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
-    }
+    
     wIdx = 1; rIdx = 1; /* read/write indices for ring buffers */
 }
 
@@ -199,69 +198,35 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
         outputs[i] = new float[FRAME_SIZE];
         memset(outputs[i],0,FRAME_SIZE*sizeof(float));
     }
-
-#ifdef ENABLE_IS_PLAYING_CHECK
-    playHead = getPlayHead();
-    bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-    if (PlayHeadAvailable == true)
-        isPlaying = currentPosition.isPlaying;
-    else
-        isPlaying = false;
-#endif
-    switch (nCurrentBlockSize) {
-        case (FRAME_SIZE * 8):
-            for (int frame = 0; frame < 8; frame++) {
-                for (int ch = 0; ch < nNumInputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-                array2sh_process(hA2sh, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-                buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
-                for (int ch = 0; ch < nNumOutputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
-            }
-            break;
+    
+    if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
+        for (int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
+            for (int ch = 0; ch < nNumInputs; ch++)
+                for (int i = 0; i < FRAME_SIZE; i++)
+                    ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
             
-        case (FRAME_SIZE * 4):
-            for (int frame = 0; frame < 4; frame++) {
-                for (int ch = 0; ch < nNumInputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-                array2sh_process(hA2sh, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-                buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
-                for (int ch = 0; ch < nNumOutputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
-            }
-            break;
+            /* determine if there is actually audio in the damn buffer */
+            playHead = getPlayHead();
+            bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
+            if (PlayHeadAvailable == true)
+                isPlaying = currentPosition.isPlaying;
+            else
+                isPlaying = true;
+//            if(buffer.getRMSLevel(0, 0, nCurrentBlockSize)>0.000001f) /* Plogue Bidule informs plug-in that it has a playHead, but it is not moving... */
+//                isPlaying = true;
             
-        case (FRAME_SIZE*2):
-            for(int frame = 0; frame < 2; frame++){
-                for (int ch = 0; ch < nNumInputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-                array2sh_process(hA2sh, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-                buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
-                for (int ch = 0; ch < nNumOutputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
-            }
-            break;
-
-        case FRAME_SIZE:
-            array2sh_process(hA2sh, bufferData, outputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-            buffer.clear();
-            for (int ch = 0; ch < nNumOutputs; ch++) {
-                for (int i = 0; i < FRAME_SIZE; i++) {
-                    bufferData[ch][i] = outputs[ch][i];
-                }
-            }
-            break;
-
-        default:
-            buffer.clear();
-            break;
+            /* perform processing */
+            array2sh_process(hA2sh, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
+            
+            /* replace buffer with new audio */
+            buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
+            for (int ch = 0; ch < nNumOutputs; ch++)
+                for (int i = 0; i < FRAME_SIZE; i++)
+                    bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
+        }
     }
+    else
+        buffer.clear();
 
     if (nHostBlockSize == (FRAME_SIZE/2)) {
         wIdx++; if (wIdx > 1) { wIdx = 0; }

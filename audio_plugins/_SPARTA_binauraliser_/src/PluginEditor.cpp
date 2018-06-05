@@ -233,6 +233,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
     fileChooser.setBounds (718, 92, 180, 20);
+    StringArray filenames;
+    filenames.add(binauraliser_getSofaFilePath(hVst->hBin));
+    fileChooser.setRecentlyUsedFilenames(filenames);
+    fileChooser.setFilenameIsEditable(true);
 
     /* grab current parameter settings */
     TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hVst->hBin), dontSendNotification);
@@ -249,7 +253,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     refreshPanViewWindow = true;
 
 	/* Specify screen refresh rate */
-    startTimer(25);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(80);//80); /*ms (40ms = 25 frames per second) */
 
     //[/Constructor]
 }
@@ -653,7 +657,6 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     else if (sliderThatWasMoved == SL_pValue)
     {
         //[UserSliderCode_SL_pValue] -- add your slider handling code here..
-        binauraliser_setDTT(hVst->hBin, (float)SL_pValue->getValue());
         //[/UserSliderCode_SL_pValue]
     }
 

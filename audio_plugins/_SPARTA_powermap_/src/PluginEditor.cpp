@@ -176,7 +176,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBpmap_method->addItem (TRANS("MVDR"), PM_MODE_MVDR);
     CBpmap_method->addItem (TRANS("CroPaC LCMV"), PM_MODE_CROPAC_LCMV);
     CBpmap_method->addItem (TRANS("MUSIC"), PM_MODE_MUSIC);
+    CBpmap_method->addItem (TRANS("log(MUSIC)"), PM_MODE_MUSIC_LOG); 
     CBpmap_method->addItem (TRANS("MinNorm"), PM_MODE_MINNORM);
+    CBpmap_method->addItem (TRANS("log(MinNorm)"), PM_MODE_MINNORM_LOG);
 
     /* Add microphone preset options */
     CBsourcePreset->addItem(TRANS("Ideal SH"), MIC_PRESET_IDEAL);
