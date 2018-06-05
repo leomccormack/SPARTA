@@ -296,7 +296,9 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
         xml.setAttribute("SourceElevDeg" + String(i), binauraliser_getSourceElev_deg(hBin,i));
     }
     xml.setAttribute("nSources", binauraliser_getNumSources(hBin));
-    xml.setAttribute("DTT", binauraliser_getDTT(hBin));
+    
+    if(!binauraliser_getUseDefaultHRIRsflag(hBin))
+        xml.setAttribute("SofaFilePath", String(binauraliser_getSofaFilePath(hBin)));
     
     copyXmlToBinary(xml, destData);
 }
@@ -314,9 +316,13 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                     binauraliser_setSourceElev_deg(hBin, i, (float)xmlState->getDoubleAttribute("SourceElevDeg" + String(i), 0.0f));
             }
             if(xmlState->hasAttribute("nSources"))
-               binauraliser_setNumSources(hBin, xmlState->getIntAttribute("nSources", 1));
-            if(xmlState->hasAttribute("DTT"))
-                binauraliser_setDTT(hBin, (float)xmlState->getDoubleAttribute("DTT", 1));
+               binauraliser_setNumSources(hBin, xmlState->getIntAttribute("nSources", 1)); 
+            
+            if(xmlState->hasAttribute("SofaFilePath")){
+                String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
+                const char* new_cstring = (const char*)directory.toUTF8();
+                binauraliser_setSofaFilePath(hBin, new_cstring);
+            }
             
             binauraliser_refreshSettings(hBin);
         }

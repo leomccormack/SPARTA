@@ -27,7 +27,6 @@
 
 #define BUILD_VER_SUFFIX "alpha"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
-#define ENABLE_IS_PLAYING_CHECK
 
 #ifndef M_PI
 #define M_PI ( 3.14159265358979323846264338327950288f )
@@ -51,12 +50,10 @@ public:
     float** ringBufferInputs;
     float** ringBufferOutputs;
     int wIdx, rIdx;
-
-#ifdef ENABLE_IS_PLAYING_CHECK
+ 
     bool isPlaying;
 	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
 	AudioPlayHead::CurrentPositionInfo currentPosition;
-#endif
     
     /***************************************************************************\
                                     JUCE Functions

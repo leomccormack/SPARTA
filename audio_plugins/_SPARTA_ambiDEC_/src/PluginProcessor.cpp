@@ -208,7 +208,9 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
             if (PlayHeadAvailable == true)
                 isPlaying = currentPosition.isPlaying;
             else
-                isPlaying = false;
+                isPlaying = true;
+            //            if(buffer.getRMSLevel(0, 0, nCurrentBlockSize)>0.000001f) /* Plogue Bidule informs plug-in that it has a playHead, but it is not moving... */
+            //                isPlaying = true;
             
             /* perform processing */
             ambi_dec_process(hAmbi, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
@@ -223,65 +225,6 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
     else
         buffer.clear();
     
-//    playHead = getPlayHead();
-//    bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-//    if (PlayHeadAvailable == true)
-//        isPlaying = currentPosition.isPlaying;
-//    else
-//        isPlaying = false;
-//
-//    switch (nCurrentBlockSize) {
-//        case (FRAME_SIZE * 8):
-//            for (int frame = 0; frame < 8; frame++) {
-//                for (int ch = 0; ch < nNumInputs; ch++)
-//                    for (int i = 0; i < FRAME_SIZE; i++)
-//                        ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-//                ambi_dec_process(hAmbi, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-//                buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
-//                for (int ch = 0; ch < nNumOutputs; ch++)
-//                    for (int i = 0; i < FRAME_SIZE; i++)
-//                        bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
-//            }
-//            break;
-//
-//        case (FRAME_SIZE * 4):
-//            for (int frame = 0; frame < 4; frame++) {
-//                for (int ch = 0; ch < nNumInputs; ch++)
-//                    for (int i = 0; i < FRAME_SIZE; i++)
-//                        ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-//                ambi_dec_process(hAmbi, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-//                buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
-//                for (int ch = 0; ch < nNumOutputs; ch++)
-//                    for (int i = 0; i < FRAME_SIZE; i++)
-//                        bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
-//            }
-//            break;
-//
-//        case (FRAME_SIZE*2):
-//            for(int frame = 0; frame < 2; frame++){
-//                for (int ch = 0; ch < nNumInputs; ch++)
-//                    for (int i = 0; i < FRAME_SIZE; i++)
-//                        ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-//                ambi_dec_process(hAmbi, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-//                buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
-//                for (int ch = 0; ch < nNumOutputs; ch++)
-//                    for (int i = 0; i < FRAME_SIZE; i++)
-//                        bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
-//            }
-//            break;
-//
-//        case FRAME_SIZE:
-//            ambi_dec_process(hAmbi, bufferData, outputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-//            buffer.clear();
-//            for (int ch = 0; ch < nNumOutputs; ch++)
-//                for (int i = 0; i < FRAME_SIZE; i++)
-//                    bufferData[ch][i] = outputs[ch][i];
-//            break;
-//
-//        default:
-//            buffer.clear();
-//            break;
-//    }
 
     for (int i = 0; i < nNumOutputs; ++i) {
         delete[] outputs[i];
