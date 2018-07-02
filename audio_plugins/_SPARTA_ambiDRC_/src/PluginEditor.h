@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.2.0
+  Created with Projucer version: 5.3.0
 
   ------------------------------------------------------------------------------
 
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2017 - ROLI Ltd.
 
   ==============================================================================
 */
@@ -20,29 +20,10 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
-/*
- ==============================================================================
 
- This file is part of SPARTA; a suite of spatial audio plug-ins.
- Copyright (c) 2018 - Leo McCormack.
-
- SPARTA is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- SPARTA is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
-
- ==============================================================================
-*/
-#include "JuceHeader.h"
 #include "PluginProcessor.h"
+#include "TFview.h"
+#include "colourGradient.h"
 
 //[/Headers]
 
@@ -57,7 +38,9 @@
                                                                     //[/Comments]
 */
 class PluginEditor  : public AudioProcessorEditor,
-                      public Timer
+                      public Timer,
+                      public Slider::Listener,
+                      public ComboBox::Listener
 {
 public:
     //==============================================================================
@@ -70,11 +53,12 @@ public:
     void timerCallback() override;
 
 
-
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
+    void sliderValueChanged (Slider* sliderThatWasMoved) override;
+    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
 
 
 
@@ -82,11 +66,20 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
-
-
+    ScopedPointer<TFview> TFviewIncluded;
     //[/UserVariables]
 
     //==============================================================================
+    ScopedPointer<Slider> s_thresh;
+    ScopedPointer<Slider> s_ratio;
+    ScopedPointer<Slider> s_knee;
+    ScopedPointer<Slider> s_attack;
+    ScopedPointer<Slider> s_release;
+    ScopedPointer<Slider> s_outgain;
+    ScopedPointer<Slider> s_ingain;
+    ScopedPointer<ComboBox> presetCB;
+    ScopedPointer<ComboBox> CHOrderingCB;
+    ScopedPointer<ComboBox> normalisationCB;
 
 
     //==============================================================================

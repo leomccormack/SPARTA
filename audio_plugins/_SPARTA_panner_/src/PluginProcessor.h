@@ -27,14 +27,53 @@
 
 #define BUILD_VER_SUFFIX "alpha"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
-#define ENABLE_IS_PLAYING_CHECK
-
 
 enum {	
     /* For the default VST GUI */
-	k_NumOfParameters
+    k_nSources,
+    k_srcAzi_0, k_srcElev_0,
+    k_srcAzi_1, k_srcElev_1,
+    k_srcAzi_2, k_srcElev_2,
+    k_srcAzi_3, k_srcElev_3,
+    k_srcAzi_4, k_srcElev_4,
+    k_srcAzi_5, k_srcElev_5,
+    k_srcAzi_6, k_srcElev_6,
+    k_srcAzi_7, k_srcElev_7,
+    k_srcAzi_8, k_srcElev_8,
+    k_srcAzi_9, k_srcElev_9,
+    k_srcAzi_10, k_srcElev_10,
+    k_srcAzi_11, k_srcElev_11,
+    k_srcAzi_12, k_srcElev_12,
+    k_srcAzi_13, k_srcElev_13,
+    k_srcAzi_14, k_srcElev_14,
+    k_srcAzi_15, k_srcElev_15,
+    k_srcAzi_16, k_srcElev_16,
+    k_srcAzi_17, k_srcElev_17,
+    k_srcAzi_18, k_srcElev_18,
+    k_srcAzi_19, k_srcElev_19,
+    k_srcAzi_20, k_srcElev_20,
+    k_srcAzi_21, k_srcElev_21,
+    k_srcAzi_22, k_srcElev_22,
+    k_srcAzi_23, k_srcElev_23,
+    k_srcAzi_24, k_srcElev_24,
+    k_srcAzi_25, k_srcElev_25,
+    k_srcAzi_26, k_srcElev_26,
+    k_srcAzi_27, k_srcElev_27,
+    k_srcAzi_28, k_srcElev_28,
+    k_srcAzi_29, k_srcElev_29,
+    k_srcAzi_30, k_srcElev_30,
+    k_srcAzi_31, k_srcElev_31,
+    k_srcAzi_32, k_srcElev_32,
+    
+    k_NumOfParameters
 };
 
+#ifndef MIN
+  #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
+#endif
+#ifndef MAX
+  #define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
+#endif
 
 class PluginProcessor  : public AudioProcessor
 {
@@ -48,12 +87,10 @@ public:
     float** ringBufferInputs;
     float** ringBufferOutputs;
     int wIdx, rIdx;
-
-#ifdef ENABLE_IS_PLAYING_CHECK
+ 
     bool isPlaying;
 	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
 	AudioPlayHead::CurrentPositionInfo currentPosition;
-#endif
     
     /***************************************************************************\
                                     JUCE Functions
