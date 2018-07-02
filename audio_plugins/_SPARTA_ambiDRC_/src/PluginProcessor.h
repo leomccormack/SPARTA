@@ -1,40 +1,19 @@
-/*
- ==============================================================================
- 
- This file is part of SPARTA; a suite of spatial audio plug-ins.
- Copyright (c) 2018 - Leo McCormack.
- 
- SPARTA is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
- 
- SPARTA is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU General Public License
- along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
- 
- ==============================================================================
-*/
+
+
 #ifndef PLUGINPROCESSOR_H_INCLUDED
 #define PLUGINPROCESSOR_H_INCLUDED
 
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "mcEQlib.h"
+#include "JuceHeader.h"
+#include "ambi_drc.h"
 
-#define BUILD_VER_SUFFIX "alpha"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
-#define ENABLE_IS_PLAYING_CHECK
+#define BUILD_VER_SUFFIX "alpha"
 
 
 enum {	
     /* For the default VST GUI */
 	k_NumOfParameters
 };
-
 
 class PluginProcessor  : public AudioProcessor
 {
@@ -43,18 +22,15 @@ public:
 	int nNumOutputs;                        /* current number of output channels */
 	int nSampleRate;                        /* current host sample rate */
     int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
-    void* hMEQ;                             /* mcEQlib handle */
- 
-    float** ringBufferInputs;
-    float** ringBufferOutputs;
-    int wIdx, rIdx;
+    void* hAmbi;                            /* dynamic range compressor handle */
 
-#ifdef ENABLE_IS_PLAYING_CHECK
-    bool isPlaying;
+	bool isPlaying;       
 	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
 	AudioPlayHead::CurrentPositionInfo currentPosition;
-#endif
-    
+
+	float** ringBufferInputs;
+	float** ringBufferOutputs;
+
     /***************************************************************************\
                                     JUCE Functions
     \***************************************************************************/

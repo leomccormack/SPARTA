@@ -24,7 +24,7 @@
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
 
-#define MAX_NUM_OUT_DIRS 2000
+#define MAX_NUM_OUT_DIRS 12000
 //[/Headers]
 
 

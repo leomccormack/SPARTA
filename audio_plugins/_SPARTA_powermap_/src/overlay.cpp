@@ -25,30 +25,6 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
-//static Point<int> convertAzElToPoint(float az, float el, Rectangle<int> localBounds, int hfov, int vfov)
-//{
-//    Point<int> AzElPos;
-//    Point<int> centre = localBounds.getCentre();
-//    int width  = localBounds.getWidth();
-//    int height = localBounds.getHeight();
-//
-//    AzElPos.setX(centre.getX() + (az/ (hfov/2)) * (width/2));
-//    AzElPos.setY(centre.getY() - (el/ (vfov/2)) * (height/2));
-//
-//    return AzElPos;
-//}
-//
-//static void convertPointToAzEl(Point<int> AzElPos, Rectangle<int> localBounds, int hfov, int vfov, float* az, float* el)
-//{
-//    Point<int> centre = localBounds.getCentre();
-//    int width  = localBounds.getWidth();
-//    int height = localBounds.getHeight();
-//    float x = AzElPos.getX();
-//    float y = AzElPos.getY();
-//
-//    (*az) = (  (x - centre.getX()) / (width/2)  ) * (hfov/2);
-//    (*el) = ( -(y - centre.getY()) / (height/2) ) * (vfov/2);
-//}
 
 /* look-up colour table for powermap */
 const int mapColourTable_N = 114;

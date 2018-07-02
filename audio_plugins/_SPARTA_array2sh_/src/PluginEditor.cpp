@@ -218,7 +218,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     ldiffviewIncluded->setVisible(false);
     dispID = SHOW_EQ;
     needScreenRefreshFLAG = true;
-   
+
 
     /* pass handles to data required for eq and analysis displays */
     int numFreqPoints, numCurves;
@@ -231,7 +231,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     cohviewIncluded->setSolidCurves_Handle(freqVector, dataHandle, numFreqPoints, numCurves);
     dataHandle = array2sh_getLevelDifference_Handle(hVst->hA2sh, &numCurves, &numFreqPoints);
     ldiffviewIncluded->setSolidCurves_Handle(freqVector, dataHandle, numFreqPoints, numCurves);
-    
+
     /* grab current parameter settings */
     arrayTypeCB->setSelectedId(array2sh_getArrayType(hVst->hA2sh), dontSendNotification);
     QSlider->setValue(array2sh_getNumSensors(hVst->hA2sh), dontSendNotification);

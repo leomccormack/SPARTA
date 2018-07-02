@@ -195,76 +195,36 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
     int nCurrentBlockSize = buffer.getNumSamples();
     float** bufferData = buffer.getArrayOfWritePointers();
     float** outputs = new float*[nNumOutputs];
-    for (int i = 0; i < nNumOutputs; i++) {
+    for (int i = 0; i < nNumOutputs; i++)
         outputs[i] = new float[FRAME_SIZE];
+
+    if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
+        for (int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
+            for (int ch = 0; ch < nNumInputs; ch++)
+                for (int i = 0; i < FRAME_SIZE; i++)
+                    ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
+            
+            /* determine if there is actually audio in the damn buffer */
+            playHead = getPlayHead();
+            bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
+            if (PlayHeadAvailable == true)
+                isPlaying = currentPosition.isPlaying;
+            else
+                isPlaying = true;
+     
+            /* perform processing */
+            binauraliser_process(hBin, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
+            
+            /* replace buffer with new audio */
+            buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
+            for (int ch = 0; ch < nNumOutputs; ch++)
+                for (int i = 0; i < FRAME_SIZE; i++)
+                    bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
+        }
     }
-    
-#ifdef ENABLE_IS_PLAYING_CHECK
-    playHead = getPlayHead();
-    bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-    if (PlayHeadAvailable == true)
-        isPlaying = currentPosition.isPlaying;
     else
-        isPlaying = false;
-#endif
-    switch (nCurrentBlockSize) {
-        case (FRAME_SIZE * 8):
-            for (int frame = 0; frame < 8; frame++) {
-                for (int ch = 0; ch < nNumInputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-                binauraliser_process(hBin, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-                buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
-                for (int ch = 0; ch < nNumOutputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
-            }
-            break;
-            
-        case (FRAME_SIZE * 4):
-            for (int frame = 0; frame < 4; frame++) {
-                for (int ch = 0; ch < nNumInputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-                binauraliser_process(hBin, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-                buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
-                for (int ch = 0; ch < nNumOutputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
-            }
-            break;
-            
-        case (FRAME_SIZE*2):
-            for(int frame = 0; frame < 2; frame++){
-                for (int ch = 0; ch < nNumInputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-                binauraliser_process(hBin, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-                buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
-                for (int ch = 0; ch < nNumOutputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
-            }
-            break;
-
-        case FRAME_SIZE:
-            binauraliser_process(hBin, bufferData, outputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-            buffer.clear();
-            for (int ch = 0; ch < nNumOutputs; ch++) {
-                for (int i = 0; i < FRAME_SIZE; i++) {
-                    bufferData[ch][i] = outputs[ch][i];
-                }
-            }
-            break;
-
-        default:
-            buffer.clear();
-            break;
-    }
-#ifdef ENABLE_IS_PLAYING_CHECK
-
-#endif
-    
+        buffer.clear();
+ 
     if (nHostBlockSize == (FRAME_SIZE/2)) {
         wIdx++; if (wIdx > 1) { wIdx = 0; }
         rIdx++; if (rIdx > 1) { rIdx = 0; }

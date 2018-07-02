@@ -40,7 +40,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "sparta_binauraliser";
-    const char* const  versionString  = "1.0.0";
-    const int          versionNumber  = 0x10000;
+    const char* const  versionString  = "1.0.3";
+    const int          versionNumber  = 0x10003;
 }
 #endif

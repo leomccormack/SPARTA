@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="lfkRjX" name="sparta_array2sh_o5" projectType="audioplug"
-              version="1.0.0" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
+              version="1.0.1" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_array2sh_o5" pluginDesc="sparta_array2sh_o5"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ASO5"
               pluginChannelConfigs="{36, 36}, {37, 36}, {38, 36}, {39, 36}, {40, 36}, {41, 36}, {42, 36}, {43, 36}, {44, 36}, {45, 36}, {46, 36}, {47, 36}, {48, 36}, {49, 36}, {50, 36}, {51, 36}, {52, 36}, {53, 36}, {54, 36}, {55, 36}, {56, 36}, {57, 36}, {58, 36}, {59, 36}, {60, 36}, {61, 36}, {62, 36}, {63, 36}, {64, 36}"
