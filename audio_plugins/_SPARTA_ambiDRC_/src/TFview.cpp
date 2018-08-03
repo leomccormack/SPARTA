@@ -25,6 +25,12 @@
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 
+#ifndef MIN
+#define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
+#endif
 //[/MiscUserDefs]
 
 //==============================================================================
@@ -112,15 +118,18 @@ void TFview::paint (Graphics& g)
             }
         }
 
-        /* Fill in TF tiles */
+        /* Fill in TF tiles */ //MIN_DISPLAY_DB
         float**gainTF = ambi_drc_getGainTF(hVst->hAmbi);
         int wIdx = ambi_drc_getGainTFwIdx(hVst->hAmbi);
         int rIdx;
-        g.setOpacity(1.0f); 
+        float logScale = (log10f(1.0f) - log10f(SPECTRAL_FLOOR));
+        g.setOpacity(1.0f);
         for (int band = 0; band < HYBRID_BANDS; band++) {
             for (int t = 0; t < READ_OFFSET; t++) {
                 rIdx = 0>wIdx - READ_OFFSET + t ? 0 : wIdx - READ_OFFSET + t;
-                g.setColour(mapColourTable[(int)((gainTF[band][rIdx])*(float)(mapColourTable_N))]);
+                float col_val = 1.0f - (log10f(gainTF[band][rIdx]) - log10f(SPECTRAL_FLOOR))/logScale;
+                int col_idx = MAX(MIN((int)(col_val*(float)(mapColourTable_N)), mapColourTable_N-1), 0);
+                g.setColour(mapColourTable[col_idx]);
                 g.fillRect(TFtiles[band][(int)(rIdx)]);
             }
         }
@@ -128,7 +137,7 @@ void TFview::paint (Graphics& g)
 
 	/* Draw wIdx line */
 	g.setColour(Colours::black);
-	g.setOpacity(1.0f);
+	g.setOpacity(1.0f); 
 	g.drawLine(0.0f, height, width, height, 2.0f);
 
     /* draw frequency guide lines on top */
@@ -149,7 +158,7 @@ void TFview::paint (Graphics& g)
         else
             done = true;
     }
-    
+
     /* draw time guide lines on top */
     g.setColour(Colours::white);
     g.setOpacity(0.17f);

@@ -114,6 +114,7 @@
 		8E22117478745F1FC98909C3 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "saf_hoa_internal.c"; path = "../../../../../SDKs/Spatial_Audio_Framework/framework/saf_hoa/saf_hoa_internal.c"; sourceTree = "SOURCE_ROOT"; };
 		92E2B20F0966030E266BFBE1 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "ambi_drc.c"; path = "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/src/ambi_drc.c"; sourceTree = "SOURCE_ROOT"; };
 		940FB8BF95187D8F2C2AB20D = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "include_juce_audio_plugin_client_utils.cpp"; path = "../../../juce/sparta_ambiDRC/JuceLibraryCode/include_juce_audio_plugin_client_utils.cpp"; sourceTree = "SOURCE_ROOT"; };
+		96E4CA4CBDA0E1E957F0B3AF = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "convhull_3d.h"; path = "../../../../../SDKs/Spatial_Audio_Framework/framework/saf_vbap/convhull_3d.h"; sourceTree = "SOURCE_ROOT"; };
 		98A3B387A09C484C2438F988 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "saf_free.c"; path = "../../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_free.c"; sourceTree = "SOURCE_ROOT"; };
 		98D31738C984C9FC97E8A137 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "saf_hrir.c"; path = "../../../../../SDKs/Spatial_Audio_Framework/framework/saf_hrir/saf_hrir.c"; sourceTree = "SOURCE_ROOT"; };
 		99EBB03FBBD791AABB8D85DA = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_audio_plugin_client_VST_utils.mm"; path = "../../../juce/sparta_ambiDRC/JuceLibraryCode/include_juce_audio_plugin_client_VST_utils.mm"; sourceTree = "SOURCE_ROOT"; };
@@ -217,6 +218,7 @@
 					08C2458BCBB8EF403D0AF339,
 					A47836744E8E0F572CD096D5, ); name = "saf_utilities"; sourceTree = "<group>"; };
 		EE39A1ABD29A106779086B5F = {isa = PBXGroup; children = (
+					96E4CA4CBDA0E1E957F0B3AF,
 					0F1D6066CDDD565AA98BD5B9,
 					4954E27810875EFBC4D5F482,
 					358385BDDDA392B11019ECD6, ); name = "saf_vbap"; sourceTree = "<group>"; };
