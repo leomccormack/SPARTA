@@ -252,6 +252,19 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
+        int x = 10, y = 36, width = 530, height = 246;
+        Colour fillColour = Colour (0x17c7c7c7);
+        Colour strokeColour = Colour (0x1fffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
+    {
         int x = 88, y = 320, width = 224, height = 112;
         Colour fillColour = Colour (0x17c7c7c7);
         Colour strokeColour = Colour (0x1fffffff);
@@ -631,7 +644,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 500, y = 247, width = 26, height = 30;
-        String text (TRANS("-60"));
+        String text (TRANS("-16"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -642,8 +655,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 502, y = 67, width = 26, height = 30;
-        String text (TRANS("-10"));
+        int x = 502, y = 85, width = 26, height = 30;
+        String text (TRANS("-4"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -654,44 +667,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 502, y = 103, width = 26, height = 30;
-        String text (TRANS("-20"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
-    }
-
-    {
-        int x = 502, y = 139, width = 26, height = 30;
-        String text (TRANS("-30"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
-    }
-
-    {
-        int x = 502, y = 211, width = 26, height = 30;
-        String text (TRANS("-50"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
-    }
-
-    {
-        int x = 502, y = 175, width = 26, height = 30;
-        String text (TRANS("-40"));
+        int x = 502, y = 193, width = 26, height = 30;
+        String text (TRANS("-12"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -714,16 +691,63 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 10, y = 36, width = 530, height = 246;
-        Colour fillColour = Colour (0x17c7c7c7);
-        Colour strokeColour = Colour (0x1fffffff);
+        int x = 502, y = 139, width = 26, height = 30;
+        String text (TRANS("-8"));
+        Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
 
+    {
+        int x = 502, y = 58, width = 26, height = 30;
+        String text (TRANS("-2"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 502, y = 112, width = 26, height = 30;
+        String text (TRANS("-6"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 502, y = 166, width = 26, height = 30;
+        String text (TRANS("-10"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 502, y = 220, width = 26, height = 30;
+        String text (TRANS("-14"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
     }
 
     //[UserPaint] Add your own custom painting code here..
@@ -847,13 +871,13 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == CHOrderingCB)
     {
         //[UserComboBoxCode_CHOrderingCB] -- add your combo box handling code here..
-        ambi_drc_setNormType(hVst->hAmbi, CHOrderingCB->getSelectedId());
+        ambi_drc_setChOrder(hVst->hAmbi, CHOrderingCB->getSelectedId());
         //[/UserComboBoxCode_CHOrderingCB]
     }
     else if (comboBoxThatHasChanged == normalisationCB)
     {
         //[UserComboBoxCode_normalisationCB] -- add your combo box handling code here..
-        ambi_drc_setChOrder(hVst->hAmbi, normalisationCB->getSelectedId());
+        ambi_drc_setNormType(hVst->hAmbi, normalisationCB->getSelectedId());
         //[/UserComboBoxCode_normalisationCB]
     }
 
@@ -895,6 +919,8 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 0 550 440" fill=" radial: 280 32, 296 416, 0=ff5c6a6c, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
+    <RECT pos="10 36 530 246" fill="solid: 17c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+          strokeColour="solid: 1fffffff"/>
     <RECT pos="88 320 224 112" fill="solid: 17c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
     <RECT pos="0 0 550 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
@@ -982,29 +1008,33 @@ BEGIN_JUCER_METADATA
     <TEXT pos="508 31 26 30" fill="solid: ffffffff" hasStroke="0" text="0"
           fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="500 247 26 30" fill="solid: ffffffff" hasStroke="0" text="-60"
+    <TEXT pos="500 247 26 30" fill="solid: ffffffff" hasStroke="0" text="-16"
           fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="502 67 26 30" fill="solid: ffffffff" hasStroke="0" text="-10"
+    <TEXT pos="502 85 26 30" fill="solid: ffffffff" hasStroke="0" text="-4"
           fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="502 103 26 30" fill="solid: ffffffff" hasStroke="0" text="-20"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="502 139 26 30" fill="solid: ffffffff" hasStroke="0" text="-30"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="502 211 26 30" fill="solid: ffffffff" hasStroke="0" text="-50"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="502 175 26 30" fill="solid: ffffffff" hasStroke="0" text="-40"
+    <TEXT pos="502 193 26 30" fill="solid: ffffffff" hasStroke="0" text="-12"
           fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="22 219 26 30" fill="solid: ffffffff" hasStroke="0" text="200"
           fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="10 36 530 246" fill="solid: 17c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
-          strokeColour="solid: 1fffffff"/>
+    <TEXT pos="502 139 26 30" fill="solid: ffffffff" hasStroke="0" text="-8"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="502 58 26 30" fill="solid: ffffffff" hasStroke="0" text="-2"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="502 112 26 30" fill="solid: ffffffff" hasStroke="0" text="-6"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="502 166 26 30" fill="solid: ffffffff" hasStroke="0" text="-10"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="502 220 26 30" fill="solid: ffffffff" hasStroke="0" text="-14"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <SLIDER name="new slider" id="863726658f50da67" memberName="s_thresh"
           virtualName="" explicitFocusOrder="0" pos="96 364 64 64" rotarysliderfill="7fffffff"

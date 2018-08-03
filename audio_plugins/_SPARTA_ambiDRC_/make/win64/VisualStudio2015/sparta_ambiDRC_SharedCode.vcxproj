@@ -1879,6 +1879,7 @@
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_malloc.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_sensorarray_presets.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_veclib.h"/>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_vbap\convhull_3d.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_vbap\saf_vbap_internal.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_audio_basics\buffers\juce_AudioChannelSet.h"/>

@@ -21,7 +21,7 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "colourGradient.h"
-#include "PluginProcessor.h" 
+#include "PluginProcessor.h"
 #define NEAREST(number, multiple) (((number) + ((multiple) / 2)) / (multiple) * (multiple))
 #define ROUND_DOWN(N,S) ((N / S) * S)
 
