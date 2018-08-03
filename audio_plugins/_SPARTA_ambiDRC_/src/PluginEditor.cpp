@@ -24,7 +24,9 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
-
+#ifndef M_PI
+#define M_PI ( 3.14159265358979323846264338327950288f )
+#endif
 //[/MiscUserDefs]
 
 //==============================================================================
@@ -783,9 +785,10 @@ void PluginEditor::paint (Graphics& g)
                (int) ((float)TFviewIncluded->getHeight()/2.0f) - textWidth/2,
                textWidth, 57, Justification::centred);
 
+	textWidth = 118;
     g.drawText(TRANS("Gain Reduction (dB)"), -36,
                (int) ((float)TFviewIncluded->getHeight()/2.0f) - textWidth/2,
-               textWidth, 1080, Justification::centred);
+               textWidth, 1084, Justification::centred);
 
     g.addTransform(AffineTransform::identity);
 

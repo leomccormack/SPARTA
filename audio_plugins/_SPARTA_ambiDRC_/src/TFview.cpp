@@ -109,10 +109,10 @@ void TFview::paint (Graphics& g)
         for (int band = 0; band < HYBRID_BANDS; band++) {
             float prev_Ypixel = band == 0 || band == 1 ? 0.0f : (log10f(freqVector[band-1]) - c)/m;
             float Ypixel = band == 0 ? 0.0f : (log10f(freqVector[band]) - c)/m;
-            float tileHeight = prev_Ypixel -Ypixel;
+            float tileHeight = Ypixel -prev_Ypixel;//SWAPPED!!!!
             for (int t = 0; t < NUM_DISPLAY_TIME_SLOTS; t++) {
                 TFtiles[band][t].setBounds((float)t*tileWidth,
-                                           (float)height-prev_Ypixel,
+                                           (float)height- Ypixel, //SWAPPED!!! prev_Ypixel,
                                            tileWidth,
                                            tileHeight);
             }

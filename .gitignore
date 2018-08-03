@@ -69,3 +69,7 @@ ipch/
 *.idb
 *.pdb
 
+*.obj
+*.tlog
+*.log
+audio_plugins/_SPARTA_ambiDRC_/obj/
