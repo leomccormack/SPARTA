@@ -25,22 +25,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/src/ambi_drc.c"
-            timestampString = "552237156.6908669"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "222"
-            endingLineNumber = "222"
-            landmarkName = "ambi_drc_process"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "../../../src/TFview.cpp"
             timestampString = "552237156.690913"
             startingColumnNumber = "9223372036854775807"
@@ -54,514 +38,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../src/PluginEditor.cpp"
-            timestampString = "552237156.691098"
+            timestampString = "552311501.547045"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "646"
-            endingLineNumber = "646"
+            startingLineNumber = "660"
+            endingLineNumber = "660"
             landmarkName = "PluginEditor::paint (Graphics&amp; g)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.846378"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "16098">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.8481621"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "16117">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.850003"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "16252">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.851895"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "16342">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.853725"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "16432">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.855495"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "16574">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.857249"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "16716">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.85913"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "16858">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.861325"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "17000">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.863312"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "17090">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.8651381"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "17180">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.866918"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "17322">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.868821"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "17464">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.8707089"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "17606">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.872508"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "17748">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.874274"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "17890">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.876165"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "18032">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.878002"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "18174">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.879787"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "18316">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.881537"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "18458">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.883402"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "18548">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.885271"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "18690">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.887084"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "18832">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.88888"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "18922">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.890687"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "19064">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.892505"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "19206">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.8947099"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "19348">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.896576"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "19490">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.898367"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "19632">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.900107"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "19774">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.9021111"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "19916">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.904086"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "20058">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PluginEditor::paint(juce::Graphics&amp;)"
-                  moduleName = "sparta_ambiDRC"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mccorml1/Documents/SourceTree/SPARTA_VSTs_public/audio_plugins/_SPARTA_ambiDRC_/src/PluginEditor.cpp"
-                  timestampString = "552237156.906763"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "647"
-                  endingLineNumber = "647"
-                  offsetFromSymbolStart = "20500">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -587,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/src/ambi_drc.c"
-            timestampString = "552237380.991563"
+            timestampString = "552311501.547367"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "215"
-            endingLineNumber = "215"
+            startingLineNumber = "218"
+            endingLineNumber = "218"
             landmarkName = "ambi_drc_process"
             landmarkType = "9">
          </BreakpointContent>
@@ -603,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/src/ambi_drc.c"
-            timestampString = "552237429.073802"
+            timestampString = "552311501.547415"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "238"
-            endingLineNumber = "238"
+            startingLineNumber = "241"
+            endingLineNumber = "241"
             landmarkName = "ambi_drc_process"
             landmarkType = "9">
          </BreakpointContent>
@@ -615,15 +102,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/src/ambi_drc.c"
-            timestampString = "552237434.131371"
+            timestampString = "552311501.547455"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "239"
-            endingLineNumber = "239"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
             landmarkName = "ambi_drc_process"
             landmarkType = "9">
          </BreakpointContent>

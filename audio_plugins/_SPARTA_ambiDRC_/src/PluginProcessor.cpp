@@ -6,7 +6,7 @@ PluginProcessor::PluginProcessor()
 {
 	nSampleRate = 48000;
     nHostBlockSize = FRAME_SIZE;
-	ambi_drc_create(&hAmbi, NUM_CHANNELS);
+	ambi_drc_create(&hAmbi);
 
 	ringBufferInputs = new float*[MAX_NUM_CHANNELS];
 	for (int i = 0; i < MAX_NUM_CHANNELS; i++)
@@ -232,6 +232,9 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("OUTGAIN", ambi_drc_getOutGain(hAmbi));
 	xml.setAttribute("ATTACK", ambi_drc_getAttack(hAmbi));
 	xml.setAttribute("RELEASE", ambi_drc_getRelease(hAmbi));
+    xml.setAttribute("NORM", ambi_drc_getNormType(hAmbi));
+    xml.setAttribute("CHORDER", ambi_drc_getChOrder(hAmbi));
+    xml.setAttribute("PRESET", ambi_drc_getInputPreset(hAmbi));
  
 	copyXmlToBinary(xml, destData);
 }
@@ -260,6 +263,14 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 ambi_drc_setAttack(hAmbi, (float)xmlState->getDoubleAttribute("ATTACK", 50.0f));
             if(xmlState->hasAttribute("RELEASE"))
                 ambi_drc_setRelease(hAmbi, (float)xmlState->getDoubleAttribute("RELEASE", 100.0f));
+            if(xmlState->hasAttribute("NORM"))
+                ambi_drc_setNormType(hAmbi, xmlState->getIntAttribute("NORM", 1));
+            if(xmlState->hasAttribute("CHORDER"))
+                ambi_drc_setChOrder(hAmbi, xmlState->getIntAttribute("CHORDER", 1));
+            if(xmlState->hasAttribute("PRESET"))
+                ambi_drc_setInputPreset(hAmbi, (INPUT_ORDER)xmlState->getIntAttribute("PRESET", 1));
+            
+            ambi_drc_refreshSettings(hAmbi);
         } 
 	}
 }
