@@ -130,7 +130,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     presetCB->setJustificationType (Justification::centredLeft);
     presetCB->setTextWhenNothingSelected (String());
     presetCB->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    presetCB->addItem (TRANS("Default"), 1);
     presetCB->addListener (this);
 
     presetCB->setBounds (72, 296, 120, 16);
@@ -140,7 +139,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CHOrderingCB->setJustificationType (Justification::centredLeft);
     CHOrderingCB->setTextWhenNothingSelected (TRANS("ACN"));
     CHOrderingCB->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CHOrderingCB->addItem (TRANS("ACN"), 1);
     CHOrderingCB->addListener (this);
 
     CHOrderingCB->setBounds (288, 296, 80, 16);
@@ -150,8 +148,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     normalisationCB->setJustificationType (Justification::centredLeft);
     normalisationCB->setTextWhenNothingSelected (TRANS("N3D"));
     normalisationCB->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    normalisationCB->addItem (TRANS("N3D"), 1);
-    normalisationCB->addItem (TRANS("SN3D"), 2);
     normalisationCB->addListener (this);
 
     normalisationCB->setBounds (440, 296, 88, 16);
@@ -177,6 +173,19 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     float* freqVector = ambi_drc_getFreqVector(hVst->hAmbi, &numFreqPoints);
     TFviewIncluded->setFreqVector(freqVector, numFreqPoints);
 
+    /* add options to drop down boxes */
+    normalisationCB->addItem (TRANS("N3D"), NORM_N3D);
+    normalisationCB->addItem (TRANS("SN3D"), NORM_SN3D);
+    CHOrderingCB->addItem (TRANS("ACN"), CH_ACN);
+    presetCB->addItem(TRANS("Omni"), INPUT_OMNI);
+    presetCB->addItem(TRANS("1st order"), INPUT_ORDER_1);
+    presetCB->addItem(TRANS("2nd order"), INPUT_ORDER_2);
+    presetCB->addItem(TRANS("3rd order"), INPUT_ORDER_3);
+    presetCB->addItem(TRANS("4th order"), INPUT_ORDER_4);
+    presetCB->addItem(TRANS("5th order"), INPUT_ORDER_5);
+    presetCB->addItem(TRANS("6th order"), INPUT_ORDER_6);
+    presetCB->addItem(TRANS("7th order"), INPUT_ORDER_7);
+
 	/* fetch current configuration */
 	s_thresh->setValue(ambi_drc_getThreshold(hVst->hAmbi), dontSendNotification);
 	s_ratio->setValue(ambi_drc_getRatio(hVst->hAmbi), dontSendNotification);
@@ -185,6 +194,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_outgain->setValue(ambi_drc_getOutGain(hVst->hAmbi), dontSendNotification);
 	s_attack->setValue(ambi_drc_getAttack(hVst->hAmbi), dontSendNotification);
 	s_release->setValue(ambi_drc_getRelease(hVst->hAmbi), dontSendNotification);
+    CHOrderingCB->setSelectedId(ambi_drc_getChOrder(hVst->hAmbi), dontSendNotification);
+    normalisationCB->setSelectedId(ambi_drc_getNormType(hVst->hAmbi), dontSendNotification);
+    presetCB->setSelectedId(ambi_drc_getInputPreset(hVst->hAmbi), dontSendNotification);
 
     startTimer(80); /*ms (40ms = 25 frames per second) */
 
@@ -222,16 +234,16 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 0, width = 550, height = 440;
-        Colour fillColour1 = Colour (0xff839496), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff5c6a6c), fillColour2 = Colour (0xff073642);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (fillColour1,
-                                       264.0f - 0.0f + x,
-                                       static_cast<float> (-120) - 0.0f + y,
-                                       fillColour2,
                                        280.0f - 0.0f + x,
-                                       400.0f - 0.0f + y,
+                                       32.0f - 0.0f + y,
+                                       fillColour2,
+                                       296.0f - 0.0f + x,
+                                       416.0f - 0.0f + y,
                                        true));
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -701,6 +713,19 @@ void PluginEditor::paint (Graphics& g)
                     Justification::centredLeft, true);
     }
 
+    {
+        int x = 10, y = 36, width = 530, height = 246;
+        Colour fillColour = Colour (0x17c7c7c7);
+        Colour strokeColour = Colour (0x1fffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
     /* banner text */
@@ -732,11 +757,11 @@ void PluginEditor::paint (Graphics& g)
     g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
     g.drawText(TRANS("Frequency (Hz)"), -36,
                (int) ((float)TFviewIncluded->getHeight()/2.0f) - textWidth/2,
-               textWidth, 50, Justification::centred);
+               textWidth, 57, Justification::centred);
 
     g.drawText(TRANS("Gain Reduction (dB)"), -36,
                (int) ((float)TFviewIncluded->getHeight()/2.0f) - textWidth/2,
-               textWidth, 1086, Justification::centred);
+               textWidth, 1080, Justification::centred);
 
     g.addTransform(AffineTransform::identity);
 
@@ -816,16 +841,19 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == presetCB)
     {
         //[UserComboBoxCode_presetCB] -- add your combo box handling code here..
+        ambi_drc_setInputPreset(hVst->hAmbi, (INPUT_ORDER)presetCB->getSelectedId());
         //[/UserComboBoxCode_presetCB]
     }
     else if (comboBoxThatHasChanged == CHOrderingCB)
     {
         //[UserComboBoxCode_CHOrderingCB] -- add your combo box handling code here..
+        ambi_drc_setNormType(hVst->hAmbi, CHOrderingCB->getSelectedId());
         //[/UserComboBoxCode_CHOrderingCB]
     }
     else if (comboBoxThatHasChanged == normalisationCB)
     {
         //[UserComboBoxCode_normalisationCB] -- add your combo box handling code here..
+        ambi_drc_setChOrder(hVst->hAmbi, normalisationCB->getSelectedId());
         //[/UserComboBoxCode_normalisationCB]
     }
 
@@ -865,7 +893,7 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="550" initialHeight="440">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 0 550 440" fill=" radial: 264 -120, 280 400, 0=ff839496, 1=ff073642"
+    <RECT pos="0 0 550 440" fill=" radial: 280 32, 296 416, 0=ff5c6a6c, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="88 320 224 112" fill="solid: 17c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
@@ -975,6 +1003,8 @@ BEGIN_JUCER_METADATA
     <TEXT pos="22 219 26 30" fill="solid: ffffffff" hasStroke="0" text="200"
           fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <RECT pos="10 36 530 246" fill="solid: 17c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+          strokeColour="solid: 1fffffff"/>
   </BACKGROUND>
   <SLIDER name="new slider" id="863726658f50da67" memberName="s_thresh"
           virtualName="" explicitFocusOrder="0" pos="96 364 64 64" rotarysliderfill="7fffffff"
@@ -1027,13 +1057,13 @@ BEGIN_JUCER_METADATA
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <COMBOBOX name="new combo box" id="abcd469891fabf2d" memberName="presetCB"
             virtualName="" explicitFocusOrder="0" pos="72 296 120 16" editable="0"
-            layout="33" items="Default" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
+            layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="44b90530e58253e" memberName="CHOrderingCB"
             virtualName="" explicitFocusOrder="0" pos="288 296 80 16" editable="0"
-            layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
+            layout="33" items="" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="caeee0fc74db72a4" memberName="normalisationCB"
             virtualName="" explicitFocusOrder="0" pos="440 296 88 16" editable="0"
-            layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
+            layout="33" items="" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

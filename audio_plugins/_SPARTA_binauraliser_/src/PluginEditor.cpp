@@ -117,14 +117,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     TB_showOutputs->setBounds (673, 318, 32, 24);
 
-    addAndMakeVisible (SL_pValue = new Slider ("new slider"));
-    SL_pValue->setRange (0, 1, 0.01);
-    SL_pValue->setSliderStyle (Slider::LinearHorizontal);
-    SL_pValue->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
-    SL_pValue->addListener (this);
-
-    SL_pValue->setBounds (272, 318, 160, 24);
-
     addAndMakeVisible (label_N_Tri = new Label ("new label",
                                                 String()));
     label_N_Tri->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
@@ -135,6 +127,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_N_Tri->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     label_N_Tri->setBounds (800, 168, 96, 24);
+
+    addAndMakeVisible (CBinterpMode = new ComboBox ("new combo box"));
+    CBinterpMode->setEditableText (false);
+    CBinterpMode->setJustificationType (Justification::centredLeft);
+    CBinterpMode->setTextWhenNothingSelected (String());
+    CBinterpMode->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBinterpMode->addListener (this);
+
+    CBinterpMode->setBounds (328, 318, 112, 20);
 
 
     //[UserPreSize]
@@ -201,6 +202,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 #ifdef ENABLE_DTU_AVIL_PRESET
     CBsourceDirsPreset->addItem (TRANS("DTU AVIL"), PRESET_DTU_AVIL);
 #endif
+#ifdef ENABLE_ZYLIA_LAB_PRESET
+    CBsourceDirsPreset->addItem (TRANS("Zylia Lab (22.x)"), PRESET_ZYLIA_LAB);
+#endif
 #ifdef ENABLE_T_DESIGN_4_PRESET
     CBsourceDirsPreset->addItem (TRANS("T-design (4)"), PRESET_T_DESIGN_4);
 #endif
@@ -243,7 +247,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_sources->setValue(binauraliser_getNumSources(hVst->hBin),dontSendNotification);
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(true, dontSendNotification);
-    SL_pValue->setEnabled(false);
+    CBinterpMode->setEnabled(false);
 
     /* create panning window */
     addAndMakeVisible (panWindow = new pannerView(ownerFilter, 480, 240));
@@ -272,8 +276,8 @@ PluginEditor::~PluginEditor()
     label_DAW_fs = nullptr;
     TB_showInputs = nullptr;
     TB_showOutputs = nullptr;
-    SL_pValue = nullptr;
     label_N_Tri = nullptr;
+    CBinterpMode = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -372,7 +376,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 12, y = 122, width = 196, height = 224;
+        int x = 12, y = 121, width = 196, height = 225;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -423,7 +427,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 712, y = 122, width = 196, height = 224;
+        int x = 712, y = 121, width = 196, height = 225;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -460,8 +464,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 784, y = 32, width = 113, height = 30;
-        String text (TRANS("Outputs"));
+        int x = 788, y = 32, width = 113, height = 30;
+        String text (TRANS("HRIRs"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -472,7 +476,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 404, y = 32, width = 113, height = 30;
+        int x = 392, y = 32, width = 136, height = 30;
         String text (TRANS("Panning Window"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -480,7 +484,7 @@ void PluginEditor::paint (Graphics& g)
         g.setColour (fillColour);
         g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    Justification::centred, true);
     }
 
     {
@@ -556,8 +560,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 574, y = 314, width = 132, height = 30;
-        String text (TRANS("Show Outputs:"));
+        int x = 584, y = 314, width = 122, height = 30;
+        String text (TRANS("Show HRIRs:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -568,7 +572,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 220, y = 308, width = 219, height = 38;
+        int x = 220, y = 308, width = 229, height = 38;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -582,7 +586,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 231, y = 314, width = 132, height = 30;
-        String text (TRANS("DTT:"));
+        String text (TRANS("Interp. Mode:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -637,6 +641,11 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
         refreshPanViewWindow = true;
         //[/UserComboBoxCode_CBsourceDirsPreset]
     }
+    else if (comboBoxThatHasChanged == CBinterpMode)
+    {
+        //[UserComboBoxCode_CBinterpMode] -- add your combo box handling code here..
+        //[/UserComboBoxCode_CBinterpMode]
+    }
 
     //[UsercomboBoxChanged_Post]
     //[/UsercomboBoxChanged_Post]
@@ -653,11 +662,6 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
         binauraliser_setNumSources(hVst->hBin, (int)SL_num_sources->getValue());
         refreshPanViewWindow = true;
         //[/UserSliderCode_SL_num_sources]
-    }
-    else if (sliderThatWasMoved == SL_pValue)
-    {
-        //[UserSliderCode_SL_pValue] -- add your slider handling code here..
-        //[/UserSliderCode_SL_pValue]
     }
 
     //[UsersliderValueChanged_Post]
@@ -754,7 +758,7 @@ BEGIN_JUCER_METADATA
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 58 480 240" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 122 196 224" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 121 196 225" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="70 123 105 32" fill="solid: ffffffff" hasStroke="0" text="Azi    #   Elev"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
@@ -763,7 +767,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="712 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="712 122 196 224" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="712 121 196 225" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="23 88 113 30" fill="solid: ffffffff" hasStroke="0" text="N Chan:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
@@ -771,12 +775,12 @@ BEGIN_JUCER_METADATA
     <TEXT pos="84 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="784 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Outputs"
+    <TEXT pos="788 32 113 30" fill="solid: ffffffff" hasStroke="0" text="HRIRs"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="404 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
+    <TEXT pos="392 32 136 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="720 58 160 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
@@ -795,12 +799,12 @@ BEGIN_JUCER_METADATA
     <TEXT pos="455 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="574 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Outputs:"
+    <TEXT pos="584 314 122 30" fill="solid: ffffffff" hasStroke="0" text="Show HRIRs:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="220 308 219 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="220 308 229 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="231 314 132 30" fill="solid: ffffffff" hasStroke="0" text="DTT:"
+    <TEXT pos="231 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Interp. Mode:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="723 163 132 30" fill="solid: ffffffff" hasStroke="0" text="N Tri:"
@@ -848,17 +852,15 @@ BEGIN_JUCER_METADATA
   <TOGGLEBUTTON name="new toggle button" id="1a1dfbb1d4296140" memberName="TB_showOutputs"
                 virtualName="" explicitFocusOrder="0" pos="673 318 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
-  <SLIDER name="new slider" id="5b4f982e7ea9b2d5" memberName="SL_pValue"
-          virtualName="" explicitFocusOrder="0" pos="272 318 160 24" min="0.00000000000000000000"
-          max="1.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
-          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <LABEL name="new label" id="2c30657926641642" memberName="label_N_Tri"
          virtualName="" explicitFocusOrder="0" pos="800 168 96 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
+  <COMBOBOX name="new combo box" id="aeb0b2f644784061" memberName="CBinterpMode"
+            virtualName="" explicitFocusOrder="0" pos="328 318 112 20" editable="0"
+            layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

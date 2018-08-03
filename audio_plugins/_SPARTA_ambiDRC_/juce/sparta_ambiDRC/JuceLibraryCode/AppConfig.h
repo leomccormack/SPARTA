@@ -402,11 +402,11 @@
  #define JucePlugin_IAAName                "AALTO: sparta_ambiDRC"
 #endif
 #ifndef  JucePlugin_MaxNumInputChannels
- #define JucePlugin_MaxNumInputChannels    2
+ #define JucePlugin_MaxNumInputChannels    64
 #endif
 #ifndef  JucePlugin_MaxNumOutputChannels
- #define JucePlugin_MaxNumOutputChannels   2
+ #define JucePlugin_MaxNumOutputChannels   64
 #endif
 #ifndef  JucePlugin_PreferredChannelConfigurations
- #define JucePlugin_PreferredChannelConfigurations   {2,2}
+ #define JucePlugin_PreferredChannelConfigurations   {1,1},  {4,4},  {9,9},  {16,16},  {25,25},  {36,36},  {49,49} , {64,64}
 #endif

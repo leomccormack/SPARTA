@@ -100,8 +100,8 @@ private:
     ScopedPointer<Label> label_DAW_fs;
     ScopedPointer<ToggleButton> TB_showInputs;
     ScopedPointer<ToggleButton> TB_showOutputs;
-    ScopedPointer<Slider> SL_pValue;
     ScopedPointer<Label> label_N_Tri;
+    ScopedPointer<ComboBox> CBinterpMode;
 
 
     //==============================================================================
