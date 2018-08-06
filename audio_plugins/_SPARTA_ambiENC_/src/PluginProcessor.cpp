@@ -176,13 +176,10 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
 	ambi_enc_init(hAmbi, sampleRate);
     
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         memset(ringBufferInputs[i], 0, FRAME_SIZE*sizeof(float));
-    }
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
-        memset(ringBufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
-    }
-    wIdx = 1; rIdx = 1; /* read/write indices for ring buffers */
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
+        memset(ringBufferOutputs[i], 0, FRAME_SIZE * sizeof(float)); 
 }
 
 void PluginProcessor::releaseResources()
@@ -195,83 +192,38 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
     int nCurrentBlockSize = buffer.getNumSamples();
     float** bufferData = buffer.getArrayOfWritePointers();
     float** outputs = new float*[nNumOutputs];
-    for (int i = 0; i < nNumOutputs; i++) {
+    for (int i = 0; i < nNumOutputs; i++)
         outputs[i] = new float[FRAME_SIZE];
-    }
     
-#ifdef ENABLE_IS_PLAYING_CHECK
-    playHead = getPlayHead();
-    bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-    if (PlayHeadAvailable == true)
-        isPlaying = currentPosition.isPlaying;
-    else
-        isPlaying = false;
-    
-#endif
-    switch (nCurrentBlockSize) {
-        case (FRAME_SIZE * 8):
-            for (int frame = 0; frame < 8; frame++) {
-                for (int ch = 0; ch < nNumInputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-                ambi_enc_process(hAmbi, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-                buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
-                for (int ch = 0; ch < nNumOutputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
-            }
-            break;
+    if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
+        for (int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
+            for (int ch = 0; ch < nNumInputs; ch++)
+                for (int i = 0; i < FRAME_SIZE; i++)
+                    ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
             
-        case (FRAME_SIZE * 4):
-            for (int frame = 0; frame < 4; frame++) {
-                for (int ch = 0; ch < nNumInputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-                ambi_enc_process(hAmbi, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-                buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
-                for (int ch = 0; ch < nNumOutputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
-            }
-            break;
-
-        case (FRAME_SIZE*2):
-            for(int frame = 0; frame < 2; frame++){
-                for (int ch = 0; ch < nNumInputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-                ambi_enc_process(hAmbi, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-                buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
-                for (int ch = 0; ch < nNumOutputs; ch++)
-                    for (int i = 0; i < FRAME_SIZE; i++)
-                        bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
-            }
-            break;
-
-        case FRAME_SIZE:
-            ambi_enc_process(hAmbi, bufferData, outputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
-            buffer.clear();
+            /* determine if there is actually audio in the damn buffer */
+            playHead = getPlayHead();
+            bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
+            if (PlayHeadAvailable == true)
+                isPlaying = currentPosition.isPlaying;
+            else
+                isPlaying = true;
+            
+            /* perform processing */
+            ambi_enc_process(hAmbi, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
+            
+            /* replace buffer with new audio */
+            buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
             for (int ch = 0; ch < nNumOutputs; ch++)
                 for (int i = 0; i < FRAME_SIZE; i++)
-                    bufferData[ch][i] = outputs[ch][i];
-            break;
-
-        default:
-            buffer.clear();
-            break;
+                    bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
+        }
     }
-#ifdef ENABLE_IS_PLAYING_CHECK
-
-#endif
+    else
+        buffer.clear();
     
-    if (nHostBlockSize == (FRAME_SIZE/2)) {
-        wIdx++; if (wIdx > 1) { wIdx = 0; }
-        rIdx++; if (rIdx > 1) { rIdx = 0; }
-    }
-    
-    for (int i = 0; i < nNumOutputs; ++i) {
+    for (int i = 0; i < nNumOutputs; ++i)
         delete[] outputs[i];
-    }
     delete[] outputs;
 }
 
@@ -294,6 +246,9 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
         xml.setAttribute("SourceAziDeg" + String(i), ambi_enc_getSourceAzi_deg(hAmbi,i));
         xml.setAttribute("SourceElevDeg" + String(i), ambi_enc_getSourceElev_deg(hAmbi,i));
     }
+    xml.setAttribute("NORM", ambi_enc_getNormType(hAmbi));
+    xml.setAttribute("CHORDER", ambi_enc_getChOrder(hAmbi));
+    xml.setAttribute("OUT_ORDER", ambi_enc_getOutputOrder(hAmbi));
     xml.setAttribute("nSources", ambi_enc_getNumSources(hAmbi));
 
     copyXmlToBinary(xml, destData);
@@ -314,6 +269,13 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if(xmlState->hasAttribute("nSources"))
                 ambi_enc_setNumSources(hAmbi, xmlState->getIntAttribute("nSources", 1));
 
+            if(xmlState->hasAttribute("NORM"))
+                ambi_enc_setNormType(hAmbi, xmlState->getIntAttribute("NORM", 1));
+            if(xmlState->hasAttribute("CHORDER"))
+                ambi_enc_setChOrder(hAmbi, xmlState->getIntAttribute("CHORDER", 1));
+            if(xmlState->hasAttribute("OUT_ORDER"))
+                ambi_enc_setOutputOrder(hAmbi, xmlState->getIntAttribute("OUT_ORDER", 1));
+            
             ambi_enc_refreshParams(hAmbi);
         }
     }

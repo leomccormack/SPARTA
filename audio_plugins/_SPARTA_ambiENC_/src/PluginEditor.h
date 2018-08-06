@@ -87,6 +87,7 @@ private:
     ScopedPointer<Slider> SL_num_sources;
     ScopedPointer<ComboBox> CBoutputFormat;
     ScopedPointer<ComboBox> CBnormalisation;
+    ScopedPointer<ComboBox> CBorder;
 
 
     //==============================================================================

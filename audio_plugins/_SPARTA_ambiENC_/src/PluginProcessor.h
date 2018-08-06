@@ -27,7 +27,6 @@
 
 #define BUILD_VER_SUFFIX "alpha"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
-#define ENABLE_IS_PLAYING_CHECK
 
 enum {	
     /* For the default VST GUI */
@@ -45,14 +44,11 @@ public:
     void* hAmbi;                            /* ambi_enclib handle */
  
     float** ringBufferInputs;
-    float** ringBufferOutputs;
-    int wIdx, rIdx;
-
-#ifdef ENABLE_IS_PLAYING_CHECK
+    float** ringBufferOutputs; 
+ 
     bool isPlaying;
 	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
 	AudioPlayHead::CurrentPositionInfo currentPosition;
-#endif
     
     /***************************************************************************\
                                     JUCE Functions
