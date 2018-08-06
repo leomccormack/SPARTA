@@ -42,7 +42,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsourceDirsPreset->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBsourceDirsPreset->addListener (this);
 
-    CBsourceDirsPreset->setBounds (88, 64, 112, 20);
+    CBsourceDirsPreset->setBounds (88, 96, 112, 20);
 
     addAndMakeVisible (SL_num_sources = new Slider ("new slider"));
     SL_num_sources->setRange (1, 64, 1);
@@ -50,7 +50,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_sources->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
 
-    SL_num_sources->setBounds (80, 92, 120, 24);
+    SL_num_sources->setBounds (80, 124, 120, 24);
 
     addAndMakeVisible (CBoutputFormat = new ComboBox ("new combo box"));
     CBoutputFormat->setEditableText (false);
@@ -73,6 +73,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBnormalisation->setBounds (576, 316, 112, 20);
 
+    addAndMakeVisible (CBorder = new ComboBox ("new combo box"));
+    CBorder->setEditableText (false);
+    CBorder->setJustificationType (Justification::centredLeft);
+    CBorder->setTextWhenNothingSelected (String());
+    CBorder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBorder->addListener (this);
+
+    CBorder->setBounds (88, 64, 112, 20);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -89,7 +98,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
 
-    /* add source preset options */
+    /* add combo box options */
 #ifdef ENABLE_MONO_PRESET
     CBsourceDirsPreset->addItem (TRANS("Mono"), PRESET_MONO);
 #endif
@@ -153,6 +162,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 #ifdef ENABLE_T_DESIGN_60_PRESET
     CBsourceDirsPreset->addItem (TRANS("T-design (60)"), PRESET_T_DESIGN_60);
 #endif
+    CBorder->addItem (TRANS("0th (Omni)"), OUTPUT_OMNI);
+    CBorder->addItem (TRANS("1st order"), OUTPUT_ORDER_FIRST);
+    CBorder->addItem (TRANS("2nd order"), OUTPUT_ORDER_SECOND);
+    CBorder->addItem (TRANS("3rd order"), OUTPUT_ORDER_THIRD);
+    CBorder->addItem (TRANS("4th order"), OUTPUT_ORDER_FOURTH);
+    CBorder->addItem (TRANS("5th order"), OUTPUT_ORDER_FIFTH);
+    CBorder->addItem (TRANS("6th order"), OUTPUT_ORDER_SIXTH);
+    CBorder->addItem (TRANS("7th order"), OUTPUT_ORDER_SEVENTH);
 
     /* source coordinates viewport */
     addAndMakeVisible (sourceCoordsVP = new Viewport ("new viewport"));
@@ -160,13 +177,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
-    sourceCoordsVP->setBounds(22, 153, 184, 180);
+    sourceCoordsVP->setBounds(22, 183, 184, 155);
     sourceCoordsView_handle->setNCH(ambi_enc_getNumSources(hVst->hAmbi));
 
     /* grab current parameter settings */
     SL_num_sources->setValue(ambi_enc_getNumSources(hVst->hAmbi),dontSendNotification);
     CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hVst->hAmbi), dontSendNotification);
     CBnormalisation->setSelectedId(ambi_enc_getNormType(hVst->hAmbi), dontSendNotification);
+    CBorder->setSelectedId(ambi_enc_getOutputOrder(hVst->hAmbi), dontSendNotification);
 
     /* create panning window */
     addAndMakeVisible (panWindow = new pannerView(ownerFilter, 480, 240));
@@ -188,6 +206,7 @@ PluginEditor::~PluginEditor()
     SL_num_sources = nullptr;
     CBoutputFormat = nullptr;
     CBnormalisation = nullptr;
+    CBorder = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -204,17 +223,17 @@ void PluginEditor::paint (Graphics& g)
     g.fillAll (Colours::white);
 
     {
-        int x = 0, y = 31, width = 712, height = 325;
+        int x = 0, y = 30, width = 712, height = 326;
         Colour fillColour1 = Colour (0xff55636d), fillColour2 = Colour (0xff073642);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (fillColour1,
                                        460.0f - 0.0f + x,
-                                       184.0f - 31.0f + y,
+                                       184.0f - 30.0f + y,
                                        fillColour2,
                                        920.0f - 0.0f + x,
-                                       352.0f - 31.0f + y,
+                                       352.0f - 30.0f + y,
                                        true));
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -236,7 +255,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 12, y = 58, width = 196, height = 64;
+        int x = 12, y = 89, width = 196, height = 64;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -261,7 +280,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 23, y = 58, width = 67, height = 30;
+        int x = 20, y = 90, width = 67, height = 30;
         String text (TRANS("Presets: "));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -286,7 +305,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 12, y = 122, width = 196, height = 224;
+        int x = 12, y = 152, width = 196, height = 194;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -299,7 +318,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 70, y = 123, width = 105, height = 32;
+        int x = 70, y = 151, width = 105, height = 32;
         String text (TRANS("Azi    #   Elev"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -311,8 +330,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 23, y = 88, width = 113, height = 30;
-        String text (TRANS("N Chan:"));
+        int x = 20, y = 120, width = 113, height = 30;
+        String text (TRANS("N Inputs:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -323,8 +342,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 84, y = 32, width = 113, height = 30;
-        String text (TRANS("Inputs"));
+        int x = 48, y = 32, width = 164, height = 30;
+        String text (TRANS("Encoding Settings"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -335,7 +354,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 395, y = 32, width = 113, height = 30;
+        int x = 405, y = 32, width = 113, height = 30;
         String text (TRANS("Panning Window"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -347,7 +366,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 220, y = 306, width = 480, height = 39;
+        int x = 220, y = 306, width = 480, height = 40;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -374,6 +393,31 @@ void PluginEditor::paint (Graphics& g)
     {
         int x = 471, y = 311, width = 145, height = 30;
         String text (TRANS("Normalisation:"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 12, y = 58, width = 196, height = 32;
+        Colour fillColour = Colour (0x13f4f4f4);
+        Colour strokeColour = Colour (0x67a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
+    {
+        int x = 20, y = 60, width = 67, height = 30;
+        String text (TRANS("Order: "));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -427,6 +471,12 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
         //[UserComboBoxCode_CBnormalisation] -- add your combo box handling code here..
         ambi_enc_setNormType(hVst->hAmbi, CBnormalisation->getSelectedId());
         //[/UserComboBoxCode_CBnormalisation]
+    }
+    else if (comboBoxThatHasChanged == CBorder)
+    {
+        //[UserComboBoxCode_CBorder] -- add your combo box handling code here..
+        ambi_enc_setOutputOrder(hVst->hAmbi, CBorder->getSelectedId());
+        //[/UserComboBoxCode_CBorder]
     }
 
     //[UsercomboBoxChanged_Post]
@@ -488,35 +538,35 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="712" initialHeight="356">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 31 712 325" fill=" radial: 460 184, 920 352, 0=ff55636d, 1=ff073642"
+    <RECT pos="0 30 712 326" fill=" radial: 460 184, 920 352, 0=ff55636d, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="0 0 712 32" fill="solid: ff073642" hasStroke="1" stroke="2.5, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
-    <RECT pos="12 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 89 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="-19 0 195 32" fill="solid: ffffffff" hasStroke="0" text="AmbiENC"
           fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
-    <TEXT pos="23 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
+    <TEXT pos="20 90 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 58 480 240" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 122 196 224" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 152 196 194" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="70 123 105 32" fill="solid: ffffffff" hasStroke="0" text="Azi    #   Elev"
+    <TEXT pos="70 151 105 32" fill="solid: ffffffff" hasStroke="0" text="Azi    #   Elev"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="23 88 113 30" fill="solid: ffffffff" hasStroke="0" text="N Chan:"
+    <TEXT pos="20 120 113 30" fill="solid: ffffffff" hasStroke="0" text="N Inputs:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="84 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
+    <TEXT pos="48 32 164 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Settings"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="395 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
+    <TEXT pos="405 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="220 306 480 39" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="220 306 480 40" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="231 311 145 30" fill="solid: ffffffff" hasStroke="0" text="Channel Order:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
@@ -524,12 +574,17 @@ BEGIN_JUCER_METADATA
     <TEXT pos="471 311 145 30" fill="solid: ffffffff" hasStroke="0" text="Normalisation:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <RECT pos="12 58 196 32" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 67a0a0a0"/>
+    <TEXT pos="20 60 67 30" fill="solid: ffffffff" hasStroke="0" text="Order: "
+          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="5a2f99f88aa51390" memberName="CBsourceDirsPreset"
-            virtualName="" explicitFocusOrder="0" pos="88 64 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="88 96 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_sources"
-          virtualName="" explicitFocusOrder="0" pos="80 92 120 24" min="1.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="80 124 120 24" min="1.00000000000000000000"
           max="64.00000000000000000000" int="1.00000000000000000000" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
@@ -539,6 +594,9 @@ BEGIN_JUCER_METADATA
   <COMBOBOX name="new combo box" id="27f130362a28f1eb" memberName="CBnormalisation"
             virtualName="" explicitFocusOrder="0" pos="576 316 112 20" editable="0"
             layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
+  <COMBOBOX name="new combo box" id="56ba0566c2fe39e0" memberName="CBorder"
+            virtualName="" explicitFocusOrder="0" pos="88 64 112 20" editable="0"
+            layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
