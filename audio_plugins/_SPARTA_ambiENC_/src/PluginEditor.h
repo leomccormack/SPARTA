@@ -53,8 +53,6 @@ public:
     PluginProcessor* hVst;
     void timerCallback() override;
 
-
-
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -73,13 +71,13 @@ private:
     ScopedPointer<Viewport> sourceCoordsVP;
     inputCoordsView* sourceCoordsView_handle;
 
-
     /* panning window */
     ScopedPointer<pannerView> panWindow;
     bool refreshPanViewWindow;
 
-
-
+    /* warning message */
+    bool showingFrameSizeWarning;
+    
     //[/UserVariables]
 
     //==============================================================================

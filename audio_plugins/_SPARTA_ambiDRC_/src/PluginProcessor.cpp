@@ -188,6 +188,8 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
                 isPlaying = currentPosition.isPlaying;
             else
                 isPlaying = true;
+            if(!isPlaying) /* for DAWs with no transport */
+                isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
             
             /* perform processing */
             ambi_drc_process(hAmbi, ringBufferInputs, ringBufferOutputs, nNumInputs < nNumOutputs ? nNumInputs : nNumOutputs, FRAME_SIZE, isPlaying);

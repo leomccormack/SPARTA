@@ -442,7 +442,7 @@ void PluginEditor::paint (Graphics& g)
 
     //[UserPaint] Add your own custom painting code here..
 
-    /* display version */
+    /* display version/date built */
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
@@ -562,7 +562,7 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 void PluginEditor::timerCallback()
 {
     /* show warning if currently selected framesize is not supported */
-    if (hVst->getCurrentBlockSize()<FRAME_SIZE){
+    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         showingFrameSizeWarning = true;
         repaint();
     }

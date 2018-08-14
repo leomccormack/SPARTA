@@ -85,9 +85,8 @@ private:
     /* panning window */
     ScopedPointer<pannerView> panWindow;
     bool refreshPanViewWindow;
-
-
-
+ 
+    bool showingFrameSizeWarning;
     //[/UserVariables]
 
     //==============================================================================

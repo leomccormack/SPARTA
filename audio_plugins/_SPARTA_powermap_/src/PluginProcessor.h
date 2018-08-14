@@ -43,7 +43,10 @@ public:
     void* hPm;                              /* powermap handle */
     
     float** ringBufferInputs;
-    int wIdx, rIdx;
+    
+    int getCurrentBlockSize(){
+        return nHostBlockSize;
+    }
 	
 	bool isPlaying;
 	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */

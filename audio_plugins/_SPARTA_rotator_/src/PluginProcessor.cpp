@@ -257,7 +257,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
 				isPlaying = currentPosition.isPlaying;
 			else
 				isPlaying = false;
-            if(!isPlaying) /* to  */
+            if(!isPlaying) /* for DAWs with no transport */
                 isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
         
 			/* perform processing */

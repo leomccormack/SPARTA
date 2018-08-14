@@ -39,9 +39,8 @@ PluginProcessor::~PluginProcessor()
 {
 	sldoa_destroy(&hSld);
 
-	for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
+	for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
 		delete[] ringBufferInputs[i];
-	}
 	delete[] ringBufferInputs;
 }
 
@@ -195,6 +194,8 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
                 isPlaying = currentPosition.isPlaying;
             else
                 isPlaying = false;
+            if(!isPlaying) /* for DAWs with no transport */
+                isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
             
             /* perform processing */
             sldoa_analysis(hSld, ringBufferInputs, nNumInputs, FRAME_SIZE, isPlaying);

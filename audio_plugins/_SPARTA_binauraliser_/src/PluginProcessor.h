@@ -27,11 +27,14 @@
 
 #define BUILD_VER_SUFFIX "alpha"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
+#define NUM_OF_AUTOMATABLE_SOURCES 32
 
-enum {	
-    /* For the default VST GUI */
-	k_NumOfParameters
-};
+#ifndef MIN
+  #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
+#endif
+#ifndef MAX
+  #define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
+#endif
 
 
 class PluginProcessor  : public AudioProcessor
@@ -45,11 +48,14 @@ public:
  
     float** ringBufferInputs;
     float** ringBufferOutputs;
-    int wIdx, rIdx;
  
     bool isPlaying;
 	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
 	AudioPlayHead::CurrentPositionInfo currentPosition;
+    
+    int getCurrentBlockSize(){
+        return nHostBlockSize;
+    }
     
     /***************************************************************************\
                                     JUCE Functions

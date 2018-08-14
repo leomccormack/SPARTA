@@ -54,9 +54,7 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
     PluginProcessor* hVst;
     void timerCallback() override;
-
-
-
+ 
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -84,7 +82,7 @@ private:
     ScopedPointer<pannerView> panWindow;
     bool refreshPanViewWindow;
 
-
+    bool showingFrameSizeWarning;
 
     //[/UserVariables]
 

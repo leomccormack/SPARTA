@@ -270,7 +270,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     refreshPanViewWindow = true;
 
 	/* Specify screen refresh rate */
-    startTimer(25);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(40);//80); /*ms (40ms = 25 frames per second) */
+    
+    showingFrameSizeWarning = false;
 
     //[/Constructor]
 }
@@ -588,6 +590,15 @@ void PluginEditor::paint (Graphics& g)
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
 		150, 16, 530, 11,
 		Justification::centredLeft, true);
+    
+    /* display warning message */
+    if(showingFrameSizeWarning){
+        g.setColour(Colours::red);
+        g.setFont(Font(11.00f, Font::plain));
+        g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                   getBounds().getWidth()-170, 16, 530, 11,
+                   Justification::centredLeft, true);
+    }
 
     //[/UserPaint]
 }
@@ -697,6 +708,16 @@ void PluginEditor::timerCallback()
         refreshPanViewWindow = false;
         sourceCoordsView_handle->setHasASliderChange(false);
         loudspeakerCoordsView_handle->setHasASliderChange(false);
+    }
+    
+    /* show warning if currently selected framesize is not supported */
+    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
+        showingFrameSizeWarning = true;
+        repaint();
+    }
+    else if(showingFrameSizeWarning){
+        showingFrameSizeWarning = false;
+        repaint();
     }
 }
 

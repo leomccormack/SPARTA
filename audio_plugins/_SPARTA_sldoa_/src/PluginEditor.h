@@ -73,6 +73,8 @@ private:
     ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
 	OpenGLContext openGLContext;
     ScopedPointer<log2dSlider> anaOrder2dSlider;
+    
+    bool showingFrameSizeWarning;
     //[/UserVariables]
 
     //==============================================================================

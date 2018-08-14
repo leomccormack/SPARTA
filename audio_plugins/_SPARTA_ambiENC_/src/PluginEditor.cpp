@@ -193,6 +193,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
+    
+    showingFrameSizeWarning = false;
 
     //[/Constructor]
 }
@@ -434,6 +436,16 @@ void PluginEditor::paint (Graphics& g)
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
 		150, 16, 530, 11,
 		Justification::centredLeft, true);
+    
+    /* display warning message */
+    if(showingFrameSizeWarning){
+        g.setColour(Colours::red);
+        g.setFont(Font(11.00f, Font::plain));
+        g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                   getBounds().getWidth()-170, 16, 530, 11,
+                   Justification::centredLeft, true);
+    }
+    
 
     //[/UserPaint]
 }
@@ -505,7 +517,7 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PluginEditor::timerCallback()
 {
-    /*  */
+    /* update number of sources */
     sourceCoordsView_handle->setNCH(ambi_enc_getNumSources(hVst->hAmbi));
     SL_num_sources->setValue(ambi_enc_getNumSources(hVst->hAmbi),dontSendNotification);
 
@@ -515,6 +527,16 @@ void PluginEditor::timerCallback()
         panWindow->refreshPanView();
         refreshPanViewWindow = false;
         sourceCoordsView_handle->setHasASliderChange(false);
+    }
+    
+    /* show warning if currently selected framesize is not supported */
+    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
+        showingFrameSizeWarning = true;
+        repaint();
+    }
+    else if(showingFrameSizeWarning){
+        showingFrameSizeWarning = false;
+        repaint();
     }
 }
 

@@ -39,14 +39,12 @@ PluginProcessor::~PluginProcessor()
 {
 	array2sh_destroy(&hA2sh);
     
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         delete[] ringBufferInputs[i];
-    }
     delete[] ringBufferInputs;
     
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         delete[] ringBufferOutputs[i];
-    }
     delete[] ringBufferOutputs;
 }
 
@@ -180,8 +178,6 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
         memset(ringBufferInputs[i], 0, FRAME_SIZE*sizeof(float));
     for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         memset(ringBufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
-    
-    wIdx = 1; rIdx = 1; /* read/write indices for ring buffers */
 }
 
 void PluginProcessor::releaseResources()
@@ -212,9 +208,9 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
                 isPlaying = currentPosition.isPlaying;
             else
                 isPlaying = true;
-//            if(buffer.getRMSLevel(0, 0, nCurrentBlockSize)>0.000001f) /* Plogue Bidule informs plug-in that it has a playHead, but it is not moving... */
-//                isPlaying = true;
-            
+            if(!isPlaying) /* for DAWs with no transport */
+                isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
+ 
             /* perform processing */
             array2sh_process(hA2sh, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
             
@@ -227,15 +223,9 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
     }
     else
         buffer.clear();
-
-    if (nHostBlockSize == (FRAME_SIZE/2)) {
-        wIdx++; if (wIdx > 1) { wIdx = 0; }
-        rIdx++; if (rIdx > 1) { rIdx = 0; }
-    }
-
-    for (int i = 0; i < nNumOutputs; ++i) {
+ 
+    for (int i = 0; i < nNumOutputs; ++i)
         delete[] outputs[i];
-    }
     delete[] outputs;
 }
 
