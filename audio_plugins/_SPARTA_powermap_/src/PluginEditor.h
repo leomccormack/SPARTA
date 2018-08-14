@@ -82,6 +82,8 @@ private:
     ScopedPointer<log2dSlider> pmapEQ2dSlider;
 
     bool resolutionHasChanged;
+    
+    bool showingFrameSizeWarning;
 
     //[/UserVariables]
 

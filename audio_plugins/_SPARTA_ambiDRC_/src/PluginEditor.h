@@ -67,6 +67,7 @@ private:
     ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
     ScopedPointer<TFview> TFviewIncluded;
+    bool showingFrameSizeWarning;
     //[/UserVariables]
 
     //==============================================================================

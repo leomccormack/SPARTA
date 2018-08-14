@@ -87,6 +87,7 @@ private:
 
     bool needScreenRefreshFLAG;
     bool showDegreesInstead;
+    bool showingFrameSizeWarning;
     //[/UserVariables]
 
     //==============================================================================

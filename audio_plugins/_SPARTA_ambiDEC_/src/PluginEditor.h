@@ -84,6 +84,8 @@ private:
         const char* new_cstring = (const char*)directory.toUTF8();
         ambi_dec_setSofaFilePath(hVst->hAmbi, new_cstring);
     }
+    
+    bool showingFrameSizeWarning;
 
     //[/UserVariables]
 

@@ -259,6 +259,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 #ifdef ENABLE_DTU_AVIL_PRESET
     CBoutputDirsPreset->addItem (TRANS("DTU AVIL"), PRESET_DTU_AVIL);
 #endif
+#ifdef ENABLE_ZYLIA_LAB_PRESET
+    CBoutputDirsPreset->addItem (TRANS("Zylia Lab (22.x)"), PRESET_ZYLIA_LAB);
+#endif
 #ifdef ENABLE_T_DESIGN_4_PRESET
     CBoutputDirsPreset->addItem (TRANS("T-design (4)"), PRESET_T_DESIGN_4);
 #endif
@@ -310,6 +313,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
+    
+    showingFrameSizeWarning = false;
 
     //[/Constructor]
 }
@@ -777,6 +782,15 @@ void PluginEditor::paint (Graphics& g)
     g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
     g.drawText (text, x, y, width, height,
                 Justification::centredLeft, true);
+    
+    /* display warning message */
+    if(showingFrameSizeWarning){
+        g.setColour(Colours::red);
+        g.setFont(Font(11.00f, Font::plain));
+        g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                   getBounds().getWidth()-170, 16, 530, 11,
+                   Justification::centredLeft, true);
+    }
 
     //[/UserPaint]
 }
@@ -925,6 +939,16 @@ void PluginEditor::timerCallback()
     /* refresh */
     if (decOrder2dSlider->getRefreshValuesFLAG())
         decOrder2dSlider->repaint();
+    
+    /* show warning if currently selected framesize is not supported */
+    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
+        showingFrameSizeWarning = true;
+        repaint();
+    }
+    else if(showingFrameSizeWarning){
+        showingFrameSizeWarning = false;
+        repaint();
+    }
 }
 
 

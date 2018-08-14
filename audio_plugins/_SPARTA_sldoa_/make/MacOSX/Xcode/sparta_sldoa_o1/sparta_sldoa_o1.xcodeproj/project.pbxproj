@@ -46,6 +46,7 @@
 		FEE7D0173C73F5A2BFCA2F48 = {isa = PBXBuildFile; fileRef = 9FE5666E9922FEA4CD9B7327; };
 		784186D2D8A11503DF254BA0 = {isa = PBXBuildFile; fileRef = BF056AA0E21D0ACA6027AD70; };
 		CC0BBB6AB762C263885152A7 = {isa = PBXBuildFile; fileRef = AA4EA097ED1F187FA8A8202D; };
+		1A7BEF3339F1A5D872551C13 = {isa = PBXBuildFile; fileRef = C10A75028E1C6AC931D92D2A; };
 		F2E41ED28EE02761F52BA335 = {isa = PBXBuildFile; fileRef = 834C8388AFB082511262978D; };
 		535FB801E131E013E4FCB84B = {isa = PBXBuildFile; fileRef = 862AC750F706450099B6EC88; };
 		DCAF6857E6F612A9F88CC542 = {isa = PBXBuildFile; fileRef = B675D9ACE4E7DB932DB62664; };
@@ -133,8 +134,10 @@
 		95FA46534DFCDF9B0BE489E3 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "saf_complex.c"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_complex.c"; sourceTree = "SOURCE_ROOT"; };
 		9C446CD76F7C4088886B0130 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "sldoa_internal.h"; path = "../../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/src/sldoa_internal.h"; sourceTree = "SOURCE_ROOT"; };
 		9C96F5DBB55967AF40344C74 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "saf_calloc.c"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_calloc.c"; sourceTree = "SOURCE_ROOT"; };
+		9DBA1559BC704AA6CB65A6D9 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "convhull_3d.h"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_vbap/convhull_3d.h"; sourceTree = "SOURCE_ROOT"; };
 		9E3D64F42728B2EE5C13C9CF = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "saf_loudspeaker_presets.h"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_loudspeaker_presets.h"; sourceTree = "SOURCE_ROOT"; };
 		9FE5666E9922FEA4CD9B7327 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "saf_loudspeaker_presets.c"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_loudspeaker_presets.c"; sourceTree = "SOURCE_ROOT"; };
+		A3A6AACA8669C502639BDBCF = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "saf_sort.h"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sort.h"; sourceTree = "SOURCE_ROOT"; };
 		A8853FA61032388D6E6AA83A = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = log2dSlider.cpp; path = ../../../../src/log2dSlider.cpp; sourceTree = "SOURCE_ROOT"; };
 		AA4EA097ED1F187FA8A8202D = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "saf_sensorarray_presets.c"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sensorarray_presets.c"; sourceTree = "SOURCE_ROOT"; };
 		AA66F738EFB7FAEEDBB3CF63 = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "sparta_sldoa_o1.entitlements"; path = "sparta_sldoa_o1.entitlements"; sourceTree = "SOURCE_ROOT"; };
@@ -144,6 +147,7 @@
 		B675D9ACE4E7DB932DB62664 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "saf_vbap_internal.c"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_vbap/saf_vbap_internal.c"; sourceTree = "SOURCE_ROOT"; };
 		BF056AA0E21D0ACA6027AD70 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "saf_malloc.c"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_malloc.c"; sourceTree = "SOURCE_ROOT"; };
 		BFFFEB0A6FDD39FB90EF0A24 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
+		C10A75028E1C6AC931D92D2A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "saf_sort.c"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sort.c"; sourceTree = "SOURCE_ROOT"; };
 		C493242FAE234F8E5B146235 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "saf_hrir.h"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/include/saf_hrir.h"; sourceTree = "SOURCE_ROOT"; };
 		C7E0192A885A88A30357D6E8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "afSTFT_protoFilter.h"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_afstft/afSTFT_protoFilter.h"; sourceTree = "SOURCE_ROOT"; };
 		CEF37AE39A09D01EA1870939 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_opengl"; path = "../../../../../../SDKs/modules/juce_opengl"; sourceTree = "SOURCE_ROOT"; };
@@ -227,9 +231,12 @@
 					4FF8F1AE3F5EDCA52DE5F62A,
 					AA4EA097ED1F187FA8A8202D,
 					F27E7E98AA618C63288B66D2,
+					C10A75028E1C6AC931D92D2A,
+					A3A6AACA8669C502639BDBCF,
 					834C8388AFB082511262978D,
 					7D90A2A43A7B35DC83539DE1, ); name = "saf_utilities"; sourceTree = "<group>"; };
 		EE39A1ABD29A106779086B5F = {isa = PBXGroup; children = (
+					9DBA1559BC704AA6CB65A6D9,
 					862AC750F706450099B6EC88,
 					B675D9ACE4E7DB932DB62664,
 					6C53579B10266B96022F975A, ); name = "saf_vbap"; sourceTree = "<group>"; };
@@ -339,8 +346,8 @@
 					"SH_ORDER=1",
 					"FRAME_SIZE=256",
 					"JUCER_XCODE_MAC_F4144655=1",
-					"JUCE_APP_VERSION=1.0.0",
-					"JUCE_APP_VERSION_HEX=0x10000",
+					"JUCE_APP_VERSION=1.0.1",
+					"JUCE_APP_VERSION_HEX=0x10001",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -379,8 +386,8 @@
 					"SH_ORDER=1",
 					"FRAME_SIZE=256",
 					"JUCER_XCODE_MAC_F4144655=1",
-					"JUCE_APP_VERSION=1.0.0",
-					"JUCE_APP_VERSION_HEX=0x10000",
+					"JUCE_APP_VERSION=1.0.1",
+					"JUCE_APP_VERSION_HEX=0x10001",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -419,8 +426,8 @@
 					"SH_ORDER=1",
 					"FRAME_SIZE=256",
 					"JUCER_XCODE_MAC_F4144655=1",
-					"JUCE_APP_VERSION=1.0.0",
-					"JUCE_APP_VERSION_HEX=0x10000",
+					"JUCE_APP_VERSION=1.0.1",
+					"JUCE_APP_VERSION_HEX=0x10001",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -452,8 +459,8 @@
 					"SH_ORDER=1",
 					"FRAME_SIZE=256",
 					"JUCER_XCODE_MAC_F4144655=1",
-					"JUCE_APP_VERSION=1.0.0",
-					"JUCE_APP_VERSION_HEX=0x10000",
+					"JUCE_APP_VERSION=1.0.1",
+					"JUCE_APP_VERSION_HEX=0x10001",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -610,6 +617,7 @@
 					FEE7D0173C73F5A2BFCA2F48,
 					784186D2D8A11503DF254BA0,
 					CC0BBB6AB762C263885152A7,
+					1A7BEF3339F1A5D872551C13,
 					F2E41ED28EE02761F52BA335,
 					535FB801E131E013E4FCB84B,
 					DCAF6857E6F612A9F88CC542,

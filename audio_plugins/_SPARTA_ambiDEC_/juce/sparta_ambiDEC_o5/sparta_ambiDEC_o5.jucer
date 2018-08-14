@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="lfkRjX" name="sparta_ambiDEC_o5" projectType="audioplug"
-              version="1.0.1" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
+              version="1.0.2" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiDEC_o5" pluginDesc="sparta_ambiDEC_o5"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ADO5"
               pluginChannelConfigs="{36,1},{36,2},{36,3},{36,4},{36,5},{36,6},{36,7},{36,8},{36,9},{36,10},{36,11},{36,12},{36,13},{36,14},{36,15},{36,16},{36,17},{36,18},{36,19},{36,20},{36,21},{36,22},{36,23},{36,24},{36,25},{36,26},{36,27},{36,28},{36,29},{36,30},{36,31},{36,32},{36,33},{36,34},{36,35},{36,36},{36,37},{36,38},{36,39},{36,40},{36,41},{36,42},{36,43},{36,44},{36,45},{36,46},{36,47},{36,48},{36,49},{36,50},{36,51},{36,52},{36,53},{36,54},{36,55},{36,56},{36,57},{36,58},{36,59},{36,60},{36,61},{36,62},{36,63},{36,64}"
@@ -110,10 +110,13 @@
                 file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sensorarray_presets.c"/>
           <FILE id="ckaRQD" name="saf_sensorarray_presets.h" compile="0" resource="0"
                 file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sensorarray_presets.h"/>
+          <FILE id="U0hFxX" name="saf_sort.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sort.c"/>
+          <FILE id="aFKRGS" name="saf_sort.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sort.h"/>
           <FILE id="Ys7tKV" name="saf_veclib.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_veclib.c"/>
           <FILE id="n8K5k3" name="saf_veclib.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_veclib.h"/>
         </GROUP>
         <GROUP id="{5EA3B0E6-FE4D-7026-D223-837588AC4414}" name="saf_vbap">
+          <FILE id="uZvJqT" name="convhull_3d.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_vbap/convhull_3d.h"/>
           <FILE id="KPnRc4" name="saf_vbap.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_vbap/saf_vbap.c"/>
           <FILE id="rGG6w1" name="saf_vbap_internal.c" compile="1" resource="0"
                 file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_vbap/saf_vbap_internal.c"/>

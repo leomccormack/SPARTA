@@ -481,6 +481,9 @@
     <ClCompile Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_sensorarray_presets.c">
       <Filter>sparta_ambiDEC_o7\Spatial_Audio_Framework\framework\saf_utilities</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_sort.c">
+      <Filter>sparta_ambiDEC_o7\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_veclib.c">
       <Filter>sparta_ambiDEC_o7\Spatial_Audio_Framework\framework\saf_utilities</Filter>
     </ClCompile>
@@ -2388,8 +2391,14 @@
     <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_sensorarray_presets.h">
       <Filter>sparta_ambiDEC_o7\Spatial_Audio_Framework\framework\saf_utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_sort.h">
+      <Filter>sparta_ambiDEC_o7\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_veclib.h">
       <Filter>sparta_ambiDEC_o7\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_vbap\convhull_3d.h">
+      <Filter>sparta_ambiDEC_o7\Spatial_Audio_Framework\framework\saf_vbap</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_vbap\saf_vbap_internal.h">
       <Filter>sparta_ambiDEC_o7\Spatial_Audio_Framework\framework\saf_vbap</Filter>

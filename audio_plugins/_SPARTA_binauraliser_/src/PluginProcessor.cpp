@@ -39,23 +39,21 @@ PluginProcessor::~PluginProcessor()
 {
 	binauraliser_destroy(&hBin);
     
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         delete[] ringBufferInputs[i];
-    }
     delete[] ringBufferInputs;
     
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         delete[] ringBufferOutputs[i];
-    }
     delete[] ringBufferOutputs;
 }
 
 void PluginProcessor::setParameter (int index, float newValue)
 {
-	switch (index)
-	{
-		default: break;
-	}
+    if (index % 2 || index == 0)
+        binauraliser_setSourceAzi_deg(hBin, index/2, (newValue - 0.5f)*360.0f);
+    else
+        binauraliser_setSourceElev_deg(hBin, (index-1)/2, (newValue - 0.5f)*180.0f);
 }
 
 void PluginProcessor::setCurrentProgram (int index)
@@ -64,15 +62,15 @@ void PluginProcessor::setCurrentProgram (int index)
 
 float PluginProcessor::getParameter (int index)
 {
-    switch (index)
-	{
-		default: return 0.0f;
-	}
+    if (index % 2 || index == 0)
+        return (binauraliser_getSourceAzi_deg(hBin, index/2)/360.0f) + 0.5f;
+    else
+        return (binauraliser_getSourceElev_deg(hBin, (index-1)/2)/180.0f) + 0.5f;
 }
 
 int PluginProcessor::getNumParameters()
 {
-	return k_NumOfParameters;
+	return MIN(binauraliser_getMaxNumSources(), NUM_OF_AUTOMATABLE_SOURCES);
 }
 
 const String PluginProcessor::getName() const
@@ -82,15 +80,18 @@ const String PluginProcessor::getName() const
 
 const String PluginProcessor::getParameterName (int index)
 {
-    switch (index)
-	{
-		default: return "NULL";
-	}
+    if (index % 2 || index == 0)
+        return TRANS("Azim_") + String(index/2);
+    else
+        return TRANS("Elev_") + String((index-1)/2);
 }
 
 const String PluginProcessor::getParameterText(int index)
 {
-	return String(getParameter(index), 1);    
+    if (index % 2 || index == 0)
+        return String(binauraliser_getSourceAzi_deg(hBin, index/2));
+    else
+        return String(binauraliser_getSourceElev_deg(hBin, (index-1)/2));
 }
 
 const String PluginProcessor::getInputChannelName (int channelIndex) const
@@ -176,13 +177,10 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
 	binauraliser_init(hBin, sampleRate);
     
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         memset(ringBufferInputs[i], 0, FRAME_SIZE*sizeof(float));
-    }
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         memset(ringBufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
-    }
-    wIdx = 1; rIdx = 1; /* read/write indices for ring buffers */
 }
 
 void PluginProcessor::releaseResources()
@@ -211,6 +209,8 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
                 isPlaying = currentPosition.isPlaying;
             else
                 isPlaying = true;
+            if(!isPlaying) /* for DAWs with no transport */
+                isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
      
             /* perform processing */
             binauraliser_process(hBin, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
@@ -224,15 +224,9 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
     }
     else
         buffer.clear();
- 
-    if (nHostBlockSize == (FRAME_SIZE/2)) {
-        wIdx++; if (wIdx > 1) { wIdx = 0; }
-        rIdx++; if (rIdx > 1) { rIdx = 0; }
-    }
-    
-    for (int i = 0; i < nNumOutputs; ++i) {
+  
+    for (int i = 0; i < nNumOutputs; ++i)
         delete[] outputs[i];
-    }
     delete[] outputs;
 }
 

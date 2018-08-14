@@ -152,6 +152,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
 	/* Specify screen refresh rate */
     startTimer(100);//80); /*ms (40ms = 25 frames per second) */
+    
+    showingFrameSizeWarning = false;
 
     //[/Constructor]
 }
@@ -460,6 +462,15 @@ void PluginEditor::paint (Graphics& g)
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
+    
+    /* display warning message */
+    if(showingFrameSizeWarning){
+        g.setColour(Colours::red);
+        g.setFont(Font(11.00f, Font::plain));
+        g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                   getBounds().getWidth()-170, 16, 530, 11,
+                   Justification::centredLeft, true);
+    }
 
     //[/UserPaint]
 }
@@ -553,6 +564,16 @@ void PluginEditor::timerCallback()
 
     s_minFreq->setValue(sldoa_getMinFreq(hVst->hSld));
     s_maxFreq->setValue(sldoa_getMaxFreq(hVst->hSld));
+    
+    /* show warning if currently selected framesize is not supported */
+    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
+        showingFrameSizeWarning = true;
+        repaint();
+    }
+    else if(showingFrameSizeWarning){
+        showingFrameSizeWarning = false;
+        repaint();
+    }
 }
 
 

@@ -53,9 +53,11 @@ public:
 	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
 	AudioPlayHead::CurrentPositionInfo currentPosition;
 
-	float** ringBufferInputs; 
-	int wIdx, rIdx;
-
+	float** ringBufferInputs;
+    
+    int getCurrentBlockSize(){
+        return nHostBlockSize;
+    }
     /***************************************************************************\
                                     JUCE Functions
     \***************************************************************************/

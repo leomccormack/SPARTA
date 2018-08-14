@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_panner" projectType="audioplug" version="1.0.1"
+<JUCERPROJECT id="lfkRjX" name="sparta_panner" projectType="audioplug" version="1.0.2"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_panner" pluginDesc="sparta_panner"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="PANN"
@@ -113,10 +113,13 @@
                 file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sensorarray_presets.c"/>
           <FILE id="zm5gY1" name="saf_sensorarray_presets.h" compile="0" resource="0"
                 file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sensorarray_presets.h"/>
+          <FILE id="CpwdPH" name="saf_sort.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sort.c"/>
+          <FILE id="jaKsQd" name="saf_sort.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sort.h"/>
           <FILE id="kKEtyB" name="saf_veclib.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_veclib.c"/>
           <FILE id="ZzSHjI" name="saf_veclib.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_veclib.h"/>
         </GROUP>
         <GROUP id="{86332B77-234A-F72F-138C-E7DC5C763F87}" name="saf_vbap">
+          <FILE id="VwKvja" name="convhull_3d.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_vbap/convhull_3d.h"/>
           <FILE id="R5g7VL" name="saf_vbap.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_vbap/saf_vbap.c"/>
           <FILE id="fwMY67" name="saf_vbap_internal.c" compile="1" resource="0"
                 file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_vbap/saf_vbap_internal.c"/>

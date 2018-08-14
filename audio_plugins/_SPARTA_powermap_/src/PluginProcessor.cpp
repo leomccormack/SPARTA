@@ -33,9 +33,8 @@ PluginProcessor::PluginProcessor()
 
 PluginProcessor::~PluginProcessor()
 {
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         delete[] ringBufferInputs[i];
-    }
     delete[] ringBufferInputs;
     powermap_destroy(&hPm);
 }
@@ -165,7 +164,6 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
     for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         memset(ringBufferInputs[i], 0, FRAME_SIZE*sizeof(float));
-     wIdx = 1; rIdx = 1; /* read/write indices for ring buffers */
 
     powermap_init(hPm, sampleRate);
 }
@@ -193,6 +191,8 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
                 isPlaying = currentPosition.isPlaying;
             else
                 isPlaying = false;
+            if(!isPlaying) /* for DAWs with no transport */
+                isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
             
             /* perform processing */
             powermap_analysis( hPm, ringBufferInputs, nNumInputs, FRAME_SIZE, isPlaying);

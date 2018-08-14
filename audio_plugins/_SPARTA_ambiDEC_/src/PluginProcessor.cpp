@@ -39,14 +39,12 @@ PluginProcessor::~PluginProcessor()
 {
 	ambi_dec_destroy(&hAmbi);
     
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         delete[] ringBufferInputs[i];
-    }
     delete[] ringBufferInputs;
     
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         delete[] ringBufferOutputs[i];
-    }
     delete[] ringBufferOutputs;
 }
 
@@ -192,9 +190,8 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
     int nCurrentBlockSize = buffer.getNumSamples();
     float** bufferData = buffer.getArrayOfWritePointers();
     float** outputs = new float*[nNumOutputs];
-    for (int i = 0; i < nNumOutputs; i++) {
+    for (int i = 0; i < nNumOutputs; i++)
         outputs[i] = new float[FRAME_SIZE];
-    }
     
     if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
         for (int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
@@ -209,8 +206,8 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
                 isPlaying = currentPosition.isPlaying;
             else
                 isPlaying = true;
-            //            if(buffer.getRMSLevel(0, 0, nCurrentBlockSize)>0.000001f) /* Plogue Bidule informs plug-in that it has a playHead, but it is not moving... */
-            //                isPlaying = true;
+            if(!isPlaying) /* for DAWs with no transport */
+                isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
             
             /* perform processing */
             ambi_dec_process(hAmbi, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
@@ -225,10 +222,8 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
     else
         buffer.clear();
     
-
-    for (int i = 0; i < nNumOutputs; ++i) {
+    for (int i = 0; i < nNumOutputs; ++i)
         delete[] outputs[i];
-    }
     delete[] outputs;
 }
 
@@ -248,9 +243,8 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
     XmlElement xml("AMBIDECPLUGINSETTINGSO"+String(SH_ORDER));
  
-    for(int band=0; band<ambi_dec_getNumberOfBands(); band++){
+    for(int band=0; band<ambi_dec_getNumberOfBands(); band++)
         xml.setAttribute("DecOrder"+String(band), ambi_dec_getDecOrder(hAmbi, band));
-    }
     for(int i=0; i<ambi_dec_getMaxNumLoudspeakers(); i++){
         xml.setAttribute("LoudspeakerAziDeg" + String(i), ambi_dec_getLoudspeakerAzi_deg(hAmbi,i));
         xml.setAttribute("LoudspeakerElevDeg" + String(i), ambi_dec_getLoudspeakerElev_deg(hAmbi,i));
@@ -281,10 +275,9 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 
     if (xmlState != nullptr) {
         if (xmlState->hasTagName("AMBIDECPLUGINSETTINGSO"+String(SH_ORDER))) {
-            for(int band=0; band<ambi_dec_getNumberOfBands(); band++){
+            for(int band=0; band<ambi_dec_getNumberOfBands(); band++)
                 if(xmlState->hasAttribute("DecOrder"+String(band)))
                     ambi_dec_setDecOrder(hAmbi, xmlState->getIntAttribute("DecOrder"+String(band),0), band);
-            }
             for(i=0; i<ambi_dec_getMaxNumLoudspeakers(); i++){
                 if(xmlState->hasAttribute("LoudspeakerAziDeg" + String(i)))
                     ambi_dec_setLoudspeakerAzi_deg(hAmbi, i, (float)xmlState->getDoubleAttribute("LoudspeakerAziDeg" + String(i), 0.0f));
