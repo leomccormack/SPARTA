@@ -10,9 +10,9 @@
     <key>CFBundleIdentifier</key>
     <string>com.AALTO.SPARTA</string>
     <key>CFBundleName</key>
-    <string>sparta_ambiENC</string>
+    <string>sparta_rotator</string>
     <key>CFBundleDisplayName</key>
-    <string>sparta_ambiENC</string>
+    <string>sparta_rotator</string>
     <key>CFBundlePackageType</key>
     <string>BNDL</string>
     <key>CFBundleSignature</key>

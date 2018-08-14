@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.2.1
+  Created with Projucer version: 5.3.0
 
   ------------------------------------------------------------------------------
 
@@ -95,7 +95,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_oscport->setColour (TextEditor::outlineColourId, Colour (0x00000000));
     te_oscport->setText (TRANS("9000"));
 
-    te_oscport->setBounds (96, 116, 64, 24);
+    te_oscport->setBounds (93, 128, 76, 24);
 
     addAndMakeVisible (CBoutputFormat = new ComboBox ("new combo box"));
     CBoutputFormat->setEditableText (false);
@@ -105,7 +105,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBoutputFormat->addItem (TRANS("ACN"), 1);
     CBoutputFormat->addListener (this);
 
-    CBoutputFormat->setBounds (96, 52, 64, 20);
+    CBoutputFormat->setBounds (93, 78, 76, 20);
 
     addAndMakeVisible (CBnorm = new ComboBox ("new combo box"));
     CBnorm->setEditableText (false);
@@ -117,7 +117,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnorm->addSeparator();
     CBnorm->addListener (this);
 
-    CBnorm->setBounds (96, 84, 64, 20);
+    CBnorm->setBounds (93, 105, 76, 20);
+
+    addAndMakeVisible (CBorder = new ComboBox ("new combo box"));
+    CBorder->setEditableText (false);
+    CBorder->setJustificationType (Justification::centredLeft);
+    CBorder->setTextWhenNothingSelected (String());
+    CBorder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBorder->addListener (this);
+
+    CBorder->setBounds (64, 46, 106, 20);
 
 
     //[UserPreSize]
@@ -128,6 +137,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     //[Constructor] You can add your own custom stuff here..
 	hVst = ownerFilter;
+    
+    /* add combo box options */
+    CBorder->addItem (TRANS("0th (Omni)"), OUTPUT_OMNI);
+    CBorder->addItem (TRANS("1st order"), OUTPUT_ORDER_FIRST);
+    CBorder->addItem (TRANS("2nd order"), OUTPUT_ORDER_SECOND);
+    CBorder->addItem (TRANS("3rd order"), OUTPUT_ORDER_THIRD);
+    CBorder->addItem (TRANS("4th order"), OUTPUT_ORDER_FOURTH);
+    CBorder->addItem (TRANS("5th order"), OUTPUT_ORDER_FIFTH);
+    CBorder->addItem (TRANS("6th order"), OUTPUT_ORDER_SIXTH);
+    CBorder->addItem (TRANS("7th order"), OUTPUT_ORDER_SEVENTH);
 
 	/* fetch current configuration */
 	s_yaw->setValue(rotator_getYaw(hVst->hRot), dontSendNotification);
@@ -136,7 +155,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     t_flipYaw->setToggleState((bool)rotator_getFlipYaw(hVst->hRot), dontSendNotification);
     t_flipPitch->setToggleState((bool)rotator_getFlipPitch(hVst->hRot), dontSendNotification);
     t_flipRoll->setToggleState((bool)rotator_getFlipRoll(hVst->hRot), dontSendNotification);
-
+    CBnorm->setSelectedId(rotator_getNormType(hVst->hRot), dontSendNotification);
+    CBoutputFormat->setSelectedId(rotator_getChOrder(hVst->hRot), dontSendNotification);
+    CBorder->setSelectedId(rotator_getOrder(hVst->hRot), dontSendNotification);
+    
 	// specify here on which UDP port number to receive incoming OSC messages
     connect(9000);
 
@@ -164,6 +186,7 @@ PluginEditor::~PluginEditor()
     te_oscport = nullptr;
     CBoutputFormat = nullptr;
     CBnorm = nullptr;
+    CBorder = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -198,7 +221,20 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 13, y = 40, width = 155, height = 112;
+        int x = 10, y = 40, width = 167, height = 32;
+        Colour fillColour = Colour (0x17c7c7c7);
+        Colour strokeColour = Colour (0x1fffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
+    {
+        int x = 10, y = 71, width = 167, height = 81;
         Colour fillColour = Colour (0x17c7c7c7);
         Colour strokeColour = Colour (0x1fffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -321,7 +357,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 20, y = 108, width = 91, height = 35;
+        int x = 16, y = 121, width = 91, height = 35;
         String text (TRANS("OSC port:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -369,8 +405,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 20, y = 44, width = 91, height = 35;
-        String text (TRANS("CH Order:"));
+        int x = 16, y = 71, width = 91, height = 35;
+        String text (TRANS("CH Format:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -381,8 +417,20 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 20, y = 76, width = 91, height = 35;
+        int x = 16, y = 96, width = 91, height = 35;
         String text (TRANS("Norm:"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 16, y = 39, width = 91, height = 35;
+        String text (TRANS("Order:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -394,13 +442,22 @@ void PluginEditor::paint (Graphics& g)
 
     //[UserPaint] Add your own custom painting code here..
 
+    /* display version */
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
 		110, 16, 530, 11,
 		Justification::centredLeft, true);
-
-
+    
+    /* display warning message */
+    if(showingFrameSizeWarning){
+        g.setColour(Colours::red);
+        g.setFont(Font(11.00f, Font::plain));
+        g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                   getBounds().getWidth()-170, 16, 530, 11,
+                   Justification::centredLeft, true);
+    }
+ 
     //[/UserPaint]
 }
 
@@ -488,6 +545,12 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
         rotator_setNormType(hVst->hRot, CBnorm->getSelectedId());
         //[/UserComboBoxCode_CBnorm]
     }
+    else if (comboBoxThatHasChanged == CBorder)
+    {
+        //[UserComboBoxCode_CBorder] -- add your combo box handling code here..
+        rotator_setOrder(hVst->hRot, CBorder->getSelectedId());
+        //[/UserComboBoxCode_CBorder]
+    }
 
     //[UsercomboBoxChanged_Post]
     //[/UsercomboBoxChanged_Post]
@@ -498,7 +561,15 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PluginEditor::timerCallback()
 {
-
+    /* show warning if currently selected framesize is not supported */
+    if (hVst->getCurrentBlockSize()<FRAME_SIZE){
+        showingFrameSizeWarning = true;
+        repaint();
+    }
+    else if(showingFrameSizeWarning){
+        showingFrameSizeWarning = false;
+        repaint();
+    }
 }
 
 
@@ -523,7 +594,9 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 30 530 130" fill=" radial: 280 104, 528 160, 0=ff55636d, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
-    <RECT pos="13 40 155 112" fill="solid: 17c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+    <RECT pos="10 40 167 32" fill="solid: 17c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+          strokeColour="solid: 1fffffff"/>
+    <RECT pos="10 71 167 81" fill="solid: 17c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
     <RECT pos="0 0 530 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
@@ -550,7 +623,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="205 125 63 30" fill="solid: ffffffff" hasStroke="0" text="+/-"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
-    <TEXT pos="20 108 91 35" fill="solid: ffffffff" hasStroke="0" text="OSC port:"
+    <TEXT pos="16 121 91 35" fill="solid: ffffffff" hasStroke="0" text="OSC port:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="189 45 60 30" fill="solid: ffffffff" hasStroke="0" text="Yaw"
@@ -562,10 +635,13 @@ BEGIN_JUCER_METADATA
     <TEXT pos="461 45 63 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[2]"
           fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
           bold="0" italic="0" justification="36"/>
-    <TEXT pos="20 44 91 35" fill="solid: ffffffff" hasStroke="0" text="CH Order:"
+    <TEXT pos="16 71 91 35" fill="solid: ffffffff" hasStroke="0" text="CH Format:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="20 76 91 35" fill="solid: ffffffff" hasStroke="0" text="Norm:"
+    <TEXT pos="16 96 91 35" fill="solid: ffffffff" hasStroke="0" text="Norm:"
+          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="16 39 91 35" fill="solid: ffffffff" hasStroke="0" text="Order:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
@@ -597,16 +673,19 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="468 112 23 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TEXTEDITOR name="new text editor" id="1799da9e8cf495d6" memberName="te_oscport"
-              virtualName="" explicitFocusOrder="0" pos="96 116 64 24" textcol="ffffffff"
+              virtualName="" explicitFocusOrder="0" pos="93 128 76 24" textcol="ffffffff"
               bkgcol="ffffff" outlinecol="0" initialText="9000" multiline="0"
               retKeyStartsLine="0" readonly="1" scrollbars="1" caret="0" popupmenu="1"/>
   <COMBOBOX name="new combo box" id="63f8ff411606aafd" memberName="CBoutputFormat"
-            virtualName="" explicitFocusOrder="0" pos="96 52 64 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="93 78 76 20" editable="0"
             layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="2d87659a256dc599" memberName="CBnorm"
-            virtualName="" explicitFocusOrder="0" pos="96 84 64 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="93 105 76 20" editable="0"
             layout="33" items="N3D&#10;SN3D&#10;" textWhenNonSelected="N3D"
             textWhenNoItems="(no choices)"/>
+  <COMBOBOX name="new combo box" id="6482174c8b11c0b5" memberName="CBorder"
+            virtualName="" explicitFocusOrder="0" pos="64 46 106 20" editable="0"
+            layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
