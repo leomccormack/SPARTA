@@ -53,12 +53,12 @@
     <TargetExt>.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\..\..\..\lib\Win64_Debug\Shared Code\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\obj\Win64_Debug\Shared Code\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">sparta_ambiENC_debug</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">sparta_rotator</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\..\..\..\lib\Win64_Release\Shared Code\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\obj\sparta_ambiENC\Win64_Release\Shared Code\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">sparta_ambiENC</TargetName>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\obj\Win64_Release\Shared Code\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">sparta_rotator</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win</LibraryPath>
     <PlatformToolset>v140</PlatformToolset>
@@ -75,7 +75,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\..\juce\sparta_ambiENC\JuceLibraryCode;..\..\..\..\..\SDKs\modules;../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\juce\sparta_rotator\JuceLibraryCode;..\..\..\..\..\SDKs\modules;../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;FRAME_SIZE=256;JUCER_VS2015_E4AAC541=1;JUCE_APP_VERSION=1.0.2;JUCE_APP_VERSION_HEX=0x10002;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -92,11 +92,11 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)\sparta_ambiENC_debug.lib</OutputFile>
+      <OutputFile>$(OutDir)\sparta_rotator.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcmt.lib; msvcrt.lib;;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(IntDir)\sparta_ambiENC_debug.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(IntDir)\sparta_rotator.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
@@ -104,7 +104,7 @@
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(IntDir)\sparta_ambiENC_debug.bsc</OutputFile>
+      <OutputFile>$(IntDir)\sparta_rotator.bsc</OutputFile>
     </Bscmake>
     <Lib>
       <AdditionalDependencies>mkl_intel_lp64.lib;mkl_sequential.lib;mkl_core.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -121,7 +121,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\juce\sparta_ambiENC\JuceLibraryCode;..\..\..\..\..\SDKs\modules;../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\juce\sparta_rotator\JuceLibraryCode;..\..\..\..\..\SDKs\modules;../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;FRAME_SIZE=256;JUCER_VS2015_E4AAC541=1;JUCE_APP_VERSION=1.0.2;JUCE_APP_VERSION_HEX=0x10002;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -138,11 +138,11 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)\sparta_ambiENC.lib</OutputFile>
+      <OutputFile>$(OutDir)\sparta_rotator.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(IntDir)\sparta_ambiENC.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(IntDir)\sparta_rotator.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -152,7 +152,7 @@
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(IntDir)\sparta_ambiENC.bsc</OutputFile>
+      <OutputFile>$(IntDir)\sparta_rotator.bsc</OutputFile>
     </Bscmake>
     <Lib>
       <AdditionalDependencies>mkl_intel_lp64.lib;mkl_sequential.lib;mkl_core.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -162,10 +162,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\PluginEditor.cpp"/>
     <ClCompile Include="..\..\..\src\PluginProcessor.cpp"/>
-    <ClCompile Include="..\..\..\src\pannerView.cpp"/>
-    <ClCompile Include="..\..\..\src\inputCoordsView.cpp"/>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\ambi_enc\src\ambi_enc.c"/>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\ambi_enc\src\ambi_enc_internal.c"/>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\rotator\src\rotator.c"/>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\rotator\src\rotator_internal.c"/>
     <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\afSTFTlib.c"/>
     <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\fft4g.c"/>
     <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\vecTools.c"/>
@@ -1836,37 +1834,53 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_opengl\juce_opengl.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_video\capture\juce_CameraDevice.cpp">
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCAddress.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_video\playback\juce_VideoComponent.cpp">
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCArgument.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_video\juce_video.cpp">
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCBundle.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_audio_basics.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_audio_devices.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_audio_formats.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_audio_plugin_client_utils.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_audio_processors.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_core.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_cryptography.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_data_structures.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_events.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_graphics.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_gui_basics.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_gui_extra.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_opengl.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\include_juce_video.cpp"/>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCMessage.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCReceiver.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCSender.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCTimeTag.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCTypes.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_osc\juce_osc.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_audio_basics.cpp"/>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_audio_devices.cpp"/>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_audio_formats.cpp"/>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_audio_plugin_client_utils.cpp"/>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_audio_processors.cpp"/>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_core.cpp"/>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_cryptography.cpp"/>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_data_structures.cpp"/>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_events.cpp"/>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_graphics.cpp"/>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_gui_basics.cpp"/>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_gui_extra.cpp"/>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_opengl.cpp"/>
+    <ClCompile Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\include_juce_osc.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\PluginEditor.h"/>
     <ClInclude Include="..\..\..\src\PluginProcessor.h"/>
-    <ClInclude Include="..\..\..\src\pannerView.h"/>
-    <ClInclude Include="..\..\..\src\inputCoordsView.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\ambi_enc\include\ambi_enc.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\ambi_enc\src\ambi_enc_internal.h"/>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\rotator\include\rotator.h"/>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\rotator\src\rotator_internal.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\afSTFTlib.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_cdf4sap.h"/>
@@ -2534,16 +2548,17 @@
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_opengl\opengl\juce_OpenGLTexture.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_opengl\utils\juce_OpenGLAppComponent.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_opengl\juce_opengl.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\capture\juce_CameraDevice.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\native\juce_android_CameraDevice.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\native\juce_mac_CameraDevice.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\native\juce_mac_Video.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\native\juce_win32_CameraDevice.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\native\juce_win32_Video.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\playback\juce_VideoComponent.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\juce_video.h"/>
-    <ClInclude Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\AppConfig.h"/>
-    <ClInclude Include="..\..\..\juce\sparta_ambiENC\JuceLibraryCode\JuceHeader.h"/>
+    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCAddress.h"/>
+    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCArgument.h"/>
+    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCBundle.h"/>
+    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCMessage.h"/>
+    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCReceiver.h"/>
+    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCSender.h"/>
+    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCTimeTag.h"/>
+    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCTypes.h"/>
+    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_osc\juce_osc.h"/>
+    <ClInclude Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\AppConfig.h"/>
+    <ClInclude Include="..\..\..\juce\sparta_rotator\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\SDKs\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>

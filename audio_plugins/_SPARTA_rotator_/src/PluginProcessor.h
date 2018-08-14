@@ -27,7 +27,6 @@
 #include "rotator.h"
 
 #define MAX_NUM_CHANNELS 64
-#define ENABLE_IS_PLAYING_CHECK
 #define BUILD_VER_SUFFIX "alpha"            /* String to be added before the version name on the GUI (beta, alpha etc..) */
 
 enum {	
@@ -42,7 +41,6 @@ enum {
 	k_NumOfParameters
 };
 
-
 class PluginProcessor  : public AudioProcessor
 {
 public:
@@ -52,16 +50,13 @@ public:
     int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
     void* hRot;                             /* handle */
 
-#ifdef ENABLE_IS_PLAYING_CHECK
 	bool isPlaying;
 	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
 	AudioPlayHead::CurrentPositionInfo currentPosition;
-#endif
 
 	float** ringBufferInputs;
 	float** ringBufferOutputs;
-	int wIdx, rIdx;
-    
+ 
     int getCurrentBlockSize(){
         return nHostBlockSize;
     }

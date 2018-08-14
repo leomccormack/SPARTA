@@ -228,12 +228,8 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 		memset(ringBufferInputs[i], 0, FRAME_SIZE*sizeof(float));
 	for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
 		memset(ringBufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
-	
-	wIdx = 1; rIdx = 1; /* read/write indices for ring buffers */
-	
-#ifdef ENABLE_IS_PLAYING_CHECK
+	 
 	isPlaying = false;
-#endif
 }
 
 void PluginProcessor::releaseResources()
@@ -245,9 +241,8 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
 	int nCurrentBlockSize = buffer.getNumSamples();
 	float** bufferData = buffer.getArrayOfWritePointers(); 
 	float** outputs = new float*[nNumOutputs];
-	for (int i = 0; i < nNumOutputs; i++) {
-		outputs[i] = new float[FRAME_SIZE]; 
-	}
+	for (int i = 0; i < nNumOutputs; i++)
+		outputs[i] = new float[FRAME_SIZE];
 
 	if (nCurrentBlockSize % FRAME_SIZE == 0) { /* divisible by frame size */
 		for (int frame = 0; frame < nCurrentBlockSize / FRAME_SIZE; frame++) {
@@ -262,7 +257,9 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
 				isPlaying = currentPosition.isPlaying;
 			else
 				isPlaying = false;
-
+            if(!isPlaying) /* to  */
+                isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
+        
 			/* perform processing */
 			rotator_process(hRot, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
 
@@ -276,11 +273,6 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
 	else
 		buffer.clear();
 
-	if (nHostBlockSize == (FRAME_SIZE/2)) {
-		wIdx++; if (wIdx > 1) { wIdx = 0; }
-		rIdx++; if (rIdx > 1) { rIdx = 0; }
-	}
-	
 	for (int i = 0; i < nNumOutputs; ++i)
 		delete[] outputs[i];
 	delete[] outputs;
@@ -301,7 +293,7 @@ AudioProcessorEditor* PluginProcessor::createEditor()
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
 	/* Create an outer XML element.. */ 
-	XmlElement xml("ROTATORAUDIOPLUGINSETTINGS_O" + String(SH_ORDER));
+	XmlElement xml("ROTATORAUDIOPLUGINSETTINGS");
  
 	xml.setAttribute("YAW", rotator_getYaw(hRot));
 	xml.setAttribute("PITCH", rotator_getPitch(hRot));
@@ -310,6 +302,11 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("FLIP_YAW", rotator_getFlipYaw(hRot));
     xml.setAttribute("FLIP_PITCH", rotator_getFlipPitch(hRot));
     xml.setAttribute("FLIP_ROLL", rotator_getFlipRoll(hRot));
+    
+    xml.setAttribute("NORM", rotator_getNormType(hRot));
+    xml.setAttribute("CHORDER", rotator_getChOrder(hRot));
+    
+    xml.setAttribute("ORDER", rotator_getOrder(hRot));
     
 	copyXmlToBinary(xml, destData);
 }
@@ -321,15 +318,28 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 
 	if (xmlState != nullptr) {
 		/* make sure that it's actually the correct XML object */
-		if (xmlState->hasTagName("ROTATORAUDIOPLUGINSETTINGS_O" + String(SH_ORDER))) {
+		if (xmlState->hasTagName("ROTATORAUDIOPLUGINSETTINGS")) {
+            if(xmlState->hasAttribute("YAW"))
+                rotator_setYaw(hRot, (float)xmlState->getDoubleAttribute("YAW", 0.0f));
+            if(xmlState->hasAttribute("PITCH"))
+                rotator_setPitch(hRot, (float)xmlState->getDoubleAttribute("PITCH", 0.0f));
+            if(xmlState->hasAttribute("ROLL"))
+                rotator_setRoll(hRot, (float)xmlState->getDoubleAttribute("ROLL", 0.0f));
             
-            rotator_setYaw(hRot, (float)xmlState->getDoubleAttribute("YAW", 0.0f));
-            rotator_setPitch(hRot, (float)xmlState->getDoubleAttribute("PITCH", 0.0f));
-            rotator_setRoll(hRot, (float)xmlState->getDoubleAttribute("ROLL", 0.0f));
+            if(xmlState->hasAttribute("FLIP_YAW"))
+                rotator_setFlipYaw(hRot, xmlState->getIntAttribute("FLIP_YAW", 0));
+            if(xmlState->hasAttribute("FLIP_PITCH"))
+                rotator_setFlipPitch(hRot, xmlState->getIntAttribute("FLIP_PITCH", 0));
+            if(xmlState->hasAttribute("FLIP_ROLL"))
+                rotator_setFlipRoll(hRot, xmlState->getIntAttribute("FLIP_ROLL", 0));
             
-            rotator_setFlipYaw(hRot, xmlState->getIntAttribute("FLIP_YAW", 0));
-            rotator_setFlipPitch(hRot, xmlState->getIntAttribute("FLIP_PITCH", 0));
-            rotator_setFlipRoll(hRot, xmlState->getIntAttribute("FLIP_ROLL", 0));
+            if(xmlState->hasAttribute("NORM"))
+                rotator_setNormType(hRot, xmlState->getIntAttribute("NORM", 1));
+            if(xmlState->hasAttribute("CHORDER"))
+                rotator_setChOrder(hRot, xmlState->getIntAttribute("CHORDER", 1));
+            
+            if(xmlState->hasAttribute("ORDER"))
+                rotator_setOrder(hRot, xmlState->getIntAttribute("ORDER", 1));
         }
 	}
 }

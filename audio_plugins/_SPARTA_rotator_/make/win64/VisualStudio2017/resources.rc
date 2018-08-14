@@ -15,9 +15,9 @@ BEGIN
     BEGIN
       VALUE "CompanyName",  "Aalto\0"
       VALUE "LegalCopyright",  "Aalto\0"
-      VALUE "FileDescription",  "sparta_ambiENC\0"
+      VALUE "FileDescription",  "sparta_rotator\0"
       VALUE "FileVersion",  "1.0.2\0"
-      VALUE "ProductName",  "sparta_ambiENC\0"
+      VALUE "ProductName",  "sparta_rotator\0"
       VALUE "ProductVersion",  "1.0.2\0"
     END
   END

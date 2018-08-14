@@ -61,7 +61,7 @@
 #define JUCE_MODULE_AVAILABLE_juce_gui_basics               1
 #define JUCE_MODULE_AVAILABLE_juce_gui_extra                1
 #define JUCE_MODULE_AVAILABLE_juce_opengl                   1
-#define JUCE_MODULE_AVAILABLE_juce_video                    1
+#define JUCE_MODULE_AVAILABLE_juce_osc                      1
 
 #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
 
@@ -255,13 +255,6 @@
 #ifndef    JUCE_ENABLE_LIVE_CONSTANT_EDITOR
  //#define JUCE_ENABLE_LIVE_CONSTANT_EDITOR 0
 #endif
-
-//==============================================================================
-// juce_video flags:
-
-#ifndef    JUCE_USE_CAMERA
- #define   JUCE_USE_CAMERA 0
-#endif
 //==============================================================================
 #ifndef    JUCE_STANDALONE_APPLICATION
  #if defined(JucePlugin_Name) && defined(JucePlugin_Build_Standalone)
@@ -299,10 +292,10 @@
  #define JucePlugin_Enable_IAA             0
 #endif
 #ifndef  JucePlugin_Name
- #define JucePlugin_Name                   "sparta_ambiENC"
+ #define JucePlugin_Name                   "sparta_rotator"
 #endif
 #ifndef  JucePlugin_Desc
- #define JucePlugin_Desc                   "sparta_ambiENC"
+ #define JucePlugin_Desc                   "sparta_rotator"
 #endif
 #ifndef  JucePlugin_Manufacturer
  #define JucePlugin_Manufacturer           "AALTO"
@@ -317,7 +310,7 @@
  #define JucePlugin_ManufacturerCode       0x4c454f4d // 'LEOM'
 #endif
 #ifndef  JucePlugin_PluginCode
- #define JucePlugin_PluginCode             0x41454f41 // 'AEOA'
+ #define JucePlugin_PluginCode             0x524f4f41 // 'ROOA'
 #endif
 #ifndef  JucePlugin_IsSynth
  #define JucePlugin_IsSynth                0
@@ -356,10 +349,10 @@
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AUExportPrefix
- #define JucePlugin_AUExportPrefix         sparta_ambiENCAU
+ #define JucePlugin_AUExportPrefix         sparta_rotator_o3AU
 #endif
 #ifndef  JucePlugin_AUExportPrefixQuoted
- #define JucePlugin_AUExportPrefixQuoted   "sparta_ambiENCAU"
+ #define JucePlugin_AUExportPrefixQuoted   "sparta_rotator_o3AU"
 #endif
 #ifndef  JucePlugin_AUManufacturerCode
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode
@@ -383,7 +376,7 @@
  #define JucePlugin_RTASDisableMultiMono   0
 #endif
 #ifndef  JucePlugin_AAXIdentifier
- #define JucePlugin_AAXIdentifier          com.yourcompany.panner
+ #define JucePlugin_AAXIdentifier          com.yourcompany.rotator
 #endif
 #ifndef  JucePlugin_AAXManufacturerCode
  #define JucePlugin_AAXManufacturerCode    JucePlugin_ManufacturerCode
@@ -407,7 +400,7 @@
  #define JucePlugin_IAASubType             JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_IAAName
- #define JucePlugin_IAAName                "AALTO: sparta_ambiENC"
+ #define JucePlugin_IAAName                "AALTO: sparta_rotator"
 #endif
 #ifndef  JucePlugin_MaxNumInputChannels
  #define JucePlugin_MaxNumInputChannels    64
@@ -416,5 +409,5 @@
  #define JucePlugin_MaxNumOutputChannels   64
 #endif
 #ifndef  JucePlugin_PreferredChannelConfigurations
- #define JucePlugin_PreferredChannelConfigurations  {64,64}
+ #define JucePlugin_PreferredChannelConfigurations  {1,1}, {4,4},  {9,9}, {16,16}, {25,25}, {36,36}, {49,49}, {64,64}
 #endif
