@@ -2,6 +2,8 @@
 
 Spatial audio real-time applications (SPARTA). A collection of VST audio plug-ins for spatial audio production, reproduction and analysis.
 
+![](sparta_screenshot.png)
+
 ## Getting Started
 
 These instructions will help you compile the individual VST audio plug-ins. Alternatively, they can be downloaded from here:
