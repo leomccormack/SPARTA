@@ -61,6 +61,7 @@
 #define JUCE_MODULE_AVAILABLE_juce_gui_basics               1
 #define JUCE_MODULE_AVAILABLE_juce_gui_extra                1
 #define JUCE_MODULE_AVAILABLE_juce_opengl                   1
+#define JUCE_MODULE_AVAILABLE_juce_osc                      1
 #define JUCE_MODULE_AVAILABLE_juce_video                    1
 
 #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
@@ -335,13 +336,13 @@
  #define JucePlugin_EditorRequiresKeyboardFocus  0
 #endif
 #ifndef  JucePlugin_Version
- #define JucePlugin_Version                1.0.0
+ #define JucePlugin_Version                1.0.1
 #endif
 #ifndef  JucePlugin_VersionCode
- #define JucePlugin_VersionCode            0x10000
+ #define JucePlugin_VersionCode            0x10001
 #endif
 #ifndef  JucePlugin_VersionString
- #define JucePlugin_VersionString          "1.0.0"
+ #define JucePlugin_VersionString          "1.0.1"
 #endif
 #ifndef  JucePlugin_VSTUniqueID
  #define JucePlugin_VSTUniqueID            JucePlugin_PluginCode

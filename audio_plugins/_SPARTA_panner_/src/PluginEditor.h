@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.2.1
+  Created with Projucer version: 5.3.0
 
   ------------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
     PluginProcessor* hVst;
     void timerCallback() override;
- 
+
     //[/UserMethods]
 
     void paint (Graphics& g) override;

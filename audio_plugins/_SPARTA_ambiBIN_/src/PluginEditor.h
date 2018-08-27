@@ -39,6 +39,8 @@
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
                       private FilenameComponentListener,
+                      private OSCReceiver,
+                      private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
                       public Button::Listener,
                       public ComboBox::Listener,
                       public Slider::Listener
@@ -52,6 +54,26 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
     PluginProcessor* hVst;
     void timerCallback() override;
+    
+    void oscMessageReceived(const OSCMessage& message) override {
+        if (message.size() == 3 ) {
+            //message[0]
+            //message.getAddressPattern == "/yaw"
+            if (message[0].isFloat32()) {
+                ambi_bin_setYaw(hVst->hAmbi, message[0].getFloat32());
+                s_yaw->setValue(jlimit(-180.0f, 180.0f, message[0].getFloat32()), dontSendNotification);
+            }
+            if (message[1].isFloat32()) {
+                ambi_bin_setPitch(hVst->hAmbi, message[1].getFloat32());
+                s_pitch->setValue(jlimit(-90.0f, 90.0f, message[1].getFloat32()), dontSendNotification);
+            }
+            
+            if (message[2].isFloat32()) {
+                ambi_bin_setRoll(hVst->hAmbi, message[2].getFloat32());
+                s_roll->setValue(jlimit(-90.0f, 90.0f, message[2].getFloat32()), dontSendNotification);
+            }
+        }
+    }
 
     //[/UserMethods]
 
