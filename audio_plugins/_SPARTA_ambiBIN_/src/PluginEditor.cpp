@@ -234,6 +234,12 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     t_flipPitch->setToggleState((bool)ambi_bin_getFlipPitch(hVst->hAmbi), dontSendNotification);
     t_flipRoll->setToggleState((bool)ambi_bin_getFlipRoll(hVst->hAmbi), dontSendNotification);
 
+    /* specify here on which UDP port number to receive incoming OSC messages */
+    connect(9000);
+    
+    /* tell the component to listen for OSC messages */
+    addListener(this);
+    
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
 
@@ -846,7 +852,7 @@ void PluginEditor::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer, private FilenameComponentListener"
+                 parentClasses="public AudioProcessorEditor, public Timer, private FilenameComponentListener, private OSCReceiver, private OSCReceiver::Listener&lt;OSCReceiver::RealtimeCallback&gt;"
                  constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), fileChooser (&quot;File&quot;, File(), true, false, false,&#10;                       &quot;*.sofa;*.nc;&quot;, String(),&#10;                       &quot;Load SOFA File&quot;)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="656" initialHeight="232">

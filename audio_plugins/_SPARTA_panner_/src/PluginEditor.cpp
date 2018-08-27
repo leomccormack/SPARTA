@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.2.1
+  Created with Projucer version: 5.3.0
 
   ------------------------------------------------------------------------------
 
@@ -82,7 +82,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsLoudspeakerDirsPreset->setBounds (788, 66, 112, 20);
 
     addAndMakeVisible (SL_num_loudspeakers = new Slider ("new slider"));
-    SL_num_loudspeakers->setRange (1, 64, 1);
+    SL_num_loudspeakers->setRange (2, 64, 1);
     SL_num_loudspeakers->setSliderStyle (Slider::LinearHorizontal);
     SL_num_loudspeakers->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
     SL_num_loudspeakers->addListener (this);
@@ -271,7 +271,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
 	/* Specify screen refresh rate */
     startTimer(40);//80); /*ms (40ms = 25 frames per second) */
-    
+
     showingFrameSizeWarning = false;
 
     //[/Constructor]
@@ -590,7 +590,7 @@ void PluginEditor::paint (Graphics& g)
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
 		150, 16, 530, 11,
 		Justification::centredLeft, true);
-    
+
     /* display warning message */
     if(showingFrameSizeWarning){
         g.setColour(Colours::red);
@@ -709,7 +709,7 @@ void PluginEditor::timerCallback()
         sourceCoordsView_handle->setHasASliderChange(false);
         loudspeakerCoordsView_handle->setHasASliderChange(false);
     }
-    
+
     /* show warning if currently selected framesize is not supported */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         showingFrameSizeWarning = true;
@@ -822,7 +822,7 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="788 66 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="cbb243fa14b960d0" memberName="SL_num_loudspeakers"
-          virtualName="" explicitFocusOrder="0" pos="780 92 120 24" min="1.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="780 92 120 24" min="2.00000000000000000000"
           max="64.00000000000000000000" int="1.00000000000000000000" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>

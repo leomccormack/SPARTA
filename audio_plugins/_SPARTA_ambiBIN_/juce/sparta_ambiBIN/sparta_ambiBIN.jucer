@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_ambiBIN" projectType="audioplug" version="1.0.0"
+<JUCERPROJECT id="lfkRjX" name="sparta_ambiBIN" projectType="audioplug" version="1.0.1"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiBIN" pluginDesc="sparta_ambiBIN"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ABOA"
@@ -147,6 +147,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_osc" path="../../../../SDKs/modules"/>
       </MODULEPATHS>
     </VS2017>
     <VS2015 targetFolder="../../make/win64/VisualStudio2015/" vstFolder="C://SDKs/VST3 SDK"
@@ -181,6 +182,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_osc" path="../../../../SDKs/modules"/>
       </MODULEPATHS>
     </VS2015>
     <XCODE_MAC targetFolder="../../make/MacOSX/Xcode/" vstFolder="../../../SDKs/VST3 SDK"
@@ -211,6 +213,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_osc" path="../../../../SDKs/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
@@ -228,6 +231,7 @@
     <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULES id="juce_video" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_USE_CAMERA="0"/>
