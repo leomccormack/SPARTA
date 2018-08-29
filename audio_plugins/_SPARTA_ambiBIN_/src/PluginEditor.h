@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.2.1
 
   ------------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
     PluginProcessor* hVst;
     void timerCallback() override;
-    
+
     void oscMessageReceived(const OSCMessage& message) override {
         if (message.size() == 3 ) {
             //message[0]
@@ -67,7 +67,7 @@ public:
                 ambi_bin_setPitch(hVst->hAmbi, message[1].getFloat32());
                 s_pitch->setValue(jlimit(-90.0f, 90.0f, message[1].getFloat32()), dontSendNotification);
             }
-            
+
             if (message[2].isFloat32()) {
                 ambi_bin_setRoll(hVst->hAmbi, message[2].getFloat32());
                 s_roll->setValue(jlimit(-90.0f, 90.0f, message[2].getFloat32()), dontSendNotification);

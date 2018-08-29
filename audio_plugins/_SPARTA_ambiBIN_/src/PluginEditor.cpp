@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.2.1
 
   ------------------------------------------------------------------------------
 
@@ -236,10 +236,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* specify here on which UDP port number to receive incoming OSC messages */
     connect(9000);
-    
+
     /* tell the component to listen for OSC messages */
     addListener(this);
-    
+
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
 
@@ -431,7 +431,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 19, y = 58, width = 132, height = 30;
+        int x = 19, y = 58, width = 69, height = 30;
         String text (TRANS("Order:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -672,7 +672,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 107, y = 82, width = 69, height = 30;
+        int x = 104, y = 82, width = 80, height = 30;
         String text (TRANS("Comp. EQ:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -883,7 +883,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="459 56 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="19 58 132 30" fill="solid: ffffffff" hasStroke="0" text="Order:"
+    <TEXT pos="19 58 69 30" fill="solid: ffffffff" hasStroke="0" text="Order:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="227 58 132 30" fill="solid: ffffffff" hasStroke="0" text="CH Order:"
@@ -942,7 +942,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="11 174 63 23" fill="solid: ffffffff" hasStroke="0" text="OSC port"
           fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
-    <TEXT pos="107 82 69 30" fill="solid: ffffffff" hasStroke="0" text="Comp. EQ:"
+    <TEXT pos="104 82 80 30" fill="solid: ffffffff" hasStroke="0" text="Comp. EQ:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
