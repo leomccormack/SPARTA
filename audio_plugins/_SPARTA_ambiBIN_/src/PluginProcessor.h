@@ -24,18 +24,27 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ambi_bin.h"
+#include <string.h>
 
 #define BUILD_VER_SUFFIX "alpha"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
-
+#define DEFAULT_OSC_PORT 9000
 
 enum {	
     /* For the default VST GUI */
+    k_yaw,
+    k_pitch,
+    k_roll,
+    k_flipYaw,
+    k_flipPitch,
+    k_flipRoll,
+    
 	k_NumOfParameters
 };
 
 
-class PluginProcessor  : public AudioProcessor
+class PluginProcessor  : public AudioProcessor, 
+                         private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>
 {
 public:
     int nNumInputs;                         /* current number of input channels */
@@ -55,6 +64,18 @@ public:
         return nHostBlockSize;
     }
     
+    OSCReceiver osc;
+    void oscMessageReceived(const OSCMessage& message) override;
+    int osc_port_ID;
+    void setOscPortID(int newID){
+        osc.disconnect();
+        osc_port_ID = newID;
+        osc.connect(osc_port_ID);
+    }
+    int getOscPortID(){
+        return osc_port_ID;
+    }
+    
     /***************************************************************************\
                                     JUCE Functions
     \***************************************************************************/
@@ -62,32 +83,32 @@ public:
     PluginProcessor();
     ~PluginProcessor();
 
-    void prepareToPlay (double sampleRate, int samplesPerBlock);
-    void releaseResources();
-    void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
-    AudioProcessorEditor* createEditor();
-    bool hasEditor() const;
-    const String getName() const;
-    int getNumParameters();
-    float getParameter (int index);
-    void setParameter (int index, float newValue);
-    const String getParameterName (int index);
-    const String getParameterText (int index);
-    const String getInputChannelName (int channelIndex) const;
-    const String getOutputChannelName (int channelIndex) const;    
-    bool acceptsMidi() const;
-    bool producesMidi() const;
-    bool silenceInProducesSilenceOut() const;
-    double getTailLengthSeconds() const;
-    int getNumPrograms();
-    int getCurrentProgram();
-	void setCurrentProgram(int index);
-	const String getProgramName(int index);
-	bool isInputChannelStereoPair (int index) const;
-	bool isOutputChannelStereoPair(int index) const;
-	void changeProgramName(int index, const String& newName);
-    void getStateInformation (MemoryBlock& destData);
-    void setStateInformation (const void* data, int sizeInBytes);
+    void prepareToPlay (double sampleRate, int samplesPerBlock) override;
+    void releaseResources() override;
+    void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages) override;
+    AudioProcessorEditor* createEditor() override;
+    bool hasEditor() const override;
+    const String getName() const override;
+    int getNumParameters() override;
+    float getParameter (int index) override;
+    void setParameter (int index, float newValue) override;
+    const String getParameterName (int index) override;
+    const String getParameterText (int index) override;
+    const String getInputChannelName (int channelIndex) const override;
+    const String getOutputChannelName (int channelIndex) const override;
+    bool acceptsMidi() const override;
+    bool producesMidi() const override;
+    bool silenceInProducesSilenceOut() const override;
+    double getTailLengthSeconds() const override;
+    int getNumPrograms() override;
+    int getCurrentProgram() override;
+	void setCurrentProgram(int index) override;
+	const String getProgramName(int index) override;
+	bool isInputChannelStereoPair (int index) const override;
+	bool isOutputChannelStereoPair(int index) const override;
+	void changeProgramName(int index, const String& newName) override;
+    void getStateInformation (MemoryBlock& destData) override;
+    void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
