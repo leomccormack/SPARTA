@@ -36,11 +36,18 @@ PluginProcessor::PluginProcessor()
 	for (int i = 0; i < MAX_NUM_CHANNELS; i++)
 		ringBufferOutputs[i] = new float[FRAME_SIZE];
 
-	refreshDefaultGUIParams = true;
+    /* specify here on which UDP port number to receive incoming OSC messages */
+    osc_port_ID = DEFAULT_OSC_PORT;
+    osc.connect(osc_port_ID);
+    /* tell the component to listen for OSC messages */
+    osc.addListener(this);
 }
 
 PluginProcessor::~PluginProcessor()
 {
+    osc.disconnect();
+    osc.removeListener(this);
+    
 	rotator_destroy(&hRot);
 
 	for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
@@ -52,6 +59,28 @@ PluginProcessor::~PluginProcessor()
 		delete[] ringBufferOutputs[i];
 	}
 	delete[] ringBufferOutputs;
+}
+
+void PluginProcessor::oscMessageReceived(const OSCMessage& message)
+{
+    /* if rotation angles are sent as an array \ypr[3] */
+    if (message.size() == 3 && message.getAddressPattern().toString().compare("ypr")) {
+        if (message[0].isFloat32())
+            rotator_setYaw(hRot, message[0].getFloat32());
+        if (message[1].isFloat32())
+            rotator_setPitch(hRot, message[1].getFloat32());
+        if (message[2].isFloat32())
+            rotator_setRoll(hRot, message[2].getFloat32());
+        return;
+    }
+    
+    /* if rotation angles are sent individually: */
+    if(message.getAddressPattern().toString().compare("yaw"))
+        rotator_setYaw(hRot, message[0].getFloat32());
+    else if(message.getAddressPattern().toString().compare("pitch"))
+        rotator_setPitch(hRot, message[0].getFloat32());
+    else if(message.getAddressPattern().toString().compare("roll"))
+        rotator_setRoll(hRot, message[0].getFloat32());
 }
 
 void PluginProcessor::setParameter (int index, float newValue)
@@ -79,7 +108,6 @@ void PluginProcessor::setParameter (int index, float newValue)
             
 		default: break;
 	}
-	refreshDefaultGUIParams = true;
 }
 
 void PluginProcessor::setCurrentProgram (int index)
@@ -302,6 +330,9 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("FLIP_YAW", rotator_getFlipYaw(hRot));
     xml.setAttribute("FLIP_PITCH", rotator_getFlipPitch(hRot));
     xml.setAttribute("FLIP_ROLL", rotator_getFlipRoll(hRot));
+    xml.setAttribute("RPY_FLAG", rotator_getRPYflag(hRot));
+    
+    xml.setAttribute("OSC_PORT", osc_port_ID);
     
     xml.setAttribute("NORM", rotator_getNormType(hRot));
     xml.setAttribute("CHORDER", rotator_getChOrder(hRot));
@@ -332,6 +363,13 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 rotator_setFlipPitch(hRot, xmlState->getIntAttribute("FLIP_PITCH", 0));
             if(xmlState->hasAttribute("FLIP_ROLL"))
                 rotator_setFlipRoll(hRot, xmlState->getIntAttribute("FLIP_ROLL", 0));
+            if(xmlState->hasAttribute("RPY_FLAG"))
+                rotator_setRPYflag(hRot, xmlState->getIntAttribute("RPY_FLAG", 0));
+            
+            if(xmlState->hasAttribute("OSC_PORT")){
+                osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
+                osc.connect(osc_port_ID);
+            }
             
             if(xmlState->hasAttribute("NORM"))
                 rotator_setNormType(hRot, xmlState->getIntAttribute("NORM", 1));

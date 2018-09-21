@@ -33,10 +33,19 @@ PluginProcessor::PluginProcessor()
         ringBufferOutputs[i] = new float[FRAME_SIZE];
     
 	ambi_bin_create(&hAmbi);
+    
+    /* specify here on which UDP port number to receive incoming OSC messages */
+    osc_port_ID = DEFAULT_OSC_PORT;
+    osc.connect(osc_port_ID);
+    /* tell the component to listen for OSC messages */
+    osc.addListener(this);
 }
 
 PluginProcessor::~PluginProcessor()
 {
+    osc.disconnect();
+    osc.removeListener(this);
+    
 	ambi_bin_destroy(&hAmbi);
     
     for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
@@ -48,12 +57,53 @@ PluginProcessor::~PluginProcessor()
     delete[] ringBufferOutputs;
 }
 
+void PluginProcessor::oscMessageReceived(const OSCMessage& message)
+{
+    /* if rotation angles are sent as an array \ypr[3] */
+    if (message.size() == 3 && message.getAddressPattern().toString().compare("ypr")) {
+        if (message[0].isFloat32())
+            ambi_bin_setYaw(hAmbi, message[0].getFloat32());
+        if (message[1].isFloat32())
+            ambi_bin_setPitch(hAmbi, message[1].getFloat32());
+        if (message[2].isFloat32())
+            ambi_bin_setRoll(hAmbi, message[2].getFloat32());
+        return;
+    }
+    
+    /* if rotation angles are sent individually: */
+    if(message.getAddressPattern().toString().compare("yaw"))
+        ambi_bin_setYaw(hAmbi, message[0].getFloat32());
+    else if(message.getAddressPattern().toString().compare("pitch"))
+        ambi_bin_setPitch(hAmbi, message[0].getFloat32());
+    else if(message.getAddressPattern().toString().compare("roll"))
+        ambi_bin_setRoll(hAmbi, message[0].getFloat32());
+}
+
 void PluginProcessor::setParameter (int index, float newValue)
 {
-	switch (index)
-	{
-		default: break;
-	}
+    switch (index)
+    {
+        case k_yaw:
+            ambi_bin_setYaw(hAmbi, (newValue-0.5f)*360.0f );
+            break;
+        case k_pitch:
+            ambi_bin_setPitch(hAmbi, (newValue - 0.5f)*180.0f);
+            break;
+        case k_roll:
+            ambi_bin_setRoll(hAmbi, (newValue - 0.5f)*180.0f);
+            break;
+        case k_flipYaw:
+            ambi_bin_setFlipYaw(hAmbi, (int)(newValue + 0.5f));
+            break;
+        case k_flipPitch:
+            ambi_bin_setFlipPitch(hAmbi, (int)(newValue + 0.5f));
+            break;
+        case k_flipRoll:
+            ambi_bin_setFlipRoll(hAmbi, (int)(newValue + 0.5f));
+            break;
+            
+        default: break;
+    }
 }
 
 void PluginProcessor::setCurrentProgram (int index)
@@ -63,9 +113,22 @@ void PluginProcessor::setCurrentProgram (int index)
 float PluginProcessor::getParameter (int index)
 {
     switch (index)
-	{
-		default: return 0.0f;
-	}
+    {
+        case k_yaw:
+            return (ambi_bin_getYaw(hAmbi)/360.0f) + 0.5f;
+        case k_pitch:
+            return (ambi_bin_getPitch(hAmbi)/180.0f) + 0.5f;
+        case k_roll:
+            return (ambi_bin_getRoll(hAmbi)/180.0f) + 0.5f;
+        case k_flipYaw:
+            return (float)ambi_bin_getFlipYaw(hAmbi);
+        case k_flipPitch:
+            return (float)ambi_bin_getFlipPitch(hAmbi);
+        case k_flipRoll:
+            return (float)ambi_bin_getFlipRoll(hAmbi);
+            
+        default: return 0.0f;
+    }
 }
 
 int PluginProcessor::getNumParameters()
@@ -81,9 +144,21 @@ const String PluginProcessor::getName() const
 const String PluginProcessor::getParameterName (int index)
 {
     switch (index)
-	{
-		default: return "NULL";
-	}
+    {
+        case k_yaw:
+            return "yaw";
+        case k_pitch:
+            return "pitch";
+        case k_roll:
+            return "roll";
+        case k_flipYaw:
+            return "flip_yaw";
+        case k_flipPitch:
+            return "flip_pitch";
+        case k_flipRoll:
+            return "flip_roll";
+        default: return "NULL";
+    }
 }
 
 const String PluginProcessor::getParameterText(int index)
@@ -242,11 +317,24 @@ AudioProcessorEditor* PluginProcessor::createEditor()
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
     XmlElement xml("AMBIBINPLUGINSETTINGS");
+    
+    xml.setAttribute("orderPreset", ambi_bin_getInputOrderPreset(hAmbi));
   
     xml.setAttribute("UseDefaultHRIRset", ambi_bin_getUseDefaultHRIRsflag(hAmbi));
     xml.setAttribute("Norm", ambi_bin_getNormType(hAmbi));
     xml.setAttribute("ChOrder", ambi_bin_getChOrder(hAmbi));
     xml.setAttribute("maxrE", ambi_bin_getDecEnableMaxrE(hAmbi));
+    xml.setAttribute("PhaseManip", ambi_bin_getEnablePhaseManip(hAmbi));
+    
+    xml.setAttribute("YAW", ambi_bin_getYaw(hAmbi));
+    xml.setAttribute("PITCH", ambi_bin_getPitch(hAmbi));
+    xml.setAttribute("ROLL", ambi_bin_getRoll(hAmbi));
+    xml.setAttribute("FLIP_YAW", ambi_bin_getFlipYaw(hAmbi));
+    xml.setAttribute("FLIP_PITCH", ambi_bin_getFlipPitch(hAmbi));
+    xml.setAttribute("FLIP_ROLL", ambi_bin_getFlipRoll(hAmbi));
+    xml.setAttribute("RPY_FLAG", ambi_bin_getRPYflag(hAmbi));
+    
+    xml.setAttribute("OSC_PORT", osc_port_ID);
     
     if(!ambi_bin_getUseDefaultHRIRsflag(hAmbi))
         xml.setAttribute("SofaFilePath", String(ambi_bin_getSofaFilePath(hAmbi)));
@@ -257,11 +345,12 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     ScopedPointer<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-    int i;
 
     if (xmlState != nullptr) {
         if (xmlState->hasTagName("AMBIBINPLUGINSETTINGS")) {
             
+            if(xmlState->hasAttribute("orderPreset"))
+                ambi_bin_setInputOrderPreset(hAmbi, (INPUT_ORDERS)xmlState->getIntAttribute("orderPreset", 2));
             if(xmlState->hasAttribute("UseDefaultHRIRset"))
                 ambi_bin_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
             if(xmlState->hasAttribute("Norm"))
@@ -270,12 +359,36 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 ambi_bin_setChOrder(hAmbi, xmlState->getIntAttribute("ChOrder", 1));
             if(xmlState->hasAttribute("maxrE"))
                 ambi_bin_setDecEnableMaxrE(hAmbi,xmlState->getIntAttribute("maxrE", 1));
+            if(xmlState->hasAttribute("PhaseManip"))
+                ambi_bin_setEnablePhaseManip(hAmbi,xmlState->getIntAttribute("PhaseManip", 1));
+            
+            if(xmlState->hasAttribute("YAW"))
+                ambi_bin_setYaw(hAmbi, (float)xmlState->getDoubleAttribute("YAW", 0.0f));
+            if(xmlState->hasAttribute("PITCH"))
+                ambi_bin_setPitch(hAmbi, (float)xmlState->getDoubleAttribute("PITCH", 0.0f));
+            if(xmlState->hasAttribute("ROLL"))
+                ambi_bin_setRoll(hAmbi, (float)xmlState->getDoubleAttribute("ROLL", 0.0f));
+            if(xmlState->hasAttribute("FLIP_YAW"))
+                ambi_bin_setFlipYaw(hAmbi, xmlState->getIntAttribute("FLIP_YAW", 0));
+            if(xmlState->hasAttribute("FLIP_PITCH"))
+                ambi_bin_setFlipPitch(hAmbi, xmlState->getIntAttribute("FLIP_PITCH", 0));
+            if(xmlState->hasAttribute("FLIP_ROLL"))
+                ambi_bin_setFlipRoll(hAmbi, xmlState->getIntAttribute("FLIP_ROLL", 0));
+            if(xmlState->hasAttribute("RPY_FLAG"))
+                ambi_bin_setRPYflag(hAmbi, xmlState->getIntAttribute("RPY_FLAG", 0));
+            
+            if(xmlState->hasAttribute("OSC_PORT")){
+                osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
+                osc.connect(osc_port_ID);
+            }
             
             if(xmlState->hasAttribute("SofaFilePath")){
                 String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
                 const char* new_cstring = (const char*)directory.toUTF8();
                 ambi_bin_setSofaFilePath(hAmbi, new_cstring);
             }
+            
+            ambi_bin_refreshParams(hAmbi);
         }
     }
 }

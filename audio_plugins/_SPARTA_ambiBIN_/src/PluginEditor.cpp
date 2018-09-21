@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.2.1
+  Created with Projucer version: 5.3.0
 
   ------------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_yaw->setBounds (80, 150, 120, 32);
 
     addAndMakeVisible (s_pitch = new Slider ("new slider"));
-    s_pitch->setRange (-90, 90, 0.01);
+    s_pitch->setRange (-180, 180, 0.01);
     s_pitch->setSliderStyle (Slider::LinearVertical);
     s_pitch->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     s_pitch->setColour (Slider::textBoxTextColourId, Colours::white);
@@ -99,7 +99,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_pitch->setBounds (208, 110, 96, 112);
 
     addAndMakeVisible (s_roll = new Slider ("new slider"));
-    s_roll->setRange (-90, 90, 0.01);
+    s_roll->setRange (-180, 180, 0.01);
     s_roll->setSliderStyle (Slider::LinearVertical);
     s_roll->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     s_roll->setColour (Slider::textBoxTextColourId, Colours::white);
@@ -111,14 +111,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (te_oscport = new TextEditor ("new text editor"));
     te_oscport->setMultiLine (false);
     te_oscport->setReturnKeyStartsNewLine (false);
-    te_oscport->setReadOnly (true);
+    te_oscport->setReadOnly (false);
     te_oscport->setScrollbarsShown (true);
     te_oscport->setCaretVisible (false);
     te_oscport->setPopupMenuEnabled (true);
     te_oscport->setColour (TextEditor::textColourId, Colours::white);
     te_oscport->setColour (TextEditor::backgroundColourId, Colour (0x00ffffff));
     te_oscport->setColour (TextEditor::outlineColourId, Colour (0x68a3a2a2));
-    te_oscport->setText (TRANS("9000"));
+    te_oscport->setText (String());
 
     te_oscport->setBounds (16, 194, 56, 24);
 
@@ -190,6 +190,12 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     TBcompEQ->setBounds (176, 85, 32, 24);
 
+    addAndMakeVisible (TBrpyFlag = new ToggleButton ("new toggle button"));
+    TBrpyFlag->setButtonText (String());
+    TBrpyFlag->addListener (this);
+
+    TBrpyFlag->setBounds (48, 144, 32, 24);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -227,21 +233,18 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormScheme->setSelectedId(ambi_bin_getNormType(hVst->hAmbi), dontSendNotification);
     CBorderPreset->setSelectedId(ambi_bin_getInputOrderPreset(hVst->hAmbi), dontSendNotification);
     TBmaxRE->setToggleState(ambi_bin_getDecEnableMaxrE(hVst->hAmbi), dontSendNotification);
+    TBcompEQ->setToggleState(ambi_bin_getEnablePhaseManip(hVst->hAmbi), dontSendNotification);
     s_yaw->setValue(ambi_bin_getYaw(hVst->hAmbi), dontSendNotification);
     s_pitch->setValue(ambi_bin_getPitch(hVst->hAmbi), dontSendNotification);
     s_roll->setValue(ambi_bin_getRoll(hVst->hAmbi), dontSendNotification);
     t_flipYaw->setToggleState((bool)ambi_bin_getFlipYaw(hVst->hAmbi), dontSendNotification);
     t_flipPitch->setToggleState((bool)ambi_bin_getFlipPitch(hVst->hAmbi), dontSendNotification);
     t_flipRoll->setToggleState((bool)ambi_bin_getFlipRoll(hVst->hAmbi), dontSendNotification);
-
-    /* specify here on which UDP port number to receive incoming OSC messages */
-    connect(9000);
-
-    /* tell the component to listen for OSC messages */
-    addListener(this);
+    te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
+    TBrpyFlag->setToggleState((bool)ambi_bin_getRPYflag(hVst->hAmbi), dontSendNotification);
 
 	/* Specify screen refresh rate */
-    startTimer(80);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(30);//80); /*ms (40ms = 25 frames per second) */
 
     showingFrameSizeWarning = false;
 
@@ -270,6 +273,7 @@ PluginEditor::~PluginEditor()
     t_flipRoll = nullptr;
     t_flipYaw = nullptr;
     TBcompEQ = nullptr;
+    TBrpyFlag = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -683,6 +687,18 @@ void PluginEditor::paint (Graphics& g)
                     Justification::centredLeft, true);
     }
 
+    {
+        int x = 3, y = 145, width = 63, height = 23;
+        String text (TRANS("R-P-Y:"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
@@ -751,7 +767,14 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == TBcompEQ)
     {
         //[UserButtonCode_TBcompEQ] -- add your button handler code here..
+        ambi_bin_setEnablePhaseManip(hVst->hAmbi, (int)TBcompEQ->getToggleState());
         //[/UserButtonCode_TBcompEQ]
+    }
+    else if (buttonThatWasClicked == TBrpyFlag)
+    {
+        //[UserButtonCode_TBrpyFlag] -- add your button handler code here..
+        ambi_bin_setRPYflag(hVst->hAmbi, (int)TBrpyFlag->getToggleState());
+        //[/UserButtonCode_TBrpyFlag]
     }
 
     //[UserbuttonClicked_Post]
@@ -825,6 +848,9 @@ void PluginEditor::timerCallback()
     label_HRIR_len->setText(String(ambi_bin_getHRIRlength(hVst->hAmbi)), dontSendNotification);
     label_HRIR_fs->setText(String(ambi_bin_getHRIRsamplerate(hVst->hAmbi)), dontSendNotification);
     label_DAW_fs->setText(String(ambi_bin_getDAWsamplerate(hVst->hAmbi)), dontSendNotification);
+    s_yaw->setValue(ambi_bin_getYaw(hVst->hAmbi), dontSendNotification);
+    s_pitch->setValue(ambi_bin_getPitch(hVst->hAmbi), dontSendNotification);
+    s_roll->setValue(ambi_bin_getRoll(hVst->hAmbi), dontSendNotification);
 
     /* show warning if currently selected framesize is not supported */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
@@ -835,6 +861,10 @@ void PluginEditor::timerCallback()
         showingFrameSizeWarning = false;
         repaint();
     }
+
+    /* check if OSC port has changed */
+    if(hVst->getOscPortID() != te_oscport->getText().getIntValue())
+        hVst->setOscPortID(te_oscport->getText().getIntValue());
 }
 
 
@@ -852,7 +882,7 @@ void PluginEditor::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer, private FilenameComponentListener, private OSCReceiver, private OSCReceiver::Listener&lt;OSCReceiver::RealtimeCallback&gt;"
+                 parentClasses="public AudioProcessorEditor, public Timer, private FilenameComponentListener"
                  constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), fileChooser (&quot;File&quot;, File(), true, false, false,&#10;                       &quot;*.sofa;*.nc;&quot;, String(),&#10;                       &quot;Load SOFA File&quot;)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="656" initialHeight="232">
@@ -945,6 +975,9 @@ BEGIN_JUCER_METADATA
     <TEXT pos="104 82 80 30" fill="solid: ffffffff" hasStroke="0" text="Comp. EQ:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="3 145 63 23" fill="solid: ffffffff" hasStroke="0" text="R-P-Y:"
+          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
   </BACKGROUND>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
                 virtualName="" explicitFocusOrder="0" pos="604 60 32 24" buttonText=""
@@ -969,20 +1002,20 @@ BEGIN_JUCER_METADATA
           needsCallback="1"/>
   <SLIDER name="new slider" id="9af7dd86cd139d85" memberName="s_pitch"
           virtualName="" explicitFocusOrder="0" pos="208 110 96 112" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="-90.00000000000000000000" max="90.00000000000000000000"
+          textboxbkgd="ffffff" min="-180.00000000000000000000" max="180.00000000000000000000"
           int="0.01000000000000000021" style="LinearVertical" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
   <SLIDER name="new slider" id="b5d39bb257b3289a" memberName="s_roll" virtualName=""
           explicitFocusOrder="0" pos="328 110 96 112" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="-90.00000000000000000000" max="90.00000000000000000000"
+          textboxbkgd="ffffff" min="-180.00000000000000000000" max="180.00000000000000000000"
           int="0.01000000000000000021" style="LinearVertical" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
   <TEXTEDITOR name="new text editor" id="1799da9e8cf495d6" memberName="te_oscport"
               virtualName="" explicitFocusOrder="0" pos="16 194 56 24" textcol="ffffffff"
-              bkgcol="ffffff" outlinecol="68a3a2a2" initialText="9000" multiline="0"
-              retKeyStartsLine="0" readonly="1" scrollbars="1" caret="0" popupmenu="1"/>
+              bkgcol="ffffff" outlinecol="68a3a2a2" initialText="" multiline="0"
+              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="0" popupmenu="1"/>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_N_dirs"
          virtualName="" explicitFocusOrder="0" pos="536 120 96 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
@@ -1018,6 +1051,9 @@ BEGIN_JUCER_METADATA
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="d5b2026137993288" memberName="TBcompEQ"
                 virtualName="" explicitFocusOrder="0" pos="176 85 32 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TOGGLEBUTTON name="new toggle button" id="b4fec6d3e1a2bae2" memberName="TBrpyFlag"
+                virtualName="" explicitFocusOrder="0" pos="48 144 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
