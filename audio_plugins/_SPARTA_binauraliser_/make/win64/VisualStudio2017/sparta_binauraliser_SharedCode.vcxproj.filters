@@ -2307,6 +2307,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\src\ConfigurationHelper.h">
+      <Filter>sparta_binauraliser</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\src\PluginProcessor.h">
       <Filter>sparta_binauraliser</Filter>
     </ClInclude>
@@ -4373,10 +4376,5 @@
     <None Include="..\..\..\..\..\SDKs\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt">
       <Filter>JUCE Modules\juce_graphics\image_formats\pnglib</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include=".\resources.rc">
-      <Filter>JUCE Library Code</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>
