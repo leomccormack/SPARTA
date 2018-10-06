@@ -254,6 +254,8 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     if(!binauraliser_getUseDefaultHRIRsflag(hBin))
         xml.setAttribute("SofaFilePath", String(binauraliser_getSofaFilePath(hBin)));
     
+    xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
+    
     copyXmlToBinary(xml, destData);
 }
 
@@ -278,6 +280,9 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 binauraliser_setSofaFilePath(hBin, new_cstring);
             }
             
+            if(xmlState->hasAttribute("JSONFilePath"))
+                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            
             binauraliser_refreshSettings(hBin);
         }
     }
@@ -289,4 +294,53 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new PluginProcessor();
 }
+
+void PluginProcessor::saveConfigurationToFile (File destination)
+{
+    sources.removeAllChildren(nullptr);
+    for (int i=0; i<binauraliser_getNumSources(hBin);i++)
+    {
+        sources.appendChild (ConfigurationHelper::
+                             createSource(binauraliser_getSourceAzi_deg(hBin, i),
+                                          binauraliser_getSourceElev_deg(hBin, i),
+                                          1.0f,
+                                          i,
+                                          false,
+                                          1.0f), nullptr);
+    }
+    DynamicObject* jsonObj = new DynamicObject();
+    jsonObj->setProperty("Name", var("SPARTA Binauraliser source directions."));
+    char versionString[10];
+    strcpy(versionString, "v");
+    strcat(versionString, JucePlugin_VersionString);
+    jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA Binauraliser " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
+    jsonObj->setProperty ("SourceArrangement", ConfigurationHelper::convertSourcesToVar (sources, "Source Directions"));
+    Result result = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
+    assert(result.wasOk());
+}
+
+void PluginProcessor::loadConfiguration (const File& configFile)
+{
+    sources.removeAllChildren(nullptr);
+    Result result = ConfigurationHelper::parseFileForSourceArrangement (configFile, sources, nullptr);
+    if(!result.wasOk()){
+        result = ConfigurationHelper::parseFileForLoudspeakerLayout (configFile, sources, nullptr);
+    }
+    if(result.wasOk()){
+        int num_srcs = 0;
+        int src_idx = 0;
+        for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it)
+            if ( !((*it).getProperty("Imaginary")))
+                num_srcs++;
+        binauraliser_setNumSources(hBin, num_srcs);
+        for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it){
+            if ( !((*it).getProperty("Imaginary"))){
+                binauraliser_setSourceAzi_deg(hBin, src_idx, (*it).getProperty("Azimuth"));
+                binauraliser_setSourceElev_deg(hBin, src_idx, (*it).getProperty("Elevation"));
+                src_idx++;
+            }
+        }
+    }
+}
+
 

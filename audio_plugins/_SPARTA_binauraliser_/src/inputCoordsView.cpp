@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.1.2
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2017 - ROLI Ltd.
 
   ==============================================================================
 */
@@ -35,11 +35,14 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (dummySlider = new Slider ("new slider"));
+    dummySlider.reset (new Slider ("new slider"));
+    addAndMakeVisible (dummySlider.get());
     dummySlider->setRange (0.01, 0.3, 0.001);
     dummySlider->setSliderStyle (Slider::LinearHorizontal);
     dummySlider->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
     dummySlider->addListener (this);
+
+    dummySlider->setBounds (-176, 144, 96, 16);
 
 
     //[UserPreSize]
@@ -76,7 +79,7 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 96, 16);
         elevSliders[i]->addListener (this);
     }
-    
+
     sliderHasChanged = true;
 
     //[/Constructor]
@@ -164,7 +167,6 @@ void inputCoordsView::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    dummySlider->setBounds (-176, 144, 96, 16);
     //[UserResized] Add your own custom resize handling here..
     setSize (sensorEdit_width, sensorEdit_height*currentNCH);
     repaint();
@@ -187,7 +189,7 @@ void inputCoordsView::sliderValueChanged (Slider* sliderThatWasMoved)
 
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == dummySlider)
+    if (sliderThatWasMoved == dummySlider.get())
     {
         //[UserSliderCode_dummySlider] -- add your slider handling code here..
         //[/UserSliderCode_dummySlider]
@@ -237,10 +239,10 @@ BEGIN_JUCER_METADATA
           hasStroke="0"/>
   </BACKGROUND>
   <SLIDER name="new slider" id="4689db34530ab7c7" memberName="dummySlider"
-          virtualName="" explicitFocusOrder="0" pos="-176 144 96 16" min="0.010000000000000000208"
-          max="0.2999999999999999889" int="0.0010000000000000000208" style="LinearHorizontal"
+          virtualName="" explicitFocusOrder="0" pos="-176 144 96 16" min="0.01000000000000000021"
+          max="0.29999999999999998890" int="0.00100000000000000002" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="70"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

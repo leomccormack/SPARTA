@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -36,13 +36,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (TBuseDefaultHRIRs = new ToggleButton ("new toggle button"));
+    TBuseDefaultHRIRs.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBuseDefaultHRIRs.get());
     TBuseDefaultHRIRs->setButtonText (String());
     TBuseDefaultHRIRs->addListener (this);
 
     TBuseDefaultHRIRs->setBounds (604, 60, 32, 24);
 
-    addAndMakeVisible (CBorderPreset = new ComboBox ("new combo box"));
+    CBorderPreset.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBorderPreset.get());
     CBorderPreset->setEditableText (false);
     CBorderPreset->setJustificationType (Justification::centredLeft);
     CBorderPreset->setTextWhenNothingSelected (TRANS("Default"));
@@ -51,7 +53,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBorderPreset->setBounds (80, 64, 120, 20);
 
-    addAndMakeVisible (CBchFormat = new ComboBox ("new combo box"));
+    CBchFormat.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBchFormat.get());
     CBchFormat->setEditableText (false);
     CBchFormat->setJustificationType (Justification::centredLeft);
     CBchFormat->setTextWhenNothingSelected (TRANS("ACN"));
@@ -61,7 +64,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBchFormat->setBounds (312, 64, 112, 20);
 
-    addAndMakeVisible (CBnormScheme = new ComboBox ("new combo box"));
+    CBnormScheme.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBnormScheme.get());
     CBnormScheme->setEditableText (false);
     CBnormScheme->setJustificationType (Justification::centredLeft);
     CBnormScheme->setTextWhenNothingSelected (TRANS("N3D"));
@@ -72,13 +76,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBnormScheme->setBounds (312, 88, 112, 20);
 
-    addAndMakeVisible (TBmaxRE = new ToggleButton ("new toggle button"));
+    TBmaxRE.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBmaxRE.get());
     TBmaxRE->setButtonText (String());
     TBmaxRE->addListener (this);
 
     TBmaxRE->setBounds (72, 85, 32, 24);
 
-    addAndMakeVisible (s_yaw = new Slider ("new slider"));
+    s_yaw.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_yaw.get());
     s_yaw->setRange (-180, 180, 0.01);
     s_yaw->setSliderStyle (Slider::LinearHorizontal);
     s_yaw->setTextBoxStyle (Slider::TextBoxAbove, false, 80, 20);
@@ -88,7 +94,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_yaw->setBounds (80, 150, 120, 32);
 
-    addAndMakeVisible (s_pitch = new Slider ("new slider"));
+    s_pitch.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_pitch.get());
     s_pitch->setRange (-180, 180, 0.01);
     s_pitch->setSliderStyle (Slider::LinearVertical);
     s_pitch->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
@@ -98,7 +105,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_pitch->setBounds (208, 110, 96, 112);
 
-    addAndMakeVisible (s_roll = new Slider ("new slider"));
+    s_roll.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_roll.get());
     s_roll->setRange (-180, 180, 0.01);
     s_roll->setSliderStyle (Slider::LinearVertical);
     s_roll->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
@@ -108,7 +116,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_roll->setBounds (328, 110, 96, 112);
 
-    addAndMakeVisible (te_oscport = new TextEditor ("new text editor"));
+    te_oscport.reset (new TextEditor ("new text editor"));
+    addAndMakeVisible (te_oscport.get());
     te_oscport->setMultiLine (false);
     te_oscport->setReturnKeyStartsNewLine (false);
     te_oscport->setReadOnly (false);
@@ -122,8 +131,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     te_oscport->setBounds (16, 194, 56, 24);
 
-    addAndMakeVisible (label_N_dirs = new Label ("new label",
-                                                 String()));
+    label_N_dirs.reset (new Label ("new label",
+                                   String()));
+    addAndMakeVisible (label_N_dirs.get());
     label_N_dirs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_N_dirs->setJustificationType (Justification::centredLeft);
     label_N_dirs->setEditable (false, false, false);
@@ -133,8 +143,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_N_dirs->setBounds (536, 120, 96, 24);
 
-    addAndMakeVisible (label_HRIR_len = new Label ("new label",
-                                                   String()));
+    label_HRIR_len.reset (new Label ("new label",
+                                     String()));
+    addAndMakeVisible (label_HRIR_len.get());
     label_HRIR_len->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_HRIR_len->setJustificationType (Justification::centredLeft);
     label_HRIR_len->setEditable (false, false, false);
@@ -144,8 +155,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_HRIR_len->setBounds (536, 144, 96, 24);
 
-    addAndMakeVisible (label_HRIR_fs = new Label ("new label",
-                                                  String()));
+    label_HRIR_fs.reset (new Label ("new label",
+                                    String()));
+    addAndMakeVisible (label_HRIR_fs.get());
     label_HRIR_fs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_HRIR_fs->setJustificationType (Justification::centredLeft);
     label_HRIR_fs->setEditable (false, false, false);
@@ -155,8 +167,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_HRIR_fs->setBounds (536, 168, 96, 24);
 
-    addAndMakeVisible (label_DAW_fs = new Label ("new label",
-                                                 String()));
+    label_DAW_fs.reset (new Label ("new label",
+                                   String()));
+    addAndMakeVisible (label_DAW_fs.get());
     label_DAW_fs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_DAW_fs->setJustificationType (Justification::centredLeft);
     label_DAW_fs->setEditable (false, false, false);
@@ -166,31 +179,36 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_DAW_fs->setBounds (536, 192, 96, 24);
 
-    addAndMakeVisible (t_flipPitch = new ToggleButton ("new toggle button"));
+    t_flipPitch.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (String());
     t_flipPitch->addListener (this);
 
     t_flipPitch->setBounds (260, 182, 23, 24);
 
-    addAndMakeVisible (t_flipRoll = new ToggleButton ("new toggle button"));
+    t_flipRoll.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (String());
     t_flipRoll->addListener (this);
 
     t_flipRoll->setBounds (376, 182, 23, 24);
 
-    addAndMakeVisible (t_flipYaw = new ToggleButton ("new toggle button"));
+    t_flipYaw.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (String());
     t_flipYaw->addListener (this);
 
     t_flipYaw->setBounds (128, 182, 23, 24);
 
-    addAndMakeVisible (TBcompEQ = new ToggleButton ("new toggle button"));
+    TBcompEQ.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBcompEQ.get());
     TBcompEQ->setButtonText (String());
     TBcompEQ->addListener (this);
 
     TBcompEQ->setBounds (176, 85, 32, 24);
 
-    addAndMakeVisible (TBrpyFlag = new ToggleButton ("new toggle button"));
+    TBrpyFlag.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBrpyFlag.get());
     TBrpyFlag->setButtonText (String());
     TBrpyFlag->addListener (this);
 
@@ -734,43 +752,43 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == TBuseDefaultHRIRs)
+    if (buttonThatWasClicked == TBuseDefaultHRIRs.get())
     {
         //[UserButtonCode_TBuseDefaultHRIRs] -- add your button handler code here..
         ambi_bin_setUseDefaultHRIRsflag(hVst->hAmbi, (int)TBuseDefaultHRIRs->getToggleState());
         //[/UserButtonCode_TBuseDefaultHRIRs]
     }
-    else if (buttonThatWasClicked == TBmaxRE)
+    else if (buttonThatWasClicked == TBmaxRE.get())
     {
         //[UserButtonCode_TBmaxRE] -- add your button handler code here..
         ambi_bin_setDecEnableMaxrE(hVst->hAmbi, (int)TBmaxRE->getToggleState());
         //[/UserButtonCode_TBmaxRE]
     }
-    else if (buttonThatWasClicked == t_flipPitch)
+    else if (buttonThatWasClicked == t_flipPitch.get())
     {
         //[UserButtonCode_t_flipPitch] -- add your button handler code here..
         ambi_bin_setFlipPitch(hVst->hAmbi, (int)t_flipPitch->getToggleState());
         //[/UserButtonCode_t_flipPitch]
     }
-    else if (buttonThatWasClicked == t_flipRoll)
+    else if (buttonThatWasClicked == t_flipRoll.get())
     {
         //[UserButtonCode_t_flipRoll] -- add your button handler code here..
         ambi_bin_setFlipRoll(hVst->hAmbi, (int)t_flipRoll->getToggleState());
         //[/UserButtonCode_t_flipRoll]
     }
-    else if (buttonThatWasClicked == t_flipYaw)
+    else if (buttonThatWasClicked == t_flipYaw.get())
     {
         //[UserButtonCode_t_flipYaw] -- add your button handler code here..
         ambi_bin_setFlipYaw(hVst->hAmbi, (int)t_flipYaw->getToggleState());
         //[/UserButtonCode_t_flipYaw]
     }
-    else if (buttonThatWasClicked == TBcompEQ)
+    else if (buttonThatWasClicked == TBcompEQ.get())
     {
         //[UserButtonCode_TBcompEQ] -- add your button handler code here..
         ambi_bin_setEnablePhaseManip(hVst->hAmbi, (int)TBcompEQ->getToggleState());
         //[/UserButtonCode_TBcompEQ]
     }
-    else if (buttonThatWasClicked == TBrpyFlag)
+    else if (buttonThatWasClicked == TBrpyFlag.get())
     {
         //[UserButtonCode_TBrpyFlag] -- add your button handler code here..
         ambi_bin_setRPYflag(hVst->hAmbi, (int)TBrpyFlag->getToggleState());
@@ -786,19 +804,19 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == CBorderPreset)
+    if (comboBoxThatHasChanged == CBorderPreset.get())
     {
         //[UserComboBoxCode_CBorderPreset] -- add your combo box handling code here..
         ambi_bin_setInputOrderPreset(hVst->hAmbi, (INPUT_ORDERS)CBorderPreset->getSelectedId());
         //[/UserComboBoxCode_CBorderPreset]
     }
-    else if (comboBoxThatHasChanged == CBchFormat)
+    else if (comboBoxThatHasChanged == CBchFormat.get())
     {
         //[UserComboBoxCode_CBchFormat] -- add your combo box handling code here..
         ambi_bin_setChOrder(hVst->hAmbi, CBchFormat->getSelectedId());
         //[/UserComboBoxCode_CBchFormat]
     }
-    else if (comboBoxThatHasChanged == CBnormScheme)
+    else if (comboBoxThatHasChanged == CBnormScheme.get())
     {
         //[UserComboBoxCode_CBnormScheme] -- add your combo box handling code here..
         ambi_bin_setNormType(hVst->hAmbi, CBnormScheme->getSelectedId());
@@ -814,19 +832,19 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == s_yaw)
+    if (sliderThatWasMoved == s_yaw.get())
     {
         //[UserSliderCode_s_yaw] -- add your slider handling code here..
         ambi_bin_setYaw(hVst->hAmbi, (float)s_yaw->getValue());
         //[/UserSliderCode_s_yaw]
     }
-    else if (sliderThatWasMoved == s_pitch)
+    else if (sliderThatWasMoved == s_pitch.get())
     {
         //[UserSliderCode_s_pitch] -- add your slider handling code here..
         ambi_bin_setPitch(hVst->hAmbi, (float)s_pitch->getValue());
         //[/UserSliderCode_s_pitch]
     }
-    else if (sliderThatWasMoved == s_roll)
+    else if (sliderThatWasMoved == s_roll.get())
     {
         //[UserSliderCode_s_roll] -- add your slider handling code here..
         ambi_bin_setRoll(hVst->hAmbi, (float)s_roll->getValue());

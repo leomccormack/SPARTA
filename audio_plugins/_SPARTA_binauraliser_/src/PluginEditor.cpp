@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -37,7 +37,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (CBsourceDirsPreset = new ComboBox ("new combo box"));
+    CBsourceDirsPreset.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBsourceDirsPreset.get());
     CBsourceDirsPreset->setEditableText (false);
     CBsourceDirsPreset->setJustificationType (Justification::centredLeft);
     CBsourceDirsPreset->setTextWhenNothingSelected (String());
@@ -47,7 +48,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBsourceDirsPreset->setBounds (88, 64, 112, 20);
 
-    addAndMakeVisible (SL_num_sources = new Slider ("new slider"));
+    SL_num_sources.reset (new Slider ("new slider"));
+    addAndMakeVisible (SL_num_sources.get());
     SL_num_sources->setRange (1, 64, 1);
     SL_num_sources->setSliderStyle (Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
@@ -55,8 +57,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_sources->setBounds (80, 92, 120, 24);
 
-    addAndMakeVisible (label_N_dirs = new Label ("new label",
-                                                 String()));
+    label_N_dirs.reset (new Label ("new label",
+                                   String()));
+    addAndMakeVisible (label_N_dirs.get());
     label_N_dirs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_N_dirs->setJustificationType (Justification::centredLeft);
     label_N_dirs->setEditable (false, false, false);
@@ -66,8 +69,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_N_dirs->setBounds (800, 136, 96, 24);
 
-    addAndMakeVisible (label_HRIR_len = new Label ("new label",
-                                                   String()));
+    label_HRIR_len.reset (new Label ("new label",
+                                     String()));
+    addAndMakeVisible (label_HRIR_len.get());
     label_HRIR_len->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_HRIR_len->setJustificationType (Justification::centredLeft);
     label_HRIR_len->setEditable (false, false, false);
@@ -77,8 +81,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_HRIR_len->setBounds (800, 200, 96, 24);
 
-    addAndMakeVisible (label_HRIR_fs = new Label ("new label",
-                                                  String()));
+    label_HRIR_fs.reset (new Label ("new label",
+                                    String()));
+    addAndMakeVisible (label_HRIR_fs.get());
     label_HRIR_fs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_HRIR_fs->setJustificationType (Justification::centredLeft);
     label_HRIR_fs->setEditable (false, false, false);
@@ -88,14 +93,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_HRIR_fs->setBounds (800, 232, 96, 24);
 
-    addAndMakeVisible (TBuseDefaultHRIRs = new ToggleButton ("new toggle button"));
+    TBuseDefaultHRIRs.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBuseDefaultHRIRs.get());
     TBuseDefaultHRIRs->setButtonText (String());
     TBuseDefaultHRIRs->addListener (this);
 
     TBuseDefaultHRIRs->setBounds (876, 61, 32, 24);
 
-    addAndMakeVisible (label_DAW_fs = new Label ("new label",
-                                                 String()));
+    label_DAW_fs.reset (new Label ("new label",
+                                   String()));
+    addAndMakeVisible (label_DAW_fs.get());
     label_DAW_fs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_DAW_fs->setJustificationType (Justification::centredLeft);
     label_DAW_fs->setEditable (false, false, false);
@@ -105,20 +112,23 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_DAW_fs->setBounds (800, 264, 96, 24);
 
-    addAndMakeVisible (TB_showInputs = new ToggleButton ("new toggle button"));
+    TB_showInputs.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TB_showInputs.get());
     TB_showInputs->setButtonText (String());
     TB_showInputs->addListener (this);
 
     TB_showInputs->setBounds (545, 318, 32, 24);
 
-    addAndMakeVisible (TB_showOutputs = new ToggleButton ("new toggle button"));
+    TB_showOutputs.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TB_showOutputs.get());
     TB_showOutputs->setButtonText (String());
     TB_showOutputs->addListener (this);
 
     TB_showOutputs->setBounds (673, 318, 32, 24);
 
-    addAndMakeVisible (label_N_Tri = new Label ("new label",
-                                                String()));
+    label_N_Tri.reset (new Label ("new label",
+                                  String()));
+    addAndMakeVisible (label_N_Tri.get());
     label_N_Tri->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_N_Tri->setJustificationType (Justification::centredLeft);
     label_N_Tri->setEditable (false, false, false);
@@ -128,7 +138,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_N_Tri->setBounds (800, 168, 96, 24);
 
-    addAndMakeVisible (CBinterpMode = new ComboBox ("new combo box"));
+    CBinterpMode.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBinterpMode.get());
     CBinterpMode->setEditableText (false);
     CBinterpMode->setJustificationType (Justification::centredLeft);
     CBinterpMode->setTextWhenNothingSelected (String());
@@ -136,6 +147,22 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBinterpMode->addListener (this);
 
     CBinterpMode->setBounds (328, 318, 112, 20);
+
+    tb_loadJSON.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_loadJSON.get());
+    tb_loadJSON->setButtonText (TRANS("LoadJSON"));
+    tb_loadJSON->addListener (this);
+    tb_loadJSON->setColour (TextButton::buttonColourId, Colour (0xff695ca4));
+
+    tb_loadJSON->setBounds (200, 8, 112, 24);
+
+    tb_saveJSON.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_saveJSON.get());
+    tb_saveJSON->setButtonText (TRANS("saveJSON"));
+    tb_saveJSON->addListener (this);
+    tb_saveJSON->setColour (TextButton::buttonColourId, Colour (0xff695ca4));
+
+    tb_saveJSON->setBounds (328, 8, 112, 24);
 
 
     //[UserPreSize]
@@ -258,7 +285,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
-    
+
     showingFrameSizeWarning = false;
 
     //[/Constructor]
@@ -280,6 +307,8 @@ PluginEditor::~PluginEditor()
     TB_showOutputs = nullptr;
     label_N_Tri = nullptr;
     CBinterpMode = nullptr;
+    tb_loadJSON = nullptr;
+    tb_saveJSON = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -617,7 +646,7 @@ void PluginEditor::paint (Graphics& g)
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
 		150, 16, 530, 11,
 		Justification::centredLeft, true);
-    
+
     /* display warning message */
     if(showingFrameSizeWarning){
         g.setColour(Colours::red);
@@ -645,14 +674,14 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == CBsourceDirsPreset)
+    if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
     {
         //[UserComboBoxCode_CBsourceDirsPreset] -- add your combo box handling code here..
         binauraliser_setInputConfigPreset(hVst->hBin, CBsourceDirsPreset->getSelectedId());
         refreshPanViewWindow = true;
         //[/UserComboBoxCode_CBsourceDirsPreset]
     }
-    else if (comboBoxThatHasChanged == CBinterpMode)
+    else if (comboBoxThatHasChanged == CBinterpMode.get())
     {
         //[UserComboBoxCode_CBinterpMode] -- add your combo box handling code here..
         //[/UserComboBoxCode_CBinterpMode]
@@ -667,7 +696,7 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == SL_num_sources)
+    if (sliderThatWasMoved == SL_num_sources.get())
     {
         //[UserSliderCode_SL_num_sources] -- add your slider handling code here..
         binauraliser_setNumSources(hVst->hBin, (int)SL_num_sources->getValue());
@@ -684,26 +713,52 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == TBuseDefaultHRIRs)
+    if (buttonThatWasClicked == TBuseDefaultHRIRs.get())
     {
         //[UserButtonCode_TBuseDefaultHRIRs] -- add your button handler code here..
         binauraliser_setUseDefaultHRIRsflag(hVst->hBin, (int)TBuseDefaultHRIRs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TBuseDefaultHRIRs]
     }
-    else if (buttonThatWasClicked == TB_showInputs)
+    else if (buttonThatWasClicked == TB_showInputs.get())
     {
         //[UserButtonCode_TB_showInputs] -- add your button handler code here..
         panWindow->setShowInputs(TB_showInputs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TB_showInputs]
     }
-    else if (buttonThatWasClicked == TB_showOutputs)
+    else if (buttonThatWasClicked == TB_showOutputs.get())
     {
         //[UserButtonCode_TB_showOutputs] -- add your button handler code here..
         panWindow->setShowOutputs(TB_showOutputs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TB_showOutputs]
+    }
+    else if (buttonThatWasClicked == tb_loadJSON.get())
+    {
+        //[UserButtonCode_tb_loadJSON] -- add your button handler code here..
+        FileChooser myChooser ("Load configuration...",
+                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                               "*.json");
+        if (myChooser.browseForFileToOpen()) {
+            File configFile (myChooser.getResult());
+            hVst->setLastDir(configFile.getParentDirectory());
+            hVst->loadConfiguration (configFile);
+        }
+        //[/UserButtonCode_tb_loadJSON]
+    }
+    else if (buttonThatWasClicked == tb_saveJSON.get())
+    {
+        //[UserButtonCode_tb_saveJSON] -- add your button handler code here..
+        FileChooser myChooser ("Save configuration...",
+                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                               "*.json");
+        if (myChooser.browseForFileToSave (true)) {
+            File configFile (myChooser.getResult());
+            hVst->setLastDir(configFile.getParentDirectory());
+            hVst->saveConfigurationToFile (configFile);
+        }
+        //[/UserButtonCode_tb_saveJSON]
     }
 
     //[UserbuttonClicked_Post]
@@ -733,7 +788,7 @@ void PluginEditor::timerCallback()
         refreshPanViewWindow = false;
         sourceCoordsView_handle->setHasASliderChange(false);
     }
-    
+
     /* show warning if currently selected framesize is not supported */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         showingFrameSizeWarning = true;
@@ -744,7 +799,6 @@ void PluginEditor::timerCallback()
         repaint();
     }
 }
-
 
 
 //[/MiscUserCode]
@@ -882,6 +936,12 @@ BEGIN_JUCER_METADATA
   <COMBOBOX name="new combo box" id="aeb0b2f644784061" memberName="CBinterpMode"
             virtualName="" explicitFocusOrder="0" pos="328 318 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
+  <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON"
+              virtualName="" explicitFocusOrder="0" pos="200 8 112 24" bgColOff="ff695ca4"
+              buttonText="LoadJSON" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="new button" id="48c5d3526dcfe64f" memberName="tb_saveJSON"
+              virtualName="" explicitFocusOrder="0" pos="328 8 112 24" bgColOff="ff695ca4"
+              buttonText="saveJSON" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

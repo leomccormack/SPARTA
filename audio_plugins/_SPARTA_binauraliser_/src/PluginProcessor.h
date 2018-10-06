@@ -24,6 +24,10 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "binauraliser.h"
+#define CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS 1
+#define CONFIGURATIONHELPER_ENABLE_SOURCEARRANGEMENT_METHODS 1
+#include "ConfigurationHelper.h"
+
 
 #define BUILD_VER_SUFFIX "alpha"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
@@ -56,6 +60,14 @@ public:
     int getCurrentBlockSize(){
         return nHostBlockSize;
     }
+    
+    /* JSON */
+    void saveConfigurationToFile (File destination);
+    void loadConfiguration (const File& presetFile);
+    ValueTree sources {"Sources"};
+    void setLastDir(File newLastDir){ lastDir = newLastDir; }
+    File getLastDir() {return lastDir;};
+    File lastDir;
     
     /***************************************************************************\
                                     JUCE Functions
