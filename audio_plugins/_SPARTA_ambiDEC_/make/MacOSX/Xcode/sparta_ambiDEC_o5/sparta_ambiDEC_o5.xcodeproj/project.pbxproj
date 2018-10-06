@@ -146,6 +146,7 @@
 		B67185D6373B5278555E2161 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ambi_dec.h"; path = "../../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include/ambi_dec.h"; sourceTree = "SOURCE_ROOT"; };
 		B675D9ACE4E7DB932DB62664 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "saf_vbap_internal.c"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_vbap/saf_vbap_internal.c"; sourceTree = "SOURCE_ROOT"; };
 		BA612B56A65F182A9556BF87 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_audio_devices.mm"; path = "../../../../juce/sparta_ambiDEC_o5/JuceLibraryCode/include_juce_audio_devices.mm"; sourceTree = "SOURCE_ROOT"; };
+		BE0152B2119C8DC6147A7FFB = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConfigurationHelper.h; path = ../../../../../resources/ConfigurationHelper.h; sourceTree = "SOURCE_ROOT"; };
 		BF056AA0E21D0ACA6027AD70 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "saf_malloc.c"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_malloc.c"; sourceTree = "SOURCE_ROOT"; };
 		C10A75028E1C6AC931D92D2A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "saf_sort.c"; path = "../../../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sort.c"; sourceTree = "SOURCE_ROOT"; };
 		C489525790C392FD01B0DF79 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ambi_dec_database.h"; path = "../../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/src/ambi_dec_database.h"; sourceTree = "SOURCE_ROOT"; };
@@ -250,6 +251,7 @@
 		C1B2F7193C3818E412035BBB = {isa = PBXGroup; children = (
 					AA435F41DF0D82E609305F73, ); name = "Spatial_Audio_Framework"; sourceTree = "<group>"; };
 		32A1B937A17DAEEAA0CDAC00 = {isa = PBXGroup; children = (
+					BE0152B2119C8DC6147A7FFB,
 					4C271405CE31A8D04323510B,
 					063CBB2A6E151E5887341712,
 					0E4A5B853F9C045F70EF1577,
@@ -343,8 +345,8 @@
 					"FRAME_SIZE=256",
 					"SH_ORDER=5",
 					"JUCER_XCODE_MAC_7B016188=1",
-					"JUCE_APP_VERSION=1.0.2",
-					"JUCE_APP_VERSION_HEX=0x10002",
+					"JUCE_APP_VERSION=1.1.0",
+					"JUCE_APP_VERSION_HEX=0x10100",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -384,8 +386,8 @@
 					"FRAME_SIZE=256",
 					"SH_ORDER=5",
 					"JUCER_XCODE_MAC_7B016188=1",
-					"JUCE_APP_VERSION=1.0.2",
-					"JUCE_APP_VERSION_HEX=0x10002",
+					"JUCE_APP_VERSION=1.1.0",
+					"JUCE_APP_VERSION_HEX=0x10100",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -425,8 +427,8 @@
 					"FRAME_SIZE=256",
 					"SH_ORDER=5",
 					"JUCER_XCODE_MAC_7B016188=1",
-					"JUCE_APP_VERSION=1.0.2",
-					"JUCE_APP_VERSION_HEX=0x10002",
+					"JUCE_APP_VERSION=1.1.0",
+					"JUCE_APP_VERSION_HEX=0x10100",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -460,8 +462,8 @@
 					"FRAME_SIZE=256",
 					"SH_ORDER=5",
 					"JUCER_XCODE_MAC_7B016188=1",
-					"JUCE_APP_VERSION=1.0.2",
-					"JUCE_APP_VERSION_HEX=0x10002",
+					"JUCE_APP_VERSION=1.1.0",
+					"JUCE_APP_VERSION_HEX=0x10100",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",

@@ -262,6 +262,8 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("Dec2maxrE", ambi_dec_getDecEnableMaxrE(hAmbi, 1));
     xml.setAttribute("TransitionFreq", ambi_dec_getTransitionFreq(hAmbi));
     
+    xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
+    
     if(!ambi_dec_getUseDefaultHRIRsflag(hAmbi))
         xml.setAttribute("SofaFilePath", String(ambi_dec_getSofaFilePath(hAmbi)));
 
@@ -309,11 +311,16 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if(xmlState->hasAttribute("TransitionFreq"))
                 ambi_dec_setTransitionFreq(hAmbi, (float)xmlState->getDoubleAttribute("TransitionFreq", 1e3f));
             
+            if(xmlState->hasAttribute("JSONFilePath"))
+                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            
             if(xmlState->hasAttribute("SofaFilePath")){
                 String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
                 const char* new_cstring = (const char*)directory.toUTF8();
                 ambi_dec_setSofaFilePath(hAmbi, new_cstring);
             }
+            
+            ambi_dec_refreshSettings(hAmbi);
         }
     }
 }
@@ -325,3 +332,51 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
     return new PluginProcessor();
 }
 
+void PluginProcessor::saveConfigurationToFile (File destination)
+{
+    loudspeakers.removeAllChildren(nullptr);
+    for (int i=0; i<ambi_dec_getNumLoudspeakers(hAmbi);i++)
+    {
+        loudspeakers.appendChild (ConfigurationHelper::
+                                  createLoudspeaker(ambi_dec_getLoudspeakerAzi_deg(hAmbi, i),
+                                              ambi_dec_getLoudspeakerElev_deg(hAmbi, i),
+                                              1.0f,
+                                              i,
+                                              false,
+                                              1.0f), nullptr);
+    }
+    DynamicObject* jsonObj = new DynamicObject();
+    jsonObj->setProperty("Name", var("SPARTA AmbiDEC loudspeaker directions."));
+    char versionString[10];
+    strcpy(versionString, "v");
+    strcat(versionString, JucePlugin_VersionString);
+    jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA AmbiDEC " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
+    jsonObj->setProperty ("LoudspeakerLayout", ConfigurationHelper::convertLoudspeakersToVar (loudspeakers, "Loudspeaker Directions"));
+    Result result = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
+    assert(result.wasOk());
+}
+
+void PluginProcessor::loadConfiguration (const File& configFile)
+{
+    loudspeakers.removeAllChildren(nullptr);
+    Result result = ConfigurationHelper::parseFileForLoudspeakerLayout (configFile, loudspeakers, nullptr);
+    if(!result.wasOk()){
+        result = ConfigurationHelper::parseFileForLoudspeakerLayout (configFile, loudspeakers, nullptr);
+    }
+    if(result.wasOk()){
+        int num_ls = 0;
+        int ls_idx = 0;
+        for (ValueTree::Iterator it = loudspeakers.begin() ; it != loudspeakers.end(); ++it)
+            if ( !((*it).getProperty("Imaginary")))
+                num_ls++;
+        ambi_dec_setNumLoudspeakers(hAmbi, num_ls);
+        for (ValueTree::Iterator it = loudspeakers.begin() ; it != loudspeakers.end(); ++it){
+            if ( !((*it).getProperty("Imaginary"))){
+                ambi_dec_setLoudspeakerAzi_deg(hAmbi, ls_idx, (*it).getProperty("Azimuth"));
+                ambi_dec_setLoudspeakerElev_deg(hAmbi, ls_idx, (*it).getProperty("Elevation"));
+                ls_idx++;
+            }
+        }
+    }
+    ambi_dec_refreshSettings(hAmbi);
+}

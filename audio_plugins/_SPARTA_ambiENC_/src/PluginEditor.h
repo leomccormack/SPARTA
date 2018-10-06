@@ -41,7 +41,8 @@
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
                       public ComboBox::Listener,
-                      public Slider::Listener
+                      public Slider::Listener,
+                      public Button::Listener
 {
 public:
     //==============================================================================
@@ -59,6 +60,7 @@ public:
     void resized() override;
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
 
 
 
@@ -77,7 +79,7 @@ private:
 
     /* warning message */
     bool showingFrameSizeWarning;
-    
+
     //[/UserVariables]
 
     //==============================================================================
@@ -86,6 +88,8 @@ private:
     ScopedPointer<ComboBox> CBoutputFormat;
     ScopedPointer<ComboBox> CBnormalisation;
     ScopedPointer<ComboBox> CBorder;
+    ScopedPointer<TextButton> tb_loadJSON;
+    ScopedPointer<TextButton> tb_saveJSON;
 
 
     //==============================================================================

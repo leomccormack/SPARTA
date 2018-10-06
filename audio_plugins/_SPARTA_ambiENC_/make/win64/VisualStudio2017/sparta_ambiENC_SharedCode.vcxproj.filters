@@ -2304,6 +2304,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\resources\ConfigurationHelper.h">
+      <Filter>sparta_ambiENC</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\src\PluginEditor.h">
       <Filter>sparta_ambiENC</Filter>
     </ClInclude>

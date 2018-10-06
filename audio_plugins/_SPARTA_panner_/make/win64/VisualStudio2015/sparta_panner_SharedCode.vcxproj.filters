@@ -2310,6 +2310,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\resources\ConfigurationHelper.h">
+      <Filter>sparta_panner</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\src\PluginEditor.h">
       <Filter>sparta_panner</Filter>
     </ClInclude>

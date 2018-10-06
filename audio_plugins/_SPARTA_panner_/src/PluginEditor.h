@@ -94,6 +94,10 @@ private:
     ScopedPointer<Slider> SL_pValue;
     ScopedPointer<ComboBox> CBsLoudspeakerDirsPreset;
     ScopedPointer<Slider> SL_num_loudspeakers;
+    ScopedPointer<TextButton> tb_loadJSON_src;
+    ScopedPointer<TextButton> tb_saveJSON_src;
+    ScopedPointer<TextButton> tb_loadJSON_ls;
+    ScopedPointer<TextButton> tb_saveJSON_ls;
 
 
     //==============================================================================

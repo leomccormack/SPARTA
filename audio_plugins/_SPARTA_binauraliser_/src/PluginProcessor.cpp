@@ -33,10 +33,19 @@ PluginProcessor::PluginProcessor()
         ringBufferOutputs[i] = new float[FRAME_SIZE];
     
 	binauraliser_create(&hBin);
+    
+    /* specify here on which UDP port number to receive incoming OSC messages */
+    osc_port_ID = DEFAULT_OSC_PORT;
+    osc.connect(osc_port_ID);
+    /* tell the component to listen for OSC messages */
+    osc.addListener(this);
 }
 
 PluginProcessor::~PluginProcessor()
 {
+    osc.disconnect();
+    osc.removeListener(this);
+    
 	binauraliser_destroy(&hBin);
     
     for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
@@ -46,6 +55,28 @@ PluginProcessor::~PluginProcessor()
     for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
         delete[] ringBufferOutputs[i];
     delete[] ringBufferOutputs;
+}
+
+void PluginProcessor::oscMessageReceived(const OSCMessage& message)
+{
+    /* if rotation angles are sent as an array \ypr[3] */
+    if (message.size() == 3 && message.getAddressPattern().toString().compare("ypr")) {
+        if (message[0].isFloat32())
+            binauraliser_setYaw(hBin, message[0].getFloat32());
+        if (message[1].isFloat32())
+            binauraliser_setPitch(hBin, message[1].getFloat32());
+        if (message[2].isFloat32())
+            binauraliser_setRoll(hBin, message[2].getFloat32());
+        return;
+    }
+    
+    /* if rotation angles are sent individually: */
+    if(message.getAddressPattern().toString().compare("yaw"))
+        binauraliser_setYaw(hBin, message[0].getFloat32());
+    else if(message.getAddressPattern().toString().compare("pitch"))
+        binauraliser_setPitch(hBin, message[0].getFloat32());
+    else if(message.getAddressPattern().toString().compare("roll"))
+        binauraliser_setRoll(hBin, message[0].getFloat32());
 }
 
 void PluginProcessor::setParameter (int index, float newValue)
@@ -256,6 +287,17 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     
     xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
     
+    xml.setAttribute("ENABLE_ROT", binauraliser_getEnableRotation(hBin));
+    xml.setAttribute("YAW", binauraliser_getYaw(hBin));
+    xml.setAttribute("PITCH", binauraliser_getPitch(hBin));
+    xml.setAttribute("ROLL", binauraliser_getRoll(hBin));
+    xml.setAttribute("FLIP_YAW", binauraliser_getFlipYaw(hBin));
+    xml.setAttribute("FLIP_PITCH", binauraliser_getFlipPitch(hBin));
+    xml.setAttribute("FLIP_ROLL", binauraliser_getFlipRoll(hBin));
+    xml.setAttribute("RPY_FLAG", binauraliser_getRPYflag(hBin));
+    
+    xml.setAttribute("OSC_PORT", osc_port_ID);
+    
     copyXmlToBinary(xml, destData);
 }
 
@@ -282,6 +324,28 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             
             if(xmlState->hasAttribute("JSONFilePath"))
                 lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            
+            if(xmlState->hasAttribute("ENABLE_ROT"))
+                binauraliser_setEnableRotation(hBin, xmlState->getIntAttribute("ENABLE_ROT", 0));
+            if(xmlState->hasAttribute("YAW"))
+                binauraliser_setYaw(hBin, (float)xmlState->getDoubleAttribute("YAW", 0.0f));
+            if(xmlState->hasAttribute("PITCH"))
+                binauraliser_setPitch(hBin, (float)xmlState->getDoubleAttribute("PITCH", 0.0f));
+            if(xmlState->hasAttribute("ROLL"))
+                binauraliser_setRoll(hBin, (float)xmlState->getDoubleAttribute("ROLL", 0.0f));
+            if(xmlState->hasAttribute("FLIP_YAW"))
+                binauraliser_setFlipYaw(hBin, xmlState->getIntAttribute("FLIP_YAW", 0));
+            if(xmlState->hasAttribute("FLIP_PITCH"))
+                binauraliser_setFlipPitch(hBin, xmlState->getIntAttribute("FLIP_PITCH", 0));
+            if(xmlState->hasAttribute("FLIP_ROLL"))
+                binauraliser_setFlipRoll(hBin, xmlState->getIntAttribute("FLIP_ROLL", 0));
+            if(xmlState->hasAttribute("RPY_FLAG"))
+                binauraliser_setRPYflag(hBin, xmlState->getIntAttribute("RPY_FLAG", 0));
+            
+            if(xmlState->hasAttribute("OSC_PORT")){
+                osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
+                osc.connect(osc_port_ID);
+            }
             
             binauraliser_refreshSettings(hBin);
         }
@@ -341,6 +405,7 @@ void PluginProcessor::loadConfiguration (const File& configFile)
             }
         }
     }
+    binauraliser_refreshSettings(hBin);
 }
 
 

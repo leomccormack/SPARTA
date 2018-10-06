@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_panner" projectType="audioplug" version="1.0.3"
+<JUCERPROJECT id="lfkRjX" name="sparta_panner" projectType="audioplug" version="1.1.0"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_panner" pluginDesc="sparta_panner"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="PANN"
@@ -16,6 +16,8 @@
               reportAppUsage="0" splashScreenColour="Dark" buildStandalone="0"
               enableIAA="0" cppLanguageStandard="11" companyCopyright="Aalto">
   <MAINGROUP id="imnfnp" name="sparta_panner">
+    <FILE id="JxqOtN" name="ConfigurationHelper.h" compile="0" resource="0"
+          file="../../../resources/ConfigurationHelper.h"/>
     <FILE id="dgOUES" name="PluginEditor.cpp" compile="1" resource="0"
           file="../../src/PluginEditor.cpp"/>
     <FILE id="ow8jF2" name="PluginEditor.h" compile="0" resource="0" file="../../src/PluginEditor.h"/>

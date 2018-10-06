@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.2.1
+  Created with Projucer version: 5.3.0
 
   ------------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ private:
         const char* new_cstring = (const char*)directory.toUTF8();
         ambi_dec_setSofaFilePath(hVst->hAmbi, new_cstring);
     }
-    
+
     bool showingFrameSizeWarning;
 
     //[/UserVariables]
@@ -105,6 +105,8 @@ private:
     ScopedPointer<ToggleButton> TBBinauraliseLS;
     ScopedPointer<ComboBox> CBdec2normtype;
     ScopedPointer<Slider> s_decOrder;
+    ScopedPointer<TextButton> tb_loadJSON;
+    ScopedPointer<TextButton> tb_saveJSON;
 
 
     //==============================================================================

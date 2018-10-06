@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.3.0
 
   ------------------------------------------------------------------------------
 
@@ -37,8 +37,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    CBsourceDirsPreset.reset (new ComboBox ("new combo box"));
-    addAndMakeVisible (CBsourceDirsPreset.get());
+    addAndMakeVisible (CBsourceDirsPreset = new ComboBox ("new combo box"));
     CBsourceDirsPreset->setEditableText (false);
     CBsourceDirsPreset->setJustificationType (Justification::centredLeft);
     CBsourceDirsPreset->setTextWhenNothingSelected (String());
@@ -48,8 +47,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBsourceDirsPreset->setBounds (88, 64, 112, 20);
 
-    SL_num_sources.reset (new Slider ("new slider"));
-    addAndMakeVisible (SL_num_sources.get());
+    addAndMakeVisible (SL_num_sources = new Slider ("new slider"));
     SL_num_sources->setRange (1, 64, 1);
     SL_num_sources->setSliderStyle (Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
@@ -57,9 +55,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_sources->setBounds (80, 92, 120, 24);
 
-    label_N_dirs.reset (new Label ("new label",
-                                   String()));
-    addAndMakeVisible (label_N_dirs.get());
+    addAndMakeVisible (label_N_dirs = new Label ("new label",
+                                                 String()));
     label_N_dirs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_N_dirs->setJustificationType (Justification::centredLeft);
     label_N_dirs->setEditable (false, false, false);
@@ -67,23 +64,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_N_dirs->setColour (TextEditor::textColourId, Colours::black);
     label_N_dirs->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    label_N_dirs->setBounds (800, 136, 96, 24);
+    label_N_dirs->setBounds (797, 297, 51, 20);
 
-    label_HRIR_len.reset (new Label ("new label",
-                                     String()));
-    addAndMakeVisible (label_HRIR_len.get());
-    label_HRIR_len->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
-    label_HRIR_len->setJustificationType (Justification::centredLeft);
-    label_HRIR_len->setEditable (false, false, false);
-    label_HRIR_len->setColour (Label::outlineColourId, Colour (0x68a3a2a2));
-    label_HRIR_len->setColour (TextEditor::textColourId, Colours::black);
-    label_HRIR_len->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-
-    label_HRIR_len->setBounds (800, 200, 96, 24);
-
-    label_HRIR_fs.reset (new Label ("new label",
-                                    String()));
-    addAndMakeVisible (label_HRIR_fs.get());
+    addAndMakeVisible (label_HRIR_fs = new Label ("new label",
+                                                  String()));
     label_HRIR_fs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_HRIR_fs->setJustificationType (Justification::centredLeft);
     label_HRIR_fs->setEditable (false, false, false);
@@ -91,18 +75,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_HRIR_fs->setColour (TextEditor::textColourId, Colours::black);
     label_HRIR_fs->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    label_HRIR_fs->setBounds (800, 232, 96, 24);
+    label_HRIR_fs->setBounds (797, 321, 51, 20);
 
-    TBuseDefaultHRIRs.reset (new ToggleButton ("new toggle button"));
-    addAndMakeVisible (TBuseDefaultHRIRs.get());
+    addAndMakeVisible (TBuseDefaultHRIRs = new ToggleButton ("new toggle button"));
     TBuseDefaultHRIRs->setButtonText (String());
     TBuseDefaultHRIRs->addListener (this);
 
     TBuseDefaultHRIRs->setBounds (876, 61, 32, 24);
 
-    label_DAW_fs.reset (new Label ("new label",
-                                   String()));
-    addAndMakeVisible (label_DAW_fs.get());
+    addAndMakeVisible (label_DAW_fs = new Label ("new label",
+                                                 String()));
     label_DAW_fs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_DAW_fs->setJustificationType (Justification::centredLeft);
     label_DAW_fs->setEditable (false, false, false);
@@ -110,25 +92,22 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_DAW_fs->setColour (TextEditor::textColourId, Colours::black);
     label_DAW_fs->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    label_DAW_fs->setBounds (800, 264, 96, 24);
+    label_DAW_fs->setBounds (851, 321, 51, 20);
 
-    TB_showInputs.reset (new ToggleButton ("new toggle button"));
-    addAndMakeVisible (TB_showInputs.get());
+    addAndMakeVisible (TB_showInputs = new ToggleButton ("new toggle button"));
     TB_showInputs->setButtonText (String());
     TB_showInputs->addListener (this);
 
-    TB_showInputs->setBounds (545, 318, 32, 24);
+    TB_showInputs->setBounds (546, 317, 32, 24);
 
-    TB_showOutputs.reset (new ToggleButton ("new toggle button"));
-    addAndMakeVisible (TB_showOutputs.get());
+    addAndMakeVisible (TB_showOutputs = new ToggleButton ("new toggle button"));
     TB_showOutputs->setButtonText (String());
     TB_showOutputs->addListener (this);
 
-    TB_showOutputs->setBounds (673, 318, 32, 24);
+    TB_showOutputs->setBounds (668, 317, 32, 24);
 
-    label_N_Tri.reset (new Label ("new label",
-                                  String()));
-    addAndMakeVisible (label_N_Tri.get());
+    addAndMakeVisible (label_N_Tri = new Label ("new label",
+                                                String()));
     label_N_Tri->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_N_Tri->setJustificationType (Justification::centredLeft);
     label_N_Tri->setEditable (false, false, false);
@@ -136,10 +115,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_N_Tri->setColour (TextEditor::textColourId, Colours::black);
     label_N_Tri->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    label_N_Tri->setBounds (800, 168, 96, 24);
+    label_N_Tri->setBounds (851, 297, 51, 20);
 
-    CBinterpMode.reset (new ComboBox ("new combo box"));
-    addAndMakeVisible (CBinterpMode.get());
+    addAndMakeVisible (CBinterpMode = new ComboBox ("new combo box"));
     CBinterpMode->setEditableText (false);
     CBinterpMode->setJustificationType (Justification::centredLeft);
     CBinterpMode->setTextWhenNothingSelected (String());
@@ -148,21 +126,96 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBinterpMode->setBounds (328, 318, 112, 20);
 
-    tb_loadJSON.reset (new TextButton ("new button"));
-    addAndMakeVisible (tb_loadJSON.get());
-    tb_loadJSON->setButtonText (TRANS("LoadJSON"));
+    addAndMakeVisible (tb_loadJSON = new TextButton ("new button"));
+    tb_loadJSON->setButtonText (TRANS("Import"));
+    tb_loadJSON->setConnectedEdges (Button::ConnectedOnRight);
     tb_loadJSON->addListener (this);
-    tb_loadJSON->setColour (TextButton::buttonColourId, Colour (0xff695ca4));
+    tb_loadJSON->setColour (TextButton::buttonColourId, Colour (0xff14889e));
 
-    tb_loadJSON->setBounds (200, 8, 112, 24);
+    tb_loadJSON->setBounds (140, 40, 34, 14);
 
-    tb_saveJSON.reset (new TextButton ("new button"));
-    addAndMakeVisible (tb_saveJSON.get());
-    tb_saveJSON->setButtonText (TRANS("saveJSON"));
+    addAndMakeVisible (tb_saveJSON = new TextButton ("new button"));
+    tb_saveJSON->setButtonText (TRANS("Export"));
+    tb_saveJSON->setConnectedEdges (Button::ConnectedOnLeft);
     tb_saveJSON->addListener (this);
-    tb_saveJSON->setColour (TextButton::buttonColourId, Colour (0xff695ca4));
+    tb_saveJSON->setColour (TextButton::buttonColourId, Colour (0xff224d97));
+    tb_saveJSON->setColour (TextButton::buttonOnColourId, Colour (0xff181f9a));
 
-    tb_saveJSON->setBounds (328, 8, 112, 24);
+    tb_saveJSON->setBounds (174, 40, 34, 14);
+
+    addAndMakeVisible (s_yaw = new Slider ("new slider"));
+    s_yaw->setRange (-180, 180, 0.01);
+    s_yaw->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
+    s_yaw->setTextBoxStyle (Slider::TextBoxBelow, false, 58, 15);
+    s_yaw->setColour (Slider::textBoxTextColourId, Colours::white);
+    s_yaw->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
+    s_yaw->addListener (this);
+
+    s_yaw->setBounds (717, 196, 60, 68);
+
+    addAndMakeVisible (s_pitch = new Slider ("new slider"));
+    s_pitch->setRange (-180, 180, 0.01);
+    s_pitch->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
+    s_pitch->setTextBoxStyle (Slider::TextBoxBelow, false, 58, 15);
+    s_pitch->setColour (Slider::textBoxTextColourId, Colours::white);
+    s_pitch->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
+    s_pitch->addListener (this);
+
+    s_pitch->setBounds (780, 196, 60, 68);
+
+    addAndMakeVisible (s_roll = new Slider ("new slider"));
+    s_roll->setRange (-180, 180, 0.01);
+    s_roll->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
+    s_roll->setTextBoxStyle (Slider::TextBoxBelow, false, 58, 15);
+    s_roll->setColour (Slider::textBoxTextColourId, Colours::white);
+    s_roll->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
+    s_roll->addListener (this);
+
+    s_roll->setBounds (843, 196, 60, 68);
+
+    addAndMakeVisible (t_flipYaw = new ToggleButton ("new toggle button"));
+    t_flipYaw->setButtonText (String());
+    t_flipYaw->addListener (this);
+
+    t_flipYaw->setBounds (749, 265, 23, 24);
+
+    addAndMakeVisible (t_flipPitch = new ToggleButton ("new toggle button"));
+    t_flipPitch->setButtonText (String());
+    t_flipPitch->addListener (this);
+
+    t_flipPitch->setBounds (812, 265, 23, 24);
+
+    addAndMakeVisible (t_flipRoll = new ToggleButton ("new toggle button"));
+    t_flipRoll->setButtonText (String());
+    t_flipRoll->addListener (this);
+
+    t_flipRoll->setBounds (875, 265, 23, 24);
+
+    addAndMakeVisible (te_oscport = new TextEditor ("new text editor"));
+    te_oscport->setMultiLine (false);
+    te_oscport->setReturnKeyStartsNewLine (false);
+    te_oscport->setReadOnly (false);
+    te_oscport->setScrollbarsShown (true);
+    te_oscport->setCaretVisible (false);
+    te_oscport->setPopupMenuEnabled (true);
+    te_oscport->setColour (TextEditor::textColourId, Colours::white);
+    te_oscport->setColour (TextEditor::backgroundColourId, Colour (0x00ffffff));
+    te_oscport->setColour (TextEditor::outlineColourId, Colour (0x6c838080));
+    te_oscport->setText (TRANS("9000"));
+
+    te_oscport->setBounds (853, 147, 44, 22);
+
+    addAndMakeVisible (TBrpyFlag = new ToggleButton ("new toggle button"));
+    TBrpyFlag->setButtonText (String());
+    TBrpyFlag->addListener (this);
+
+    TBrpyFlag->setBounds (758, 147, 32, 24);
+
+    addAndMakeVisible (TBenableRotation = new ToggleButton ("new toggle button"));
+    TBenableRotation->setButtonText (String());
+    TBenableRotation->addListener (this);
+
+    TBenableRotation->setBounds (832, 123, 32, 24);
 
 
     //[UserPreSize]
@@ -275,6 +328,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(true, dontSendNotification);
     CBinterpMode->setEnabled(false);
+    TBenableRotation->setToggleState((bool)binauraliser_getEnableRotation(hVst->hBin), dontSendNotification);
+    s_yaw->setValue(binauraliser_getYaw(hVst->hBin), dontSendNotification);
+    s_pitch->setValue(binauraliser_getPitch(hVst->hBin), dontSendNotification);
+    s_roll->setValue(binauraliser_getRoll(hVst->hBin), dontSendNotification);
+    t_flipYaw->setToggleState((bool)binauraliser_getFlipYaw(hVst->hBin), dontSendNotification);
+    t_flipPitch->setToggleState((bool)binauraliser_getFlipPitch(hVst->hBin), dontSendNotification);
+    t_flipRoll->setToggleState((bool)binauraliser_getFlipRoll(hVst->hBin), dontSendNotification);
+    te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
+    TBrpyFlag->setToggleState((bool)binauraliser_getRPYflag(hVst->hBin), dontSendNotification);
 
     /* create panning window */
     addAndMakeVisible (panWindow = new pannerView(ownerFilter, 480, 240));
@@ -299,7 +361,6 @@ PluginEditor::~PluginEditor()
     CBsourceDirsPreset = nullptr;
     SL_num_sources = nullptr;
     label_N_dirs = nullptr;
-    label_HRIR_len = nullptr;
     label_HRIR_fs = nullptr;
     TBuseDefaultHRIRs = nullptr;
     label_DAW_fs = nullptr;
@@ -309,6 +370,15 @@ PluginEditor::~PluginEditor()
     CBinterpMode = nullptr;
     tb_loadJSON = nullptr;
     tb_saveJSON = nullptr;
+    s_yaw = nullptr;
+    s_pitch = nullptr;
+    s_roll = nullptr;
+    t_flipYaw = nullptr;
+    t_flipPitch = nullptr;
+    t_flipRoll = nullptr;
+    te_oscport = nullptr;
+    TBrpyFlag = nullptr;
+    TBenableRotation = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -340,6 +410,19 @@ void PluginEditor::paint (Graphics& g)
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 2);
+
+    }
+
+    {
+        int x = 712, y = 121, width = 196, height = 170;
+        Colour fillColour = Colour (0x13f4f4f4);
+        Colour strokeColour = Colour (0x67a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
 
     }
 
@@ -458,7 +541,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 712, y = 121, width = 196, height = 225;
+        int x = 712, y = 290, width = 196, height = 56;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -531,55 +614,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 723, y = 131, width = 132, height = 30;
-        String text (TRANS("N dirs:"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
-    }
-
-    {
-        int x = 723, y = 195, width = 132, height = 30;
-        String text (TRANS("HRIR len:"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
-    }
-
-    {
-        int x = 723, y = 227, width = 132, height = 30;
-        String text (TRANS("HRIR fs:"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
-    }
-
-    {
-        int x = 723, y = 259, width = 132, height = 30;
-        String text (TRANS("DAW fs:"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
-    }
-
-    {
-        int x = 455, y = 314, width = 132, height = 30;
+        int x = 459, y = 314, width = 132, height = 30;
         String text (TRANS("Show Inputs:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -628,8 +663,177 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 723, y = 163, width = 132, height = 30;
-        String text (TRANS("N Tri:"));
+        int x = 719, y = 316, width = 89, height = 30;
+        String text (TRANS("HRIR/DAW Fs:"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 719, y = 294, width = 132, height = 30;
+        String text (TRANS("N Dirs/Tri:"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 712, y = 176, width = 196, height = 115;
+        Colour fillColour = Colour (0x13f4f4f4);
+        Colour strokeColour = Colour (0x67a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
+    {
+        int x = 735, y = 174, width = 49, height = 30;
+        String text (TRANS("\\ypr[0]"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (10.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 775, y = 174, width = 46, height = 30;
+        String text (TRANS("Pitch"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 831, y = 174, width = 54, height = 30;
+        String text (TRANS("Roll"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 831, y = 262, width = 63, height = 30;
+        String text (TRANS("+/-"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 703, y = 262, width = 63, height = 30;
+        String text (TRANS("+/-"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 767, y = 262, width = 63, height = 30;
+        String text (TRANS("+/-"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 799, y = 142, width = 91, height = 35;
+        String text (TRANS("OSC port:"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 698, y = 174, width = 65, height = 30;
+        String text (TRANS("Yaw"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 808, y = 174, width = 40, height = 30;
+        String text (TRANS("\\ypr[1]"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (10.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 864, y = 174, width = 40, height = 30;
+        String text (TRANS("\\ypr[2]"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (10.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 711, y = 142, width = 54, height = 35;
+        String text (TRANS("R-P-Y:"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 719, y = 120, width = 160, height = 30;
+        String text (TRANS("Enable Rotation:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -674,14 +878,14 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
+    if (comboBoxThatHasChanged == CBsourceDirsPreset)
     {
         //[UserComboBoxCode_CBsourceDirsPreset] -- add your combo box handling code here..
         binauraliser_setInputConfigPreset(hVst->hBin, CBsourceDirsPreset->getSelectedId());
         refreshPanViewWindow = true;
         //[/UserComboBoxCode_CBsourceDirsPreset]
     }
-    else if (comboBoxThatHasChanged == CBinterpMode.get())
+    else if (comboBoxThatHasChanged == CBinterpMode)
     {
         //[UserComboBoxCode_CBinterpMode] -- add your combo box handling code here..
         //[/UserComboBoxCode_CBinterpMode]
@@ -696,12 +900,30 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == SL_num_sources.get())
+    if (sliderThatWasMoved == SL_num_sources)
     {
         //[UserSliderCode_SL_num_sources] -- add your slider handling code here..
         binauraliser_setNumSources(hVst->hBin, (int)SL_num_sources->getValue());
         refreshPanViewWindow = true;
         //[/UserSliderCode_SL_num_sources]
+    }
+    else if (sliderThatWasMoved == s_yaw)
+    {
+        //[UserSliderCode_s_yaw] -- add your slider handling code here..
+        binauraliser_setYaw(hVst->hBin, (float)s_yaw->getValue());
+        //[/UserSliderCode_s_yaw]
+    }
+    else if (sliderThatWasMoved == s_pitch)
+    {
+        //[UserSliderCode_s_pitch] -- add your slider handling code here..
+        binauraliser_setPitch(hVst->hBin, (float)s_pitch->getValue());
+        //[/UserSliderCode_s_pitch]
+    }
+    else if (sliderThatWasMoved == s_roll)
+    {
+        //[UserSliderCode_s_roll] -- add your slider handling code here..
+        binauraliser_setRoll(hVst->hBin, (float)s_roll->getValue());
+        //[/UserSliderCode_s_roll]
     }
 
     //[UsersliderValueChanged_Post]
@@ -713,28 +935,28 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == TBuseDefaultHRIRs.get())
+    if (buttonThatWasClicked == TBuseDefaultHRIRs)
     {
         //[UserButtonCode_TBuseDefaultHRIRs] -- add your button handler code here..
         binauraliser_setUseDefaultHRIRsflag(hVst->hBin, (int)TBuseDefaultHRIRs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TBuseDefaultHRIRs]
     }
-    else if (buttonThatWasClicked == TB_showInputs.get())
+    else if (buttonThatWasClicked == TB_showInputs)
     {
         //[UserButtonCode_TB_showInputs] -- add your button handler code here..
         panWindow->setShowInputs(TB_showInputs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TB_showInputs]
     }
-    else if (buttonThatWasClicked == TB_showOutputs.get())
+    else if (buttonThatWasClicked == TB_showOutputs)
     {
         //[UserButtonCode_TB_showOutputs] -- add your button handler code here..
         panWindow->setShowOutputs(TB_showOutputs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TB_showOutputs]
     }
-    else if (buttonThatWasClicked == tb_loadJSON.get())
+    else if (buttonThatWasClicked == tb_loadJSON)
     {
         //[UserButtonCode_tb_loadJSON] -- add your button handler code here..
         FileChooser myChooser ("Load configuration...",
@@ -747,7 +969,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_tb_loadJSON]
     }
-    else if (buttonThatWasClicked == tb_saveJSON.get())
+    else if (buttonThatWasClicked == tb_saveJSON)
     {
         //[UserButtonCode_tb_saveJSON] -- add your button handler code here..
         FileChooser myChooser ("Save configuration...",
@@ -759,6 +981,37 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
             hVst->saveConfigurationToFile (configFile);
         }
         //[/UserButtonCode_tb_saveJSON]
+    }
+    else if (buttonThatWasClicked == t_flipYaw)
+    {
+        //[UserButtonCode_t_flipYaw] -- add your button handler code here..
+        binauraliser_setFlipYaw(hVst->hBin, (int)t_flipYaw->getToggleState());
+        //[/UserButtonCode_t_flipYaw]
+    }
+    else if (buttonThatWasClicked == t_flipPitch)
+    {
+        //[UserButtonCode_t_flipPitch] -- add your button handler code here..
+        binauraliser_setFlipPitch(hVst->hBin, (int)t_flipPitch->getToggleState());
+        //[/UserButtonCode_t_flipPitch]
+    }
+    else if (buttonThatWasClicked == t_flipRoll)
+    {
+        //[UserButtonCode_t_flipRoll] -- add your button handler code here..
+
+        binauraliser_setFlipRoll(hVst->hBin, (int)t_flipRoll->getToggleState());
+        //[/UserButtonCode_t_flipRoll]
+    }
+    else if (buttonThatWasClicked == TBrpyFlag)
+    {
+        //[UserButtonCode_TBrpyFlag] -- add your button handler code here..
+        binauraliser_setRPYflag(hVst->hBin, (int)TBrpyFlag->getToggleState());
+        //[/UserButtonCode_TBrpyFlag]
+    }
+    else if (buttonThatWasClicked == TBenableRotation)
+    {
+        //[UserButtonCode_TBenableRotation] -- add your button handler code here..
+        binauraliser_setEnableRotation(hVst->hBin, (int)TBenableRotation->getToggleState());
+        //[/UserButtonCode_TBenableRotation]
     }
 
     //[UserbuttonClicked_Post]
@@ -772,7 +1025,6 @@ void PluginEditor::timerCallback()
 {
     /* labels for HRIR details */
     label_N_dirs->setText(String(binauraliser_getNDirs(hVst->hBin)), dontSendNotification);
-    label_HRIR_len->setText(String(binauraliser_getHRIRlength(hVst->hBin)), dontSendNotification);
     label_HRIR_fs->setText(String(binauraliser_getHRIRsamplerate(hVst->hBin)), dontSendNotification);
     label_DAW_fs->setText(String(binauraliser_getDAWsamplerate(hVst->hBin)), dontSendNotification);
     label_N_Tri->setText(String(binauraliser_getNTriangles(hVst->hBin)), dontSendNotification);
@@ -821,6 +1073,8 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 30 920 326" fill=" radial: 460 184, 920 352, 0=ff55636d, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
+    <RECT pos="712 121 196 170" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="0 0 920 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
@@ -842,7 +1096,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="712 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="712 121 196 225" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="712 290 196 56" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="23 88 113 30" fill="solid: ffffffff" hasStroke="0" text="N Chan:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
@@ -859,19 +1113,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="720 58 160 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="723 131 132 30" fill="solid: ffffffff" hasStroke="0" text="N dirs:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="723 195 132 30" fill="solid: ffffffff" hasStroke="0" text="HRIR len:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="723 227 132 30" fill="solid: ffffffff" hasStroke="0" text="HRIR fs:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="723 259 132 30" fill="solid: ffffffff" hasStroke="0" text="DAW fs:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="455 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
+    <TEXT pos="459 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="584 314 122 30" fill="solid: ffffffff" hasStroke="0" text="Show HRIRs:"
@@ -882,7 +1124,48 @@ BEGIN_JUCER_METADATA
     <TEXT pos="231 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Interp. Mode:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="723 163 132 30" fill="solid: ffffffff" hasStroke="0" text="N Tri:"
+    <TEXT pos="719 316 89 30" fill="solid: ffffffff" hasStroke="0" text="HRIR/DAW Fs:"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="719 294 132 30" fill="solid: ffffffff" hasStroke="0" text="N Dirs/Tri:"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <RECT pos="712 176 196 115" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 67a0a0a0"/>
+    <TEXT pos="735 174 49 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[0]"
+          fontname="Default font" fontsize="10.00000000000000000000" kerning="0.00000000000000000000"
+          bold="0" italic="0" justification="36"/>
+    <TEXT pos="775 174 46 30" fill="solid: ffffffff" hasStroke="0" text="Pitch"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+    <TEXT pos="831 174 54 30" fill="solid: ffffffff" hasStroke="0" text="Roll"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+    <TEXT pos="831 262 63 30" fill="solid: ffffffff" hasStroke="0" text="+/-"
+          fontname="Default font" fontsize="13.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+    <TEXT pos="703 262 63 30" fill="solid: ffffffff" hasStroke="0" text="+/-"
+          fontname="Default font" fontsize="13.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+    <TEXT pos="767 262 63 30" fill="solid: ffffffff" hasStroke="0" text="+/-"
+          fontname="Default font" fontsize="13.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+    <TEXT pos="799 142 91 35" fill="solid: ffffffff" hasStroke="0" text="OSC port:"
+          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="698 174 65 30" fill="solid: ffffffff" hasStroke="0" text="Yaw"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+    <TEXT pos="808 174 40 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[1]"
+          fontname="Default font" fontsize="10.00000000000000000000" kerning="0.00000000000000000000"
+          bold="0" italic="0" justification="36"/>
+    <TEXT pos="864 174 40 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[2]"
+          fontname="Default font" fontsize="10.00000000000000000000" kerning="0.00000000000000000000"
+          bold="0" italic="0" justification="36"/>
+    <TEXT pos="711 142 54 35" fill="solid: ffffffff" hasStroke="0" text="R-P-Y:"
+          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+    <TEXT pos="719 120 160 30" fill="solid: ffffffff" hasStroke="0" text="Enable Rotation:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
@@ -895,19 +1178,13 @@ BEGIN_JUCER_METADATA
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_N_dirs"
-         virtualName="" explicitFocusOrder="0" pos="800 136 96 24" outlineCol="68a3a2a2"
-         edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
-  <LABEL name="new label" id="e14d1c2e00d7849b" memberName="label_HRIR_len"
-         virtualName="" explicitFocusOrder="0" pos="800 200 96 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="797 297 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="f8b5274e0c8768f4" memberName="label_HRIR_fs"
-         virtualName="" explicitFocusOrder="0" pos="800 232 96 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="797 321 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
@@ -916,19 +1193,19 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="876 61 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <LABEL name="new label" id="c59fb2aab2496c4e" memberName="label_DAW_fs"
-         virtualName="" explicitFocusOrder="0" pos="800 264 96 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="851 321 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="74817bb8a57611dc" memberName="TB_showInputs"
-                virtualName="" explicitFocusOrder="0" pos="545 318 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="546 317 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="1a1dfbb1d4296140" memberName="TB_showOutputs"
-                virtualName="" explicitFocusOrder="0" pos="673 318 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="668 317 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <LABEL name="new label" id="2c30657926641642" memberName="label_N_Tri"
-         virtualName="" explicitFocusOrder="0" pos="800 168 96 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="851 297 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
@@ -937,11 +1214,49 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="328 318 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON"
-              virtualName="" explicitFocusOrder="0" pos="200 8 112 24" bgColOff="ff695ca4"
-              buttonText="LoadJSON" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+              virtualName="" explicitFocusOrder="0" pos="140 40 34 14" bgColOff="ff14889e"
+              buttonText="Import" connectedEdges="2" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="new button" id="48c5d3526dcfe64f" memberName="tb_saveJSON"
-              virtualName="" explicitFocusOrder="0" pos="328 8 112 24" bgColOff="ff695ca4"
-              buttonText="saveJSON" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+              virtualName="" explicitFocusOrder="0" pos="174 40 34 14" bgColOff="ff224d97"
+              bgColOn="ff181f9a" buttonText="Export" connectedEdges="1" needsCallback="1"
+              radioGroupId="0"/>
+  <SLIDER name="new slider" id="ace036a85eec9703" memberName="s_yaw" virtualName=""
+          explicitFocusOrder="0" pos="717 196 60 68" textboxtext="ffffffff"
+          textboxbkgd="ffffff" min="-180.00000000000000000000" max="180.00000000000000000000"
+          int="0.01000000000000000021" style="RotaryHorizontalVerticalDrag"
+          textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="58"
+          textBoxHeight="15" skewFactor="1.00000000000000000000" needsCallback="1"/>
+  <SLIDER name="new slider" id="9af7dd86cd139d85" memberName="s_pitch"
+          virtualName="" explicitFocusOrder="0" pos="780 196 60 68" textboxtext="ffffffff"
+          textboxbkgd="ffffff" min="-180.00000000000000000000" max="180.00000000000000000000"
+          int="0.01000000000000000021" style="RotaryHorizontalVerticalDrag"
+          textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="58"
+          textBoxHeight="15" skewFactor="1.00000000000000000000" needsCallback="1"/>
+  <SLIDER name="new slider" id="b5d39bb257b3289a" memberName="s_roll" virtualName=""
+          explicitFocusOrder="0" pos="843 196 60 68" textboxtext="ffffffff"
+          textboxbkgd="ffffff" min="-180.00000000000000000000" max="180.00000000000000000000"
+          int="0.01000000000000000021" style="RotaryHorizontalVerticalDrag"
+          textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="58"
+          textBoxHeight="15" skewFactor="1.00000000000000000000" needsCallback="1"/>
+  <TOGGLEBUTTON name="new toggle button" id="ac47b63592b1d4cf" memberName="t_flipYaw"
+                virtualName="" explicitFocusOrder="0" pos="749 265 23 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TOGGLEBUTTON name="new toggle button" id="c58241ee52766d62" memberName="t_flipPitch"
+                virtualName="" explicitFocusOrder="0" pos="812 265 23 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TOGGLEBUTTON name="new toggle button" id="717e9536768dfd8c" memberName="t_flipRoll"
+                virtualName="" explicitFocusOrder="0" pos="875 265 23 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TEXTEDITOR name="new text editor" id="1799da9e8cf495d6" memberName="te_oscport"
+              virtualName="" explicitFocusOrder="0" pos="853 147 44 22" textcol="ffffffff"
+              bkgcol="ffffff" outlinecol="6c838080" initialText="9000" multiline="0"
+              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="0" popupmenu="1"/>
+  <TOGGLEBUTTON name="new toggle button" id="b4fec6d3e1a2bae2" memberName="TBrpyFlag"
+                virtualName="" explicitFocusOrder="0" pos="758 147 32 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TOGGLEBUTTON name="new toggle button" id="a45ef80fa16bd3f0" memberName="TBenableRotation"
+                virtualName="" explicitFocusOrder="0" pos="832 123 32 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -89,6 +89,40 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_loudspeakers->setBounds (780, 92, 120, 24);
 
+    addAndMakeVisible (tb_loadJSON_src = new TextButton ("new button"));
+    tb_loadJSON_src->setButtonText (TRANS("Import"));
+    tb_loadJSON_src->setConnectedEdges (Button::ConnectedOnRight);
+    tb_loadJSON_src->addListener (this);
+    tb_loadJSON_src->setColour (TextButton::buttonColourId, Colour (0xff14889e));
+
+    tb_loadJSON_src->setBounds (140, 41, 34, 14);
+
+    addAndMakeVisible (tb_saveJSON_src = new TextButton ("new button"));
+    tb_saveJSON_src->setButtonText (TRANS("Export"));
+    tb_saveJSON_src->setConnectedEdges (Button::ConnectedOnLeft);
+    tb_saveJSON_src->addListener (this);
+    tb_saveJSON_src->setColour (TextButton::buttonColourId, Colour (0xff224d97));
+    tb_saveJSON_src->setColour (TextButton::buttonOnColourId, Colour (0xff181f9a));
+
+    tb_saveJSON_src->setBounds (174, 41, 34, 14);
+
+    addAndMakeVisible (tb_loadJSON_ls = new TextButton ("new button"));
+    tb_loadJSON_ls->setButtonText (TRANS("Import"));
+    tb_loadJSON_ls->setConnectedEdges (Button::ConnectedOnRight);
+    tb_loadJSON_ls->addListener (this);
+    tb_loadJSON_ls->setColour (TextButton::buttonColourId, Colour (0xff14889e));
+
+    tb_loadJSON_ls->setBounds (712, 41, 34, 14);
+
+    addAndMakeVisible (tb_saveJSON_ls = new TextButton ("new button"));
+    tb_saveJSON_ls->setButtonText (TRANS("Export"));
+    tb_saveJSON_ls->setConnectedEdges (Button::ConnectedOnLeft);
+    tb_saveJSON_ls->addListener (this);
+    tb_saveJSON_ls->setColour (TextButton::buttonColourId, Colour (0xff224d97));
+    tb_saveJSON_ls->setColour (TextButton::buttonOnColourId, Colour (0xff181f9a));
+
+    tb_saveJSON_ls->setBounds (746, 41, 34, 14);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -289,6 +323,10 @@ PluginEditor::~PluginEditor()
     SL_pValue = nullptr;
     CBsLoudspeakerDirsPreset = nullptr;
     SL_num_loudspeakers = nullptr;
+    tb_loadJSON_src = nullptr;
+    tb_saveJSON_src = nullptr;
+    tb_loadJSON_ls = nullptr;
+    tb_saveJSON_ls = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -475,7 +513,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 784, y = 32, width = 113, height = 30;
+        int x = 789, y = 32, width = 113, height = 30;
         String text (TRANS("Outputs"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -685,6 +723,58 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
         refreshPanViewWindow = true;
         //[/UserButtonCode_TB_showOutputs]
     }
+    else if (buttonThatWasClicked == tb_loadJSON_src)
+    {
+        //[UserButtonCode_tb_loadJSON_src] -- add your button handler code here..
+        FileChooser myChooser ("Load configuration...",
+                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                               "*.json");
+        if (myChooser.browseForFileToOpen()) {
+            File configFile (myChooser.getResult());
+            hVst->setLastDir(configFile.getParentDirectory());
+            hVst->loadConfiguration (configFile, 0);
+        }
+        //[/UserButtonCode_tb_loadJSON_src]
+    }
+    else if (buttonThatWasClicked == tb_saveJSON_src)
+    {
+        //[UserButtonCode_tb_saveJSON_src] -- add your button handler code here..
+        FileChooser myChooser ("Save configuration...",
+                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                               "*.json");
+        if (myChooser.browseForFileToSave (true)) {
+            File configFile (myChooser.getResult());
+            hVst->setLastDir(configFile.getParentDirectory());
+            hVst->saveConfigurationToFile (configFile, 0);
+        }
+        //[/UserButtonCode_tb_saveJSON_src]
+    }
+    else if (buttonThatWasClicked == tb_loadJSON_ls)
+    {
+        //[UserButtonCode_tb_loadJSON_ls] -- add your button handler code here..
+        FileChooser myChooser ("Load configuration...",
+                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                               "*.json");
+        if (myChooser.browseForFileToOpen()) {
+            File configFile (myChooser.getResult());
+            hVst->setLastDir(configFile.getParentDirectory());
+            hVst->loadConfiguration (configFile, 1);
+        }
+        //[/UserButtonCode_tb_loadJSON_ls]
+    }
+    else if (buttonThatWasClicked == tb_saveJSON_ls)
+    {
+        //[UserButtonCode_tb_saveJSON_ls] -- add your button handler code here..
+        FileChooser myChooser ("Save configuration...",
+                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                               "*.json");
+        if (myChooser.browseForFileToSave (true)) {
+            File configFile (myChooser.getResult());
+            hVst->setLastDir(configFile.getParentDirectory());
+            hVst->saveConfigurationToFile (configFile, 1);
+        }
+        //[/UserButtonCode_tb_saveJSON_ls]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -772,7 +862,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="84 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="784 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Outputs"
+    <TEXT pos="789 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Outputs"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="404 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
@@ -826,6 +916,20 @@ BEGIN_JUCER_METADATA
           max="64.00000000000000000000" int="1.00000000000000000000" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
+  <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON_src"
+              virtualName="" explicitFocusOrder="0" pos="140 41 34 14" bgColOff="ff14889e"
+              buttonText="Import" connectedEdges="2" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="new button" id="48c5d3526dcfe64f" memberName="tb_saveJSON_src"
+              virtualName="" explicitFocusOrder="0" pos="174 41 34 14" bgColOff="ff224d97"
+              bgColOn="ff181f9a" buttonText="Export" connectedEdges="1" needsCallback="1"
+              radioGroupId="0"/>
+  <TEXTBUTTON name="new button" id="9e16f5d467ae2a3b" memberName="tb_loadJSON_ls"
+              virtualName="" explicitFocusOrder="0" pos="712 41 34 14" bgColOff="ff14889e"
+              buttonText="Import" connectedEdges="2" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="new button" id="87186d3e46663c48" memberName="tb_saveJSON_ls"
+              virtualName="" explicitFocusOrder="0" pos="746 41 34 14" bgColOff="ff224d97"
+              bgColOn="ff181f9a" buttonText="Export" connectedEdges="1" needsCallback="1"
+              radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
