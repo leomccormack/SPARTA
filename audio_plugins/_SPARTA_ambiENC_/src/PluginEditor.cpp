@@ -82,6 +82,23 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBorder->setBounds (88, 64, 112, 20);
 
+    addAndMakeVisible (tb_loadJSON = new TextButton ("new button"));
+    tb_loadJSON->setButtonText (TRANS("Import"));
+    tb_loadJSON->setConnectedEdges (Button::ConnectedOnRight);
+    tb_loadJSON->addListener (this);
+    tb_loadJSON->setColour (TextButton::buttonColourId, Colour (0xff14889e));
+
+    tb_loadJSON->setBounds (140, 40, 34, 14);
+
+    addAndMakeVisible (tb_saveJSON = new TextButton ("new button"));
+    tb_saveJSON->setButtonText (TRANS("Export"));
+    tb_saveJSON->setConnectedEdges (Button::ConnectedOnLeft);
+    tb_saveJSON->addListener (this);
+    tb_saveJSON->setColour (TextButton::buttonColourId, Colour (0xff224d97));
+    tb_saveJSON->setColour (TextButton::buttonOnColourId, Colour (0xff181f9a));
+
+    tb_saveJSON->setBounds (174, 40, 34, 14);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -193,7 +210,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
-    
+
     showingFrameSizeWarning = false;
 
     //[/Constructor]
@@ -209,6 +226,8 @@ PluginEditor::~PluginEditor()
     CBoutputFormat = nullptr;
     CBnormalisation = nullptr;
     CBorder = nullptr;
+    tb_loadJSON = nullptr;
+    tb_saveJSON = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -344,8 +363,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 48, y = 32, width = 164, height = 30;
-        String text (TRANS("Encoding Settings"));
+        int x = 72, y = 32, width = 96, height = 30;
+        String text (TRANS("Encoding"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -436,7 +455,7 @@ void PluginEditor::paint (Graphics& g)
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
 		150, 16, 530, 11,
 		Justification::centredLeft, true);
-    
+
     /* display warning message */
     if(showingFrameSizeWarning){
         g.setColour(Colours::red);
@@ -445,7 +464,7 @@ void PluginEditor::paint (Graphics& g)
                    getBounds().getWidth()-170, 16, 530, 11,
                    Justification::centredLeft, true);
     }
-    
+
 
     //[/UserPaint]
 }
@@ -512,6 +531,42 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[/UsersliderValueChanged_Post]
 }
 
+void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
+{
+    //[UserbuttonClicked_Pre]
+    //[/UserbuttonClicked_Pre]
+
+    if (buttonThatWasClicked == tb_loadJSON)
+    {
+        //[UserButtonCode_tb_loadJSON] -- add your button handler code here..
+        FileChooser myChooser ("Load configuration...",
+                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                               "*.json");
+        if (myChooser.browseForFileToOpen()) {
+            File configFile (myChooser.getResult());
+            hVst->setLastDir(configFile.getParentDirectory());
+            hVst->loadConfiguration (configFile);
+        }
+        //[/UserButtonCode_tb_loadJSON]
+    }
+    else if (buttonThatWasClicked == tb_saveJSON)
+    {
+        //[UserButtonCode_tb_saveJSON] -- add your button handler code here..
+        FileChooser myChooser ("Save configuration...",
+                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                               "*.json");
+        if (myChooser.browseForFileToSave (true)) {
+            File configFile (myChooser.getResult());
+            hVst->setLastDir(configFile.getParentDirectory());
+            hVst->saveConfigurationToFile (configFile);
+        }
+        //[/UserButtonCode_tb_saveJSON]
+    }
+
+    //[UserbuttonClicked_Post]
+    //[/UserbuttonClicked_Post]
+}
+
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
@@ -528,7 +583,7 @@ void PluginEditor::timerCallback()
         refreshPanViewWindow = false;
         sourceCoordsView_handle->setHasASliderChange(false);
     }
-    
+
     /* show warning if currently selected framesize is not supported */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         showingFrameSizeWarning = true;
@@ -582,7 +637,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="20 120 113 30" fill="solid: ffffffff" hasStroke="0" text="N Inputs:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="48 32 164 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Settings"
+    <TEXT pos="72 32 96 30" fill="solid: ffffffff" hasStroke="0" text="Encoding"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="405 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
@@ -619,6 +674,13 @@ BEGIN_JUCER_METADATA
   <COMBOBOX name="new combo box" id="56ba0566c2fe39e0" memberName="CBorder"
             virtualName="" explicitFocusOrder="0" pos="88 64 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
+  <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON"
+              virtualName="" explicitFocusOrder="0" pos="140 40 34 14" bgColOff="ff14889e"
+              buttonText="Import" connectedEdges="2" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="new button" id="48c5d3526dcfe64f" memberName="tb_saveJSON"
+              virtualName="" explicitFocusOrder="0" pos="174 40 34 14" bgColOff="ff224d97"
+              bgColOn="ff181f9a" buttonText="Export" connectedEdges="1" needsCallback="1"
+              radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

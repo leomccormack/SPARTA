@@ -24,6 +24,9 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "panner.h"
+#define CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS 1
+#define CONFIGURATIONHELPER_ENABLE_SOURCEARRANGEMENT_METHODS 1
+#include "../../resources/ConfigurationHelper.h"
 
 #define BUILD_VER_SUFFIX "alpha"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
@@ -55,6 +58,15 @@ public:
     bool isPlaying;
 	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
 	AudioPlayHead::CurrentPositionInfo currentPosition;
+    
+    /* JSON */
+    void saveConfigurationToFile (File destination, int srcOrLs);
+    void loadConfiguration (const File& presetFile, int srcOrLs);
+    ValueTree sources {"Sources"};
+    ValueTree loudspeakers {"Loudspeakers"};
+    void setLastDir(File newLastDir){ lastDir = newLastDir; }
+    File getLastDir() {return lastDir;};
+    File lastDir;
     
     /***************************************************************************\
                                     JUCE Functions

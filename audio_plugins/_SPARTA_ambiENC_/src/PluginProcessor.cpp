@@ -249,6 +249,9 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
         xml.setAttribute("SourceAziDeg" + String(i), ambi_enc_getSourceAzi_deg(hAmbi,i));
         xml.setAttribute("SourceElevDeg" + String(i), ambi_enc_getSourceElev_deg(hAmbi,i));
     }
+    
+    xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
+    
     xml.setAttribute("NORM", ambi_enc_getNormType(hAmbi));
     xml.setAttribute("CHORDER", ambi_enc_getChOrder(hAmbi));
     xml.setAttribute("OUT_ORDER", ambi_enc_getOutputOrder(hAmbi));
@@ -271,6 +274,9 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             }
             if(xmlState->hasAttribute("nSources"))
                 ambi_enc_setNumSources(hAmbi, xmlState->getIntAttribute("nSources", 1));
+            
+            if(xmlState->hasAttribute("JSONFilePath"))
+                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
 
             if(xmlState->hasAttribute("NORM"))
                 ambi_enc_setNormType(hAmbi, xmlState->getIntAttribute("NORM", 1));
@@ -289,5 +295,53 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new PluginProcessor();
+}
+
+void PluginProcessor::saveConfigurationToFile (File destination)
+{
+    sources.removeAllChildren(nullptr);
+    for (int i=0; i<ambi_enc_getNumSources(hAmbi);i++)
+    {
+        sources.appendChild (ConfigurationHelper::
+                             createSource(ambi_enc_getSourceAzi_deg(hAmbi, i),
+                                          ambi_enc_getSourceElev_deg(hAmbi, i),
+                                          1.0f,
+                                          i,
+                                          false,
+                                          1.0f), nullptr);
+    }
+    DynamicObject* jsonObj = new DynamicObject();
+    jsonObj->setProperty("Name", var("SPARTA AmbiENC source directions."));
+    char versionString[10];
+    strcpy(versionString, "v");
+    strcat(versionString, JucePlugin_VersionString);
+    jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA AmbiENC " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
+    jsonObj->setProperty ("SourceArrangement", ConfigurationHelper::convertSourcesToVar (sources, "Source Directions"));
+    Result result = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
+    assert(result.wasOk());
+}
+
+void PluginProcessor::loadConfiguration (const File& configFile)
+{
+    sources.removeAllChildren(nullptr);
+    Result result = ConfigurationHelper::parseFileForSourceArrangement (configFile, sources, nullptr);
+    if(!result.wasOk()){
+        result = ConfigurationHelper::parseFileForLoudspeakerLayout (configFile, sources, nullptr);
+    }
+    if(result.wasOk()){
+        int num_srcs = 0;
+        int src_idx = 0;
+        for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it)
+            if ( !((*it).getProperty("Imaginary")))
+                num_srcs++;
+        ambi_enc_setNumSources(hAmbi, num_srcs);
+        for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it){
+            if ( !((*it).getProperty("Imaginary"))){
+                ambi_enc_setSourceAzi_deg(hAmbi, src_idx, (*it).getProperty("Azimuth"));
+                ambi_enc_setSourceElev_deg(hAmbi, src_idx, (*it).getProperty("Elevation"));
+                src_idx++;
+            }
+        }
+    }
 }
 

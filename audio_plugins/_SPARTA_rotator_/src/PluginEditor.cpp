@@ -46,7 +46,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_yaw->setBounds (176, 80, 120, 32);
 
     addAndMakeVisible (s_pitch = new Slider ("new slider"));
-    s_pitch->setRange (-90, 90, 0.01);
+    s_pitch->setRange (-180, 180, 0.01);
     s_pitch->setSliderStyle (Slider::LinearVertical);
     s_pitch->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     s_pitch->setColour (Slider::textBoxTextColourId, Colours::white);
@@ -56,7 +56,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_pitch->setBounds (304, 40, 96, 112);
 
     addAndMakeVisible (s_roll = new Slider ("new slider"));
-    s_roll->setRange (-90, 90, 0.01);
+    s_roll->setRange (-180, 180, 0.01);
     s_roll->setSliderStyle (Slider::LinearVertical);
     s_roll->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     s_roll->setColour (Slider::textBoxTextColourId, Colours::white);
@@ -166,9 +166,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorder->setSelectedId(rotator_getOrder(hVst->hRot), dontSendNotification);
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
     TBrpyFlag->setToggleState((bool)rotator_getRPYflag(hVst->hRot), dontSendNotification);
-    
+
     showingFrameSizeWarning = false;
- 
+
     startTimer(30); /*ms (40ms = 25 frames per second) */
 
     //[/Constructor]
@@ -599,7 +599,7 @@ void PluginEditor::timerCallback()
     s_yaw->setValue(rotator_getYaw(hVst->hRot), dontSendNotification);
     s_pitch->setValue(rotator_getPitch(hVst->hRot), dontSendNotification);
     s_roll->setValue(rotator_getRoll(hVst->hRot), dontSendNotification);
-    
+
     /* show warning if currently selected framesize is not supported */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         showingFrameSizeWarning = true;
@@ -609,7 +609,7 @@ void PluginEditor::timerCallback()
         showingFrameSizeWarning = false;
         repaint();
     }
-    
+
     /* check if OSC port has changed */
     if(hVst->getOscPortID() != te_oscport->getText().getIntValue())
         hVst->setOscPortID(te_oscport->getText().getIntValue());
@@ -701,13 +701,13 @@ BEGIN_JUCER_METADATA
           needsCallback="1"/>
   <SLIDER name="new slider" id="9af7dd86cd139d85" memberName="s_pitch"
           virtualName="" explicitFocusOrder="0" pos="304 40 96 112" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="-90.00000000000000000000" max="90.00000000000000000000"
+          textboxbkgd="ffffff" min="-180.00000000000000000000" max="180.00000000000000000000"
           int="0.01000000000000000021" style="LinearVertical" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
   <SLIDER name="new slider" id="b5d39bb257b3289a" memberName="s_roll" virtualName=""
           explicitFocusOrder="0" pos="416 40 96 112" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="-90.00000000000000000000" max="90.00000000000000000000"
+          textboxbkgd="ffffff" min="-180.00000000000000000000" max="180.00000000000000000000"
           int="0.01000000000000000021" style="LinearVertical" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>

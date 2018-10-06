@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.3.0
 
   ------------------------------------------------------------------------------
 
@@ -90,19 +90,27 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<ComboBox> CBsourceDirsPreset;
-    std::unique_ptr<Slider> SL_num_sources;
-    std::unique_ptr<Label> label_N_dirs;
-    std::unique_ptr<Label> label_HRIR_len;
-    std::unique_ptr<Label> label_HRIR_fs;
-    std::unique_ptr<ToggleButton> TBuseDefaultHRIRs;
-    std::unique_ptr<Label> label_DAW_fs;
-    std::unique_ptr<ToggleButton> TB_showInputs;
-    std::unique_ptr<ToggleButton> TB_showOutputs;
-    std::unique_ptr<Label> label_N_Tri;
-    std::unique_ptr<ComboBox> CBinterpMode;
-    std::unique_ptr<TextButton> tb_loadJSON;
-    std::unique_ptr<TextButton> tb_saveJSON;
+    ScopedPointer<ComboBox> CBsourceDirsPreset;
+    ScopedPointer<Slider> SL_num_sources;
+    ScopedPointer<Label> label_N_dirs;
+    ScopedPointer<Label> label_HRIR_fs;
+    ScopedPointer<ToggleButton> TBuseDefaultHRIRs;
+    ScopedPointer<Label> label_DAW_fs;
+    ScopedPointer<ToggleButton> TB_showInputs;
+    ScopedPointer<ToggleButton> TB_showOutputs;
+    ScopedPointer<Label> label_N_Tri;
+    ScopedPointer<ComboBox> CBinterpMode;
+    ScopedPointer<TextButton> tb_loadJSON;
+    ScopedPointer<TextButton> tb_saveJSON;
+    ScopedPointer<Slider> s_yaw;
+    ScopedPointer<Slider> s_pitch;
+    ScopedPointer<Slider> s_roll;
+    ScopedPointer<ToggleButton> t_flipYaw;
+    ScopedPointer<ToggleButton> t_flipPitch;
+    ScopedPointer<ToggleButton> t_flipRoll;
+    ScopedPointer<TextEditor> te_oscport;
+    ScopedPointer<ToggleButton> TBrpyFlag;
+    ScopedPointer<ToggleButton> TBenableRotation;
 
 
     //==============================================================================

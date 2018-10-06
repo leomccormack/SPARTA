@@ -24,6 +24,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ambi_dec.h"
+#define CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS 1 
+#include "../../resources/ConfigurationHelper.h"
 
 #define BUILD_VER_SUFFIX "alpha"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
@@ -54,6 +56,14 @@ public:
     int getCurrentBlockSize(){
         return nHostBlockSize;
     }
+    
+    /* JSON */
+    void saveConfigurationToFile (File destination);
+    void loadConfiguration (const File& presetFile);
+    ValueTree loudspeakers {"Loudspeakers"};
+    void setLastDir(File newLastDir){ lastDir = newLastDir; }
+    File getLastDir() {return lastDir;};
+    File lastDir;
     
     /***************************************************************************\
                                     JUCE Functions

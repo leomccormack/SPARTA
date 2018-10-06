@@ -173,14 +173,14 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "316"
             endingLineNumber = "316"
-            landmarkName = "PluginProcessor::saveConfigurationToFile (File destination)"
+            landmarkName = "PluginProcessor::setStateInformation (const void* data, int sizeInBytes)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../src/PluginProcessor.cpp"
@@ -189,7 +189,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "317"
             endingLineNumber = "317"
-            landmarkName = "PluginProcessor::saveConfigurationToFile (File destination)"
+            landmarkName = "PluginProcessor::setStateInformation (const void* data, int sizeInBytes)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -205,7 +205,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "318"
             endingLineNumber = "318"
-            landmarkName = "PluginProcessor::saveConfigurationToFile (File destination)"
+            landmarkName = "PluginProcessor::setStateInformation (const void* data, int sizeInBytes)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -221,7 +221,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "322"
             endingLineNumber = "322"
-            landmarkName = "PluginProcessor::saveConfigurationToFile (File destination)"
+            landmarkName = "PluginProcessor::setStateInformation (const void* data, int sizeInBytes)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -237,7 +237,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "327"
             endingLineNumber = "327"
-            landmarkName = "PluginProcessor::loadConfiguration (const File&amp; configFile)"
+            landmarkName = "PluginProcessor::setStateInformation (const void* data, int sizeInBytes)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

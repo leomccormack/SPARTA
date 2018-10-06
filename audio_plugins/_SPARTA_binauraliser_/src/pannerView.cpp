@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.1.2
+  Created with Projucer version: 5.3.0
 
   ------------------------------------------------------------------------------
 
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2017 - ROLI Ltd.
 
   ==============================================================================
 */
@@ -142,7 +142,7 @@ void pannerView::paint (Graphics& g)
                        width / 2.0f, (float)i*height / (float)numGridLinesY - 20, 40, 20, Justification::centred, true);
         }
     }
- 
+
     if(showOutputs){
         /* Draw loudspeaker/HRIR icons */
         for(int ls=0; ls<NLoudspeakers; ls++){
@@ -247,7 +247,7 @@ void pannerView::refreshPanView()
                                        icon_size,
                                        icon_size);
     }
- 
+
     repaint();
 }
 //[/MiscUserCode]

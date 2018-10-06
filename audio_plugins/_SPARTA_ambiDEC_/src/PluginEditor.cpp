@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.2.1
+  Created with Projucer version: 5.3.0
 
   ------------------------------------------------------------------------------
 
@@ -163,6 +163,23 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_decOrder->setBounds (384, 176, 40, 80);
 
+    addAndMakeVisible (tb_loadJSON = new TextButton ("new button"));
+    tb_loadJSON->setButtonText (TRANS("Import"));
+    tb_loadJSON->setConnectedEdges (Button::ConnectedOnRight);
+    tb_loadJSON->addListener (this);
+    tb_loadJSON->setColour (TextButton::buttonColourId, Colour (0xff14889e));
+
+    tb_loadJSON->setBounds (447, 40, 34, 14);
+
+    addAndMakeVisible (tb_saveJSON = new TextButton ("new button"));
+    tb_saveJSON->setButtonText (TRANS("Export"));
+    tb_saveJSON->setConnectedEdges (Button::ConnectedOnLeft);
+    tb_saveJSON->addListener (this);
+    tb_saveJSON->setColour (TextButton::buttonColourId, Colour (0xff224d97));
+    tb_saveJSON->setColour (TextButton::buttonOnColourId, Colour (0xff181f9a));
+
+    tb_saveJSON->setBounds (481, 40, 34, 14);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -313,7 +330,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
-    
+
     showingFrameSizeWarning = false;
 
     //[/Constructor]
@@ -339,6 +356,8 @@ PluginEditor::~PluginEditor()
     TBBinauraliseLS = nullptr;
     CBdec2normtype = nullptr;
     s_decOrder = nullptr;
+    tb_loadJSON = nullptr;
+    tb_saveJSON = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -538,7 +557,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 520, y = 32, width = 113, height = 30;
+        int x = 524, y = 32, width = 113, height = 30;
         String text (TRANS("Outputs"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -782,7 +801,7 @@ void PluginEditor::paint (Graphics& g)
     g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
     g.drawText (text, x, y, width, height,
                 Justification::centredLeft, true);
-    
+
     /* display warning message */
     if(showingFrameSizeWarning){
         g.setColour(Colours::red);
@@ -920,6 +939,32 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
         ambi_dec_setBinauraliseLSflag(hVst->hAmbi, TBBinauraliseLS->getToggleState());
         //[/UserButtonCode_TBBinauraliseLS]
     }
+    else if (buttonThatWasClicked == tb_loadJSON)
+    {
+        //[UserButtonCode_tb_loadJSON] -- add your button handler code here..
+        FileChooser myChooser ("Load configuration...",
+                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                               "*.json");
+        if (myChooser.browseForFileToOpen()) {
+            File configFile (myChooser.getResult());
+            hVst->setLastDir(configFile.getParentDirectory());
+            hVst->loadConfiguration (configFile);
+        }
+        //[/UserButtonCode_tb_loadJSON]
+    }
+    else if (buttonThatWasClicked == tb_saveJSON)
+    {
+        //[UserButtonCode_tb_saveJSON] -- add your button handler code here..
+        FileChooser myChooser ("Save configuration...",
+                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                               "*.json");
+        if (myChooser.browseForFileToSave (true)) {
+            File configFile (myChooser.getResult());
+            hVst->setLastDir(configFile.getParentDirectory());
+            hVst->saveConfigurationToFile (configFile);
+        }
+        //[/UserButtonCode_tb_saveJSON]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -939,7 +984,7 @@ void PluginEditor::timerCallback()
     /* refresh */
     if (decOrder2dSlider->getRefreshValuesFLAG())
         decOrder2dSlider->repaint();
-    
+
     /* show warning if currently selected framesize is not supported */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         showingFrameSizeWarning = true;
@@ -1004,7 +1049,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="164 32 149 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Settings"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="520 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Outputs"
+    <TEXT pos="524 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Outputs"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="227 90 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
@@ -1114,6 +1159,13 @@ BEGIN_JUCER_METADATA
           int="1.00000000000000000000" style="LinearVertical" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
+  <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON"
+              virtualName="" explicitFocusOrder="0" pos="447 40 34 14" bgColOff="ff14889e"
+              buttonText="Import" connectedEdges="2" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="new button" id="48c5d3526dcfe64f" memberName="tb_saveJSON"
+              virtualName="" explicitFocusOrder="0" pos="481 40 34 14" bgColOff="ff224d97"
+              bgColOn="ff181f9a" buttonText="Export" connectedEdges="1" needsCallback="1"
+              radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
