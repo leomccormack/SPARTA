@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="lfkRjX" name="sparta_array2sh_o4" projectType="audioplug"
-              version="1.0.2" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
+              version="1.1.0" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_array2sh_o4" pluginDesc="sparta_array2sh_o4"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ASO4"
               pluginChannelConfigs="{25, 25}, {26, 25}, {27, 25}, {28, 25}, {29, 25}, {30, 25}, {31, 25}, {32, 25}, {33, 25}, {34, 25}, {35, 25}, {36, 25}, {37, 25}, {38, 25}, {39, 25}, {40, 25}, {41, 25}, {42, 25}, {43, 25}, {44, 25}, {45, 25}, {46, 25}, {47, 25}, {48, 25}, {49, 25}, {50, 25}, {51, 25}, {52, 25}, {53, 25}, {54, 25}, {55, 25}, {56, 25}, {57, 25}, {58, 25}, {59, 25}, {60, 25}, {61, 25}, {62, 25}, {63, 25}, {64, 25}"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="sparta_array2sh_o4AU" pluginRTASCategory=""
-              aaxIdentifier="com.yourcompany.array2sh" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
-              jucerVersion="5.3.0" buildVST3="0" buildRTAS="0" buildAAX="0"
+              aaxIdentifier="com.yourcompany.array2sh" pluginAAXCategory="2"
+              jucerVersion="5.3.2" buildVST3="0" buildRTAS="0" buildAAX="0"
               pluginManufacturerEmail="support@yourcompany.com" defines="SH_ORDER = 4&#10;FRAME_SIZE = 256"
               companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
               buildAUv3="0" pluginIsMidiEffectPlugin="0" displaySplashScreen="0"
               reportAppUsage="0" splashScreenColour="Dark" buildStandalone="0"
-              enableIAA="0" cppLanguageStandard="11" companyCopyright="Aalto">
+              enableIAA="0" cppLanguageStandard="11" companyCopyright="Aalto"
+              pluginFormats="buildVST">
   <MAINGROUP id="imnfnp" name="sparta_array2sh_o4">
+    <FILE id="VJIGMM" name="ConfigurationHelper.h" compile="0" resource="0"
+          file="../../../resources/ConfigurationHelper.h"/>
     <FILE id="ZLV3HS" name="anaview_window.cpp" compile="1" resource="0"
           file="../../src/anaview_window.cpp"/>
     <FILE id="Gx0uv2" name="anaview_window.h" compile="0" resource="0"

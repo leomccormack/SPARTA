@@ -2316,6 +2316,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\resources\ConfigurationHelper.h">
+      <Filter>sparta_array2sh_o1</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\anaview_window.h">
       <Filter>sparta_array2sh_o1</Filter>
     </ClInclude>
@@ -4391,10 +4394,5 @@
     <None Include="..\..\..\..\..\..\SDKs\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt">
       <Filter>JUCE Modules\juce_graphics\image_formats\pnglib</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include=".\resources.rc">
-      <Filter>JUCE Library Code</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>

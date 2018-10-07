@@ -55,12 +55,10 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\..\obj\sparta_array2sh_o6\Win64_Debug\Shared Code\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">sparta_array2sh_o6d</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\..\..\..\..\..\lib\Win64_Release\Shared Code\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\..\obj\sparta_array2sh_o6\Win64_Release\Shared Code\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">sparta_array2sh_o6</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win</LibraryPath>
     <PlatformToolset>v141</PlatformToolset>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -76,7 +74,7 @@
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\..\..\juce\sparta_array2sh_o6\JuceLibraryCode;..\..\..\..\..\..\SDKs\modules;../../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;SH_ORDER=6;FRAME_SIZE=256;JUCER_VS2017_8CA06E33=1;JUCE_APP_VERSION=1.0.2;JUCE_APP_VERSION_HEX=0x10002;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;SH_ORDER=6;FRAME_SIZE=256;JUCER_VS2017_8CA06E33=1;JUCE_APP_VERSION=1.1.0;JUCE_APP_VERSION_HEX=0x10100;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -98,18 +96,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)\sparta_array2sh_o6d.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>mkl_intel_lp64.lib;mkl_sequential.lib;mkl_core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\sparta_array2sh_o6d.bsc</OutputFile>
     </Bscmake>
-    <Lib>
-      <AdditionalDependencies>mkl_intel_lp64.lib;mkl_sequential.lib;mkl_core.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -122,7 +114,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>..\..\..\..\juce\sparta_array2sh_o6\JuceLibraryCode;..\..\..\..\..\..\SDKs\modules;../../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;SH_ORDER=6;FRAME_SIZE=256;JUCER_VS2017_8CA06E33=1;JUCE_APP_VERSION=1.0.2;JUCE_APP_VERSION_HEX=0x10002;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;SH_ORDER=6;FRAME_SIZE=256;JUCER_VS2017_8CA06E33=1;JUCE_APP_VERSION=1.1.0;JUCE_APP_VERSION_HEX=0x10100;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -146,18 +138,12 @@
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalLibraryDirectories>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>mkl_intel_lp64.lib;mkl_sequential.lib;mkl_core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\sparta_array2sh_o6.bsc</OutputFile>
     </Bscmake>
-    <Lib>
-      <AdditionalDependencies>mkl_intel_lp64.lib;mkl_sequential.lib;mkl_core.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\anaview_window.cpp"/>
@@ -1865,6 +1851,7 @@
     <ClCompile Include="..\..\..\..\juce\sparta_array2sh_o6\JuceLibraryCode\include_juce_video.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\resources\ConfigurationHelper.h"/>
     <ClInclude Include="..\..\..\..\src\anaview_window.h"/>
     <ClInclude Include="..\..\..\..\src\anaview.h"/>
     <ClInclude Include="..\..\..\..\src\eqview.h"/>
@@ -2558,9 +2545,6 @@
     <None Include="..\..\..\..\..\..\SDKs\modules\juce_audio_formats\codecs\oggvorbis\Ogg Vorbis Licence.txt"/>
     <None Include="..\..\..\..\..\..\SDKs\modules\juce_graphics\image_formats\jpglib\changes to libjpeg for JUCE.txt"/>
     <None Include="..\..\..\..\..\..\SDKs\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt"/>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include=".\resources.rc"/>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
   <ImportGroup Label="ExtensionTargets"/>
