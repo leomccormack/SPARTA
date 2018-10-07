@@ -316,97 +316,70 @@ void PluginProcessor::saveConfigurationToFile (File destination, int srcOrLs)
 {
     DynamicObject* jsonObj;
     char versionString[10];
-    
+    elements.removeAllChildren(nullptr);
     switch (srcOrLs){
-        case 0: {
-            sources.removeAllChildren(nullptr);
-            for (int i=0; i<panner_getNumSources(hPan);i++)
-            {
-                sources.appendChild (ConfigurationHelper::
-                                     createSource(panner_getSourceAzi_deg(hPan, i),
-                                                  panner_getSourceElev_deg(hPan, i),
-                                                  1.0f,
-                                                  i,
-                                                  false,
-                                                  1.0f), nullptr);
+        case 0:{
+            for (int i=0; i<panner_getNumSources(hPan);i++) {
+                elements.appendChild (ConfigurationHelper::
+                                      createElement(panner_getSourceAzi_deg(hPan, i),
+                                                    panner_getSourceElev_deg(hPan, i),
+                                                    1.0f, i, false, 1.0f), nullptr);
             }
-            jsonObj = new DynamicObject();
-            jsonObj->setProperty("Name", var("SPARTA Panner source directions."));
-            strcpy(versionString, "v");
-            strcat(versionString, JucePlugin_VersionString);
-            jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA Panner " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
-            jsonObj->setProperty ("SourceArrangement", ConfigurationHelper::convertSourcesToVar (sources, "Source Directions"));
-            Result result = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
-            assert(result.wasOk());
-            break;
         }
-            
-        case 1: {
-            loudspeakers.removeAllChildren(nullptr);
-            for (int i=0; i<panner_getNumLoudspeakers(hPan);i++)
-            {
-                loudspeakers.appendChild (ConfigurationHelper::
-                                     createLoudspeaker(panner_getLoudspeakerAzi_deg(hPan, i),
+        break;
+        case 1:{
+            for (int i=0; i<panner_getNumLoudspeakers(hPan);i++) {
+                elements.appendChild (ConfigurationHelper::
+                                     createElement(panner_getLoudspeakerAzi_deg(hPan, i),
                                                        panner_getLoudspeakerElev_deg(hPan, i),
-                                                       1.0f,
-                                                       i,
-                                                       false,
-                                                       1.0f), nullptr);
+                                                       1.0f, i, false, 1.0f), nullptr);
             }
-            jsonObj = new DynamicObject();
-            jsonObj->setProperty("Name", var("SPARTA Panner loudspeaker directions."));
-            strcpy(versionString, "v");
-            strcat(versionString, JucePlugin_VersionString);
-            jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA Panner " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
-            jsonObj->setProperty ("LoudspeakerLayout", ConfigurationHelper::convertLoudspeakersToVar (loudspeakers, "Loudspeaker Directions"));
-            Result result2 = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
-            assert(result2.wasOk());
-            break;
         }
+        break;
     }
+    jsonObj = new DynamicObject();
+    jsonObj->setProperty("Name", var("SPARTA Panner source/loudspeaker directions."));
+    strcpy(versionString, "v");
+    strcat(versionString, JucePlugin_VersionString);
+    jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA Panner " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
+    jsonObj->setProperty ("GenericLayout", ConfigurationHelper::convertElementsToVar (elements, "Source/Loudspeaker Directions"));
+    Result result2 = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
+    assert(result2.wasOk());
 }
 
 void PluginProcessor::loadConfiguration (const File& configFile, int srcOrLs)
 {
-    switch (srcOrLs){
-        case 0: {
-            sources.removeAllChildren(nullptr);
-            Result result = ConfigurationHelper::parseFileForSourceArrangement (configFile, sources, nullptr);
-            if(result.wasOk()){
-                int num_srcs = 0;
-                int src_idx = 0;
-                for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it)
-                    if ( !((*it).getProperty("Imaginary")))
-                        num_srcs++;
-                panner_setNumSources(hPan, num_srcs);
-                for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it){
+    elements.removeAllChildren(nullptr);
+    Result result = ConfigurationHelper::parseFileForGenericLayout(configFile, elements, nullptr);
+    if(result.wasOk()){
+        int num_el = 0;
+        int el_idx = 0;
+        for (ValueTree::Iterator it = elements.begin() ; it != elements.end(); ++it)
+            if ( !((*it).getProperty("Imaginary")))
+                num_el++;
+        switch(srcOrLs){
+            case 0:{
+                panner_setNumSources(hPan, num_el);
+                for (ValueTree::Iterator it = elements.begin() ; it != elements.end(); ++it){
                     if ( !((*it).getProperty("Imaginary"))){
-                        panner_setSourceAzi_deg(hPan, src_idx, (*it).getProperty("Azimuth"));
-                        panner_setSourceElev_deg(hPan, src_idx, (*it).getProperty("Elevation"));
-                        src_idx++;
+                        panner_setSourceAzi_deg(hPan, el_idx, (*it).getProperty("Azimuth"));
+                        panner_setSourceElev_deg(hPan, el_idx, (*it).getProperty("Elevation"));
+                        el_idx++;
                     }
                 }
             }
-        }
-           
-        case 1: {
-            loudspeakers.removeAllChildren(nullptr);
-            Result result = ConfigurationHelper::parseFileForLoudspeakerLayout (configFile, loudspeakers, nullptr);
-            if(result.wasOk()){
-                int num_ls = 0;
-                int ls_idx = 0;
-                for (ValueTree::Iterator it = loudspeakers.begin() ; it != loudspeakers.end(); ++it)
-                    if ( !((*it).getProperty("Imaginary")))
-                        num_ls++;
-                panner_setNumLoudspeakers(hPan, num_ls);
-                for (ValueTree::Iterator it = loudspeakers.begin() ; it != loudspeakers.end(); ++it){
+            break;
+            case 1:{
+                panner_setNumLoudspeakers(hPan, num_el);
+                for (ValueTree::Iterator it = elements.begin() ; it != elements.end(); ++it){
                     if ( !((*it).getProperty("Imaginary"))){
-                        panner_setLoudspeakerAzi_deg(hPan, ls_idx, (*it).getProperty("Azimuth"));
-                        panner_setLoudspeakerElev_deg(hPan, ls_idx, (*it).getProperty("Elevation"));
-                        ls_idx++;
+                        panner_setLoudspeakerAzi_deg(hPan, el_idx, (*it).getProperty("Azimuth"));
+                        panner_setLoudspeakerElev_deg(hPan, el_idx, (*it).getProperty("Elevation"));
+                        el_idx++;
                     }
                 }
             }
+            break;
         }
     }
     panner_refreshSettings(hPan);

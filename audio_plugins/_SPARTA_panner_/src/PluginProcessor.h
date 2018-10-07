@@ -24,11 +24,10 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "panner.h"
-#define CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS 1
-#define CONFIGURATIONHELPER_ENABLE_SOURCEARRANGEMENT_METHODS 1
+#define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
 #include "../../resources/ConfigurationHelper.h"
 
-#define BUILD_VER_SUFFIX "alpha"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
+#define BUILD_VER_SUFFIX ""            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
 #define NUM_OF_AUTOMATABLE_SOURCES 32
 
@@ -62,8 +61,7 @@ public:
     /* JSON */
     void saveConfigurationToFile (File destination, int srcOrLs);
     void loadConfiguration (const File& presetFile, int srcOrLs);
-    ValueTree sources {"Sources"};
-    ValueTree loudspeakers {"Loudspeakers"};
+    ValueTree elements {"SourcesOrLoudspeakers"}; 
     void setLastDir(File newLastDir){ lastDir = newLastDir; }
     File getLastDir() {return lastDir;};
     File lastDir;

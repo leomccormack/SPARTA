@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -83,13 +83,13 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<ComboBox> CBsourceDirsPreset;
-    ScopedPointer<Slider> SL_num_sources;
-    ScopedPointer<ComboBox> CBoutputFormat;
-    ScopedPointer<ComboBox> CBnormalisation;
-    ScopedPointer<ComboBox> CBorder;
-    ScopedPointer<TextButton> tb_loadJSON;
-    ScopedPointer<TextButton> tb_saveJSON;
+    std::unique_ptr<ComboBox> CBsourceDirsPreset;
+    std::unique_ptr<Slider> SL_num_sources;
+    std::unique_ptr<ComboBox> CBoutputFormat;
+    std::unique_ptr<ComboBox> CBnormalisation;
+    std::unique_ptr<ComboBox> CBorder;
+    std::unique_ptr<TextButton> tb_loadJSON;
+    std::unique_ptr<TextButton> tb_saveJSON;
 
 
     //==============================================================================

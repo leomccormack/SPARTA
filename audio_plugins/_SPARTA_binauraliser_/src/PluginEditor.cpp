@@ -232,6 +232,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* init OpenGL */
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
+    
+    /* interp modes */
+    CBinterpMode->addItem(TRANS("Triangular"), INTERP_TRI);
 
     /* add source preset options */
 #ifdef ENABLE_MONO_PRESET
@@ -327,7 +330,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_sources->setValue(binauraliser_getNumSources(hVst->hBin),dontSendNotification);
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(true, dontSendNotification);
-    CBinterpMode->setEnabled(false);
+    CBinterpMode->setSelectedId(binauraliser_getInterpMode(hVst->hBin), dontSendNotification);
     TBenableRotation->setToggleState((bool)binauraliser_getEnableRotation(hVst->hBin), dontSendNotification);
     s_yaw->setValue(binauraliser_getYaw(hVst->hBin), dontSendNotification);
     s_pitch->setValue(binauraliser_getPitch(hVst->hBin), dontSendNotification);
@@ -337,6 +340,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     t_flipRoll->setToggleState((bool)binauraliser_getFlipRoll(hVst->hBin), dontSendNotification);
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
     TBrpyFlag->setToggleState((bool)binauraliser_getRPYflag(hVst->hBin), dontSendNotification);
+    
 
     /* create panning window */
     addAndMakeVisible (panWindow = new pannerView(ownerFilter, 480, 240));
@@ -888,6 +892,7 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == CBinterpMode)
     {
         //[UserComboBoxCode_CBinterpMode] -- add your combo box handling code here..
+        binauraliser_setInterpMode(hVst->hBin, CBinterpMode->getSelectedId());
         //[/UserComboBoxCode_CBinterpMode]
     }
 

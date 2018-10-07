@@ -287,6 +287,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     
     xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
     
+    xml.setAttribute("INTERP_MODE", binauraliser_getInterpMode(hBin));
     xml.setAttribute("ENABLE_ROT", binauraliser_getEnableRotation(hBin));
     xml.setAttribute("YAW", binauraliser_getYaw(hBin));
     xml.setAttribute("PITCH", binauraliser_getPitch(hBin));
@@ -325,6 +326,8 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if(xmlState->hasAttribute("JSONFilePath"))
                 lastDir = xmlState->getStringAttribute("JSONFilePath", "");
             
+            if(xmlState->hasAttribute("INTERP_MODE"))
+                binauraliser_setInterpMode(hBin, xmlState->getIntAttribute("INTERP_MODE", 1));
             if(xmlState->hasAttribute("ENABLE_ROT"))
                 binauraliser_setEnableRotation(hBin, xmlState->getIntAttribute("ENABLE_ROT", 0));
             if(xmlState->hasAttribute("YAW"))
@@ -365,7 +368,7 @@ void PluginProcessor::saveConfigurationToFile (File destination)
     for (int i=0; i<binauraliser_getNumSources(hBin);i++)
     {
         sources.appendChild (ConfigurationHelper::
-                             createSource(binauraliser_getSourceAzi_deg(hBin, i),
+                             createElement(binauraliser_getSourceAzi_deg(hBin, i),
                                           binauraliser_getSourceElev_deg(hBin, i),
                                           1.0f,
                                           i,
@@ -378,7 +381,7 @@ void PluginProcessor::saveConfigurationToFile (File destination)
     strcpy(versionString, "v");
     strcat(versionString, JucePlugin_VersionString);
     jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA Binauraliser " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
-    jsonObj->setProperty ("SourceArrangement", ConfigurationHelper::convertSourcesToVar (sources, "Source Directions"));
+    jsonObj->setProperty ("GenericLayout", ConfigurationHelper::convertElementsToVar (sources, "Source Directions"));
     Result result = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
     assert(result.wasOk());
 }
@@ -386,10 +389,7 @@ void PluginProcessor::saveConfigurationToFile (File destination)
 void PluginProcessor::loadConfiguration (const File& configFile)
 {
     sources.removeAllChildren(nullptr);
-    Result result = ConfigurationHelper::parseFileForSourceArrangement (configFile, sources, nullptr);
-    if(!result.wasOk()){
-        result = ConfigurationHelper::parseFileForLoudspeakerLayout (configFile, sources, nullptr);
-    }
+    Result result = ConfigurationHelper::parseFileForGenericLayout (configFile, sources, nullptr);
     if(result.wasOk()){
         int num_srcs = 0;
         int src_idx = 0;

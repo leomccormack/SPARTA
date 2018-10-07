@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -35,7 +35,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (CBsourceDirsPreset = new ComboBox ("new combo box"));
+    CBsourceDirsPreset.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBsourceDirsPreset.get());
     CBsourceDirsPreset->setEditableText (false);
     CBsourceDirsPreset->setJustificationType (Justification::centredLeft);
     CBsourceDirsPreset->setTextWhenNothingSelected (String());
@@ -44,7 +45,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBsourceDirsPreset->setBounds (88, 96, 112, 20);
 
-    addAndMakeVisible (SL_num_sources = new Slider ("new slider"));
+    SL_num_sources.reset (new Slider ("new slider"));
+    addAndMakeVisible (SL_num_sources.get());
     SL_num_sources->setRange (1, 64, 1);
     SL_num_sources->setSliderStyle (Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
@@ -52,7 +54,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_sources->setBounds (80, 124, 120, 24);
 
-    addAndMakeVisible (CBoutputFormat = new ComboBox ("new combo box"));
+    CBoutputFormat.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (Justification::centredLeft);
     CBoutputFormat->setTextWhenNothingSelected (TRANS("ACN"));
@@ -62,7 +65,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBoutputFormat->setBounds (344, 316, 112, 20);
 
-    addAndMakeVisible (CBnormalisation = new ComboBox ("new combo box"));
+    CBnormalisation.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBnormalisation.get());
     CBnormalisation->setEditableText (false);
     CBnormalisation->setJustificationType (Justification::centredLeft);
     CBnormalisation->setTextWhenNothingSelected (TRANS("N3D"));
@@ -73,7 +77,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBnormalisation->setBounds (576, 316, 112, 20);
 
-    addAndMakeVisible (CBorder = new ComboBox ("new combo box"));
+    CBorder.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBorder.get());
     CBorder->setEditableText (false);
     CBorder->setJustificationType (Justification::centredLeft);
     CBorder->setTextWhenNothingSelected (String());
@@ -82,7 +87,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBorder->setBounds (88, 64, 112, 20);
 
-    addAndMakeVisible (tb_loadJSON = new TextButton ("new button"));
+    tb_loadJSON.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_loadJSON.get());
     tb_loadJSON->setButtonText (TRANS("Import"));
     tb_loadJSON->setConnectedEdges (Button::ConnectedOnRight);
     tb_loadJSON->addListener (this);
@@ -90,7 +96,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     tb_loadJSON->setBounds (140, 40, 34, 14);
 
-    addAndMakeVisible (tb_saveJSON = new TextButton ("new button"));
+    tb_saveJSON.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_saveJSON.get());
     tb_saveJSON->setButtonText (TRANS("Export"));
     tb_saveJSON->setConnectedEdges (Button::ConnectedOnLeft);
     tb_saveJSON->addListener (this);
@@ -484,26 +491,26 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == CBsourceDirsPreset)
+    if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
     {
         //[UserComboBoxCode_CBsourceDirsPreset] -- add your combo box handling code here..
         ambi_enc_setInputConfigPreset(hVst->hAmbi, CBsourceDirsPreset->getSelectedId());
         refreshPanViewWindow = true;
         //[/UserComboBoxCode_CBsourceDirsPreset]
     }
-    else if (comboBoxThatHasChanged == CBoutputFormat)
+    else if (comboBoxThatHasChanged == CBoutputFormat.get())
     {
         //[UserComboBoxCode_CBoutputFormat] -- add your combo box handling code here..
         ambi_enc_setChOrder(hVst->hAmbi, CBoutputFormat->getSelectedId());
         //[/UserComboBoxCode_CBoutputFormat]
     }
-    else if (comboBoxThatHasChanged == CBnormalisation)
+    else if (comboBoxThatHasChanged == CBnormalisation.get())
     {
         //[UserComboBoxCode_CBnormalisation] -- add your combo box handling code here..
         ambi_enc_setNormType(hVst->hAmbi, CBnormalisation->getSelectedId());
         //[/UserComboBoxCode_CBnormalisation]
     }
-    else if (comboBoxThatHasChanged == CBorder)
+    else if (comboBoxThatHasChanged == CBorder.get())
     {
         //[UserComboBoxCode_CBorder] -- add your combo box handling code here..
         ambi_enc_setOutputOrder(hVst->hAmbi, CBorder->getSelectedId());
@@ -519,7 +526,7 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == SL_num_sources)
+    if (sliderThatWasMoved == SL_num_sources.get())
     {
         //[UserSliderCode_SL_num_sources] -- add your slider handling code here..
         ambi_enc_setNumSources(hVst->hAmbi, (int)SL_num_sources->getValue());
@@ -536,7 +543,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == tb_loadJSON)
+    if (buttonThatWasClicked == tb_loadJSON.get())
     {
         //[UserButtonCode_tb_loadJSON] -- add your button handler code here..
         FileChooser myChooser ("Load configuration...",
@@ -549,7 +556,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_tb_loadJSON]
     }
-    else if (buttonThatWasClicked == tb_saveJSON)
+    else if (buttonThatWasClicked == tb_saveJSON.get())
     {
         //[UserButtonCode_tb_saveJSON] -- add your button handler code here..
         FileChooser myChooser ("Save configuration...",

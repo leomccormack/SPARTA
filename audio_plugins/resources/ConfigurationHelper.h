@@ -34,8 +34,8 @@
     #define CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS 0
 #endif
 
-#ifndef CONFIGURATIONHELPER_ENABLE_SOURCEARRANGEMENT_METHODS
-    #define CONFIGURATIONHELPER_ENABLE_SOURCEARRANGEMENT_METHODS 0
+#ifndef CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS
+    #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 0
 #endif
 
 #ifndef CONFIGURATIONHELPER_ENABLE_ALL_METHODS
@@ -58,8 +58,8 @@
     #undef CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS
     #define CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS 1
     
-    #undef CONFIGURATIONHELPER_ENABLE_SOURCEARRANGEMENT_METHODS
-    #define CONFIGURATIONHELPER_ENABLE_SOURCEARRANGEMENT_METHODS 1
+    #undef CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS
+    #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
 #endif
 
 #if CONFIGURATIONHELPER_ENABLE_MATRIX_METHODS
@@ -467,11 +467,11 @@ public:
 
 #endif // #if CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS
     
-#if CONFIGURATIONHELPER_ENABLE_SOURCEARRANGEMENT_METHODS
+#if CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS
     /**
-     Loads a JSON-file (fileToParse) and tries to parse for a 'SourceLayout' object. If successful, writes the sources into a ValueTree object (sourdes). Set 'undoManager' to nullptr in case you don't want to use a undoManager.
+     Loads a JSON-file (fileToParse) and tries to parse for a 'GenericLayout' object. If successful, writes the generic object into a ValueTree object (elements). Set 'undoManager' to nullptr in case you don't want to use a undoManager.
      */
-    static Result parseFileForSourceArrangement (const File& fileToParse, ValueTree& sources, UndoManager* undoManager)
+    static Result parseFileForGenericLayout (const File& fileToParse, ValueTree& elements, UndoManager* undoManager)
     {
         // parse configuration file
         var parsedJson;
@@ -479,16 +479,25 @@ public:
         if (! result.wasOk())
             return Result::fail (result.getErrorMessage());
         
-        // looks for 'Decoder' object
-        if (! parsedJson.hasProperty ("SourceArrangement"))
-            return Result::fail ("No 'SourceArrangement' object found in the configuration file.");
+        // looks for a 'GenericLayout' or 'LoudspeakerLayout' object
+        var genericLayout;
+        if (parsedJson.hasProperty ("GenericLayout"))
+            genericLayout = parsedJson.getProperty ("GenericLayout", var());
+        else if (parsedJson.hasProperty ("LoudspeakerLayout"))
+            genericLayout = parsedJson.getProperty ("LoudspeakerLayout", var());
+        else
+            return Result::fail ("No 'GenericLayout' or 'LoudspeakerLayout' object found in the configuration file.");
         
-        var sourceArrangement = parsedJson.getProperty ("SourceArrangement", var());
-        if (! sourceArrangement.hasProperty ("Sources"))
-            return Result::fail ("No 'Sources' object found within the 'SourceArrangement' attribute.");
+        // looks for a 'GenericLayout' or 'LoudspeakerLayout' object
+        var elementArray;
+        if (genericLayout.hasProperty ("Elements"))
+            elementArray = genericLayout.getProperty ("Elements", var());
+        else if (genericLayout.hasProperty ("Loudspeakers"))
+            elementArray = genericLayout.getProperty ("Loudspeakers", var());
+        else
+            return Result::fail ("No 'Elements' or 'Loudspeakers' attribute found within the 'GenericLayout' or 'LoudspeakerLayout' object.");
         
-        var sourceArray = sourceArrangement.getProperty ("Sources", var());
-        result = addSourcesToValueTree (sourceArray, sources, undoManager);
+        result = addElementsToValueTree (elementArray, elements, undoManager);
         
         if (! result.wasOk())
             return Result::fail (result.getErrorMessage());
@@ -497,95 +506,95 @@ public:
     }
     
     /**
-     Appends all sources within the sourceArrangement to the sources ValueTree.
+     Appends all elements within the GenericLayout to the elements ValueTree.
      */
-    static Result addSourcesToValueTree (var& sourceArray, ValueTree& sources, UndoManager* undoManager)
+    static Result addElementsToValueTree (var& elementArray, ValueTree& elements, UndoManager* undoManager)
     {
-        if (! sourceArray.isArray())
-            return Result::fail ("'Sources' is not an array.");
+        if (! elementArray.isArray())
+            return Result::fail ("'elementArray' is not an array.");
         
-        const int nSrc = sourceArray.size();
+        const int nSrc = elementArray.size();
         
         for (int i = 0; i < nSrc; ++i)
         {
-            var& source = sourceArray[i];
+            var& element = elementArray[i];
             float azimuth, elevation, radius, gain;
             int channel;
             bool isImaginary;
             
-            if (! source.hasProperty ("Azimuth"))
-                return Result::fail ("No 'Azimuth' attribute for source #" + String (i+1) + ".");
-            var azi = source.getProperty ("Azimuth", var());
+            if (! element.hasProperty ("Azimuth"))
+                return Result::fail ("No 'Azimuth' attribute for element #" + String (i+1) + ".");
+            var azi = element.getProperty ("Azimuth", var());
             if (azi.isDouble() || azi.isInt())
                 azimuth = azi;
             else
-                return Result::fail ("Wrong datatype for attribute 'Azimuth' for source #" + String (i+1) + ".");
+                return Result::fail ("Wrong datatype for attribute 'Azimuth' for element #" + String (i+1) + ".");
             
-            if (! source.hasProperty ("Elevation"))
-                return Result::fail ("No 'Elevation' attribute for source #" + String (i+1) + ".");
-            var ele = source.getProperty ("Elevation", var());
+            if (! element.hasProperty ("Elevation"))
+                return Result::fail ("No 'Elevation' attribute for element #" + String (i+1) + ".");
+            var ele = element.getProperty ("Elevation", var());
             if (ele.isDouble() || ele.isInt())
                 elevation = ele;
             else
-                return Result::fail ("Wrong datatype for attribute 'Elevation' for source #" + String (i+1) + ".");
+                return Result::fail ("Wrong datatype for attribute 'Elevation' for element #" + String (i+1) + ".");
             
-            if (! source.hasProperty ("Radius"))
-                return Result::fail ("No 'Radius' attribute for source #" + String (i+1) + ".");
-            var rad = source.getProperty ("Radius", var());
+            if (! element.hasProperty ("Radius"))
+                return Result::fail ("No 'Radius' attribute for element #" + String (i+1) + ".");
+            var rad = element.getProperty ("Radius", var());
             if (rad.isDouble() || rad.isInt())
                 radius = rad;
             else
-                return Result::fail("Wrong datatype for attribute 'Radius' for source #" + String (i+1) + ".");
+                return Result::fail("Wrong datatype for attribute 'Radius' for element #" + String (i+1) + ".");
             
-            if (! source.hasProperty ("Gain"))
-                return Result::fail ("No 'Gain' attribute for source #" + String (i+1) + ".");
-            var g = source.getProperty ("Gain", var());
+            if (! element.hasProperty ("Gain"))
+                return Result::fail ("No 'Gain' attribute for element #" + String (i+1) + ".");
+            var g = element.getProperty ("Gain", var());
             if (g.isDouble() || g.isInt())
                 gain = g;
             else
-                return Result::fail ("Wrong datatype for attribute 'Gain' for source #" + String (i+1) + ".");
+                return Result::fail ("Wrong datatype for attribute 'Gain' for element #" + String (i+1) + ".");
             
-            if (! source.hasProperty ("Channel"))
-                return Result::fail ("No 'Channel' attribute for source #" + String (i+1) + ".");
-            var ch = source.getProperty ("Channel", var());
+            if (! element.hasProperty ("Channel"))
+                return Result::fail ("No 'Channel' attribute for element #" + String (i+1) + ".");
+            var ch = element.getProperty ("Channel", var());
             if (ch.isInt())
                 channel = ch;
             else
-                return Result::fail ("Wrong datatype for attribute 'Channel' for source #" + String (i+1) + ".");
+                return Result::fail ("Wrong datatype for attribute 'Channel' for element #" + String (i+1) + ".");
             
-            if (! source.hasProperty ("IsImaginary"))
-                return Result::fail ("No 'IsImaginary' attribute for source #" + String(i+1) + ".");
-            var im = source.getProperty ("IsImaginary", var());
+            if (! element.hasProperty ("IsImaginary"))
+                return Result::fail ("No 'IsImaginary' attribute for element #" + String(i+1) + ".");
+            var im = element.getProperty ("IsImaginary", var());
             if (im.isBool())
                 isImaginary = im;
             else
-                return Result::fail ("Wrong datatype for attribute 'IsImaginary' for source #" + String (i+1) + ".");
+                return Result::fail ("Wrong datatype for attribute 'IsImaginary' for element #" + String (i+1) + ".");
 
             
-            sources.appendChild (createSource(azimuth, elevation, radius, channel, isImaginary, gain), undoManager);
+            elements.appendChild (createElement(azimuth, elevation, radius, channel, isImaginary, gain), undoManager);
         }
         
         return Result::ok();
     }
     
     /**
-     Creates a single source ValueTree, which can be appended to another ValueTree holding several sources.
+     Creates a single element ValueTree, which can be appended to another ValueTree holding several elements.
      */
-    static ValueTree createSource (const float azimuth, const float elevation, const float radius, const int channel, const bool isImaginary, const float gain)
+    static ValueTree createElement (const float azimuth, const float elevation, const float radius, const int channel, const bool isImaginary, const float gain)
     {
-        ValueTree newSource ("Source");
+        ValueTree newElement ("Element");
         
-        newSource.setProperty ("Azimuth", azimuth, nullptr);
-        newSource.setProperty ("Elevation", elevation, nullptr);
-        newSource.setProperty ("Radius", radius, nullptr);
-        newSource.setProperty ("Channel", channel, nullptr);
-        newSource.setProperty ("Imaginary", isImaginary, nullptr);
-        newSource.setProperty ("Gain", gain, nullptr);
+        newElement.setProperty ("Azimuth", azimuth, nullptr);
+        newElement.setProperty ("Elevation", elevation, nullptr);
+        newElement.setProperty ("Radius", radius, nullptr);
+        newElement.setProperty ("Channel", channel, nullptr);
+        newElement.setProperty ("Imaginary", isImaginary, nullptr);
+        newElement.setProperty ("Gain", gain, nullptr);
         
-        return newSource;
+        return newElement;
     }
     
-#endif // #if CONFIGURATIONHELPER_ENABLE_SOURCEARRANGEMENT_METHODS
+#endif // #if CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS
 
 #if CONFIGURATIONHELPER_ENABLE_DECODER_METHODS
     // =============== EXPORT ======================================================
@@ -702,11 +711,11 @@ public:
 
 #endif //#if CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS
     
-#if CONFIGURATIONHELPER_ENABLE_SOURCEARRANGEMENT_METHODS
+#if CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS
     /**
-     Converts a sources ValueTree object to a var object. Useful for writing the sources to a configuration file ('SourceArrangement'). Make sure the ValueTree contains valid sources.
+     Converts a elements ValueTree object to a var object. Useful for writing the sources to a configuration file ('GenericLayout'). Make sure the ValueTree contains valid elements.
      */
-    static var convertSourcesToVar (ValueTree& sources, String name = "", String description = "")
+    static var convertElementsToVar (ValueTree& elements, String name = "", String description = "")
     {
         DynamicObject* obj = new DynamicObject();  
         if (! name.isEmpty())
@@ -714,27 +723,27 @@ public:
         if (! description.isEmpty())
             obj->setProperty("Description", description);
         
-        var sourceArray;
+        var elementArray;
         
-        for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it)
+        for (ValueTree::Iterator it = elements.begin() ; it != elements.end(); ++it)
         {
-            DynamicObject* source = new DynamicObject();
+            DynamicObject* element = new DynamicObject();
             
-            source->setProperty ("Azimuth", (*it).getProperty ("Azimuth"));
-            source->setProperty ("Elevation", (*it).getProperty ("Elevation"));
-            source->setProperty ("Radius", (*it).getProperty ("Radius"));
-            source->setProperty ("IsImaginary", (*it).getProperty("Imaginary"));
-            source->setProperty ("Channel", (*it).getProperty("Channel"));
-            source->setProperty ("Gain", (*it).getProperty("Gain"));
+            element->setProperty ("Azimuth", (*it).getProperty ("Azimuth"));
+            element->setProperty ("Elevation", (*it).getProperty ("Elevation"));
+            element->setProperty ("Radius", (*it).getProperty ("Radius"));
+            element->setProperty ("IsImaginary", (*it).getProperty("Imaginary"));
+            element->setProperty ("Channel", (*it).getProperty("Channel"));
+            element->setProperty ("Gain", (*it).getProperty("Gain"));
             
-            sourceArray.append(var(source));
+            elementArray.append(var(element));
         }
         
-        obj->setProperty("Sources", sourceArray);
+        obj->setProperty("Elements", elementArray);
         return var(obj);
     }
     
-#endif //#if CONFIGURATIONHELPER_ENABLE_SOURCEARRANGEMENT_METHODS
+#endif //#if CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS
     
     /**
      Writes a configuration var to a JSON file.

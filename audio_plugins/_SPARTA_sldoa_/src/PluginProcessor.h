@@ -27,7 +27,7 @@
 #include "sldoa.h"
 
 #define MAX_NUM_CHANNELS 64
-#define BUILD_VER_SUFFIX "alpha"
+#define BUILD_VER_SUFFIX ""
 
 #ifndef MIN
   #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))

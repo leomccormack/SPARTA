@@ -23,9 +23,11 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "array2sh.h" 
+#include "array2sh.h"
+#define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
+#include "../../resources/ConfigurationHelper.h"
 
-#define BUILD_VER_SUFFIX "alpha"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
+#define BUILD_VER_SUFFIX ""            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
 
 #ifndef M_PI
@@ -57,6 +59,14 @@ public:
     int getCurrentBlockSize(){
         return nHostBlockSize;
     }
+    
+    /* JSON */
+    void saveConfigurationToFile (File destination);
+    void loadConfiguration (const File& presetFile);
+    ValueTree sensors {"Sensors"};
+    void setLastDir(File newLastDir){ lastDir = newLastDir; }
+    File getLastDir() {return lastDir;};
+    File lastDir;
     
     /***************************************************************************\
                                     JUCE Functions

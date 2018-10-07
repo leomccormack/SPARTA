@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -35,7 +35,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (presetCB = new ComboBox ("new combo box"));
+    presetCB.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (presetCB.get());
     presetCB->setEditableText (false);
     presetCB->setJustificationType (Justification::centredLeft);
     presetCB->setTextWhenNothingSelected (String());
@@ -45,7 +46,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     presetCB->setBounds (88, 64, 120, 16);
 
-    addAndMakeVisible (arrayTypeCB = new ComboBox ("new combo box"));
+    arrayTypeCB.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (arrayTypeCB.get());
     arrayTypeCB->setEditableText (false);
     arrayTypeCB->setJustificationType (Justification::centredLeft);
     arrayTypeCB->setTextWhenNothingSelected (TRANS("Spherical"));
@@ -56,7 +58,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     arrayTypeCB->setBounds (352, 312, 128, 16);
 
-    addAndMakeVisible (QSlider = new Slider ("new slider"));
+    QSlider.reset (new Slider ("new slider"));
+    addAndMakeVisible (QSlider.get());
     QSlider->setRange (4, 64, 1);
     QSlider->setSliderStyle (Slider::LinearHorizontal);
     QSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
@@ -64,7 +67,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     QSlider->setBounds (112, 96, 96, 16);
 
-    addAndMakeVisible (rSlider = new Slider ("new slider"));
+    rSlider.reset (new Slider ("new slider"));
+    addAndMakeVisible (rSlider.get());
     rSlider->setRange (0.01, 0.3, 0.001);
     rSlider->setSliderStyle (Slider::LinearHorizontal);
     rSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
@@ -72,7 +76,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     rSlider->setBounds (112, 128, 96, 16);
 
-    addAndMakeVisible (RSlider = new Slider ("new slider"));
+    RSlider.reset (new Slider ("new slider"));
+    addAndMakeVisible (RSlider.get());
     RSlider->setRange (0.01, 0.3, 0.001);
     RSlider->setSliderStyle (Slider::LinearHorizontal);
     RSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
@@ -80,7 +85,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     RSlider->setBounds (112, 160, 96, 16);
 
-    addAndMakeVisible (cSlider = new Slider ("new slider"));
+    cSlider.reset (new Slider ("new slider"));
+    addAndMakeVisible (cSlider.get());
     cSlider->setRange (200, 2000, 0.1);
     cSlider->setSliderStyle (Slider::LinearHorizontal);
     cSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
@@ -88,7 +94,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     cSlider->setBounds (344, 280, 136, 16);
 
-    addAndMakeVisible (weightTypeCB = new ComboBox ("new combo box"));
+    weightTypeCB.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (weightTypeCB.get());
     weightTypeCB->setEditableText (false);
     weightTypeCB->setJustificationType (Justification::centredLeft);
     weightTypeCB->setTextWhenNothingSelected (TRANS("Rigid"));
@@ -101,7 +108,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     weightTypeCB->setBounds (352, 344, 128, 16);
 
-    addAndMakeVisible (addmittanceSlider = new Slider ("new slider"));
+    addmittanceSlider.reset (new Slider ("new slider"));
+    addAndMakeVisible (addmittanceSlider.get());
     addmittanceSlider->setRange (0, 20, 0.01);
     addmittanceSlider->setSliderStyle (Slider::LinearHorizontal);
     addmittanceSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
@@ -109,7 +117,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     addmittanceSlider->setBounds (344, 376, 136, 16);
 
-    addAndMakeVisible (regTypeCB = new ComboBox ("new combo box"));
+    regTypeCB.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (regTypeCB.get());
     regTypeCB->setEditableText (false);
     regTypeCB->setJustificationType (Justification::centredLeft);
     regTypeCB->setTextWhenNothingSelected (TRANS("Soft Limiting"));
@@ -121,7 +130,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     regTypeCB->setBounds (640, 280, 128, 16);
 
-    addAndMakeVisible (regAmountSlider = new Slider ("new slider"));
+    regAmountSlider.reset (new Slider ("new slider"));
+    addAndMakeVisible (regAmountSlider.get());
     regAmountSlider->setRange (0, 80, 0.01);
     regAmountSlider->setSliderStyle (Slider::LinearHorizontal);
     regAmountSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
@@ -129,7 +139,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     regAmountSlider->setBounds (640, 312, 128, 16);
 
-    addAndMakeVisible (CHOrderingCB = new ComboBox ("new combo box"));
+    CHOrderingCB.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CHOrderingCB.get());
     CHOrderingCB->setEditableText (false);
     CHOrderingCB->setJustificationType (Justification::centredLeft);
     CHOrderingCB->setTextWhenNothingSelected (TRANS("ACN"));
@@ -139,7 +150,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CHOrderingCB->setBounds (640, 376, 128, 16);
 
-    addAndMakeVisible (normalisationCB = new ComboBox ("new combo box"));
+    normalisationCB.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (normalisationCB.get());
     normalisationCB->setEditableText (false);
     normalisationCB->setJustificationType (Justification::centredLeft);
     normalisationCB->setTextWhenNothingSelected (TRANS("N3D"));
@@ -150,7 +162,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     normalisationCB->setBounds (640, 408, 128, 16);
 
-    addAndMakeVisible (maxFreqSlider = new Slider ("new slider"));
+    maxFreqSlider.reset (new Slider ("new slider"));
+    addAndMakeVisible (maxFreqSlider.get());
     maxFreqSlider->setRange (5000, 24000, 1);
     maxFreqSlider->setSliderStyle (Slider::LinearHorizontal);
     maxFreqSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
@@ -158,7 +171,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     maxFreqSlider->setBounds (344, 408, 136, 16);
 
-    addAndMakeVisible (gainSlider = new Slider ("new slider"));
+    gainSlider.reset (new Slider ("new slider"));
+    addAndMakeVisible (gainSlider.get());
     gainSlider->setRange (-60, 60, 0.01);
     gainSlider->setSliderStyle (Slider::LinearHorizontal);
     gainSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
@@ -166,20 +180,23 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     gainSlider->setBounds (640, 344, 128, 16);
 
-    addAndMakeVisible (degRadTB = new ToggleButton ("new toggle button"));
+    degRadTB.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (degRadTB.get());
     degRadTB->setButtonText (String());
     degRadTB->addListener (this);
 
     degRadTB->setBounds (186, 198, 23, 24);
 
-    addAndMakeVisible (textButton = new TextButton ("new button"));
+    textButton.reset (new TextButton ("new button"));
+    addAndMakeVisible (textButton.get());
     textButton->setButtonText (TRANS("Analyse"));
     textButton->addListener (this);
     textButton->setColour (TextButton::buttonColourId, Colour (0xff5c68a4));
 
     textButton->setBounds (712, 37, 72, 16);
 
-    addAndMakeVisible (dispWindow = new ComboBox ("new combo box"));
+    dispWindow.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (dispWindow.get());
     dispWindow->setEditableText (false);
     dispWindow->setJustificationType (Justification::centredLeft);
     dispWindow->setTextWhenNothingSelected (TRANS("EQ"));
@@ -190,6 +207,25 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     dispWindow->addListener (this);
 
     dispWindow->setBounds (642, 37, 63, 16);
+
+    tb_loadJSON.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_loadJSON.get());
+    tb_loadJSON->setButtonText (TRANS("Import"));
+    tb_loadJSON->setConnectedEdges (Button::ConnectedOnRight);
+    tb_loadJSON->addListener (this);
+    tb_loadJSON->setColour (TextButton::buttonColourId, Colour (0xff14889e));
+
+    tb_loadJSON->setBounds (148, 39, 34, 14);
+
+    tb_saveJSON.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_saveJSON.get());
+    tb_saveJSON->setButtonText (TRANS("Export"));
+    tb_saveJSON->setConnectedEdges (Button::ConnectedOnLeft);
+    tb_saveJSON->addListener (this);
+    tb_saveJSON->setColour (TextButton::buttonColourId, Colour (0xff224d97));
+    tb_saveJSON->setColour (TextButton::buttonOnColourId, Colour (0xff181f9a));
+
+    tb_saveJSON->setBounds (182, 39, 34, 14);
 
 
     //[UserPreSize]
@@ -299,7 +335,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 #endif
 	/* Specify screen refresh rate */
     startTimer(200);//80); /*ms (40ms = 25 frames per second) */
-    
+
     showingFrameSizeWarning = false;
 
     //[/Constructor]
@@ -327,6 +363,8 @@ PluginEditor::~PluginEditor()
     degRadTB = nullptr;
     textButton = nullptr;
     dispWindow = nullptr;
+    tb_loadJSON = nullptr;
+    tb_saveJSON = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -648,7 +686,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 24, y = 224, width = 184, height = 200;
-        Colour strokeColour = Colour (0x5ab6b5b5);
+        Colour strokeColour = Colour (0x29b6b5b5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (strokeColour);
@@ -669,7 +707,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 96, y = 30, width = 88, height = 30;
+        int x = 92, y = 30, width = 88, height = 30;
         String text (TRANS("Inputs"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -699,7 +737,7 @@ void PluginEditor::paint (Graphics& g)
     g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
 		150, 16, 530, 11,
 		Justification::centredLeft, true);
-    
+
     /* display warning message */
     if(showingFrameSizeWarning){
         g.setColour(Colours::red);
@@ -728,7 +766,7 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == presetCB)
+    if (comboBoxThatHasChanged == presetCB.get())
     {
         //[UserComboBoxCode_presetCB] -- add your combo box handling code here..
         array2sh_setPreset(hVst->hA2sh, (int)presetCB->getSelectedId());
@@ -754,14 +792,14 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
         needScreenRefreshFLAG = true;
         //[/UserComboBoxCode_presetCB]
     }
-    else if (comboBoxThatHasChanged == arrayTypeCB)
+    else if (comboBoxThatHasChanged == arrayTypeCB.get())
     {
         //[UserComboBoxCode_arrayTypeCB] -- add your combo box handling code here..
         array2sh_setArrayType(hVst->hA2sh, arrayTypeCB->getSelectedId());
         needScreenRefreshFLAG = true;
         //[/UserComboBoxCode_arrayTypeCB]
     }
-    else if (comboBoxThatHasChanged == weightTypeCB)
+    else if (comboBoxThatHasChanged == weightTypeCB.get())
     {
         //[UserComboBoxCode_weightTypeCB] -- add your combo box handling code here..
         array2sh_setWeightType(hVst->hA2sh, weightTypeCB->getSelectedId());
@@ -769,26 +807,26 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
         needScreenRefreshFLAG = true;
         //[/UserComboBoxCode_weightTypeCB]
     }
-    else if (comboBoxThatHasChanged == regTypeCB)
+    else if (comboBoxThatHasChanged == regTypeCB.get())
     {
         //[UserComboBoxCode_regTypeCB] -- add your combo box handling code here..
         array2sh_setRegType(hVst->hA2sh, regTypeCB->getSelectedId());
         needScreenRefreshFLAG = true;
         //[/UserComboBoxCode_regTypeCB]
     }
-    else if (comboBoxThatHasChanged == CHOrderingCB)
+    else if (comboBoxThatHasChanged == CHOrderingCB.get())
     {
         //[UserComboBoxCode_CHOrderingCB] -- add your combo box handling code here..
         array2sh_setChOrder(hVst->hA2sh, CHOrderingCB->getSelectedId());
         //[/UserComboBoxCode_CHOrderingCB]
     }
-    else if (comboBoxThatHasChanged == normalisationCB)
+    else if (comboBoxThatHasChanged == normalisationCB.get())
     {
         //[UserComboBoxCode_normalisationCB] -- add your combo box handling code here..
         array2sh_setNormType(hVst->hA2sh, normalisationCB->getSelectedId());
         //[/UserComboBoxCode_normalisationCB]
     }
-    else if (comboBoxThatHasChanged == dispWindow)
+    else if (comboBoxThatHasChanged == dispWindow.get())
     {
         //[UserComboBoxCode_dispWindow] -- add your combo box handling code here..
         dispID = (DISP_WINDOW)dispWindow->getSelectedId();
@@ -817,7 +855,7 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == QSlider)
+    if (sliderThatWasMoved == QSlider.get())
     {
         //[UserSliderCode_QSlider] -- add your slider handling code here..
         array2sh_setNumSensors(hVst->hA2sh, (int)QSlider->getValue());
@@ -825,7 +863,7 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
         sensorCoordsView_handle->setQ((int)QSlider->getValue());
         //[/UserSliderCode_QSlider]
     }
-    else if (sliderThatWasMoved == rSlider)
+    else if (sliderThatWasMoved == rSlider.get())
     {
         //[UserSliderCode_rSlider] -- add your slider handling code here..
         array2sh_setr(hVst->hA2sh, (float)rSlider->getValue());
@@ -837,41 +875,41 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
         needScreenRefreshFLAG = true;
         //[/UserSliderCode_rSlider]
     }
-    else if (sliderThatWasMoved == RSlider)
+    else if (sliderThatWasMoved == RSlider.get())
     {
         //[UserSliderCode_RSlider] -- add your slider handling code here..
         array2sh_setR(hVst->hA2sh, (float)RSlider->getValue());
         needScreenRefreshFLAG = true;
         //[/UserSliderCode_RSlider]
     }
-    else if (sliderThatWasMoved == cSlider)
+    else if (sliderThatWasMoved == cSlider.get())
     {
         //[UserSliderCode_cSlider] -- add your slider handling code here..
         array2sh_setc(hVst->hA2sh, (float)cSlider->getValue());
         needScreenRefreshFLAG = true;
         //[/UserSliderCode_cSlider]
     }
-    else if (sliderThatWasMoved == addmittanceSlider)
+    else if (sliderThatWasMoved == addmittanceSlider.get())
     {
         //[UserSliderCode_addmittanceSlider] -- add your slider handling code here..
         array2sh_setAdmittance(hVst->hA2sh, (float)addmittanceSlider->getValue());
         needScreenRefreshFLAG = true;
         //[/UserSliderCode_addmittanceSlider]
     }
-    else if (sliderThatWasMoved == regAmountSlider)
+    else if (sliderThatWasMoved == regAmountSlider.get())
     {
         //[UserSliderCode_regAmountSlider] -- add your slider handling code here..
         array2sh_setRegPar(hVst->hA2sh, (float)regAmountSlider->getValue());
         needScreenRefreshFLAG = true;
         //[/UserSliderCode_regAmountSlider]
     }
-    else if (sliderThatWasMoved == maxFreqSlider)
+    else if (sliderThatWasMoved == maxFreqSlider.get())
     {
         //[UserSliderCode_maxFreqSlider] -- add your slider handling code here..
         array2sh_setMaxFreq(hVst->hA2sh, (float)maxFreqSlider->getValue());
         //[/UserSliderCode_maxFreqSlider]
     }
-    else if (sliderThatWasMoved == gainSlider)
+    else if (sliderThatWasMoved == gainSlider.get())
     {
         //[UserSliderCode_gainSlider] -- add your slider handling code here..
         array2sh_setGain(hVst->hA2sh, (float)gainSlider->getValue());
@@ -887,18 +925,44 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == degRadTB)
+    if (buttonThatWasClicked == degRadTB.get())
     {
         //[UserButtonCode_degRadTB] -- add your button handler code here..
         showDegreesInstead = degRadTB->getToggleState();
         sensorCoordsView_handle->setUseDegreesInstead(showDegreesInstead);
         //[/UserButtonCode_degRadTB]
     }
-    else if (buttonThatWasClicked == textButton)
+    else if (buttonThatWasClicked == textButton.get())
     {
         //[UserButtonCode_textButton] -- add your button handler code here..
         array2sh_evaluateFilters(hVst->hA2sh);
         //[/UserButtonCode_textButton]
+    }
+    else if (buttonThatWasClicked == tb_loadJSON.get())
+    {
+        //[UserButtonCode_tb_loadJSON] -- add your button handler code here..
+        FileChooser myChooser ("Load configuration...",
+                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                               "*.json");
+        if (myChooser.browseForFileToOpen()) {
+            File configFile (myChooser.getResult());
+            hVst->setLastDir(configFile.getParentDirectory());
+            hVst->loadConfiguration (configFile);
+        }
+        //[/UserButtonCode_tb_loadJSON]
+    }
+    else if (buttonThatWasClicked == tb_saveJSON.get())
+    {
+        //[UserButtonCode_tb_saveJSON] -- add your button handler code here..
+        FileChooser myChooser ("Save configuration...",
+                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                               "*.json");
+        if (myChooser.browseForFileToSave (true)) {
+            File configFile (myChooser.getResult());
+            hVst->setLastDir(configFile.getParentDirectory());
+            hVst->saveConfigurationToFile (configFile);
+        }
+        //[/UserButtonCode_tb_saveJSON]
     }
 
     //[UserbuttonClicked_Post]
@@ -913,6 +977,7 @@ void PluginEditor::timerCallback()
     /* these parameters can change internally */
     RSlider->setValue(array2sh_getR(hVst->hA2sh), dontSendNotification);
     QSlider->setValue(array2sh_getNumSensors(hVst->hA2sh), dontSendNotification);
+    sensorCoordsView_handle->setQ(array2sh_getNumSensors(hVst->hA2sh));
 
     /* draw magnitude responses */
     if (needScreenRefreshFLAG){
@@ -939,7 +1004,7 @@ void PluginEditor::timerCallback()
         }
         needScreenRefreshFLAG = false;
     }
-    
+
     /* show warning if currently selected framesize is not supported */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         showingFrameSizeWarning = true;
@@ -1036,11 +1101,11 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="24 224 184 200" fill="solid: 39a52a" hasStroke="1" stroke="1, mitered, butt"
-          strokeColour="solid: 5ab6b5b5"/>
+          strokeColour="solid: 29b6b5b5"/>
     <TEXT pos="179 193 24 23" fill="solid: ffffffff" hasStroke="0" text="&#176;"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="96 30 88 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
+    <TEXT pos="92 30 88 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="440 30 149 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Settings"
@@ -1120,6 +1185,13 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="642 37 63 16" editable="0"
             layout="33" items="EQ&#10;Coh&#10;L Diff" textWhenNonSelected="EQ"
             textWhenNoItems="(no choices)"/>
+  <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON"
+              virtualName="" explicitFocusOrder="0" pos="148 39 34 14" bgColOff="ff14889e"
+              buttonText="Import" connectedEdges="2" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="new button" id="48c5d3526dcfe64f" memberName="tb_saveJSON"
+              virtualName="" explicitFocusOrder="0" pos="182 39 34 14" bgColOff="ff224d97"
+              bgColOn="ff181f9a" buttonText="Export" connectedEdges="1" needsCallback="1"
+              radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

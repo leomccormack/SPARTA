@@ -361,7 +361,7 @@ void PluginProcessor::loadConfiguration (const File& configFile)
     loudspeakers.removeAllChildren(nullptr);
     Result result = ConfigurationHelper::parseFileForLoudspeakerLayout (configFile, loudspeakers, nullptr);
     if(!result.wasOk()){
-        result = ConfigurationHelper::parseFileForLoudspeakerLayout (configFile, loudspeakers, nullptr);
+        result = ConfigurationHelper::parseFileForGenericLayout (configFile, loudspeakers, nullptr);
     }
     if(result.wasOk()){
         int num_ls = 0;

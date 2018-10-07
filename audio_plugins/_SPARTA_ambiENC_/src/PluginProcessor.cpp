@@ -303,12 +303,9 @@ void PluginProcessor::saveConfigurationToFile (File destination)
     for (int i=0; i<ambi_enc_getNumSources(hAmbi);i++)
     {
         sources.appendChild (ConfigurationHelper::
-                             createSource(ambi_enc_getSourceAzi_deg(hAmbi, i),
+                             createElement(ambi_enc_getSourceAzi_deg(hAmbi, i),
                                           ambi_enc_getSourceElev_deg(hAmbi, i),
-                                          1.0f,
-                                          i,
-                                          false,
-                                          1.0f), nullptr);
+                                          1.0f, i, false, 1.0f), nullptr);
     }
     DynamicObject* jsonObj = new DynamicObject();
     jsonObj->setProperty("Name", var("SPARTA AmbiENC source directions."));
@@ -316,7 +313,7 @@ void PluginProcessor::saveConfigurationToFile (File destination)
     strcpy(versionString, "v");
     strcat(versionString, JucePlugin_VersionString);
     jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA AmbiENC " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
-    jsonObj->setProperty ("SourceArrangement", ConfigurationHelper::convertSourcesToVar (sources, "Source Directions"));
+    jsonObj->setProperty ("SourceArrangement", ConfigurationHelper::convertElementsToVar (sources, "Source Directions"));
     Result result = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
     assert(result.wasOk());
 }
@@ -324,10 +321,7 @@ void PluginProcessor::saveConfigurationToFile (File destination)
 void PluginProcessor::loadConfiguration (const File& configFile)
 {
     sources.removeAllChildren(nullptr);
-    Result result = ConfigurationHelper::parseFileForSourceArrangement (configFile, sources, nullptr);
-    if(!result.wasOk()){
-        result = ConfigurationHelper::parseFileForLoudspeakerLayout (configFile, sources, nullptr);
-    }
+    Result result = ConfigurationHelper::parseFileForGenericLayout(configFile, sources, nullptr);
     if(result.wasOk()){
         int num_srcs = 0;
         int src_idx = 0;

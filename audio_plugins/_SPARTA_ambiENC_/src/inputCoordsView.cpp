@@ -60,7 +60,7 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
     for( int i=0; i<maxNCH; i++){
         /* create and initialise azimuth sliders */
         addAndMakeVisible (aziSliders[i] = new Slider ("new slider"));
-        aziSliders[i]->setRange (-180.0, 180.0, 0.001);
+        aziSliders[i]->setRange (-360.0, 360.0, 0.001);
         aziSliders[i]->setValue(ambi_enc_getSourceAzi_deg(hVst->hAmbi, i));
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
@@ -69,7 +69,7 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
 
         /* create and initialise elevation sliders */
         addAndMakeVisible (elevSliders[i] = new Slider ("new slider"));
-        elevSliders[i]->setRange (-90.0, 90.0, 0.001);
+        elevSliders[i]->setRange (-180.0, 180.0, 0.001);
         elevSliders[i]->setValue(ambi_enc_getSourceElev_deg(hVst->hAmbi, i));
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);

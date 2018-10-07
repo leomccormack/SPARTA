@@ -263,6 +263,8 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("gain", array2sh_getGain(hA2sh));
     xml.setAttribute("maxFreq", array2sh_getMaxFreq(hA2sh));
     
+    xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
+    
     copyXmlToBinary(xml, destData);
 }
 
@@ -306,6 +308,9 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if(xmlState->hasAttribute("maxFreq"))
                 array2sh_setMaxFreq(hA2sh, (float)xmlState->getDoubleAttribute("maxFreq", 20000.0));
             
+            if(xmlState->hasAttribute("JSONFilePath"))
+                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            
             array2sh_refreshSettings(hA2sh);
         }
     }
@@ -318,3 +323,48 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
     return new PluginProcessor();
 }
 
+void PluginProcessor::saveConfigurationToFile (File destination)
+{
+    sensors.removeAllChildren(nullptr);
+    for (int i=0; i<array2sh_getNumSensors(hA2sh);i++)
+    {
+        sensors.appendChild (ConfigurationHelper::
+                             createElement(array2sh_getSensorAzi_deg(hA2sh, i),
+                                           array2sh_getSensorElev_deg(hA2sh, i),
+                                           1.0f,
+                                           i,
+                                           false,
+                                           1.0f), nullptr);
+    }
+    DynamicObject* jsonObj = new DynamicObject();
+    jsonObj->setProperty("Name", var("SPARTA Array2SH sensor directions."));
+    char versionString[10];
+    strcpy(versionString, "v");
+    strcat(versionString, JucePlugin_VersionString);
+    jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA Array2SH " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
+    jsonObj->setProperty ("GenericLayout", ConfigurationHelper::convertElementsToVar (sensors, "Sensor Directions"));
+    Result result = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
+    assert(result.wasOk());
+}
+
+void PluginProcessor::loadConfiguration (const File& configFile)
+{
+    sensors.removeAllChildren(nullptr);
+    Result result = ConfigurationHelper::parseFileForGenericLayout (configFile, sensors, nullptr);
+    if(result.wasOk()){
+        int num_srcs = 0;
+        int src_idx = 0;
+        for (ValueTree::Iterator it = sensors.begin() ; it != sensors.end(); ++it)
+            if ( !((*it).getProperty("Imaginary")))
+                num_srcs++;
+        array2sh_setNumSensors(hA2sh, num_srcs);
+        for (ValueTree::Iterator it = sensors.begin() ; it != sensors.end(); ++it){
+            if ( !((*it).getProperty("Imaginary"))){
+                array2sh_setSensorAzi_deg(hA2sh, src_idx, (*it).getProperty("Azimuth"));
+                array2sh_setSensorElev_deg(hA2sh, src_idx, (*it).getProperty("Elevation"));
+                src_idx++;
+            }
+        }
+    }
+    array2sh_refreshSettings(hA2sh);
+}
