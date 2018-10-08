@@ -371,7 +371,7 @@ void PluginProcessor::saveConfigurationToFile (File destination)
                              createElement(binauraliser_getSourceAzi_deg(hBin, i),
                                           binauraliser_getSourceElev_deg(hBin, i),
                                           1.0f,
-                                          i,
+                                          i+1,
                                           false,
                                           1.0f), nullptr);
     }
@@ -382,6 +382,7 @@ void PluginProcessor::saveConfigurationToFile (File destination)
     strcat(versionString, JucePlugin_VersionString);
     jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA Binauraliser " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
     jsonObj->setProperty ("GenericLayout", ConfigurationHelper::convertElementsToVar (sources, "Source Directions"));
+    //jsonObj->setProperty ("LoudspeakerLayout", ConfigurationHelper::convertLoudspeakersToVar (sources, "Source Directions"));
     Result result = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
     assert(result.wasOk());
 }
@@ -390,6 +391,7 @@ void PluginProcessor::loadConfiguration (const File& configFile)
 {
     sources.removeAllChildren(nullptr);
     Result result = ConfigurationHelper::parseFileForGenericLayout (configFile, sources, nullptr);
+    //Result result = ConfigurationHelper::parseFileForLoudspeakerLayout (configFile, sources, nullptr);
     if(result.wasOk()){
         int num_srcs = 0;
         int src_idx = 0;
