@@ -323,7 +323,7 @@ void PluginProcessor::saveConfigurationToFile (File destination, int srcOrLs)
                 elements.appendChild (ConfigurationHelper::
                                       createElement(panner_getSourceAzi_deg(hPan, i),
                                                     panner_getSourceElev_deg(hPan, i),
-                                                    1.0f, i, false, 1.0f), nullptr);
+                                                    1.0f, i+1, false, 1.0f), nullptr);
             }
         }
         break;
@@ -332,7 +332,7 @@ void PluginProcessor::saveConfigurationToFile (File destination, int srcOrLs)
                 elements.appendChild (ConfigurationHelper::
                                      createElement(panner_getLoudspeakerAzi_deg(hPan, i),
                                                        panner_getLoudspeakerElev_deg(hPan, i),
-                                                       1.0f, i, false, 1.0f), nullptr);
+                                                       1.0f, i+1, false, 1.0f), nullptr);
             }
         }
         break;

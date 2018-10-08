@@ -305,7 +305,7 @@ void PluginProcessor::saveConfigurationToFile (File destination)
         sources.appendChild (ConfigurationHelper::
                              createElement(ambi_enc_getSourceAzi_deg(hAmbi, i),
                                           ambi_enc_getSourceElev_deg(hAmbi, i),
-                                          1.0f, i, false, 1.0f), nullptr);
+                                          1.0f, i+1, false, 1.0f), nullptr);
     }
     DynamicObject* jsonObj = new DynamicObject();
     jsonObj->setProperty("Name", var("SPARTA AmbiENC source directions."));
