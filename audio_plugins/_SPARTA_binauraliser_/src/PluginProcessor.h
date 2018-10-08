@@ -24,6 +24,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "binauraliser.h"
+//#define CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS 1
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
 #include "../../resources/ConfigurationHelper.h"
 

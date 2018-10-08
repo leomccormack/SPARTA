@@ -350,7 +350,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     refreshPanViewWindow = true;
 
 	/* Specify screen refresh rate */
-    startTimer(80);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(40);//80); /*ms (40ms = 25 frames per second) */
 
     showingFrameSizeWarning = false;
 
@@ -1038,6 +1038,9 @@ void PluginEditor::timerCallback()
     TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hVst->hBin), dontSendNotification);
     sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hVst->hBin));
     SL_num_sources->setValue(binauraliser_getNumSources(hVst->hBin),dontSendNotification);
+    s_yaw->setValue(binauraliser_getYaw(hVst->hBin), dontSendNotification);
+    s_pitch->setValue(binauraliser_getPitch(hVst->hBin), dontSendNotification);
+    s_roll->setValue(binauraliser_getRoll(hVst->hBin), dontSendNotification);
 
     /* refresh pan view */
     if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged()){
