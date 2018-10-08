@@ -331,10 +331,7 @@ void PluginProcessor::saveConfigurationToFile (File destination)
         sensors.appendChild (ConfigurationHelper::
                              createElement(array2sh_getSensorAzi_deg(hA2sh, i),
                                            array2sh_getSensorElev_deg(hA2sh, i),
-                                           1.0f,
-                                           i,
-                                           false,
-                                           1.0f), nullptr);
+                                           1.0f, i+1, false, 1.0f), nullptr);
     }
     DynamicObject* jsonObj = new DynamicObject();
     jsonObj->setProperty("Name", var("SPARTA Array2SH sensor directions."));

@@ -370,10 +370,7 @@ void PluginProcessor::saveConfigurationToFile (File destination)
         sources.appendChild (ConfigurationHelper::
                              createElement(binauraliser_getSourceAzi_deg(hBin, i),
                                           binauraliser_getSourceElev_deg(hBin, i),
-                                          1.0f,
-                                          i+1,
-                                          false,
-                                          1.0f), nullptr);
+                                          1.0f, i+1, false, 1.0f), nullptr);
     }
     DynamicObject* jsonObj = new DynamicObject();
     jsonObj->setProperty("Name", var("SPARTA Binauraliser source directions."));

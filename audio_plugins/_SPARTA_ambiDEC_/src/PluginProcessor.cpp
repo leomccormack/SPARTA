@@ -341,7 +341,7 @@ void PluginProcessor::saveConfigurationToFile (File destination)
                                   createLoudspeaker(ambi_dec_getLoudspeakerAzi_deg(hAmbi, i),
                                               ambi_dec_getLoudspeakerElev_deg(hAmbi, i),
                                               1.0f,
-                                              i,
+                                              i+1,
                                               false,
                                               1.0f), nullptr);
     }
