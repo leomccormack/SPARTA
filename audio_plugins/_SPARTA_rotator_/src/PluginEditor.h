@@ -24,7 +24,12 @@
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
 
-
+typedef enum _SPARTA_WARNINGS{
+    k_warning_none,
+    k_warning_frameSize,
+    k_warning_NinputCH,
+    k_warning_NoutputCH
+}SPARTA_WARNINGS;
 //[/Headers]
 
 
@@ -65,7 +70,9 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    bool showingFrameSizeWarning;
+    
+    /* warnings */
+    SPARTA_WARNINGS currentWarning; 
     //[/UserVariables]
 
     //==============================================================================

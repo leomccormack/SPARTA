@@ -24,13 +24,13 @@
 
 PluginProcessor::PluginProcessor()
 {
-    ringBufferInputs = new float*[MAX_NUM_CHANNELS];
+    bufferInputs = new float*[MAX_NUM_CHANNELS];
     for (int i = 0; i < MAX_NUM_CHANNELS; i++)
-        ringBufferInputs[i] = new float[FRAME_SIZE];
+        bufferInputs[i] = new float[FRAME_SIZE];
     
-    ringBufferOutputs = new float*[MAX_NUM_CHANNELS];
+    bufferOutputs = new float*[MAX_NUM_CHANNELS];
     for (int i = 0; i < MAX_NUM_CHANNELS; i++)
-        ringBufferOutputs[i] = new float[FRAME_SIZE];
+        bufferOutputs[i] = new float[FRAME_SIZE];
     
 	ambi_bin_create(&hAmbi);
     
@@ -49,12 +49,12 @@ PluginProcessor::~PluginProcessor()
 	ambi_bin_destroy(&hAmbi);
     
     for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        delete[] ringBufferInputs[i];
-    delete[] ringBufferInputs;
+        delete[] bufferInputs[i];
+    delete[] bufferInputs;
     
     for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        delete[] ringBufferOutputs[i];
-    delete[] ringBufferOutputs;
+        delete[] bufferOutputs[i];
+    delete[] bufferOutputs;
 }
 
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
@@ -193,7 +193,7 @@ int PluginProcessor::getCurrentProgram()
 
 const String PluginProcessor::getProgramName (int index)
 {
-    return String::empty;
+    return String();
 }
 
 
@@ -237,22 +237,18 @@ void PluginProcessor::changeProgramName (int index, const String& newName)
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-	nHostBlockSize = samplesPerBlock;
-	nSampleRate = (int)(sampleRate + 0.5);
-    
-    nNumInputs = getTotalNumInputChannels();
+    nHostBlockSize = samplesPerBlock;
+    nNumInputs =  getTotalNumInputChannels();
     nNumOutputs = getTotalNumOutputChannels();
- 
-	setPlayConfigDetails(nNumInputs, nNumOutputs, (double)nSampleRate, nHostBlockSize);
-	numChannelsChanged();
+    nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
 
 	ambi_bin_init(hAmbi, sampleRate);
     
     for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(ringBufferInputs[i], 0, FRAME_SIZE*sizeof(float));
+        memset(bufferInputs[i], 0, FRAME_SIZE*sizeof(float));
     for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(ringBufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
+        memset(bufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
 }
 
 void PluginProcessor::releaseResources()
@@ -262,44 +258,39 @@ void PluginProcessor::releaseResources()
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
-    int nCurrentBlockSize = buffer.getNumSamples();
+    int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
+    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
+    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
-    float** outputs = new float*[nNumOutputs];
-    for (int i = 0; i < nNumOutputs; i++)
-        outputs[i] = new float[FRAME_SIZE];
     
     if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
         for (int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
             for (int ch = 0; ch < nNumInputs; ch++)
                 for (int i = 0; i < FRAME_SIZE; i++)
-                    ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
+                    bufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
             
             /* determine if there is actually audio in the damn buffer */
             playHead = getPlayHead();
             bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-            if (PlayHeadAvailable == true)
+            if (PlayHeadAvailable)
                 isPlaying = currentPosition.isPlaying;
             else
-                isPlaying = true;
+                isPlaying = false;
             if(!isPlaying) /* for DAWs with no transport */
                 isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
             
             /* perform processing */
-            ambi_bin_process(hAmbi, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
+            ambi_bin_process(hAmbi, bufferInputs, bufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
             
             /* replace buffer with new audio */
             buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
             for (int ch = 0; ch < nNumOutputs; ch++)
                 for (int i = 0; i < FRAME_SIZE; i++)
-                    bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
+                    bufferData[ch][frame*FRAME_SIZE + i] = bufferOutputs[ch][i];
         }
     }
     else
         buffer.clear();
-    
-    for (int i = 0; i < nNumOutputs; ++i)
-        delete[] outputs[i];
-    delete[] outputs;
 }
 
 //==============================================================================

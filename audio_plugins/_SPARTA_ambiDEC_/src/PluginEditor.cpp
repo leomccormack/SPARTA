@@ -331,7 +331,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
 
-    showingFrameSizeWarning = false;
+    /* warnings */
+    currentWarning = k_warning_none;
 
     //[/Constructor]
 }
@@ -393,7 +394,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 152, y = 263, width = 144, height = 81;
+        int x = 152, y = 263, width = 145, height = 81;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -419,7 +420,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 446, y = 120, width = 196, height = 224;
+        int x = 446, y = 121, width = 196, height = 223;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -458,7 +459,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 12, y = 58, width = 204, height = 102;
+        int x = 12, y = 58, width = 205, height = 102;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -508,7 +509,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 12, y = 160, width = 424, height = 105;
+        int x = 12, y = 159, width = 424, height = 105;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -629,7 +630,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 12, y = 263, width = 140, height = 81;
+        int x = 12, y = 263, width = 141, height = 81;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -803,12 +804,28 @@ void PluginEditor::paint (Graphics& g)
                 Justification::centredLeft, true);
 
     /* display warning message */
-    if(showingFrameSizeWarning){
-        g.setColour(Colours::red);
-        g.setFont(Font(11.00f, Font::plain));
-        g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                   getBounds().getWidth()-170, 16, 530, 11,
-                   Justification::centredLeft, true);
+    g.setColour(Colours::red);
+    g.setFont(Font(11.00f, Font::plain));
+    switch (currentWarning){
+        case k_warning_none:
+            break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NinputCH:
+            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+                       TRANS("/") + String(ambi_dec_getNSHrequired()) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NoutputCH:
+            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+                       TRANS("/") + String(ambi_dec_getNumLoudspeakers(hVst->hAmbi)) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
     }
 
     //[/UserPaint]
@@ -985,14 +1002,22 @@ void PluginEditor::timerCallback()
     if (decOrder2dSlider->getRefreshValuesFLAG())
         decOrder2dSlider->repaint();
 
-    /* show warning if currently selected framesize is not supported */
+    /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        showingFrameSizeWarning = true;
-        repaint();
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
     }
-    else if(showingFrameSizeWarning){
-        showingFrameSizeWarning = false;
-        repaint();
+    else if ((hVst->getCurrentNumInputs() < ambi_dec_getNSHrequired())){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((hVst->getCurrentNumOutputs() < ambi_dec_getNumLoudspeakers(hVst->hAmbi))){
+        currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 }
 
@@ -1018,17 +1043,17 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 30 656 326" fill=" radial: 336 184, 656 352, 0=ff55636d, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
-    <RECT pos="152 263 144 81" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="152 263 145 81" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="296 263 140 81" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="446 120 196 224" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="446 121 196 223" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="216 58 220 102" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="446 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 58 204 102" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 58 205 102" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="0 0 656 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
@@ -1038,7 +1063,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="455 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="12 160 424 105" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 159 424 105" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="502 124 105 32" fill="solid: ffffffff" hasStroke="0" text="Azi    #    Elev"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
@@ -1067,7 +1092,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="227 58 189 30" fill="solid: ffffffff" hasStroke="0" text="Binauralise Loudspeakers:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="12 263 140 81" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 263 141 81" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="51 261 96 30" fill="solid: ffffffff" hasStroke="0" text="Decoder 1"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"

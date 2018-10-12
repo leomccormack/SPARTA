@@ -29,6 +29,12 @@
 #ifndef M_PI
   #define M_PI (3.14159265359f)
 #endif
+
+typedef enum _SPARTA_WARNINGS{
+    k_warning_none,
+    k_warning_frameSize,
+    k_warning_NinputCH
+}SPARTA_WARNINGS;
 //[/Headers]
 
 
@@ -73,8 +79,9 @@ private:
     ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
 	OpenGLContext openGLContext;
     ScopedPointer<log2dSlider> anaOrder2dSlider;
-    
-    bool showingFrameSizeWarning;
+
+    /* warnings */
+    SPARTA_WARNINGS currentWarning; 
     //[/UserVariables]
 
     //==============================================================================

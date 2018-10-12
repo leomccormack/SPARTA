@@ -92,6 +92,10 @@
  //#define JUCE_JACK 0
 #endif
 
+#ifndef    JUCE_BELA
+ //#define JUCE_BELA 0
+#endif
+
 #ifndef    JUCE_USE_ANDROID_OBOE
  //#define JUCE_USE_ANDROID_OBOE 0
 #endif
@@ -163,6 +167,10 @@
 
 #ifndef    JUCE_PLUGINHOST_AU
  //#define JUCE_PLUGINHOST_AU 0
+#endif
+
+#ifndef    JUCE_PLUGINHOST_LADSPA
+ //#define JUCE_PLUGINHOST_LADSPA 0
 #endif
 
 //==============================================================================
@@ -335,13 +343,13 @@
  #define JucePlugin_EditorRequiresKeyboardFocus  0
 #endif
 #ifndef  JucePlugin_Version
- #define JucePlugin_Version                1.1.0
+ #define JucePlugin_Version                1.1.2
 #endif
 #ifndef  JucePlugin_VersionCode
- #define JucePlugin_VersionCode            0x10100
+ #define JucePlugin_VersionCode            0x10102
 #endif
 #ifndef  JucePlugin_VersionString
- #define JucePlugin_VersionString          "1.1.0"
+ #define JucePlugin_VersionString          "1.1.2"
 #endif
 #ifndef  JucePlugin_VSTUniqueID
  #define JucePlugin_VSTUniqueID            JucePlugin_PluginCode
@@ -349,8 +357,11 @@
 #ifndef  JucePlugin_VSTCategory
  #define JucePlugin_VSTCategory            kPlugCategEffect
 #endif
+#ifndef  JucePlugin_Vst3Category
+ #define JucePlugin_Vst3Category           "Fx"
+#endif
 #ifndef  JucePlugin_AUMainType
- #define JucePlugin_AUMainType             kAudioUnitType_Effect
+ #define JucePlugin_AUMainType             'aufx'
 #endif
 #ifndef  JucePlugin_AUSubType
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
@@ -368,7 +379,7 @@
  #define JucePlugin_CFBundleIdentifier     com.AALTO.SPARTA
 #endif
 #ifndef  JucePlugin_RTASCategory
- #define JucePlugin_RTASCategory           ePlugInCategory_None
+ #define JucePlugin_RTASCategory           0
 #endif
 #ifndef  JucePlugin_RTASManufacturerCode
  #define JucePlugin_RTASManufacturerCode   JucePlugin_ManufacturerCode
@@ -392,7 +403,7 @@
  #define JucePlugin_AAXProductId           JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AAXCategory
- #define JucePlugin_AAXCategory            AAX_ePlugInCategory_Dynamics
+ #define JucePlugin_AAXCategory            2
 #endif
 #ifndef  JucePlugin_AAXDisableBypass
  #define JucePlugin_AAXDisableBypass       0
@@ -408,13 +419,4 @@
 #endif
 #ifndef  JucePlugin_IAAName
  #define JucePlugin_IAAName                "AALTO: sparta_ambiDEC_o7"
-#endif
-#ifndef  JucePlugin_MaxNumInputChannels
- #define JucePlugin_MaxNumInputChannels    64
-#endif
-#ifndef  JucePlugin_MaxNumOutputChannels
- #define JucePlugin_MaxNumOutputChannels   64
-#endif
-#ifndef  JucePlugin_PreferredChannelConfigurations
- #define JucePlugin_PreferredChannelConfigurations  {64,1},{64,2},{64,3},{64,4},{64,5},{64,6},{64,7},{64,8},{64,9},{64,10},{64,11},{64,12},{64,13},{64,14},{64,15},{64,16},{64,17},{64,18},{64,19},{64,20},{64,21},{64,22},{64,23},{64,24},{64,25},{64,26},{64,27},{64,28},{64,29},{64,30},{64,31},{64,32},{64,33},{64,34},{64,35},{64,36},{64,37},{64,38},{64,39},{64,40},{64,41},{64,42},{64,43},{64,44},{64,45},{64,46},{64,47},{64,48},{64,49},{64,50},{64,51},{64,52},{64,53},{64,54},{64,55},{64,56},{64,57},{64,58},{64,59},{64,60},{64,61},{64,62},{64,63},{64,64}
 #endif

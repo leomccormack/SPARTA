@@ -28,9 +28,9 @@ PluginProcessor::PluginProcessor()
 	nHostBlockSize = FRAME_SIZE;
 	nSampleRate = 48000;
 
-	ringBufferInputs = new float*[MAX_NUM_CHANNELS];
+	bufferInputs = new float*[MAX_NUM_CHANNELS];
 	for (int i = 0; i < MAX_NUM_CHANNELS; i++)
-		ringBufferInputs[i] = new float[FRAME_SIZE];
+		bufferInputs[i] = new float[FRAME_SIZE];
  
 	sldoa_create(&hSld);
 }
@@ -40,8 +40,8 @@ PluginProcessor::~PluginProcessor()
 	sldoa_destroy(&hSld);
 
 	for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-		delete[] ringBufferInputs[i];
-	delete[] ringBufferInputs;
+		delete[] bufferInputs[i];
+	delete[] bufferInputs;
 }
 
 void PluginProcessor::setParameter (int index, float newValue)
@@ -114,7 +114,7 @@ int PluginProcessor::getCurrentProgram()
 
 const String PluginProcessor::getProgramName (int index)
 {
-    return String::empty;
+    return String();
 }
 
 bool PluginProcessor::isInputChannelStereoPair (int index) const
@@ -156,16 +156,13 @@ void PluginProcessor::changeProgramName (int index, const String& newName)
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-	nHostBlockSize = samplesPerBlock;
-	nSampleRate = (int)(sampleRate + 0.5);
-
-    nNumInputs = getNumInputChannels();
-
-	setPlayConfigDetails(nNumInputs, 0, (double)nSampleRate, nHostBlockSize);
-	numChannelsChanged(); 
+    nHostBlockSize = samplesPerBlock;
+    nNumInputs =  getTotalNumInputChannels();
+    nSampleRate = (int)(sampleRate + 0.5);
+    isPlaying = false;
 
 	for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-		memset(ringBufferInputs[i], 0, FRAME_SIZE * sizeof(float));
+		memset(bufferInputs[i], 0, FRAME_SIZE * sizeof(float));
 	
 	isPlaying = false; 
 	sldoa_init(hSld, sampleRate);
@@ -179,18 +176,19 @@ void PluginProcessor::releaseResources()
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
 	int nCurrentBlockSize = buffer.getNumSamples();
-	float** bufferData = buffer.getArrayOfWritePointers();
+    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
+    const float** bufferData = buffer.getArrayOfReadPointers();
  
     if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
         for (int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
             for (int ch = 0; ch < nNumInputs; ch++)
                 for (int i = 0; i < FRAME_SIZE; i++)
-                    ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
+                    bufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
             
             /* determine if there is actually audio in the damn buffer */
             playHead = getPlayHead();
             bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-            if (PlayHeadAvailable == true)
+            if (PlayHeadAvailable)
                 isPlaying = currentPosition.isPlaying;
             else
                 isPlaying = false;
@@ -198,7 +196,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
                 isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
             
             /* perform processing */
-            sldoa_analysis(hSld, ringBufferInputs, nNumInputs, FRAME_SIZE, isPlaying);
+            sldoa_analysis(hSld, bufferInputs, nNumInputs, FRAME_SIZE, isPlaying);
         }
     }
 }

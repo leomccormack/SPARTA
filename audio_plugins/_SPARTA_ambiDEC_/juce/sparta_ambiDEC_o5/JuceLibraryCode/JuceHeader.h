@@ -40,7 +40,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "sparta_ambiDEC_o5";
-    const char* const  versionString  = "1.1.0";
-    const int          versionNumber  = 0x10100;
+    const char* const  versionString  = "1.1.2";
+    const int          versionNumber  = 0x10102;
 }
 #endif

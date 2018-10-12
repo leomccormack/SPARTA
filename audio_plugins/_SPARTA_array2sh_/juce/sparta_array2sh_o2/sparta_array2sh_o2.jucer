@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="lfkRjX" name="sparta_array2sh_o2" projectType="audioplug"
-              version="1.1.0" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
+              version="1.1.1" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_array2sh_o2" pluginDesc="sparta_array2sh_o2"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ASO2"
-              pluginChannelConfigs="{9, 9}, {10, 9}, {11, 9}, {12, 9}, {13, 9}, {14, 9}, {15, 9}, {16, 9}, {17, 9}, {18, 9}, {19, 9}, {20, 9}, {21, 9}, {22, 9}, {23, 9}, {24, 9}, {25, 9}, {26, 9}, {27, 9}, {28, 9}, {29, 9}, {30, 9}, {31, 9}, {32, 9}, {33, 9}, {34, 9}, {35, 9}, {36, 9}, {37, 9}, {38, 9}, {39, 9}, {40, 9}, {41, 9}, {42, 9}, {43, 9}, {44, 9}, {45, 9}, {46, 9}, {47, 9}, {48, 9}, {49, 9}, {50, 9}, {51, 9}, {52, 9}, {53, 9}, {54, 9}, {55, 9}, {56, 9}, {57, 9}, {58, 9}, {59, 9}, {60, 9}, {61, 9}, {62, 9}, {63, 9}, {64, 9}"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="sparta_array2sh_o2AU" pluginRTASCategory=""
@@ -152,7 +151,6 @@
                        intermediatesPath="../../../../obj/sparta_array2sh_o2/Win64_Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_video" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_opengl" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_gui_basics" path="../../../../SDKs/modules/"/>
@@ -188,7 +186,6 @@
                        linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_video" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_opengl" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_gui_basics" path="../../../../SDKs/modules/"/>
@@ -216,7 +213,6 @@
                        linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_video" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_opengl" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_gui_basics" path="../../../../SDKs/modules/"/>
@@ -247,7 +243,6 @@
     <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
-    <MODULES id="juce_video" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_USE_CAMERA="0"/>
   <LIVE_SETTINGS>

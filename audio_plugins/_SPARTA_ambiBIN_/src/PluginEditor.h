@@ -24,6 +24,13 @@
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
 
+typedef enum _SPARTA_WARNINGS{
+    k_warning_none,
+    k_warning_frameSize,
+    k_warning_NinputCH,
+    k_warning_NoutputCH
+}SPARTA_WARNINGS;
+
 //[/Headers]
 
 
@@ -78,7 +85,8 @@ private:
         ambi_bin_setSofaFilePath(hVst->hAmbi, new_cstring);
     }
 
-    bool showingFrameSizeWarning;
+    /* warnings */
+    SPARTA_WARNINGS currentWarning; 
 
     //[/UserVariables]
 

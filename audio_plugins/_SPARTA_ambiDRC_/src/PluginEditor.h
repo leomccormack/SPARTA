@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.3.0
 
   ------------------------------------------------------------------------------
 
@@ -25,6 +25,12 @@
 #include "TFview.h"
 #include "colourGradient.h"
 
+typedef enum _SPARTA_WARNINGS{
+    k_warning_none,
+    k_warning_frameSize,
+    k_warning_NinputCH,
+    k_warning_NoutputCH
+}SPARTA_WARNINGS;
 //[/Headers]
 
 
@@ -67,20 +73,22 @@ private:
     ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
     ScopedPointer<TFview> TFviewIncluded;
-    bool showingFrameSizeWarning;
+    
+    /* warnings */
+    SPARTA_WARNINGS currentWarning; 
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<Slider> s_thresh;
-    std::unique_ptr<Slider> s_ratio;
-    std::unique_ptr<Slider> s_knee;
-    std::unique_ptr<Slider> s_attack;
-    std::unique_ptr<Slider> s_release;
-    std::unique_ptr<Slider> s_outgain;
-    std::unique_ptr<Slider> s_ingain;
-    std::unique_ptr<ComboBox> presetCB;
-    std::unique_ptr<ComboBox> CHOrderingCB;
-    std::unique_ptr<ComboBox> normalisationCB;
+    ScopedPointer<Slider> s_thresh;
+    ScopedPointer<Slider> s_ratio;
+    ScopedPointer<Slider> s_knee;
+    ScopedPointer<Slider> s_attack;
+    ScopedPointer<Slider> s_release;
+    ScopedPointer<Slider> s_outgain;
+    ScopedPointer<Slider> s_ingain;
+    ScopedPointer<ComboBox> presetCB;
+    ScopedPointer<ComboBox> CHOrderingCB;
+    ScopedPointer<ComboBox> normalisationCB;
 
 
     //==============================================================================

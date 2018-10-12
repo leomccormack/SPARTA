@@ -27,7 +27,6 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <juce_gui_extra/juce_gui_extra.h>
 #include <juce_opengl/juce_opengl.h>
-#include <juce_video/juce_video.h>
 
 
 #if ! DONT_SET_USING_JUCE_NAMESPACE
@@ -40,7 +39,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "sparta_panner";
-    const char* const  versionString  = "1.1.0";
-    const int          versionNumber  = 0x10100;
+    const char* const  versionString  = "1.1.1";
+    const int          versionNumber  = 0x10101;
 }
 #endif

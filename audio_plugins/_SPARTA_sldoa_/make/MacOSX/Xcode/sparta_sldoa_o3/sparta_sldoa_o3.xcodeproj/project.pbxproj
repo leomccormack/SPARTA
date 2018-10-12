@@ -332,6 +332,7 @@
 		FE11BF6CC1DD8595A15CE890 = {isa = XCBuildConfiguration; buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
@@ -346,8 +347,8 @@
 					"SH_ORDER=3",
 					"FRAME_SIZE=256",
 					"JUCER_XCODE_MAC_F4144657=1",
-					"JUCE_APP_VERSION=1.0.1",
-					"JUCE_APP_VERSION_HEX=0x10001",
+					"JUCE_APP_VERSION=1.0.2",
+					"JUCE_APP_VERSION_HEX=0x10002",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -372,6 +373,7 @@
 		08258B6FE107E5DD391A2D26 = {isa = XCBuildConfiguration; buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
@@ -386,8 +388,8 @@
 					"SH_ORDER=3",
 					"FRAME_SIZE=256",
 					"JUCER_XCODE_MAC_F4144657=1",
-					"JUCE_APP_VERSION=1.0.1",
-					"JUCE_APP_VERSION_HEX=0x10001",
+					"JUCE_APP_VERSION=1.0.2",
+					"JUCE_APP_VERSION_HEX=0x10002",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -414,6 +416,7 @@
 		DF828A93703B4E59B120047E = {isa = XCBuildConfiguration; buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
@@ -426,8 +429,8 @@
 					"SH_ORDER=3",
 					"FRAME_SIZE=256",
 					"JUCER_XCODE_MAC_F4144657=1",
-					"JUCE_APP_VERSION=1.0.1",
-					"JUCE_APP_VERSION_HEX=0x10001",
+					"JUCE_APP_VERSION=1.0.2",
+					"JUCE_APP_VERSION_HEX=0x10002",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -447,6 +450,7 @@
 		C19C3B6C902CC4E3EFC5D474 = {isa = XCBuildConfiguration; buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
@@ -459,8 +463,8 @@
 					"SH_ORDER=3",
 					"FRAME_SIZE=256",
 					"JUCER_XCODE_MAC_F4144657=1",
-					"JUCE_APP_VERSION=1.0.1",
-					"JUCE_APP_VERSION_HEX=0x10001",
+					"JUCE_APP_VERSION=1.0.2",
+					"JUCE_APP_VERSION_HEX=0x10002",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -638,7 +642,7 @@
 					E06A7684CA3F7D34264E284C, ); runOnlyForDeploymentPostprocessing = 0; };
 		1913975A7EF2E7A8FAA91C38 = {isa = PBXNativeTarget; buildConfigurationList = 8DD858FBCD8866A7B398294A; buildPhases = (
 					45621E0B9BB8B1B8E90EC560, ); buildRules = ( ); dependencies = (  ); name = "sparta_sldoa_o3 - Shared Code"; productName = "sparta_sldoa_o3"; productReference = B3B6D47D71F2CEA1599FEA89; productType = "com.apple.product-type.library.static"; };
-		030CE0186C510D1FDA6ED6A6 = {isa = PBXProject; buildConfigurationList = D66792391EEF08ACA447E192; attributes = { LastUpgradeCheck = 0830; ORGANIZATIONNAME = "Aalto"; TargetAttributes = { 637B0DF4ED253147FAB02C55 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; };52B20B8A73E772FFE4672ADB = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; };1913975A7EF2E7A8FAA91C38 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; }; compatibilityVersion = "Xcode 3.2"; hasScannedForEncodings = 0; mainGroup = D2E828249AD63D01CF4A6A14; projectDirPath = ""; projectRoot = ""; targets = (637B0DF4ED253147FAB02C55, 52B20B8A73E772FFE4672ADB, 1913975A7EF2E7A8FAA91C38); };
+		030CE0186C510D1FDA6ED6A6 = {isa = PBXProject; buildConfigurationList = D66792391EEF08ACA447E192; attributes = { LastUpgradeCheck = 0930; ORGANIZATIONNAME = "Aalto"; TargetAttributes = { 637B0DF4ED253147FAB02C55 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; };52B20B8A73E772FFE4672ADB = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; };1913975A7EF2E7A8FAA91C38 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; }; compatibilityVersion = "Xcode 3.2"; hasScannedForEncodings = 0; mainGroup = D2E828249AD63D01CF4A6A14; projectDirPath = ""; projectRoot = ""; targets = (637B0DF4ED253147FAB02C55, 52B20B8A73E772FFE4672ADB, 1913975A7EF2E7A8FAA91C38); };
 	};
 	rootObject = 030CE0186C510D1FDA6ED6A6;
 }

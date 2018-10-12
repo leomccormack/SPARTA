@@ -29,6 +29,12 @@
 #ifndef M_PI
   #define M_PI (3.14159265359f)
 #endif
+
+typedef enum _SPARTA_WARNINGS{
+    k_warning_none,
+    k_warning_frameSize,
+    k_warning_NinputCH
+}SPARTA_WARNINGS;
 //[/Headers]
 
 
@@ -83,7 +89,8 @@ private:
 
     bool resolutionHasChanged;
     
-    bool showingFrameSizeWarning;
+    /* warnings */
+    SPARTA_WARNINGS currentWarning; 
 
     //[/UserVariables]
 

@@ -28,7 +28,6 @@
 #include <juce_gui_extra/juce_gui_extra.h>
 #include <juce_opengl/juce_opengl.h>
 #include <juce_osc/juce_osc.h>
-#include <juce_video/juce_video.h>
 
 
 #if ! DONT_SET_USING_JUCE_NAMESPACE
@@ -41,7 +40,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "sparta_ambiBIN";
-    const char* const  versionString  = "1.0.1";
-    const int          versionNumber  = 0x10001;
+    const char* const  versionString  = "1.0.2";
+    const int          versionNumber  = 0x10002;
 }
 #endif

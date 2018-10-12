@@ -26,6 +26,13 @@
 #include "outputCoordsView.h"
 #include "log2dSlider.h"
 
+typedef enum _SPARTA_WARNINGS{
+    k_warning_none,
+    k_warning_frameSize,
+    k_warning_NinputCH,
+    k_warning_NoutputCH
+}SPARTA_WARNINGS;
+
 //[/Headers]
 
 
@@ -85,7 +92,8 @@ private:
         ambi_dec_setSofaFilePath(hVst->hAmbi, new_cstring);
     }
 
-    bool showingFrameSizeWarning;
+    /* warnings */
+    SPARTA_WARNINGS currentWarning;
 
     //[/UserVariables]
 

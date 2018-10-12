@@ -352,7 +352,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 	/* Specify screen refresh rate */
     startTimer(40);//80); /*ms (40ms = 25 frames per second) */
 
-    showingFrameSizeWarning = false;
+    /* warnings */
+    currentWarning = k_warning_none;
 
     //[/Constructor]
 }
@@ -856,12 +857,28 @@ void PluginEditor::paint (Graphics& g)
 		Justification::centredLeft, true);
 
     /* display warning message */
-    if(showingFrameSizeWarning){
-        g.setColour(Colours::red);
-        g.setFont(Font(11.00f, Font::plain));
-        g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                   getBounds().getWidth()-170, 16, 530, 11,
-                   Justification::centredLeft, true);
+    g.setColour(Colours::red);
+    g.setFont(Font(11.00f, Font::plain));
+    switch (currentWarning){
+        case k_warning_none:
+            break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NinputCH:
+            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+                       TRANS("/") + String(binauraliser_getNumSources(hVst->hBin)) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NoutputCH:
+            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+                       TRANS("/") + String(binauraliser_getNumEars()) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
     }
 
     //[/UserPaint]
@@ -1048,15 +1065,23 @@ void PluginEditor::timerCallback()
         refreshPanViewWindow = false;
         sourceCoordsView_handle->setHasASliderChange(false);
     }
-
-    /* show warning if currently selected framesize is not supported */
+    
+    /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        showingFrameSizeWarning = true;
-        repaint();
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
     }
-    else if(showingFrameSizeWarning){
-        showingFrameSizeWarning = false;
-        repaint();
+    else if ((hVst->getCurrentNumInputs() < binauraliser_getNumSources(hVst->hBin))){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((hVst->getCurrentNumOutputs() < binauraliser_getNumEars())){
+        currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 }
 
