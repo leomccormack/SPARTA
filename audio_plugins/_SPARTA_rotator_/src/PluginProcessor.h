@@ -44,7 +44,8 @@ enum {
 };
 
 class PluginProcessor  : public AudioProcessor,
-                         private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>
+                         private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
+                         public VSTCallbackHandler
 {
 public:
     int nNumInputs;                         /* current number of input channels */
@@ -53,17 +54,34 @@ public:
     int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
     void* hRot;                             /* handle */
 
-	bool isPlaying;
-	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
-	AudioPlayHead::CurrentPositionInfo currentPosition;
-
-	float** ringBufferInputs;
-	float** ringBufferOutputs;
- 
+    float** bufferInputs;
+    float** bufferOutputs;
+    
+    bool isPlaying;
+    AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
+    AudioPlayHead::CurrentPositionInfo currentPosition;
+    
     int getCurrentBlockSize(){
         return nHostBlockSize;
     }
+    int getCurrentNumInputs(){
+        return nNumInputs;
+    }
+    int getCurrentNumOutputs(){
+        return nNumOutputs;
+    }
+    
+    /* VST CanDo */
+    pointer_sized_int handleVstManufacturerSpecific (int32 index, pointer_sized_int value, void* ptr, float opt) override { return 0; };
+    pointer_sized_int handleVstPluginCanDo (int32 index, pointer_sized_int value, void* ptr, float opt) override{
+        auto text = (const char*) ptr;
+        auto matches = [=](const char* s) { return strcmp (text, s) == 0; };
+        if (matches ("wantsChannelCountNotifications"))
+            return 1;
+        return 0;
+    } 
 	
+    /* OSC */
     OSCReceiver osc;
     void oscMessageReceived(const OSCMessage& message) override;
     int osc_port_ID;

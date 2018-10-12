@@ -167,9 +167,11 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
     TBrpyFlag->setToggleState((bool)rotator_getRPYflag(hVst->hRot), dontSendNotification);
 
-    showingFrameSizeWarning = false;
-
+    /* Specify screen refresh rate */
     startTimer(30); /*ms (40ms = 25 frames per second) */
+    
+    /* warnings */
+    currentWarning = k_warning_none;
 
     //[/Constructor]
 }
@@ -478,13 +480,30 @@ void PluginEditor::paint (Graphics& g)
 		Justification::centredLeft, true);
 
     /* display warning message */
-    if(showingFrameSizeWarning){
-        g.setColour(Colours::red);
-        g.setFont(Font(11.00f, Font::plain));
-        g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                   getBounds().getWidth()-170, 16, 530, 11,
-                   Justification::centredLeft, true);
+    g.setColour(Colours::red);
+    g.setFont(Font(11.00f, Font::plain));
+    switch (currentWarning){
+        case k_warning_none:
+            break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NinputCH:
+            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+                       TRANS("/") + String(rotator_getNSHrequired(hVst->hRot)) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NoutputCH:
+            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+                       TRANS("/") + String(rotator_getNSHrequired(hVst->hRot)) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
     }
+
 
     //[/UserPaint]
 }
@@ -600,14 +619,22 @@ void PluginEditor::timerCallback()
     s_pitch->setValue(rotator_getPitch(hVst->hRot), dontSendNotification);
     s_roll->setValue(rotator_getRoll(hVst->hRot), dontSendNotification);
 
-    /* show warning if currently selected framesize is not supported */
+    /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        showingFrameSizeWarning = true;
-        repaint();
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
     }
-    else if(showingFrameSizeWarning){
-        showingFrameSizeWarning = false;
-        repaint();
+    else if ((hVst->getCurrentNumInputs() < rotator_getNSHrequired(hVst->hRot))){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((hVst->getCurrentNumOutputs() < rotator_getNSHrequired(hVst->hRot))){
+        currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 
     /* check if OSC port has changed */

@@ -313,6 +313,9 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_devices\native\juce_linux_ALSA.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_devices\native\juce_linux_Bela.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_devices\native\juce_linux_JackAudio.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -595,6 +598,9 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_processors\format_types\juce_LADSPAPluginFormat.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_processors\format_types\juce_LegacyAudioParameter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_processors\format_types\juce_VST3PluginFormat.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -650,6 +656,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\containers\juce_PropertySet.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\containers\juce_SparseSet.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\containers\juce_Variant.cpp">
@@ -1639,6 +1648,9 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_ChoicePropertyComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_MultiChoicePropertyComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_PropertyComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1864,15 +1876,6 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_osc\juce_osc.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_video\capture\juce_CameraDevice.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_video\playback\juce_VideoComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_video\juce_video.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\juce\sparta_binauraliser\JuceLibraryCode\include_juce_audio_basics.cpp"/>
     <ClCompile Include="..\..\..\juce\sparta_binauraliser\JuceLibraryCode\include_juce_audio_devices.cpp"/>
     <ClCompile Include="..\..\..\juce\sparta_binauraliser\JuceLibraryCode\include_juce_audio_formats.cpp"/>
@@ -1887,7 +1890,6 @@
     <ClCompile Include="..\..\..\juce\sparta_binauraliser\JuceLibraryCode\include_juce_gui_extra.cpp"/>
     <ClCompile Include="..\..\..\juce\sparta_binauraliser\JuceLibraryCode\include_juce_opengl.cpp"/>
     <ClCompile Include="..\..\..\juce\sparta_binauraliser\JuceLibraryCode\include_juce_osc.cpp"/>
-    <ClCompile Include="..\..\..\juce\sparta_binauraliser\JuceLibraryCode\include_juce_video.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\resources\ConfigurationHelper.h"/>
@@ -2487,6 +2489,7 @@
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_BooleanPropertyComponent.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_ButtonPropertyComponent.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_ChoicePropertyComponent.h"/>
+    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_MultiChoicePropertyComponent.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_PropertyComponent.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_PropertyPanel.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_SliderPropertyComponent.h"/>
@@ -2574,14 +2577,6 @@
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCTimeTag.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_osc\osc\juce_OSCTypes.h"/>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_osc\juce_osc.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\capture\juce_CameraDevice.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\native\juce_android_CameraDevice.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\native\juce_mac_CameraDevice.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\native\juce_mac_Video.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\native\juce_win32_CameraDevice.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\native\juce_win32_Video.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\playback\juce_VideoComponent.h"/>
-    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_video\juce_video.h"/>
     <ClInclude Include="..\..\..\juce\sparta_binauraliser\JuceLibraryCode\AppConfig.h"/>
     <ClInclude Include="..\..\..\juce\sparta_binauraliser\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>

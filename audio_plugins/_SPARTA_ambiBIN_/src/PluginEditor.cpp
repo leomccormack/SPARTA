@@ -76,7 +76,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBmaxRE->setButtonText (String());
     TBmaxRE->addListener (this);
 
-    TBmaxRE->setBounds (72, 85, 32, 24);
+    TBmaxRE->setBounds (121, 86, 32, 24);
 
     addAndMakeVisible (s_yaw = new Slider ("new slider"));
     s_yaw->setRange (-180, 180, 0.01);
@@ -188,13 +188,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBcompEQ->setButtonText (String());
     TBcompEQ->addListener (this);
 
-    TBcompEQ->setBounds (176, 85, 32, 24);
+    TBcompEQ->setBounds (656, -16, 32, 24);
 
     addAndMakeVisible (TBrpyFlag = new ToggleButton ("new toggle button"));
     TBrpyFlag->setButtonText (String());
     TBrpyFlag->addListener (this);
 
-    TBrpyFlag->setBounds (48, 144, 32, 24);
+    TBrpyFlag->setBounds (56, 144, 32, 24);
 
 
     //[UserPreSize]
@@ -246,7 +246,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 	/* Specify screen refresh rate */
     startTimer(30);//80); /*ms (40ms = 25 frames per second) */
 
-    showingFrameSizeWarning = false;
+    /* warnings */
+    currentWarning = k_warning_none;
 
     //[/Constructor]
 }
@@ -483,8 +484,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 19, y = 82, width = 69, height = 30;
-        String text (TRANS("max_rE:"));
+        int x = 19, y = 82, width = 125, height = 30;
+        String text (TRANS("Enable max_rE:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -676,7 +677,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 104, y = 82, width = 80, height = 30;
+        int x = 659, y = -15, width = 80, height = 30;
         String text (TRANS("Comp. EQ:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -708,12 +709,28 @@ void PluginEditor::paint (Graphics& g)
 		Justification::centredLeft, true);
 
     /* display warning message */
-    if(showingFrameSizeWarning){
-        g.setColour(Colours::red);
-        g.setFont(Font(11.00f, Font::plain));
-        g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                   getBounds().getWidth()-170, 16, 530, 11,
-                   Justification::centredLeft, true);
+    g.setColour(Colours::red);
+    g.setFont(Font(11.00f, Font::plain));
+    switch (currentWarning){
+        case k_warning_none:
+            break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NinputCH:
+            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+                       TRANS("/") + String(ambi_bin_getNSHrequired(hVst->hAmbi)) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NoutputCH:
+            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+                       TRANS("/") + String(ambi_bin_getNumEars()) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
     }
 
     //[/UserPaint]
@@ -852,14 +869,22 @@ void PluginEditor::timerCallback()
     s_pitch->setValue(ambi_bin_getPitch(hVst->hAmbi), dontSendNotification);
     s_roll->setValue(ambi_bin_getRoll(hVst->hAmbi), dontSendNotification);
 
-    /* show warning if currently selected framesize is not supported */
+    /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        showingFrameSizeWarning = true;
-        repaint();
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
     }
-    else if(showingFrameSizeWarning){
-        showingFrameSizeWarning = false;
-        repaint();
+    else if ((hVst->getCurrentNumInputs() < ambi_bin_getNSHrequired(hVst->hAmbi))){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((hVst->getCurrentNumOutputs() < ambi_bin_getNumEars())){
+        currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 
     /* check if OSC port has changed */
@@ -925,7 +950,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="19 112 133 30" fill="solid: ffffffff" hasStroke="0" text="Rotation"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="19 82 69 30" fill="solid: ffffffff" hasStroke="0" text="max_rE:"
+    <TEXT pos="19 82 125 30" fill="solid: ffffffff" hasStroke="0" text="Enable max_rE:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="125 117 63 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[0]"
@@ -972,7 +997,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="11 174 63 23" fill="solid: ffffffff" hasStroke="0" text="OSC port"
           fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
-    <TEXT pos="104 82 80 30" fill="solid: ffffffff" hasStroke="0" text="Comp. EQ:"
+    <TEXT pos="659 -15 80 30" fill="solid: ffffffff" hasStroke="0" text="Comp. EQ:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="3 145 63 23" fill="solid: ffffffff" hasStroke="0" text="R-P-Y:"
@@ -992,7 +1017,7 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="312 88 112 20" editable="0"
             layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <TOGGLEBUTTON name="new toggle button" id="943aa789e193d13a" memberName="TBmaxRE"
-                virtualName="" explicitFocusOrder="0" pos="72 85 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="121 86 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <SLIDER name="new slider" id="ace036a85eec9703" memberName="s_yaw" virtualName=""
           explicitFocusOrder="0" pos="80 150 120 32" textboxtext="ffffffff"
@@ -1050,10 +1075,10 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="128 182 23 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="d5b2026137993288" memberName="TBcompEQ"
-                virtualName="" explicitFocusOrder="0" pos="176 85 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="656 -16 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="b4fec6d3e1a2bae2" memberName="TBrpyFlag"
-                virtualName="" explicitFocusOrder="0" pos="48 144 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="56 144 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 

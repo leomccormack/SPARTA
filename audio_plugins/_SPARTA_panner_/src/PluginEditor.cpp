@@ -70,7 +70,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_pValue->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
     SL_pValue->addListener (this);
 
-    SL_pValue->setBounds (272, 318, 160, 24);
+    SL_pValue->setBounds (272, 317, 168, 24);
 
     addAndMakeVisible (CBsLoudspeakerDirsPreset = new ComboBox ("new combo box"));
     CBsLoudspeakerDirsPreset->setEditableText (false);
@@ -306,7 +306,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 	/* Specify screen refresh rate */
     startTimer(40);//80); /*ms (40ms = 25 frames per second) */
 
-    showingFrameSizeWarning = false;
+    /* warnings */
+    currentWarning = k_warning_none;
 
     //[/Constructor]
 }
@@ -425,7 +426,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 12, y = 122, width = 196, height = 224;
+        int x = 12, y = 121, width = 196, height = 225;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -476,7 +477,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 712, y = 122, width = 196, height = 224;
+        int x = 712, y = 121, width = 196, height = 225;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -561,7 +562,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 220, y = 308, width = 219, height = 38;
+        int x = 220, y = 308, width = 229, height = 38;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -626,16 +627,32 @@ void PluginEditor::paint (Graphics& g)
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		150, 16, 530, 11,
+		135, 16, 530, 11,
 		Justification::centredLeft, true);
 
     /* display warning message */
-    if(showingFrameSizeWarning){
-        g.setColour(Colours::red);
-        g.setFont(Font(11.00f, Font::plain));
-        g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                   getBounds().getWidth()-170, 16, 530, 11,
-                   Justification::centredLeft, true);
+    g.setColour(Colours::red);
+    g.setFont(Font(11.00f, Font::plain));
+    switch (currentWarning){
+        case k_warning_none:
+            break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NinputCH:
+            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+                       TRANS("/") + String(panner_getNumSources(hVst->hPan)) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NoutputCH:
+            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+                       TRANS("/") + String(panner_getNumLoudspeakers(hVst->hPan)) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
     }
 
     //[/UserPaint]
@@ -800,14 +817,22 @@ void PluginEditor::timerCallback()
         loudspeakerCoordsView_handle->setHasASliderChange(false);
     }
 
-    /* show warning if currently selected framesize is not supported */
+    /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        showingFrameSizeWarning = true;
-        repaint();
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
     }
-    else if(showingFrameSizeWarning){
-        showingFrameSizeWarning = false;
-        repaint();
+    else if ((hVst->getCurrentNumInputs() < panner_getNumSources(hVst->hPan))){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((hVst->getCurrentNumOutputs() < panner_getNumLoudspeakers(hVst->hPan))){
+        currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 }
 
@@ -845,7 +870,7 @@ BEGIN_JUCER_METADATA
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 58 480 240" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 122 196 224" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 121 196 225" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="70 123 105 32" fill="solid: ffffffff" hasStroke="0" text="Azi    #   Elev"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
@@ -854,7 +879,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="712 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="712 122 196 224" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="712 121 196 225" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="23 88 113 30" fill="solid: ffffffff" hasStroke="0" text="N Chan:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
@@ -874,7 +899,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="574 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Outputs:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="220 308 219 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="220 308 229 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="231 314 132 30" fill="solid: ffffffff" hasStroke="0" text="DTT:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
@@ -904,7 +929,7 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="674 318 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <SLIDER name="new slider" id="5b4f982e7ea9b2d5" memberName="SL_pValue"
-          virtualName="" explicitFocusOrder="0" pos="272 318 160 24" min="0.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="272 317 168 24" min="0.00000000000000000000"
           max="1.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>

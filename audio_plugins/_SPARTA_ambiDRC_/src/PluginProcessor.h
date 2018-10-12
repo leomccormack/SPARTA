@@ -35,7 +35,8 @@ enum {
 	k_NumOfParameters
 };
 
-class PluginProcessor  : public AudioProcessor
+class PluginProcessor  : public AudioProcessor,
+                         public VSTCallbackHandler
 {
 public:
     int nNumInputs;                         /* current number of input channels */
@@ -44,16 +45,32 @@ public:
     int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
     void* hAmbi;                            /* dynamic range compressor handle */
 
-	bool isPlaying;       
-	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
-	AudioPlayHead::CurrentPositionInfo currentPosition;
+    float** bufferInputs;
+    float** bufferOutputs;
+    
+    bool isPlaying;
+    AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
+    AudioPlayHead::CurrentPositionInfo currentPosition;
     
     int getCurrentBlockSize(){
         return nHostBlockSize;
     }
-
-	float** ringBufferInputs;
-	float** ringBufferOutputs;
+    int getCurrentNumInputs(){
+        return nNumInputs;
+    }
+    int getCurrentNumOutputs(){
+        return nNumOutputs;
+    }
+    
+    /* VST CanDo */
+    pointer_sized_int handleVstManufacturerSpecific (int32 index, pointer_sized_int value, void* ptr, float opt) override { return 0; };
+    pointer_sized_int handleVstPluginCanDo (int32 index, pointer_sized_int value, void* ptr, float opt) override{
+        auto text = (const char*) ptr;
+        auto matches = [=](const char* s) { return strcmp (text, s) == 0; };
+        if (matches ("wantsChannelCountNotifications"))
+            return 1;
+        return 0;
+    }
 
     /***************************************************************************\
                                     JUCE Functions
@@ -62,32 +79,32 @@ public:
     PluginProcessor();
     ~PluginProcessor();
 
-    void prepareToPlay (double sampleRate, int samplesPerBlock);
-    void releaseResources();
-    void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
-    AudioProcessorEditor* createEditor();
-    bool hasEditor() const;
-    const String getName() const;
-    int getNumParameters();
-    float getParameter (int index);
-    void setParameter (int index, float newValue);
-    const String getParameterName (int index);
-    const String getParameterText (int index);
-    const String getInputChannelName (int channelIndex) const;
-    const String getOutputChannelName (int channelIndex) const;    
-    bool acceptsMidi() const;
-    bool producesMidi() const;
-    bool silenceInProducesSilenceOut() const;
-    double getTailLengthSeconds() const;
-    int getNumPrograms();
-    int getCurrentProgram();
-	void setCurrentProgram(int index);
-	const String getProgramName(int index);
-	bool isInputChannelStereoPair (int index) const;
-	bool isOutputChannelStereoPair(int index) const;
-	void changeProgramName(int index, const String& newName);
-    void getStateInformation (MemoryBlock& destData);
-    void setStateInformation (const void* data, int sizeInBytes);
+    void prepareToPlay (double sampleRate, int samplesPerBlock) override;
+    void releaseResources() override;
+    void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages) override;
+    AudioProcessorEditor* createEditor() override;
+    bool hasEditor() const override;
+    const String getName() const override;
+    int getNumParameters() override;
+    float getParameter (int index) override;
+    void setParameter (int index, float newValue) override;
+    const String getParameterName (int index) override;
+    const String getParameterText (int index) override;
+    const String getInputChannelName (int channelIndex) const override;
+    const String getOutputChannelName (int channelIndex) const override;
+    bool acceptsMidi() const override;
+    bool producesMidi() const override;
+    bool silenceInProducesSilenceOut() const override;
+    double getTailLengthSeconds() const override;
+    int getNumPrograms() override;
+    int getCurrentProgram() override;
+    void setCurrentProgram(int index) override;
+    const String getProgramName(int index) override;
+    bool isInputChannelStereoPair (int index) const override;
+    bool isOutputChannelStereoPair(int index) const override;
+    void changeProgramName(int index, const String& newName) override;
+    void getStateInformation (MemoryBlock& destData) override;
+    void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)

@@ -152,8 +152,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
 	/* Specify screen refresh rate */
     startTimer(100);//80); /*ms (40ms = 25 frames per second) */
-    
-    showingFrameSizeWarning = false;
+
+    /* warnings */
+    currentWarning = k_warning_none;
 
     //[/Constructor]
 }
@@ -219,7 +220,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 16, y = 366, width = 180, height = 34;
+        int x = 16, y = 366, width = 181, height = 34;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -232,7 +233,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 16, y = 400, width = 180, height = 94;
+        int x = 16, y = 399, width = 181, height = 95;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -245,7 +246,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 196, y = 400, width = 422, height = 94;
+        int x = 196, y = 399, width = 422, height = 95;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -266,7 +267,7 @@ void PluginEditor::paint (Graphics& g)
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 2);
+        g.drawRect (x, y, width, height, 3);
 
     }
 
@@ -462,14 +463,24 @@ void PluginEditor::paint (Graphics& g)
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
-    
+
     /* display warning message */
-    if(showingFrameSizeWarning){
-        g.setColour(Colours::red);
-        g.setFont(Font(11.00f, Font::plain));
-        g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                   getBounds().getWidth()-170, 16, 530, 11,
-                   Justification::centredLeft, true);
+    g.setColour(Colours::red);
+    g.setFont(Font(11.00f, Font::plain));
+    switch (currentWarning){
+        case k_warning_none:
+            break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NinputCH:
+            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+                       TRANS("/") + String(sldoa_getNSHrequired()) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
     }
 
     //[/UserPaint]
@@ -564,15 +575,19 @@ void PluginEditor::timerCallback()
 
     s_minFreq->setValue(sldoa_getMinFreq(hVst->hSld));
     s_maxFreq->setValue(sldoa_getMaxFreq(hVst->hSld));
-    
-    /* show warning if currently selected framesize is not supported */
+
+    /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        showingFrameSizeWarning = true;
-        repaint();
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
     }
-    else if(showingFrameSizeWarning){
-        showingFrameSizeWarning = false;
-        repaint();
+    else if ((hVst->getCurrentNumInputs() < sldoa_getNSHrequired())){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 }
 
@@ -600,13 +615,13 @@ BEGIN_JUCER_METADATA
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="196 366 422 34" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="16 366 180 34" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="16 366 181 34" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="16 400 180 94" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="16 399 181 95" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="196 400 422 94" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="196 399 422 95" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="0 0 634 32" fill="solid: ff073642" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="0 0 634 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
     <TEXT pos="-23 0 159 32" fill="solid: ffffffff" hasStroke="0" text="SLDoA"
           fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"

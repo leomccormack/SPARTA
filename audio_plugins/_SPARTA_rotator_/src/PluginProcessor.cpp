@@ -28,13 +28,13 @@ PluginProcessor::PluginProcessor()
     nHostBlockSize = FRAME_SIZE;
 	rotator_create(&hRot);
 
-	ringBufferInputs = new float*[MAX_NUM_CHANNELS];
-	for (int i = 0; i < MAX_NUM_CHANNELS; i++)
-		ringBufferInputs[i] = new float[FRAME_SIZE];
-
-	ringBufferOutputs = new float*[MAX_NUM_CHANNELS];
-	for (int i = 0; i < MAX_NUM_CHANNELS; i++)
-		ringBufferOutputs[i] = new float[FRAME_SIZE];
+    bufferInputs = new float*[MAX_NUM_CHANNELS];
+    for (int i = 0; i < MAX_NUM_CHANNELS; i++)
+        bufferInputs[i] = new float[FRAME_SIZE];
+    
+    bufferOutputs = new float*[MAX_NUM_CHANNELS];
+    for (int i = 0; i < MAX_NUM_CHANNELS; i++)
+        bufferOutputs[i] = new float[FRAME_SIZE];
 
     /* specify here on which UDP port number to receive incoming OSC messages */
     osc_port_ID = DEFAULT_OSC_PORT;
@@ -50,15 +50,13 @@ PluginProcessor::~PluginProcessor()
     
 	rotator_destroy(&hRot);
 
-	for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
-		delete[] ringBufferInputs[i];
-	}
-	delete[] ringBufferInputs;
-
-	for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
-		delete[] ringBufferOutputs[i];
-	}
-	delete[] ringBufferOutputs;
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
+        delete[] bufferInputs[i];
+    delete[] bufferInputs;
+    
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
+        delete[] bufferOutputs[i];
+    delete[] bufferOutputs;
 }
 
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
@@ -197,7 +195,7 @@ int PluginProcessor::getCurrentProgram()
 
 const String PluginProcessor::getProgramName (int index)
 {
-    return String::empty;
+    return String();
 }
 
 
@@ -241,21 +239,18 @@ void PluginProcessor::changeProgramName (int index, const String& newName)
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-	nHostBlockSize = samplesPerBlock;
-	nSampleRate = (int)(sampleRate + 0.5);
-
-	nNumInputs = getNumInputChannels();
-    nNumOutputs = getNumOutputChannels();
-
-	setPlayConfigDetails(nNumInputs, nNumOutputs, (double)nSampleRate, nHostBlockSize);
-	numChannelsChanged();
+    nHostBlockSize = samplesPerBlock;
+    nNumInputs =  getTotalNumInputChannels();
+    nNumOutputs = getTotalNumOutputChannels();
+    nSampleRate = (int)(sampleRate + 0.5);
+    isPlaying = false;
 
 	rotator_init(hRot, (float)sampleRate);
 
-	for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-		memset(ringBufferInputs[i], 0, FRAME_SIZE*sizeof(float));
-	for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-		memset(ringBufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
+        memset(bufferInputs[i], 0, FRAME_SIZE * sizeof(float));
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
+        memset(bufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
 	 
 	isPlaying = false;
 }
@@ -266,22 +261,21 @@ void PluginProcessor::releaseResources()
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
-	int nCurrentBlockSize = buffer.getNumSamples();
-	float** bufferData = buffer.getArrayOfWritePointers(); 
-	float** outputs = new float*[nNumOutputs];
-	for (int i = 0; i < nNumOutputs; i++)
-		outputs[i] = new float[FRAME_SIZE];
+    int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
+    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
+    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
+    float** bufferData = buffer.getArrayOfWritePointers();
 
 	if (nCurrentBlockSize % FRAME_SIZE == 0) { /* divisible by frame size */
 		for (int frame = 0; frame < nCurrentBlockSize / FRAME_SIZE; frame++) {
 			for (int ch = 0; ch < nNumInputs; ch++)
 				for (int i = 0; i < FRAME_SIZE; i++)
-					ringBufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
+					bufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
 
 			/* determine if there is actually audio in the damn buffer */
 			playHead = getPlayHead();
 			bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-			if (PlayHeadAvailable == true)
+			if (PlayHeadAvailable)
 				isPlaying = currentPosition.isPlaying;
 			else
 				isPlaying = false;
@@ -289,21 +283,17 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
                 isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
         
 			/* perform processing */
-			rotator_process(hRot, ringBufferInputs, ringBufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
+			rotator_process(hRot, bufferInputs, bufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
 
 			/* replace buffer with new audio */
 			buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
 			for (int ch = 0; ch < nNumOutputs; ch++)
 				for (int i = 0; i < FRAME_SIZE; i++)
-					bufferData[ch][frame*FRAME_SIZE + i] = ringBufferOutputs[ch][i];
+					bufferData[ch][frame*FRAME_SIZE + i] = bufferOutputs[ch][i];
 		}
 	}
 	else
 		buffer.clear();
-
-	for (int i = 0; i < nNumOutputs; ++i)
-		delete[] outputs[i];
-	delete[] outputs;
 }
 
 //==============================================================================

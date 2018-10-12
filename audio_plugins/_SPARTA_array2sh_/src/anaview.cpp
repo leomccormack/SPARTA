@@ -161,7 +161,7 @@ void anaview::paint (Graphics& g)
     g.drawText(ylabel, 0,
                localBounds.getHeight()/2 - border_pixels_top - textWidth/2,
                textWidth, 50, Justification::centred);
-    g.addTransform(AffineTransform::identity);
+    g.addTransform(AffineTransform());
 
     /* draw curves */
     anaview_windowIncluded->repaint();

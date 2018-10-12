@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="lfkRjX" name="sparta_ambiDEC_o3" projectType="audioplug"
-              version="1.1.0" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
+              version="1.1.2" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiDEC_o3" pluginDesc="sparta_ambiDEC_o3"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ADO3"
-              pluginChannelConfigs="{16,1},{16,2},{16,3},{16,4},{16,5},{16,6},{16,7},{16,8},{16,9},{16,10},{16,11},{16,12},{16,13},{16,14},{16,15},{16,16},{16,17},{16,18},{16,19},{16,20},{16,21},{16,22},{16,23},{16,24},{16,25},{16,26},{16,27},{16,28},{16,29},{16,30},{16,31},{16,32},{16,33},{16,34},{16,35},{16,36},{16,37},{16,38},{16,39},{16,40},{16,41},{16,42},{16,43},{16,44},{16,45},{16,46},{16,47},{16,48},{16,49},{16,50},{16,51},{16,52},{16,53},{16,54},{16,55},{16,56},{16,57},{16,58},{16,59},{16,60},{16,61},{16,62},{16,63},{16,64}"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="sparta_ambiDEC_o3AU" pluginRTASCategory=""
-              aaxIdentifier="com.yourcompany.panner" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
-              jucerVersion="5.3.0" buildVST3="0" buildRTAS="0" buildAAX="0"
+              aaxIdentifier="com.yourcompany.panner" pluginAAXCategory="2"
+              jucerVersion="5.3.2" buildVST3="0" buildRTAS="0" buildAAX="0"
               pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE = 256&#10;SH_ORDER = 3"
               companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
               buildAUv3="0" pluginIsMidiEffectPlugin="0" displaySplashScreen="0"
               reportAppUsage="0" splashScreenColour="Dark" buildStandalone="0"
-              enableIAA="0" cppLanguageStandard="11" companyCopyright="Aalto">
+              enableIAA="0" cppLanguageStandard="11" companyCopyright="Aalto"
+              pluginFormats="buildVST">
   <MAINGROUP id="imnfnp" name="sparta_ambiDEC_o3">
     <FILE id="Mih0dJ" name="ConfigurationHelper.h" compile="0" resource="0"
           file="../../../resources/ConfigurationHelper.h"/>
@@ -142,7 +142,6 @@
                        intermediatesPath="../../../../obj/sparta_ambiDEC_o3/Win64_Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_video" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_opengl" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_gui_basics" path="../../../../SDKs/modules/"/>
@@ -177,7 +176,6 @@
                        linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_video" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_opengl" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_gui_basics" path="../../../../SDKs/modules/"/>
@@ -207,7 +205,6 @@
                        enablePluginBinaryCopyStep="1" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_video" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_opengl" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_gui_basics" path="../../../../SDKs/modules/"/>
@@ -238,7 +235,6 @@
     <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
-    <MODULES id="juce_video" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_USE_CAMERA="0"/>
   <LIVE_SETTINGS>

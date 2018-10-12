@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_ambiDRC" projectType="audioplug" version="1.0.2"
+<JUCERPROJECT id="lfkRjX" name="sparta_ambiDRC" projectType="audioplug" version="1.0.3"
               bundleIdentifier="com.LeoMcCormack.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiDRC" pluginDesc="sparta_ambiDRC"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ADRC"
-              pluginChannelConfigs=" {1,1},  {4,4},  {9,9},  {16,16},  {25,25},  {36,36},  {49,49} , {64,64}"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="sparta_ambiDRCAU" pluginRTASCategory=""

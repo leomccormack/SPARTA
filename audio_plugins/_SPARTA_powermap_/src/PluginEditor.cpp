@@ -213,6 +213,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_anaOrder->setValue(powermap_getAnaOrderAllBands(hVst->hPm), dontSendNotification);
     CBchFormat->setSelectedId(powermap_getChOrder(hVst->hPm), dontSendNotification);
     CBnormScheme->setSelectedId(powermap_getNormType(hVst->hPm), dontSendNotification);
+    s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired()/2.0f), 1);
     s_Nsources->setValue(powermap_getNumSources(hVst->hPm), dontSendNotification);
     s_Nsources->setEnabled((powermap_getPowermapMode(hVst->hPm)==PM_MODE_MINNORM ||
                             powermap_getPowermapMode(hVst->hPm)==PM_MODE_MUSIC) ? true : false);
@@ -224,7 +225,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 	/* Specify screen refresh rate */
     startTimer(120);//80); /*ms (40ms = 25 frames per second) */
     
-    showingFrameSizeWarning = false;
+    /* warnings */
+    currentWarning = k_warning_none;
 
     //[/Constructor]
 }
@@ -700,12 +702,22 @@ void PluginEditor::paint (Graphics& g)
                 Justification::centredLeft, true);
     
     /* display warning message */
-    if(showingFrameSizeWarning){
-        g.setColour(Colours::red);
-        g.setFont(Font(11.00f, Font::plain));
-        g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                   getBounds().getWidth()-170, 16, 530, 11,
-                   Justification::centredLeft, true);
+    g.setColour(Colours::red);
+    g.setFont(Font(11.00f, Font::plain));
+    switch (currentWarning){
+        case k_warning_none:
+            break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NinputCH:
+            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+                       TRANS("/") + String(powermap_getNSHrequired()) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
     }
 
     //[/UserPaint]
@@ -838,14 +850,18 @@ void PluginEditor::timerCallback()
     if (pmapEQ2dSlider->getRefreshValuesFLAG())
         pmapEQ2dSlider->repaint();
     
-    /* show warning if currently selected framesize is not supported */
+    /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        showingFrameSizeWarning = true;
-        repaint();
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
     }
-    else if(showingFrameSizeWarning){
-        showingFrameSizeWarning = false;
-        repaint();
+    else if ((hVst->getCurrentNumInputs() < powermap_getNSHrequired())){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 }
 

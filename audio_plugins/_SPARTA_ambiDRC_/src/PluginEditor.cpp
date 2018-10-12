@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.3.0
 
   ------------------------------------------------------------------------------
 
@@ -36,8 +36,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    s_thresh.reset (new Slider ("new slider"));
-    addAndMakeVisible (s_thresh.get());
+    addAndMakeVisible (s_thresh = new Slider ("new slider"));
     s_thresh->setRange (-60, 0, 0.01);
     s_thresh->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_thresh->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -50,8 +49,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_thresh->setBounds (96, 364, 64, 64);
 
-    s_ratio.reset (new Slider ("new slider"));
-    addAndMakeVisible (s_ratio.get());
+    addAndMakeVisible (s_ratio = new Slider ("new slider"));
     s_ratio->setRange (1, 30, 0.01);
     s_ratio->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_ratio->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -64,8 +62,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_ratio->setBounds (168, 364, 64, 64);
 
-    s_knee.reset (new Slider ("new slider"));
-    addAndMakeVisible (s_knee.get());
+    addAndMakeVisible (s_knee = new Slider ("new slider"));
     s_knee->setRange (0, 10, 0.01);
     s_knee->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_knee->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -78,8 +75,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_knee->setBounds (240, 364, 64, 64);
 
-    s_attack.reset (new Slider ("new slider"));
-    addAndMakeVisible (s_attack.get());
+    addAndMakeVisible (s_attack = new Slider ("new slider"));
     s_attack->setRange (10, 200, 0.01);
     s_attack->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_attack->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -92,8 +88,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_attack->setBounds (319, 364, 64, 64);
 
-    s_release.reset (new Slider ("new slider"));
-    addAndMakeVisible (s_release.get());
+    addAndMakeVisible (s_release = new Slider ("new slider"));
     s_release->setRange (50, 1000, 0.01);
     s_release->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_release->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -106,8 +101,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_release->setBounds (391, 364, 64, 64);
 
-    s_outgain.reset (new Slider ("new slider"));
-    addAndMakeVisible (s_outgain.get());
+    addAndMakeVisible (s_outgain = new Slider ("new slider"));
     s_outgain->setRange (-20, 40, 0.01);
     s_outgain->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_outgain->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -120,8 +114,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_outgain->setBounds (468, 364, 64, 64);
 
-    s_ingain.reset (new Slider ("new slider"));
-    addAndMakeVisible (s_ingain.get());
+    addAndMakeVisible (s_ingain = new Slider ("new slider"));
     s_ingain->setRange (-40, 20, 0.01);
     s_ingain->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_ingain->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -134,8 +127,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_ingain->setBounds (17, 364, 64, 64);
 
-    presetCB.reset (new ComboBox ("new combo box"));
-    addAndMakeVisible (presetCB.get());
+    addAndMakeVisible (presetCB = new ComboBox ("new combo box"));
     presetCB->setEditableText (false);
     presetCB->setJustificationType (Justification::centredLeft);
     presetCB->setTextWhenNothingSelected (String());
@@ -144,8 +136,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     presetCB->setBounds (72, 296, 120, 16);
 
-    CHOrderingCB.reset (new ComboBox ("new combo box"));
-    addAndMakeVisible (CHOrderingCB.get());
+    addAndMakeVisible (CHOrderingCB = new ComboBox ("new combo box"));
     CHOrderingCB->setEditableText (false);
     CHOrderingCB->setJustificationType (Justification::centredLeft);
     CHOrderingCB->setTextWhenNothingSelected (TRANS("ACN"));
@@ -154,8 +145,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CHOrderingCB->setBounds (288, 296, 80, 16);
 
-    normalisationCB.reset (new ComboBox ("new combo box"));
-    addAndMakeVisible (normalisationCB.get());
+    addAndMakeVisible (normalisationCB = new ComboBox ("new combo box"));
     normalisationCB->setEditableText (false);
     normalisationCB->setJustificationType (Justification::centredLeft);
     normalisationCB->setTextWhenNothingSelected (TRANS("N3D"));
@@ -212,7 +202,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     startTimer(80); /*ms (40ms = 25 frames per second) */
 
-    showingFrameSizeWarning = false;
+    /* warnings */
+    currentWarning = k_warning_none;
     //[/Constructor]
 }
 
@@ -304,7 +295,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = -7, y = 0, width = 122, height = 32;
+        int x = -7, y = 0, width = 167, height = 32;
         String text (TRANS("AmbiDRC"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -769,8 +760,34 @@ void PluginEditor::paint (Graphics& g)
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		110, 16, 530, 11,
+		145, 16, 530, 11,
 		Justification::centredLeft, true);
+    
+    /* display warning message */
+    g.setColour(Colours::red);
+    g.setFont(Font(11.00f, Font::plain));
+    g.setOpacity(1.0f);
+    switch (currentWarning){
+        case k_warning_none:
+            break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NinputCH:
+            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+                       TRANS("/") + String(ambi_drc_getNSHrequired(hVst->hAmbi)) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NoutputCH:
+            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+                       TRANS("/") + String(ambi_drc_getNSHrequired(hVst->hAmbi)) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+    }
 
     /* draw colour bar */
     int colourbarWidth = 16;
@@ -801,17 +818,8 @@ void PluginEditor::paint (Graphics& g)
                (int) ((float)TFviewIncluded->getHeight()/2.0f) - textWidth/2,
                textWidth, 1084, Justification::centred);
 
-    g.addTransform(AffineTransform::identity);
-
-    /* display warning message */
-    if(showingFrameSizeWarning){
-        g.setColour(Colours::red);
-        g.setFont(Font(11.00f, Font::plain));
-        g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                   getBounds().getWidth()-170, 16, 530, 11,
-                   Justification::centredLeft, true);
-    }
-
+    g.addTransform(AffineTransform());
+ 
     //[/UserPaint]
 }
 
@@ -832,43 +840,43 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == s_thresh.get())
+    if (sliderThatWasMoved == s_thresh)
     {
         //[UserSliderCode_s_thresh] -- add your slider handling code here..
 		ambi_drc_setThreshold(hVst->hAmbi, s_thresh->getValue());
         //[/UserSliderCode_s_thresh]
     }
-    else if (sliderThatWasMoved == s_ratio.get())
+    else if (sliderThatWasMoved == s_ratio)
     {
         //[UserSliderCode_s_ratio] -- add your slider handling code here..
 		ambi_drc_setRatio(hVst->hAmbi, s_ratio->getValue());
         //[/UserSliderCode_s_ratio]
     }
-    else if (sliderThatWasMoved == s_knee.get())
+    else if (sliderThatWasMoved == s_knee)
     {
         //[UserSliderCode_s_knee] -- add your slider handling code here..
 		ambi_drc_setKnee(hVst->hAmbi, s_knee->getValue());
         //[/UserSliderCode_s_knee]
     }
-    else if (sliderThatWasMoved == s_attack.get())
+    else if (sliderThatWasMoved == s_attack)
     {
         //[UserSliderCode_s_attack] -- add your slider handling code here..
 		ambi_drc_setAttack(hVst->hAmbi, s_attack->getValue());
         //[/UserSliderCode_s_attack]
     }
-    else if (sliderThatWasMoved == s_release.get())
+    else if (sliderThatWasMoved == s_release)
     {
         //[UserSliderCode_s_release] -- add your slider handling code here..
 		ambi_drc_setRelease(hVst->hAmbi, s_release->getValue());
         //[/UserSliderCode_s_release]
     }
-    else if (sliderThatWasMoved == s_outgain.get())
+    else if (sliderThatWasMoved == s_outgain)
     {
         //[UserSliderCode_s_outgain] -- add your slider handling code here..
         ambi_drc_setOutGain(hVst->hAmbi, s_outgain->getValue());
         //[/UserSliderCode_s_outgain]
     }
-    else if (sliderThatWasMoved == s_ingain.get())
+    else if (sliderThatWasMoved == s_ingain)
     {
         //[UserSliderCode_s_ingain] -- add your slider handling code here..
         ambi_drc_setInGain(hVst->hAmbi, s_ingain->getValue());
@@ -884,19 +892,19 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == presetCB.get())
+    if (comboBoxThatHasChanged == presetCB)
     {
         //[UserComboBoxCode_presetCB] -- add your combo box handling code here..
         ambi_drc_setInputPreset(hVst->hAmbi, (INPUT_ORDER)presetCB->getSelectedId());
         //[/UserComboBoxCode_presetCB]
     }
-    else if (comboBoxThatHasChanged == CHOrderingCB.get())
+    else if (comboBoxThatHasChanged == CHOrderingCB)
     {
         //[UserComboBoxCode_CHOrderingCB] -- add your combo box handling code here..
         ambi_drc_setChOrder(hVst->hAmbi, CHOrderingCB->getSelectedId());
         //[/UserComboBoxCode_CHOrderingCB]
     }
-    else if (comboBoxThatHasChanged == normalisationCB.get())
+    else if (comboBoxThatHasChanged == normalisationCB)
     {
         //[UserComboBoxCode_normalisationCB] -- add your combo box handling code here..
         ambi_drc_setNormType(hVst->hAmbi, normalisationCB->getSelectedId());
@@ -918,14 +926,22 @@ void PluginEditor::timerCallback()
 		TFviewIncluded->repaint(linePos-10, 0, TFviewIncluded->getWidth(), TFviewIncluded->getHeight());
 	}
 
-    /* show warning if currently selected framesize is not supported */
+    /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        showingFrameSizeWarning = true;
+        currentWarning = k_warning_frameSize;
         repaint();
     }
-    else if(showingFrameSizeWarning){
-        showingFrameSizeWarning = false;
-        repaint();
+    else if ((hVst->getCurrentNumInputs() < ambi_drc_getNSHrequired(hVst->hAmbi))){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((hVst->getCurrentNumOutputs() < ambi_drc_getNSHrequired(hVst->hAmbi))){
+        currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 }
 
@@ -957,7 +973,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 1fffffff"/>
     <RECT pos="0 0 550 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
-    <TEXT pos="-7 0 122 32" fill="solid: ffffffff" hasStroke="0" text="AmbiDRC"
+    <TEXT pos="-7 0 167 32" fill="solid: ffffffff" hasStroke="0" text="AmbiDRC"
           fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="96 325 60 30" fill="solid: ffffffff" hasStroke="0" text="Thresh."

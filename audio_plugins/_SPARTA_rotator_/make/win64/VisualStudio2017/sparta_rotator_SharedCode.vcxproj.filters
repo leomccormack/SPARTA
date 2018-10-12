@@ -607,6 +607,9 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_devices\native\juce_linux_ALSA.cpp">
       <Filter>JUCE Modules\juce_audio_devices\native</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_devices\native\juce_linux_Bela.cpp">
+      <Filter>JUCE Modules\juce_audio_devices\native</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_devices\native\juce_linux_JackAudio.cpp">
       <Filter>JUCE Modules\juce_audio_devices\native</Filter>
     </ClCompile>
@@ -904,6 +907,9 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_processors\format_types\juce_LADSPAPluginFormat.cpp">
       <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_processors\format_types\juce_LegacyAudioParameter.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_processors\format_types\juce_VST3PluginFormat.cpp">
       <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
     </ClCompile>
@@ -962,6 +968,9 @@
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\containers\juce_PropertySet.cpp">
+      <Filter>JUCE Modules\juce_core\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\containers\juce_SparseSet.cpp">
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\containers\juce_Variant.cpp">
@@ -2015,6 +2024,9 @@
       <Filter>JUCE Modules\juce_gui_basics\properties</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_ChoicePropertyComponent.cpp">
+      <Filter>JUCE Modules\juce_gui_basics\properties</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_MultiChoicePropertyComponent.cpp">
       <Filter>JUCE Modules\juce_gui_basics\properties</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_PropertyComponent.cpp">
@@ -4086,6 +4098,9 @@
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_ChoicePropertyComponent.h">
       <Filter>JUCE Modules\juce_gui_basics\properties</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_MultiChoicePropertyComponent.h">
+      <Filter>JUCE Modules\juce_gui_basics\properties</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\properties\juce_PropertyComponent.h">
       <Filter>JUCE Modules\juce_gui_basics\properties</Filter>
     </ClInclude>
@@ -4367,10 +4382,5 @@
     <None Include="..\..\..\..\..\SDKs\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt">
       <Filter>JUCE Modules\juce_graphics\image_formats\pnglib</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include=".\resources.rc">
-      <Filter>JUCE Library Code</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>
