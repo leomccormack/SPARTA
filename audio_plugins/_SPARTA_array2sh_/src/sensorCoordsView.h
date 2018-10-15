@@ -23,7 +23,7 @@
 
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
-
+#define MAX_SH_ORDER 7
 //[/Headers]
 
 
@@ -48,7 +48,7 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
     void setUseDegreesInstead(bool newState);
     void setQ(int newQ){
-        currentQ = newQ < ((SH_ORDER+1)*(SH_ORDER+1)) ? ((SH_ORDER+1)*(SH_ORDER+1)) : newQ;
+        currentQ = newQ < ((MAX_SH_ORDER+1)*(MAX_SH_ORDER+1)) ? ((MAX_SH_ORDER+1)*(MAX_SH_ORDER+1)) : newQ;
         refreshCoords();
         resized();
     }

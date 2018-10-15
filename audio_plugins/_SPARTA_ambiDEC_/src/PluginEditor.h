@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -98,23 +98,24 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<ComboBox> CBoutputDirsPreset;
-    ScopedPointer<Slider> SL_num_loudspeakers;
-    ScopedPointer<ToggleButton> TBuseDefaultHRIRs;
-    ScopedPointer<ComboBox> CBsourcePreset;
-    ScopedPointer<ComboBox> CBchFormat;
-    ScopedPointer<ComboBox> CBnormScheme;
-    ScopedPointer<Slider> SL_transitionFreq;
-    ScopedPointer<ComboBox> CBdec1method;
-    ScopedPointer<ComboBox> CBdec2method;
-    ScopedPointer<ToggleButton> TBdec1EnableMaxrE;
-    ScopedPointer<ToggleButton> TBdec2EnableMaxrE;
-    ScopedPointer<ComboBox> CBdec1normtype;
-    ScopedPointer<ToggleButton> TBBinauraliseLS;
-    ScopedPointer<ComboBox> CBdec2normtype;
-    ScopedPointer<Slider> s_decOrder;
-    ScopedPointer<TextButton> tb_loadJSON;
-    ScopedPointer<TextButton> tb_saveJSON;
+    std::unique_ptr<ComboBox> CBoutputDirsPreset;
+    std::unique_ptr<Slider> SL_num_loudspeakers;
+    std::unique_ptr<ToggleButton> TBuseDefaultHRIRs;
+    std::unique_ptr<ComboBox> CBsourcePreset;
+    std::unique_ptr<ComboBox> CBchFormat;
+    std::unique_ptr<ComboBox> CBnormScheme;
+    std::unique_ptr<Slider> SL_transitionFreq;
+    std::unique_ptr<ComboBox> CBdec1method;
+    std::unique_ptr<ComboBox> CBdec2method;
+    std::unique_ptr<ToggleButton> TBdec1EnableMaxrE;
+    std::unique_ptr<ToggleButton> TBdec2EnableMaxrE;
+    std::unique_ptr<ComboBox> CBdec1normtype;
+    std::unique_ptr<ToggleButton> TBBinauraliseLS;
+    std::unique_ptr<ComboBox> CBdec2normtype;
+    std::unique_ptr<Slider> s_decOrder;
+    std::unique_ptr<TextButton> tb_loadJSON;
+    std::unique_ptr<TextButton> tb_saveJSON;
+    std::unique_ptr<ComboBox> CBmasterOrder;
 
 
     //==============================================================================

@@ -336,13 +336,13 @@
  #define JucePlugin_EditorRequiresKeyboardFocus  0
 #endif
 #ifndef  JucePlugin_Version
- #define JucePlugin_Version                1.1.0
+ #define JucePlugin_Version                1.2.0
 #endif
 #ifndef  JucePlugin_VersionCode
- #define JucePlugin_VersionCode            0x10100
+ #define JucePlugin_VersionCode            0x10200
 #endif
 #ifndef  JucePlugin_VersionString
- #define JucePlugin_VersionString          "1.1.0"
+ #define JucePlugin_VersionString          "1.2.0"
 #endif
 #ifndef  JucePlugin_VSTUniqueID
  #define JucePlugin_VSTUniqueID            JucePlugin_PluginCode
@@ -350,8 +350,11 @@
 #ifndef  JucePlugin_VSTCategory
  #define JucePlugin_VSTCategory            kPlugCategEffect
 #endif
+#ifndef  JucePlugin_Vst3Category
+ #define JucePlugin_Vst3Category           "Fx"
+#endif
 #ifndef  JucePlugin_AUMainType
- #define JucePlugin_AUMainType             kAudioUnitType_Effect
+ #define JucePlugin_AUMainType             'aufx'
 #endif
 #ifndef  JucePlugin_AUSubType
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
@@ -369,7 +372,7 @@
  #define JucePlugin_CFBundleIdentifier     com.AALTO.SPARTA
 #endif
 #ifndef  JucePlugin_RTASCategory
- #define JucePlugin_RTASCategory           ePlugInCategory_None
+ #define JucePlugin_RTASCategory           0
 #endif
 #ifndef  JucePlugin_RTASManufacturerCode
  #define JucePlugin_RTASManufacturerCode   JucePlugin_ManufacturerCode

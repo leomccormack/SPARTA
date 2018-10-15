@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -35,7 +35,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (avgSlider = new Slider ("new slider"));
+    avgSlider.reset (new Slider ("new slider"));
+    addAndMakeVisible (avgSlider.get());
     avgSlider->setRange (0, 2000, 0.1);
     avgSlider->setSliderStyle (Slider::LinearHorizontal);
     avgSlider->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
@@ -43,7 +44,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     avgSlider->setBounds (88, 464, 96, 24);
 
-    addAndMakeVisible (CB_CHorder = new ComboBox ("new combo box"));
+    CB_CHorder.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CB_CHorder.get());
     CB_CHorder->setEditableText (false);
     CB_CHorder->setJustificationType (Justification::centredLeft);
     CB_CHorder->setTextWhenNothingSelected (TRANS("ACN"));
@@ -53,7 +55,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CB_CHorder->setBounds (96, 408, 88, 16);
 
-    addAndMakeVisible (CB_Norm = new ComboBox ("new combo box"));
+    CB_Norm.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CB_Norm.get());
     CB_Norm->setEditableText (false);
     CB_Norm->setJustificationType (Justification::centredLeft);
     CB_Norm->setTextWhenNothingSelected (TRANS("N3D"));
@@ -64,7 +67,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CB_Norm->setBounds (96, 440, 88, 16);
 
-    addAndMakeVisible (slider_anaOrder = new Slider ("new slider"));
+    slider_anaOrder.reset (new Slider ("new slider"));
+    addAndMakeVisible (slider_anaOrder.get());
     slider_anaOrder->setRange (0, 1, 1);
     slider_anaOrder->setSliderStyle (Slider::LinearVertical);
     slider_anaOrder->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
@@ -74,7 +78,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     slider_anaOrder->setBounds (568, 416, 40, 66);
 
-    addAndMakeVisible (CBinputTypePreset = new ComboBox ("new combo box"));
+    CBinputTypePreset.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBinputTypePreset.get());
     CBinputTypePreset->setEditableText (false);
     CBinputTypePreset->setJustificationType (Justification::centredLeft);
     CBinputTypePreset->setTextWhenNothingSelected (TRANS("Ideal SH"));
@@ -84,7 +89,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBinputTypePreset->setBounds (96, 372, 88, 20);
 
-    addAndMakeVisible (s_minFreq = new Slider ("new slider"));
+    s_minFreq.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_minFreq.get());
     s_minFreq->setRange (0, 24000, 0.1);
     s_minFreq->setSliderStyle (Slider::LinearHorizontal);
     s_minFreq->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
@@ -92,7 +98,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_minFreq->setBounds (304, 372, 96, 24);
 
-    addAndMakeVisible (s_maxFreq = new Slider ("new slider"));
+    s_maxFreq.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_maxFreq.get());
     s_maxFreq->setRange (0, 24000, 0.1);
     s_maxFreq->setSliderStyle (Slider::LinearHorizontal);
     s_maxFreq->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
@@ -502,20 +509,20 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == avgSlider)
+    if (sliderThatWasMoved == avgSlider.get())
     {
         //[UserSliderCode_avgSlider] -- add your slider handling code here..
         sldoa_setAvg(hVst->hSld, (float)avgSlider->getValue());
         //[/UserSliderCode_avgSlider]
     }
-    else if (sliderThatWasMoved == slider_anaOrder)
+    else if (sliderThatWasMoved == slider_anaOrder.get())
     {
         //[UserSliderCode_slider_anaOrder] -- add your slider handling code here..
         sldoa_setAnaOrderAllBands(hVst->hSld, (int)(slider_anaOrder->getValue()+0.5));
         anaOrder2dSlider->setRefreshValuesFLAG(true);
         //[/UserSliderCode_slider_anaOrder]
     }
-    else if (sliderThatWasMoved == s_minFreq)
+    else if (sliderThatWasMoved == s_minFreq.get())
     {
         //[UserSliderCode_s_minFreq] -- add your slider handling code here..
         sldoa_setMinFreq(hVst->hSld, (float)s_minFreq->getValue());
@@ -523,7 +530,7 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 
         //[/UserSliderCode_s_minFreq]
     }
-    else if (sliderThatWasMoved == s_maxFreq)
+    else if (sliderThatWasMoved == s_maxFreq.get())
     {
         //[UserSliderCode_s_maxFreq] -- add your slider handling code here..
         sldoa_setMaxFreq(hVst->hSld, (float)s_maxFreq->getValue());
@@ -539,19 +546,19 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == CB_CHorder)
+    if (comboBoxThatHasChanged == CB_CHorder.get())
     {
         //[UserComboBoxCode_CB_CHorder] -- add your combo box handling code here..
         sldoa_setChOrder(hVst->hSld, CB_CHorder->getSelectedId());
         //[/UserComboBoxCode_CB_CHorder]
     }
-    else if (comboBoxThatHasChanged == CB_Norm)
+    else if (comboBoxThatHasChanged == CB_Norm.get())
     {
         //[UserComboBoxCode_CB_Norm] -- add your combo box handling code here..
         sldoa_setNormType(hVst->hSld, CB_Norm->getSelectedId());
         //[/UserComboBoxCode_CB_Norm]
     }
-    else if (comboBoxThatHasChanged == CBinputTypePreset)
+    else if (comboBoxThatHasChanged == CBinputTypePreset.get())
     {
         //[UserComboBoxCode_CBinputTypePreset] -- add your combo box handling code here..
         sldoa_setSourcePreset(hVst->hSld, CBinputTypePreset->getSelectedId());

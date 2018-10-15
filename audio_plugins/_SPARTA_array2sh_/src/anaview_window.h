@@ -57,6 +57,9 @@ public:
         numCurves =_numCurves;
         numFreqPoints = _numFreqPoints;
     }
+    void setNumCurves(int _numCurves){
+        numCurves = _numCurves;
+    }
 
     //[/UserMethods]
 

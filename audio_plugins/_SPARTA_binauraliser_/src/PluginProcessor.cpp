@@ -202,12 +202,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 	nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
     
-	binauraliser_init(hBin, sampleRate);
-    
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferInputs[i], 0, FRAME_SIZE * sizeof(float));
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
+	binauraliser_init(hBin, sampleRate); 
 }
 
 void PluginProcessor::releaseResources()

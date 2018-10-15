@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -81,17 +81,17 @@ private:
     ScopedPointer<log2dSlider> anaOrder2dSlider;
 
     /* warnings */
-    SPARTA_WARNINGS currentWarning; 
+    SPARTA_WARNINGS currentWarning;
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<Slider> avgSlider;
-    ScopedPointer<ComboBox> CB_CHorder;
-    ScopedPointer<ComboBox> CB_Norm;
-    ScopedPointer<Slider> slider_anaOrder;
-    ScopedPointer<ComboBox> CBinputTypePreset;
-    ScopedPointer<Slider> s_minFreq;
-    ScopedPointer<Slider> s_maxFreq;
+    std::unique_ptr<Slider> avgSlider;
+    std::unique_ptr<ComboBox> CB_CHorder;
+    std::unique_ptr<ComboBox> CB_Norm;
+    std::unique_ptr<Slider> slider_anaOrder;
+    std::unique_ptr<ComboBox> CBinputTypePreset;
+    std::unique_ptr<Slider> s_minFreq;
+    std::unique_ptr<Slider> s_maxFreq;
 
 
     //==============================================================================

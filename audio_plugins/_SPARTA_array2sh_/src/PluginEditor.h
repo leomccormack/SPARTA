@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
     PluginProcessor* hVst;
     void timerCallback() override;
- 
+
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -92,31 +92,31 @@ private:
 
     bool needScreenRefreshFLAG;
     bool showDegreesInstead;
-     
+
     /* warnings */
     SPARTA_WARNINGS currentWarning;
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<ComboBox> presetCB;
-    ScopedPointer<ComboBox> arrayTypeCB;
-    ScopedPointer<Slider> QSlider;
-    ScopedPointer<Slider> rSlider;
-    ScopedPointer<Slider> RSlider;
-    ScopedPointer<Slider> cSlider;
-    ScopedPointer<ComboBox> weightTypeCB;
-    ScopedPointer<Slider> addmittanceSlider;
-    ScopedPointer<ComboBox> regTypeCB;
-    ScopedPointer<Slider> regAmountSlider;
-    ScopedPointer<ComboBox> CHOrderingCB;
-    ScopedPointer<ComboBox> normalisationCB;
-    ScopedPointer<Slider> maxFreqSlider;
-    ScopedPointer<Slider> gainSlider;
-    ScopedPointer<ToggleButton> degRadTB;
-    ScopedPointer<TextButton> textButton;
-    ScopedPointer<ComboBox> dispWindow;
-    ScopedPointer<TextButton> tb_loadJSON;
-    ScopedPointer<TextButton> tb_saveJSON;
+    std::unique_ptr<ComboBox> presetCB;
+    std::unique_ptr<ComboBox> arrayTypeCB;
+    std::unique_ptr<Slider> QSlider;
+    std::unique_ptr<Slider> rSlider;
+    std::unique_ptr<Slider> RSlider;
+    std::unique_ptr<Slider> cSlider;
+    std::unique_ptr<ComboBox> weightTypeCB;
+    std::unique_ptr<ComboBox> regTypeCB;
+    std::unique_ptr<Slider> regAmountSlider;
+    std::unique_ptr<ComboBox> CHOrderingCB;
+    std::unique_ptr<ComboBox> normalisationCB;
+    std::unique_ptr<Slider> maxFreqSlider;
+    std::unique_ptr<Slider> gainSlider;
+    std::unique_ptr<ToggleButton> degRadTB;
+    std::unique_ptr<TextButton> textButton;
+    std::unique_ptr<ComboBox> dispWindow;
+    std::unique_ptr<TextButton> tb_loadJSON;
+    std::unique_ptr<TextButton> tb_saveJSON;
+    std::unique_ptr<ComboBox> CBencodingOrder;
 
 
     //==============================================================================

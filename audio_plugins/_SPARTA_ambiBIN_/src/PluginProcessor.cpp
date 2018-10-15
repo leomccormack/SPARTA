@@ -243,12 +243,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
 
-	ambi_bin_init(hAmbi, sampleRate);
-    
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferInputs[i], 0, FRAME_SIZE*sizeof(float));
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
+	ambi_bin_init(hAmbi, sampleRate); 
 }
 
 void PluginProcessor::releaseResources()
@@ -317,6 +312,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("maxrE", ambi_bin_getDecEnableMaxrE(hAmbi));
     xml.setAttribute("PhaseManip", ambi_bin_getEnablePhaseManip(hAmbi));
     
+    xml.setAttribute("ENABLEROT", ambi_bin_getEnableRotation(hAmbi));
     xml.setAttribute("YAW", ambi_bin_getYaw(hAmbi));
     xml.setAttribute("PITCH", ambi_bin_getPitch(hAmbi));
     xml.setAttribute("ROLL", ambi_bin_getRoll(hAmbi));
@@ -353,6 +349,8 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if(xmlState->hasAttribute("PhaseManip"))
                 ambi_bin_setEnablePhaseManip(hAmbi,xmlState->getIntAttribute("PhaseManip", 1));
             
+            if(xmlState->hasAttribute("ENABLEROT"))
+                ambi_bin_setEnableRotation(hAmbi, xmlState->getIntAttribute("ENABLEROT", 0));
             if(xmlState->hasAttribute("YAW"))
                 ambi_bin_setYaw(hAmbi, (float)xmlState->getDoubleAttribute("YAW", 0.0f));
             if(xmlState->hasAttribute("PITCH"))
