@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/src/ambi_bin.c"
-            timestampString = "558944934.055415"
+            timestampString = "561047960.673691"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "196"
-            endingLineNumber = "196"
+            startingLineNumber = "195"
+            endingLineNumber = "195"
             landmarkName = "ambi_bin_process"
             landmarkType = "9">
          </BreakpointContent>
@@ -74,7 +74,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/src/ambi_bin_internal.c"
-            timestampString = "558870533.545409"
+            timestampString = "561047960.6739939"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "156"
@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/src/ambi_bin.c"
-            timestampString = "558944934.055577"
+            timestampString = "561047960.674039"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "200"
-            endingLineNumber = "200"
+            startingLineNumber = "199"
+            endingLineNumber = "199"
             landmarkName = "ambi_bin_process"
             landmarkType = "9">
          </BreakpointContent>
@@ -106,12 +106,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../src/PluginEditor.cpp"
-            timestampString = "558944934.055624"
+            timestampString = "561047960.67423"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "830"
             endingLineNumber = "830"
-            landmarkName = "PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)"
+            landmarkName = "PluginEditor::buttonClicked (Button* buttonThatWasClicked)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -128,22 +128,6 @@
             startingLineNumber = "271"
             endingLineNumber = "271"
             landmarkName = "PluginProcessor::processBlock (AudioSampleBuffer&amp; buffer, MidiBuffer&amp; midiMessages)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../../src/PluginProcessor.cpp"
-            timestampString = "559479571.3299201"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "250"
-            endingLineNumber = "250"
-            landmarkName = "PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

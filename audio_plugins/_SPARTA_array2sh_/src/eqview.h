@@ -54,6 +54,9 @@ public:
     void setFaintCurves_Handle(float* _freqVector, float** _faintCurves, int _numFreqPoints, int _numCurves){
         eqview_windowIncluded->setFaintCurves_Handle(_freqVector, _faintCurves, _numFreqPoints, _numCurves);
     }
+    void setNumCurves(int _numCurves){
+        eqview_windowIncluded->setNumCurves(_numCurves);
+    }
 
     //[/UserMethods]
 

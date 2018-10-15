@@ -171,12 +171,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
 
-	panner_init(hPan, sampleRate);
-    
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferInputs[i], 0, FRAME_SIZE * sizeof(float));
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
+	panner_init(hPan, sampleRate); 
 }
 
 void PluginProcessor::releaseResources()

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_ambiENC" projectType="audioplug" version="1.1.0"
+<JUCERPROJECT id="lfkRjX" name="sparta_ambiENC" projectType="audioplug" version="1.1.2"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiENC" pluginDesc="sparta_ambiENC"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="AEOA"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="sparta_ambiENCAU" pluginRTASCategory=""
-              aaxIdentifier="com.yourcompany.panner" pluginAAXCategory="2"
+              aaxIdentifier="com.yourcompany.sparta" pluginAAXCategory="2"
               jucerVersion="5.3.2" buildVST3="0" buildRTAS="0" buildAAX="0"
               pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE = 256"
               companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"

@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -35,43 +35,48 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (CBpmap_method = new ComboBox (String()));
+    CBpmap_method.reset (new ComboBox (String()));
+    addAndMakeVisible (CBpmap_method.get());
     CBpmap_method->setEditableText (false);
     CBpmap_method->setJustificationType (Justification::centredLeft);
     CBpmap_method->setTextWhenNothingSelected (TRANS("Default"));
     CBpmap_method->setTextWhenNoChoicesAvailable (String());
     CBpmap_method->addListener (this);
 
-    CBpmap_method->setBounds (104, 496, 112, 24);
+    CBpmap_method->setBounds (106, 495, 112, 24);
 
-    addAndMakeVisible (CBsourcePreset = new ComboBox ("new combo box"));
+    CBsourcePreset.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBsourcePreset.get());
     CBsourcePreset->setEditableText (false);
     CBsourcePreset->setJustificationType (Justification::centredLeft);
     CBsourcePreset->setTextWhenNothingSelected (TRANS("Default"));
     CBsourcePreset->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBsourcePreset->addListener (this);
 
-    CBsourcePreset->setBounds (104, 392, 112, 20);
+    CBsourcePreset->setBounds (106, 423, 112, 20);
 
-    addAndMakeVisible (CBchFormat = new ComboBox ("new combo box"));
+    CBchFormat.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBchFormat.get());
     CBchFormat->setEditableText (false);
     CBchFormat->setJustificationType (Justification::centredLeft);
     CBchFormat->setTextWhenNothingSelected (TRANS("ACN"));
     CBchFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBchFormat->addListener (this);
 
-    CBchFormat->setBounds (104, 424, 112, 20);
+    CBchFormat->setBounds (80, 456, 66, 20);
 
-    addAndMakeVisible (CBnormScheme = new ComboBox ("new combo box"));
+    CBnormScheme.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBnormScheme.get());
     CBnormScheme->setEditableText (false);
     CBnormScheme->setJustificationType (Justification::centredLeft);
     CBnormScheme->setTextWhenNothingSelected (TRANS("N3D"));
     CBnormScheme->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBnormScheme->addListener (this);
 
-    CBnormScheme->setBounds (104, 456, 112, 20);
+    CBnormScheme->setBounds (151, 456, 67, 20);
 
-    addAndMakeVisible (s_anaOrder = new Slider ("new slider"));
+    s_anaOrder.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_anaOrder.get());
     s_anaOrder->setRange (0, 1, 1);
     s_anaOrder->setSliderStyle (Slider::LinearVertical);
     s_anaOrder->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
@@ -81,7 +86,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_anaOrder->setBounds (608, 536, 40, 80);
 
-    addAndMakeVisible (s_pmapEQ = new Slider ("new slider"));
+    s_pmapEQ.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_pmapEQ.get());
     s_pmapEQ->setRange (0, 2, 0.01);
     s_pmapEQ->setSliderStyle (Slider::LinearVertical);
     s_pmapEQ->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
@@ -91,7 +97,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_pmapEQ->setBounds (608, 432, 40, 80);
 
-    addAndMakeVisible (s_covAvg = new Slider ("new slider"));
+    s_covAvg.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_covAvg.get());
     s_covAvg->setRange (0, 1, 0.01);
     s_covAvg->setSliderStyle (Slider::LinearHorizontal);
     s_covAvg->setTextBoxStyle (Slider::TextBoxRight, false, 50, 20);
@@ -99,9 +106,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_covAvg->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
     s_covAvg->addListener (this);
 
-    s_covAvg->setBounds (104, 592, 112, 24);
+    s_covAvg->setBounds (106, 592, 112, 24);
 
-    addAndMakeVisible (s_Nsources = new Slider ("new slider"));
+    s_Nsources.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_Nsources.get());
     s_Nsources->setRange (1, 8, 1);
     s_Nsources->setSliderStyle (Slider::LinearHorizontal);
     s_Nsources->setTextBoxStyle (Slider::TextBoxRight, false, 50, 20);
@@ -109,9 +117,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_Nsources->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
     s_Nsources->addListener (this);
 
-    s_Nsources->setBounds (104, 528, 112, 24);
+    s_Nsources->setBounds (106, 528, 112, 24);
 
-    addAndMakeVisible (CB_hfov = new ComboBox (String()));
+    CB_hfov.reset (new ComboBox (String()));
+    addAndMakeVisible (CB_hfov.get());
     CB_hfov->setEditableText (false);
     CB_hfov->setJustificationType (Justification::centredLeft);
     CB_hfov->setTextWhenNothingSelected (TRANS("Default"));
@@ -120,7 +129,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CB_hfov->setBounds (352, 388, 96, 24);
 
-    addAndMakeVisible (CB_aspectRatio = new ComboBox (String()));
+    CB_aspectRatio.reset (new ComboBox (String()));
+    addAndMakeVisible (CB_aspectRatio.get());
     CB_aspectRatio->setEditableText (false);
     CB_aspectRatio->setJustificationType (Justification::centredLeft);
     CB_aspectRatio->setTextWhenNothingSelected (TRANS("Default"));
@@ -129,7 +139,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CB_aspectRatio->setBounds (552, 388, 96, 24);
 
-    addAndMakeVisible (s_pmapAvg = new Slider ("new slider"));
+    s_pmapAvg.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_pmapAvg.get());
     s_pmapAvg->setRange (0, 1, 0.01);
     s_pmapAvg->setSliderStyle (Slider::LinearHorizontal);
     s_pmapAvg->setTextBoxStyle (Slider::TextBoxRight, false, 50, 20);
@@ -137,7 +148,17 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_pmapAvg->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
     s_pmapAvg->addListener (this);
 
-    s_pmapAvg->setBounds (104, 560, 112, 24);
+    s_pmapAvg->setBounds (106, 560, 112, 24);
+
+    CBmasterOrder.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBmasterOrder.get());
+    CBmasterOrder->setEditableText (false);
+    CBmasterOrder->setJustificationType (Justification::centredLeft);
+    CBmasterOrder->setTextWhenNothingSelected (TRANS("Default"));
+    CBmasterOrder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBmasterOrder->addListener (this);
+
+    CBmasterOrder->setBounds (106, 391, 112, 20);
 
 
     //[UserPreSize]
@@ -159,7 +180,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     int nPoints;
     float* pX_vector, *pY_values;
     int* pY_values_int;
-    addAndMakeVisible (anaOrder2dSlider = new log2dSlider(360, 63, 100, 20e3, 1, SH_ORDER, 0));
+    addAndMakeVisible (anaOrder2dSlider = new log2dSlider(360, 63, 100, 20e3, 1, powermap_getMasterOrder(hVst->hPm), 0));
     anaOrder2dSlider->setAlwaysOnTop(true);
     anaOrder2dSlider->setTopLeftPosition(248, 543);
     powermap_getAnaOrderHandle(hVst->hPm, &pX_vector, &pY_values_int, &nPoints);
@@ -171,12 +192,21 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     powermap_getPowermapEQHandle(hVst->hPm, &pX_vector, &pY_values, &nPoints);
     pmapEQ2dSlider->setDataHandles(pX_vector, pY_values, nPoints);
 
+    /* add master analysis order options */
+    CBmasterOrder->addItem (TRANS("1st order"), MASTER_ORDER_FIRST);
+    CBmasterOrder->addItem (TRANS("2nd order"), MASTER_ORDER_SECOND);
+    CBmasterOrder->addItem (TRANS("3rd order"), MASTER_ORDER_THIRD);
+    CBmasterOrder->addItem (TRANS("4th order"), MASTER_ORDER_FOURTH);
+    CBmasterOrder->addItem (TRANS("5th order"), MASTER_ORDER_FIFTH);
+    CBmasterOrder->addItem (TRANS("6th order"), MASTER_ORDER_SIXTH);
+    CBmasterOrder->addItem (TRANS("7th order"), MASTER_ORDER_SEVENTH);
+
     /* Add powermap options */
     CBpmap_method->addItem (TRANS("PWD"), PM_MODE_PWD);
     CBpmap_method->addItem (TRANS("MVDR"), PM_MODE_MVDR);
     CBpmap_method->addItem (TRANS("CroPaC LCMV"), PM_MODE_CROPAC_LCMV);
     CBpmap_method->addItem (TRANS("MUSIC"), PM_MODE_MUSIC);
-    CBpmap_method->addItem (TRANS("log(MUSIC)"), PM_MODE_MUSIC_LOG); 
+    CBpmap_method->addItem (TRANS("log(MUSIC)"), PM_MODE_MUSIC_LOG);
     CBpmap_method->addItem (TRANS("MinNorm"), PM_MODE_MINNORM);
     CBpmap_method->addItem (TRANS("log(MinNorm)"), PM_MODE_MINNORM_LOG);
 
@@ -206,14 +236,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     overlayIncluded->setBounds(previewArea);
 
     /* fetch current configuration */
+    CBmasterOrder->setSelectedId(powermap_getMasterOrder(hVst->hPm), dontSendNotification);
     CBpmap_method->setSelectedId(powermap_getPowermapMode(hVst->hPm), dontSendNotification);
     s_covAvg->setValue(powermap_getCovAvgCoeff(hVst->hPm), dontSendNotification);
     s_pmapEQ->setValue(powermap_getPowermapEQAllBands(hVst->hPm), dontSendNotification);
-    s_anaOrder->setRange(1, SH_ORDER, 1);
+    s_anaOrder->setRange(1, powermap_getMasterOrder(hVst->hPm), 1);
     s_anaOrder->setValue(powermap_getAnaOrderAllBands(hVst->hPm), dontSendNotification);
     CBchFormat->setSelectedId(powermap_getChOrder(hVst->hPm), dontSendNotification);
     CBnormScheme->setSelectedId(powermap_getNormType(hVst->hPm), dontSendNotification);
-    s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired()/2.0f), 1);
+    s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired(hVst->hPm)/2.0f), 1);
     s_Nsources->setValue(powermap_getNumSources(hVst->hPm), dontSendNotification);
     s_Nsources->setEnabled((powermap_getPowermapMode(hVst->hPm)==PM_MODE_MINNORM ||
                             powermap_getPowermapMode(hVst->hPm)==PM_MODE_MUSIC) ? true : false);
@@ -223,8 +254,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     resolutionHasChanged = false;
 
 	/* Specify screen refresh rate */
-    startTimer(120);//80); /*ms (40ms = 25 frames per second) */
-    
+    startTimer(160);//80); /*ms (40ms = 25 frames per second) */
+
     /* warnings */
     currentWarning = k_warning_none;
 
@@ -247,6 +278,7 @@ PluginEditor::~PluginEditor()
     CB_hfov = nullptr;
     CB_aspectRatio = nullptr;
     s_pmapAvg = nullptr;
+    CBmasterOrder = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -346,8 +378,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 23, y = 419, width = 132, height = 30;
-        String text (TRANS("CH Order:"));
+        int x = 23, y = 386, width = 132, height = 30;
+        String text (TRANS("Max Order:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -358,8 +390,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 23, y = 451, width = 132, height = 30;
-        String text (TRANS("Norm:"));
+        int x = 23, y = 450, width = 132, height = 30;
+        String text (TRANS("Format:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -370,8 +402,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 21, y = 387, width = 132, height = 30;
-        String text (TRANS("Preset:"));
+        int x = 23, y = 418, width = 132, height = 30;
+        String text (TRANS("Mic Preset:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -395,8 +427,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 243, y = 516, width = 133, height = 30;
-        String text (TRANS("Analysis Order"));
+        int x = 243, y = 516, width = 325, height = 30;
+        String text (TRANS("Analysis Order Per Band"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -684,6 +716,32 @@ void PluginEditor::paint (Graphics& g)
                     Justification::centredLeft, true);
     }
 
+    {
+        int x = 13, y = 382, width = 214, height = 36;
+        Colour fillColour = Colour (0x13f4f4f4);
+        Colour strokeColour = Colour (0x35a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
+    {
+        int x = 13, y = 488, width = 214, height = 36;
+        Colour fillColour = Colour (0x13f4f4f4);
+        Colour strokeColour = Colour (0x33a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
@@ -694,13 +752,13 @@ void PluginEditor::paint (Graphics& g)
 
     /* label for max ORDER */
     int x = 643, y = 530, width = 13, height = 30;
-    String text (String(SH_ORDER));
+    String text  = String(powermap_getMasterOrder(hVst->hPm));
     Colour fillColour = Colours::white;
     g.setColour (fillColour);
     g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
     g.drawText (text, x, y, width, height,
                 Justification::centredLeft, true);
-    
+
     /* display warning message */
     g.setColour(Colours::red);
     g.setFont(Font(11.00f, Font::plain));
@@ -714,7 +772,7 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(powermap_getNSHrequired()) + TRANS(")"),
+                       TRANS("/") + String(powermap_getNSHrequired(hVst->hPm)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -743,7 +801,7 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == CBpmap_method)
+    if (comboBoxThatHasChanged == CBpmap_method.get())
     {
         //[UserComboBoxCode_CBpmap_method] -- add your combo box handling code here..
         powermap_setPowermapMode(hVst->hPm, CBpmap_method->getSelectedId());
@@ -751,35 +809,46 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
                                 powermap_getPowermapMode(hVst->hPm)==PM_MODE_MUSIC) ? true : false);
         //[/UserComboBoxCode_CBpmap_method]
     }
-    else if (comboBoxThatHasChanged == CBsourcePreset)
+    else if (comboBoxThatHasChanged == CBsourcePreset.get())
     {
         //[UserComboBoxCode_CBsourcePreset] -- add your combo box handling code here..
         powermap_setSourcePreset(hVst->hPm, CBsourcePreset->getSelectedId());
         //[/UserComboBoxCode_CBsourcePreset]
     }
-    else if (comboBoxThatHasChanged == CBchFormat)
+    else if (comboBoxThatHasChanged == CBchFormat.get())
     {
         //[UserComboBoxCode_CBchFormat] -- add your combo box handling code here..
         powermap_setChOrder(hVst->hPm, CBchFormat->getSelectedId());
         //[/UserComboBoxCode_CBchFormat]
     }
-    else if (comboBoxThatHasChanged == CBnormScheme)
+    else if (comboBoxThatHasChanged == CBnormScheme.get())
     {
         //[UserComboBoxCode_CBnormScheme] -- add your combo box handling code here..
         powermap_setNormType(hVst->hPm, CBnormScheme->getSelectedId());
         //[/UserComboBoxCode_CBnormScheme]
     }
-    else if (comboBoxThatHasChanged == CB_hfov)
+    else if (comboBoxThatHasChanged == CB_hfov.get())
     {
         //[UserComboBoxCode_CB_hfov] -- add your combo box handling code here..
         powermap_setDispFOV(hVst->hPm, CB_hfov->getSelectedId());
         //[/UserComboBoxCode_CB_hfov]
     }
-    else if (comboBoxThatHasChanged == CB_aspectRatio)
+    else if (comboBoxThatHasChanged == CB_aspectRatio.get())
     {
         //[UserComboBoxCode_CB_aspectRatio] -- add your combo box handling code here..
         powermap_setAspectRatio(hVst->hPm, CB_aspectRatio->getSelectedId());
         //[/UserComboBoxCode_CB_aspectRatio]
+    }
+    else if (comboBoxThatHasChanged == CBmasterOrder.get())
+    {
+        //[UserComboBoxCode_CBmasterOrder] -- add your combo box handling code here..
+        powermap_setMasterOrder(hVst->hPm, CBmasterOrder->getSelectedId());
+        anaOrder2dSlider->setYrange(1, CBmasterOrder->getSelectedId());
+        anaOrder2dSlider->setRefreshValuesFLAG(true);
+        s_anaOrder->setRange(1, CBmasterOrder->getSelectedId(), 1);
+        s_anaOrder->setValue(CBmasterOrder->getSelectedId());
+        repaint();
+        //[/UserComboBoxCode_CBmasterOrder]
     }
 
     //[UsercomboBoxChanged_Post]
@@ -791,31 +860,31 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == s_anaOrder)
+    if (sliderThatWasMoved == s_anaOrder.get())
     {
         //[UserSliderCode_s_anaOrder] -- add your slider handling code here..
         powermap_setAnaOrderAllBands(hVst->hPm, (int)(s_anaOrder->getValue()+0.5));
         //[/UserSliderCode_s_anaOrder]
     }
-    else if (sliderThatWasMoved == s_pmapEQ)
+    else if (sliderThatWasMoved == s_pmapEQ.get())
     {
         //[UserSliderCode_s_pmapEQ] -- add your slider handling code here..
         powermap_setPowermapEQAllBands(hVst->hPm, (s_pmapEQ->getValue()));
         //[/UserSliderCode_s_pmapEQ]
     }
-    else if (sliderThatWasMoved == s_covAvg)
+    else if (sliderThatWasMoved == s_covAvg.get())
     {
         //[UserSliderCode_s_covAvg] -- add your slider handling code here..
         powermap_setCovAvgCoeff(hVst->hPm, (float)s_covAvg->getValue());
         //[/UserSliderCode_s_covAvg]
     }
-    else if (sliderThatWasMoved == s_Nsources)
+    else if (sliderThatWasMoved == s_Nsources.get())
     {
         //[UserSliderCode_s_Nsources] -- add your slider handling code here..
         powermap_setNumSources(hVst->hPm, (int)(s_Nsources->getValue()+0.5));
         //[/UserSliderCode_s_Nsources]
     }
-    else if (sliderThatWasMoved == s_pmapAvg)
+    else if (sliderThatWasMoved == s_pmapAvg.get())
     {
         //[UserSliderCode_s_pmapAvg] -- add your slider handling code here..
         powermap_setPowermapAvgCoeff(hVst->hPm, (float)s_pmapAvg->getValue());
@@ -831,6 +900,9 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PluginEditor::timerCallback()
 {
+    /* Nsource slider range */
+    s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired(hVst->hPm)/2.0f), 1);
+    
     /* refresh the powermap display */
     if ((overlayIncluded != nullptr) && (hVst->isPlaying)) {
         float* dirs_deg, *pmap;
@@ -849,13 +921,13 @@ void PluginEditor::timerCallback()
         anaOrder2dSlider->repaint();
     if (pmapEQ2dSlider->getRefreshValuesFLAG())
         pmapEQ2dSlider->repaint();
-    
+
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < powermap_getNSHrequired())){
+    else if ((hVst->getCurrentNumInputs() < powermap_getNSHrequired(hVst->hPm))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -896,18 +968,18 @@ BEGIN_JUCER_METADATA
     <TEXT pos="-19 0 195 32" fill="solid: ffffffff" hasStroke="0" text="PowerMap"
           fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
-    <TEXT pos="23 419 132 30" fill="solid: ffffffff" hasStroke="0" text="CH Order:"
+    <TEXT pos="23 386 132 30" fill="solid: ffffffff" hasStroke="0" text="Max Order:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="23 451 132 30" fill="solid: ffffffff" hasStroke="0" text="Norm:"
+    <TEXT pos="23 450 132 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="21 387 132 30" fill="solid: ffffffff" hasStroke="0" text="Preset:"
+    <TEXT pos="23 418 132 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="236 520 424 105" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="243 516 133 30" fill="solid: ffffffff" hasStroke="0" text="Analysis Order"
+    <TEXT pos="243 516 325 30" fill="solid: ffffffff" hasStroke="0" text="Analysis Order Per Band"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="243 598 37 30" fill="solid: ffffffff" hasStroke="0" text="100"
@@ -977,18 +1049,22 @@ BEGIN_JUCER_METADATA
     <TEXT pos="456 384 132 30" fill="solid: ffffffff" hasStroke="0" text="Aspect Ratio:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <RECT pos="13 382 214 36" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 35a0a0a0"/>
+    <RECT pos="13 488 214 36" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 33a0a0a0"/>
   </BACKGROUND>
   <COMBOBOX name="" id="787134d7259eea10" memberName="CBpmap_method" virtualName=""
-            explicitFocusOrder="0" pos="104 496 112 24" editable="0" layout="33"
+            explicitFocusOrder="0" pos="106 495 112 24" editable="0" layout="33"
             items="" textWhenNonSelected="Default" textWhenNoItems=""/>
   <COMBOBOX name="new combo box" id="d83602bab6f1a999" memberName="CBsourcePreset"
-            virtualName="" explicitFocusOrder="0" pos="104 392 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="106 423 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="a36915795f16ceb6" memberName="CBchFormat"
-            virtualName="" explicitFocusOrder="0" pos="104 424 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="80 456 66 20" editable="0"
             layout="33" items="" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="e10be54628a6df43" memberName="CBnormScheme"
-            virtualName="" explicitFocusOrder="0" pos="104 456 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="151 456 67 20" editable="0"
             layout="33" items="" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="50ea77f60aadeeca" memberName="s_anaOrder"
           virtualName="" explicitFocusOrder="0" pos="608 536 40 80" textboxtext="ffffffff"
@@ -1003,13 +1079,13 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
   <SLIDER name="new slider" id="9f910fb3b8d0dcf3" memberName="s_covAvg"
-          virtualName="" explicitFocusOrder="0" pos="104 592 112 24" textboxtext="ffffffff"
+          virtualName="" explicitFocusOrder="0" pos="106 592 112 24" textboxtext="ffffffff"
           textboxbkgd="ffffff" min="0.00000000000000000000" max="1.00000000000000000000"
           int="0.01000000000000000021" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
   <SLIDER name="new slider" id="2778ed8914910289" memberName="s_Nsources"
-          virtualName="" explicitFocusOrder="0" pos="104 528 112 24" textboxtext="ffffffff"
+          virtualName="" explicitFocusOrder="0" pos="106 528 112 24" textboxtext="ffffffff"
           textboxbkgd="ffffff" min="1.00000000000000000000" max="8.00000000000000000000"
           int="1.00000000000000000000" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1.00000000000000000000"
@@ -1021,11 +1097,14 @@ BEGIN_JUCER_METADATA
             explicitFocusOrder="0" pos="552 388 96 24" editable="0" layout="33"
             items="" textWhenNonSelected="Default" textWhenNoItems=""/>
   <SLIDER name="new slider" id="d9acd6687ea4c8b5" memberName="s_pmapAvg"
-          virtualName="" explicitFocusOrder="0" pos="104 560 112 24" textboxtext="ffffffff"
+          virtualName="" explicitFocusOrder="0" pos="106 560 112 24" textboxtext="ffffffff"
           textboxbkgd="ffffff" min="0.00000000000000000000" max="1.00000000000000000000"
           int="0.01000000000000000021" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
+  <COMBOBOX name="new combo box" id="a465903000494955" memberName="CBmasterOrder"
+            virtualName="" explicitFocusOrder="0" pos="106 391 112 20" editable="0"
+            layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -86,29 +86,30 @@ private:
     }
 
     /* warnings */
-    SPARTA_WARNINGS currentWarning; 
+    SPARTA_WARNINGS currentWarning;
 
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<ToggleButton> TBuseDefaultHRIRs;
-    ScopedPointer<ComboBox> CBorderPreset;
-    ScopedPointer<ComboBox> CBchFormat;
-    ScopedPointer<ComboBox> CBnormScheme;
-    ScopedPointer<ToggleButton> TBmaxRE;
-    ScopedPointer<Slider> s_yaw;
-    ScopedPointer<Slider> s_pitch;
-    ScopedPointer<Slider> s_roll;
-    ScopedPointer<TextEditor> te_oscport;
-    ScopedPointer<Label> label_N_dirs;
-    ScopedPointer<Label> label_HRIR_len;
-    ScopedPointer<Label> label_HRIR_fs;
-    ScopedPointer<Label> label_DAW_fs;
-    ScopedPointer<ToggleButton> t_flipPitch;
-    ScopedPointer<ToggleButton> t_flipRoll;
-    ScopedPointer<ToggleButton> t_flipYaw;
-    ScopedPointer<ToggleButton> TBcompEQ;
-    ScopedPointer<ToggleButton> TBrpyFlag;
+    std::unique_ptr<ToggleButton> TBuseDefaultHRIRs;
+    std::unique_ptr<ComboBox> CBorderPreset;
+    std::unique_ptr<ComboBox> CBchFormat;
+    std::unique_ptr<ComboBox> CBnormScheme;
+    std::unique_ptr<ToggleButton> TBmaxRE;
+    std::unique_ptr<Slider> s_yaw;
+    std::unique_ptr<Slider> s_pitch;
+    std::unique_ptr<Slider> s_roll;
+    std::unique_ptr<TextEditor> te_oscport;
+    std::unique_ptr<Label> label_N_dirs;
+    std::unique_ptr<Label> label_HRIR_len;
+    std::unique_ptr<Label> label_HRIR_fs;
+    std::unique_ptr<Label> label_DAW_fs;
+    std::unique_ptr<ToggleButton> t_flipPitch;
+    std::unique_ptr<ToggleButton> t_flipRoll;
+    std::unique_ptr<ToggleButton> t_flipYaw;
+    std::unique_ptr<ToggleButton> TBcompEQ;
+    std::unique_ptr<ToggleButton> TBrpyFlag;
+    std::unique_ptr<ToggleButton> TBenableRot;
 
 
     //==============================================================================

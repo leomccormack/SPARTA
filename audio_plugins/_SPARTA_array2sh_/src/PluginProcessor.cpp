@@ -232,8 +232,9 @@ AudioProcessorEditor* PluginProcessor::createEditor()
 //==============================================================================
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-    XmlElement xml("ARRAY2SHPLUGINSETTINGS"+String(SH_ORDER));
+    XmlElement xml("ARRAY2SHPLUGINSETTINGS");
     
+    xml.setAttribute("order", array2sh_getEncodingOrder(hA2sh));
     xml.setAttribute("Q", array2sh_getNumSensors(hA2sh));
     for(int i=0; i<MAX_NUM_CHANNELS; i++){
         xml.setAttribute("AziRad" + String(i), array2sh_getSensorAzi_rad(hA2sh,i));
@@ -241,7 +242,6 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     }
     xml.setAttribute("r", array2sh_getr(hA2sh));
     xml.setAttribute("R", array2sh_getR(hA2sh));
-    xml.setAttribute("admittance", array2sh_getAdmittance(hA2sh));
     xml.setAttribute("arrayType", array2sh_getArrayType(hA2sh));
     xml.setAttribute("weightType", array2sh_getWeightType(hA2sh));
     xml.setAttribute("regType", array2sh_getRegType(hA2sh));
@@ -263,21 +263,21 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     int i;
     
     if (xmlState != nullptr) {
-        if (xmlState->hasTagName("ARRAY2SHPLUGINSETTINGS"+String(SH_ORDER))) {
+        if (xmlState->hasTagName("ARRAY2SHPLUGINSETTINGS")) {
             for(i=0; i<array2sh_getMaxNumSensors(); i++){
                 if(xmlState->hasAttribute("AziRad" + String(i)))
                     array2sh_setSensorAzi_rad(hA2sh, i, (float)xmlState->getDoubleAttribute("AziRad" + String(i), 0.0f));
                 if(xmlState->hasAttribute("ElevRad" + String(i)))
                     array2sh_setSensorElev_rad(hA2sh, i, (float)xmlState->getDoubleAttribute("ElevRad" + String(i), 0.0f));
             }
+            if(xmlState->hasAttribute("order"))
+                array2sh_setEncodingOrder(hA2sh, xmlState->getIntAttribute("order", 1));
             if(xmlState->hasAttribute("Q"))
-                array2sh_setNumSensors(hA2sh, xmlState->getIntAttribute("Q", (SH_ORDER+1)*(SH_ORDER+1)));
+                array2sh_setNumSensors(hA2sh, xmlState->getIntAttribute("Q", 4));
             if(xmlState->hasAttribute("r"))
                 array2sh_setr(hA2sh, (float)xmlState->getDoubleAttribute("r", 0.042));
             if(xmlState->hasAttribute("R"))
                 array2sh_setR(hA2sh, (float)xmlState->getDoubleAttribute("R", 0.042));
-            if(xmlState->hasAttribute("admittance"))
-                array2sh_setAdmittance(hA2sh, (float)xmlState->getDoubleAttribute("admittance", 0.0));
             if(xmlState->hasAttribute("arrayType"))
                 array2sh_setArrayType(hA2sh, xmlState->getIntAttribute("arrayType", 1));
             if(xmlState->hasAttribute("weightType"))

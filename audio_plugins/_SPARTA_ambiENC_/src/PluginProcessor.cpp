@@ -171,12 +171,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
 
-	ambi_enc_init(hAmbi, sampleRate);
-    
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferInputs[i], 0, FRAME_SIZE*sizeof(float));
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
+	ambi_enc_init(hAmbi, sampleRate); 
 }
 
 void PluginProcessor::releaseResources()

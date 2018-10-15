@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -88,24 +88,25 @@ private:
     ScopedPointer<log2dSlider> pmapEQ2dSlider;
 
     bool resolutionHasChanged;
-    
+
     /* warnings */
-    SPARTA_WARNINGS currentWarning; 
+    SPARTA_WARNINGS currentWarning;
 
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<ComboBox> CBpmap_method;
-    ScopedPointer<ComboBox> CBsourcePreset;
-    ScopedPointer<ComboBox> CBchFormat;
-    ScopedPointer<ComboBox> CBnormScheme;
-    ScopedPointer<Slider> s_anaOrder;
-    ScopedPointer<Slider> s_pmapEQ;
-    ScopedPointer<Slider> s_covAvg;
-    ScopedPointer<Slider> s_Nsources;
-    ScopedPointer<ComboBox> CB_hfov;
-    ScopedPointer<ComboBox> CB_aspectRatio;
-    ScopedPointer<Slider> s_pmapAvg;
+    std::unique_ptr<ComboBox> CBpmap_method;
+    std::unique_ptr<ComboBox> CBsourcePreset;
+    std::unique_ptr<ComboBox> CBchFormat;
+    std::unique_ptr<ComboBox> CBnormScheme;
+    std::unique_ptr<Slider> s_anaOrder;
+    std::unique_ptr<Slider> s_pmapEQ;
+    std::unique_ptr<Slider> s_covAvg;
+    std::unique_ptr<Slider> s_Nsources;
+    std::unique_ptr<ComboBox> CB_hfov;
+    std::unique_ptr<ComboBox> CB_aspectRatio;
+    std::unique_ptr<Slider> s_pmapAvg;
+    std::unique_ptr<ComboBox> CBmasterOrder;
 
 
     //==============================================================================

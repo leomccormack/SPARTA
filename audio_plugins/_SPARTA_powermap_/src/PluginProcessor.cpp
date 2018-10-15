@@ -211,8 +211,9 @@ AudioProcessorEditor* PluginProcessor::createEditor()
 //==============================================================================
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
- 	XmlElement xml("POWERMAPAUDIOPLUGINSETTINGS_"+String(SH_ORDER));
+ 	XmlElement xml("POWERMAPAUDIOPLUGINSETTINGS");
 
+    xml.setAttribute("masterOrder", powermap_getMasterOrder(hPm));
     xml.setAttribute("powermapMode", powermap_getPowermapMode(hPm));
     xml.setAttribute("covAvgCoeff", powermap_getCovAvgCoeff(hPm));
     for(int i=0; i<powermap_getNumberOfBands(); i++){
@@ -234,7 +235,9 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     ScopedPointer<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
 
     if (xmlState != nullptr) {
-        if (xmlState->hasTagName("POWERMAPAUDIOPLUGINSETTINGS_"+String(SH_ORDER))) {
+        if (xmlState->hasTagName("POWERMAPAUDIOPLUGINSETTINGS")) {
+            if(xmlState->hasAttribute("masterOrder"))
+                powermap_setMasterOrder(hPm, xmlState->getIntAttribute("masterOrder", 1));
             if(xmlState->hasAttribute("powermapMode"))
                 powermap_setPowermapMode(hPm, xmlState->getIntAttribute("powermapMode", 1));
             if(xmlState->hasAttribute("covAvgCoeff"))

@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -36,7 +36,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (CBoutputDirsPreset = new ComboBox ("new combo box"));
+    CBoutputDirsPreset.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBoutputDirsPreset.get());
     CBoutputDirsPreset->setEditableText (false);
     CBoutputDirsPreset->setJustificationType (Justification::centredLeft);
     CBoutputDirsPreset->setTextWhenNothingSelected (TRANS("Default"));
@@ -46,7 +47,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBoutputDirsPreset->setBounds (520, 64, 112, 20);
 
-    addAndMakeVisible (SL_num_loudspeakers = new Slider ("new slider"));
+    SL_num_loudspeakers.reset (new Slider ("new slider"));
+    addAndMakeVisible (SL_num_loudspeakers.get());
     SL_num_loudspeakers->setRange (1, 64, 1);
     SL_num_loudspeakers->setSliderStyle (Slider::LinearHorizontal);
     SL_num_loudspeakers->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
@@ -54,13 +56,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_loudspeakers->setBounds (520, 90, 112, 24);
 
-    addAndMakeVisible (TBuseDefaultHRIRs = new ToggleButton ("new toggle button"));
+    TBuseDefaultHRIRs.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBuseDefaultHRIRs.get());
     TBuseDefaultHRIRs->setButtonText (String());
     TBuseDefaultHRIRs->addListener (this);
 
     TBuseDefaultHRIRs->setBounds (408, 94, 32, 24);
 
-    addAndMakeVisible (CBsourcePreset = new ComboBox ("new combo box"));
+    CBsourcePreset.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBsourcePreset.get());
     CBsourcePreset->setEditableText (false);
     CBsourcePreset->setJustificationType (Justification::centredLeft);
     CBsourcePreset->setTextWhenNothingSelected (TRANS("Default"));
@@ -68,9 +72,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsourcePreset->addItem (TRANS("Ideal SH"), 1);
     CBsourcePreset->addListener (this);
 
-    CBsourcePreset->setBounds (96, 64, 112, 20);
+    CBsourcePreset->setBounds (98, 97, 118, 20);
 
-    addAndMakeVisible (CBchFormat = new ComboBox ("new combo box"));
+    CBchFormat.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBchFormat.get());
     CBchFormat->setEditableText (false);
     CBchFormat->setJustificationType (Justification::centredLeft);
     CBchFormat->setTextWhenNothingSelected (TRANS("ACN"));
@@ -78,9 +83,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBchFormat->addItem (TRANS("ACN"), 1);
     CBchFormat->addListener (this);
 
-    CBchFormat->setBounds (96, 96, 112, 20);
+    CBchFormat->setBounds (75, 128, 64, 20);
 
-    addAndMakeVisible (CBnormScheme = new ComboBox ("new combo box"));
+    CBnormScheme.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBnormScheme.get());
     CBnormScheme->setEditableText (false);
     CBnormScheme->setJustificationType (Justification::centredLeft);
     CBnormScheme->setTextWhenNothingSelected (TRANS("N3D"));
@@ -89,9 +95,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormScheme->addItem (TRANS("SN3D"), 2);
     CBnormScheme->addListener (this);
 
-    CBnormScheme->setBounds (96, 128, 112, 20);
+    CBnormScheme->setBounds (144, 128, 72, 20);
 
-    addAndMakeVisible (SL_transitionFreq = new Slider ("new slider"));
+    SL_transitionFreq.reset (new Slider ("new slider"));
+    addAndMakeVisible (SL_transitionFreq.get());
     SL_transitionFreq->setRange (500, 2000, 0.1);
     SL_transitionFreq->setSliderStyle (Slider::LinearHorizontal);
     SL_transitionFreq->setTextBoxStyle (Slider::TextBoxAbove, false, 60, 20);
@@ -99,7 +106,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_transitionFreq->setBounds (168, 296, 112, 40);
 
-    addAndMakeVisible (CBdec1method = new ComboBox ("new combo box"));
+    CBdec1method.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBdec1method.get());
     CBdec1method->setEditableText (false);
     CBdec1method->setJustificationType (Justification::centredLeft);
     CBdec1method->setTextWhenNothingSelected (TRANS("Default"));
@@ -108,7 +116,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBdec1method->setBounds (24, 288, 116, 20);
 
-    addAndMakeVisible (CBdec2method = new ComboBox ("new combo box"));
+    CBdec2method.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBdec2method.get());
     CBdec2method->setEditableText (false);
     CBdec2method->setJustificationType (Justification::centredLeft);
     CBdec2method->setTextWhenNothingSelected (TRANS("Default"));
@@ -117,19 +126,22 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBdec2method->setBounds (308, 288, 116, 20);
 
-    addAndMakeVisible (TBdec1EnableMaxrE = new ToggleButton ("new toggle button"));
+    TBdec1EnableMaxrE.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBdec1EnableMaxrE.get());
     TBdec1EnableMaxrE->setButtonText (String());
     TBdec1EnableMaxrE->addListener (this);
 
     TBdec1EnableMaxrE->setBounds (120, 312, 32, 24);
 
-    addAndMakeVisible (TBdec2EnableMaxrE = new ToggleButton ("new toggle button"));
+    TBdec2EnableMaxrE.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBdec2EnableMaxrE.get());
     TBdec2EnableMaxrE->setButtonText (String());
     TBdec2EnableMaxrE->addListener (this);
 
     TBdec2EnableMaxrE->setBounds (404, 312, 32, 24);
 
-    addAndMakeVisible (CBdec1normtype = new ComboBox ("new combo box"));
+    CBdec1normtype.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBdec1normtype.get());
     CBdec1normtype->setEditableText (false);
     CBdec1normtype->setJustificationType (Justification::centredLeft);
     CBdec1normtype->setTextWhenNothingSelected (TRANS("EP"));
@@ -138,13 +150,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBdec1normtype->setBounds (24, 314, 52, 20);
 
-    addAndMakeVisible (TBBinauraliseLS = new ToggleButton ("new toggle button"));
+    TBBinauraliseLS.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBBinauraliseLS.get());
     TBBinauraliseLS->setButtonText (String());
     TBBinauraliseLS->addListener (this);
 
     TBBinauraliseLS->setBounds (408, 62, 32, 24);
 
-    addAndMakeVisible (CBdec2normtype = new ComboBox ("new combo box"));
+    CBdec2normtype.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBdec2normtype.get());
     CBdec2normtype->setEditableText (false);
     CBdec2normtype->setJustificationType (Justification::centredLeft);
     CBdec2normtype->setTextWhenNothingSelected (TRANS("EP"));
@@ -153,7 +167,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBdec2normtype->setBounds (308, 314, 52, 20);
 
-    addAndMakeVisible (s_decOrder = new Slider ("new slider"));
+    s_decOrder.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_decOrder.get());
     s_decOrder->setRange (0, 1, 1);
     s_decOrder->setSliderStyle (Slider::LinearVertical);
     s_decOrder->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
@@ -163,7 +178,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_decOrder->setBounds (384, 176, 40, 80);
 
-    addAndMakeVisible (tb_loadJSON = new TextButton ("new button"));
+    tb_loadJSON.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_loadJSON.get());
     tb_loadJSON->setButtonText (TRANS("Import"));
     tb_loadJSON->setConnectedEdges (Button::ConnectedOnRight);
     tb_loadJSON->addListener (this);
@@ -171,7 +187,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     tb_loadJSON->setBounds (447, 40, 34, 14);
 
-    addAndMakeVisible (tb_saveJSON = new TextButton ("new button"));
+    tb_saveJSON.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_saveJSON.get());
     tb_saveJSON->setButtonText (TRANS("Export"));
     tb_saveJSON->setConnectedEdges (Button::ConnectedOnLeft);
     tb_saveJSON->addListener (this);
@@ -179,6 +196,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     tb_saveJSON->setColour (TextButton::buttonOnColourId, Colour (0xff181f9a));
 
     tb_saveJSON->setBounds (481, 40, 34, 14);
+
+    CBmasterOrder.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBmasterOrder.get());
+    CBmasterOrder->setEditableText (false);
+    CBmasterOrder->setJustificationType (Justification::centredLeft);
+    CBmasterOrder->setTextWhenNothingSelected (TRANS("Default"));
+    CBmasterOrder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBmasterOrder->addListener (this);
+
+    CBmasterOrder->setBounds (98, 65, 118, 20);
 
 
     //[UserPreSize]
@@ -200,11 +227,20 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     int nPoints;
     float* pX_vector;
     int* pY_values_int;
-    addAndMakeVisible (decOrder2dSlider = new log2dSlider(360, 63, 100, 20e3, 1, SH_ORDER, 0));
+    addAndMakeVisible (decOrder2dSlider = new log2dSlider(360, 63, 100, 20e3, 1, ambi_dec_getMasterDecOrder(hVst->hAmbi), 0));
     decOrder2dSlider->setAlwaysOnTop(true);
     decOrder2dSlider->setTopLeftPosition(25, 183);
     ambi_dec_getDecOrderHandle(hVst->hAmbi, &pX_vector, &pY_values_int, &nPoints);
     decOrder2dSlider->setDataHandlesInt(pX_vector, pY_values_int, nPoints);
+
+    /* add master decoding order options */
+    CBmasterOrder->addItem (TRANS("1st order"), MASTER_ORDER_FIRST);
+    CBmasterOrder->addItem (TRANS("2nd order"), MASTER_ORDER_SECOND);
+    CBmasterOrder->addItem (TRANS("3rd order"), MASTER_ORDER_THIRD);
+    CBmasterOrder->addItem (TRANS("4th order"), MASTER_ORDER_FOURTH);
+    CBmasterOrder->addItem (TRANS("5th order"), MASTER_ORDER_FIFTH);
+    CBmasterOrder->addItem (TRANS("6th order"), MASTER_ORDER_SIXTH);
+    CBmasterOrder->addItem (TRANS("7th order"), MASTER_ORDER_SEVENTH);
 
     /* add decorder options */
     CBdec1method->addItem(TRANS("SAD"), DECODER_SAD);
@@ -310,14 +346,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* file loader */
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
-    fileChooser.setBounds (226, 128, 200, 20);
+    fileChooser.setBounds (232, 128, 195, 20);
 
     /* grab current parameter settings */
+    CBmasterOrder->setSelectedId(ambi_dec_getMasterDecOrder(hVst->hAmbi), dontSendNotification);
     TBuseDefaultHRIRs->setToggleState(ambi_dec_getUseDefaultHRIRsflag(hVst->hAmbi), dontSendNotification);
     SL_num_loudspeakers->setValue(ambi_dec_getNumLoudspeakers(hVst->hAmbi),dontSendNotification);
     CBchFormat->setSelectedId(ambi_dec_getChOrder(hVst->hAmbi), dontSendNotification);
     CBnormScheme->setSelectedId(ambi_dec_getNormType(hVst->hAmbi), dontSendNotification);
-    s_decOrder->setRange(1, SH_ORDER, 1);
+    s_decOrder->setRange(1, ambi_dec_getMasterDecOrder(hVst->hAmbi), 1);
     s_decOrder->setValue(ambi_dec_getDecOrderAllBands(hVst->hAmbi), dontSendNotification);
     TBBinauraliseLS->setToggleState(ambi_dec_getBinauraliseLSflag(hVst->hAmbi), dontSendNotification);
     CBdec1method->setSelectedId(ambi_dec_getDecMethod(hVst->hAmbi, 0), dontSendNotification);
@@ -359,6 +396,7 @@ PluginEditor::~PluginEditor()
     s_decOrder = nullptr;
     tb_loadJSON = nullptr;
     tb_saveJSON = nullptr;
+    CBmasterOrder = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -433,7 +471,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 216, y = 58, width = 220, height = 102;
+        int x = 224, y = 58, width = 212, height = 102;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -459,7 +497,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 12, y = 58, width = 205, height = 102;
+        int x = 12, y = 58, width = 213, height = 102;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -570,7 +608,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 227, y = 90, width = 165, height = 30;
+        int x = 234, y = 90, width = 165, height = 30;
         String text (TRANS("Use Default HRIR set:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -582,20 +620,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 19, y = 58, width = 132, height = 30;
-        String text (TRANS("Preset:"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
-    }
-
-    {
         int x = 19, y = 90, width = 132, height = 30;
-        String text (TRANS("CH Order:"));
+        String text (TRANS("Mic Preset:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -607,7 +633,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 19, y = 122, width = 132, height = 30;
-        String text (TRANS("Norm:"));
+        String text (TRANS("Format:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -618,7 +644,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 227, y = 58, width = 189, height = 30;
+        int x = 234, y = 58, width = 189, height = 30;
         String text (TRANS("Binauralise Loudspeakers:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -691,8 +717,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 19, y = 156, width = 133, height = 30;
-        String text (TRANS("Decoding Order"));
+        int x = 19, y = 156, width = 261, height = 30;
+        String text (TRANS("Decoding Order Per Frequency Band"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -786,6 +812,18 @@ void PluginEditor::paint (Graphics& g)
                     Justification::centredLeft, true);
     }
 
+    {
+        int x = 19, y = 58, width = 132, height = 30;
+        String text (TRANS("Max Order:"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
@@ -796,10 +834,11 @@ void PluginEditor::paint (Graphics& g)
 
     /* label for max ORDER */
     int x = 419, y = 170, width = 13, height = 30;
-    String text (String(SH_ORDER));
+    String text = String(CBmasterOrder->getSelectedId());
     Colour fillColour = Colours::white;
     g.setColour (fillColour);
     g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+
     g.drawText (text, x, y, width, height,
                 Justification::centredLeft, true);
 
@@ -816,13 +855,13 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(ambi_dec_getNSHrequired()) + TRANS(")"),
+                       TRANS("/") + String(ambi_dec_getNSHrequired(hVst->hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
-                       TRANS("/") + String(ambi_dec_getNumLoudspeakers(hVst->hAmbi)) + TRANS(")"),
+                       TRANS("/") + String((ambi_dec_getBinauraliseLSflag(hVst->hAmbi) ? 2 : ambi_dec_getNumLoudspeakers(hVst->hAmbi)) ) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -846,53 +885,65 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == CBoutputDirsPreset)
+    if (comboBoxThatHasChanged == CBoutputDirsPreset.get())
     {
         //[UserComboBoxCode_CBoutputDirsPreset] -- add your combo box handling code here..
         ambi_dec_setOutputConfigPreset(hVst->hAmbi, CBoutputDirsPreset->getSelectedId());
         //[/UserComboBoxCode_CBoutputDirsPreset]
     }
-    else if (comboBoxThatHasChanged == CBsourcePreset)
+    else if (comboBoxThatHasChanged == CBsourcePreset.get())
     {
         //[UserComboBoxCode_CBsourcePreset] -- add your combo box handling code here..
         ambi_dec_setSourcePreset(hVst->hAmbi, CBsourcePreset->getSelectedId());
         //[/UserComboBoxCode_CBsourcePreset]
     }
-    else if (comboBoxThatHasChanged == CBchFormat)
+    else if (comboBoxThatHasChanged == CBchFormat.get())
     {
         //[UserComboBoxCode_CBchFormat] -- add your combo box handling code here..
         ambi_dec_setChOrder(hVst->hAmbi, CBchFormat->getSelectedId());
         //[/UserComboBoxCode_CBchFormat]
     }
-    else if (comboBoxThatHasChanged == CBnormScheme)
+    else if (comboBoxThatHasChanged == CBnormScheme.get())
     {
         //[UserComboBoxCode_CBnormScheme] -- add your combo box handling code here..
         ambi_dec_setNormType(hVst->hAmbi, CBnormScheme->getSelectedId());
         //[/UserComboBoxCode_CBnormScheme]
     }
-    else if (comboBoxThatHasChanged == CBdec1method)
+    else if (comboBoxThatHasChanged == CBdec1method.get())
     {
         //[UserComboBoxCode_CBdec1method] -- add your combo box handling code here..
         ambi_dec_setDecMethod(hVst->hAmbi, 0, CBdec1method->getSelectedId());
         //[/UserComboBoxCode_CBdec1method]
     }
-    else if (comboBoxThatHasChanged == CBdec2method)
+    else if (comboBoxThatHasChanged == CBdec2method.get())
     {
         //[UserComboBoxCode_CBdec2method] -- add your combo box handling code here..
         ambi_dec_setDecMethod(hVst->hAmbi, 1, CBdec2method->getSelectedId());
         //[/UserComboBoxCode_CBdec2method]
     }
-    else if (comboBoxThatHasChanged == CBdec1normtype)
+    else if (comboBoxThatHasChanged == CBdec1normtype.get())
     {
         //[UserComboBoxCode_CBdec1normtype] -- add your combo box handling code here..
         ambi_dec_setDecNormType(hVst->hAmbi, 0, CBdec1normtype->getSelectedId());
         //[/UserComboBoxCode_CBdec1normtype]
     }
-    else if (comboBoxThatHasChanged == CBdec2normtype)
+    else if (comboBoxThatHasChanged == CBdec2normtype.get())
     {
         //[UserComboBoxCode_CBdec2normtype] -- add your combo box handling code here..
         ambi_dec_setDecNormType(hVst->hAmbi, 1, CBdec2normtype->getSelectedId());
         //[/UserComboBoxCode_CBdec2normtype]
+    }
+    else if (comboBoxThatHasChanged == CBmasterOrder.get())
+    {
+        //[UserComboBoxCode_CBmasterOrder] -- add your combo box handling code here..
+        ambi_dec_setMasterDecOrder(hVst->hAmbi, CBmasterOrder->getSelectedId());
+        ambi_dec_setDecOrderAllBands(hVst->hAmbi, CBmasterOrder->getSelectedId());
+        decOrder2dSlider->setYrange(1, CBmasterOrder->getSelectedId());
+        decOrder2dSlider->setRefreshValuesFLAG(true);
+        s_decOrder->setRange(1, CBmasterOrder->getSelectedId(), 1);
+        s_decOrder->setValue(CBmasterOrder->getSelectedId());
+        repaint();
+        //[/UserComboBoxCode_CBmasterOrder]
     }
 
     //[UsercomboBoxChanged_Post]
@@ -904,19 +955,19 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == SL_num_loudspeakers)
+    if (sliderThatWasMoved == SL_num_loudspeakers.get())
     {
         //[UserSliderCode_SL_num_loudspeakers] -- add your slider handling code here..
         ambi_dec_setNumLoudspeakers(hVst->hAmbi, (int)SL_num_loudspeakers->getValue());
         //[/UserSliderCode_SL_num_loudspeakers]
     }
-    else if (sliderThatWasMoved == SL_transitionFreq)
+    else if (sliderThatWasMoved == SL_transitionFreq.get())
     {
         //[UserSliderCode_SL_transitionFreq] -- add your slider handling code here..
         ambi_dec_setTransitionFreq(hVst->hAmbi, (float)SL_transitionFreq->getValue());
         //[/UserSliderCode_SL_transitionFreq]
     }
-    else if (sliderThatWasMoved == s_decOrder)
+    else if (sliderThatWasMoved == s_decOrder.get())
     {
         //[UserSliderCode_s_decOrder] -- add your slider handling code here..
         ambi_dec_setDecOrderAllBands(hVst->hAmbi, (int)s_decOrder->getValue());
@@ -932,31 +983,31 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == TBuseDefaultHRIRs)
+    if (buttonThatWasClicked == TBuseDefaultHRIRs.get())
     {
         //[UserButtonCode_TBuseDefaultHRIRs] -- add your button handler code here..
         ambi_dec_setUseDefaultHRIRsflag(hVst->hAmbi, TBuseDefaultHRIRs->getToggleState());
         //[/UserButtonCode_TBuseDefaultHRIRs]
     }
-    else if (buttonThatWasClicked == TBdec1EnableMaxrE)
+    else if (buttonThatWasClicked == TBdec1EnableMaxrE.get())
     {
         //[UserButtonCode_TBdec1EnableMaxrE] -- add your button handler code here..
         ambi_dec_setDecEnableMaxrE(hVst->hAmbi, 0, TBdec1EnableMaxrE->getToggleState());
         //[/UserButtonCode_TBdec1EnableMaxrE]
     }
-    else if (buttonThatWasClicked == TBdec2EnableMaxrE)
+    else if (buttonThatWasClicked == TBdec2EnableMaxrE.get())
     {
         //[UserButtonCode_TBdec2EnableMaxrE] -- add your button handler code here..
         ambi_dec_setDecEnableMaxrE(hVst->hAmbi, 1, TBdec2EnableMaxrE->getToggleState());
         //[/UserButtonCode_TBdec2EnableMaxrE]
     }
-    else if (buttonThatWasClicked == TBBinauraliseLS)
+    else if (buttonThatWasClicked == TBBinauraliseLS.get())
     {
         //[UserButtonCode_TBBinauraliseLS] -- add your button handler code here..
         ambi_dec_setBinauraliseLSflag(hVst->hAmbi, TBBinauraliseLS->getToggleState());
         //[/UserButtonCode_TBBinauraliseLS]
     }
-    else if (buttonThatWasClicked == tb_loadJSON)
+    else if (buttonThatWasClicked == tb_loadJSON.get())
     {
         //[UserButtonCode_tb_loadJSON] -- add your button handler code here..
         FileChooser myChooser ("Load configuration...",
@@ -969,7 +1020,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_tb_loadJSON]
     }
-    else if (buttonThatWasClicked == tb_saveJSON)
+    else if (buttonThatWasClicked == tb_saveJSON.get())
     {
         //[UserButtonCode_tb_saveJSON] -- add your button handler code here..
         FileChooser myChooser ("Save configuration...",
@@ -1007,11 +1058,12 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < ambi_dec_getNSHrequired())){
+    else if (hVst->getCurrentNumInputs() < ambi_dec_getNSHrequired(hVst->hAmbi)){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumOutputs() < ambi_dec_getNumLoudspeakers(hVst->hAmbi))){
+    else if (hVst->getCurrentNumOutputs() <
+              (ambi_dec_getBinauraliseLSflag(hVst->hAmbi) ? 2 : ambi_dec_getNumLoudspeakers(hVst->hAmbi)) ){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -1049,11 +1101,11 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="446 121 196 223" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="216 58 220 102" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="224 58 212 102" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="446 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 58 205 102" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 58 213 102" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="0 0 656 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
@@ -1077,19 +1129,16 @@ BEGIN_JUCER_METADATA
     <TEXT pos="524 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Outputs"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="227 90 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
+    <TEXT pos="234 90 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="19 58 132 30" fill="solid: ffffffff" hasStroke="0" text="Preset:"
+    <TEXT pos="19 90 132 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="19 90 132 30" fill="solid: ffffffff" hasStroke="0" text="CH Order:"
+    <TEXT pos="19 122 132 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="19 122 132 30" fill="solid: ffffffff" hasStroke="0" text="Norm:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="227 58 189 30" fill="solid: ffffffff" hasStroke="0" text="Binauralise Loudspeakers:"
+    <TEXT pos="234 58 189 30" fill="solid: ffffffff" hasStroke="0" text="Binauralise Loudspeakers:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 263 141 81" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
@@ -1106,7 +1155,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="82 308 96 30" fill="solid: ffffffff" hasStroke="0" text="max_rE:"
           fontname="Default font" fontsize="10.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="19 156 133 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Order"
+    <TEXT pos="19 156 261 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Order Per Frequency Band"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 238 37 30" fill="solid: ffffffff" hasStroke="0" text="100"
@@ -1130,6 +1179,9 @@ BEGIN_JUCER_METADATA
     <TEXT pos="419 230 13 30" fill="solid: ffffffff" hasStroke="0" text="1"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="19 58 132 30" fill="solid: ffffffff" hasStroke="0" text="Max Order:"
+          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="5a2f99f88aa51390" memberName="CBoutputDirsPreset"
             virtualName="" explicitFocusOrder="0" pos="520 64 112 20" editable="0"
@@ -1143,13 +1195,13 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="408 94 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <COMBOBOX name="new combo box" id="d83602bab6f1a999" memberName="CBsourcePreset"
-            virtualName="" explicitFocusOrder="0" pos="96 64 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="98 97 118 20" editable="0"
             layout="33" items="Ideal SH" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="a36915795f16ceb6" memberName="CBchFormat"
-            virtualName="" explicitFocusOrder="0" pos="96 96 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="75 128 64 20" editable="0"
             layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="e10be54628a6df43" memberName="CBnormScheme"
-            virtualName="" explicitFocusOrder="0" pos="96 128 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="144 128 72 20" editable="0"
             layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="27b7eb906eb4d4f" memberName="SL_transitionFreq"
           virtualName="" explicitFocusOrder="0" pos="168 296 112 40" min="500.00000000000000000000"
@@ -1191,6 +1243,9 @@ BEGIN_JUCER_METADATA
               virtualName="" explicitFocusOrder="0" pos="481 40 34 14" bgColOff="ff224d97"
               bgColOn="ff181f9a" buttonText="Export" connectedEdges="1" needsCallback="1"
               radioGroupId="0"/>
+  <COMBOBOX name="new combo box" id="a465903000494955" memberName="CBmasterOrder"
+            virtualName="" explicitFocusOrder="0" pos="98 65 118 20" editable="0"
+            layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

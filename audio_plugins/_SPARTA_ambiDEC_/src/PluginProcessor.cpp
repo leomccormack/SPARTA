@@ -168,12 +168,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
 
-	ambi_dec_init(hAmbi, sampleRate);
-    
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferInputs[i], 0, FRAME_SIZE*sizeof(float));
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
+    ambi_dec_init(hAmbi, sampleRate);
 }
 
 void PluginProcessor::releaseResources()
@@ -232,8 +227,9 @@ AudioProcessorEditor* PluginProcessor::createEditor()
 //==============================================================================
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-    XmlElement xml("AMBIDECPLUGINSETTINGSO"+String(SH_ORDER));
+    XmlElement xml("AMBIDECPLUGINSETTINGS");
  
+    xml.setAttribute("MasterDecOrder", ambi_dec_getMasterDecOrder(hAmbi));
     for(int band=0; band<ambi_dec_getNumberOfBands(); band++)
         xml.setAttribute("DecOrder"+String(band), ambi_dec_getDecOrder(hAmbi, band));
     for(int i=0; i<ambi_dec_getMaxNumLoudspeakers(); i++){
@@ -267,10 +263,12 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     int i;
 
     if (xmlState != nullptr) {
-        if (xmlState->hasTagName("AMBIDECPLUGINSETTINGSO"+String(SH_ORDER))) {
+        if (xmlState->hasTagName("AMBIDECPLUGINSETTINGS")) {
+            if(xmlState->hasAttribute("MasterDecOrder"))
+                ambi_dec_setMasterDecOrder(hAmbi, xmlState->getIntAttribute("MasterDecOrder",1));
             for(int band=0; band<ambi_dec_getNumberOfBands(); band++)
                 if(xmlState->hasAttribute("DecOrder"+String(band)))
-                    ambi_dec_setDecOrder(hAmbi, xmlState->getIntAttribute("DecOrder"+String(band),0), band);
+                    ambi_dec_setDecOrder(hAmbi, xmlState->getIntAttribute("DecOrder"+String(band),1), band);
             for(i=0; i<ambi_dec_getMaxNumLoudspeakers(); i++){
                 if(xmlState->hasAttribute("LoudspeakerAziDeg" + String(i)))
                     ambi_dec_setLoudspeakerAzi_deg(hAmbi, i, (float)xmlState->getDoubleAttribute("LoudspeakerAziDeg" + String(i), 0.0f));

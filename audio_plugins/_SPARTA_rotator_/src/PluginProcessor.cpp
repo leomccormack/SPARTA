@@ -246,13 +246,6 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     isPlaying = false;
 
 	rotator_init(hRot, (float)sampleRate);
-
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferInputs[i], 0, FRAME_SIZE * sizeof(float));
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
-	 
-	isPlaying = false;
 }
 
 void PluginProcessor::releaseResources()
