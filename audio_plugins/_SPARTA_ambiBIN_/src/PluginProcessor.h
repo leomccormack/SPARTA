@@ -43,8 +43,7 @@ enum {
 };
 
 
-class PluginProcessor  : public AudioProcessor, 
-	//public AudioProcessorValueTreeState::Listener,
+class PluginProcessor  : public AudioProcessor,  
                          private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
                          public VSTCallbackHandler
 {
