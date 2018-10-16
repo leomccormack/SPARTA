@@ -41,7 +41,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBuseDefaultHRIRs->setButtonText (String());
     TBuseDefaultHRIRs->addListener (this);
 
-    TBuseDefaultHRIRs->setBounds (604, 60, 32, 24);
+    TBuseDefaultHRIRs->setBounds (606, 60, 32, 24);
 
     CBorderPreset.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBorderPreset.get());
@@ -81,7 +81,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBmaxRE->setButtonText (String());
     TBmaxRE->addListener (this);
 
-    TBmaxRE->setBounds (121, 86, 32, 24);
+    TBmaxRE->setBounds (124, 86, 32, 24);
 
     s_yaw.reset (new Slider ("new slider"));
     addAndMakeVisible (s_yaw.get());
@@ -212,14 +212,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBrpyFlag->setButtonText (String());
     TBrpyFlag->addListener (this);
 
-    TBrpyFlag->setBounds (54, 160, 32, 24);
+    TBrpyFlag->setBounds (56, 160, 32, 24);
 
     TBenableRot.reset (new ToggleButton ("new toggle button"));
     addAndMakeVisible (TBenableRot.get());
     TBenableRot->setButtonText (String());
     TBenableRot->addListener (this);
 
-    TBenableRot->setBounds (54, 138, 32, 24);
+    TBenableRot->setBounds (56, 138, 32, 24);
 
 
     //[UserPreSize]
@@ -476,7 +476,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 19, y = 56, width = 93, height = 30;
+        int x = 19, y = 56, width = 125, height = 30;
         String text (TRANS("Decode Order:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -998,7 +998,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="459 56 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="19 56 93 30" fill="solid: ffffffff" hasStroke="0" text="Decode Order:"
+    <TEXT pos="19 56 125 30" fill="solid: ffffffff" hasStroke="0" text="Decode Order:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="227 56 132 30" fill="solid: ffffffff" hasStroke="0" text="CH Order:"
@@ -1068,7 +1068,7 @@ BEGIN_JUCER_METADATA
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
-                virtualName="" explicitFocusOrder="0" pos="604 60 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="606 60 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <COMBOBOX name="new combo box" id="d83602bab6f1a999" memberName="CBorderPreset"
             virtualName="" explicitFocusOrder="0" pos="120 62 92 20" editable="0"
@@ -1080,7 +1080,7 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="312 88 112 20" editable="0"
             layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <TOGGLEBUTTON name="new toggle button" id="943aa789e193d13a" memberName="TBmaxRE"
-                virtualName="" explicitFocusOrder="0" pos="121 86 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="124 86 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <SLIDER name="new slider" id="ace036a85eec9703" memberName="s_yaw" virtualName=""
           explicitFocusOrder="0" pos="80 150 120 32" textboxtext="ffffffff"
@@ -1141,10 +1141,10 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="656 -16 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="b4fec6d3e1a2bae2" memberName="TBrpyFlag"
-                virtualName="" explicitFocusOrder="0" pos="54 160 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="56 160 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="dfb8e588ab02032d" memberName="TBenableRot"
-                virtualName="" explicitFocusOrder="0" pos="54 138 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="56 138 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 

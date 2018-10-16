@@ -44,6 +44,7 @@ enum {
 
 
 class PluginProcessor  : public AudioProcessor, 
+	//public AudioProcessorValueTreeState::Listener,
                          private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
                          public VSTCallbackHandler
 {
@@ -124,6 +125,7 @@ public:
 	const String getProgramName(int index) override;
 	bool isInputChannelStereoPair (int index) const override;
 	bool isOutputChannelStereoPair(int index) const override;
+	bool isBusesLayoutSupported(const BusesLayout& layouts) const override;
 	void changeProgramName(int index, const String& newName) override;
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
