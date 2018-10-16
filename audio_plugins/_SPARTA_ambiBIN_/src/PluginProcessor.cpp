@@ -22,10 +22,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-PluginProcessor::PluginProcessor() : 
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(64), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(2), true))
+PluginProcessor::PluginProcessor() :
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(64), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(2), true))
 {
     bufferInputs = new float*[MAX_NUM_CHANNELS];
     for (int i = 0; i < MAX_NUM_CHANNELS; i++)
@@ -212,7 +212,7 @@ bool PluginProcessor::isOutputChannelStereoPair (int index) const
 
 bool PluginProcessor::isBusesLayoutSupported(const BusesLayout& layouts) const
 {
-	return true;
+    return true;
 }
 
 bool PluginProcessor::acceptsMidi() const
