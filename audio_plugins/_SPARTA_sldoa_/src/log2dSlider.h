@@ -65,6 +65,11 @@ public:
     void setRefreshValuesFLAG(bool newFlag){
         refreshValues = newFlag;
     }
+    
+    void setYrange(int _min_Y_value, int _max_Y_value){
+        min_Y_value = _min_Y_value;
+        max_Y_value = _max_Y_value;
+    }
 
     //[/UserMethods]
 

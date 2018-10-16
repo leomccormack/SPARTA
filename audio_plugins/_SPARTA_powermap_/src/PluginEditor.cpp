@@ -254,7 +254,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     resolutionHasChanged = false;
 
 	/* Specify screen refresh rate */
-    startTimer(160);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(120);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
     currentWarning = k_warning_none;

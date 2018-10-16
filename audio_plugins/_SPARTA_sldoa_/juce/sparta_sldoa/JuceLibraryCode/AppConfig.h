@@ -307,10 +307,10 @@
  #define JucePlugin_Enable_IAA             0
 #endif
 #ifndef  JucePlugin_Name
- #define JucePlugin_Name                   "sparta_sldoa_o7"
+ #define JucePlugin_Name                   "sparta_sldoa"
 #endif
 #ifndef  JucePlugin_Desc
- #define JucePlugin_Desc                   "sparta_sldoa_o7"
+ #define JucePlugin_Desc                   "sparta_sldoa"
 #endif
 #ifndef  JucePlugin_Manufacturer
  #define JucePlugin_Manufacturer           "AALTO"
@@ -325,7 +325,7 @@
  #define JucePlugin_ManufacturerCode       0x4c454f4d // 'LEOM'
 #endif
 #ifndef  JucePlugin_PluginCode
- #define JucePlugin_PluginCode             0x534c4f37 // 'SLO7'
+ #define JucePlugin_PluginCode             0x534c4f41 // 'SLOA'
 #endif
 #ifndef  JucePlugin_IsSynth
  #define JucePlugin_IsSynth                0
@@ -343,13 +343,13 @@
  #define JucePlugin_EditorRequiresKeyboardFocus  0
 #endif
 #ifndef  JucePlugin_Version
- #define JucePlugin_Version                1.0.2
+ #define JucePlugin_Version                1.1.0
 #endif
 #ifndef  JucePlugin_VersionCode
- #define JucePlugin_VersionCode            0x10002
+ #define JucePlugin_VersionCode            0x10100
 #endif
 #ifndef  JucePlugin_VersionString
- #define JucePlugin_VersionString          "1.0.2"
+ #define JucePlugin_VersionString          "1.1.0"
 #endif
 #ifndef  JucePlugin_VSTUniqueID
  #define JucePlugin_VSTUniqueID            JucePlugin_PluginCode
@@ -367,10 +367,10 @@
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AUExportPrefix
- #define JucePlugin_AUExportPrefix         sparta_sldoa_o7AU
+ #define JucePlugin_AUExportPrefix         sparta_sldoaAU
 #endif
 #ifndef  JucePlugin_AUExportPrefixQuoted
- #define JucePlugin_AUExportPrefixQuoted   "sparta_sldoa_o7AU"
+ #define JucePlugin_AUExportPrefixQuoted   "sparta_sldoaAU"
 #endif
 #ifndef  JucePlugin_AUManufacturerCode
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode
@@ -418,5 +418,5 @@
  #define JucePlugin_IAASubType             JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_IAAName
- #define JucePlugin_IAAName                "AALTO: sparta_sldoa_o7"
+ #define JucePlugin_IAAName                "AALTO: sparta_sldoa"
 #endif

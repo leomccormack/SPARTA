@@ -39,8 +39,8 @@
 #if ! JUCE_DONT_DECLARE_PROJECTINFO
 namespace ProjectInfo
 {
-    const char* const  projectName    = "sparta_sldoa_o7";
-    const char* const  versionString  = "1.0.2";
-    const int          versionNumber  = 0x10002;
+    const char* const  projectName    = "sparta_sldoa";
+    const char* const  versionString  = "1.1.0";
+    const int          versionNumber  = 0x10100;
 }
 #endif

@@ -160,11 +160,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nNumInputs =  getTotalNumInputChannels();
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
-
-	for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-		memset(bufferInputs[i], 0, FRAME_SIZE * sizeof(float));
-	
-	isPlaying = false; 
+    
 	sldoa_init(hSld, sampleRate);
 }
 
@@ -215,9 +211,10 @@ AudioProcessorEditor* PluginProcessor::createEditor()
 //==============================================================================
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-	XmlElement xml("SLDOAAUDIOPLUGINSETTINGS_O" + String(SH_ORDER));
+	XmlElement xml("SLDOAAUDIOPLUGINSETTINGS");
 
 	/* add attributes */
+    xml.setAttribute("MasterOrder", sldoa_getMasterOrder(hSld));
     xml.setAttribute("MaxFreq", sldoa_getMaxFreq(hSld));
     xml.setAttribute("MinFreq", sldoa_getMinFreq(hSld));
     xml.setAttribute("Avg", sldoa_getAvg(hSld));
@@ -235,8 +232,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 
     if (xmlState != nullptr) {
         /* make sure that it's actually the correct type of XML object */
-        if (xmlState->hasTagName("SLDOAAUDIOPLUGINSETTINGS_O" + String(SH_ORDER))) {
+        if (xmlState->hasTagName("SLDOAAUDIOPLUGINSETTINGS")) {
             /* pull attributes */
+            if(xmlState->hasAttribute("MasterOrder"))
+                sldoa_setMasterOrder(hSld, xmlState->getIntAttribute("MasterOrder", 1));
             if(xmlState->hasAttribute("MaxFreq"))
                 sldoa_setMaxFreq(hSld, (float)xmlState->getDoubleAttribute("MaxFreq", 5000.0));
             if(xmlState->hasAttribute("MinFreq"))
@@ -245,7 +244,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 sldoa_setAvg(hSld, (float)xmlState->getDoubleAttribute("Avg", 100.0));
             for(int i=0; i<sldoa_getNumberOfBands(); i++){
                 if(xmlState->hasAttribute("AnaOrder"+String(i)))
-                    sldoa_setAnaOrder(hSld, (float)xmlState->getIntAttribute("AnaOrder"+String(i), SH_ORDER), i);
+                    sldoa_setAnaOrder(hSld, xmlState->getIntAttribute("AnaOrder"+String(i), 1), i);
             }
             if(xmlState->hasAttribute("ChOrder"))
                 sldoa_setChOrder(hSld, xmlState->getIntAttribute("ChOrder", 1));
