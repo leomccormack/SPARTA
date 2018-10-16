@@ -92,6 +92,7 @@ private:
     std::unique_ptr<ComboBox> CBinputTypePreset;
     std::unique_ptr<Slider> s_minFreq;
     std::unique_ptr<Slider> s_maxFreq;
+    std::unique_ptr<ComboBox> CBmasterOrder;
 
 
     //==============================================================================
