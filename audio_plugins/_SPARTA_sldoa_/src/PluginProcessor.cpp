@@ -23,7 +23,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-PluginProcessor::PluginProcessor()
+PluginProcessor::PluginProcessor() : 
+	AudioProcessor(BusesProperties()
+		.withInput("Input", AudioChannelSet::discreteChannels(64), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(0), true))
 {
 	nHostBlockSize = FRAME_SIZE;
 	nSampleRate = 48000;
