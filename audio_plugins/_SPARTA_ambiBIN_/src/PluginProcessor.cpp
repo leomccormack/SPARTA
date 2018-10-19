@@ -265,7 +265,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
     
-    if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
+    if((nCurrentBlockSize % FRAME_SIZE == 0)){ /* divisible by frame size */
         for (int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
             for (int ch = 0; ch < nNumInputs; ch++)
                 for (int i = 0; i < FRAME_SIZE; i++)

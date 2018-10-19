@@ -61,6 +61,9 @@ public:
 	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
 	AudioPlayHead::CurrentPositionInfo currentPosition;
     
+	bool getIsPlaying() {
+		return isPlaying;
+	}
     int getCurrentBlockSize(){
         return nHostBlockSize;
     }
