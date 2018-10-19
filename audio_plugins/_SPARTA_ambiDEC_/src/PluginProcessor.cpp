@@ -346,7 +346,6 @@ void PluginProcessor::saveConfigurationToFile (File destination)
     jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA AmbiDEC " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
     jsonObj->setProperty ("LoudspeakerLayout", ConfigurationHelper::convertLoudspeakersToVar (loudspeakers, "Loudspeaker Directions"));
     Result result = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
-    assert(result.wasOk());
 }
 
 /* Adapted from the AllRADecoder by Daniel Rudrich, (c) 2017 (GPLv3 license) */

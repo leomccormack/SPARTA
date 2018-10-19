@@ -41,7 +41,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBuseDefaultHRIRs->setButtonText (String());
     TBuseDefaultHRIRs->addListener (this);
 
-    TBuseDefaultHRIRs->setBounds (606, 60, 32, 24);
+    TBuseDefaultHRIRs->setBounds (614, 60, 21, 24);
 
     CBorderPreset.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBorderPreset.get());
@@ -51,7 +51,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorderPreset->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBorderPreset->addListener (this);
 
-    CBorderPreset->setBounds (120, 62, 92, 20);
+    CBorderPreset->setBounds (122, 62, 90, 20);
 
     CBchFormat.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBchFormat.get());
@@ -62,7 +62,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBchFormat->addItem (TRANS("ACN"), 1);
     CBchFormat->addListener (this);
 
-    CBchFormat->setBounds (312, 63, 112, 20);
+    CBchFormat->setBounds (314, 63, 112, 20);
 
     CBnormScheme.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBnormScheme.get());
@@ -74,14 +74,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormScheme->addItem (TRANS("SN3D"), 2);
     CBnormScheme->addListener (this);
 
-    CBnormScheme->setBounds (312, 88, 112, 20);
+    CBnormScheme->setBounds (314, 88, 112, 20);
 
     TBmaxRE.reset (new ToggleButton ("new toggle button"));
     addAndMakeVisible (TBmaxRE.get());
     TBmaxRE->setButtonText (String());
     TBmaxRE->addListener (this);
 
-    TBmaxRE->setBounds (124, 86, 32, 24);
+    TBmaxRE->setBounds (132, 86, 22, 24);
 
     s_yaw.reset (new Slider ("new slider"));
     addAndMakeVisible (s_yaw.get());
@@ -212,14 +212,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBrpyFlag->setButtonText (String());
     TBrpyFlag->addListener (this);
 
-    TBrpyFlag->setBounds (56, 160, 32, 24);
+    TBrpyFlag->setBounds (59, 160, 24, 24);
 
     TBenableRot.reset (new ToggleButton ("new toggle button"));
     addAndMakeVisible (TBenableRot.get());
     TBenableRot->setButtonText (String());
     TBenableRot->addListener (this);
 
-    TBenableRot->setBounds (56, 138, 32, 24);
+    TBenableRot->setBounds (59, 138, 24, 24);
 
 
     //[UserPreSize]
@@ -238,7 +238,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     openGLContext.attachTo(*this);
 
     /* add options to combo boxes */
-    CBorderPreset->addItem (TRANS("0th (Omni)"), INPUT_OMNI);
+    CBorderPreset->addItem (TRANS("Omni"), INPUT_OMNI);
     CBorderPreset->addItem (TRANS("1st order"), INPUT_ORDER_FIRST);
     CBorderPreset->addItem (TRANS("2nd order"), INPUT_ORDER_SECOND);
     CBorderPreset->addItem (TRANS("3rd order"), INPUT_ORDER_THIRD);
@@ -927,6 +927,22 @@ void PluginEditor::timerCallback()
     s_pitch->setValue(ambi_bin_getPitch(hVst->hAmbi), dontSendNotification);
     s_roll->setValue(ambi_bin_getRoll(hVst->hAmbi), dontSendNotification);
 
+	/* Some parameters shouldn't be enabled if playback is ongoing */
+	if (hVst->getIsPlaying()) {
+		CBorderPreset->setEnabled(false);
+		fileChooser.setEnabled(false);
+		TBuseDefaultHRIRs->setEnabled(false);
+		TBmaxRE->setEnabled(false);
+	}
+	else {
+		CBorderPreset->setWantsKeyboardFocus(false);
+		CBorderPreset->setEnabled(true);
+		fileChooser.setEnabled(true);
+		TBuseDefaultHRIRs->setEnabled(true);
+		TBmaxRE->setEnabled(true);
+		ambi_bin_checkReInit(hVst->hAmbi);
+	}
+
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         currentWarning = k_warning_frameSize;
@@ -1068,19 +1084,19 @@ BEGIN_JUCER_METADATA
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
-                virtualName="" explicitFocusOrder="0" pos="606 60 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="614 60 21 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <COMBOBOX name="new combo box" id="d83602bab6f1a999" memberName="CBorderPreset"
-            virtualName="" explicitFocusOrder="0" pos="120 62 92 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="122 62 90 20" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="a36915795f16ceb6" memberName="CBchFormat"
-            virtualName="" explicitFocusOrder="0" pos="312 63 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="314 63 112 20" editable="0"
             layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="e10be54628a6df43" memberName="CBnormScheme"
-            virtualName="" explicitFocusOrder="0" pos="312 88 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="314 88 112 20" editable="0"
             layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <TOGGLEBUTTON name="new toggle button" id="943aa789e193d13a" memberName="TBmaxRE"
-                virtualName="" explicitFocusOrder="0" pos="124 86 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="132 86 22 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <SLIDER name="new slider" id="ace036a85eec9703" memberName="s_yaw" virtualName=""
           explicitFocusOrder="0" pos="80 150 120 32" textboxtext="ffffffff"
@@ -1141,10 +1157,10 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="656 -16 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="b4fec6d3e1a2bae2" memberName="TBrpyFlag"
-                virtualName="" explicitFocusOrder="0" pos="56 160 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="59 160 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="dfb8e588ab02032d" memberName="TBenableRot"
-                virtualName="" explicitFocusOrder="0" pos="56 138 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="59 138 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
