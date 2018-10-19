@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -37,7 +37,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (CBsourceDirsPreset = new ComboBox ("new combo box"));
+    CBsourceDirsPreset.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBsourceDirsPreset.get());
     CBsourceDirsPreset->setEditableText (false);
     CBsourceDirsPreset->setJustificationType (Justification::centredLeft);
     CBsourceDirsPreset->setTextWhenNothingSelected (String());
@@ -47,7 +48,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBsourceDirsPreset->setBounds (88, 64, 112, 20);
 
-    addAndMakeVisible (SL_num_sources = new Slider ("new slider"));
+    SL_num_sources.reset (new Slider ("new slider"));
+    addAndMakeVisible (SL_num_sources.get());
     SL_num_sources->setRange (1, 64, 1);
     SL_num_sources->setSliderStyle (Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
@@ -55,8 +57,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_sources->setBounds (80, 92, 120, 24);
 
-    addAndMakeVisible (label_N_dirs = new Label ("new label",
-                                                 String()));
+    label_N_dirs.reset (new Label ("new label",
+                                   String()));
+    addAndMakeVisible (label_N_dirs.get());
     label_N_dirs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_N_dirs->setJustificationType (Justification::centredLeft);
     label_N_dirs->setEditable (false, false, false);
@@ -66,8 +69,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_N_dirs->setBounds (797, 297, 51, 20);
 
-    addAndMakeVisible (label_HRIR_fs = new Label ("new label",
-                                                  String()));
+    label_HRIR_fs.reset (new Label ("new label",
+                                    String()));
+    addAndMakeVisible (label_HRIR_fs.get());
     label_HRIR_fs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_HRIR_fs->setJustificationType (Justification::centredLeft);
     label_HRIR_fs->setEditable (false, false, false);
@@ -77,14 +81,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_HRIR_fs->setBounds (797, 321, 51, 20);
 
-    addAndMakeVisible (TBuseDefaultHRIRs = new ToggleButton ("new toggle button"));
+    TBuseDefaultHRIRs.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBuseDefaultHRIRs.get());
     TBuseDefaultHRIRs->setButtonText (String());
     TBuseDefaultHRIRs->addListener (this);
 
     TBuseDefaultHRIRs->setBounds (876, 61, 32, 24);
 
-    addAndMakeVisible (label_DAW_fs = new Label ("new label",
-                                                 String()));
+    label_DAW_fs.reset (new Label ("new label",
+                                   String()));
+    addAndMakeVisible (label_DAW_fs.get());
     label_DAW_fs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_DAW_fs->setJustificationType (Justification::centredLeft);
     label_DAW_fs->setEditable (false, false, false);
@@ -94,20 +100,23 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_DAW_fs->setBounds (851, 321, 51, 20);
 
-    addAndMakeVisible (TB_showInputs = new ToggleButton ("new toggle button"));
+    TB_showInputs.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TB_showInputs.get());
     TB_showInputs->setButtonText (String());
     TB_showInputs->addListener (this);
 
-    TB_showInputs->setBounds (546, 317, 32, 24);
+    TB_showInputs->setBounds (552, 317, 24, 24);
 
-    addAndMakeVisible (TB_showOutputs = new ToggleButton ("new toggle button"));
+    TB_showOutputs.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TB_showOutputs.get());
     TB_showOutputs->setButtonText (String());
     TB_showOutputs->addListener (this);
 
-    TB_showOutputs->setBounds (668, 317, 32, 24);
+    TB_showOutputs->setBounds (674, 317, 24, 24);
 
-    addAndMakeVisible (label_N_Tri = new Label ("new label",
-                                                String()));
+    label_N_Tri.reset (new Label ("new label",
+                                  String()));
+    addAndMakeVisible (label_N_Tri.get());
     label_N_Tri->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label_N_Tri->setJustificationType (Justification::centredLeft);
     label_N_Tri->setEditable (false, false, false);
@@ -117,7 +126,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_N_Tri->setBounds (851, 297, 51, 20);
 
-    addAndMakeVisible (CBinterpMode = new ComboBox ("new combo box"));
+    CBinterpMode.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBinterpMode.get());
     CBinterpMode->setEditableText (false);
     CBinterpMode->setJustificationType (Justification::centredLeft);
     CBinterpMode->setTextWhenNothingSelected (String());
@@ -126,7 +136,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBinterpMode->setBounds (328, 318, 112, 20);
 
-    addAndMakeVisible (tb_loadJSON = new TextButton ("new button"));
+    tb_loadJSON.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_loadJSON.get());
     tb_loadJSON->setButtonText (TRANS("Import"));
     tb_loadJSON->setConnectedEdges (Button::ConnectedOnRight);
     tb_loadJSON->addListener (this);
@@ -134,7 +145,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     tb_loadJSON->setBounds (140, 40, 34, 14);
 
-    addAndMakeVisible (tb_saveJSON = new TextButton ("new button"));
+    tb_saveJSON.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_saveJSON.get());
     tb_saveJSON->setButtonText (TRANS("Export"));
     tb_saveJSON->setConnectedEdges (Button::ConnectedOnLeft);
     tb_saveJSON->addListener (this);
@@ -143,7 +155,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     tb_saveJSON->setBounds (174, 40, 34, 14);
 
-    addAndMakeVisible (s_yaw = new Slider ("new slider"));
+    s_yaw.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_yaw.get());
     s_yaw->setRange (-180, 180, 0.01);
     s_yaw->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_yaw->setTextBoxStyle (Slider::TextBoxBelow, false, 58, 15);
@@ -153,7 +166,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_yaw->setBounds (717, 196, 60, 68);
 
-    addAndMakeVisible (s_pitch = new Slider ("new slider"));
+    s_pitch.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_pitch.get());
     s_pitch->setRange (-180, 180, 0.01);
     s_pitch->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_pitch->setTextBoxStyle (Slider::TextBoxBelow, false, 58, 15);
@@ -163,7 +177,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_pitch->setBounds (780, 196, 60, 68);
 
-    addAndMakeVisible (s_roll = new Slider ("new slider"));
+    s_roll.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_roll.get());
     s_roll->setRange (-180, 180, 0.01);
     s_roll->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_roll->setTextBoxStyle (Slider::TextBoxBelow, false, 58, 15);
@@ -173,25 +188,29 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_roll->setBounds (843, 196, 60, 68);
 
-    addAndMakeVisible (t_flipYaw = new ToggleButton ("new toggle button"));
+    t_flipYaw.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (String());
     t_flipYaw->addListener (this);
 
     t_flipYaw->setBounds (749, 265, 23, 24);
 
-    addAndMakeVisible (t_flipPitch = new ToggleButton ("new toggle button"));
+    t_flipPitch.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (String());
     t_flipPitch->addListener (this);
 
     t_flipPitch->setBounds (812, 265, 23, 24);
 
-    addAndMakeVisible (t_flipRoll = new ToggleButton ("new toggle button"));
+    t_flipRoll.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (String());
     t_flipRoll->addListener (this);
 
     t_flipRoll->setBounds (875, 265, 23, 24);
 
-    addAndMakeVisible (te_oscport = new TextEditor ("new text editor"));
+    te_oscport.reset (new TextEditor ("new text editor"));
+    addAndMakeVisible (te_oscport.get());
     te_oscport->setMultiLine (false);
     te_oscport->setReturnKeyStartsNewLine (false);
     te_oscport->setReadOnly (false);
@@ -205,13 +224,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     te_oscport->setBounds (853, 147, 44, 22);
 
-    addAndMakeVisible (TBrpyFlag = new ToggleButton ("new toggle button"));
+    TBrpyFlag.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBrpyFlag.get());
     TBrpyFlag->setButtonText (String());
     TBrpyFlag->addListener (this);
 
     TBrpyFlag->setBounds (758, 147, 32, 24);
 
-    addAndMakeVisible (TBenableRotation = new ToggleButton ("new toggle button"));
+    TBenableRotation.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBenableRotation.get());
     TBenableRotation->setButtonText (String());
     TBenableRotation->addListener (this);
 
@@ -232,7 +253,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* init OpenGL */
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
-    
+
     /* interp modes */
     CBinterpMode->addItem(TRANS("Triangular"), INTERP_TRI);
 
@@ -340,7 +361,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     t_flipRoll->setToggleState((bool)binauraliser_getFlipRoll(hVst->hBin), dontSendNotification);
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
     TBrpyFlag->setToggleState((bool)binauraliser_getRPYflag(hVst->hBin), dontSendNotification);
-    
+
 
     /* create panning window */
     addAndMakeVisible (panWindow = new pannerView(ownerFilter, 480, 240));
@@ -458,7 +479,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = -19, y = 0, width = 195, height = 32;
+        int x = -19, y = 0, width = 219, height = 32;
         String text (TRANS("Binauraliser"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -619,25 +640,25 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 459, y = 314, width = 132, height = 30;
+        int x = 457, y = 314, width = 132, height = 30;
         String text (TRANS("Show Inputs:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 584, y = 314, width = 122, height = 30;
+        int x = 582, y = 314, width = 122, height = 30;
         String text (TRANS("Show HRIRs:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -656,7 +677,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 231, y = 314, width = 132, height = 30;
+        int x = 229, y = 314, width = 132, height = 30;
         String text (TRANS("Interp. Mode:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -674,7 +695,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -686,7 +707,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -853,7 +874,7 @@ void PluginEditor::paint (Graphics& g)
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		150, 16, 530, 11,
+		174, 16, 530, 11,
 		Justification::centredLeft, true);
 
     /* display warning message */
@@ -899,14 +920,14 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == CBsourceDirsPreset)
+    if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
     {
         //[UserComboBoxCode_CBsourceDirsPreset] -- add your combo box handling code here..
         binauraliser_setInputConfigPreset(hVst->hBin, CBsourceDirsPreset->getSelectedId());
         refreshPanViewWindow = true;
         //[/UserComboBoxCode_CBsourceDirsPreset]
     }
-    else if (comboBoxThatHasChanged == CBinterpMode)
+    else if (comboBoxThatHasChanged == CBinterpMode.get())
     {
         //[UserComboBoxCode_CBinterpMode] -- add your combo box handling code here..
         binauraliser_setInterpMode(hVst->hBin, CBinterpMode->getSelectedId());
@@ -922,26 +943,26 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == SL_num_sources)
+    if (sliderThatWasMoved == SL_num_sources.get())
     {
         //[UserSliderCode_SL_num_sources] -- add your slider handling code here..
         binauraliser_setNumSources(hVst->hBin, (int)SL_num_sources->getValue());
         refreshPanViewWindow = true;
         //[/UserSliderCode_SL_num_sources]
     }
-    else if (sliderThatWasMoved == s_yaw)
+    else if (sliderThatWasMoved == s_yaw.get())
     {
         //[UserSliderCode_s_yaw] -- add your slider handling code here..
         binauraliser_setYaw(hVst->hBin, (float)s_yaw->getValue());
         //[/UserSliderCode_s_yaw]
     }
-    else if (sliderThatWasMoved == s_pitch)
+    else if (sliderThatWasMoved == s_pitch.get())
     {
         //[UserSliderCode_s_pitch] -- add your slider handling code here..
         binauraliser_setPitch(hVst->hBin, (float)s_pitch->getValue());
         //[/UserSliderCode_s_pitch]
     }
-    else if (sliderThatWasMoved == s_roll)
+    else if (sliderThatWasMoved == s_roll.get())
     {
         //[UserSliderCode_s_roll] -- add your slider handling code here..
         binauraliser_setRoll(hVst->hBin, (float)s_roll->getValue());
@@ -957,28 +978,28 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == TBuseDefaultHRIRs)
+    if (buttonThatWasClicked == TBuseDefaultHRIRs.get())
     {
         //[UserButtonCode_TBuseDefaultHRIRs] -- add your button handler code here..
         binauraliser_setUseDefaultHRIRsflag(hVst->hBin, (int)TBuseDefaultHRIRs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TBuseDefaultHRIRs]
     }
-    else if (buttonThatWasClicked == TB_showInputs)
+    else if (buttonThatWasClicked == TB_showInputs.get())
     {
         //[UserButtonCode_TB_showInputs] -- add your button handler code here..
         panWindow->setShowInputs(TB_showInputs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TB_showInputs]
     }
-    else if (buttonThatWasClicked == TB_showOutputs)
+    else if (buttonThatWasClicked == TB_showOutputs.get())
     {
         //[UserButtonCode_TB_showOutputs] -- add your button handler code here..
         panWindow->setShowOutputs(TB_showOutputs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TB_showOutputs]
     }
-    else if (buttonThatWasClicked == tb_loadJSON)
+    else if (buttonThatWasClicked == tb_loadJSON.get())
     {
         //[UserButtonCode_tb_loadJSON] -- add your button handler code here..
         FileChooser myChooser ("Load configuration...",
@@ -991,7 +1012,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_tb_loadJSON]
     }
-    else if (buttonThatWasClicked == tb_saveJSON)
+    else if (buttonThatWasClicked == tb_saveJSON.get())
     {
         //[UserButtonCode_tb_saveJSON] -- add your button handler code here..
         FileChooser myChooser ("Save configuration...",
@@ -1004,32 +1025,32 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_tb_saveJSON]
     }
-    else if (buttonThatWasClicked == t_flipYaw)
+    else if (buttonThatWasClicked == t_flipYaw.get())
     {
         //[UserButtonCode_t_flipYaw] -- add your button handler code here..
         binauraliser_setFlipYaw(hVst->hBin, (int)t_flipYaw->getToggleState());
         //[/UserButtonCode_t_flipYaw]
     }
-    else if (buttonThatWasClicked == t_flipPitch)
+    else if (buttonThatWasClicked == t_flipPitch.get())
     {
         //[UserButtonCode_t_flipPitch] -- add your button handler code here..
         binauraliser_setFlipPitch(hVst->hBin, (int)t_flipPitch->getToggleState());
         //[/UserButtonCode_t_flipPitch]
     }
-    else if (buttonThatWasClicked == t_flipRoll)
+    else if (buttonThatWasClicked == t_flipRoll.get())
     {
         //[UserButtonCode_t_flipRoll] -- add your button handler code here..
 
         binauraliser_setFlipRoll(hVst->hBin, (int)t_flipRoll->getToggleState());
         //[/UserButtonCode_t_flipRoll]
     }
-    else if (buttonThatWasClicked == TBrpyFlag)
+    else if (buttonThatWasClicked == TBrpyFlag.get())
     {
         //[UserButtonCode_TBrpyFlag] -- add your button handler code here..
         binauraliser_setRPYflag(hVst->hBin, (int)TBrpyFlag->getToggleState());
         //[/UserButtonCode_TBrpyFlag]
     }
-    else if (buttonThatWasClicked == TBenableRotation)
+    else if (buttonThatWasClicked == TBenableRotation.get())
     {
         //[UserButtonCode_TBenableRotation] -- add your button handler code here..
         binauraliser_setEnableRotation(hVst->hBin, (int)TBenableRotation->getToggleState());
@@ -1059,13 +1080,24 @@ void PluginEditor::timerCallback()
     s_pitch->setValue(binauraliser_getPitch(hVst->hBin), dontSendNotification);
     s_roll->setValue(binauraliser_getRoll(hVst->hBin), dontSendNotification);
 
+	/* Some parameters shouldn't be enabled if playback is ongoing */
+	if (hVst->getIsPlaying()) {
+		fileChooser.setEnabled(false);
+		TBuseDefaultHRIRs->setEnabled(false);
+	}
+	else {
+		fileChooser.setEnabled(true);
+		TBuseDefaultHRIRs->setEnabled(true);
+		binauraliser_checkReInit(hVst->hBin);
+	}
+
     /* refresh pan view */
     if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged()){
-        panWindow->refreshPanView();
-        refreshPanViewWindow = false;
-        sourceCoordsView_handle->setHasASliderChange(false);
+		panWindow->refreshPanView();
+		sourceCoordsView_handle->setHasASliderChange(false);
+		refreshPanViewWindow = false;
     }
-    
+
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         currentWarning = k_warning_frameSize;
@@ -1112,7 +1144,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="0 0 920 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
-    <TEXT pos="-19 0 195 32" fill="solid: ffffffff" hasStroke="0" text="Binauraliser"
+    <TEXT pos="-19 0 219 32" fill="solid: ffffffff" hasStroke="0" text="Binauraliser"
           fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="23 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
@@ -1146,22 +1178,22 @@ BEGIN_JUCER_METADATA
     <TEXT pos="720 58 160 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="459 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+    <TEXT pos="457 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
+          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="584 314 122 30" fill="solid: ffffffff" hasStroke="0" text="Show HRIRs:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+    <TEXT pos="582 314 122 30" fill="solid: ffffffff" hasStroke="0" text="Show HRIRs:"
+          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 308 229 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="231 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Interp. Mode:"
+    <TEXT pos="229 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Interp. Mode:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="719 316 89 30" fill="solid: ffffffff" hasStroke="0" text="HRIR/DAW Fs:"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="719 294 132 30" fill="solid: ffffffff" hasStroke="0" text="N Dirs/Tri:"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="712 176 196 115" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1232,10 +1264,10 @@ BEGIN_JUCER_METADATA
          fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="74817bb8a57611dc" memberName="TB_showInputs"
-                virtualName="" explicitFocusOrder="0" pos="546 317 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="552 317 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="1a1dfbb1d4296140" memberName="TB_showOutputs"
-                virtualName="" explicitFocusOrder="0" pos="668 317 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="674 317 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <LABEL name="new label" id="2c30657926641642" memberName="label_N_Tri"
          virtualName="" explicitFocusOrder="0" pos="851 297 51 20" outlineCol="68a3a2a2"

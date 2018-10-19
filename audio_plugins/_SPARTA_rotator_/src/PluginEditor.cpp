@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -35,7 +35,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (s_yaw = new Slider ("new slider"));
+    s_yaw.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_yaw.get());
     s_yaw->setRange (-180, 180, 0.01);
     s_yaw->setSliderStyle (Slider::LinearHorizontal);
     s_yaw->setTextBoxStyle (Slider::TextBoxAbove, false, 80, 20);
@@ -45,7 +46,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_yaw->setBounds (176, 80, 120, 32);
 
-    addAndMakeVisible (s_pitch = new Slider ("new slider"));
+    s_pitch.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_pitch.get());
     s_pitch->setRange (-180, 180, 0.01);
     s_pitch->setSliderStyle (Slider::LinearVertical);
     s_pitch->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
@@ -55,7 +57,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_pitch->setBounds (304, 40, 96, 112);
 
-    addAndMakeVisible (s_roll = new Slider ("new slider"));
+    s_roll.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_roll.get());
     s_roll->setRange (-180, 180, 0.01);
     s_roll->setSliderStyle (Slider::LinearVertical);
     s_roll->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
@@ -65,25 +68,29 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_roll->setBounds (416, 40, 96, 112);
 
-    addAndMakeVisible (t_flipYaw = new ToggleButton ("new toggle button"));
+    t_flipYaw.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (String());
     t_flipYaw->addListener (this);
 
     t_flipYaw->setBounds (226, 112, 23, 24);
 
-    addAndMakeVisible (t_flipPitch = new ToggleButton ("new toggle button"));
+    t_flipPitch.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (String());
     t_flipPitch->addListener (this);
 
     t_flipPitch->setBounds (356, 112, 23, 24);
 
-    addAndMakeVisible (t_flipRoll = new ToggleButton ("new toggle button"));
+    t_flipRoll.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (String());
     t_flipRoll->addListener (this);
 
     t_flipRoll->setBounds (468, 112, 23, 24);
 
-    addAndMakeVisible (te_oscport = new TextEditor ("new text editor"));
+    te_oscport.reset (new TextEditor ("new text editor"));
+    addAndMakeVisible (te_oscport.get());
     te_oscport->setMultiLine (false);
     te_oscport->setReturnKeyStartsNewLine (false);
     te_oscport->setReadOnly (false);
@@ -95,9 +102,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_oscport->setColour (TextEditor::outlineColourId, Colour (0x6c838080));
     te_oscport->setText (TRANS("9000"));
 
-    te_oscport->setBounds (64, 128, 44, 22);
+    te_oscport->setBounds (66, 128, 42, 22);
 
-    addAndMakeVisible (CBoutputFormat = new ComboBox ("new combo box"));
+    CBoutputFormat.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (Justification::centredLeft);
     CBoutputFormat->setTextWhenNothingSelected (TRANS("ACN"));
@@ -105,9 +113,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBoutputFormat->addItem (TRANS("ACN"), 1);
     CBoutputFormat->addListener (this);
 
-    CBoutputFormat->setBounds (93, 78, 76, 20);
+    CBoutputFormat->setBounds (94, 78, 76, 20);
 
-    addAndMakeVisible (CBnorm = new ComboBox ("new combo box"));
+    CBnorm.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBnorm.get());
     CBnorm->setEditableText (false);
     CBnorm->setJustificationType (Justification::centredLeft);
     CBnorm->setTextWhenNothingSelected (TRANS("N3D"));
@@ -117,22 +126,24 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnorm->addSeparator();
     CBnorm->addListener (this);
 
-    CBnorm->setBounds (93, 105, 76, 20);
+    CBnorm->setBounds (94, 105, 76, 20);
 
-    addAndMakeVisible (CBorder = new ComboBox ("new combo box"));
+    CBorder.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBorder.get());
     CBorder->setEditableText (false);
     CBorder->setJustificationType (Justification::centredLeft);
     CBorder->setTextWhenNothingSelected (String());
     CBorder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBorder->addListener (this);
 
-    CBorder->setBounds (64, 46, 106, 20);
+    CBorder->setBounds (65, 46, 106, 20);
 
-    addAndMakeVisible (TBrpyFlag = new ToggleButton ("new toggle button"));
+    TBrpyFlag.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBrpyFlag.get());
     TBrpyFlag->setButtonText (String());
     TBrpyFlag->addListener (this);
 
-    TBrpyFlag->setBounds (144, 128, 32, 24);
+    TBrpyFlag->setBounds (145, 128, 32, 24);
 
 
     //[UserPreSize]
@@ -169,7 +180,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* Specify screen refresh rate */
     startTimer(30); /*ms (40ms = 25 frames per second) */
-    
+
     /* warnings */
     currentWarning = k_warning_none;
 
@@ -429,7 +440,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -441,7 +452,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -524,19 +535,19 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == s_yaw)
+    if (sliderThatWasMoved == s_yaw.get())
     {
         //[UserSliderCode_s_yaw] -- add your slider handling code here..
         rotator_setYaw(hVst->hRot, (float)s_yaw->getValue());
         //[/UserSliderCode_s_yaw]
     }
-    else if (sliderThatWasMoved == s_pitch)
+    else if (sliderThatWasMoved == s_pitch.get())
     {
         //[UserSliderCode_s_pitch] -- add your slider handling code here..
         rotator_setPitch(hVst->hRot, (float)s_pitch->getValue());
         //[/UserSliderCode_s_pitch]
     }
-    else if (sliderThatWasMoved == s_roll)
+    else if (sliderThatWasMoved == s_roll.get())
     {
         //[UserSliderCode_s_roll] -- add your slider handling code here..
         rotator_setRoll(hVst->hRot, (float)s_roll->getValue());
@@ -552,25 +563,25 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == t_flipYaw)
+    if (buttonThatWasClicked == t_flipYaw.get())
     {
         //[UserButtonCode_t_flipYaw] -- add your button handler code here..
         rotator_setFlipYaw(hVst->hRot, (int)t_flipYaw->getToggleState());
         //[/UserButtonCode_t_flipYaw]
     }
-    else if (buttonThatWasClicked == t_flipPitch)
+    else if (buttonThatWasClicked == t_flipPitch.get())
     {
         //[UserButtonCode_t_flipPitch] -- add your button handler code here..
         rotator_setFlipPitch(hVst->hRot, (int)t_flipPitch->getToggleState());
         //[/UserButtonCode_t_flipPitch]
     }
-    else if (buttonThatWasClicked == t_flipRoll)
+    else if (buttonThatWasClicked == t_flipRoll.get())
     {
         //[UserButtonCode_t_flipRoll] -- add your button handler code here..
         rotator_setFlipRoll(hVst->hRot, (int)t_flipRoll->getToggleState());
         //[/UserButtonCode_t_flipRoll]
     }
-    else if (buttonThatWasClicked == TBrpyFlag)
+    else if (buttonThatWasClicked == TBrpyFlag.get())
     {
         //[UserButtonCode_TBrpyFlag] -- add your button handler code here..
         rotator_setRPYflag(hVst->hRot, (int)TBrpyFlag->getToggleState());
@@ -586,19 +597,19 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == CBoutputFormat)
+    if (comboBoxThatHasChanged == CBoutputFormat.get())
     {
         //[UserComboBoxCode_CBoutputFormat] -- add your combo box handling code here..
         rotator_setChOrder(hVst->hRot, CBoutputFormat->getSelectedId());
         //[/UserComboBoxCode_CBoutputFormat]
     }
-    else if (comboBoxThatHasChanged == CBnorm)
+    else if (comboBoxThatHasChanged == CBnorm.get())
     {
         //[UserComboBoxCode_CBnorm] -- add your combo box handling code here..
         rotator_setNormType(hVst->hRot, CBnorm->getSelectedId());
         //[/UserComboBoxCode_CBnorm]
     }
-    else if (comboBoxThatHasChanged == CBorder)
+    else if (comboBoxThatHasChanged == CBorder.get())
     {
         //[UserComboBoxCode_CBorder] -- add your combo box handling code here..
         rotator_setOrder(hVst->hRot, CBorder->getSelectedId());
@@ -708,10 +719,10 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
           bold="0" italic="0" justification="36"/>
     <TEXT pos="16 71 91 35" fill="solid: ffffffff" hasStroke="0" text="CH Format:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 96 91 35" fill="solid: ffffffff" hasStroke="0" text="Norm:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 39 91 35" fill="solid: ffffffff" hasStroke="0" text="Order:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
@@ -748,21 +759,21 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="468 112 23 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TEXTEDITOR name="new text editor" id="1799da9e8cf495d6" memberName="te_oscport"
-              virtualName="" explicitFocusOrder="0" pos="64 128 44 22" textcol="ffffffff"
+              virtualName="" explicitFocusOrder="0" pos="66 128 42 22" textcol="ffffffff"
               bkgcol="ffffff" outlinecol="6c838080" initialText="9000" multiline="0"
               retKeyStartsLine="0" readonly="0" scrollbars="1" caret="0" popupmenu="1"/>
   <COMBOBOX name="new combo box" id="63f8ff411606aafd" memberName="CBoutputFormat"
-            virtualName="" explicitFocusOrder="0" pos="93 78 76 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="94 78 76 20" editable="0"
             layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="2d87659a256dc599" memberName="CBnorm"
-            virtualName="" explicitFocusOrder="0" pos="93 105 76 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="94 105 76 20" editable="0"
             layout="33" items="N3D&#10;SN3D&#10;" textWhenNonSelected="N3D"
             textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="6482174c8b11c0b5" memberName="CBorder"
-            virtualName="" explicitFocusOrder="0" pos="64 46 106 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="65 46 106 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <TOGGLEBUTTON name="new toggle button" id="b4fec6d3e1a2bae2" memberName="TBrpyFlag"
-                virtualName="" explicitFocusOrder="0" pos="144 128 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="145 128 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 

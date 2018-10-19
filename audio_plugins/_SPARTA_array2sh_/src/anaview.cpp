@@ -149,7 +149,7 @@ void anaview::paint (Graphics& g)
     }
 
     /* Axis labels */
-    textWidth = 100;
+    textWidth = 110;
     textHeight = 50;
     g.drawText(xlabel, (anaview_windowIncluded->getWidth())/2+border_pixels_left - textWidth/2,
                anaview_windowIncluded->getHeight() + border_pixels_top,
@@ -164,8 +164,7 @@ void anaview::paint (Graphics& g)
     g.addTransform(AffineTransform());
 
     /* draw curves */
-    anaview_windowIncluded->repaint();
-
+    //anaview_windowIncluded->repaint();/* No need to call, as eqview will repaint any children too */
 
     //[/UserPaint]
 }

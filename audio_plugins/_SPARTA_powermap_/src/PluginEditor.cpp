@@ -127,7 +127,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CB_hfov->setTextWhenNoChoicesAvailable (String());
     CB_hfov->addListener (this);
 
-    CB_hfov->setBounds (352, 388, 96, 24);
+    CB_hfov->setBounds (357, 388, 96, 24);
 
     CB_aspectRatio.reset (new ComboBox (String()));
     addAndMakeVisible (CB_aspectRatio.get());
@@ -137,7 +137,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CB_aspectRatio->setTextWhenNoChoicesAvailable (String());
     CB_aspectRatio->addListener (this);
 
-    CB_aspectRatio->setBounds (552, 388, 96, 24);
+    CB_aspectRatio->setBounds (557, 388, 96, 24);
 
     s_pmapAvg.reset (new Slider ("new slider"));
     addAndMakeVisible (s_pmapAvg.get());
@@ -428,7 +428,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 243, y = 516, width = 325, height = 30;
-        String text (TRANS("Analysis Order Per Band"));
+        String text (TRANS("Analysis Order Per Frequency Band"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -813,6 +813,8 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     {
         //[UserComboBoxCode_CBsourcePreset] -- add your combo box handling code here..
         powermap_setSourcePreset(hVst->hPm, CBsourcePreset->getSelectedId());
+		anaOrder2dSlider->setRefreshValuesFLAG(true);
+		pmapEQ2dSlider->setRefreshValuesFLAG(true);
         //[/UserComboBoxCode_CBsourcePreset]
     }
     else if (comboBoxThatHasChanged == CBchFormat.get())
@@ -864,12 +866,14 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     {
         //[UserSliderCode_s_anaOrder] -- add your slider handling code here..
         powermap_setAnaOrderAllBands(hVst->hPm, (int)(s_anaOrder->getValue()+0.5));
+		anaOrder2dSlider->setRefreshValuesFLAG(true);
         //[/UserSliderCode_s_anaOrder]
     }
     else if (sliderThatWasMoved == s_pmapEQ.get())
     {
         //[UserSliderCode_s_pmapEQ] -- add your slider handling code here..
         powermap_setPowermapEQAllBands(hVst->hPm, (s_pmapEQ->getValue()));
+		pmapEQ2dSlider->setRefreshValuesFLAG(true);
         //[/UserSliderCode_s_pmapEQ]
     }
     else if (sliderThatWasMoved == s_covAvg.get())
@@ -902,7 +906,15 @@ void PluginEditor::timerCallback()
 {
     /* Nsource slider range */
     s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired(hVst->hPm)/2.0f), 1);
-    
+
+	/* Some parameters shouldn't be enabled if playback is ongoing */
+	if (hVst->getIsPlaying())
+		CBmasterOrder->setEnabled(false);
+	else {
+		CBmasterOrder->setEnabled(true);
+		powermap_checkReInit(hVst->hPm);
+	}
+
     /* refresh the powermap display */
     if ((overlayIncluded != nullptr) && (hVst->isPlaying)) {
         float* dirs_deg, *pmap;
@@ -917,10 +929,14 @@ void PluginEditor::timerCallback()
     }
 
     /* refresh the 2d sliders */
-    if (anaOrder2dSlider->getRefreshValuesFLAG())
-        anaOrder2dSlider->repaint();
-    if (pmapEQ2dSlider->getRefreshValuesFLAG())
-        pmapEQ2dSlider->repaint();
+	if (anaOrder2dSlider->getRefreshValuesFLAG()) {
+		anaOrder2dSlider->repaint();
+		anaOrder2dSlider->setRefreshValuesFLAG(false);
+	}
+	if (pmapEQ2dSlider->getRefreshValuesFLAG()) {
+		pmapEQ2dSlider->repaint();
+		pmapEQ2dSlider->setRefreshValuesFLAG(false);
+	}
 
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
@@ -979,7 +995,7 @@ BEGIN_JUCER_METADATA
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="236 520 424 105" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="243 516 325 30" fill="solid: ffffffff" hasStroke="0" text="Analysis Order Per Band"
+    <TEXT pos="243 516 325 30" fill="solid: ffffffff" hasStroke="0" text="Analysis Order Per Frequency Band"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="243 598 37 30" fill="solid: ffffffff" hasStroke="0" text="100"
@@ -1091,10 +1107,10 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
   <COMBOBOX name="" id="e69fd08ce7960e5e" memberName="CB_hfov" virtualName=""
-            explicitFocusOrder="0" pos="352 388 96 24" editable="0" layout="33"
+            explicitFocusOrder="0" pos="357 388 96 24" editable="0" layout="33"
             items="" textWhenNonSelected="Default" textWhenNoItems=""/>
   <COMBOBOX name="" id="757b635652d2e8ab" memberName="CB_aspectRatio" virtualName=""
-            explicitFocusOrder="0" pos="552 388 96 24" editable="0" layout="33"
+            explicitFocusOrder="0" pos="557 388 96 24" editable="0" layout="33"
             items="" textWhenNonSelected="Default" textWhenNoItems=""/>
   <SLIDER name="new slider" id="d9acd6687ea4c8b5" memberName="s_pmapAvg"
           virtualName="" explicitFocusOrder="0" pos="106 560 112 24" textboxtext="ffffffff"

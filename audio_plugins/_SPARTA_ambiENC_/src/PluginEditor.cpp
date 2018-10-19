@@ -52,7 +52,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_sources->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
 
-    SL_num_sources->setBounds (80, 124, 120, 24);
+    SL_num_sources->setBounds (82, 124, 118, 24);
 
     CBoutputFormat.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBoutputFormat.get());
@@ -63,7 +63,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBoutputFormat->addItem (TRANS("ACN"), 1);
     CBoutputFormat->addListener (this);
 
-    CBoutputFormat->setBounds (344, 316, 112, 20);
+    CBoutputFormat->setBounds (343, 316, 112, 20);
 
     CBnormalisation.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBnormalisation.get());
@@ -75,7 +75,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormalisation->addItem (TRANS("SN3D"), 2);
     CBnormalisation->addListener (this);
 
-    CBnormalisation->setBounds (576, 316, 112, 20);
+    CBnormalisation->setBounds (578, 316, 112, 20);
 
     CBorder.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBorder.get());
@@ -365,7 +365,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -383,7 +383,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 405, y = 32, width = 113, height = 30;
+        int x = 405, y = 32, width = 163, height = 30;
         String text (TRANS("Panning Window"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -667,12 +667,12 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="20 120 113 30" fill="solid: ffffffff" hasStroke="0" text="N Inputs:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="72 32 96 30" fill="solid: ffffffff" hasStroke="0" text="Encoding"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="405 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
+    <TEXT pos="405 32 163 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 306 480 40" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
@@ -693,15 +693,15 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="88 96 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_sources"
-          virtualName="" explicitFocusOrder="0" pos="80 124 120 24" min="1.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="82 124 118 24" min="1.00000000000000000000"
           max="64.00000000000000000000" int="1.00000000000000000000" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <COMBOBOX name="new combo box" id="63f8ff411606aafd" memberName="CBoutputFormat"
-            virtualName="" explicitFocusOrder="0" pos="344 316 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="343 316 112 20" editable="0"
             layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="27f130362a28f1eb" memberName="CBnormalisation"
-            virtualName="" explicitFocusOrder="0" pos="576 316 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="578 316 112 20" editable="0"
             layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="56ba0566c2fe39e0" memberName="CBorder"
             virtualName="" explicitFocusOrder="0" pos="88 64 112 20" editable="0"

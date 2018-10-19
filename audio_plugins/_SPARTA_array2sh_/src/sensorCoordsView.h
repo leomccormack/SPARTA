@@ -48,9 +48,12 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
     void setUseDegreesInstead(bool newState);
     void setQ(int newQ){
-        currentQ = newQ < ((MAX_SH_ORDER+1)*(MAX_SH_ORDER+1)) ? ((MAX_SH_ORDER+1)*(MAX_SH_ORDER+1)) : newQ;
+		newQ = newQ < ((MAX_SH_ORDER+1)*(MAX_SH_ORDER+1)) ? ((MAX_SH_ORDER+1)*(MAX_SH_ORDER+1)) : newQ;
         refreshCoords();
-        resized();
+		if (newQ != currentQ) {
+			currentQ = newQ;
+			resized();
+		}
     }
     //[/UserMethods]
 

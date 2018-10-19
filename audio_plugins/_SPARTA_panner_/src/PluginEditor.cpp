@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -35,7 +35,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (CBsourceDirsPreset = new ComboBox ("new combo box"));
+    CBsourceDirsPreset.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBsourceDirsPreset.get());
     CBsourceDirsPreset->setEditableText (false);
     CBsourceDirsPreset->setJustificationType (Justification::centredLeft);
     CBsourceDirsPreset->setTextWhenNothingSelected (String());
@@ -44,7 +45,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBsourceDirsPreset->setBounds (88, 64, 112, 20);
 
-    addAndMakeVisible (SL_num_sources = new Slider ("new slider"));
+    SL_num_sources.reset (new Slider ("new slider"));
+    addAndMakeVisible (SL_num_sources.get());
     SL_num_sources->setRange (1, 64, 1);
     SL_num_sources->setSliderStyle (Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
@@ -52,19 +54,22 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_sources->setBounds (80, 92, 120, 24);
 
-    addAndMakeVisible (TB_showInputs = new ToggleButton ("new toggle button"));
+    TB_showInputs.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TB_showInputs.get());
     TB_showInputs->setButtonText (String());
     TB_showInputs->addListener (this);
 
-    TB_showInputs->setBounds (545, 318, 32, 24);
+    TB_showInputs->setBounds (546, 318, 24, 24);
 
-    addAndMakeVisible (TB_showOutputs = new ToggleButton ("new toggle button"));
+    TB_showOutputs.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TB_showOutputs.get());
     TB_showOutputs->setButtonText (String());
     TB_showOutputs->addListener (this);
 
-    TB_showOutputs->setBounds (674, 318, 32, 24);
+    TB_showOutputs->setBounds (675, 318, 24, 24);
 
-    addAndMakeVisible (SL_pValue = new Slider ("new slider"));
+    SL_pValue.reset (new Slider ("new slider"));
+    addAndMakeVisible (SL_pValue.get());
     SL_pValue->setRange (0, 1, 0.01);
     SL_pValue->setSliderStyle (Slider::LinearHorizontal);
     SL_pValue->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
@@ -72,7 +77,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_pValue->setBounds (272, 317, 168, 24);
 
-    addAndMakeVisible (CBsLoudspeakerDirsPreset = new ComboBox ("new combo box"));
+    CBsLoudspeakerDirsPreset.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBsLoudspeakerDirsPreset.get());
     CBsLoudspeakerDirsPreset->setEditableText (false);
     CBsLoudspeakerDirsPreset->setJustificationType (Justification::centredLeft);
     CBsLoudspeakerDirsPreset->setTextWhenNothingSelected (String());
@@ -81,7 +87,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBsLoudspeakerDirsPreset->setBounds (788, 66, 112, 20);
 
-    addAndMakeVisible (SL_num_loudspeakers = new Slider ("new slider"));
+    SL_num_loudspeakers.reset (new Slider ("new slider"));
+    addAndMakeVisible (SL_num_loudspeakers.get());
     SL_num_loudspeakers->setRange (2, 64, 1);
     SL_num_loudspeakers->setSliderStyle (Slider::LinearHorizontal);
     SL_num_loudspeakers->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
@@ -89,7 +96,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_loudspeakers->setBounds (780, 92, 120, 24);
 
-    addAndMakeVisible (tb_loadJSON_src = new TextButton ("new button"));
+    tb_loadJSON_src.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_loadJSON_src.get());
     tb_loadJSON_src->setButtonText (TRANS("Import"));
     tb_loadJSON_src->setConnectedEdges (Button::ConnectedOnRight);
     tb_loadJSON_src->addListener (this);
@@ -97,7 +105,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     tb_loadJSON_src->setBounds (140, 41, 34, 14);
 
-    addAndMakeVisible (tb_saveJSON_src = new TextButton ("new button"));
+    tb_saveJSON_src.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_saveJSON_src.get());
     tb_saveJSON_src->setButtonText (TRANS("Export"));
     tb_saveJSON_src->setConnectedEdges (Button::ConnectedOnLeft);
     tb_saveJSON_src->addListener (this);
@@ -106,7 +115,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     tb_saveJSON_src->setBounds (174, 41, 34, 14);
 
-    addAndMakeVisible (tb_loadJSON_ls = new TextButton ("new button"));
+    tb_loadJSON_ls.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_loadJSON_ls.get());
     tb_loadJSON_ls->setButtonText (TRANS("Import"));
     tb_loadJSON_ls->setConnectedEdges (Button::ConnectedOnRight);
     tb_loadJSON_ls->addListener (this);
@@ -114,7 +124,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     tb_loadJSON_ls->setBounds (712, 41, 34, 14);
 
-    addAndMakeVisible (tb_saveJSON_ls = new TextButton ("new button"));
+    tb_saveJSON_ls.reset (new TextButton ("new button"));
+    addAndMakeVisible (tb_saveJSON_ls.get());
     tb_saveJSON_ls->setButtonText (TRANS("Export"));
     tb_saveJSON_ls->setConnectedEdges (Button::ConnectedOnLeft);
     tb_saveJSON_ls->addListener (this);
@@ -526,7 +537,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 404, y = 32, width = 113, height = 30;
+        int x = 404, y = 32, width = 156, height = 30;
         String text (TRANS("Panning Window"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -544,7 +555,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -556,7 +567,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -673,14 +684,14 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == CBsourceDirsPreset)
+    if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
     {
         //[UserComboBoxCode_CBsourceDirsPreset] -- add your combo box handling code here..
         panner_setInputConfigPreset(hVst->hPan, CBsourceDirsPreset->getSelectedId());
         refreshPanViewWindow = true;
         //[/UserComboBoxCode_CBsourceDirsPreset]
     }
-    else if (comboBoxThatHasChanged == CBsLoudspeakerDirsPreset)
+    else if (comboBoxThatHasChanged == CBsLoudspeakerDirsPreset.get())
     {
         //[UserComboBoxCode_CBsLoudspeakerDirsPreset] -- add your combo box handling code here..
         panner_setOutputConfigPreset(hVst->hPan, CBsLoudspeakerDirsPreset->getSelectedId());
@@ -697,20 +708,20 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == SL_num_sources)
+    if (sliderThatWasMoved == SL_num_sources.get())
     {
         //[UserSliderCode_SL_num_sources] -- add your slider handling code here..
         panner_setNumSources(hVst->hPan, (int)SL_num_sources->getValue());
         refreshPanViewWindow = true;
         //[/UserSliderCode_SL_num_sources]
     }
-    else if (sliderThatWasMoved == SL_pValue)
+    else if (sliderThatWasMoved == SL_pValue.get())
     {
         //[UserSliderCode_SL_pValue] -- add your slider handling code here..
         panner_setDTT(hVst->hPan, (float)SL_pValue->getValue());
         //[/UserSliderCode_SL_pValue]
     }
-    else if (sliderThatWasMoved == SL_num_loudspeakers)
+    else if (sliderThatWasMoved == SL_num_loudspeakers.get())
     {
         //[UserSliderCode_SL_num_loudspeakers] -- add your slider handling code here..
         panner_setNumLoudspeakers(hVst->hPan, (int)SL_num_loudspeakers->getValue());
@@ -726,21 +737,21 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == TB_showInputs)
+    if (buttonThatWasClicked == TB_showInputs.get())
     {
         //[UserButtonCode_TB_showInputs] -- add your button handler code here..
         panWindow->setShowInputs(TB_showInputs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TB_showInputs]
     }
-    else if (buttonThatWasClicked == TB_showOutputs)
+    else if (buttonThatWasClicked == TB_showOutputs.get())
     {
         //[UserButtonCode_TB_showOutputs] -- add your button handler code here..
         panWindow->setShowOutputs(TB_showOutputs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TB_showOutputs]
     }
-    else if (buttonThatWasClicked == tb_loadJSON_src)
+    else if (buttonThatWasClicked == tb_loadJSON_src.get())
     {
         //[UserButtonCode_tb_loadJSON_src] -- add your button handler code here..
         FileChooser myChooser ("Load configuration...",
@@ -753,7 +764,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_tb_loadJSON_src]
     }
-    else if (buttonThatWasClicked == tb_saveJSON_src)
+    else if (buttonThatWasClicked == tb_saveJSON_src.get())
     {
         //[UserButtonCode_tb_saveJSON_src] -- add your button handler code here..
         FileChooser myChooser ("Save configuration...",
@@ -766,7 +777,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_tb_saveJSON_src]
     }
-    else if (buttonThatWasClicked == tb_loadJSON_ls)
+    else if (buttonThatWasClicked == tb_loadJSON_ls.get())
     {
         //[UserButtonCode_tb_loadJSON_ls] -- add your button handler code here..
         FileChooser myChooser ("Load configuration...",
@@ -779,7 +790,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_tb_loadJSON_ls]
     }
-    else if (buttonThatWasClicked == tb_saveJSON_ls)
+    else if (buttonThatWasClicked == tb_saveJSON_ls.get())
     {
         //[UserButtonCode_tb_saveJSON_ls] -- add your button handler code here..
         FileChooser myChooser ("Save configuration...",
@@ -807,6 +818,19 @@ void PluginEditor::timerCallback()
     loudspeakerCoordsView_handle->setNCH(panner_getNumLoudspeakers(hVst->hPan));
     SL_num_sources->setValue(panner_getNumSources(hVst->hPan),dontSendNotification);
     SL_num_loudspeakers->setValue(panner_getNumLoudspeakers(hVst->hPan),dontSendNotification);
+
+	/* Some parameters shouldn't be enabled if playback is ongoing */
+	if (hVst->getIsPlaying()) {
+		SL_num_loudspeakers->setEnabled(false);
+		loudspeakerCoordsView_handle->setEnabled(false);
+		CBsLoudspeakerDirsPreset->setEnabled(false);
+	}
+	else {
+		SL_num_loudspeakers->setEnabled(true);
+		loudspeakerCoordsView_handle->setEnabled(true);
+		CBsLoudspeakerDirsPreset->setEnabled(true);
+		panner_checkReInit(hVst->hPan);
+	}
 
     /* refresh pan view */
     if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) ||
@@ -890,14 +914,14 @@ BEGIN_JUCER_METADATA
     <TEXT pos="789 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Outputs"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="404 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
+    <TEXT pos="404 32 156 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="455 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="574 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Outputs:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 308 229 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -923,10 +947,10 @@ BEGIN_JUCER_METADATA
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="74817bb8a57611dc" memberName="TB_showInputs"
-                virtualName="" explicitFocusOrder="0" pos="545 318 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="546 318 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="1a1dfbb1d4296140" memberName="TB_showOutputs"
-                virtualName="" explicitFocusOrder="0" pos="674 318 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="675 318 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <SLIDER name="new slider" id="5b4f982e7ea9b2d5" memberName="SL_pValue"
           virtualName="" explicitFocusOrder="0" pos="272 317 168 24" min="0.00000000000000000000"

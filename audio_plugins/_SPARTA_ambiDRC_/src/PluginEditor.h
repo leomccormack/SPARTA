@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -73,22 +73,22 @@ private:
     ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
     ScopedPointer<TFview> TFviewIncluded;
-    
+
     /* warnings */
-    SPARTA_WARNINGS currentWarning; 
+    SPARTA_WARNINGS currentWarning;
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<Slider> s_thresh;
-    ScopedPointer<Slider> s_ratio;
-    ScopedPointer<Slider> s_knee;
-    ScopedPointer<Slider> s_attack;
-    ScopedPointer<Slider> s_release;
-    ScopedPointer<Slider> s_outgain;
-    ScopedPointer<Slider> s_ingain;
-    ScopedPointer<ComboBox> presetCB;
-    ScopedPointer<ComboBox> CHOrderingCB;
-    ScopedPointer<ComboBox> normalisationCB;
+    std::unique_ptr<Slider> s_thresh;
+    std::unique_ptr<Slider> s_ratio;
+    std::unique_ptr<Slider> s_knee;
+    std::unique_ptr<Slider> s_attack;
+    std::unique_ptr<Slider> s_release;
+    std::unique_ptr<Slider> s_outgain;
+    std::unique_ptr<Slider> s_ingain;
+    std::unique_ptr<ComboBox> presetCB;
+    std::unique_ptr<ComboBox> CHOrderingCB;
+    std::unique_ptr<ComboBox> normalisationCB;
 
 
     //==============================================================================

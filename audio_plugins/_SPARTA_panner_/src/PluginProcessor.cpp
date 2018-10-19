@@ -325,7 +325,6 @@ void PluginProcessor::saveConfigurationToFile (File destination, int srcOrLs)
     jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA Panner " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
     jsonObj->setProperty ("GenericLayout", ConfigurationHelper::convertElementsToVar (elements, "Source/Loudspeaker Directions"));
     Result result2 = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
-    assert(result2.wasOk());
 }
 
 void PluginProcessor::loadConfiguration (const File& configFile, int srcOrLs)
@@ -363,5 +362,4 @@ void PluginProcessor::loadConfiguration (const File& configFile, int srcOrLs)
             break;
         }
     }
-    panner_refreshSettings(hPan);
 }

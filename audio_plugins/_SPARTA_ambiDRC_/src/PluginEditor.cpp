@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -36,7 +36,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (s_thresh = new Slider ("new slider"));
+    s_thresh.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_thresh.get());
     s_thresh->setRange (-60, 0, 0.01);
     s_thresh->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_thresh->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -49,7 +50,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_thresh->setBounds (96, 364, 64, 64);
 
-    addAndMakeVisible (s_ratio = new Slider ("new slider"));
+    s_ratio.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_ratio.get());
     s_ratio->setRange (1, 30, 0.01);
     s_ratio->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_ratio->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -62,7 +64,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_ratio->setBounds (168, 364, 64, 64);
 
-    addAndMakeVisible (s_knee = new Slider ("new slider"));
+    s_knee.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_knee.get());
     s_knee->setRange (0, 10, 0.01);
     s_knee->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_knee->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -75,7 +78,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_knee->setBounds (240, 364, 64, 64);
 
-    addAndMakeVisible (s_attack = new Slider ("new slider"));
+    s_attack.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_attack.get());
     s_attack->setRange (10, 200, 0.01);
     s_attack->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_attack->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -88,7 +92,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_attack->setBounds (319, 364, 64, 64);
 
-    addAndMakeVisible (s_release = new Slider ("new slider"));
+    s_release.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_release.get());
     s_release->setRange (50, 1000, 0.01);
     s_release->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_release->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -101,7 +106,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_release->setBounds (391, 364, 64, 64);
 
-    addAndMakeVisible (s_outgain = new Slider ("new slider"));
+    s_outgain.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_outgain.get());
     s_outgain->setRange (-20, 40, 0.01);
     s_outgain->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_outgain->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -114,7 +120,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_outgain->setBounds (468, 364, 64, 64);
 
-    addAndMakeVisible (s_ingain = new Slider ("new slider"));
+    s_ingain.reset (new Slider ("new slider"));
+    addAndMakeVisible (s_ingain.get());
     s_ingain->setRange (-40, 20, 0.01);
     s_ingain->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     s_ingain->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -127,7 +134,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_ingain->setBounds (17, 364, 64, 64);
 
-    addAndMakeVisible (presetCB = new ComboBox ("new combo box"));
+    presetCB.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (presetCB.get());
     presetCB->setEditableText (false);
     presetCB->setJustificationType (Justification::centredLeft);
     presetCB->setTextWhenNothingSelected (String());
@@ -136,7 +144,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     presetCB->setBounds (72, 296, 120, 16);
 
-    addAndMakeVisible (CHOrderingCB = new ComboBox ("new combo box"));
+    CHOrderingCB.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CHOrderingCB.get());
     CHOrderingCB->setEditableText (false);
     CHOrderingCB->setJustificationType (Justification::centredLeft);
     CHOrderingCB->setTextWhenNothingSelected (TRANS("ACN"));
@@ -145,7 +154,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CHOrderingCB->setBounds (288, 296, 80, 16);
 
-    addAndMakeVisible (normalisationCB = new ComboBox ("new combo box"));
+    normalisationCB.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (normalisationCB.get());
     normalisationCB->setEditableText (false);
     normalisationCB->setJustificationType (Justification::centredLeft);
     normalisationCB->setTextWhenNothingSelected (TRANS("N3D"));
@@ -762,7 +772,7 @@ void PluginEditor::paint (Graphics& g)
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
 		145, 16, 530, 11,
 		Justification::centredLeft, true);
-    
+
     /* display warning message */
     g.setColour(Colours::red);
     g.setFont(Font(11.00f, Font::plain));
@@ -819,7 +829,7 @@ void PluginEditor::paint (Graphics& g)
                textWidth, 1084, Justification::centred);
 
     g.addTransform(AffineTransform());
- 
+
     //[/UserPaint]
 }
 
@@ -840,43 +850,43 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == s_thresh)
+    if (sliderThatWasMoved == s_thresh.get())
     {
         //[UserSliderCode_s_thresh] -- add your slider handling code here..
 		ambi_drc_setThreshold(hVst->hAmbi, s_thresh->getValue());
         //[/UserSliderCode_s_thresh]
     }
-    else if (sliderThatWasMoved == s_ratio)
+    else if (sliderThatWasMoved == s_ratio.get())
     {
         //[UserSliderCode_s_ratio] -- add your slider handling code here..
 		ambi_drc_setRatio(hVst->hAmbi, s_ratio->getValue());
         //[/UserSliderCode_s_ratio]
     }
-    else if (sliderThatWasMoved == s_knee)
+    else if (sliderThatWasMoved == s_knee.get())
     {
         //[UserSliderCode_s_knee] -- add your slider handling code here..
 		ambi_drc_setKnee(hVst->hAmbi, s_knee->getValue());
         //[/UserSliderCode_s_knee]
     }
-    else if (sliderThatWasMoved == s_attack)
+    else if (sliderThatWasMoved == s_attack.get())
     {
         //[UserSliderCode_s_attack] -- add your slider handling code here..
 		ambi_drc_setAttack(hVst->hAmbi, s_attack->getValue());
         //[/UserSliderCode_s_attack]
     }
-    else if (sliderThatWasMoved == s_release)
+    else if (sliderThatWasMoved == s_release.get())
     {
         //[UserSliderCode_s_release] -- add your slider handling code here..
 		ambi_drc_setRelease(hVst->hAmbi, s_release->getValue());
         //[/UserSliderCode_s_release]
     }
-    else if (sliderThatWasMoved == s_outgain)
+    else if (sliderThatWasMoved == s_outgain.get())
     {
         //[UserSliderCode_s_outgain] -- add your slider handling code here..
         ambi_drc_setOutGain(hVst->hAmbi, s_outgain->getValue());
         //[/UserSliderCode_s_outgain]
     }
-    else if (sliderThatWasMoved == s_ingain)
+    else if (sliderThatWasMoved == s_ingain.get())
     {
         //[UserSliderCode_s_ingain] -- add your slider handling code here..
         ambi_drc_setInGain(hVst->hAmbi, s_ingain->getValue());
@@ -892,19 +902,19 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == presetCB)
+    if (comboBoxThatHasChanged == presetCB.get())
     {
         //[UserComboBoxCode_presetCB] -- add your combo box handling code here..
         ambi_drc_setInputPreset(hVst->hAmbi, (INPUT_ORDER)presetCB->getSelectedId());
         //[/UserComboBoxCode_presetCB]
     }
-    else if (comboBoxThatHasChanged == CHOrderingCB)
+    else if (comboBoxThatHasChanged == CHOrderingCB.get())
     {
         //[UserComboBoxCode_CHOrderingCB] -- add your combo box handling code here..
         ambi_drc_setChOrder(hVst->hAmbi, CHOrderingCB->getSelectedId());
         //[/UserComboBoxCode_CHOrderingCB]
     }
-    else if (comboBoxThatHasChanged == normalisationCB)
+    else if (comboBoxThatHasChanged == normalisationCB.get())
     {
         //[UserComboBoxCode_normalisationCB] -- add your combo box handling code here..
         ambi_drc_setNormType(hVst->hAmbi, normalisationCB->getSelectedId());

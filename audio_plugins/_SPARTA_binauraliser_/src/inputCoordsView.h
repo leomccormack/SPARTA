@@ -47,10 +47,13 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     void setNCH(int newNCH){
-        currentNCH = newNCH > MAX_NUM_CHANNELS ? MAX_NUM_CHANNELS : newNCH;
-        refreshCoords();
-        resized();
-        sliderHasChanged = true;
+		newNCH = newNCH > MAX_NUM_CHANNELS ? MAX_NUM_CHANNELS : newNCH;
+		refreshCoords();
+		if (newNCH != currentNCH) {
+			currentNCH = newNCH;  
+			resized();
+			sliderHasChanged = true;
+		}
     }
 
     bool getHasASliderChanged(){

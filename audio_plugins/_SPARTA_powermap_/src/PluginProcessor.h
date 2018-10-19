@@ -45,6 +45,9 @@ public:
     
     float** bufferInputs;
     
+	bool getIsPlaying() {
+		return isPlaying;
+	}
     int getCurrentBlockSize(){
         return nHostBlockSize;
     }

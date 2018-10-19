@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -70,23 +70,23 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    
+
     /* warnings */
-    SPARTA_WARNINGS currentWarning; 
+    SPARTA_WARNINGS currentWarning;
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<Slider> s_yaw;
-    ScopedPointer<Slider> s_pitch;
-    ScopedPointer<Slider> s_roll;
-    ScopedPointer<ToggleButton> t_flipYaw;
-    ScopedPointer<ToggleButton> t_flipPitch;
-    ScopedPointer<ToggleButton> t_flipRoll;
-    ScopedPointer<TextEditor> te_oscport;
-    ScopedPointer<ComboBox> CBoutputFormat;
-    ScopedPointer<ComboBox> CBnorm;
-    ScopedPointer<ComboBox> CBorder;
-    ScopedPointer<ToggleButton> TBrpyFlag;
+    std::unique_ptr<Slider> s_yaw;
+    std::unique_ptr<Slider> s_pitch;
+    std::unique_ptr<Slider> s_roll;
+    std::unique_ptr<ToggleButton> t_flipYaw;
+    std::unique_ptr<ToggleButton> t_flipPitch;
+    std::unique_ptr<ToggleButton> t_flipRoll;
+    std::unique_ptr<TextEditor> te_oscport;
+    std::unique_ptr<ComboBox> CBoutputFormat;
+    std::unique_ptr<ComboBox> CBnorm;
+    std::unique_ptr<ComboBox> CBorder;
+    std::unique_ptr<ToggleButton> TBrpyFlag;
 
 
     //==============================================================================

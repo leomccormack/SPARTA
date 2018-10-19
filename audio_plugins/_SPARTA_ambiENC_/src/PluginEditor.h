@@ -84,7 +84,7 @@ private:
     bool refreshPanViewWindow;
 
     /* warnings */
-    SPARTA_WARNINGS currentWarning; 
+    SPARTA_WARNINGS currentWarning;
 
     //[/UserVariables]
 
