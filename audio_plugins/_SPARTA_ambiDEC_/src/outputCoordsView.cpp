@@ -79,6 +79,9 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
 
     sliderHasChanged = true;
 
+	refreshCoords();
+	resized();
+
     //[/Constructor]
 }
 

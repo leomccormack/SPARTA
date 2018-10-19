@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -94,17 +94,17 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<ComboBox> CBsourceDirsPreset;
-    ScopedPointer<Slider> SL_num_sources;
-    ScopedPointer<ToggleButton> TB_showInputs;
-    ScopedPointer<ToggleButton> TB_showOutputs;
-    ScopedPointer<Slider> SL_pValue;
-    ScopedPointer<ComboBox> CBsLoudspeakerDirsPreset;
-    ScopedPointer<Slider> SL_num_loudspeakers;
-    ScopedPointer<TextButton> tb_loadJSON_src;
-    ScopedPointer<TextButton> tb_saveJSON_src;
-    ScopedPointer<TextButton> tb_loadJSON_ls;
-    ScopedPointer<TextButton> tb_saveJSON_ls;
+    std::unique_ptr<ComboBox> CBsourceDirsPreset;
+    std::unique_ptr<Slider> SL_num_sources;
+    std::unique_ptr<ToggleButton> TB_showInputs;
+    std::unique_ptr<ToggleButton> TB_showOutputs;
+    std::unique_ptr<Slider> SL_pValue;
+    std::unique_ptr<ComboBox> CBsLoudspeakerDirsPreset;
+    std::unique_ptr<Slider> SL_num_loudspeakers;
+    std::unique_ptr<TextButton> tb_loadJSON_src;
+    std::unique_ptr<TextButton> tb_saveJSON_src;
+    std::unique_ptr<TextButton> tb_loadJSON_ls;
+    std::unique_ptr<TextButton> tb_saveJSON_ls;
 
 
     //==============================================================================

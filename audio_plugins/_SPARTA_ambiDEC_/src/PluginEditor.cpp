@@ -614,7 +614,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -650,7 +650,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -895,6 +895,7 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     {
         //[UserComboBoxCode_CBsourcePreset] -- add your combo box handling code here..
         ambi_dec_setSourcePreset(hVst->hAmbi, CBsourcePreset->getSelectedId());
+		decOrder2dSlider->setRefreshValuesFLAG(true);
         //[/UserComboBoxCode_CBsourcePreset]
     }
     else if (comboBoxThatHasChanged == CBchFormat.get())
@@ -971,6 +972,7 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     {
         //[UserSliderCode_s_decOrder] -- add your slider handling code here..
         ambi_dec_setDecOrderAllBands(hVst->hAmbi, (int)s_decOrder->getValue());
+		decOrder2dSlider->setRefreshValuesFLAG(true);
         //[/UserSliderCode_s_decOrder]
     }
 
@@ -1048,10 +1050,27 @@ void PluginEditor::timerCallback()
     TBBinauraliseLS->setToggleState(ambi_dec_getBinauraliseLSflag(hVst->hAmbi), dontSendNotification);
     outputCoordsView_handle->setNCH(ambi_dec_getNumLoudspeakers(hVst->hAmbi));
     SL_num_loudspeakers->setValue(ambi_dec_getNumLoudspeakers(hVst->hAmbi),dontSendNotification);
+	CBdec1method->setSelectedId(ambi_dec_getDecMethod(hVst->hAmbi, 0));
+	CBdec2method->setSelectedId(ambi_dec_getDecMethod(hVst->hAmbi, 1));
 
     /* refresh */
-    if (decOrder2dSlider->getRefreshValuesFLAG())
-        decOrder2dSlider->repaint();
+	if (decOrder2dSlider->getRefreshValuesFLAG()) {
+		decOrder2dSlider->repaint();
+		decOrder2dSlider->setRefreshValuesFLAG(false);
+	}
+
+	/* Some parameters shouldn't be enabled if playback is ongoing */
+	if (hVst->getIsPlaying()) {
+		fileChooser.setEnabled(false);
+		TBuseDefaultHRIRs->setEnabled(false);
+		TBBinauraliseLS->setEnabled(false);
+	}
+	else {
+		fileChooser.setEnabled(true);
+		TBuseDefaultHRIRs->setEnabled(true);
+		TBBinauraliseLS->setEnabled(true);
+		ambi_dec_checkReInit(hVst->hAmbi);
+	}
 
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
@@ -1130,7 +1149,7 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="234 90 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 90 132 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
@@ -1139,7 +1158,7 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="234 58 189 30" fill="solid: ffffffff" hasStroke="0" text="Binauralise Loudspeakers:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 263 141 81" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>

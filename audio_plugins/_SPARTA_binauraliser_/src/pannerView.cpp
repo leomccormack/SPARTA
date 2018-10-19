@@ -63,7 +63,7 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     }
     showInputs = true;
     showOutputs = true;
-
+	sourceIconIsClicked = false;
     //[/Constructor]
 }
 

@@ -367,6 +367,5 @@ void PluginProcessor::loadConfiguration (const File& configFile)
                 ls_idx++;
             }
         }
-    }
-    ambi_dec_refreshSettings(hAmbi);
+    } 
 }

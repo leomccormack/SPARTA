@@ -300,7 +300,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = -23, y = 0, width = 159, height = 32;
+        int x = -23, y = 0, width = 191, height = 32;
         String text (TRANS("SLDoA"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -318,7 +318,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -330,7 +330,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -342,14 +342,14 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 216, y = 396, width = 200, height = 30;
-        String text (TRANS("Analysis Order Per Band"));
+        int x = 216, y = 396, width = 312, height = 30;
+        String text (TRANS("Analysis Order Per Frequency Band"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -472,7 +472,7 @@ void PluginEditor::paint (Graphics& g)
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		150, 16, 530, 11,
+		140, 16, 530, 11,
 		Justification::centredLeft, true);
 
     Colour strokeColour = Colour (0x86a3a4a5);
@@ -664,19 +664,19 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="0 0 634 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
-    <TEXT pos="-23 0 159 32" fill="solid: ffffffff" hasStroke="0" text="SLDoA"
+    <TEXT pos="-23 0 191 32" fill="solid: ffffffff" hasStroke="0" text="SLDoA"
           fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="14 402 96 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="14 460 112 30" fill="solid: ffffffff" hasStroke="0" text="Avg (ms):"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="14 432 127 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="216 396 200 30" fill="solid: ffffffff" hasStroke="0" text="Analysis Order Per Band"
+    <TEXT pos="216 396 312 30" fill="solid: ffffffff" hasStroke="0" text="Analysis Order Per Frequency Band"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="611 458 13 30" fill="solid: ffffffff" hasStroke="0" text="1"

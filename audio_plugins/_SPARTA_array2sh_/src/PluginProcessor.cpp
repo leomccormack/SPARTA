@@ -334,7 +334,6 @@ void PluginProcessor::saveConfigurationToFile (File destination)
     jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA Array2SH " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
     jsonObj->setProperty ("GenericLayout", ConfigurationHelper::convertElementsToVar (sensors, "Sensor Directions"));
     Result result = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
-    assert(result.wasOk());
 }
 
 /* Adapted from the AllRADecoder by Daniel Rudrich, (c) 2017 (GPLv3 license) */
@@ -357,5 +356,4 @@ void PluginProcessor::loadConfiguration (const File& configFile)
             }
         }
     }
-    array2sh_refreshSettings(hA2sh);
 }

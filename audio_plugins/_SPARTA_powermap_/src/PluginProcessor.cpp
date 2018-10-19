@@ -263,6 +263,8 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 powermap_setAspectRatio(hPm, xmlState->getIntAttribute("aspectRatio", 1));
             if(xmlState->hasAttribute("powermapAvgCoeff"))
                 powermap_setPowermapAvgCoeff(hPm, (float)xmlState->getDoubleAttribute("powermapAvgCoeff", 0.5f));
+
+			powermap_refreshSettings(hPm);
         }
     }
 }

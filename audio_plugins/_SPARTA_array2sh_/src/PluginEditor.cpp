@@ -348,7 +348,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     presetCB->addItem (TRANS("Aalto Hydro"), PRESET_AALTO_HYDROPHONE);
 #endif
 	/* Specify screen refresh rate */
-    startTimer(160);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(80);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -1026,8 +1026,16 @@ void PluginEditor::timerCallback()
     sensorCoordsView_handle->setQ(array2sh_getNumSensors(hVst->hA2sh));
     CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hVst->hA2sh), dontSendNotification);
 
-    /* draw magnitude responses */
-    if (needScreenRefreshFLAG){
+	/* Some parameters shouldn't be enabled if playback is ongoing */
+	if (hVst->getIsPlaying()) 
+		textButton->setEnabled(false);
+	else {
+		textButton->setEnabled(true);
+		array2sh_checkReInit(hVst->hA2sh);
+	}
+
+    /* draw magnitude/spatial-correlation/level-difference curves */
+    if (needScreenRefreshFLAG || array2sh_getEvalReady(hVst->hA2sh)){
         switch(dispID){
             default:
             case SHOW_EQ:

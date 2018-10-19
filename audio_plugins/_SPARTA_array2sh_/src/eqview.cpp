@@ -163,8 +163,7 @@ void eqview::paint (Graphics& g)
     g.addTransform(AffineTransform());
 
     /* draw curves */
-    eqview_windowIncluded->repaint();
-
+    //eqview_windowIncluded->repaint(); /* No need to call, as eqview will repaint any children too */
 
     //[/UserPaint]
 }

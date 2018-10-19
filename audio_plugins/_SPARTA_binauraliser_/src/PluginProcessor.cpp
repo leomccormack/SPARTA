@@ -371,7 +371,6 @@ void PluginProcessor::saveConfigurationToFile (File destination)
     jsonObj->setProperty ("GenericLayout", ConfigurationHelper::convertElementsToVar (sources, "Source Directions"));
     //jsonObj->setProperty ("LoudspeakerLayout", ConfigurationHelper::convertLoudspeakersToVar (sources, "Source Directions"));
     Result result = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
-    assert(result.wasOk());
 }
 
 /* Adapted from the AllRADecoder by Daniel Rudrich, (c) 2017 (GPLv3 license) */
@@ -395,7 +394,6 @@ void PluginProcessor::loadConfiguration (const File& configFile)
             }
         }
     }
-    binauraliser_refreshSettings(hBin);
 }
 
 
