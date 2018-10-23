@@ -205,7 +205,8 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 	nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
     
-	binauraliser_init(hBin, sampleRate); 
+	binauraliser_init(hBin, sampleRate);
+    AudioProcessor::setLatencySamples(binauraliser_getProcessingDelay());
 }
 
 void PluginProcessor::releaseResources()

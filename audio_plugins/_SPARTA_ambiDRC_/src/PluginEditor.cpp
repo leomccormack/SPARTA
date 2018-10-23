@@ -930,11 +930,11 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PluginEditor::timerCallback()
 {
-	if (hVst->isPlaying) {
-		int wIdx = ambi_drc_getGainTFwIdx(hVst->hAmbi);
-		float linePos = (float)wIdx*((float)TFviewIncluded->getWidth() / (float)NUM_DISPLAY_TIME_SLOTS);
-		TFviewIncluded->repaint(linePos-10, 0, TFviewIncluded->getWidth(), TFviewIncluded->getHeight());
-	}
+    if (hVst->isPlaying) {
+        int wIdx = ambi_drc_getGainTFwIdx(hVst->hAmbi);
+        float linePos = (float)wIdx*((float)TFviewIncluded->getWidth() / (float)NUM_DISPLAY_TIME_SLOTS);
+        TFviewIncluded->repaint(linePos-10, 0, TFviewIncluded->getWidth(), TFviewIncluded->getHeight());
+    }
 
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){

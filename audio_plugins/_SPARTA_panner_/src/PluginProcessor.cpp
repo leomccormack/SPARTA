@@ -174,7 +174,8 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
 
-	panner_init(hPan, sampleRate); 
+	panner_init(hPan, sampleRate);
+    AudioProcessor::setLatencySamples(panner_getProcessingDelay());
 }
 
 void PluginProcessor::releaseResources()
