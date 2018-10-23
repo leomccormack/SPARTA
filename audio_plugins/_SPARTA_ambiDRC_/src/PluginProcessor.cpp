@@ -153,7 +153,8 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
 
-	ambi_drc_init(hAmbi, (float)sampleRate); 
+	ambi_drc_init(hAmbi, (float)sampleRate);
+    AudioProcessor::setLatencySamples(ambi_drc_getProcessingDelay());
 }
 
 void PluginProcessor::releaseResources()
@@ -176,7 +177,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
             /* determine if there is actually audio in the damn buffer */
             playHead = getPlayHead();
             bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-            if (PlayHeadAvailable == true)
+            if (PlayHeadAvailable)
                 isPlaying = currentPosition.isPlaying;
             else
                 isPlaying = false;

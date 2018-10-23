@@ -172,6 +172,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     isPlaying = false;
 
     ambi_dec_init(hAmbi, sampleRate);
+    AudioProcessor::setLatencySamples(ambi_dec_getProcessingDelay());
 }
 
 void PluginProcessor::releaseResources()

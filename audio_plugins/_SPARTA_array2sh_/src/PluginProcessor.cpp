@@ -172,11 +172,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     isPlaying = false;
 
     array2sh_init(hA2sh, sampleRate);
-
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferInputs[i], 0, FRAME_SIZE*sizeof(float));
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        memset(bufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
+    AudioProcessor::setLatencySamples(array2sh_getProcessingDelay());
 }
 
 void PluginProcessor::releaseResources()

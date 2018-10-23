@@ -351,7 +351,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "498"
             endingLineNumber = "498"
-            landmarkName = "array2sh_getMinNumSensors"
+            landmarkName = "array2sh_getSensorElev_rad"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

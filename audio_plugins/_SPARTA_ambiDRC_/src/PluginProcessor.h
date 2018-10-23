@@ -29,7 +29,6 @@
 #define MAX_NUM_CHANNELS 64
 #define BUILD_VER_SUFFIX "beta"
 
-
 enum {	
     /* For the default VST GUI */
 	k_NumOfParameters
