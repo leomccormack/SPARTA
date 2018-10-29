@@ -422,7 +422,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 30, width = 920, height = 326;
-        Colour fillColour1 = Colour (0xff55636d), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -714,7 +714,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 712, y = 176, width = 196, height = 115;
-        Colour fillColour = Colour (0x13f4f4f4);
+        Colour fillColour = Colour (0x10f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1136,7 +1136,7 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="920" initialHeight="356">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 920 326" fill=" radial: 460 184, 920 352, 0=ff55636d, 1=ff073642"
+    <RECT pos="0 30 920 326" fill=" radial: 460 184, 920 352, 0=ff5b6d76, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="712 121 196 170" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1195,7 +1195,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="719 294 132 30" fill="solid: ffffffff" hasStroke="0" text="N Dirs/Tri:"
           fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="712 176 196 115" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="712 176 196 115" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="735 174 49 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[0]"
           fontname="Default font" fontsize="10.00000000000000000000" kerning="0.00000000000000000000"

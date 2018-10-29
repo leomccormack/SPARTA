@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -137,7 +137,7 @@ void TFview::paint (Graphics& g)
 
 	/* Draw wIdx line */
 	g.setColour(Colours::black);
-	g.setOpacity(1.0f); 
+	g.setOpacity(1.0f);
 	g.drawLine(0.0f, height, width, height, 2.0f);
 
     /* draw frequency guide lines on top */

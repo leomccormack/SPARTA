@@ -296,7 +296,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 30, width = 672, height = 608;
-        Colour fillColour1 = Colour (0xff839496), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -304,8 +304,8 @@ void PluginEditor::paint (Graphics& g)
                                        336.0f - 0.0f + x,
                                        208.0f - 30.0f + y,
                                        fillColour2,
-                                       344.0f - 0.0f + x,
-                                       608.0f - 30.0f + y,
+                                       360.0f - 0.0f + x,
+                                       552.0f - 30.0f + y,
                                        true));
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -718,7 +718,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 13, y = 382, width = 214, height = 36;
-        Colour fillColour = Colour (0x13f4f4f4);
+        Colour fillColour = Colour (0x08f4f4f4);
         Colour strokeColour = Colour (0x35a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -731,7 +731,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 13, y = 488, width = 214, height = 36;
-        Colour fillColour = Colour (0x13f4f4f4);
+        Colour fillColour = Colour (0x08f4f4f4);
         Colour strokeColour = Colour (0x33a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -971,7 +971,7 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="672" initialHeight="638">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 672 608" fill=" radial: 336 208, 344 608, 0=ff839496, 1=ff073642"
+    <RECT pos="0 30 672 608" fill=" radial: 336 208, 360 552, 0=ff5b6d76, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="13 382 214 107" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1065,9 +1065,9 @@ BEGIN_JUCER_METADATA
     <TEXT pos="456 384 132 30" fill="solid: ffffffff" hasStroke="0" text="Aspect Ratio:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="13 382 214 36" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="13 382 214 36" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 35a0a0a0"/>
-    <RECT pos="13 488 214 36" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="13 488 214 36" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 33a0a0a0"/>
   </BACKGROUND>
   <COMBOBOX name="" id="787134d7259eea10" memberName="CBpmap_method" virtualName=""

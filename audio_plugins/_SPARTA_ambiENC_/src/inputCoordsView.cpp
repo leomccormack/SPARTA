@@ -78,6 +78,8 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
     }
 
     sliderHasChanged = true;
+    refreshCoords();
+    resized();
 
     //[/Constructor]
 }

@@ -253,7 +253,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 30, width = 712, height = 326;
-        Colour fillColour1 = Colour (0xff55636d), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -261,7 +261,7 @@ void PluginEditor::paint (Graphics& g)
                                        460.0f - 0.0f + x,
                                        184.0f - 30.0f + y,
                                        fillColour2,
-                                       920.0f - 0.0f + x,
+                                       704.0f - 0.0f + x,
                                        352.0f - 30.0f + y,
                                        true));
         g.fillRect (x, y, width, height);
@@ -456,6 +456,19 @@ void PluginEditor::paint (Graphics& g)
                     Justification::centredLeft, true);
     }
 
+    {
+        int x = 12, y = 58, width = 196, height = 32;
+        Colour fillColour = Colour (0x09f4f4f4);
+        Colour strokeColour = Colour (0x67a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
@@ -647,7 +660,7 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="712" initialHeight="356">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 712 326" fill=" radial: 460 184, 920 352, 0=ff55636d, 1=ff073642"
+    <RECT pos="0 30 712 326" fill=" radial: 460 184, 704 352, 0=ff5b6d76, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="0 0 712 32" fill="solid: ff073642" hasStroke="1" stroke="2.5, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
@@ -688,6 +701,8 @@ BEGIN_JUCER_METADATA
     <TEXT pos="20 60 67 30" fill="solid: ffffffff" hasStroke="0" text="Order: "
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <RECT pos="12 58 196 32" fill="solid: 9f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 67a0a0a0"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="5a2f99f88aa51390" memberName="CBsourceDirsPreset"
             virtualName="" explicitFocusOrder="0" pos="88 96 112 20" editable="0"

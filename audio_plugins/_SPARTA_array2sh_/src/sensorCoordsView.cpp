@@ -91,6 +91,9 @@ sensorCoordsView::sensorCoordsView (PluginProcessor* ownerFilter, int _maxQ, int
         elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 96, 16);
         elevSliders[i]->addListener (this);
     }
+    
+    refreshCoords();
+    resized();
 
     //[/Constructor]
 }

@@ -399,16 +399,16 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 30, width = 800, height = 420;
-        Colour fillColour1 = Colour (0xff55636d), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (fillColour1,
-                                       408.0f - 0.0f + x,
-                                       224.0f - 30.0f + y,
+                                       424.0f - 0.0f + x,
+                                       160.0f - 30.0f + y,
                                        fillColour2,
-                                       688.0f - 0.0f + x,
-                                       392.0f - 30.0f + y,
+                                       696.0f - 0.0f + x,
+                                       440.0f - 30.0f + y,
                                        true));
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -735,7 +735,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 228, y = 264, width = 273, height = 41;
-        Colour fillColour = Colour (0x13f4f4f4);
+        Colour fillColour = Colour (0x08f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1027,7 +1027,7 @@ void PluginEditor::timerCallback()
     CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hVst->hA2sh), dontSendNotification);
 
 	/* Some parameters shouldn't be enabled if playback is ongoing */
-	if (hVst->getIsPlaying()) 
+	if (hVst->getIsPlaying())
 		textButton->setEnabled(false);
 	else {
 		textButton->setEnabled(true);
@@ -1110,7 +1110,7 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="800" initialHeight="450">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 800 420" fill=" radial: 408 224, 688 392, 0=ff55636d, 1=ff073642"
+    <RECT pos="0 30 800 420" fill=" radial: 424 160, 696 440, 0=ff5b6d76, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="500 264 284 172" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1182,7 +1182,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="440 30 149 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Settings"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="228 264 273 41" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="228 264 273 41" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="243 270 172 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Order:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"

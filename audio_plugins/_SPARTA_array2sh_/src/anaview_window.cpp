@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -99,7 +99,8 @@ void anaview_window::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 
     /* background */
-    Colour fillColour1 = Colour (0x75707070), fillColour2 = Colour (0xa1202020);
+    //Colour fillColour1 = Colour (0x75707070), fillColour2 = Colour (0xa1202020);
+    Colour fillColour1 = Colour (0xff4e4e4e), fillColour2 = Colour (0xff202020);
     g.setGradientFill (ColourGradient (fillColour1, 0, 0,
                                        fillColour2, 0, localBounds.getHeight(),
                                        false));
@@ -110,7 +111,7 @@ void anaview_window::paint (Graphics& g)
 
     /* draw frequency guide lines */
     g.setColour(Colours::white);
-    g.setOpacity(0.13f);
+    g.setOpacity(0.22f);
     float freq;
     float c = log10f(min_freq);
     float m = (log10f(max_freq) - c)/(float)localBounds.getWidth();
@@ -130,7 +131,7 @@ void anaview_window::paint (Graphics& g)
 
     /* draw magnitude guide lines */
     g.setColour(Colours::white);
-    g.setOpacity(0.03f);
+    g.setOpacity(0.08f);
     float start_dB = round_nearest(min_Y<0 ? min_Y-yaxislineStepSize : min_Y, yaxislineStepSize);
     float end_dB= round_nearest(max_Y, yaxislineStepSize);
     for (int i = start_dB; i<=end_dB; i+=yaxislineStepSize){

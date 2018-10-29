@@ -356,7 +356,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 30, width = 920, height = 326;
-        Colour fillColour1 = Colour (0xff55636d), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -364,8 +364,8 @@ void PluginEditor::paint (Graphics& g)
                                        460.0f - 0.0f + x,
                                        184.0f - 30.0f + y,
                                        fillColour2,
-                                       920.0f - 0.0f + x,
-                                       352.0f - 30.0f + y,
+                                       928.0f - 0.0f + x,
+                                       368.0f - 30.0f + y,
                                        true));
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -880,7 +880,7 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="920" initialHeight="356">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 920 326" fill=" radial: 460 184, 920 352, 0=ff55636d, 1=ff073642"
+    <RECT pos="0 30 920 326" fill=" radial: 460 184, 928 368, 0=ff5b6d76, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="12 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>

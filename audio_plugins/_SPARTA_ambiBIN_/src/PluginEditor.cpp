@@ -88,17 +88,21 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_yaw->setRange (-180, 180, 0.01);
     s_yaw->setSliderStyle (Slider::LinearHorizontal);
     s_yaw->setTextBoxStyle (Slider::TextBoxAbove, false, 80, 20);
+    s_yaw->setColour (Slider::backgroundColourId, Colour (0xff263238));
+    s_yaw->setColour (Slider::trackColourId, Colour (0xff181f22));
     s_yaw->setColour (Slider::textBoxTextColourId, Colours::white);
     s_yaw->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
     s_yaw->addListener (this);
 
-    s_yaw->setBounds (80, 150, 120, 32);
+    s_yaw->setBounds (80, 144, 120, 38);
 
     s_pitch.reset (new Slider ("new slider"));
     addAndMakeVisible (s_pitch.get());
     s_pitch->setRange (-180, 180, 0.01);
     s_pitch->setSliderStyle (Slider::LinearVertical);
     s_pitch->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
+    s_pitch->setColour (Slider::backgroundColourId, Colour (0xff263238));
+    s_pitch->setColour (Slider::trackColourId, Colour (0xff181f22));
     s_pitch->setColour (Slider::textBoxTextColourId, Colours::white);
     s_pitch->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
     s_pitch->addListener (this);
@@ -110,6 +114,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_roll->setRange (-180, 180, 0.01);
     s_roll->setSliderStyle (Slider::LinearVertical);
     s_roll->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
+    s_roll->setColour (Slider::backgroundColourId, Colour (0xff263238));
+    s_roll->setColour (Slider::trackColourId, Colour (0xff181f22));
     s_roll->setColour (Slider::textBoxTextColourId, Colours::white);
     s_roll->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
     s_roll->addListener (this);
@@ -319,7 +325,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 30, width = 656, height = 202;
-        Colour fillColour1 = Colour (0xff55636d), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -337,7 +343,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 12, y = 58, width = 205, height = 54;
+        int x = 12, y = 58, width = 207, height = 54;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -350,8 +356,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 12, y = 57, width = 205, height = 29;
-        Colour fillColour = Colour (0x13f4f4f4);
+        int x = 12, y = 57, width = 207, height = 29;
+        Colour fillColour = Colour (0x08f4f4f4);
         Colour strokeColour = Colour (0x35a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -377,7 +383,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 12, y = 136, width = 73, height = 87;
-        Colour fillColour = Colour (0x13f4f4f4);
+        Colour fillColour = Colour (0x08f4f4f4);
         Colour strokeColour = Colour (0x3aa0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -389,7 +395,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 216, y = 58, width = 220, height = 54;
+        int x = 218, y = 58, width = 218, height = 54;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -986,17 +992,17 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="656" initialHeight="232">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 656 202" fill=" radial: 336 152, 656 232, 0=ff55636d, 1=ff073642"
+    <RECT pos="0 30 656 202" fill=" radial: 336 152, 656 232, 0=ff5b6d76, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
-    <RECT pos="12 58 205 54" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 58 207 54" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 57 205 29" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 57 207 29" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 35a0a0a0"/>
     <RECT pos="12 111 424 112" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 136 73 87" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 136 73 87" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 3aa0a0a0"/>
-    <RECT pos="216 58 220 54" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="218 58 218 54" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="446 58 196 54" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1099,20 +1105,23 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="132 86 22 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <SLIDER name="new slider" id="ace036a85eec9703" memberName="s_yaw" virtualName=""
-          explicitFocusOrder="0" pos="80 150 120 32" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="-180.00000000000000000000" max="180.00000000000000000000"
+          explicitFocusOrder="0" pos="80 144 120 38" bkgcol="ff263238"
+          trackcol="ff181f22" textboxtext="ffffffff" textboxbkgd="ffffff"
+          min="-180.00000000000000000000" max="180.00000000000000000000"
           int="0.01000000000000000021" style="LinearHorizontal" textBoxPos="TextBoxAbove"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
   <SLIDER name="new slider" id="9af7dd86cd139d85" memberName="s_pitch"
-          virtualName="" explicitFocusOrder="0" pos="208 110 96 112" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="-180.00000000000000000000" max="180.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="208 110 96 112" bkgcol="ff263238"
+          trackcol="ff181f22" textboxtext="ffffffff" textboxbkgd="ffffff"
+          min="-180.00000000000000000000" max="180.00000000000000000000"
           int="0.01000000000000000021" style="LinearVertical" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
   <SLIDER name="new slider" id="b5d39bb257b3289a" memberName="s_roll" virtualName=""
-          explicitFocusOrder="0" pos="328 110 96 112" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="-180.00000000000000000000" max="180.00000000000000000000"
+          explicitFocusOrder="0" pos="328 110 96 112" bkgcol="ff263238"
+          trackcol="ff181f22" textboxtext="ffffffff" textboxbkgd="ffffff"
+          min="-180.00000000000000000000" max="180.00000000000000000000"
           int="0.01000000000000000021" style="LinearVertical" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>

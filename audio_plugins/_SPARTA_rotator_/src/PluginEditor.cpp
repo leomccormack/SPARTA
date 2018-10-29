@@ -219,7 +219,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 30, width = 530, height = 130;
-        Colour fillColour1 = Colour (0xff55636d), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -673,7 +673,7 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="530" initialHeight="160">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 530 130" fill=" radial: 280 104, 528 160, 0=ff55636d, 1=ff073642"
+    <RECT pos="0 30 530 130" fill=" radial: 280 104, 528 160, 0=ff5b6d76, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="10 127 167 25" fill="solid: 17c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>

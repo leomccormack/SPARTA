@@ -248,16 +248,16 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 0, width = 550, height = 440;
-        Colour fillColour1 = Colour (0xff5c6a6c), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (fillColour1,
-                                       280.0f - 0.0f + x,
-                                       32.0f - 0.0f + y,
+                                       272.0f - 0.0f + x,
+                                       152.0f - 0.0f + y,
                                        fillColour2,
-                                       296.0f - 0.0f + x,
-                                       416.0f - 0.0f + y,
+                                       288.0f - 0.0f + x,
+                                       440.0f - 0.0f + y,
                                        true));
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -764,6 +764,19 @@ void PluginEditor::paint (Graphics& g)
                     Justification::centredLeft, true);
     }
 
+    {
+        int x = 10, y = 288, width = 193, height = 33;
+        Colour fillColour = Colour (0x08c7c7c7);
+        Colour strokeColour = Colour (0x1fffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
     /* banner text */
@@ -975,7 +988,7 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="550" initialHeight="440">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 0 550 440" fill=" radial: 280 32, 296 416, 0=ff5c6a6c, 1=ff073642"
+    <RECT pos="0 0 550 440" fill=" radial: 272 152, 288 440, 0=ff5b6d76, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="10 36 530 246" fill="solid: 17c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
@@ -1093,6 +1106,8 @@ BEGIN_JUCER_METADATA
     <TEXT pos="502 220 26 30" fill="solid: ffffffff" hasStroke="0" text="-14"
           fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <RECT pos="10 288 193 33" fill="solid: 8c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+          strokeColour="solid: 1fffffff"/>
   </BACKGROUND>
   <SLIDER name="new slider" id="863726658f50da67" memberName="s_thresh"
           virtualName="" explicitFocusOrder="0" pos="96 364 64 64" rotarysliderfill="7fffffff"
