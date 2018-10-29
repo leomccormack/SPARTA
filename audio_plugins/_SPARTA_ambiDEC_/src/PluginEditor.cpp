@@ -102,6 +102,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_transitionFreq->setRange (500, 2000, 0.1);
     SL_transitionFreq->setSliderStyle (Slider::LinearHorizontal);
     SL_transitionFreq->setTextBoxStyle (Slider::TextBoxAbove, false, 60, 20);
+    SL_transitionFreq->setColour (Slider::backgroundColourId, Colour (0xff263238));
+    SL_transitionFreq->setColour (Slider::trackColourId, Colour (0xff181f22));
     SL_transitionFreq->addListener (this);
 
     SL_transitionFreq->setBounds (168, 296, 112, 40);
@@ -172,6 +174,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_decOrder->setRange (0, 1, 1);
     s_decOrder->setSliderStyle (Slider::LinearVertical);
     s_decOrder->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+    s_decOrder->setColour (Slider::backgroundColourId, Colour (0xff263238));
+    s_decOrder->setColour (Slider::trackColourId, Colour (0xff181f22));
     s_decOrder->setColour (Slider::textBoxTextColourId, Colours::white);
     s_decOrder->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
     s_decOrder->addListener (this);
@@ -414,7 +418,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 30, width = 656, height = 326;
-        Colour fillColour1 = Colour (0xff55636d), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -824,6 +828,19 @@ void PluginEditor::paint (Graphics& g)
                     Justification::centredLeft, true);
     }
 
+    {
+        int x = 12, y = 58, width = 213, height = 33;
+        Colour fillColour = Colour (0x08f4f4f4);
+        Colour strokeColour = Colour (0x35a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
@@ -1112,7 +1129,7 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="656" initialHeight="356">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 656 326" fill=" radial: 336 184, 656 352, 0=ff55636d, 1=ff073642"
+    <RECT pos="0 30 656 326" fill=" radial: 336 184, 656 352, 0=ff5b6d76, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="152 263 145 81" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1201,6 +1218,8 @@ BEGIN_JUCER_METADATA
     <TEXT pos="19 58 132 30" fill="solid: ffffffff" hasStroke="0" text="Max Order:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <RECT pos="12 58 213 33" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 35a0a0a0"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="5a2f99f88aa51390" memberName="CBoutputDirsPreset"
             virtualName="" explicitFocusOrder="0" pos="520 64 112 20" editable="0"
@@ -1223,10 +1242,10 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="144 128 72 20" editable="0"
             layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="27b7eb906eb4d4f" memberName="SL_transitionFreq"
-          virtualName="" explicitFocusOrder="0" pos="168 296 112 40" min="500.00000000000000000000"
-          max="2000.00000000000000000000" int="0.10000000000000000555"
-          style="LinearHorizontal" textBoxPos="TextBoxAbove" textBoxEditable="1"
-          textBoxWidth="60" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="168 296 112 40" bkgcol="ff263238"
+          trackcol="ff181f22" min="500.00000000000000000000" max="2000.00000000000000000000"
+          int="0.10000000000000000555" style="LinearHorizontal" textBoxPos="TextBoxAbove"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="6fe8e095551b1808" memberName="CBdec1method"
             virtualName="" explicitFocusOrder="0" pos="24 288 116 20" editable="0"
@@ -1250,10 +1269,11 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="308 314 52 20" editable="0"
             layout="33" items="" textWhenNonSelected="EP" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="50ea77f60aadeeca" memberName="s_decOrder"
-          virtualName="" explicitFocusOrder="0" pos="384 176 40 80" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="0.00000000000000000000" max="1.00000000000000000000"
-          int="1.00000000000000000000" style="LinearVertical" textBoxPos="NoTextBox"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="384 176 40 80" bkgcol="ff263238"
+          trackcol="ff181f22" textboxtext="ffffffff" textboxbkgd="ffffff"
+          min="0.00000000000000000000" max="1.00000000000000000000" int="1.00000000000000000000"
+          style="LinearVertical" textBoxPos="NoTextBox" textBoxEditable="1"
+          textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
   <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON"
               virtualName="" explicitFocusOrder="0" pos="447 40 34 14" bgColOff="ff14889e"

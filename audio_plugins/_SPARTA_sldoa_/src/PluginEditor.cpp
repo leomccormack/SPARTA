@@ -217,13 +217,13 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 30, width = 634, height = 472;
-        Colour fillColour1 = Colour (0xff839496), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (fillColour1,
                                        312.0f - 0.0f + x,
-                                       208.0f - 30.0f + y,
+                                       200.0f - 30.0f + y,
                                        fillColour2,
                                        576.0f - 0.0f + x,
                                        464.0f - 30.0f + y,
@@ -262,7 +262,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 8, y = 366, width = 197, height = 34;
-        Colour fillColour = Colour (0x13f4f4f4);
+        Colour fillColour = Colour (0x08f4f4f4);
         Colour strokeColour = Colour (0x32a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -477,8 +477,8 @@ void PluginEditor::paint (Graphics& g)
 
     Colour strokeColour = Colour (0x86a3a4a5);
     g.setColour (strokeColour);
-    g.setOpacity(0.3f);
-    g.drawRect (17, 48, 600, 300, 2);
+    g.setOpacity(0.8f);
+    g.drawRect (17, 48, 600, 300, 1);
 
 
     /* label for max ORDER */
@@ -652,13 +652,13 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="634" initialHeight="502">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 634 472" fill=" radial: 312 208, 576 464, 0=ff839496, 1=ff073642"
+    <RECT pos="0 30 634 472" fill=" radial: 312 200, 576 464, 0=ff5b6d76, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="8 366 197 128" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="204 366 422 34" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="8 366 197 34" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="8 366 197 34" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 32a0a0a0"/>
     <RECT pos="204 399 422 95" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
