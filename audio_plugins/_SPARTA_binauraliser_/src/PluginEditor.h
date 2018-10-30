@@ -86,6 +86,7 @@ private:
         String directory = fileChooser.getCurrentFile().getFullPathName();
         const char* new_cstring = (const char*)directory.toUTF8();
         binauraliser_setSofaFilePath(hVst->hBin, new_cstring);
+        refreshPanViewWindow = true;
     }
 
     /* panning window */
