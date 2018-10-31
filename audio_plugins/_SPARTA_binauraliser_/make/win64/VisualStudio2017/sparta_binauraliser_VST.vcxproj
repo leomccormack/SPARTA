@@ -55,12 +55,12 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\obj\sparta_binauraliser\Win64_Debug\VST\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">sparta_binauraliser_debug</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;.\..\..\..\..\..\lib\Win64_Debug\Shared Code</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;.\..\..\..\..\..\lib\Win64_Debug\Shared Code</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\..\..\..\..\lib\Win64_Release\VST\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\obj\sparta_binauraliser\Win64_Release\VST\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">sparta_binauraliser</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;.\..\..\..\..\..\lib\Win64_Release\Shared Code</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;.\..\..\..\..\..\lib\Win64_Release\Shared Code</LibraryPath>
     <PlatformToolset>v141</PlatformToolset>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -98,17 +98,17 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)\sparta_binauraliser_debug.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>mkl_intel_lp64.lib;mkl_sequential.lib;mkl_core.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_binauraliser_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mkl_custom_sparta.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_binauraliser_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\sparta_binauraliser_debug.bsc</OutputFile>
     </Bscmake>
     <Lib>
-      <AdditionalDependencies>mkl_intel_lp64.lib;mkl_sequential.lib;mkl_core.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_binauraliser_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>mkl_custom_sparta.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_binauraliser_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,17 +146,17 @@
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalLibraryDirectories>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>mkl_intel_lp64.lib;mkl_sequential.lib;mkl_core.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_binauraliser.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mkl_custom_sparta.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_binauraliser.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\sparta_binauraliser.bsc</OutputFile>
     </Bscmake>
     <Lib>
-      <AdditionalDependencies>mkl_intel_lp64.lib;mkl_sequential.lib;mkl_core.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_binauraliser.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>mkl_custom_sparta.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_binauraliser.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
