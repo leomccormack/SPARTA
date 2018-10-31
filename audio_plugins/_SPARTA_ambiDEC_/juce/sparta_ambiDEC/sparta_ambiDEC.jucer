@@ -130,16 +130,16 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2017 targetFolder="../../make/win64/VisualStudio2017/sparta_ambiDEC/"
-            externalLibraries="mkl_intel_lp64.lib&#10;mkl_sequential.lib &#10;mkl_core.lib&#10;libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib">
+            externalLibraries="mkl_custom_sparta.lib&#10;libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_ambiDECd" binaryPath="../../../../lib/Win64_Debug"
                        headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
-                       libraryPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
+                       libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../../obj/sparta_ambiDEC/Win64_Debug"
                        linkTimeOptimisation="1"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="sparta_ambiDEC" binaryPath="../../../../lib/Win64_Release"
                        headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
-                       libraryPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
+                       libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../../obj/sparta_ambiDEC/Win64_Release"
                        linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
@@ -160,20 +160,20 @@
       </MODULEPATHS>
     </VS2017>
     <VS2015 targetFolder="../../make/win64/VisualStudio2015/sparta_ambiDEC/"
-            vstFolder="C://SDKs/VST3 SDK" externalLibraries="mkl_intel_lp64.lib&#10;mkl_sequential.lib &#10;mkl_core.lib&#10;libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib"
+            vstFolder="C://SDKs/VST3 SDK" externalLibraries="mkl_custom_sparta.lib&#10;libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib"
             extraLinkerFlags="" extraCompilerFlags="" IPPLibrary="" vst3Folder="../../../../SDKs/VST3_SDK/"
             windowsTargetPlatformVersion="8.1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="sparta_ambiDECd" binaryPath="../../../../lib/Win64_Debug"
                        headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
-                       libraryPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
+                       libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../../obj/sparta_ambiDEC/Win64_Debug"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="1"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="3" targetName="sparta_ambiDEC" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
-                       binaryPath="../../../../lib/Win64_Release" libraryPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
+                       binaryPath="../../../../lib/Win64_Release" libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../../obj/sparta_ambiDEC/Win64_Release"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="1"/>
