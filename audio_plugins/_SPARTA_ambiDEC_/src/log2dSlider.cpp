@@ -144,7 +144,7 @@ void log2dSlider::paint (Graphics& g)
         float y_range = max_Y_value - min_Y_value;
         for(int xIdx = 0; xIdx<num_X_points-1; xIdx++){
             float Xpixel_1 = MAX(0,(log10f(X_vector[xIdx]+2.23e-13f) - c)/m);
-            float Xpixel_2 = MAX(0,(log10f(X_vector[xIdx+1]+2.23e-13f) - c)/m);
+            float Xpixel_2 = MAX(0,(log10f(X_vector[xIdx+1]+2.23e-13f) - c)/m)+1.0f;
             float Yval;
             if(useIntValues)
                 Yval = (float)Y_values_int[xIdx]-min_Y_value;
