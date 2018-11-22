@@ -75,7 +75,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\..\..\juce\sparta_ambiDEC\JuceLibraryCode;..\..\..\..\..\..\SDKs\modules;../../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\juce\sparta_ambiDEC\JuceLibraryCode;..\..\..\..\..\..\SDKs\modules;../../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;FRAME_SIZE=256;JUCER_VS2017_B0DF86A5=1;JUCE_APP_VERSION=1.3.1;JUCE_APP_VERSION_HEX=0x10301;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -100,14 +100,14 @@
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>mkl_custom_sparta.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_ambiDECd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>saf_mkl_custom.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_ambiDECd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\sparta_ambiDECd.bsc</OutputFile>
     </Bscmake>
     <Lib>
-      <AdditionalDependencies>mkl_custom_sparta.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_ambiDECd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>saf_mkl_custom.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_ambiDECd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -121,7 +121,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\juce\sparta_ambiDEC\JuceLibraryCode;..\..\..\..\..\..\SDKs\modules;../../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\juce\sparta_ambiDEC\JuceLibraryCode;..\..\..\..\..\..\SDKs\modules;../../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;FRAME_SIZE=256;JUCER_VS2017_B0DF86A5=1;JUCE_APP_VERSION=1.3.1;JUCE_APP_VERSION_HEX=0x10301;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -148,14 +148,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <AdditionalLibraryDirectories>../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>mkl_custom_sparta.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_ambiDEC.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>saf_mkl_custom.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_ambiDEC.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\sparta_ambiDEC.bsc</OutputFile>
     </Bscmake>
     <Lib>
-      <AdditionalDependencies>mkl_custom_sparta.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_ambiDEC.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>saf_mkl_custom.lib;libszip.lib;libzlib.lib;libhdf5.lib;libhdf5_hl.lib;netcdf.lib;sparta_ambiDEC.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
