@@ -48,8 +48,6 @@ public:
     float** bufferOutputs;
     
     bool isPlaying;
-    AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
-    AudioPlayHead::CurrentPositionInfo currentPosition;
     
     int getCurrentBlockSize(){
         return nHostBlockSize;

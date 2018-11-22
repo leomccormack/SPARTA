@@ -58,8 +58,6 @@ public:
     float** bufferOutputs;
  
     bool isPlaying;
-	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
-	AudioPlayHead::CurrentPositionInfo currentPosition;
     
 	bool getIsPlaying() {
 		return isPlaying;
@@ -72,7 +70,7 @@ public:
     }
     int getCurrentNumOutputs(){
         return nNumOutputs;
-    }
+    } 
     
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 index, pointer_sized_int value, void* ptr, float opt) override { return 0; };

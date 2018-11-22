@@ -183,7 +183,7 @@ void log2dSlider::mouseDown (const MouseEvent& e)
         float y_range = max_Y_value - min_Y_value;
         for(int xIdx = 0; (xIdx<num_X_points-1) && shouldContinue; xIdx++){
             float Xpixel_1 = MAX(0,(log10f(X_vector[xIdx]+2.23e-13f) - c)/m);
-            float Xpixel_2 = MAX(0,(log10f(X_vector[xIdx+1]+2.23e-13f) - c)/m);
+            float Xpixel_2 = MAX(0,(log10f(X_vector[xIdx+1]+2.23e-13f) - c)/m)+1.0f;
             float Yval = 1.0f-(float)e.getPosition().y/(float)height;
             /* if down click is between two X-axis indices */
             if((e.getPosition().x>Xpixel_1) && (e.getPosition().x<=Xpixel_2)){

@@ -51,9 +51,7 @@ public:
     float** bufferInputs;
     float** bufferOutputs; 
  
-    bool isPlaying;
-	AudioPlayHead* playHead;                /* Used to determine whether playback is currently occuring */
-	AudioPlayHead::CurrentPositionInfo currentPosition;
+    bool isPlaying; 
     
 	bool getIsPlaying() {
 		return isPlaying;

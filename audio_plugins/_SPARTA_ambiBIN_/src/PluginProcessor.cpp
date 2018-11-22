@@ -273,14 +273,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
                     bufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
             
             /* determine if there is actually audio in the damn buffer */
-            playHead = getPlayHead();
-            bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-            if (PlayHeadAvailable)
-                isPlaying = currentPosition.isPlaying;
-            else
-                isPlaying = false;
-            if(!isPlaying) /* for DAWs with no transport */
-                isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
+            isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f /* -100dB */ ? true : false;
             
             /* perform processing */
             ambi_bin_process(hAmbi, bufferInputs, bufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
