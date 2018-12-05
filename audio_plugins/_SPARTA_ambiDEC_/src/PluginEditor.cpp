@@ -1076,6 +1076,7 @@ void PluginEditor::timerCallback()
 		decOrder2dSlider->setRefreshValuesFLAG(false);
 	}
 
+#ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
 	if (hVst->getIsPlaying()) {
 		fileChooser.setEnabled(false);
@@ -1088,6 +1089,7 @@ void PluginEditor::timerCallback()
 		TBBinauraliseLS->setEnabled(true);
 		ambi_dec_checkReInit(hVst->hAmbi);
 	}
+#endif
 
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){

@@ -39,7 +39,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "sparta_panner";
-    const char* const  versionString  = "1.1.1";
-    const int          versionNumber  = 0x10101;
+    const char* const  versionString  = "1.1.2";
+    const int          versionNumber  = 0x10102;
 }
 #endif

@@ -1009,7 +1009,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
             File configFile (myChooser.getResult());
             hVst->setLastDir(configFile.getParentDirectory());
             hVst->loadConfiguration (configFile);
-        }
+        } 
         //[/UserButtonCode_tb_loadJSON]
     }
     else if (buttonThatWasClicked == tb_saveJSON.get())
@@ -1080,6 +1080,7 @@ void PluginEditor::timerCallback()
     s_pitch->setValue(binauraliser_getPitch(hVst->hBin), dontSendNotification);
     s_roll->setValue(binauraliser_getRoll(hVst->hBin), dontSendNotification);
 
+#ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
 	if (hVst->getIsPlaying()) {
 		fileChooser.setEnabled(false);
@@ -1090,6 +1091,7 @@ void PluginEditor::timerCallback()
 		TBuseDefaultHRIRs->setEnabled(true);
 		binauraliser_checkReInit(hVst->hBin);
 	}
+#endif
 
     /* refresh pan view */
     if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged()){

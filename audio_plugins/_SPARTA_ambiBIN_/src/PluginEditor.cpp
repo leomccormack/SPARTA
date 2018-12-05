@@ -933,6 +933,7 @@ void PluginEditor::timerCallback()
     s_pitch->setValue(ambi_bin_getPitch(hVst->hAmbi), dontSendNotification);
     s_roll->setValue(ambi_bin_getRoll(hVst->hAmbi), dontSendNotification);
 
+#ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
 	if (hVst->getIsPlaying()) {
 		CBorderPreset->setEnabled(false);
@@ -948,6 +949,7 @@ void PluginEditor::timerCallback()
 		TBmaxRE->setEnabled(true);
 		ambi_bin_checkReInit(hVst->hAmbi);
 	}
+#endif
 
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){

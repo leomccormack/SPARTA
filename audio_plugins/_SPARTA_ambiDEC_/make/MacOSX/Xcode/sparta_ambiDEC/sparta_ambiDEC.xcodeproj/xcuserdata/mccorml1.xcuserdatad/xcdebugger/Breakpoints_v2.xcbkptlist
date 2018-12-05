@@ -175,8 +175,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "316"
             endingLineNumber = "316"
-            landmarkName = "PluginProcessor::setStateInformation (const void* data, int sizeInBytes)"
-            landmarkType = "7">
+            landmarkName = "createPluginFilter()"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -191,7 +191,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "261"
             endingLineNumber = "261"
-            landmarkName = "PluginProcessor::getStateInformation (MemoryBlock&amp; destData)"
+            landmarkName = "PluginProcessor::setStateInformation (const void* data, int sizeInBytes)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
