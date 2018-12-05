@@ -819,18 +819,20 @@ void PluginEditor::timerCallback()
     SL_num_sources->setValue(panner_getNumSources(hVst->hPan),dontSendNotification);
     SL_num_loudspeakers->setValue(panner_getNumLoudspeakers(hVst->hPan),dontSendNotification);
 
+#ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
 	if (hVst->getIsPlaying()) {
 		SL_num_loudspeakers->setEnabled(false);
 		loudspeakerCoordsView_handle->setEnabled(false);
 		CBsLoudspeakerDirsPreset->setEnabled(false);
-	}
+	} 
 	else {
 		SL_num_loudspeakers->setEnabled(true);
 		loudspeakerCoordsView_handle->setEnabled(true);
 		CBsLoudspeakerDirsPreset->setEnabled(true);
 		panner_checkReInit(hVst->hPan);
 	}
+#endif
 
     /* refresh pan view */
     if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) ||

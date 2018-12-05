@@ -1026,6 +1026,7 @@ void PluginEditor::timerCallback()
     sensorCoordsView_handle->setQ(array2sh_getNumSensors(hVst->hA2sh));
     CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hVst->hA2sh), dontSendNotification);
 
+#ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
 	if (hVst->getIsPlaying())
 		textButton->setEnabled(false);
@@ -1033,6 +1034,7 @@ void PluginEditor::timerCallback()
 		textButton->setEnabled(true);
 		array2sh_checkReInit(hVst->hA2sh);
 	}
+#endif
 
     /* draw magnitude/spatial-correlation/level-difference curves */
     if (needScreenRefreshFLAG || array2sh_getEvalReady(hVst->hA2sh)){

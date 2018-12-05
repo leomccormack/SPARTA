@@ -907,6 +907,7 @@ void PluginEditor::timerCallback()
     /* Nsource slider range */
     s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired(hVst->hPm)/2.0f), 1);
 
+#ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
 	if (hVst->getIsPlaying())
 		CBmasterOrder->setEnabled(false);
@@ -914,6 +915,7 @@ void PluginEditor::timerCallback()
 		CBmasterOrder->setEnabled(true);
 		powermap_checkReInit(hVst->hPm);
 	}
+#endif
 
     /* refresh the powermap display */
     if ((overlayIncluded != nullptr) && (hVst->isPlaying)) {

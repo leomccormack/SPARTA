@@ -56,7 +56,7 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     NSources = binauraliser_getNumSources(hVst->hBin);
     NLoudspeakers = binauraliser_getNDirs(hVst->hBin)>MAX_NUM_OUT_DIRS? MAX_NUM_OUT_DIRS : binauraliser_getNDirs(hVst->hBin);
     for(int ls=0; ls<NLoudspeakers; ls++){
-        LoudspeakerIcons[ls].setBounds(width - width*(binauraliser_getHRIRAzi_deg(hVst->hBin, ls))/360.f - icon_size/2.0f,
+        LoudspeakerIcons[ls].setBounds(width - width*(binauraliser_getHRIRAzi_deg(hVst->hBin, ls) + 180.0f)/360.f - icon_size/2.0f,
                                        height - height*(binauraliser_getHRIRElev_deg(hVst->hBin, ls)+90.0f)/180.0f - icon_size/2.0f,
                                        icon_size,
                                        icon_size);
@@ -242,7 +242,7 @@ void pannerView::refreshPanView()
     NSources = binauraliser_getNumSources(hVst->hBin);
     NLoudspeakers = binauraliser_getNDirs(hVst->hBin)>MAX_NUM_OUT_DIRS ? MAX_NUM_OUT_DIRS : binauraliser_getNDirs(hVst->hBin);
     for(int ls=0; ls<NLoudspeakers; ls++){
-        LoudspeakerIcons[ls].setBounds(width - width*(binauraliser_getHRIRAzi_deg(hVst->hBin, ls))/360.f - icon_size/2.0f,
+        LoudspeakerIcons[ls].setBounds(width - width*(binauraliser_getHRIRAzi_deg(hVst->hBin, ls) + 180.0f)/360.f - icon_size/2.0f,
                                        height - height*(binauraliser_getHRIRElev_deg(hVst->hBin, ls) + 90.0f)/180.0f - icon_size/2.0f,
                                        icon_size,
                                        icon_size);
