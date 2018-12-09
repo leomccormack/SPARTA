@@ -1009,7 +1009,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
             File configFile (myChooser.getResult());
             hVst->setLastDir(configFile.getParentDirectory());
             hVst->loadConfiguration (configFile);
-        } 
+        }
         //[/UserButtonCode_tb_loadJSON]
     }
     else if (buttonThatWasClicked == tb_saveJSON.get())
