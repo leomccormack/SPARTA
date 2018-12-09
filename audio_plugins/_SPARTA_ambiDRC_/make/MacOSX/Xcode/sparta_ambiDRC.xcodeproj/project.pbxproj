@@ -306,9 +306,9 @@
 					DEEABF6D123124EC1BE034F9,
 					C1320C6972A1B44F59A3ABB7, ); name = Source; sourceTree = "<group>"; };
 		13B31003375C288E85DF49BB = {isa = XCBuildConfiguration; buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.9; }; name = Release; };
+				MACOSX_DEPLOYMENT_TARGET = 10.10; }; name = Release; };
 		BBAEDCF9A04167B1491F2E68 = {isa = XCBuildConfiguration; buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.9; }; name = Debug; };
+				MACOSX_DEPLOYMENT_TARGET = 10.10; }; name = Debug; };
 		08258B6FE107E5DD391A2D26 = {isa = XCBuildConfiguration; buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
@@ -325,9 +325,10 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"FRAME_SIZE=256",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.0.5",
-					"JUCE_APP_VERSION_HEX=0x10005",
+					"JUCE_APP_VERSION=1.1.0",
+					"JUCE_APP_VERSION_HEX=0x10100",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -338,15 +339,16 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
-				HEADER_SEARCH_PATHS = ("../../../juce/sparta_ambiDRC/JuceLibraryCode", "../../../../../SDKs/modules", "../../../../../../SDKs/modules", "../../../../../SDKs/Spatial_Audio_Framework/framework/include", "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include", "../../../../../../SDKs/modules/juce_audio_plugin_client", "$(inherited)");
+				HEADER_SEARCH_PATHS = ("../../../juce/sparta_ambiDRC/JuceLibraryCode", "../../../../../SDKs/modules", "../../../../../../SDKs/modules", "../../../../../SDKs/Spatial_Audio_Framework/framework/include", "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include", "../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include", "../../../../../../SDKs/modules/juce_audio_plugin_client", "$(inherited)");
 				INFOPLIST_FILE = Info-VST.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST/";
+				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"");
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_LDFLAGS = "-bundle -lsparta_ambiDRC";
+				OTHER_LDFLAGS = "-bundle -lsparta_ambiDRC -L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoMcCormack.SPARTA;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO;
@@ -367,9 +369,10 @@
 					"_DEBUG=1",
 					"DEBUG=1",
 					"FRAME_SIZE=256",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.0.5",
-					"JUCE_APP_VERSION_HEX=0x10005",
+					"JUCE_APP_VERSION=1.1.0",
+					"JUCE_APP_VERSION_HEX=0x10100",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -379,14 +382,15 @@
 					"JucePlugin_Build_Standalone=0", );
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
-				HEADER_SEARCH_PATHS = ("../../../juce/sparta_ambiDRC/JuceLibraryCode", "../../../../../SDKs/modules", "../../../../../../SDKs/modules", "../../../../../SDKs/Spatial_Audio_Framework/framework/include", "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include", "../../../../../../SDKs/modules/juce_audio_plugin_client", "$(inherited)");
+				HEADER_SEARCH_PATHS = ("../../../juce/sparta_ambiDRC/JuceLibraryCode", "../../../../../SDKs/modules", "../../../../../../SDKs/modules", "../../../../../SDKs/Spatial_Audio_Framework/framework/include", "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include", "../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include", "../../../../../../SDKs/modules/juce_audio_plugin_client", "$(inherited)");
 				INFOPLIST_FILE = Info-VST.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST/";
+				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"");
 				LIBRARY_STYLE = Bundle;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_LDFLAGS = "-bundle -lsparta_ambiDRC_debug";
+				OTHER_LDFLAGS = "-bundle -lsparta_ambiDRC_debug -L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoMcCormack.SPARTA;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO;
@@ -405,9 +409,10 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"FRAME_SIZE=256",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.0.5",
-					"JUCE_APP_VERSION_HEX=0x10005",
+					"JUCE_APP_VERSION=1.1.0",
+					"JUCE_APP_VERSION_HEX=0x10100",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -418,11 +423,13 @@
 					"JUCE_SHARED_CODE=1", );
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = ("../../../juce/sparta_ambiDRC/JuceLibraryCode", "../../../../../SDKs/modules", "../../../../../../SDKs/modules", "../../../../../SDKs/Spatial_Audio_Framework/framework/include", "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include", "../../../../../../SDKs/modules/juce_audio_plugin_client", "$(inherited)");
+				HEADER_SEARCH_PATHS = ("../../../juce/sparta_ambiDRC/JuceLibraryCode", "../../../../../SDKs/modules", "../../../../../../SDKs/modules", "../../../../../SDKs/Spatial_Audio_Framework/framework/include", "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include", "../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include", "../../../../../../SDKs/modules/juce_audio_plugin_client", "$(inherited)");
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"");
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
+				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoMcCormack.SPARTA;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Release; };
@@ -440,9 +447,10 @@
 					"_DEBUG=1",
 					"DEBUG=1",
 					"FRAME_SIZE=256",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.0.5",
-					"JUCE_APP_VERSION_HEX=0x10005",
+					"JUCE_APP_VERSION=1.1.0",
+					"JUCE_APP_VERSION_HEX=0x10100",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -452,10 +460,12 @@
 					"JucePlugin_Build_Standalone=0",
 					"JUCE_SHARED_CODE=1", );
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = ("../../../juce/sparta_ambiDRC/JuceLibraryCode", "../../../../../SDKs/modules", "../../../../../../SDKs/modules", "../../../../../SDKs/Spatial_Audio_Framework/framework/include", "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include", "../../../../../../SDKs/modules/juce_audio_plugin_client", "$(inherited)");
+				HEADER_SEARCH_PATHS = ("../../../juce/sparta_ambiDRC/JuceLibraryCode", "../../../../../SDKs/modules", "../../../../../../SDKs/modules", "../../../../../SDKs/Spatial_Audio_Framework/framework/include", "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include", "../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include", "../../../../../../SDKs/modules/juce_audio_plugin_client", "$(inherited)");
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"");
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
+				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoMcCormack.SPARTA;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Debug; };

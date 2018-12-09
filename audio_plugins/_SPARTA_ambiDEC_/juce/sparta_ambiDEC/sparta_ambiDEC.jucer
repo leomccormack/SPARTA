@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_ambiDEC" projectType="audioplug" version="1.3.2"
+<JUCERPROJECT id="lfkRjX" name="sparta_ambiDEC" projectType="audioplug" version="1.4.0"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiDEC" pluginDesc="sparta_ambiDEC"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ADOA"
@@ -9,12 +9,12 @@
               pluginAUExportPrefix="sparta_ambiDEC_o7AU" pluginRTASCategory=""
               aaxIdentifier="com.yourcompany.panner" pluginAAXCategory="2"
               jucerVersion="5.3.2" buildVST3="0" buildRTAS="0" buildAAX="0"
-              pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE = 256"
+              pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE = 256&#10;SAF_USE_INTEL_MKL"
               companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
               buildAUv3="0" pluginIsMidiEffectPlugin="0" displaySplashScreen="0"
               reportAppUsage="0" splashScreenColour="Dark" buildStandalone="0"
-              enableIAA="0" cppLanguageStandard="11" companyCopyright="Aalto"
+              enableIAA="0" cppLanguageStandard="14" companyCopyright="Aalto"
               pluginFormats="buildVST">
   <MAINGROUP id="imnfnp" name="sparta_ambiDEC">
     <FILE id="vMarYS" name="ConfigurationHelper.h" compile="0" resource="0"
@@ -195,16 +195,16 @@
       </MODULEPATHS>
     </VS2015>
     <XCODE_MAC targetFolder="../../make/MacOSX/Xcode/sparta_ambiDEC/" vstFolder="../../../SDKs/VST3 SDK"
-               externalLibraries="netcdf&#10;hdf5&#10;hdf5_hl&#10;z" extraLinkerFlags=""
+               externalLibraries="netcdf&#10;hdf5&#10;hdf5_hl&#10;z" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom"
                vst3Folder="../../../../SDKs/VST3_SDK/">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_ambiDECd"
                        binaryPath="" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
-                       osxArchitecture="64BitIntel" osxCompatibility="10.9 SDK" libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"
+                       osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"
                        enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="sparta_ambiDEC"
                        binaryPath="" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
-                       osxArchitecture="64BitIntel" osxCompatibility="10.9 SDK" libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"
+                       osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"
                        enablePluginBinaryCopyStep="1" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

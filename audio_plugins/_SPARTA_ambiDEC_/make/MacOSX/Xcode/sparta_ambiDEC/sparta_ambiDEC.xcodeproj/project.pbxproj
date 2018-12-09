@@ -311,12 +311,12 @@
 					DEEABF6D123124EC1BE034F9,
 					C1320C6972A1B44F59A3ABB7, ); name = Source; sourceTree = "<group>"; };
 		BBAEDCF9A04167B1491F2E68 = {isa = XCBuildConfiguration; buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.9; }; name = Debug; };
+				MACOSX_DEPLOYMENT_TARGET = 10.10; }; name = Debug; };
 		13B31003375C288E85DF49BB = {isa = XCBuildConfiguration; buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.9; }; name = Release; };
+				MACOSX_DEPLOYMENT_TARGET = 10.10; }; name = Release; };
 		FE11BF6CC1DD8595A15CE890 = {isa = XCBuildConfiguration; buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -330,9 +330,10 @@
 					"_DEBUG=1",
 					"DEBUG=1",
 					"FRAME_SIZE=256",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_D75985F1=1",
-					"JUCE_APP_VERSION=1.3.2",
-					"JUCE_APP_VERSION_HEX=0x10302",
+					"JUCE_APP_VERSION=1.4.0",
+					"JUCE_APP_VERSION_HEX=0x10400",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -348,16 +349,16 @@
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST/";
 				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"");
 				LIBRARY_STYLE = Bundle;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_LDFLAGS = "-bundle -lsparta_ambiDECd -lnetcdf -lhdf5 -lhdf5_hl -lz";
+				OTHER_LDFLAGS = "-bundle -lsparta_ambiDECd -L/usr/local/lib -lsaf_mkl_custom -lnetcdf -lhdf5 -lhdf5_hl -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO;
 				WRAPPER_EXTENSION = vst; }; name = Debug; };
 		08258B6FE107E5DD391A2D26 = {isa = XCBuildConfiguration; buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -371,9 +372,10 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"FRAME_SIZE=256",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_D75985F1=1",
-					"JUCE_APP_VERSION=1.3.2",
-					"JUCE_APP_VERSION_HEX=0x10302",
+					"JUCE_APP_VERSION=1.4.0",
+					"JUCE_APP_VERSION_HEX=0x10400",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -391,16 +393,16 @@
 				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"");
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_LDFLAGS = "-bundle -lsparta_ambiDEC -lnetcdf -lhdf5 -lhdf5_hl -lz";
+				OTHER_LDFLAGS = "-bundle -lsparta_ambiDEC -L/usr/local/lib -lsaf_mkl_custom -lnetcdf -lhdf5 -lhdf5_hl -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO;
 				WRAPPER_EXTENSION = vst; }; name = Release; };
 		DF828A93703B4E59B120047E = {isa = XCBuildConfiguration; buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -412,9 +414,10 @@
 					"_DEBUG=1",
 					"DEBUG=1",
 					"FRAME_SIZE=256",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_D75985F1=1",
-					"JUCE_APP_VERSION=1.3.2",
-					"JUCE_APP_VERSION_HEX=0x10302",
+					"JUCE_APP_VERSION=1.4.0",
+					"JUCE_APP_VERSION_HEX=0x10400",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -427,15 +430,15 @@
 				HEADER_SEARCH_PATHS = ("../../../../juce/sparta_ambiDEC/JuceLibraryCode", "../../../../../../SDKs/modules", "../../../../../../SDKs/Spatial_Audio_Framework/framework/include", "../../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include", "../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include", "../../../../../../SDKs/modules/juce_audio_plugin_client", "$(inherited)");
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"");
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_LDFLAGS = "-lnetcdf -lhdf5 -lhdf5_hl -lz";
+				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom -lnetcdf -lhdf5 -lhdf5_hl -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Debug; };
 		C19C3B6C902CC4E3EFC5D474 = {isa = XCBuildConfiguration; buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -447,9 +450,10 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"FRAME_SIZE=256",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_D75985F1=1",
-					"JUCE_APP_VERSION=1.3.2",
-					"JUCE_APP_VERSION_HEX=0x10302",
+					"JUCE_APP_VERSION=1.4.0",
+					"JUCE_APP_VERSION_HEX=0x10400",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -464,9 +468,9 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"");
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_LDFLAGS = "-lnetcdf -lhdf5 -lhdf5_hl -lz";
+				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom -lnetcdf -lhdf5 -lhdf5_hl -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Release; };

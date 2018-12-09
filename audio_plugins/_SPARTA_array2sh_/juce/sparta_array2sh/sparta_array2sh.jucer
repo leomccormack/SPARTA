@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_array2sh" projectType="audioplug" version="1.2.1"
+<JUCERPROJECT id="lfkRjX" name="sparta_array2sh" projectType="audioplug" version="1.3.0"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_array2sh" pluginDesc="sparta_array2sh"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ASOA"
@@ -9,12 +9,12 @@
               pluginAUExportPrefix="sparta_array2sh_AU" pluginRTASCategory=""
               aaxIdentifier="com.yourcompany.array2sh" pluginAAXCategory="2"
               jucerVersion="5.3.2" buildVST3="0" buildRTAS="0" buildAAX="0"
-              pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE = 256"
+              pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE = 256&#10;SAF_USE_INTEL_MKL"
               companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
               buildAUv3="0" pluginIsMidiEffectPlugin="0" displaySplashScreen="0"
               reportAppUsage="0" splashScreenColour="Dark" buildStandalone="0"
-              enableIAA="0" cppLanguageStandard="11" companyCopyright="Aalto"
+              enableIAA="0" cppLanguageStandard="14" companyCopyright="Aalto"
               pluginFormats="buildVST">
   <MAINGROUP id="imnfnp" name="sparta_array2sh">
     <FILE id="nxsugr" name="ConfigurationHelper.h" compile="0" resource="0"
@@ -201,15 +201,16 @@
       </MODULEPATHS>
     </VS2015>
     <XCODE_MAC targetFolder="../../make/MacOSX/Xcode/sparta_array2sh/" vstFolder="../../../SDKs/VST3 SDK"
-               vst3Folder="../../../../SDKs/VST3_SDK/">
+               vst3Folder="../../../../SDKs/VST3_SDK/" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_array2shd"
-                       binaryPath="" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include"
-                       osxArchitecture="64BitIntel" osxCompatibility="10.9 SDK" enablePluginBinaryCopyStep="1"/>
+                       binaryPath="" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
+                       osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"
+                       libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib&#10;"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="sparta_array2sh"
-                       binaryPath="" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include"
-                       osxArchitecture="64BitIntel" osxCompatibility="10.9 SDK" enablePluginBinaryCopyStep="1"
-                       linkTimeOptimisation="1"/>
+                       binaryPath="" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
+                       osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"
+                       linkTimeOptimisation="1" libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib&#10;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../../../SDKs/modules/"/>
