@@ -21,7 +21,7 @@ This repository contains the following VST plug-ins:
 ## Getting Started
 
 These instructions will help you compile the individual VST audio plug-ins. Alternatively, they can be downloaded from here:
-* [Pre-built](http://research.spa.aalto.fi/projects/sparta_vsts/) - for Windows (64-bit) and Mac OSX (10.9 or higher)
+* [Pre-built](http://research.spa.aalto.fi/projects/sparta_vsts/) - for Windows (64-bit) and Mac OSX (10.10 or higher)
 
 ### Prerequisites
 
@@ -38,15 +38,17 @@ And can be obtained from:
 * [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework) - For the internal code used by the plug-ins
 * [VST3_SDK](https://www.steinberg.net/en/company/developers.html) - The VST SDK
 
-Windows users must also install a custom [Intel MKL](https://software.intel.com/en-us/articles/free-ipsxe-tools-and-libraries) .dll in a system path folder. More details can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework).
+Windows users must also install a custom [Intel MKL](https://software.intel.com/en-us/articles/free-ipsxe-tools-and-libraries) .dll in a system path folder. More details can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework). Optionally, Mac users may also follow suite for some additional performance gains. 
 
 ### Installing
 
-For each individual plug-in, simply open the Visual Studio or X-code project file and build a release version
+For each individual plug-in, simply open the Visual Studio (2015/2017) or X-code project file and build a release version
 
 ```
 audio_plugins/_SPARTA_X_/make/
 ```
+
+To generate project files for other IDEs or Linux makefiles, one must open and configure the included .jucer files with JUCE's Projucer App accordingly; however, these are currently not officially supported. 
 
 ## Authors
 
