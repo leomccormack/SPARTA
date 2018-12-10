@@ -196,7 +196,11 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
                     bufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
             
             /* determine if there is actually audio in the damn buffer */
-            isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
+            for(int j=0; j<nNumInputs; j++){
+                isPlaying = buffer.getRMSLevel(j, 0, nCurrentBlockSize)>1e-5f ? true : false;
+                if(isPlaying)
+                    break;
+            }
             
             /* perform processing */
             ambi_enc_process(hAmbi, bufferInputs, bufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);

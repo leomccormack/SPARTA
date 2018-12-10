@@ -268,8 +268,12 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
 				for (int i = 0; i < FRAME_SIZE; i++)
 					bufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
 
-			/* determine if there is actually audio in the damn buffer */
-			isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
+            /* determine if there is actually audio in the damn buffer */
+            for(int j=0; j<nNumInputs; j++){
+                isPlaying = buffer.getRMSLevel(j, 0, nCurrentBlockSize)>1e-5f ? true : false;
+                if(isPlaying)
+                    break;
+            }
         
 			/* perform processing */
 			rotator_process(hRot, bufferInputs, bufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_ambiDRC" projectType="audioplug" version="1.1.0"
+<JUCERPROJECT id="lfkRjX" name="sparta_ambiDRC" projectType="audioplug" version="1.1.2"
               bundleIdentifier="com.LeoMcCormack.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiDRC" pluginDesc="sparta_ambiDRC"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ADRC"
@@ -9,7 +9,7 @@
               pluginAUExportPrefix="sparta_ambiDRCAU" pluginRTASCategory=""
               aaxIdentifier="com.yourcompany.SPARTA" pluginAAXCategory="2"
               jucerVersion="5.3.2" buildVST3="0" buildRTAS="0" buildAAX="0"
-              pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE  = 256&#10;SAF_USE_INTEL_MKL"
+              pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE  = 256"
               companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
               buildAUv3="0" pluginIsMidiEffectPlugin="0" displaySplashScreen="0"
@@ -183,7 +183,7 @@
     </VS2015>
     <XCODE_MAC targetFolder="../../make/MacOSX/Xcode/" vstFolder="../../../../SDKs/VST3 SDK"
                externalLibraries="" vst3Folder="../../../../SDKs/VST3 SDK/"
-               extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom">
+               userNotes="-L/usr/local/lib -lsaf_mkl_custom">
       <CONFIGURATIONS>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="sparta_ambiDRC"
                        binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"

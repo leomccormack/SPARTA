@@ -189,7 +189,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
-    
+
     if (nCurrentBlockSize % FRAME_SIZE == 0) { /* divisible by frame size */
         for (int frame = 0; frame < nCurrentBlockSize / FRAME_SIZE; frame++) {
             for (int ch = 0; ch < nNumInputs; ch++)
@@ -197,7 +197,11 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
                     bufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
             
             /* determine if there is actually audio in the damn buffer */
-            isPlaying = buffer.getRMSLevel(0, 0, nCurrentBlockSize)>1e-5f ? true : false;
+            for(int j=0; j<nNumInputs; j++){
+                isPlaying = buffer.getRMSLevel(j, 0, nCurrentBlockSize)>1e-5f ? true : false;
+                if(isPlaying)
+                    break;
+            }
             
             /* perform processing */
             panner_process(hPan, bufferInputs, bufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
@@ -207,10 +211,13 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
             for (int ch = 0; ch < nNumOutputs; ch++)
                 for (int i = 0; i < FRAME_SIZE; i++)
                     bufferData[ch][frame*FRAME_SIZE + i] = bufferOutputs[ch][i];
-        }
+        } 
     }
     else
         buffer.clear();
+    
+    
+    
 }
 
 //==============================================================================

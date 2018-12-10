@@ -335,10 +335,9 @@
 					"_DEBUG=1",
 					"DEBUG=1",
 					"FRAME_SIZE=256",
-					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.2.0",
-					"JUCE_APP_VERSION_HEX=0x10200",
+					"JUCE_APP_VERSION=1.3.0",
+					"JUCE_APP_VERSION_HEX=0x10300",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -356,7 +355,7 @@
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_LDFLAGS = "-bundle -lsparta_panner_debug -L/usr/local/lib -lsaf_mkl_custom";
+				OTHER_LDFLAGS = "-bundle -lsparta_panner_debug";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO;
@@ -377,10 +376,9 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"FRAME_SIZE=256",
-					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.2.0",
-					"JUCE_APP_VERSION_HEX=0x10200",
+					"JUCE_APP_VERSION=1.3.0",
+					"JUCE_APP_VERSION_HEX=0x10300",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -400,7 +398,7 @@
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_LDFLAGS = "-bundle -lsparta_panner -L/usr/local/lib -lsaf_mkl_custom";
+				OTHER_LDFLAGS = "-bundle -lsparta_panner";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO;
@@ -419,10 +417,9 @@
 					"_DEBUG=1",
 					"DEBUG=1",
 					"FRAME_SIZE=256",
-					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.2.0",
-					"JUCE_APP_VERSION_HEX=0x10200",
+					"JUCE_APP_VERSION=1.3.0",
+					"JUCE_APP_VERSION_HEX=0x10300",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -437,7 +434,6 @@
 				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"");
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Debug; };
@@ -455,10 +451,9 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"FRAME_SIZE=256",
-					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.2.0",
-					"JUCE_APP_VERSION_HEX=0x10200",
+					"JUCE_APP_VERSION=1.3.0",
+					"JUCE_APP_VERSION_HEX=0x10300",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -475,7 +470,6 @@
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Release; };
