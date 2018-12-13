@@ -34,11 +34,11 @@ SDKs/VST3_SDK
 ```
 And can be obtained from:
 
-* [JUCE modules](https://shop.juce.com/get-juce/download) - For audio plug-in wrappers and the GUIs
+* [modules](https://shop.juce.com/get-juce/download) - For audio plug-in wrappers and the GUIs
 * [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework) - For the internal code used by the plug-ins
 * [VST3_SDK](https://www.steinberg.net/en/company/developers.html) - The VST SDK
 
-Windows users must also install a custom [Intel MKL](https://software.intel.com/en-us/articles/free-ipsxe-tools-and-libraries) .dll in a system path folder. More details can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework). Optionally, Mac users may also follow suite for some additional performance gains. 
+You must also install a custom [Intel MKL](https://software.intel.com/en-us/articles/free-ipsxe-tools-and-libraries) .dll/.dylib in a system path folder. More details on this can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework). However, Mac users may elect to remove the "SAF_USE_INTEL_MKL" flag in the global pre-precessor definitions, in order to get around this requirement; albeit, at the expense of a reduction in performance.
 
 ### Installing
 
