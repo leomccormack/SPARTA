@@ -23,6 +23,8 @@ This repository contains the following VST plug-ins:
 These instructions will help you compile the individual VST audio plug-ins. Alternatively, they can be downloaded from here:
 * [Pre-built](http://research.spa.aalto.fi/projects/sparta_vsts/) - for Windows (64-bit) and Mac OSX (10.10 or higher)
 
+**NOTE: As of 6.12.2018, the code requires JUCE v5.3.2 and vstsdk3610_11_06_2018_build_37 or older. We are currently looking into how to accommodate the recent changes.**
+
 ### Prerequisites
 
 To compile the plugins yourself, the following SDKs and frameworks must be placed in the 'SDKs' folder like so
