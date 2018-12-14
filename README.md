@@ -36,7 +36,7 @@ SDKs/VST3_SDK
 ```
 And can be obtained from:
 
-* [modules](https://shop.juce.com/get-juce/download) - For audio plug-in wrappers and the GUIs
+* [modules (JUCE)](https://shop.juce.com/get-juce/download) - For audio plug-in wrappers and the GUIs
 * [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework) - For the internal code used by the plug-ins
 * [VST3_SDK](https://www.steinberg.net/en/company/developers.html) - The VST SDK
 
@@ -50,7 +50,7 @@ For each individual plug-in, simply open the Visual Studio (2015/2017) or X-code
 audio_plugins/_SPARTA_X_/make/
 ```
 
-To generate project files for other IDEs or Linux makefiles, one must open and configure the included .jucer files with JUCE's Projucer App accordingly; however, these are currently not officially supported. 
+To generate project files for other IDEs or Linux makefiles, you can open and configure the included .jucer files with JUCE's Projucer App accordingly; however, these are currently not officially supported. 
 
 ## Authors
 
