@@ -25,7 +25,7 @@
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(64), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(0), true))
+	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
     bufferInputs = new float*[MAX_NUM_CHANNELS];
     for (int i = 0; i < MAX_NUM_CHANNELS; i++)
