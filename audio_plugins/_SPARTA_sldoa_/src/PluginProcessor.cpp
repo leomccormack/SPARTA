@@ -26,7 +26,7 @@
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(64), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(0), true))
+	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
 	nHostBlockSize = FRAME_SIZE;
 	nSampleRate = 48000;
