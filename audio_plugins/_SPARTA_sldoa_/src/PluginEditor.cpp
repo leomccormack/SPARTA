@@ -300,18 +300,6 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = -23, y = 0, width = 191, height = 32;
-        String text (TRANS("SLDoA"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
-    }
-
-    {
         int x = 14, y = 402, width = 96, height = 30;
         String text (TRANS("Mic Preset:"));
         Colour fillColour = Colours::white;
@@ -467,12 +455,36 @@ void PluginEditor::paint (Graphics& g)
                     Justification::centredLeft, true);
     }
 
+    {
+        int x = 16, y = 0, width = 100, height = 32;
+        String text (TRANS("SPARTA|"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 88, y = 0, width = 112, height = 32;
+        String text (TRANS("SLDoA"));
+        Colour fillColour = Colour (0xffff4848);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		140, 16, 530, 11,
+		166, 16, 530, 11,
 		Justification::centredLeft, true);
 
     Colour strokeColour = Colour (0x86a3a4a5);
@@ -500,6 +512,11 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_frameSize:
             g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_supported_fs:
+            g.drawText(TRANS("Sample rate (") + String(sldoa_getSamplingRate(hVst->hSld)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -622,6 +639,10 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
+    else if ( !((sldoa_getSamplingRate(hVst->hSld) == 44.1e3) || (sldoa_getSamplingRate(hVst->hSld) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
     else if ((hVst->getCurrentNumInputs() < sldoa_getNSHrequired(hVst->hSld))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
@@ -664,9 +685,6 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="0 0 634 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
-    <TEXT pos="-23 0 191 32" fill="solid: ffffffff" hasStroke="0" text="SLDoA"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="14 402 96 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
           fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
@@ -705,6 +723,12 @@ BEGIN_JUCER_METADATA
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="14 368 104 30" fill="solid: ffffffff" hasStroke="0" text="Max Order:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
+          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="88 0 112 32" fill="solid: ffff4848" hasStroke="0" text="SLDoA"
+          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <SLIDER name="new slider" id="86d1295f97e935ba" memberName="avgSlider"

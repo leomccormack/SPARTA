@@ -297,18 +297,6 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = -19, y = 0, width = 195, height = 32;
-        String text (TRANS("AmbiENC"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
-    }
-
-    {
         int x = 20, y = 90, width = 67, height = 30;
         String text (TRANS("Presets: "));
         Colour fillColour = Colours::white;
@@ -469,12 +457,36 @@ void PluginEditor::paint (Graphics& g)
 
     }
 
+    {
+        int x = 16, y = 0, width = 100, height = 32;
+        String text (TRANS("SPARTA|"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 88, y = 0, width = 112, height = 32;
+        String text (TRANS("AmbiENC"));
+        Colour fillColour = Colour (0xfffb6f54);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		150, 16, 530, 11,
+		185, 16, 530, 11,
 		Justification::centredLeft, true);
 
     /* display warning message */
@@ -666,9 +678,6 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: dcbdbdbd"/>
     <RECT pos="12 89 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="-19 0 195 32" fill="solid: ffffffff" hasStroke="0" text="AmbiENC"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="20 90 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
@@ -703,6 +712,12 @@ BEGIN_JUCER_METADATA
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 58 196 32" fill="solid: 9f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
+    <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
+          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="88 0 112 32" fill="solid: fffb6f54" hasStroke="0" text="AmbiENC"
+          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="5a2f99f88aa51390" memberName="CBsourceDirsPreset"
             virtualName="" explicitFocusOrder="0" pos="88 96 112 20" editable="0"

@@ -237,7 +237,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1074"
             endingLineNumber = "1074"
-            landmarkName = "PluginEditor::timerCallback()"
+            landmarkName = "PluginEditor::buttonClicked (Button* buttonThatWasClicked)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -253,7 +253,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1073"
             endingLineNumber = "1073"
-            landmarkName = "PluginEditor::timerCallback()"
+            landmarkName = "PluginEditor::buttonClicked (Button* buttonThatWasClicked)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

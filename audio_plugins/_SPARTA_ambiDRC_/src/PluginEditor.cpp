@@ -305,18 +305,6 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = -7, y = 0, width = 167, height = 32;
-        String text (TRANS("AmbiDRC"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
-    }
-
-    {
         int x = 96, y = 325, width = 60, height = 30;
         String text (TRANS("Thresh."));
         Colour fillColour = Colours::white;
@@ -777,13 +765,37 @@ void PluginEditor::paint (Graphics& g)
 
     }
 
+    {
+        int x = 16, y = 0, width = 100, height = 32;
+        String text (TRANS("SPARTA|"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 88, y = 0, width = 112, height = 32;
+        String text (TRANS("AmbiDRC"));
+        Colour fillColour = Colour (0xfff77bf5);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
     /* banner text */
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		145, 16, 530, 11,
+		185, 16, 530, 11,
 		Justification::centredLeft, true);
 
     /* display warning message */
@@ -795,19 +807,24 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_frameSize:
             g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                       getBounds().getWidth()-225, 16, 530, 11,
+                       getBounds().getWidth()-225, 5, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_supported_fs:
+            g.drawText(TRANS("Sample rate (") + String(ambi_drc_getSamplerate(hVst->hAmbi)) + TRANS(") is unsupported"),
+                       getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
                        TRANS("/") + String(ambi_drc_getNSHrequired(hVst->hAmbi)) + TRANS(")"),
-                       getBounds().getWidth()-225, 16, 530, 11,
+                       getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
                        TRANS("/") + String(ambi_drc_getNSHrequired(hVst->hAmbi)) + TRANS(")"),
-                       getBounds().getWidth()-225, 16, 530, 11,
+                       getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
     }
@@ -954,6 +971,10 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint();
     }
+    else if ( !((ambi_drc_getSamplerate(hVst->hAmbi) == 44.1e3) || (ambi_drc_getSamplerate(hVst->hAmbi) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
     else if ((hVst->getCurrentNumInputs() < ambi_drc_getNSHrequired(hVst->hAmbi))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
@@ -996,9 +1017,6 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 1fffffff"/>
     <RECT pos="0 0 550 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
-    <TEXT pos="-7 0 167 32" fill="solid: ffffffff" hasStroke="0" text="AmbiDRC"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="96 325 60 30" fill="solid: ffffffff" hasStroke="0" text="Thresh."
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
@@ -1108,6 +1126,12 @@ BEGIN_JUCER_METADATA
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="10 288 193 33" fill="solid: 8c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
+    <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
+          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="88 0 112 32" fill="solid: fff77bf5" hasStroke="0" text="AmbiDRC"
+          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <SLIDER name="new slider" id="863726658f50da67" memberName="s_thresh"
           virtualName="" explicitFocusOrder="0" pos="96 364 64 64" rotarysliderfill="7fffffff"

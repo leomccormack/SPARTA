@@ -434,18 +434,6 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = -24, y = 0, width = 200, height = 32;
-        String text (TRANS("AmbiBIN"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
-    }
-
-    {
         int x = 164, y = 32, width = 149, height = 30;
         String text (TRANS("Decoding Settings"));
         Colour fillColour = Colours::white;
@@ -758,12 +746,36 @@ void PluginEditor::paint (Graphics& g)
                     Justification::centredLeft, true);
     }
 
+    {
+        int x = 16, y = 0, width = 196, height = 32;
+        String text (TRANS("SPARTA|"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 88, y = 0, width = 184, height = 32;
+        String text (TRANS("AmbiBIN"));
+        Colour fillColour = Colour (0xffdf8400);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		150, 16, 530, 11,
+		185, 16, 530, 11,
 		Justification::centredLeft, true);
 
     /* display warning message */
@@ -774,6 +786,16 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_frameSize:
             g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_supported_fs:
+            g.drawText(TRANS("Sample rate (") + String(ambi_bin_getDAWsamplerate(hVst->hAmbi)) + TRANS(") is unsupported"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_mismatch_fs:
+            g.drawText(TRANS("Sample rate mismatch between DAW/HRIRs"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -956,6 +978,14 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
+    else if ( !((ambi_bin_getDAWsamplerate(hVst->hAmbi) == 44.1e3) || (ambi_bin_getDAWsamplerate(hVst->hAmbi) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if (ambi_bin_getDAWsamplerate(hVst->hAmbi) != ambi_bin_getHRIRsamplerate(hVst->hAmbi)){
+        currentWarning = k_warning_mismatch_fs;
+        repaint(0,0,getWidth(),32);
+    }
     else if ((hVst->getCurrentNumInputs() < ambi_bin_getNSHrequired(hVst->hAmbi))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
@@ -1010,9 +1040,6 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="0 0 656 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
-    <TEXT pos="-24 0 200 32" fill="solid: ffffffff" hasStroke="0" text="AmbiBIN"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="164 32 149 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Settings"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
@@ -1089,6 +1116,12 @@ BEGIN_JUCER_METADATA
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 138 61 23" fill="solid: ffffffff" hasStroke="0" text="Enable:"
           fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="16 0 196 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
+          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="88 0 184 32" fill="solid: ffdf8400" hasStroke="0" text="AmbiBIN"
+          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
