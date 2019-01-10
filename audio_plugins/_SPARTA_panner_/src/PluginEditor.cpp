@@ -400,18 +400,6 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = -19, y = 0, width = 171, height = 32;
-        String text (TRANS("Panner"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
-    }
-
-    {
         int x = 23, y = 58, width = 67, height = 30;
         String text (TRANS("Presets: "));
         Colour fillColour = Colours::white;
@@ -633,12 +621,36 @@ void PluginEditor::paint (Graphics& g)
                     Justification::centredLeft, true);
     }
 
+    {
+        int x = 16, y = 0, width = 100, height = 32;
+        String text (TRANS("SPARTA|"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 88, y = 0, width = 112, height = 32;
+        String text (TRANS("Panner"));
+        Colour fillColour = Colour (0xff0eff00);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		135, 16, 530, 11,
+		175, 16, 530, 11,
 		Justification::centredLeft, true);
 
     /* display warning message */
@@ -649,6 +661,11 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_frameSize:
             g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_supported_fs:
+            g.drawText(TRANS("Sample rate (") + String(panner_getDAWsamplerate(hVst->hPan)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -825,7 +842,7 @@ void PluginEditor::timerCallback()
 		SL_num_loudspeakers->setEnabled(false);
 		loudspeakerCoordsView_handle->setEnabled(false);
 		CBsLoudspeakerDirsPreset->setEnabled(false);
-	} 
+	}
 	else {
 		SL_num_loudspeakers->setEnabled(true);
 		loudspeakerCoordsView_handle->setEnabled(true);
@@ -846,6 +863,10 @@ void PluginEditor::timerCallback()
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ( !((panner_getDAWsamplerate(hVst->hPan) == 44.1e3) || (panner_getDAWsamplerate(hVst->hPan) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
     else if ((hVst->getCurrentNumInputs() < panner_getNumSources(hVst->hPan))){
@@ -888,9 +909,6 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="0 0 920 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
-    <TEXT pos="-19 0 171 32" fill="solid: ffffffff" hasStroke="0" text="Panner"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="23 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
@@ -938,6 +956,12 @@ BEGIN_JUCER_METADATA
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="723 88 113 30" fill="solid: ffffffff" hasStroke="0" text="N Chan:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
+          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="88 0 112 32" fill="solid: ff0eff00" hasStroke="0" text="Panner"
+          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="5a2f99f88aa51390" memberName="CBsourceDirsPreset"

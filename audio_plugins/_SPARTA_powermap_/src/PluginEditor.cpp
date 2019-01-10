@@ -366,18 +366,6 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = -19, y = 0, width = 195, height = 32;
-        String text (TRANS("PowerMap"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
-    }
-
-    {
         int x = 23, y = 386, width = 132, height = 30;
         String text (TRANS("Max Order:"));
         Colour fillColour = Colours::white;
@@ -742,12 +730,36 @@ void PluginEditor::paint (Graphics& g)
 
     }
 
+    {
+        int x = 16, y = 0, width = 100, height = 32;
+        String text (TRANS("SPARTA|"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 88, y = 0, width = 112, height = 32;
+        String text (TRANS("PowerMap"));
+        Colour fillColour = Colour (0xfffffc08);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		150, 16, 530, 11,
+		195, 16, 530, 11,
 		Justification::centredLeft, true);
 
     /* label for max ORDER */
@@ -767,6 +779,11 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_frameSize:
             g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_supported_fs:
+            g.drawText(TRANS("Sample rate (") + String(powermap_getSamplingRate(hVst->hPm)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -945,6 +962,10 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
+    else if ( !((powermap_getSamplingRate(hVst->hPm) == 44.1e3) || (powermap_getSamplingRate(hVst->hPm) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
     else if ((hVst->getCurrentNumInputs() < powermap_getNSHrequired(hVst->hPm))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
@@ -983,9 +1004,6 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: dcbdbdbd"/>
     <RECT pos="12 43 648 325" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="-19 0 195 32" fill="solid: ffffffff" hasStroke="0" text="PowerMap"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="23 386 132 30" fill="solid: ffffffff" hasStroke="0" text="Max Order:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
@@ -1071,6 +1089,12 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 35a0a0a0"/>
     <RECT pos="13 488 214 36" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 33a0a0a0"/>
+    <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
+          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="88 0 112 32" fill="solid: fffffc08" hasStroke="0" text="PowerMap"
+          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <COMBOBOX name="" id="787134d7259eea10" memberName="CBpmap_method" virtualName=""
             explicitFocusOrder="0" pos="106 495 112 24" editable="0" layout="33"
