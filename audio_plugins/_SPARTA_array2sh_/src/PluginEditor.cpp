@@ -664,7 +664,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 75, y = 193, width = 85, height = 30;
+        int x = 75, y = 193, width = 101, height = 30;
         String text (TRANS("Azi   #   Elev"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -759,7 +759,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 88, y = 0, width = 112, height = 32;
+        int x = 92, y = 0, width = 112, height = 32;
         String text (TRANS("Array2SH"));
         Colour fillColour = Colour (0xffe9ff00);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -1188,7 +1188,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="243 401 172 30" fill="solid: ffffffff" hasStroke="0" text="Max Freq. (Hz):"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="75 193 85 30" fill="solid: ffffffff" hasStroke="0" text="Azi   #   Elev"
+    <TEXT pos="75 193 101 30" fill="solid: ffffffff" hasStroke="0" text="Azi   #   Elev"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="24 224 184 200" fill="solid: 39a52a" hasStroke="1" stroke="1, mitered, butt"
@@ -1210,7 +1210,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
           fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="88 0 112 32" fill="solid: ffe9ff00" hasStroke="0" text="Array2SH"
+    <TEXT pos="92 0 112 32" fill="solid: ffe9ff00" hasStroke="0" text="Array2SH"
           fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
