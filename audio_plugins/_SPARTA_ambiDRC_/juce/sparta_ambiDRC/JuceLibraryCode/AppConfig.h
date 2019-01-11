@@ -91,24 +91,12 @@
  //#define JUCE_JACK 0
 #endif
 
-#ifndef    JUCE_BELA
- //#define JUCE_BELA 0
-#endif
-
-#ifndef    JUCE_USE_ANDROID_OBOE
- //#define JUCE_USE_ANDROID_OBOE 0
-#endif
-
 #ifndef    JUCE_USE_ANDROID_OPENSLES
  //#define JUCE_USE_ANDROID_OPENSLES 0
 #endif
 
 #ifndef    JUCE_USE_WINRT_MIDI
  //#define JUCE_USE_WINRT_MIDI 0
-#endif
-
-#ifndef    JUCE_DISABLE_AUDIO_MIXING_WITH_OTHER_APPS
- //#define JUCE_DISABLE_AUDIO_MIXING_WITH_OTHER_APPS 0
 #endif
 
 //==============================================================================
@@ -149,10 +137,6 @@
  //#define JUCE_USE_STUDIO_ONE_COMPATIBLE_PARAMETERS 1
 #endif
 
-#ifndef    JUCE_STANDALONE_FILTER_WINDOW_USE_KIOSK_MODE
- //#define JUCE_STANDALONE_FILTER_WINDOW_USE_KIOSK_MODE 0
-#endif
-
 //==============================================================================
 // juce_audio_processors flags:
 
@@ -166,10 +150,6 @@
 
 #ifndef    JUCE_PLUGINHOST_AU
  //#define JUCE_PLUGINHOST_AU 0
-#endif
-
-#ifndef    JUCE_PLUGINHOST_LADSPA
- //#define JUCE_PLUGINHOST_LADSPA 0
 #endif
 
 //==============================================================================
@@ -230,14 +210,6 @@
 
 #ifndef    JUCE_ENABLE_REPAINT_DEBUGGING
  //#define JUCE_ENABLE_REPAINT_DEBUGGING 0
-#endif
-
-#ifndef    JUCE_USE_XRANDR
- //#define JUCE_USE_XRANDR 1
-#endif
-
-#ifndef    JUCE_USE_XINERAMA
- //#define JUCE_USE_XINERAMA 1
 #endif
 
 #ifndef    JUCE_USE_XSHM

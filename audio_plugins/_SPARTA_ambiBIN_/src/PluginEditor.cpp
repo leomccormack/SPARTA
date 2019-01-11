@@ -759,7 +759,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 88, y = 0, width = 184, height = 32;
+        int x = 92, y = 0, width = 184, height = 32;
         String text (TRANS("AmbiBIN"));
         Colour fillColour = Colour (0xffdf8400);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -1120,7 +1120,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="16 0 196 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
           fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="88 0 184 32" fill="solid: ffdf8400" hasStroke="0" text="AmbiBIN"
+    <TEXT pos="92 0 184 32" fill="solid: ffdf8400" hasStroke="0" text="AmbiBIN"
           fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
