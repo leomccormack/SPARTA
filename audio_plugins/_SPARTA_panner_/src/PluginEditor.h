@@ -106,6 +106,7 @@ private:
     std::unique_ptr<TextButton> tb_saveJSON_src;
     std::unique_ptr<TextButton> tb_loadJSON_ls;
     std::unique_ptr<TextButton> tb_saveJSON_ls;
+    std::unique_ptr<Slider> SL_spread;
 
 
     //==============================================================================

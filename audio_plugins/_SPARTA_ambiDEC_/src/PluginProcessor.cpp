@@ -349,19 +349,43 @@ void PluginProcessor::saveConfigurationToFile (File destination)
 /* Adapted from the AllRADecoder by Daniel Rudrich, (c) 2017 (GPLv3 license) */
 void PluginProcessor::loadConfiguration (const File& configFile)
 {
+    int channelIDs[MAX_NUM_CHANNELS+1] = {0};
+    int virtual_channelIDs[MAX_NUM_CHANNELS+1] = {0};
     loudspeakers.removeAllChildren(nullptr);
     Result result = ConfigurationHelper::parseFileForLoudspeakerLayout (configFile, loudspeakers, nullptr);
     if(result.wasOk()){
-        int num_ls = 0;
-        int ls_idx = 0;
-        for (ValueTree::Iterator it = loudspeakers.begin() ; it != loudspeakers.end(); ++it)
-            if ( !((*it).getProperty("Imaginary")))
-                num_ls++;
+        int num_ls, num_virtual_ls, ls_idx, j;
+        num_ls = num_virtual_ls = ls_idx = j = 0;
+        /* get Channel IDs and find number of directions and virtual directions */
+        for (ValueTree::Iterator it = loudspeakers.begin(); it != loudspeakers.end(); ++it){
+            if ( !((*it).getProperty("Imaginary"))){
+                num_ls++; channelIDs[j] = (*it).getProperty("Channel");
+            }
+            else{
+                virtual_channelIDs[num_virtual_ls] = (*it).getProperty("Channel");
+                num_virtual_ls++; channelIDs[j] = -1;
+            }
+            j++;
+        }
+        /* remove virtual channels and shift the channel indices down */
+        for(int i=0; i<num_virtual_ls; i++)
+            for(int j=0; j<num_ls+num_virtual_ls; j++)
+                if(channelIDs[j] == -1)
+                    for(int k=j; k<num_ls+num_virtual_ls; k++)
+                        channelIDs[k] = channelIDs[k+1];
+        
+        /* then decriment the channel IDs to remove the gaps */
+        for(int i=0; i<num_virtual_ls; i++)
+            for(int j=0; j<num_ls+num_virtual_ls; j++)
+                if( channelIDs[j] > virtual_channelIDs[i]-i )
+                    channelIDs[j]--;
+        
+        /* update with the new configuration  */
         ambi_dec_setNumLoudspeakers(hAmbi, num_ls);
         for (ValueTree::Iterator it = loudspeakers.begin() ; it != loudspeakers.end(); ++it){
             if ( !((*it).getProperty("Imaginary"))){
-                ambi_dec_setLoudspeakerAzi_deg(hAmbi, ls_idx, (*it).getProperty("Azimuth"));
-                ambi_dec_setLoudspeakerElev_deg(hAmbi, ls_idx, (*it).getProperty("Elevation"));
+                ambi_dec_setLoudspeakerAzi_deg(hAmbi, channelIDs[ls_idx]-1, (*it).getProperty("Azimuth"));
+                ambi_dec_setLoudspeakerElev_deg(hAmbi, channelIDs[ls_idx]-1, (*it).getProperty("Elevation"));
                 ls_idx++;
             }
         }

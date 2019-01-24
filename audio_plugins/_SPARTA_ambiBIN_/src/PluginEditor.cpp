@@ -811,6 +811,11 @@ void PluginEditor::paint (Graphics& g)
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
+        case k_warning_osc_connection_fail:
+            g.drawText(TRANS("Current OSC port failed to connect, or is already in use"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
     }
 
     //[/UserPaint]
@@ -992,6 +997,10 @@ void PluginEditor::timerCallback()
     }
     else if ((hVst->getCurrentNumOutputs() < ambi_bin_getNumEars())){
         currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(!hVst->getOscPortConnected() && ambi_bin_getEnableRotation(hVst->hAmbi)){
+        currentWarning = k_warning_osc_connection_fail;
         repaint(0,0,getWidth(),32);
     }
     else if(currentWarning){

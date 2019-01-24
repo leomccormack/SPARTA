@@ -28,7 +28,8 @@ typedef enum _SPARTA_WARNINGS{
     k_warning_none,
     k_warning_frameSize,
     k_warning_NinputCH,
-    k_warning_NoutputCH
+    k_warning_NoutputCH,
+    k_warning_osc_connection_fail
 }SPARTA_WARNINGS;
 //[/Headers]
 

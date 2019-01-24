@@ -36,6 +36,7 @@ PluginProcessor::PluginProcessor() :
         bufferOutputs[i] = new float[FRAME_SIZE];
     
 	ambi_enc_create(&hAmbi);
+    refreshWindow = true;
 }
 
 PluginProcessor::~PluginProcessor()
@@ -53,10 +54,21 @@ PluginProcessor::~PluginProcessor()
 
 void PluginProcessor::setParameter (int index, float newValue)
 {
-    if (index % 2 || index == 0)
-        ambi_enc_setSourceAzi_deg(hAmbi, index/2, (newValue - 0.5f)*360.0f);
-    else
-        ambi_enc_setSourceElev_deg(hAmbi, (index-1)/2, (newValue - 0.5f)*180.0f);
+    float newValueScaled;
+    if (!(index % 2)){
+        newValueScaled = (newValue - 0.5f)*360.0f;
+        if (newValueScaled != ambi_enc_getSourceAzi_deg(hAmbi, index/2)){
+            ambi_enc_setSourceAzi_deg(hAmbi, index/2, newValueScaled);
+            refreshWindow = true;
+        }
+    }
+    else{
+        newValueScaled = (newValue - 0.5f)*180.0f;
+        if (newValueScaled != ambi_enc_getSourceElev_deg(hAmbi, index/2)){
+            ambi_enc_setSourceElev_deg(hAmbi, index/2, newValueScaled);
+            refreshWindow = true;
+        }
+    } 
 }
 
 void PluginProcessor::setCurrentProgram (int index)
@@ -65,7 +77,7 @@ void PluginProcessor::setCurrentProgram (int index)
 
 float PluginProcessor::getParameter (int index)
 {
-    if (index % 2 || index == 0)
+    if (!(index % 2))
         return (ambi_enc_getSourceAzi_deg(hAmbi, index/2)/360.0f) + 0.5f;
     else
         return (ambi_enc_getSourceElev_deg(hAmbi, (index-1)/2)/180.0f) + 0.5f;
@@ -73,7 +85,7 @@ float PluginProcessor::getParameter (int index)
 
 int PluginProcessor::getNumParameters()
 {
-	return MIN(ambi_enc_getMaxNumSources(), NUM_OF_AUTOMATABLE_SOURCES);
+	return MIN(2*ambi_enc_getMaxNumSources(), 2*NUM_OF_AUTOMATABLE_SOURCES);
 }
 
 const String PluginProcessor::getName() const
@@ -83,7 +95,7 @@ const String PluginProcessor::getName() const
 
 const String PluginProcessor::getParameterName (int index)
 {
-    if (index % 2 || index == 0)
+    if (!(index % 2))
         return TRANS("Azim_") + String(index/2);
     else
         return TRANS("Elev_") + String((index-1)/2);
@@ -91,7 +103,7 @@ const String PluginProcessor::getParameterName (int index)
 
 const String PluginProcessor::getParameterText(int index)
 {
-    if (index % 2 || index == 0)
+    if (!(index % 2))
         return String(ambi_enc_getSourceAzi_deg(hAmbi, index/2));
     else
         return String(ambi_enc_getSourceElev_deg(hAmbi, (index-1)/2));
@@ -307,19 +319,43 @@ void PluginProcessor::saveConfigurationToFile (File destination)
 /* Adapted from the AllRADecoder by Daniel Rudrich, (c) 2017 (GPLv3 license) */
 void PluginProcessor::loadConfiguration (const File& configFile)
 {
+    int channelIDs[MAX_NUM_CHANNELS+1] = {0};
+    int virtual_channelIDs[MAX_NUM_CHANNELS+1] = {0};
     sources.removeAllChildren(nullptr);
     Result result = ConfigurationHelper::parseFileForGenericLayout(configFile, sources, nullptr);
     if(result.wasOk()){
-        int num_srcs = 0;
-        int src_idx = 0;
-        for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it)
-            if ( !((*it).getProperty("Imaginary")))
-                num_srcs++;
+        int num_srcs, num_virtual_srcs, src_idx, j;
+        num_srcs = num_virtual_srcs = src_idx = j = 0;
+        /* get Channel IDs and find number of directions and virtual directions */
+        for (ValueTree::Iterator it = sources.begin(); it != sources.end(); ++it){
+            if ( !((*it).getProperty("Imaginary"))){
+                num_srcs++; channelIDs[j] = (*it).getProperty("Channel");
+            }
+            else{
+                virtual_channelIDs[num_virtual_srcs] = (*it).getProperty("Channel");
+                num_virtual_srcs++; channelIDs[j] = -1;
+            }
+            j++;
+        }
+        /* remove virtual channels and shift the channel indices down */
+        for(int i=0; i<num_virtual_srcs; i++)
+            for(int j=0; j<num_srcs+num_virtual_srcs; j++)
+                if(channelIDs[j] == -1)
+                    for(int k=j; k<num_srcs+num_virtual_srcs; k++)
+                        channelIDs[k] = channelIDs[k+1];
+        
+        /* then decriment the channel IDs to remove the gaps */
+        for(int i=0; i<num_virtual_srcs; i++)
+            for(int j=0; j<num_srcs+num_virtual_srcs; j++)
+                if( channelIDs[j] > virtual_channelIDs[i]-i )
+                    channelIDs[j]--;
+        
+        /* update with the new configuration  */
         ambi_enc_setNumSources(hAmbi, num_srcs);
         for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it){
             if ( !((*it).getProperty("Imaginary"))){
-                ambi_enc_setSourceAzi_deg(hAmbi, src_idx, (*it).getProperty("Azimuth"));
-                ambi_enc_setSourceElev_deg(hAmbi, src_idx, (*it).getProperty("Elevation"));
+                ambi_enc_setSourceAzi_deg(hAmbi, channelIDs[src_idx]-1, (*it).getProperty("Azimuth"));
+                ambi_enc_setSourceElev_deg(hAmbi, channelIDs[src_idx]-1, (*it).getProperty("Elevation"));
                 src_idx++;
             }
         }

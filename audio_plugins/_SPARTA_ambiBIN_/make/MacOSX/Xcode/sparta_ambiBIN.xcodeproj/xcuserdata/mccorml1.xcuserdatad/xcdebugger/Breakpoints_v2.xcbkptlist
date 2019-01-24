@@ -95,7 +95,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "830"
             endingLineNumber = "830"
-            landmarkName = "PluginEditor::buttonClicked (Button* buttonThatWasClicked)"
+            landmarkName = "PluginEditor::resized()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

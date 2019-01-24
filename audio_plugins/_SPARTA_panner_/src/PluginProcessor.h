@@ -66,6 +66,15 @@ public:
         return nNumOutputs;
     }
     
+    /* For refreshing window during automation */
+    bool refreshWindow;
+    void setRefreshWindow(bool newState) {
+        refreshWindow = newState;
+    }
+    bool getRefreshWindow() {
+        return refreshWindow;
+    }
+    
     /* JSON */
     void saveConfigurationToFile (File destination, int srcOrLs);
     void loadConfiguration (const File& presetFile, int srcOrLs);

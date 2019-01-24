@@ -922,6 +922,11 @@ void PluginEditor::paint (Graphics& g)
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
+        case k_warning_osc_connection_fail:
+            g.drawText(TRANS("OSC failed to connect, or port is already taken"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
     }
 
     //[/UserPaint]
@@ -1116,10 +1121,11 @@ void PluginEditor::timerCallback()
 #endif
 
     /* refresh pan view */
-    if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged()){
+    if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
 		panWindow->refreshPanView();
 		sourceCoordsView_handle->setHasASliderChange(false);
 		refreshPanViewWindow = false;
+        hVst->setRefreshWindow(false);
     }
 
     /* display warning message, if needed */
@@ -1141,6 +1147,10 @@ void PluginEditor::timerCallback()
     }
     else if ((hVst->getCurrentNumOutputs() < binauraliser_getNumEars())){
         currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(!hVst->getOscPortConnected() && binauraliser_getEnableRotation(hVst->hBin)){
+        currentWarning = k_warning_osc_connection_fail;
         repaint(0,0,getWidth(),32);
     }
     else if(currentWarning){
