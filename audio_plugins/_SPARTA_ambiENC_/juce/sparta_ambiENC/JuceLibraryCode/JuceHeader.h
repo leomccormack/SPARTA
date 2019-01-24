@@ -39,7 +39,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "sparta_ambiENC";
-    const char* const  versionString  = "1.2.2";
-    const int          versionNumber  = 0x10202;
+    const char* const  versionString  = "1.2.4";
+    const int          versionNumber  = 0x10204;
 }
 #endif

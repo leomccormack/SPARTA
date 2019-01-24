@@ -216,7 +216,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     refreshPanViewWindow = true;
 
 	/* Specify screen refresh rate */
-    startTimer(80);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(40);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -627,10 +627,11 @@ void PluginEditor::timerCallback()
 
     /* refresh pan view */
     if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) ||
-        sourceCoordsView_handle->getHasASliderChanged()){
+        sourceCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
         panWindow->refreshPanView();
         refreshPanViewWindow = false;
         sourceCoordsView_handle->setHasASliderChange(false);
+        hVst->setRefreshWindow(false);
     }
 
     /* display warning message, if needed */

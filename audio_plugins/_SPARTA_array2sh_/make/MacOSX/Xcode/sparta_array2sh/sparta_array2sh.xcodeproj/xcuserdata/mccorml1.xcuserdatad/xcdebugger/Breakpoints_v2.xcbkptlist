@@ -319,8 +319,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1030"
             endingLineNumber = "1030"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            landmarkName = "PluginEditor::buttonClicked (Button* buttonThatWasClicked)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

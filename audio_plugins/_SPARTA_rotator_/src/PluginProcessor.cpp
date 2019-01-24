@@ -41,7 +41,7 @@ PluginProcessor::PluginProcessor() :
 
     /* specify here on which UDP port number to receive incoming OSC messages */
     osc_port_ID = DEFAULT_OSC_PORT;
-    osc.connect(osc_port_ID);
+    osc_connected = osc.connect(osc_port_ID);
     /* tell the component to listen for OSC messages */
     osc.addListener(this);
 }

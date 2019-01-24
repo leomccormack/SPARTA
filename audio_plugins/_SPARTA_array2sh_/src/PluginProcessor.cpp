@@ -332,20 +332,44 @@ void PluginProcessor::saveConfigurationToFile (File destination)
 /* Adapted from the AllRADecoder by Daniel Rudrich, (c) 2017 (GPLv3 license) */
 void PluginProcessor::loadConfiguration (const File& configFile)
 {
+    int channelIDs[MAX_NUM_CHANNELS+1] = {0};
+    int virtual_channelIDs[MAX_NUM_CHANNELS+1] = {0};
     sensors.removeAllChildren(nullptr);
     Result result = ConfigurationHelper::parseFileForGenericLayout (configFile, sensors, nullptr);
     if(result.wasOk()){
-        int num_srcs = 0;
-        int src_idx = 0;
-        for (ValueTree::Iterator it = sensors.begin() ; it != sensors.end(); ++it)
-            if ( !((*it).getProperty("Imaginary")))
-                num_srcs++;
-        array2sh_setNumSensors(hA2sh, num_srcs);
+        int num_sensors, num_virtual_sensors, sensor_idx, j;
+        num_sensors = num_virtual_sensors = sensor_idx = j = 0;
+        /* get Channel IDs and find number of directions and virtual directions */
+        for (ValueTree::Iterator it = sensors.begin(); it != sensors.end(); ++it){
+            if ( !((*it).getProperty("Imaginary"))){
+                num_sensors++; channelIDs[j] = (*it).getProperty("Channel");
+            }
+            else{
+                virtual_channelIDs[num_virtual_sensors] = (*it).getProperty("Channel");
+                num_virtual_sensors++; channelIDs[j] = -1;
+            }
+            j++;
+        }
+        /* remove virtual channels and shift the channel indices down */
+        for(int i=0; i<num_virtual_sensors; i++)
+            for(int j=0; j<num_sensors+num_virtual_sensors; j++)
+                if(channelIDs[j] == -1)
+                    for(int k=j; k<num_sensors+num_virtual_sensors; k++)
+                        channelIDs[k] = channelIDs[k+1];
+        
+        /* then decriment the channel IDs to remove the gaps */
+        for(int i=0; i<num_virtual_sensors; i++)
+            for(int j=0; j<num_sensors+num_virtual_sensors; j++)
+                if( channelIDs[j] > virtual_channelIDs[i]-i )
+                    channelIDs[j]--;
+        
+        /* update with the new configuration  */
+        array2sh_setNumSensors(hA2sh, num_sensors);
         for (ValueTree::Iterator it = sensors.begin() ; it != sensors.end(); ++it){
             if ( !((*it).getProperty("Imaginary"))){
-                array2sh_setSensorAzi_deg(hA2sh, src_idx, (*it).getProperty("Azimuth"));
-                array2sh_setSensorElev_deg(hA2sh, src_idx, (*it).getProperty("Elevation"));
-                src_idx++;
+                array2sh_setSensorAzi_deg(hA2sh, channelIDs[sensor_idx]-1, (*it).getProperty("Azimuth"));
+                array2sh_setSensorElev_deg(hA2sh, channelIDs[sensor_idx]-1, (*it).getProperty("Elevation"));
+                sensor_idx++;
             }
         }
     }

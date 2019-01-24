@@ -69,6 +69,15 @@ public:
         return nNumOutputs;
     }
     
+    /* For refreshing window during automation */
+    bool refreshWindow;
+    void setRefreshWindow(bool newState) {
+        refreshWindow = newState;
+    }
+    bool getRefreshWindow() {
+        return refreshWindow;
+    }
+    
     /* JSON */
     void saveConfigurationToFile (File destination);
     void loadConfiguration (const File& presetFile);
@@ -89,15 +98,19 @@ public:
     
     /* OSC */
     OSCReceiver osc;
+    bool osc_connected;
     void oscMessageReceived(const OSCMessage& message) override;
     int osc_port_ID;
     void setOscPortID(int newID){
         osc.disconnect();
         osc_port_ID = newID;
-        osc.connect(osc_port_ID);
+        osc_connected = osc.connect(osc_port_ID);
     }
     int getOscPortID(){
         return osc_port_ID;
+    }
+    bool getOscPortConnected(){
+        return osc_connected;
     }
     
     /***************************************************************************\

@@ -59,23 +59,23 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_showInputs->setButtonText (String());
     TB_showInputs->addListener (this);
 
-    TB_showInputs->setBounds (546, 318, 24, 24);
+    TB_showInputs->setBounds (561, 316, 24, 24);
 
     TB_showOutputs.reset (new ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_showOutputs.get());
     TB_showOutputs->setButtonText (String());
     TB_showOutputs->addListener (this);
 
-    TB_showOutputs->setBounds (675, 318, 24, 24);
+    TB_showOutputs->setBounds (672, 316, 24, 24);
 
     SL_pValue.reset (new Slider ("new slider"));
     addAndMakeVisible (SL_pValue.get());
     SL_pValue->setRange (0, 1, 0.01);
     SL_pValue->setSliderStyle (Slider::LinearHorizontal);
-    SL_pValue->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
+    SL_pValue->setTextBoxStyle (Slider::TextBoxRight, false, 50, 20);
     SL_pValue->addListener (this);
 
-    SL_pValue->setBounds (272, 317, 168, 24);
+    SL_pValue->setBounds (354, 326, 120, 15);
 
     CBsLoudspeakerDirsPreset.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBsLoudspeakerDirsPreset.get());
@@ -133,6 +133,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     tb_saveJSON_ls->setColour (TextButton::buttonOnColourId, Colour (0xff181f9a));
 
     tb_saveJSON_ls->setBounds (746, 41, 34, 14);
+
+    SL_spread.reset (new Slider ("new slider"));
+    addAndMakeVisible (SL_spread.get());
+    SL_spread->setRange (0, 90, 1);
+    SL_spread->setSliderStyle (Slider::LinearHorizontal);
+    SL_spread->setTextBoxStyle (Slider::TextBoxRight, false, 50, 20);
+    SL_spread->addListener (this);
+
+    SL_spread->setBounds (224, 326, 120, 15);
 
 
     //[UserPreSize]
@@ -306,6 +315,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(true, dontSendNotification);
     SL_pValue->setValue(panner_getDTT(hVst->hPan), dontSendNotification);
+    SL_spread->setValue(panner_getSpread(hVst->hPan), dontSendNotification);
 
     /* create panning window */
     addAndMakeVisible (panWindow = new pannerView(ownerFilter, 480, 240));
@@ -315,7 +325,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     refreshPanViewWindow = true;
 
 	/* Specify screen refresh rate */
-    startTimer(40);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(35);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -339,6 +349,7 @@ PluginEditor::~PluginEditor()
     tb_saveJSON_src = nullptr;
     tb_loadJSON_ls = nullptr;
     tb_saveJSON_ls = nullptr;
+    SL_spread = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -370,6 +381,32 @@ void PluginEditor::paint (Graphics& g)
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 2);
+
+    }
+
+    {
+        int x = 350, y = 308, width = 131, height = 38;
+        Colour fillColour = Colour (0x13f4f4f4);
+        Colour strokeColour = Colour (0x67a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
+    {
+        int x = 220, y = 308, width = 131, height = 38;
+        Colour fillColour = Colour (0x13f4f4f4);
+        Colour strokeColour = Colour (0x67a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
 
     }
 
@@ -450,7 +487,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 448, y = 308, width = 252, height = 38;
+        int x = 480, y = 308, width = 220, height = 38;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -537,52 +574,39 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 455, y = 314, width = 132, height = 30;
+        int x = 486, y = 313, width = 132, height = 30;
         String text (TRANS("Show Inputs:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 574, y = 314, width = 132, height = 30;
+        int x = 588, y = 313, width = 132, height = 30;
         String text (TRANS("Show Outputs:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 220, y = 308, width = 229, height = 38;
-        Colour fillColour = Colour (0x13f4f4f4);
-        Colour strokeColour = Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        int x = 231, y = 314, width = 132, height = 30;
-        String text (TRANS("DTT:"));
+        int x = 354, y = 303, width = 123, height = 30;
+        String text (TRANS("pValue Coeff:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    Justification::centred, true);
     }
 
     {
@@ -652,6 +676,19 @@ void PluginEditor::paint (Graphics& g)
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
 		175, 16, 530, 11,
 		Justification::centredLeft, true);
+
+    /* spread text*/
+    {
+        float kerningFactor = 0.5f * panner_getSpread(hVst->hPan)/90.0f;
+        int x = 205, y = 303, width = 167, height = 30;
+        String text (CharPointer_UTF8 ("Spread (\xc2\xb0):"));
+        Colour fillColour = Colours::white;
+        g.setColour (fillColour);
+        //g.setOpacity(1.0f-kerningFactor);
+        g.setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Bold").withExtraKerningFactor (kerningFactor));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
 
     /* display warning message */
     g.setColour(Colours::red);
@@ -743,6 +780,13 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
         //[UserSliderCode_SL_num_loudspeakers] -- add your slider handling code here..
         panner_setNumLoudspeakers(hVst->hPan, (int)SL_num_loudspeakers->getValue());
         //[/UserSliderCode_SL_num_loudspeakers]
+    }
+    else if (sliderThatWasMoved == SL_spread.get())
+    {
+        //[UserSliderCode_SL_spread] -- add your slider handling code here..
+        panner_setSpread(hVst->hPan, (float)SL_spread->getValue());
+        repaint(203, 303, 167, 30);
+        //[/UserSliderCode_SL_spread]
     }
 
     //[UsersliderValueChanged_Post]
@@ -850,14 +894,19 @@ void PluginEditor::timerCallback()
 		panner_checkReInit(hVst->hPan);
 	}
 #endif
+    if (hVst->getIsPlaying())
+        SL_spread->setEnabled(false);
+    else
+        SL_spread->setEnabled(true);
 
     /* refresh pan view */
     if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) ||
-       sourceCoordsView_handle->getHasASliderChanged() || loudspeakerCoordsView_handle->getHasASliderChanged()){
+       sourceCoordsView_handle->getHasASliderChanged() || loudspeakerCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
         panWindow->refreshPanView();
         refreshPanViewWindow = false;
         sourceCoordsView_handle->setHasASliderChange(false);
         loudspeakerCoordsView_handle->setHasASliderChange(false);
+        hVst->setRefreshWindow(false);
     }
 
     /* display warning message, if needed */
@@ -905,6 +954,10 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 30 920 326" fill=" radial: 460 184, 928 368, 0=ff5b6d76, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
+    <RECT pos="350 308 131 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 67a0a0a0"/>
+    <RECT pos="220 308 131 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="0 0 920 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
@@ -919,7 +972,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="70 123 105 32" fill="solid: ffffffff" hasStroke="0" text="Azi    #   Elev"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="448 308 252 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="480 308 220 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="712 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -937,17 +990,15 @@ BEGIN_JUCER_METADATA
     <TEXT pos="404 32 156 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="455 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
-          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
+    <TEXT pos="486 313 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
+          fontname="Default font" fontsize="13.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="574 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Outputs:"
-          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
+    <TEXT pos="588 313 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Outputs:"
+          fontname="Default font" fontsize="13.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="220 308 229 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="231 314 132 30" fill="solid: ffffffff" hasStroke="0" text="DTT:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="354 303 123 30" fill="solid: ffffffff" hasStroke="0" text="pValue Coeff:"
+          fontname="Default font" fontsize="13.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="723 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
@@ -973,15 +1024,15 @@ BEGIN_JUCER_METADATA
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="74817bb8a57611dc" memberName="TB_showInputs"
-                virtualName="" explicitFocusOrder="0" pos="546 318 24 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="561 316 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="1a1dfbb1d4296140" memberName="TB_showOutputs"
-                virtualName="" explicitFocusOrder="0" pos="675 318 24 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="672 316 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <SLIDER name="new slider" id="5b4f982e7ea9b2d5" memberName="SL_pValue"
-          virtualName="" explicitFocusOrder="0" pos="272 317 168 24" min="0.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="354 326 120 15" min="0.00000000000000000000"
           max="1.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
+          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="50"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <COMBOBOX name="new combo box" id="cfd23f574e19957c" memberName="CBsLoudspeakerDirsPreset"
             virtualName="" explicitFocusOrder="0" pos="788 66 112 20" editable="0"
@@ -1005,6 +1056,11 @@ BEGIN_JUCER_METADATA
               virtualName="" explicitFocusOrder="0" pos="746 41 34 14" bgColOff="ff224d97"
               bgColOn="ff181f9a" buttonText="Export" connectedEdges="1" needsCallback="1"
               radioGroupId="0"/>
+  <SLIDER name="new slider" id="502f78257b11f666" memberName="SL_spread"
+          virtualName="" explicitFocusOrder="0" pos="224 326 120 15" min="0.00000000000000000000"
+          max="90.00000000000000000000" int="1.00000000000000000000" style="LinearHorizontal"
+          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="50"
+          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

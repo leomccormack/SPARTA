@@ -36,6 +36,7 @@ PluginProcessor::PluginProcessor() :
         bufferOutputs[i] = new float[FRAME_SIZE];
     
 	panner_create(&hPan);
+    refreshWindow = true;
 }
 
 PluginProcessor::~PluginProcessor()
@@ -53,10 +54,21 @@ PluginProcessor::~PluginProcessor()
 
 void PluginProcessor::setParameter (int index, float newValue)
 {
-    if (index % 2 || index == 0)
-        panner_setSourceAzi_deg(hPan, index/2, (newValue - 0.5f)*360.0f);
-    else
-        panner_setSourceElev_deg(hPan, (index-1)/2, (newValue - 0.5f)*180.0f);
+    float newValueScaled;
+    if (!(index % 2)){
+        newValueScaled = (newValue - 0.5f)*360.0f;
+        if (newValueScaled != panner_getSourceAzi_deg(hPan, index/2)){
+            panner_setSourceAzi_deg(hPan, index/2, newValueScaled);
+            refreshWindow = true;
+        }
+    }
+    else{
+        newValueScaled = (newValue - 0.5f)*180.0f;
+        if (newValueScaled != panner_getSourceElev_deg(hPan, index/2)){
+            panner_setSourceElev_deg(hPan, index/2, newValueScaled);
+            refreshWindow = true;
+        }
+    }
 }
 
 void PluginProcessor::setCurrentProgram (int index)
@@ -65,7 +77,7 @@ void PluginProcessor::setCurrentProgram (int index)
 
 float PluginProcessor::getParameter (int index)
 {
-    if (index % 2 || index == 0)
+    if (!(index % 2))
         return (panner_getSourceAzi_deg(hPan, index/2)/360.0f) + 0.5f;
     else
         return (panner_getSourceElev_deg(hPan, (index-1)/2)/180.0f) + 0.5f;
@@ -83,7 +95,7 @@ const String PluginProcessor::getName() const
 
 const String PluginProcessor::getParameterName (int index)
 {
-    if (index % 2 || index == 0)
+    if (!(index % 2))
         return TRANS("Azim_") + String(index/2);
     else
         return TRANS("Elev_") + String((index-1)/2);
@@ -91,7 +103,7 @@ const String PluginProcessor::getParameterName (int index)
 
 const String PluginProcessor::getParameterText(int index)
 {
-    if (index % 2 || index == 0)
+    if (!(index % 2))
         return String(panner_getSourceAzi_deg(hPan, index/2));
     else
         return String(panner_getSourceElev_deg(hPan, (index-1)/2));
@@ -241,6 +253,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     }
     xml.setAttribute("nSources", panner_getNumSources(hPan));
     xml.setAttribute("DTT", panner_getDTT(hPan));
+    xml.setAttribute("Spread", panner_getSpread(hPan));
     
     xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
     
@@ -268,7 +281,9 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if(xmlState->hasAttribute("nSources"))
                 panner_setNumSources(hPan, xmlState->getIntAttribute("nSources", 1));
             if(xmlState->hasAttribute("DTT"))
-                panner_setDTT(hPan, (float)xmlState->getDoubleAttribute("DTT", 1));
+                panner_setDTT(hPan, (float)xmlState->getDoubleAttribute("DTT", 0.5f));
+            if(xmlState->hasAttribute("Spread"))
+                panner_setSpread(hPan, (float)xmlState->getDoubleAttribute("Spread", 0.0f));
             
             if(xmlState->hasAttribute("JSONFilePath"))
                 lastDir = xmlState->getStringAttribute("JSONFilePath", "");
@@ -294,6 +309,7 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
     return new PluginProcessor();
 }
 
+/* Adapted from the AllRADecoder by Daniel Rudrich, (c) 2017 (GPLv3 license) */
 void PluginProcessor::saveConfigurationToFile (File destination, int srcOrLs)
 {
     DynamicObject* jsonObj;
@@ -328,23 +344,48 @@ void PluginProcessor::saveConfigurationToFile (File destination, int srcOrLs)
     Result result2 = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
 }
 
+/* Adapted from the AllRADecoder by Daniel Rudrich, (c) 2017 (GPLv3 license) */
 void PluginProcessor::loadConfiguration (const File& configFile, int srcOrLs)
 {
+    int channelIDs[MAX_NUM_CHANNELS+1] = {0};
+    int virtual_channelIDs[MAX_NUM_CHANNELS+1] = {0};
     elements.removeAllChildren(nullptr);
     Result result = ConfigurationHelper::parseFileForGenericLayout(configFile, elements, nullptr);
     if(result.wasOk()){
-        int num_el = 0;
-        int el_idx = 0;
-        for (ValueTree::Iterator it = elements.begin() ; it != elements.end(); ++it)
-            if ( !((*it).getProperty("Imaginary")))
-                num_el++;
+        int num_el, num_virtual_el, el_idx, j;
+        num_el = num_virtual_el = el_idx = j = 0;
+        /* get Channel IDs and find number of directions and virtual directions */
+        for (ValueTree::Iterator it = elements.begin(); it != elements.end(); ++it){
+            if ( !((*it).getProperty("Imaginary"))){
+                num_el++; channelIDs[j] = (*it).getProperty("Channel");
+            }
+            else{
+                virtual_channelIDs[num_virtual_el] = (*it).getProperty("Channel");
+                num_virtual_el++; channelIDs[j] = -1;
+            }
+            j++;
+        }
+        /* remove virtual channels and shift the channel indices down */
+        for(int i=0; i<num_virtual_el; i++)
+            for(int j=0; j<num_el+num_virtual_el; j++)
+                if(channelIDs[j] == -1)
+                    for(int k=j; k<num_el+num_virtual_el; k++)
+                        channelIDs[k] = channelIDs[k+1];
+        
+        /* then decriment the channel IDs to remove the gaps */
+        for(int i=0; i<num_virtual_el; i++)
+            for(int j=0; j<num_el+num_virtual_el; j++)
+                if( channelIDs[j] > virtual_channelIDs[i]-i )
+                    channelIDs[j]--;
+        
+        /* update with the new configuration  */
         switch(srcOrLs){
             case 0:{
                 panner_setNumSources(hPan, num_el);
                 for (ValueTree::Iterator it = elements.begin() ; it != elements.end(); ++it){
                     if ( !((*it).getProperty("Imaginary"))){
-                        panner_setSourceAzi_deg(hPan, el_idx, (*it).getProperty("Azimuth"));
-                        panner_setSourceElev_deg(hPan, el_idx, (*it).getProperty("Elevation"));
+                        panner_setSourceAzi_deg(hPan, channelIDs[el_idx]-1, (*it).getProperty("Azimuth"));
+                        panner_setSourceElev_deg(hPan, channelIDs[el_idx]-1, (*it).getProperty("Elevation"));
                         el_idx++;
                     }
                 }
@@ -354,8 +395,8 @@ void PluginProcessor::loadConfiguration (const File& configFile, int srcOrLs)
                 panner_setNumLoudspeakers(hPan, num_el);
                 for (ValueTree::Iterator it = elements.begin() ; it != elements.end(); ++it){
                     if ( !((*it).getProperty("Imaginary"))){
-                        panner_setLoudspeakerAzi_deg(hPan, el_idx, (*it).getProperty("Azimuth"));
-                        panner_setLoudspeakerElev_deg(hPan, el_idx, (*it).getProperty("Elevation"));
+                        panner_setLoudspeakerAzi_deg(hPan, channelIDs[el_idx]-1, (*it).getProperty("Azimuth"));
+                        panner_setLoudspeakerElev_deg(hPan, channelIDs[el_idx]-1, (*it).getProperty("Elevation"));
                         el_idx++;
                     }
                 }

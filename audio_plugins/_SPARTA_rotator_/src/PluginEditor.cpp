@@ -510,19 +510,24 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_frameSize:
             g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                       getBounds().getWidth()-225, 16, 530, 11,
+                       getBounds().getWidth()-225, 6, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
                        TRANS("/") + String(rotator_getNSHrequired(hVst->hRot)) + TRANS(")"),
-                       getBounds().getWidth()-225, 16, 530, 11,
+                       getBounds().getWidth()-225, 6, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
                        TRANS("/") + String(rotator_getNSHrequired(hVst->hRot)) + TRANS(")"),
-                       getBounds().getWidth()-225, 16, 530, 11,
+                       getBounds().getWidth()-225, 6, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_osc_connection_fail:
+            g.drawText(TRANS("OSC failed to connect, or port is already taken"),
+                       getBounds().getWidth()-225, 6, 530, 11,
                        Justification::centredLeft, true);
             break;
     }
@@ -653,6 +658,10 @@ void PluginEditor::timerCallback()
     }
     else if ((hVst->getCurrentNumOutputs() < rotator_getNSHrequired(hVst->hRot))){
         currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(!hVst->getOscPortConnected()){
+        currentWarning = k_warning_osc_connection_fail;
         repaint(0,0,getWidth(),32);
     }
     else if(currentWarning){
