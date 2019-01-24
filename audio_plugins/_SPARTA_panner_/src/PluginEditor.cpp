@@ -679,7 +679,11 @@ void PluginEditor::paint (Graphics& g)
 
     /* spread text*/
     {
+#ifdef __APPLE__
         float kerningFactor = 0.5f * panner_getSpread(hVst->hPan)/90.0f;
+#else
+		float kerningFactor = 0.0f;
+#endif
         int x = 205, y = 303, width = 167, height = 30;
         String text (CharPointer_UTF8 ("Spread (\xc2\xb0):"));
         Colour fillColour = Colours::white;
@@ -785,7 +789,9 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     {
         //[UserSliderCode_SL_spread] -- add your slider handling code here..
         panner_setSpread(hVst->hPan, (float)SL_spread->getValue());
+#ifdef __APPLE__
         repaint(203, 303, 167, 30);
+#endif
         //[/UserSliderCode_SL_spread]
     }
 
