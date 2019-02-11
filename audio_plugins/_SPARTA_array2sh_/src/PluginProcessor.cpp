@@ -240,13 +240,13 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("R", array2sh_getR(hA2sh));
     xml.setAttribute("arrayType", array2sh_getArrayType(hA2sh));
     xml.setAttribute("weightType", array2sh_getWeightType(hA2sh));
-    xml.setAttribute("regType", array2sh_getRegType(hA2sh));
+    xml.setAttribute("filterType", array2sh_getFilterType(hA2sh));
     xml.setAttribute("regPar", array2sh_getRegPar(hA2sh));
     xml.setAttribute("chOrder", array2sh_getChOrder(hA2sh));
     xml.setAttribute("normType", array2sh_getNormType(hA2sh));
     xml.setAttribute("c", array2sh_getc(hA2sh));
     xml.setAttribute("gain", array2sh_getGain(hA2sh));
-    xml.setAttribute("maxFreq", array2sh_getMaxFreq(hA2sh));
+    //xml.setAttribute("maxFreq", array2sh_getMaxFreq(hA2sh));
     
     xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
     
@@ -278,8 +278,8 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 array2sh_setArrayType(hA2sh, xmlState->getIntAttribute("arrayType", 1));
             if(xmlState->hasAttribute("weightType"))
                 array2sh_setWeightType(hA2sh, xmlState->getIntAttribute("weightType", 1));
-            if(xmlState->hasAttribute("regType"))
-                array2sh_setRegType(hA2sh, xmlState->getIntAttribute("regType", 3));
+            if(xmlState->hasAttribute("filterType"))
+                array2sh_setFilterType(hA2sh, xmlState->getIntAttribute("filterType", 3));
             if(xmlState->hasAttribute("regPar"))
                 array2sh_setRegPar(hA2sh, (float)xmlState->getDoubleAttribute("regPar", 15.0));
             if(xmlState->hasAttribute("chOrder"))
@@ -290,8 +290,8 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 array2sh_setc(hA2sh, (float)xmlState->getDoubleAttribute("c", 343.0));
             if(xmlState->hasAttribute("gain"))
                 array2sh_setGain(hA2sh, (float)xmlState->getDoubleAttribute("gain", 0.0));
-            if(xmlState->hasAttribute("maxFreq"))
-                array2sh_setMaxFreq(hA2sh, (float)xmlState->getDoubleAttribute("maxFreq", 20000.0));
+            //if(xmlState->hasAttribute("maxFreq"))
+            //    array2sh_setMaxFreq(hA2sh, (float)xmlState->getDoubleAttribute("maxFreq", 20000.0));
             
             if(xmlState->hasAttribute("JSONFilePath"))
                 lastDir = xmlState->getStringAttribute("JSONFilePath", "");
