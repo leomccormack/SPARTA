@@ -106,11 +106,10 @@ private:
     std::unique_ptr<Slider> RSlider;
     std::unique_ptr<Slider> cSlider;
     std::unique_ptr<ComboBox> weightTypeCB;
-    std::unique_ptr<ComboBox> regTypeCB;
+    std::unique_ptr<ComboBox> filterTypeCB;
     std::unique_ptr<Slider> regAmountSlider;
     std::unique_ptr<ComboBox> CHOrderingCB;
     std::unique_ptr<ComboBox> normalisationCB;
-    std::unique_ptr<Slider> maxFreqSlider;
     std::unique_ptr<Slider> gainSlider;
     std::unique_ptr<ToggleButton> degRadTB;
     std::unique_ptr<TextButton> textButton;
@@ -118,6 +117,7 @@ private:
     std::unique_ptr<TextButton> tb_loadJSON;
     std::unique_ptr<TextButton> tb_saveJSON;
     std::unique_ptr<ComboBox> CBencodingOrder;
+    std::unique_ptr<TextButton> applyDiffEQ;
 
 
     //==============================================================================
