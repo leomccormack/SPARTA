@@ -62,28 +62,28 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (QSlider.get());
     QSlider->setRange (4, 64, 1);
     QSlider->setSliderStyle (Slider::LinearHorizontal);
-    QSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
+    QSlider->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
     QSlider->addListener (this);
 
-    QSlider->setBounds (112, 99, 96, 16);
+    QSlider->setBounds (120, 99, 88, 16);
 
     rSlider.reset (new Slider ("new slider"));
     addAndMakeVisible (rSlider.get());
     rSlider->setRange (1, 100, 0.01);
     rSlider->setSliderStyle (Slider::LinearHorizontal);
-    rSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
+    rSlider->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
     rSlider->addListener (this);
 
-    rSlider->setBounds (112, 131, 96, 16);
+    rSlider->setBounds (120, 131, 88, 16);
 
     RSlider.reset (new Slider ("new slider"));
     addAndMakeVisible (RSlider.get());
     RSlider->setRange (1, 100, 0.01);
     RSlider->setSliderStyle (Slider::LinearHorizontal);
-    RSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
+    RSlider->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
     RSlider->addListener (this);
 
-    RSlider->setBounds (112, 163, 96, 16);
+    RSlider->setBounds (120, 163, 88, 16);
 
     cSlider.reset (new Slider ("new slider"));
     addAndMakeVisible (cSlider.get());
@@ -92,7 +92,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     cSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
     cSlider->addListener (this);
 
-    cSlider->setBounds (368, 347, 120, 16);
+    cSlider->setBounds (364, 347, 124, 16);
 
     weightTypeCB.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (weightTypeCB.get());
@@ -600,7 +600,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 244, y = 337, width = 172, height = 30;
+        int x = 240, y = 337, width = 172, height = 30;
         String text (TRANS("c (m/s):"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -625,7 +625,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 244, y = 369, width = 172, height = 30;
+        int x = 240, y = 369, width = 172, height = 30;
         String text (TRANS("Array Type:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -637,7 +637,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 244, y = 401, width = 172, height = 30;
+        int x = 240, y = 401, width = 172, height = 30;
         String text (TRANS("Baffle/Directivity:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -649,7 +649,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 524, y = 268, width = 172, height = 30;
+        int x = 520, y = 268, width = 172, height = 30;
         String text (TRANS("Filter Approach:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -661,7 +661,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 524, y = 301, width = 172, height = 30;
+        int x = 520, y = 301, width = 172, height = 30;
         String text (TRANS("Max Gain (dB):"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -673,7 +673,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 523, y = 369, width = 172, height = 30;
+        int x = 520, y = 369, width = 172, height = 30;
         String text (TRANS("CH Order:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -685,7 +685,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 523, y = 401, width = 172, height = 30;
+        int x = 520, y = 401, width = 172, height = 30;
         String text (TRANS("Normalisation:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -697,7 +697,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 523, y = 334, width = 172, height = 30;
+        int x = 520, y = 334, width = 172, height = 30;
         String text (TRANS("Post Gain (dB):"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -767,7 +767,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 243, y = 268, width = 172, height = 30;
+        int x = 240, y = 268, width = 172, height = 30;
         String text (TRANS("Encoding Order:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -803,7 +803,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 243, y = 305, width = 172, height = 30;
+        int x = 240, y = 305, width = 172, height = 30;
         String text (TRANS("Diffuse-EQ Past Aliasing:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -1343,30 +1343,30 @@ BEGIN_JUCER_METADATA
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 192 204 244" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="244 337 172 30" fill="solid: ffffffff" hasStroke="0" text="c (m/s):"
+    <TEXT pos="240 337 172 30" fill="solid: ffffffff" hasStroke="0" text="c (m/s):"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 56 204 32" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="244 369 172 30" fill="solid: ffffffff" hasStroke="0" text="Array Type:"
+    <TEXT pos="240 369 172 30" fill="solid: ffffffff" hasStroke="0" text="Array Type:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="244 401 172 30" fill="solid: ffffffff" hasStroke="0" text="Baffle/Directivity:"
+    <TEXT pos="240 401 172 30" fill="solid: ffffffff" hasStroke="0" text="Baffle/Directivity:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="524 268 172 30" fill="solid: ffffffff" hasStroke="0" text="Filter Approach:"
+    <TEXT pos="520 268 172 30" fill="solid: ffffffff" hasStroke="0" text="Filter Approach:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="524 301 172 30" fill="solid: ffffffff" hasStroke="0" text="Max Gain (dB):"
+    <TEXT pos="520 301 172 30" fill="solid: ffffffff" hasStroke="0" text="Max Gain (dB):"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="523 369 172 30" fill="solid: ffffffff" hasStroke="0" text="CH Order:"
+    <TEXT pos="520 369 172 30" fill="solid: ffffffff" hasStroke="0" text="CH Order:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="523 401 172 30" fill="solid: ffffffff" hasStroke="0" text="Normalisation:"
+    <TEXT pos="520 401 172 30" fill="solid: ffffffff" hasStroke="0" text="Normalisation:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="523 334 172 30" fill="solid: ffffffff" hasStroke="0" text="Post Gain (dB):"
+    <TEXT pos="520 334 172 30" fill="solid: ffffffff" hasStroke="0" text="Post Gain (dB):"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="75 193 101 30" fill="solid: ffffffff" hasStroke="0" text="Azi   #   Elev"
@@ -1383,7 +1383,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="440 30 149 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Settings"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="243 268 172 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Order:"
+    <TEXT pos="240 268 172 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Order:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
@@ -1392,7 +1392,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="92 0 112 32" fill="solid: ffe9ff00" hasStroke="0" text="Array2SH"
           fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="243 305 172 30" fill="solid: ffffffff" hasStroke="0" text="Diffuse-EQ Past Aliasing:"
+    <TEXT pos="240 305 172 30" fill="solid: ffffffff" hasStroke="0" text="Diffuse-EQ Past Aliasing:"
           fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="328 65 392 31" fill="solid: ffffffff" hasStroke="0" text="Press the &quot;Analyse&quot; button"
@@ -1434,22 +1434,22 @@ BEGIN_JUCER_METADATA
             layout="33" items="Spherical&#10;Cylindrical" textWhenNonSelected="Spherical"
             textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="93dd93c125dcb3b3" memberName="QSlider"
-          virtualName="" explicitFocusOrder="0" pos="112 99 96 16" min="4.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="120 99 88 16" min="4.00000000000000000000"
           max="64.00000000000000000000" int="1.00000000000000000000" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
+          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <SLIDER name="new slider" id="f6fe97a46cc051e2" memberName="rSlider"
-          virtualName="" explicitFocusOrder="0" pos="112 131 96 16" min="1.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="120 131 88 16" min="1.00000000000000000000"
           max="100.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
+          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <SLIDER name="new slider" id="41d575604e9dcd3a" memberName="RSlider"
-          virtualName="" explicitFocusOrder="0" pos="112 163 96 16" min="1.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="120 163 88 16" min="1.00000000000000000000"
           max="100.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
+          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <SLIDER name="new slider" id="c3b6d9fc71650ee4" memberName="cSlider"
-          virtualName="" explicitFocusOrder="0" pos="368 347 120 16" min="200.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="364 347 124 16" min="200.00000000000000000000"
           max="2000.00000000000000000000" int="0.10000000000000000555"
           style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
           textBoxWidth="55" textBoxHeight="20" skewFactor="1.00000000000000000000"
