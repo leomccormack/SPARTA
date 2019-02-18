@@ -69,7 +69,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     rSlider.reset (new Slider ("new slider"));
     addAndMakeVisible (rSlider.get());
-    rSlider->setRange (1, 150, 0.01);
+    rSlider->setRange (1, 100, 0.01);
     rSlider->setSliderStyle (Slider::LinearHorizontal);
     rSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
     rSlider->addListener (this);
@@ -78,7 +78,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     RSlider.reset (new Slider ("new slider"));
     addAndMakeVisible (RSlider.get());
-    RSlider->setRange (1, 150, 0.01);
+    RSlider->setRange (1, 100, 0.01);
     RSlider->setSliderStyle (Slider::LinearHorizontal);
     RSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
     RSlider->addListener (this);
@@ -1440,12 +1440,12 @@ BEGIN_JUCER_METADATA
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <SLIDER name="new slider" id="f6fe97a46cc051e2" memberName="rSlider"
           virtualName="" explicitFocusOrder="0" pos="112 131 96 16" min="1.00000000000000000000"
-          max="150.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
+          max="100.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <SLIDER name="new slider" id="41d575604e9dcd3a" memberName="RSlider"
           virtualName="" explicitFocusOrder="0" pos="112 163 96 16" min="1.00000000000000000000"
-          max="150.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
+          max="100.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <SLIDER name="new slider" id="c3b6d9fc71650ee4" memberName="cSlider"

@@ -168,7 +168,7 @@ void sensorCoordsView::paint (Graphics& g)
         //g.setColour (strokeColour);
         g.setColour(Colours::white);
         g.setOpacity(0.15f);
-        g.drawRect (0, i*sensorEdit_height, sensorEdit_width, sensorEdit_height, 1);
+        g.drawRect (0, i*sensorEdit_height, sensorEdit_width, sensorEdit_height+1, 1);
     }
 
 
@@ -181,7 +181,7 @@ void sensorCoordsView::resized()
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
-    setSize (sensorEdit_width, sensorEdit_height*currentQ);
+    setSize (sensorEdit_width, sensorEdit_height*currentQ+1);
     repaint();
     //[/UserResized]
 }
