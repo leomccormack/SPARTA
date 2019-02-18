@@ -314,11 +314,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.467463"
+            timestampString = "572182379.169926"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "481"
-            endingLineNumber = "481"
+            startingLineNumber = "482"
+            endingLineNumber = "482"
             landmarkName = "array2sh_apply_diff_EQ"
             landmarkType = "9">
          </BreakpointContent>
@@ -330,11 +330,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.467911"
+            timestampString = "572182379.170265"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "401"
-            endingLineNumber = "401"
+            startingLineNumber = "402"
+            endingLineNumber = "402"
             landmarkName = "array2sh_apply_diff_EQ"
             landmarkType = "9">
          </BreakpointContent>
@@ -346,11 +346,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.468251"
+            timestampString = "572182379.170493"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "445"
-            endingLineNumber = "445"
+            startingLineNumber = "446"
+            endingLineNumber = "446"
             landmarkName = "array2sh_apply_diff_EQ"
             landmarkType = "9">
          </BreakpointContent>
@@ -362,11 +362,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.4685839"
+            timestampString = "572182379.170718"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "457"
-            endingLineNumber = "457"
+            startingLineNumber = "458"
+            endingLineNumber = "458"
             landmarkName = "array2sh_apply_diff_EQ"
             landmarkType = "9">
          </BreakpointContent>
@@ -378,27 +378,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.46891"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "475"
-            endingLineNumber = "475"
-            landmarkName = "array2sh_apply_diff_EQ"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.469256"
+            timestampString = "572182379.170945"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "476"
             endingLineNumber = "476"
+            landmarkName = "array2sh_apply_diff_EQ"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
+            timestampString = "572182379.171177"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "477"
+            endingLineNumber = "477"
             landmarkName = "array2sh_apply_diff_EQ"
             landmarkType = "9">
          </BreakpointContent>
@@ -458,7 +458,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.469757"
+            timestampString = "572182379.171443"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "98"
@@ -474,7 +474,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.4700511"
+            timestampString = "572182379.171669"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "310"
@@ -490,7 +490,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.470292"
+            timestampString = "572182379.17189"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "337"
@@ -506,7 +506,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.4705319"
+            timestampString = "572182379.172107"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "328"
@@ -522,7 +522,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.470817"
+            timestampString = "572182379.172327"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "317"
@@ -538,7 +538,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.4710619"
+            timestampString = "572182379.172546"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "332"
@@ -554,7 +554,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.471324"
+            timestampString = "572182379.172753"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "362"
@@ -570,7 +570,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.471568"
+            timestampString = "572182379.172961"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "336"
@@ -586,7 +586,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.471792"
+            timestampString = "572182379.1731679"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "241"
@@ -602,7 +602,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.472041"
+            timestampString = "572182379.173375"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "245"
@@ -618,7 +618,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580534.47226"
+            timestampString = "572182379.173584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "257"
@@ -634,12 +634,108 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
-            timestampString = "571580657.530149"
+            timestampString = "572182379.173789"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "349"
             endingLineNumber = "349"
             landmarkName = "array2sh_calculate_sht_matrix"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh.c"
+            timestampString = "572182096.7179919"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "248"
+            endingLineNumber = "248"
+            landmarkName = "array2sh_process"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
+            timestampString = "572182379.174019"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "628"
+            endingLineNumber = "628"
+            landmarkName = "array2sh_evaluateSHTfilters"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
+            timestampString = "572182379.1742311"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "609"
+            endingLineNumber = "609"
+            landmarkName = "array2sh_evaluateSHTfilters"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
+            timestampString = "572182379.1744339"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "518"
+            endingLineNumber = "518"
+            landmarkName = "array2sh_apply_diff_EQ"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
+            timestampString = "572182379.174643"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "371"
+            endingLineNumber = "371"
+            landmarkName = "array2sh_calculate_sht_matrix"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"
+            timestampString = "572182379.17485"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
+            landmarkName = "array2sh_initTFT"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
