@@ -1203,12 +1203,12 @@ void PluginEditor::timerCallback()
 {
     /* these parameters can change internally */
     RSlider->setValue(array2sh_getR(hVst->hA2sh)*1e3f, dontSendNotification);
+    CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hVst->hA2sh), dontSendNotification);
     int curOrder = CBencodingOrder->getSelectedId();
     QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
     QSlider->setValue(array2sh_getNumSensors(hVst->hA2sh), dontSendNotification);
     sensorCoordsView_handle->setQ(array2sh_getNumSensors(hVst->hA2sh));
-    CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hVst->hA2sh), dontSendNotification);
-
+    
 #ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
     if (hVst->getIsPlaying()){
