@@ -69,7 +69,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     rSlider.reset (new Slider ("new slider"));
     addAndMakeVisible (rSlider.get());
-    rSlider->setRange (1, 100, 0.01);
+    rSlider->setRange (1, 200, 0.01);
     rSlider->setSliderStyle (Slider::LinearHorizontal);
     rSlider->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
     rSlider->addListener (this);
@@ -78,7 +78,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     RSlider.reset (new Slider ("new slider"));
     addAndMakeVisible (RSlider.get());
-    RSlider->setRange (1, 100, 0.01);
+    RSlider->setRange (1, 200, 0.01);
     RSlider->setSliderStyle (Slider::LinearHorizontal);
     RSlider->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
     RSlider->addListener (this);
@@ -233,15 +233,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     openGLContext.attachTo(*this);
 
     /* create EQ window and analysis windows */
-    addAndMakeVisible (eqviewIncluded = new eqview(556, 209, 100.0f, 20e3f, -40.0f, 100.0f, 48e3f )); /* TODO: switch to the more general "anaview"  */
+    addAndMakeVisible (eqviewIncluded = new eqview(556, 209, 30.0f, 20e3f, -30.0f, 60.0f, 48e3f )); /* TODO: switch to the more general "anaview"  */
     eqviewIncluded->setAlwaysOnTop(true);
     eqviewIncluded->setTopLeftPosition(228, 56);
     eqviewIncluded->setVisible(true);
-    addAndMakeVisible (cohviewIncluded = new anaview(556, 209, 100.0f, 20e3f, 0.0f, 1.0f, TRANS("Spatial Corr. (T:I)"), 1, 48e3f ));
+    addAndMakeVisible (cohviewIncluded = new anaview(556, 209, 30.0f, 20e3f, 0.0f, 1.0f, TRANS("Spatial Corr. (T:I)"), 1, 48e3f ));
     cohviewIncluded->setAlwaysOnTop(true);
     cohviewIncluded->setTopLeftPosition(228, 56);
     cohviewIncluded->setVisible(false);
-    addAndMakeVisible (ldiffviewIncluded = new anaview(556, 209, 100.0f, 20e3f, -30, 10, TRANS("Level Diff. (dB)"), 10.0f, 48e3f ));
+    addAndMakeVisible (ldiffviewIncluded = new anaview(556, 209, 30.0f, 20e3f, -30, 10, TRANS("Level Diff. (dB)"), 10.0f, 48e3f ));
     ldiffviewIncluded->setAlwaysOnTop(true);
     ldiffviewIncluded->setTopLeftPosition(228, 56);
     ldiffviewIncluded->setVisible(false);
@@ -1208,7 +1208,7 @@ void PluginEditor::timerCallback()
     QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
     QSlider->setValue(array2sh_getNumSensors(hVst->hA2sh), dontSendNotification);
     sensorCoordsView_handle->setQ(array2sh_getNumSensors(hVst->hA2sh));
-    
+
 #ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
     if (hVst->getIsPlaying()){
@@ -1440,12 +1440,12 @@ BEGIN_JUCER_METADATA
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <SLIDER name="new slider" id="f6fe97a46cc051e2" memberName="rSlider"
           virtualName="" explicitFocusOrder="0" pos="120 131 88 16" min="1.00000000000000000000"
-          max="100.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
+          max="200.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <SLIDER name="new slider" id="41d575604e9dcd3a" memberName="RSlider"
           virtualName="" explicitFocusOrder="0" pos="120 163 88 16" min="1.00000000000000000000"
-          max="100.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
+          max="200.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <SLIDER name="new slider" id="c3b6d9fc71650ee4" memberName="cSlider"
