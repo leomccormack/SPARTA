@@ -39,7 +39,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "sparta_array2sh";
-    const char* const  versionString  = "1.4.1";
-    const int          versionNumber  = 0x10401;
+    const char* const  versionString  = "1.4.3";
+    const int          versionNumber  = 0x10403;
 }
 #endif
