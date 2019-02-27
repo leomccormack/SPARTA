@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_array2sh" projectType="audioplug" version="1.4.3"
+<JUCERPROJECT id="lfkRjX" name="sparta_array2sh" projectType="audioplug" version="1.4.5"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_array2sh" pluginDesc="sparta_array2sh"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ASOA"
@@ -8,7 +8,7 @@
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="sparta_array2sh_AU" pluginRTASCategory=""
               aaxIdentifier="com.yourcompany.array2sh" pluginAAXCategory="2"
-              jucerVersion="5.3.2" buildVST3="0" buildRTAS="0" buildAAX="0"
+              jucerVersion="5.4.1" buildVST3="0" buildRTAS="0" buildAAX="0"
               pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE = 256&#10;SAF_USE_INTEL_MKL"
               companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"

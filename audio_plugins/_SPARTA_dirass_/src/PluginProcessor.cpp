@@ -1,0 +1,274 @@
+/*
+ ==============================================================================
+ 
+ This file is part of SPARTA; a suite of spatial audio plug-ins.
+ Copyright (c) 2019 - Leo McCormack.
+ 
+ SPARTA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ SPARTA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ ==============================================================================
+*/
+#include "PluginProcessor.h"
+#include "PluginEditor.h"
+
+PluginProcessor::PluginProcessor() : 
+	AudioProcessor(BusesProperties()
+		.withInput("Input", AudioChannelSet::discreteChannels(64), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
+{
+    bufferInputs = new float*[MAX_NUM_CHANNELS];
+    for (int i = 0; i < MAX_NUM_CHANNELS; i++)
+        bufferInputs[i] = new float[FRAME_SIZE];
+
+    dirass_create(&hDir);
+}
+
+PluginProcessor::~PluginProcessor()
+{
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
+        delete[] bufferInputs[i];
+    delete[] bufferInputs;
+    dirass_destroy(&hDir);
+}
+
+void PluginProcessor::setParameter (int index, float newValue)
+{
+	switch (index)
+	{
+		default: break;
+	}
+}
+
+void PluginProcessor::setCurrentProgram (int index)
+{
+}
+
+float PluginProcessor::getParameter (int index)
+{
+    switch (index)
+	{
+		default: return 0.0f;
+	}
+}
+
+int PluginProcessor::getNumParameters()
+{
+	return k_NumOfParameters;
+}
+
+const String PluginProcessor::getName() const
+{
+    return JucePlugin_Name;
+}
+
+const String PluginProcessor::getParameterName (int index)
+{
+    switch (index)
+	{
+		default: return "NULL";
+	}
+}
+
+const String PluginProcessor::getParameterText(int index)
+{
+	return String(getParameter(index), 1);    
+}
+
+const String PluginProcessor::getInputChannelName (int channelIndex) const
+{
+    return String (channelIndex + 1);
+}
+
+const String PluginProcessor::getOutputChannelName (int channelIndex) const
+{
+    return String (channelIndex + 1);
+}
+
+double PluginProcessor::getTailLengthSeconds() const
+{
+    return 0.0;
+}
+
+int PluginProcessor::getNumPrograms()
+{
+    return 0;
+}
+
+int PluginProcessor::getCurrentProgram()
+{
+    return 0;
+}
+
+const String PluginProcessor::getProgramName (int index)
+{
+    return String();
+}
+
+
+bool PluginProcessor::isInputChannelStereoPair (int index) const
+{
+    return true;
+}
+
+bool PluginProcessor::isOutputChannelStereoPair (int index) const
+{
+    return true;
+}
+
+
+bool PluginProcessor::acceptsMidi() const
+{
+   #if JucePlugin_WantsMidiInput
+    return true;
+   #else
+    return false;
+   #endif
+}
+
+bool PluginProcessor::producesMidi() const
+{
+   #if JucePlugin_ProducesMidiOutput
+    return true;
+   #else
+    return false;
+   #endif
+}
+
+bool PluginProcessor::silenceInProducesSilenceOut() const
+{
+    return false;
+}
+
+void PluginProcessor::changeProgramName (int index, const String& newName)
+{
+}
+
+void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+{
+    nHostBlockSize = samplesPerBlock;
+    nSampleRate = (int)(sampleRate + 0.5);
+    nNumInputs = getTotalNumInputChannels(); 
+    isPlaying = false;
+
+    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
+        memset(bufferInputs[i], 0, FRAME_SIZE*sizeof(float));
+
+    dirass_init(hDir, sampleRate);
+}
+
+void PluginProcessor::releaseResources()
+{
+    isPlaying = false;
+}
+
+void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
+{
+    int nCurrentBlockSize = buffer.getNumSamples();
+    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
+    const float** bufferData = buffer.getArrayOfReadPointers();
+ 
+    if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
+        for (int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
+            for (int ch = 0; ch < nNumInputs; ch++)  
+                for (int i = 0; i < FRAME_SIZE; i++)
+                    bufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
+            
+            /* determine if there is actually audio in the damn buffer */
+            for(int j=0; j<nNumInputs; j++){
+                isPlaying = buffer.getRMSLevel(j, 0, nCurrentBlockSize)>1e-5f ? true : false;
+                if(isPlaying)
+                    break;
+            }
+            
+            /* perform processing */
+            dirass_analysis( hDir, bufferInputs, nNumInputs, FRAME_SIZE, isPlaying);
+        }
+    } 
+}
+
+//==============================================================================
+bool PluginProcessor::hasEditor() const
+{
+    return true; 
+}
+
+AudioProcessorEditor* PluginProcessor::createEditor()
+{
+    return new PluginEditor (this);
+}
+
+//==============================================================================
+void PluginProcessor::getStateInformation (MemoryBlock& destData)
+{
+ 	XmlElement xml("DIRASSAUDIOPLUGINSETTINGS");
+ 
+    xml.setAttribute("MapMode", dirass_getMapMode(hDir));
+    xml.setAttribute("InputOrder", dirass_getInputOrder(hDir));
+    xml.setAttribute("GridOption", dirass_getDisplayGridOption(hDir));
+    xml.setAttribute("UpscaleOrder", dirass_getUpscaleOrder(hDir));
+    xml.setAttribute("EnableDirASS", dirass_getEnableDiRAss(hDir));
+    xml.setAttribute("MinFreq", dirass_getMinFreq(hDir));
+    xml.setAttribute("MaxFreq", dirass_getMaxFreq(hDir));
+    xml.setAttribute("CHorder", dirass_getChOrder(hDir));
+    xml.setAttribute("Norm", dirass_getNormType(hDir));
+    xml.setAttribute("FOVoption", dirass_getDispFOV(hDir));
+    xml.setAttribute("ARoption", dirass_getAspectRatio(hDir));
+    xml.setAttribute("MapAvg", dirass_getMapAvgCoeff(hDir));
+     
+	copyXmlToBinary(xml, destData);
+}
+
+void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
+{
+    ScopedPointer<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+
+    if (xmlState != nullptr) {
+        if (xmlState->hasTagName("DIRASSAUDIOPLUGINSETTINGS")) { 
+            if(xmlState->hasAttribute("MapMode"))
+                dirass_setMapMode(hDir, xmlState->getIntAttribute("MapMode", 1));
+            if(xmlState->hasAttribute("InputOrder"))
+                dirass_setInputOrder(hDir, xmlState->getIntAttribute("InputOrder", 1));
+            if(xmlState->hasAttribute("GridOption"))
+                dirass_setDisplayGridOption(hDir, xmlState->getIntAttribute("GridOption", 1));
+            if(xmlState->hasAttribute("UpscaleOrder"))
+                dirass_setUpscaleOrder(hDir, xmlState->getIntAttribute("UpscaleOrder", 1));
+            if(xmlState->hasAttribute("EnableDirASS"))
+                dirass_setEnableDiRAss(hDir, xmlState->getIntAttribute("EnableDirASS", 1));
+            if(xmlState->hasAttribute("MinFreq"))
+                dirass_setMinFreq(hDir, (float)xmlState->getDoubleAttribute("MinFreq", 100.0f));
+            if(xmlState->hasAttribute("MaxFreq"))
+                dirass_setMaxFreq(hDir, (float)xmlState->getDoubleAttribute("MaxFreq", 20e3f));
+            if(xmlState->hasAttribute("CHorder"))
+                dirass_setChOrder(hDir, xmlState->getIntAttribute("CHorder", 1));
+            if(xmlState->hasAttribute("Norm"))
+                dirass_setNormType(hDir, xmlState->getIntAttribute("Norm", 1));
+            if(xmlState->hasAttribute("FOVoption"))
+                dirass_setDispFOV(hDir, xmlState->getIntAttribute("FOVoption", 1));
+            if(xmlState->hasAttribute("ARoption"))
+                dirass_setAspectRatio(hDir, xmlState->getIntAttribute("ARoption", 1));
+            if(xmlState->hasAttribute("MapAvg"))
+                dirass_setMapAvgCoeff(hDir, (float)xmlState->getDoubleAttribute("MapAvg", 0.5f));
+                
+			dirass_refreshSettings(hDir);
+        }
+    }
+}
+
+//==============================================================================
+// This creates new instances of the plugin..
+AudioProcessor* JUCE_CALLTYPE createPluginFilter()
+{
+    return new PluginProcessor();
+}
+
