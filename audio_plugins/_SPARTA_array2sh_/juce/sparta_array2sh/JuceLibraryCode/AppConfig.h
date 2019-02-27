@@ -262,14 +262,6 @@
 #ifndef    JUCE_ENABLE_LIVE_CONSTANT_EDITOR
  //#define JUCE_ENABLE_LIVE_CONSTANT_EDITOR 0
 #endif
-//==============================================================================
-#ifndef    JUCE_STANDALONE_APPLICATION
- #if defined(JucePlugin_Name) && defined(JucePlugin_Build_Standalone)
-  #define  JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
- #else
-  #define  JUCE_STANDALONE_APPLICATION 0
- #endif
-#endif
 
 //==============================================================================
 // Audio plugin settings..
@@ -294,6 +286,9 @@
 #endif
 #ifndef  JucePlugin_Build_Standalone
  #define JucePlugin_Build_Standalone       0
+#endif
+#ifndef  JucePlugin_Build_Unity
+ #define JucePlugin_Build_Unity            0
 #endif
 #ifndef  JucePlugin_Enable_IAA
  #define JucePlugin_Enable_IAA             0
@@ -335,13 +330,13 @@
  #define JucePlugin_EditorRequiresKeyboardFocus  0
 #endif
 #ifndef  JucePlugin_Version
- #define JucePlugin_Version                1.4.3
+ #define JucePlugin_Version                1.4.5
 #endif
 #ifndef  JucePlugin_VersionCode
- #define JucePlugin_VersionCode            0x10403
+ #define JucePlugin_VersionCode            0x10405
 #endif
 #ifndef  JucePlugin_VersionString
- #define JucePlugin_VersionString          "1.4.3"
+ #define JucePlugin_VersionString          "1.4.5"
 #endif
 #ifndef  JucePlugin_VSTUniqueID
  #define JucePlugin_VSTUniqueID            JucePlugin_PluginCode
@@ -411,4 +406,13 @@
 #endif
 #ifndef  JucePlugin_IAAName
  #define JucePlugin_IAAName                "AALTO: sparta_array2sh"
+#endif
+
+//==============================================================================
+#ifndef    JUCE_STANDALONE_APPLICATION
+ #if defined(JucePlugin_Name) && defined(JucePlugin_Build_Standalone)
+  #define  JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+ #else
+  #define  JUCE_STANDALONE_APPLICATION 0
+ #endif
 #endif

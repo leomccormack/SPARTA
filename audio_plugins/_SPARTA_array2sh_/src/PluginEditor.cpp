@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.1
 
   ------------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     QSlider->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
     QSlider->addListener (this);
 
-    QSlider->setBounds (120, 99, 88, 16);
+    QSlider->setBounds (156, 99, 52, 16);
 
     rSlider.reset (new Slider ("new slider"));
     addAndMakeVisible (rSlider.get());
@@ -74,16 +74,18 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     rSlider->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
     rSlider->addListener (this);
 
-    rSlider->setBounds (120, 131, 88, 16);
+    rSlider->setBounds (156, 131, 52, 16);
 
     RSlider.reset (new Slider ("new slider"));
     addAndMakeVisible (RSlider.get());
     RSlider->setRange (1, 200, 0.01);
     RSlider->setSliderStyle (Slider::LinearHorizontal);
     RSlider->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
+    RSlider->setColour (Slider::trackColourId, Colour (0xff181f22));
+    RSlider->setColour (Slider::rotarySliderOutlineColourId, Colour (0xff263238));
     RSlider->addListener (this);
 
-    RSlider->setBounds (120, 163, 88, 16);
+    RSlider->setBounds (156, 163, 52, 16);
 
     cSlider.reset (new Slider ("new slider"));
     addAndMakeVisible (cSlider.get());
@@ -231,6 +233,17 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 	hVst = ownerFilter;
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
+
+    /* remove the slider bit of these sliders */
+    rSlider->setColour(Slider::trackColourId, Colours::transparentBlack);
+    rSlider->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    rSlider->setSliderSnapsToMousePosition(false);
+    RSlider->setColour(Slider::trackColourId, Colours::transparentBlack);
+    RSlider->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    RSlider->setSliderSnapsToMousePosition(false);
+    QSlider->setColour(Slider::trackColourId, Colours::transparentBlack);
+    QSlider->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    QSlider->setSliderSnapsToMousePosition(false);
 
     /* create EQ window and analysis windows */
     addAndMakeVisible (eqviewIncluded = new eqview(556, 209, 30.0f, 20e3f, -30.0f, 60.0f, 48e3f )); /* TODO: switch to the more general "anaview"  */
@@ -545,43 +558,43 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 20, y = 91, width = 92, height = 30;
-        String text (TRANS("No. Sensors: "));
+        int x = 20, y = 91, width = 180, height = 30;
+        String text (TRANS("Number of Sensors: "));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
         int x = 20, y = 123, width = 116, height = 30;
-        String text (TRANS("Sensor r (mm):"));
+        String text (TRANS("Array radius (mm):"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 20, y = 155, width = 124, height = 30;
-        String text (TRANS("Baffle r (mm):"));
+        int x = 20, y = 155, width = 180, height = 30;
+        String text (TRANS("Baffle radius (mm):"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -606,7 +619,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -631,7 +644,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -643,7 +656,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -655,7 +668,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -667,7 +680,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -679,7 +692,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -691,7 +704,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -703,7 +716,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -715,7 +728,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -737,7 +750,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -749,7 +762,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -761,7 +774,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -773,7 +786,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -785,7 +798,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (18.8f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -797,7 +810,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (18.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -809,7 +822,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -821,7 +834,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     Justification::centred, true);
     }
@@ -833,7 +846,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (Font (11.0f, Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -845,7 +858,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (Font (11.0f, Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -857,7 +870,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (Font (11.0f, Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -869,7 +882,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (Font (11.0f, Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -881,7 +894,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (Font (11.0f, Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -893,7 +906,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (Font (11.0f, Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -905,7 +918,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (Font (11.0f, Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -917,7 +930,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (Font (11.0f, Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -929,7 +942,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (12.0f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -1306,7 +1319,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
                  parentClasses="public AudioProcessorEditor, public Timer" constructorParams="PluginProcessor* ownerFilter"
                  variableInitialisers="AudioProcessorEditor(ownerFilter)" snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
+                 snapActive="1" snapShown="1" overlayOpacity="0.33" fixedSize="1"
                  initialWidth="800" initialHeight="450">
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 30 800 420" fill=" radial: 424 160, 696 440, 0=ff5b6d76, 1=ff073642"
@@ -1330,101 +1343,101 @@ BEGIN_JUCER_METADATA
     <RECT pos="0 0 800 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
     <TEXT pos="20 57 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="20 91 92 30" fill="solid: ffffffff" hasStroke="0" text="No. Sensors: "
-          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="20 123 116 30" fill="solid: ffffffff" hasStroke="0" text="Sensor r (mm):"
-          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="20 155 124 30" fill="solid: ffffffff" hasStroke="0" text="Baffle r (mm):"
-          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="20 91 180 30" fill="solid: ffffffff" hasStroke="0" text="Number of Sensors: "
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="20 123 116 30" fill="solid: ffffffff" hasStroke="0" text="Array radius (mm):"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="20 155 180 30" fill="solid: ffffffff" hasStroke="0" text="Baffle radius (mm):"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 192 204 244" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="240 337 172 30" fill="solid: ffffffff" hasStroke="0" text="c (m/s):"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 56 204 32" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="240 369 172 30" fill="solid: ffffffff" hasStroke="0" text="Array Type:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="240 401 172 30" fill="solid: ffffffff" hasStroke="0" text="Baffle/Directivity:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="520 268 172 30" fill="solid: ffffffff" hasStroke="0" text="Filter Approach:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="520 301 172 30" fill="solid: ffffffff" hasStroke="0" text="Max Gain (dB):"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="520 369 172 30" fill="solid: ffffffff" hasStroke="0" text="CH Order:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="520 401 172 30" fill="solid: ffffffff" hasStroke="0" text="Normalisation:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="520 334 172 30" fill="solid: ffffffff" hasStroke="0" text="Post Gain (dB):"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="75 193 101 30" fill="solid: ffffffff" hasStroke="0" text="Azi   #   Elev"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="24 224 184 200" fill="solid: 39a52a" hasStroke="1" stroke="1, mitered, butt"
           strokeColour="solid: 29b6b5b5"/>
     <TEXT pos="179 193 24 23" fill="solid: ffffffff" hasStroke="0" text="&#176;"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 30 88 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="440 30 149 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Settings"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="240 268 172 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Order:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
+          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.0"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 0 112 32" fill="solid: ffe9ff00" hasStroke="0" text="Array2SH"
-          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="240 305 172 30" fill="solid: ffffffff" hasStroke="0" text="Diffuse-EQ Past Aliasing:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="328 65 392 31" fill="solid: ffffffff" hasStroke="0" text="Press the &quot;Analyse&quot; button"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="36"/>
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
     <TEXT pos="291 88 477 23" fill="solid: ffffffff" hasStroke="0" text="Corr: The spatial correlation is derived by comparing the patterns of the array responses with"
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="33"/>
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
+          italic="0" justification="33"/>
     <TEXT pos="291 104 477 23" fill="solid: ffffffff" hasStroke="0" text="the patterns of ideal spherical harmonics, where '1' means they are perfect, and '0' completely "
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="33"/>
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
+          italic="0" justification="33"/>
     <TEXT pos="291 120 477 23" fill="solid: ffffffff" hasStroke="0" text="uncorrelated; the spatial aliasing frequency can therefore be observed for each order, as the "
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="33"/>
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
+          italic="0" justification="33"/>
     <TEXT pos="291 160 477 23" fill="solid: ffffffff" hasStroke="0" text="Ldiff: The level difference is the mean level difference over all directions (diffuse level differe-"
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="33"/>
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
+          italic="0" justification="33"/>
     <TEXT pos="291 192 477 23" fill="solid: ffffffff" hasStroke="0" text="amplification limits [Max Gain (dB)] will result in noisier signals; however, this will also result in "
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="33"/>
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
+          italic="0" justification="33"/>
     <TEXT pos="291 176 477 23" fill="solid: ffffffff" hasStroke="0" text="nce) between the ideal and simulated components. One can observe that higher permitted "
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="33"/>
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
+          italic="0" justification="33"/>
     <TEXT pos="291 136 477 23" fill="solid: ffffffff" hasStroke="0" text="point where the spatial correlation tends towards 0."
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="33"/>
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
+          italic="0" justification="33"/>
     <TEXT pos="291 208 477 23" fill="solid: ffffffff" hasStroke="0" text="a wider frequency range of useful spherical harmonic components at each order."
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="33"/>
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
+          italic="0" justification="33"/>
     <TEXT pos="673 33 119 25" fill="solid: ffffffff" hasStroke="0" text="Display:"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="abcd469891fabf2d" memberName="presetCB"
             virtualName="" explicitFocusOrder="0" pos="88 64 120 16" editable="0"
@@ -1434,26 +1447,25 @@ BEGIN_JUCER_METADATA
             layout="33" items="Spherical&#10;Cylindrical" textWhenNonSelected="Spherical"
             textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="93dd93c125dcb3b3" memberName="QSlider"
-          virtualName="" explicitFocusOrder="0" pos="120 99 88 16" min="4.00000000000000000000"
-          max="64.00000000000000000000" int="1.00000000000000000000" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
-          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
-  <SLIDER name="new slider" id="f6fe97a46cc051e2" memberName="rSlider"
-          virtualName="" explicitFocusOrder="0" pos="120 131 88 16" min="1.00000000000000000000"
-          max="200.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
-          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
-  <SLIDER name="new slider" id="41d575604e9dcd3a" memberName="RSlider"
-          virtualName="" explicitFocusOrder="0" pos="120 163 88 16" min="1.00000000000000000000"
-          max="200.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
-          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
-  <SLIDER name="new slider" id="c3b6d9fc71650ee4" memberName="cSlider"
-          virtualName="" explicitFocusOrder="0" pos="364 347 124 16" min="200.00000000000000000000"
-          max="2000.00000000000000000000" int="0.10000000000000000555"
-          style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
-          textBoxWidth="55" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="156 99 52 16" min="4.0"
+          max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
+  <SLIDER name="new slider" id="f6fe97a46cc051e2" memberName="rSlider"
+          virtualName="" explicitFocusOrder="0" pos="156 131 52 16" min="1.0"
+          max="200.0" int="0.01000000000000000021" style="LinearHorizontal"
+          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+  <SLIDER name="new slider" id="41d575604e9dcd3a" memberName="RSlider"
+          virtualName="" explicitFocusOrder="0" pos="156 163 52 16" trackcol="ff181f22"
+          rotaryslideroutline="ff263238" min="1.0" max="200.0" int="0.01000000000000000021"
+          style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
+          textBoxWidth="45" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+  <SLIDER name="new slider" id="c3b6d9fc71650ee4" memberName="cSlider"
+          virtualName="" explicitFocusOrder="0" pos="364 347 124 16" min="200.0"
+          max="2000.0" int="0.10000000000000000555" style="LinearHorizontal"
+          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <COMBOBOX name="new combo box" id="ea26910fd5e03b81" memberName="weightTypeCB"
             virtualName="" explicitFocusOrder="0" pos="368 410 120 16" editable="0"
             layout="33" items="" textWhenNonSelected="Rigid" textWhenNoItems="(no choices)"/>
@@ -1461,10 +1473,10 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="640 276 128 16" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="9f4f4ac547d19161" memberName="regAmountSlider"
-          virtualName="" explicitFocusOrder="0" pos="640 308 128 16" min="0.00000000000000000000"
-          max="80.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
+          virtualName="" explicitFocusOrder="0" pos="640 308 128 16" min="0.0"
+          max="80.0" int="0.01000000000000000021" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
-          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <COMBOBOX name="new combo box" id="44b90530e58253e" memberName="CHOrderingCB"
             virtualName="" explicitFocusOrder="0" pos="640 377 128 16" editable="0"
             layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
@@ -1472,10 +1484,10 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="640 409 128 16" editable="0"
             layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="ee4c42494881e7dc" memberName="gainSlider"
-          virtualName="" explicitFocusOrder="0" pos="640 341 128 16" min="-60.00000000000000000000"
-          max="60.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
+          virtualName="" explicitFocusOrder="0" pos="640 341 128 16" min="-60.0"
+          max="60.0" int="0.01000000000000000021" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
-          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="3fdbf3711d00f4db" memberName="degRadTB"
                 virtualName="" explicitFocusOrder="0" pos="186 198 23 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
