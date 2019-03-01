@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.1
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     avgSlider->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
     avgSlider->addListener (this);
 
-    avgSlider->setBounds (80, 465, 118, 24);
+    avgSlider->setBounds (80, 473, 118, 24);
 
     CB_CHorder.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CB_CHorder.get());
@@ -53,7 +53,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CB_CHorder->addItem (TRANS("ACN"), 1);
     CB_CHorder->addListener (this);
 
-    CB_CHorder->setBounds (66, 439, 62, 18);
+    CB_CHorder->setBounds (66, 447, 62, 18);
 
     CB_Norm.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CB_Norm.get());
@@ -65,7 +65,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CB_Norm->addItem (TRANS("SN3D"), 2);
     CB_Norm->addListener (this);
 
-    CB_Norm->setBounds (131, 439, 68, 18);
+    CB_Norm->setBounds (131, 447, 68, 18);
 
     slider_anaOrder.reset (new Slider ("new slider"));
     addAndMakeVisible (slider_anaOrder.get());
@@ -76,7 +76,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     slider_anaOrder->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
     slider_anaOrder->addListener (this);
 
-    slider_anaOrder->setBounds (576, 416, 40, 66);
+    slider_anaOrder->setBounds (576, 424, 40, 66);
 
     CBinputTypePreset.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBinputTypePreset.get());
@@ -87,25 +87,25 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBinputTypePreset->addItem (TRANS("Ideal SH"), 1);
     CBinputTypePreset->addListener (this);
 
-    CBinputTypePreset->setBounds (96, 409, 103, 18);
+    CBinputTypePreset->setBounds (96, 417, 103, 18);
 
     s_minFreq.reset (new Slider ("new slider"));
     addAndMakeVisible (s_minFreq.get());
-    s_minFreq->setRange (0, 24000, 0.1);
+    s_minFreq->setRange (0, 24000, 1);
     s_minFreq->setSliderStyle (Slider::LinearHorizontal);
     s_minFreq->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
     s_minFreq->addListener (this);
 
-    s_minFreq->setBounds (312, 372, 96, 24);
+    s_minFreq->setBounds (352, 382, 56, 20);
 
     s_maxFreq.reset (new Slider ("new slider"));
     addAndMakeVisible (s_maxFreq.get());
-    s_maxFreq->setRange (0, 24000, 0.1);
+    s_maxFreq->setRange (0, 24000, 1);
     s_maxFreq->setSliderStyle (Slider::LinearHorizontal);
     s_maxFreq->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
     s_maxFreq->addListener (this);
 
-    s_maxFreq->setBounds (520, 372, 96, 24);
+    s_maxFreq->setBounds (560, 382, 56, 20);
 
     CBmasterOrder.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBmasterOrder.get());
@@ -115,13 +115,44 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBmasterOrder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBmasterOrder->addListener (this);
 
-    CBmasterOrder->setBounds (96, 376, 103, 18);
+    CBmasterOrder->setBounds (96, 384, 103, 18);
+
+    CB_webcam.reset (new ComboBox (String()));
+    addAndMakeVisible (CB_webcam.get());
+    CB_webcam->setEditableText (false);
+    CB_webcam->setJustificationType (Justification::centredLeft);
+    CB_webcam->setTextWhenNothingSelected (String());
+    CB_webcam->setTextWhenNoChoicesAvailable (String());
+    CB_webcam->addListener (this);
+
+    CB_webcam->setBounds (395, 38, 92, 17);
+
+    TB_greyScale.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TB_greyScale.get());
+    TB_greyScale->setButtonText (String());
+    TB_greyScale->addListener (this);
+
+    TB_greyScale->setBounds (600, 35, 24, 24);
+
+    TB_flipUD.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TB_flipUD.get());
+    TB_flipUD->setButtonText (String());
+    TB_flipUD->addListener (this);
+
+    TB_flipUD->setBounds (559, 35, 24, 24);
+
+    TB_flipLR.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (TB_flipLR.get());
+    TB_flipLR->setButtonText (String());
+    TB_flipLR->addListener (this);
+
+    TB_flipLR->setBounds (511, 35, 24, 24);
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (634, 502);
+    setSize (634, 514);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -129,9 +160,28 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 	openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
 
+    /* remove slider bit of these sliders */
+    s_minFreq->setColour(Slider::trackColourId, Colours::transparentBlack);
+    s_minFreq->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    s_minFreq->setSliderSnapsToMousePosition(false);
+    s_maxFreq->setColour(Slider::trackColourId, Colours::transparentBlack);
+    s_maxFreq->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    s_maxFreq->setSliderSnapsToMousePosition(false);
+
+    /* overlay */
+    previewArea.setBounds(13, 59, 608, 303);
     addAndMakeVisible (overlayIncluded = new overlay(ownerFilter));
     overlayIncluded->setAlwaysOnTop(true);
-    overlayIncluded->setBounds(17, 48, 600, 300);
+    overlayIncluded->setBounds(previewArea);
+
+    /* Camera support */
+    updateCameraList();
+    CB_webcam->setSelectedId (hVst->getCameraID(), dontSendNotification);
+    CB_webcam->onChange = [this] { cameraChanged(); };
+    addAndMakeVisible (lastSnapshot);
+    TB_greyScale->setToggleState(hVst->getGreyScale(), dontSendNotification);
+    TB_flipLR->setToggleState(hVst->getFlipLR(), dontSendNotification);
+    TB_flipUD->setToggleState(hVst->getFlipUD(), dontSendNotification);
 
     /* create 2d Slider for the decoding order parameter */
     int nPoints;
@@ -139,7 +189,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     int* pY_values_int;
     addAndMakeVisible (anaOrder2dSlider = new log2dSlider(360, 54, 100, 20e3, 1, sldoa_getMasterOrder(hVst->hSld), 0));
     anaOrder2dSlider->setAlwaysOnTop(true);
-    anaOrder2dSlider->setTopLeftPosition(218, 422);
+    anaOrder2dSlider->setTopLeftPosition(218, 432);
     sldoa_getAnaOrderHandle(hVst->hSld, &pX_vector, &pY_values_int, &nPoints);
     anaOrder2dSlider->setDataHandlesInt(pX_vector, pY_values_int, nPoints);
 
@@ -199,6 +249,10 @@ PluginEditor::~PluginEditor()
     s_minFreq = nullptr;
     s_maxFreq = nullptr;
     CBmasterOrder = nullptr;
+    CB_webcam = nullptr;
+    TB_greyScale = nullptr;
+    TB_flipUD = nullptr;
+    TB_flipLR = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -216,7 +270,7 @@ void PluginEditor::paint (Graphics& g)
     g.fillAll (Colours::white);
 
     {
-        int x = 0, y = 30, width = 634, height = 472;
+        int x = 0, y = 30, width = 634, height = 484;
         Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -235,7 +289,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 8, y = 366, width = 197, height = 128;
+        int x = 8, y = 374, width = 197, height = 128;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -248,7 +302,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 204, y = 366, width = 422, height = 34;
+        int x = 204, y = 374, width = 422, height = 34;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -261,7 +315,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 8, y = 366, width = 197, height = 34;
+        int x = 8, y = 374, width = 197, height = 34;
         Colour fillColour = Colour (0x08f4f4f4);
         Colour strokeColour = Colour (0x32a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -274,7 +328,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 204, y = 399, width = 422, height = 95;
+        int x = 204, y = 407, width = 422, height = 95;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -300,157 +354,157 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 14, y = 402, width = 96, height = 30;
+        int x = 14, y = 410, width = 96, height = 30;
         String text (TRANS("Mic Preset:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 14, y = 460, width = 112, height = 30;
+        int x = 14, y = 468, width = 112, height = 30;
         String text (TRANS("Avg (ms):"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 14, y = 432, width = 127, height = 30;
+        int x = 14, y = 440, width = 127, height = 30;
         String text (TRANS("Format:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 216, y = 396, width = 312, height = 30;
+        int x = 216, y = 405, width = 312, height = 30;
         String text (TRANS("Analysis Order Per Frequency Band"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 611, y = 458, width = 13, height = 30;
+        int x = 611, y = 466, width = 13, height = 30;
         String text (TRANS("1"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 211, y = 470, width = 37, height = 30;
+        int x = 211, y = 478, width = 37, height = 30;
         String text (TRANS("100"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 366, y = 470, width = 37, height = 30;
+        int x = 366, y = 478, width = 37, height = 30;
         String text (TRANS("1k"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 520, y = 470, width = 37, height = 30;
+        int x = 520, y = 478, width = 37, height = 30;
         String text (TRANS("10k"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 402, y = 470, width = 93, height = 30;
+        int x = 402, y = 478, width = 93, height = 30;
         String text (TRANS("Frequency (Hz)"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 563, y = 470, width = 37, height = 30;
+        int x = 563, y = 478, width = 37, height = 30;
         String text (TRANS("20k"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 216, y = 368, width = 152, height = 30;
-        String text (TRANS("Min Freq (Hz):"));
+        int x = 216, y = 376, width = 160, height = 30;
+        String text (TRANS("Minimum Freq (Hz):"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 422, y = 368, width = 104, height = 30;
-        String text (TRANS("Max Freq (Hz):"));
+        int x = 422, y = 376, width = 162, height = 30;
+        String text (TRANS("Maximum Freq (Hz):"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 14, y = 368, width = 104, height = 30;
+        int x = 14, y = 376, width = 104, height = 30;
         String text (TRANS("Max Order:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -462,7 +516,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (18.8f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -474,7 +528,55 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (18.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 584, y = 32, width = 29, height = 30;
+        String text (TRANS("GS:"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 536, y = 32, width = 37, height = 30;
+        String text (TRANS("U|D:"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 490, y = 32, width = 37, height = 30;
+        String text (TRANS("L|R:"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 267, y = 33, width = 125, height = 30;
+        String text (TRANS("Display Window"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -490,7 +592,7 @@ void PluginEditor::paint (Graphics& g)
     Colour strokeColour = Colour (0x86a3a4a5);
     g.setColour (strokeColour);
     g.setOpacity(0.8f);
-    g.drawRect (17, 48, 600, 300, 1);
+    g.drawRect (previewArea);
 
 
     /* label for max ORDER */
@@ -537,7 +639,12 @@ void PluginEditor::resized()
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
-
+    lastSnapshot.setBounds(previewArea);
+    if (overlayIncluded != nullptr){
+        overlayIncluded->setAlwaysOnTop(true);
+        overlayIncluded->setBounds(previewArea);
+        overlayIncluded->resized();
+    }
 	repaint();
     //[/UserResized]
 }
@@ -616,9 +723,48 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
         repaint();
         //[/UserComboBoxCode_CBmasterOrder]
     }
+    else if (comboBoxThatHasChanged == CB_webcam.get())
+    {
+        //[UserComboBoxCode_CB_webcam] -- add your combo box handling code here..
+        hVst->setCameraID(CB_webcam->getSelectedId());
+        cameraChanged();
+        if(CB_webcam->getSelectedId()==1){
+            incomingImage.clear(previewArea);
+            lastSnapshot.setImage(incomingImage);
+        }
+        //[/UserComboBoxCode_CB_webcam]
+    }
 
     //[UsercomboBoxChanged_Post]
     //[/UsercomboBoxChanged_Post]
+}
+
+void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
+{
+    //[UserbuttonClicked_Pre]
+    //[/UserbuttonClicked_Pre]
+
+    if (buttonThatWasClicked == TB_greyScale.get())
+    {
+        //[UserButtonCode_TB_greyScale] -- add your button handler code here..
+        hVst->setGreyScale(TB_greyScale->getToggleState());
+        //[/UserButtonCode_TB_greyScale]
+    }
+    else if (buttonThatWasClicked == TB_flipUD.get())
+    {
+        //[UserButtonCode_TB_flipUD] -- add your button handler code here..
+        hVst->setFlipUD(TB_flipUD->getToggleState());
+        //[/UserButtonCode_TB_flipUD]
+    }
+    else if (buttonThatWasClicked == TB_flipLR.get())
+    {
+        //[UserButtonCode_TB_flipLR] -- add your button handler code here..
+        hVst->setFlipLR(TB_flipLR->getToggleState());
+        //[/UserButtonCode_TB_flipLR]
+    }
+
+    //[UserbuttonClicked_Post]
+    //[/UserbuttonClicked_Post]
 }
 
 
@@ -626,6 +772,14 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PluginEditor::timerCallback()
 {
+    /* take webcam picture */
+    if(CB_webcam->getSelectedId()>1){
+        handleAsyncUpdate();
+        if (incomingImage.isValid())
+            lastSnapshot.setImage(incomingImage);
+    }
+
+    /* refresh overlay */
 	if ((overlayIncluded != nullptr) && (hVst->isPlaying))
 		overlayIncluded->repaint();
     if (anaOrder2dSlider->getRefreshValuesFLAG())
@@ -654,6 +808,75 @@ void PluginEditor::timerCallback()
 }
 
 
+void PluginEditor::cameraChanged()
+{
+    if (CB_webcam->getSelectedId() > 1)
+        cameraDeviceOpenResult (CameraDevice::openDevice (CB_webcam->getSelectedId() - 2), {});
+    else
+        cameraDevice.reset ();
+}
+
+void PluginEditor::cameraDeviceOpenResult (CameraDevice* device, const String& error)
+{
+    cameraDevice.reset (device);
+    resized();
+}
+
+void PluginEditor::updateCameraList()
+{
+    CB_webcam->clear();
+    CB_webcam->addItem ("No camera", 1);
+    CB_webcam->addSeparator();
+
+    auto cameras = CameraDevice::getAvailableDevices();
+    for (int i = 0; i < cameras.size(); ++i)
+        CB_webcam->addItem (cameras[i], i + 2);
+    CB_webcam->setSelectedId(1);
+}
+
+
+void PluginEditor::imageReceived(const Image& image)
+{
+    if (! image.isValid())
+        return;
+    Image newImage = image;
+
+    /* L/R */
+    if(TB_flipLR->getToggleState()){
+        Image mirrorImage = newImage;
+        Graphics g(mirrorImage);
+        AffineTransform m_LR;
+        m_LR = AffineTransform(-1, 0, mirrorImage.getWidth(),
+                               0, 1, 0);
+        g.drawImageTransformed(mirrorImage, m_LR);
+        newImage = mirrorImage;
+    }
+
+    /* U/D */
+    if(TB_flipUD->getToggleState()){
+        Image mirrorImage = newImage;
+        Graphics g(mirrorImage);
+        AffineTransform m_UD;
+        m_UD = AffineTransform(1, 0, 0,
+                               0, -1, mirrorImage.getHeight());
+
+        g.drawImageTransformed(mirrorImage, m_UD);
+        newImage = mirrorImage;
+    }
+
+    if(TB_greyScale->getToggleState())
+        newImage.desaturate();
+
+    incomingImage = newImage;
+}
+
+void PluginEditor::handleAsyncUpdate()
+{
+    if (cameraDevice != nullptr){
+        SafePointer<PluginEditor> safeThis (this);
+        cameraDevice->takeStillPicture ([safeThis] (const Image& image) mutable { safeThis->imageReceived (image); });
+    }
+}
 
 //[/MiscUserCode]
 
@@ -668,101 +891,129 @@ void PluginEditor::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer" constructorParams="PluginProcessor* ownerFilter"
-                 variableInitialisers="AudioProcessorEditor(ownerFilter)" snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.33" fixedSize="1"
-                 initialWidth="634" initialHeight="502">
+                 parentClasses="public AudioProcessorEditor, public Timer, private CameraDevice::Listener, public AsyncUpdater"
+                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="1" initialWidth="634" initialHeight="514">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 634 472" fill=" radial: 312 200, 576 464, 0=ff5b6d76, 1=ff073642"
+    <RECT pos="0 30 634 484" fill=" radial: 312 200, 576 464, 0=ff5b6d76, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
-    <RECT pos="8 366 197 128" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="8 374 197 128" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="204 366 422 34" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="204 374 422 34" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="8 366 197 34" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="8 374 197 34" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 32a0a0a0"/>
-    <RECT pos="204 399 422 95" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="204 407 422 95" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="0 0 634 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
-    <TEXT pos="14 402 96 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="14 460 112 30" fill="solid: ffffffff" hasStroke="0" text="Avg (ms):"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="14 432 127 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="216 396 312 30" fill="solid: ffffffff" hasStroke="0" text="Analysis Order Per Frequency Band"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="611 458 13 30" fill="solid: ffffffff" hasStroke="0" text="1"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="211 470 37 30" fill="solid: ffffffff" hasStroke="0" text="100"
-          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="366 470 37 30" fill="solid: ffffffff" hasStroke="0" text="1k"
-          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="520 470 37 30" fill="solid: ffffffff" hasStroke="0" text="10k"
-          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="402 470 93 30" fill="solid: ffffffff" hasStroke="0" text="Frequency (Hz)"
-          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="563 470 37 30" fill="solid: ffffffff" hasStroke="0" text="20k"
-          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="216 368 152 30" fill="solid: ffffffff" hasStroke="0" text="Min Freq (Hz):"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="422 368 104 30" fill="solid: ffffffff" hasStroke="0" text="Max Freq (Hz):"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="14 368 104 30" fill="solid: ffffffff" hasStroke="0" text="Max Order:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="14 410 96 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="14 468 112 30" fill="solid: ffffffff" hasStroke="0" text="Avg (ms):"
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="14 440 127 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="216 405 312 30" fill="solid: ffffffff" hasStroke="0" text="Analysis Order Per Frequency Band"
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="611 466 13 30" fill="solid: ffffffff" hasStroke="0" text="1"
+          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="211 478 37 30" fill="solid: ffffffff" hasStroke="0" text="100"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="366 478 37 30" fill="solid: ffffffff" hasStroke="0" text="1k"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="520 478 37 30" fill="solid: ffffffff" hasStroke="0" text="10k"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="402 478 93 30" fill="solid: ffffffff" hasStroke="0" text="Frequency (Hz)"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="563 478 37 30" fill="solid: ffffffff" hasStroke="0" text="20k"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="216 376 160 30" fill="solid: ffffffff" hasStroke="0" text="Minimum Freq (Hz):"
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="422 376 162 30" fill="solid: ffffffff" hasStroke="0" text="Maximum Freq (Hz):"
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="14 376 104 30" fill="solid: ffffffff" hasStroke="0" text="Max Order:"
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.0"
+          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 0 112 32" fill="solid: ffff4848" hasStroke="0" text="SLDoA"
-          fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="584 32 29 30" fill="solid: ffffffff" hasStroke="0" text="GS:"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="536 32 37 30" fill="solid: ffffffff" hasStroke="0" text="U|D:"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="490 32 37 30" fill="solid: ffffffff" hasStroke="0" text="L|R:"
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="267 33 125 30" fill="solid: ffffffff" hasStroke="0" text="Display Window"
+          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <SLIDER name="new slider" id="86d1295f97e935ba" memberName="avgSlider"
-          virtualName="" explicitFocusOrder="0" pos="80 465 118 24" min="0.0"
-          max="2000.0" int="0.10000000000000000555" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
-          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="80 473 118 24" min="0.00000000000000000000"
+          max="2000.00000000000000000000" int="0.10000000000000000555"
+          style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
+          textBoxWidth="45" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          needsCallback="1"/>
   <COMBOBOX name="new combo box" id="3d1c447f9542fa94" memberName="CB_CHorder"
-            virtualName="" explicitFocusOrder="0" pos="66 439 62 18" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="66 447 62 18" editable="0"
             layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="d046f2696f3a4a04" memberName="CB_Norm"
-            virtualName="" explicitFocusOrder="0" pos="131 439 68 18" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="131 447 68 18" editable="0"
             layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="50ea77f60aadeeca" memberName="slider_anaOrder"
-          virtualName="" explicitFocusOrder="0" pos="576 416 40 66" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="0.0" max="1.0" int="1.0" style="LinearVertical"
-          textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="576 424 40 66" textboxtext="ffffffff"
+          textboxbkgd="ffffff" min="0.00000000000000000000" max="1.00000000000000000000"
+          int="1.00000000000000000000" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          needsCallback="1"/>
   <COMBOBOX name="new combo box" id="932ca035edce041d" memberName="CBinputTypePreset"
-            virtualName="" explicitFocusOrder="0" pos="96 409 103 18" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="96 417 103 18" editable="0"
             layout="33" items="Ideal SH" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="905f4ab0adab1f4f" memberName="s_minFreq"
-          virtualName="" explicitFocusOrder="0" pos="312 372 96 24" min="0.0"
-          max="24000.0" int="0.10000000000000000555" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
-          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="352 382 56 20" min="0.00000000000000000000"
+          max="24000.00000000000000000000" int="1.00000000000000000000"
+          style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
+          textBoxWidth="45" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          needsCallback="1"/>
   <SLIDER name="new slider" id="3aad5000f228ef1b" memberName="s_maxFreq"
-          virtualName="" explicitFocusOrder="0" pos="520 372 96 24" min="0.0"
-          max="24000.0" int="0.10000000000000000555" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
-          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="560 382 56 20" min="0.00000000000000000000"
+          max="24000.00000000000000000000" int="1.00000000000000000000"
+          style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
+          textBoxWidth="45" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          needsCallback="1"/>
   <COMBOBOX name="new combo box" id="346a30a1bf8969e9" memberName="CBmasterOrder"
-            virtualName="" explicitFocusOrder="0" pos="96 376 103 18" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="96 384 103 18" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
+  <COMBOBOX name="" id="974f5da4ceed6bb6" memberName="CB_webcam" virtualName=""
+            explicitFocusOrder="0" pos="395 38 92 17" editable="0" layout="33"
+            items="" textWhenNonSelected="" textWhenNoItems=""/>
+  <TOGGLEBUTTON name="new toggle button" id="78ff43e4ccfdc462" memberName="TB_greyScale"
+                virtualName="" explicitFocusOrder="0" pos="600 35 24 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TOGGLEBUTTON name="new toggle button" id="f4031e45e07a36d" memberName="TB_flipUD"
+                virtualName="" explicitFocusOrder="0" pos="559 35 24 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TOGGLEBUTTON name="new toggle button" id="bb60feb319e3e7d4" memberName="TB_flipLR"
+                virtualName="" explicitFocusOrder="0" pos="511 35 24 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

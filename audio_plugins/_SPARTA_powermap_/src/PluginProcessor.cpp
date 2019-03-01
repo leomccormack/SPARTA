@@ -32,6 +32,11 @@ PluginProcessor::PluginProcessor() :
         bufferInputs[i] = new float[FRAME_SIZE];
 
     powermap_create(&hPm);
+    
+    /* camera default settings */
+    cameraID = 1;
+    flipLR = flipUD = false;
+    greyScale = true;
 }
 
 PluginProcessor::~PluginProcessor()
@@ -227,6 +232,11 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("aspectRatio", powermap_getAspectRatio(hPm));
     xml.setAttribute("powermapAvgCoeff", powermap_getPowermapAvgCoeff(hPm));
     
+    xml.setAttribute("cameraID", cameraID);
+    xml.setAttribute("flipLR", flipLR);
+    xml.setAttribute("flipUD", flipUD);
+    xml.setAttribute("greyScale", greyScale);
+    
 	copyXmlToBinary(xml, destData);
 }
 
@@ -261,6 +271,15 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if(xmlState->hasAttribute("powermapAvgCoeff"))
                 powermap_setPowermapAvgCoeff(hPm, (float)xmlState->getDoubleAttribute("powermapAvgCoeff", 0.5f));
 
+            if(xmlState->hasAttribute("cameraID"))
+                cameraID = (int)xmlState->getIntAttribute("cameraID", 1);
+            if(xmlState->hasAttribute("flipLR"))
+                flipLR = (bool)xmlState->getIntAttribute("flipLR", 0);
+            if(xmlState->hasAttribute("flipUD"))
+                flipUD = (bool)xmlState->getIntAttribute("flipUD", 0);
+            if(xmlState->hasAttribute("greyScale"))
+                greyScale = (bool)xmlState->getIntAttribute("greyScale", 1);
+            
 			powermap_refreshSettings(hPm);
         }
     }

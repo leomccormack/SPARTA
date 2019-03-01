@@ -36,6 +36,11 @@ PluginProcessor::PluginProcessor() :
 		bufferInputs[i] = new float[FRAME_SIZE];
  
 	sldoa_create(&hSld);
+    
+    /* camera default settings */
+    cameraID = 1;
+    flipLR = flipUD = false;
+    greyScale = true;
 }
 
 PluginProcessor::~PluginProcessor()
@@ -223,6 +228,11 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("ChOrder", (int)sldoa_getChOrder(hSld));
     xml.setAttribute("Norm", (int)sldoa_getNormType(hSld));
     
+    xml.setAttribute("cameraID", cameraID);
+    xml.setAttribute("flipLR", flipLR);
+    xml.setAttribute("flipUD", flipUD);
+    xml.setAttribute("greyScale", greyScale);
+    
 	copyXmlToBinary(xml, destData);
 }
 
@@ -250,6 +260,15 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 sldoa_setChOrder(hSld, xmlState->getIntAttribute("ChOrder", 1));
             if(xmlState->hasAttribute("Norm"))
                 sldoa_setNormType(hSld, xmlState->getIntAttribute("Norm", 1));
+            
+            if(xmlState->hasAttribute("cameraID"))
+                cameraID = (int)xmlState->getIntAttribute("cameraID", 1);
+            if(xmlState->hasAttribute("flipLR"))
+                flipLR = (bool)xmlState->getIntAttribute("flipLR", 0);
+            if(xmlState->hasAttribute("flipUD"))
+                flipUD = (bool)xmlState->getIntAttribute("flipUD", 0);
+            if(xmlState->hasAttribute("greyScale"))
+                greyScale = (bool)xmlState->getIntAttribute("greyScale", 1);
         }
     }
 }

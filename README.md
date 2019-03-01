@@ -13,6 +13,7 @@ This repository contains the following VST plug-ins:
 * **AmbiENC** - An ambisonic encoder/panner (up to 7th order), with support for up to 64 input channels; the directions for which may also be imported via JSON configuration files. 
 * **Array2SH** - A microphone array spatial encoder (up to 7th order), with presets for several commercially available A-format and higher-order microphone arrays. The plug-in can also present objective evaluation metrics for the currently selected configuration.
 * **Binauraliser** - A binaural panner (up to 64 input channels) with a built-in SOFA loader and head-tracking support via OSC messages.
+* **DirASS** - A sound-field visualiser based on re-assigning the energy of beamformers, based on extracting the DoA from "spatially-constrained" regions, which are centred around each beamformer look-direction. 
 * **Panner** - A frequency-dependent 3-D panner using the VBAP method (up to 64 inputs and outputs).
 * **PowerMap** - A sound-field visualisation plug-in based on ambisonic signals as input (up to 7th order), with PWD/MVDR/MUSIC/Min-Norm options.
 * **Rotator** - A flexible ambisonic rotator (up to 7th order) with head-tracking support via OSC messages. 

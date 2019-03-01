@@ -57,6 +57,10 @@ public:
     bool getFinishedRefresh(){
         return finishedRefresh;
     }
+    void setEnableTransparency(bool newState){
+        enableTransparency = newState;
+    }
+    
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -71,6 +75,7 @@ private:
     Rectangle<int> localBounds;
     
     bool finishedRefresh;
+    bool enableTransparency;
     //[/UserVariables]
 
     //==============================================================================

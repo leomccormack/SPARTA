@@ -88,7 +88,7 @@ overlay::overlay (PluginProcessor* ownerFilter)
     dirs_deg = NULL;
     pmap = NULL;
     finishedRefresh = true;
-
+    enableTransparency = false;
     //[/Constructor]
 }
 
@@ -122,7 +122,11 @@ void overlay::paint (Graphics& g)
         int pmapHeight = (int)((float)pmapWidth/(float)aspectRatio +0.5f);
         float windowWidth = (float)localBounds.getWidth();
         float windowHeight = (float)localBounds.getHeight();
-        float vfov = (float)hfov/(float)aspectRatio; 
+        float vfov = (float)hfov/(float)aspectRatio;
+        if(pmapHeight<1.0f || pmapWidth < 1.0f){
+            finishedRefresh = true;
+            return;
+        }
 
         Colour col;
         Image myImage (Image::PixelFormat::ARGB, pmapWidth, pmapHeight, false);
@@ -132,7 +136,13 @@ void overlay::paint (Graphics& g)
                 float alpha = pmap[(pmapHeight-j-1)*pmapWidth+(pmapWidth-i-1)]; /* between 0..1 */
                 alpha = log(alpha+1.0f)/log(2.0f);
                 int colIdx = MAX(MIN(alpha*(float)mapColourTable_N, mapColourTable_N-1),0);
-                myImage.setPixelAt(i, j, mapColourTable[colIdx]); //pmap[i*50+j]
+                if(enableTransparency){
+                    col = Colour::fromRGBA(mapColourTable[colIdx].getRed(), mapColourTable[colIdx].getGreen(),
+                                           mapColourTable[colIdx].getBlue(),(uint8)(255.0f*alpha));
+                    myImage.setPixelAt(i, j, col);
+                }
+                else
+                    myImage.setPixelAt(i, j, mapColourTable[colIdx]); //pmap[i*50+j]
             }
         }
         myImageScaled = myImage.rescaled(windowWidth, windowHeight, Graphics::ResamplingQuality::lowResamplingQuality);
