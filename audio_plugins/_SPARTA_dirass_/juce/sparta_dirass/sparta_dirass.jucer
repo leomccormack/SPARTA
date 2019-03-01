@@ -8,7 +8,7 @@
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="sparta_dirass_AU" pluginRTASCategory=""
               aaxIdentifier="com.yourcompany.panner" pluginAAXCategory="2"
-              jucerVersion="5.4.1" buildVST3="0" buildRTAS="0" buildAAX="0"
+              jucerVersion="5.3.2" buildVST3="0" buildRTAS="0" buildAAX="0"
               pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE = 1024&#10;SAF_USE_INTEL_MKL"
               companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
@@ -90,6 +90,8 @@
           <FILE id="MKA32V" name="saf_calloc.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_calloc.h"/>
           <FILE id="VY08pl" name="saf_complex.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_complex.c"/>
           <FILE id="JF4ucY" name="saf_complex.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_complex.h"/>
+          <FILE id="BBm0rh" name="saf_filters.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_filters.c"/>
+          <FILE id="SDLTmA" name="saf_filters.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_filters.h"/>
           <FILE id="whGYdb" name="saf_free.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_free.c"/>
           <FILE id="LUAs9x" name="saf_free.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_free.h"/>
           <FILE id="z5dQuf" name="saf_loudspeaker_presets.c" compile="1" resource="0"

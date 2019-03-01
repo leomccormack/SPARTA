@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.1
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -122,7 +122,11 @@ void overlay::paint (Graphics& g)
         float windowWidth = (float)localBounds.getWidth();
         float windowHeight = (float)localBounds.getHeight();
         float vfov = (float)hfov/(float)aspectRatio;
-
+        if(pmapHeight<1.0f || pmapWidth < 1.0f){
+            finishedRefresh = true;
+            return;
+        }
+        
         Colour col;
         Image myImage (Image::PixelFormat::ARGB, pmapWidth, pmapHeight, false);
         Image myImageScaled;
@@ -221,7 +225,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="overlay" componentName=""
                  parentClasses="public Component" constructorParams="PluginProcessor* ownerFilter"
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.33" fixedSize="1" initialWidth="600" initialHeight="400">
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="323e44"/>
 </JUCER_COMPONENT>
 

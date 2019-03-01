@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.1
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -452,7 +452,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -464,7 +464,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -476,7 +476,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -488,7 +488,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -500,7 +500,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -525,7 +525,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -537,7 +537,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -549,7 +549,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (18.8f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -561,7 +561,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (18.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -573,7 +573,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -585,7 +585,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -597,7 +597,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -609,7 +609,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -621,7 +621,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -633,7 +633,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -645,7 +645,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -657,7 +657,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -669,7 +669,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.0f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -903,6 +903,7 @@ void PluginEditor::timerCallback()
             dirass_requestPmapUpdate(hVst->hDir);
         }
     }
+    
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         currentWarning = k_warning_frameSize;
@@ -1008,7 +1009,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
                  parentClasses="public AudioProcessorEditor, public Timer, private CameraDevice::Listener, public AsyncUpdater"
                  constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.33"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="672" initialHeight="542">
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 30 672 512" fill=" radial: 336 208, 344 528, 0=ff5b6d76, 1=ff073642"
@@ -1024,61 +1025,61 @@ BEGIN_JUCER_METADATA
     <RECT pos="12 58 648 325" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="22 397 132 30" fill="solid: ffffffff" hasStroke="0" text="Input Order:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="22 497 132 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="250 465 132 30" fill="solid: ffffffff" hasStroke="0" text="Average Coeff:"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="22 433 132 30" fill="solid: ffffffff" hasStroke="0" text="Beam Type:"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="22 465 132 30" fill="solid: ffffffff" hasStroke="0" text="Scanning Grid:"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="472 394 186 138" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="481 399 132 30" fill="solid: ffffffff" hasStroke="0" text="Horiz. FOV:"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="481 432 132 30" fill="solid: ffffffff" hasStroke="0" text="Aspect Ratio:"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.0"
+          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 0 112 32" fill="solid: ffb0a6e7" hasStroke="0" text="DirASS"
-          fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="481 465 152 30" fill="solid: ffffffff" hasStroke="0" text="Min Freq (Hz):"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="481 497 104 30" fill="solid: ffffffff" hasStroke="0" text="Max Freq (Hz):"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="250 433 132 30" fill="solid: ffffffff" hasStroke="0" text="Upscale Order:"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="250 397 181 30" fill="solid: ffffffff" hasStroke="0" text="DirASS Mode:"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="250 497 132 30" fill="solid: ffffffff" hasStroke="0" text="Width (pixels):"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="624 32 29 30" fill="solid: ffffffff" hasStroke="0" text="GS:"
-          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="576 32 37 30" fill="solid: ffffffff" hasStroke="0" text="U|D:"
-          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="530 32 37 30" fill="solid: ffffffff" hasStroke="0" text="L|R:"
-          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="283 33 125 30" fill="solid: ffffffff" hasStroke="0" text="Display Window"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
+          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <COMBOBOX name="" id="787134d7259eea10" memberName="CBbeamType" virtualName=""
             explicitFocusOrder="0" pos="121 440 112 18" editable="0" layout="33"
@@ -1097,21 +1098,24 @@ BEGIN_JUCER_METADATA
             items="" textWhenNonSelected="2:1" textWhenNoItems=""/>
   <SLIDER name="new slider" id="d9acd6687ea4c8b5" memberName="SLmapAvg"
           virtualName="" explicitFocusOrder="0" pos="349 468 104 24" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="0.0" max="1.0" int="0.01000000000000000021"
-          style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
-          textBoxWidth="50" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+          textboxbkgd="ffffff" min="0.00000000000000000000" max="1.00000000000000000000"
+          int="0.01000000000000000021" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          needsCallback="1"/>
   <COMBOBOX name="new combo box" id="a465903000494955" memberName="CBinputOrder"
             virtualName="" explicitFocusOrder="0" pos="121 403 112 18" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="905f4ab0adab1f4f" memberName="s_minFreq"
-          virtualName="" explicitFocusOrder="0" pos="592 469 58 24" min="0.0"
-          max="24000.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
+          virtualName="" explicitFocusOrder="0" pos="592 469 58 24" min="0.00000000000000000000"
+          max="24000.00000000000000000000" int="1.00000000000000000000"
+          style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
+          textBoxWidth="45" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
   <SLIDER name="new slider" id="3aad5000f228ef1b" memberName="s_maxFreq"
-          virtualName="" explicitFocusOrder="0" pos="592 500 58 24" min="0.0"
-          max="24000.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
+          virtualName="" explicitFocusOrder="0" pos="592 500 58 24" min="0.00000000000000000000"
+          max="24000.00000000000000000000" int="1.00000000000000000000"
+          style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
+          textBoxWidth="45" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
   <COMBOBOX name="" id="6daf8adec965e9f2" memberName="CBgridOption" virtualName=""
             explicitFocusOrder="0" pos="121 472 112 18" editable="0" layout="33"
@@ -1123,10 +1127,10 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="354 403 99 18" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="79f6fe93d6735ce3" memberName="s_interpWidth"
-          virtualName="" explicitFocusOrder="0" pos="368 500 85 24" min="64.0"
-          max="256.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="368 500 85 24" min="64.00000000000000000000"
+          max="256.00000000000000000000" int="1.00000000000000000000" style="LinearHorizontal"
+          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
+          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <COMBOBOX name="" id="974f5da4ceed6bb6" memberName="CB_webcam" virtualName=""
             explicitFocusOrder="0" pos="434 38 92 17" editable="0" layout="33"
             items="" textWhenNonSelected="" textWhenNoItems=""/>
