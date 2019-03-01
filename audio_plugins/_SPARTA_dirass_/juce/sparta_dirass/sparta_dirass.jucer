@@ -226,7 +226,7 @@
     <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_video" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_USE_CAMERA="0"/>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_USE_CAMERA="1"/>
   <LIVE_SETTINGS>
     <WINDOWS/>
     <OSX/>

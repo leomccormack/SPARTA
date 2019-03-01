@@ -66,6 +66,18 @@ public:
             return 1;
         return 0;
     }
+    
+    /* for camera */
+    int cameraID;
+    bool flipLR, flipUD, greyScale;
+    void setCameraID(int newID){ cameraID = newID;}
+    void setFlipLR(bool newState){ flipLR = newState;}
+    void setFlipUD(bool newState){ flipUD = newState;}
+    void setGreyScale(bool newState){ greyScale = newState;}
+    int getCameraID(){ return cameraID;}
+    bool getFlipLR(){ return flipLR;}
+    bool getFlipUD(){ return flipUD;}
+    bool getGreyScale(){ return greyScale;}
  
 public:
     PluginProcessor();

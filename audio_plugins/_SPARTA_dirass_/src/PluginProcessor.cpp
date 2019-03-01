@@ -32,6 +32,11 @@ PluginProcessor::PluginProcessor() :
         bufferInputs[i] = new float[FRAME_SIZE];
 
     dirass_create(&hDir);
+    
+    /* camera default settings */
+    cameraID = 1;
+    flipLR = flipUD = false;
+    greyScale = true;
 }
 
 PluginProcessor::~PluginProcessor()
@@ -213,11 +218,11 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
  	XmlElement xml("DIRASSAUDIOPLUGINSETTINGS");
  
-    xml.setAttribute("MapMode", dirass_getMapMode(hDir));
+    xml.setAttribute("beamType", dirass_getBeamType(hDir));
     xml.setAttribute("InputOrder", dirass_getInputOrder(hDir));
     xml.setAttribute("GridOption", dirass_getDisplayGridOption(hDir));
     xml.setAttribute("UpscaleOrder", dirass_getUpscaleOrder(hDir));
-    xml.setAttribute("EnableDirASS", dirass_getEnableDiRAss(hDir));
+    xml.setAttribute("DirASSmode", dirass_getDiRAssMode(hDir));
     xml.setAttribute("MinFreq", dirass_getMinFreq(hDir));
     xml.setAttribute("MaxFreq", dirass_getMaxFreq(hDir));
     xml.setAttribute("CHorder", dirass_getChOrder(hDir));
@@ -225,7 +230,13 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("FOVoption", dirass_getDispFOV(hDir));
     xml.setAttribute("ARoption", dirass_getAspectRatio(hDir));
     xml.setAttribute("MapAvg", dirass_getMapAvgCoeff(hDir));
-     
+    xml.setAttribute("DispWidth", dirass_getDispWidth(hDir));
+    
+    xml.setAttribute("cameraID", cameraID);
+    xml.setAttribute("flipLR", flipLR);
+    xml.setAttribute("flipUD", flipUD);
+    xml.setAttribute("greyScale", greyScale);
+    
 	copyXmlToBinary(xml, destData);
 }
 
@@ -235,16 +246,16 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 
     if (xmlState != nullptr) {
         if (xmlState->hasTagName("DIRASSAUDIOPLUGINSETTINGS")) { 
-            if(xmlState->hasAttribute("MapMode"))
-                dirass_setMapMode(hDir, xmlState->getIntAttribute("MapMode", 1));
+            if(xmlState->hasAttribute("beamType"))
+                dirass_setBeamType(hDir, xmlState->getIntAttribute("beamType", 1));
             if(xmlState->hasAttribute("InputOrder"))
                 dirass_setInputOrder(hDir, xmlState->getIntAttribute("InputOrder", 1));
             if(xmlState->hasAttribute("GridOption"))
                 dirass_setDisplayGridOption(hDir, xmlState->getIntAttribute("GridOption", 1));
             if(xmlState->hasAttribute("UpscaleOrder"))
                 dirass_setUpscaleOrder(hDir, xmlState->getIntAttribute("UpscaleOrder", 1));
-            if(xmlState->hasAttribute("EnableDirASS"))
-                dirass_setEnableDiRAss(hDir, xmlState->getIntAttribute("EnableDirASS", 1));
+            if(xmlState->hasAttribute("DirASSmode"))
+                dirass_setDiRAssMode(hDir, xmlState->getIntAttribute("DirASSmode", 1));
             if(xmlState->hasAttribute("MinFreq"))
                 dirass_setMinFreq(hDir, (float)xmlState->getDoubleAttribute("MinFreq", 100.0f));
             if(xmlState->hasAttribute("MaxFreq"))
@@ -259,6 +270,17 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 dirass_setAspectRatio(hDir, xmlState->getIntAttribute("ARoption", 1));
             if(xmlState->hasAttribute("MapAvg"))
                 dirass_setMapAvgCoeff(hDir, (float)xmlState->getDoubleAttribute("MapAvg", 0.5f));
+            if(xmlState->hasAttribute("DispWidth"))
+                dirass_setDispWidth(hDir, (float)xmlState->getDoubleAttribute("DispWidth", 120));
+            
+            if(xmlState->hasAttribute("cameraID"))
+                cameraID = (int)xmlState->getIntAttribute("cameraID", 1);
+            if(xmlState->hasAttribute("flipLR"))
+                flipLR = (bool)xmlState->getIntAttribute("flipLR", 0);
+            if(xmlState->hasAttribute("flipUD"))
+                flipUD = (bool)xmlState->getIntAttribute("flipUD", 0);
+            if(xmlState->hasAttribute("greyScale"))
+                greyScale = (bool)xmlState->getIntAttribute("greyScale", 1);
                 
 			dirass_refreshSettings(hDir);
         }

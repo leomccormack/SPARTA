@@ -35,6 +35,7 @@ typedef enum _SPARTA_WARNINGS{
     k_warning_supported_fs,
     k_warning_NinputCH
 }SPARTA_WARNINGS;
+
 //[/Headers]
 
 
@@ -49,6 +50,8 @@ typedef enum _SPARTA_WARNINGS{
 */
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
+                      private CameraDevice::Listener,
+                      public AsyncUpdater,
                       public ComboBox::Listener,
                       public Slider::Listener,
                       public Button::Listener
@@ -84,8 +87,17 @@ private:
     /* for the powermap overlay */
     Rectangle<int> previewArea;
     ScopedPointer<overlay> overlayIncluded;
-
     bool resolutionHasChanged;
+
+    /* for webcam support */
+    void updateCameraList();
+    void imageReceived(const Image& image) override;
+    void handleAsyncUpdate() override;
+    std::unique_ptr<CameraDevice> cameraDevice;
+    ImageComponent lastSnapshot;
+    Image incomingImage;
+    void cameraChanged();
+    void cameraDeviceOpenResult (CameraDevice* device, const String& error);
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
@@ -93,7 +105,7 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<ComboBox> CBmapMode;
+    std::unique_ptr<ComboBox> CBbeamType;
     std::unique_ptr<ComboBox> CBchFormat;
     std::unique_ptr<ComboBox> CBnormScheme;
     std::unique_ptr<ComboBox> CB_hfov;
@@ -104,7 +116,12 @@ private:
     std::unique_ptr<Slider> s_maxFreq;
     std::unique_ptr<ComboBox> CBgridOption;
     std::unique_ptr<ComboBox> CBupscaleOrder;
-    std::unique_ptr<ToggleButton> TBenableReAss;
+    std::unique_ptr<ComboBox> CBdirassMode;
+    std::unique_ptr<Slider> s_interpWidth;
+    std::unique_ptr<ComboBox> CB_webcam;
+    std::unique_ptr<ToggleButton> TB_greyScale;
+    std::unique_ptr<ToggleButton> TB_flipUD;
+    std::unique_ptr<ToggleButton> TB_flipLR;
 
 
     //==============================================================================
