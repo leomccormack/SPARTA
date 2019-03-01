@@ -74,7 +74,7 @@
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\..\..\juce\sparta_powermap\JuceLibraryCode;..\..\..\..\..\..\SDKs\modules;../../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../../SDKs/Spatial_Audio_Framework/examples/powermap/include;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;FRAME_SIZE=1024;SAF_USE_INTEL_MKL;JUCER_VS2017_5490885C=1;JUCE_APP_VERSION=1.2.2;JUCE_APP_VERSION_HEX=0x10202;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;FRAME_SIZE=1024;SAF_USE_INTEL_MKL;JUCER_VS2017_5490885C=1;JUCE_APP_VERSION=1.3.0;JUCE_APP_VERSION_HEX=0x10300;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -114,7 +114,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>..\..\..\..\juce\sparta_powermap\JuceLibraryCode;..\..\..\..\..\..\SDKs\modules;../../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../../SDKs/Spatial_Audio_Framework/examples/powermap/include;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;FRAME_SIZE=1024;SAF_USE_INTEL_MKL;JUCER_VS2017_5490885C=1;JUCE_APP_VERSION=1.2.2;JUCE_APP_VERSION_HEX=0x10202;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;FRAME_SIZE=1024;SAF_USE_INTEL_MKL;JUCER_VS2017_5490885C=1;JUCE_APP_VERSION=1.3.0;JUCE_APP_VERSION_HEX=0x10300;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -165,6 +165,7 @@
     <ClCompile Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_sh\saf_sh_internal.c"/>
     <ClCompile Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_calloc.c"/>
     <ClCompile Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_complex.c"/>
+    <ClCompile Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_filters.c"/>
     <ClCompile Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_free.c"/>
     <ClCompile Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_loudspeaker_presets.c"/>
     <ClCompile Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_malloc.c"/>
@@ -1884,6 +1885,7 @@
     <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_sh\saf_sh_internal.h"/>
     <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_calloc.h"/>
     <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_complex.h"/>
+    <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_filters.h"/>
     <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_free.h"/>
     <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_loudspeaker_presets.h"/>
     <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_malloc.h"/>

@@ -469,6 +469,9 @@
     <ClCompile Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_complex.c">
       <Filter>sparta_powermap\Spatial_Audio_Framework\framework\saf_utilities</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_filters.c">
+      <Filter>sparta_powermap\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_free.c">
       <Filter>sparta_powermap\Spatial_Audio_Framework\framework\saf_utilities</Filter>
     </ClCompile>
@@ -2389,6 +2392,9 @@
       <Filter>sparta_powermap\Spatial_Audio_Framework\framework\saf_utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_complex.h">
+      <Filter>sparta_powermap\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_filters.h">
       <Filter>sparta_powermap\Spatial_Audio_Framework\framework\saf_utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_free.h">

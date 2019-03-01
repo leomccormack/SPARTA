@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.1
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -50,8 +50,11 @@ typedef enum _SPARTA_WARNINGS{
 */
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
+                      private CameraDevice::Listener,
+                      public AsyncUpdater,
                       public Slider::Listener,
-                      public ComboBox::Listener
+                      public ComboBox::Listener,
+                      public Button::Listener
 {
 public:
     //==============================================================================
@@ -72,6 +75,7 @@ public:
     void resized() override;
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
 
 
 
@@ -80,6 +84,17 @@ private:
     ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
 	OpenGLContext openGLContext;
     ScopedPointer<log2dSlider> anaOrder2dSlider;
+
+    /* for webcam support */
+    Rectangle<int> previewArea;
+    void updateCameraList();
+    void imageReceived(const Image& image) override;
+    void handleAsyncUpdate() override;
+    std::unique_ptr<CameraDevice> cameraDevice;
+    ImageComponent lastSnapshot;
+    Image incomingImage;
+    void cameraChanged();
+    void cameraDeviceOpenResult (CameraDevice* device, const String& error);
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
@@ -94,6 +109,10 @@ private:
     std::unique_ptr<Slider> s_minFreq;
     std::unique_ptr<Slider> s_maxFreq;
     std::unique_ptr<ComboBox> CBmasterOrder;
+    std::unique_ptr<ComboBox> CB_webcam;
+    std::unique_ptr<ToggleButton> TB_greyScale;
+    std::unique_ptr<ToggleButton> TB_flipUD;
+    std::unique_ptr<ToggleButton> TB_flipLR;
 
 
     //==============================================================================

@@ -903,7 +903,7 @@ void PluginEditor::timerCallback()
             dirass_requestPmapUpdate(hVst->hDir);
         }
     }
-    
+
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         currentWarning = k_warning_frameSize;

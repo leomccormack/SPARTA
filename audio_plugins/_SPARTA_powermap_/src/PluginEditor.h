@@ -50,8 +50,11 @@ typedef enum _SPARTA_WARNINGS{
 */
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
+                      private CameraDevice::Listener,
+                      public AsyncUpdater,
                       public ComboBox::Listener,
-                      public Slider::Listener
+                      public Slider::Listener,
+                      public Button::Listener
 {
 public:
     //==============================================================================
@@ -70,6 +73,7 @@ public:
     void resized() override;
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
 
 
 
@@ -83,12 +87,21 @@ private:
     /* for the powermap overlay */
     Rectangle<int> previewArea;
     ScopedPointer<overlay> overlayIncluded;
+    bool resolutionHasChanged;
 
     /* for freq-dependent analysis order + EQ */
     ScopedPointer<log2dSlider> anaOrder2dSlider;
     ScopedPointer<log2dSlider> pmapEQ2dSlider;
 
-    bool resolutionHasChanged;
+    /* for webcam support */
+    void updateCameraList();
+    void imageReceived(const Image& image) override;
+    void handleAsyncUpdate() override;
+    std::unique_ptr<CameraDevice> cameraDevice;
+    ImageComponent lastSnapshot;
+    Image incomingImage;
+    void cameraChanged();
+    void cameraDeviceOpenResult (CameraDevice* device, const String& error);
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
@@ -108,6 +121,10 @@ private:
     std::unique_ptr<ComboBox> CB_aspectRatio;
     std::unique_ptr<Slider> s_pmapAvg;
     std::unique_ptr<ComboBox> CBmasterOrder;
+    std::unique_ptr<ComboBox> CB_webcam;
+    std::unique_ptr<ToggleButton> TB_greyScale;
+    std::unique_ptr<ToggleButton> TB_flipUD;
+    std::unique_ptr<ToggleButton> TB_flipLR;
 
 
     //==============================================================================
