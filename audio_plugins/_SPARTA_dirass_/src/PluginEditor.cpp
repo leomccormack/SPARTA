@@ -281,7 +281,12 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormScheme->addItem(TRANS("N3D"), NORM_N3D);
     CBnormScheme->addItem(TRANS("SN3D"), NORM_SN3D);
     CB_hfov->addItem(TRANS("360"), HFOV_360);
+    CB_hfov->addItem(TRANS("180"), HFOV_180);
+    CB_hfov->addItem(TRANS("90"), HFOV_90);
+    CB_hfov->addItem(TRANS("60"), HFOV_60);
     CB_aspectRatio->addItem(TRANS("2:1"), ASPECT_RATIO_2_1);
+    CB_aspectRatio->addItem(TRANS("16:9"), ASPECT_RATIO_16_9);
+    CB_aspectRatio->addItem(TRANS("4:3"), ASPECT_RATIO_4_3);
 
     /* Overlay */
     previewArea.setBounds(13, 59, 646, 323);
@@ -316,7 +321,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     resolutionHasChanged = false;
 
 	/* Specify screen refresh rate */
-    startTimer(120);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(140);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -893,7 +898,8 @@ void PluginEditor::timerCallback()
     /* refresh the powermap display */
     if ((overlayIncluded != nullptr) && (hVst->isPlaying)) {
         float* dirs_deg, *pmap;
-        int nDirs, pmapReady, pmapWidth, hfov, aspectRatio;
+        int nDirs, pmapReady, pmapWidth, hfov;
+        float aspectRatio;
         pmapReady = dirass_getPmap(hVst->hDir, &dirs_deg, &pmap, &nDirs, &pmapWidth, &hfov, &aspectRatio);
         overlayIncluded->setEnableTransparency(CB_webcam->getSelectedId() > 1 ? true : false);
         if(pmapReady){
