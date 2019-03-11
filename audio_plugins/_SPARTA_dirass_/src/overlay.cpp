@@ -121,8 +121,8 @@ void overlay::paint (Graphics& g)
         int pmapHeight = (int)((float)pmapWidth/(float)aspectRatio +0.5f);
         float windowWidth = (float)localBounds.getWidth();
         float windowHeight = (float)localBounds.getHeight();
-        float vfov = (float)hfov/(float)aspectRatio;
-        if(pmapHeight<1.0f || pmapWidth < 1.0f){
+        float vfov = (float)hfov/aspectRatio;
+        if(pmapHeight<1.0f || pmapWidth < 1.0f || pmapHeight > windowHeight || pmapWidth > windowWidth){
             finishedRefresh = true;
             return;
         }
@@ -197,7 +197,7 @@ void overlay::resized()
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void overlay::refreshPowerMap(float* _dirs_deg, float* _pmap, int _nDirs, int _pmapWidth, int _hfov, int _aspectRatio )
+void overlay::refreshPowerMap(float* _dirs_deg, float* _pmap, int _nDirs, int _pmapWidth, int _hfov, float _aspectRatio )
 {
     if(finishedRefresh){
         dirs_deg = _dirs_deg;

@@ -53,7 +53,7 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
 
-    void refreshPowerMap(float* _dirs_deg, float* _pmap, int _nDirs, int _pmapWidth, int _hfov, int _aspectRatio );
+    void refreshPowerMap(float* _dirs_deg, float* _pmap, int _nDirs, int _pmapWidth, int _hfov, float _aspectRatio );
     bool getFinishedRefresh(){
         return finishedRefresh;
     }
@@ -71,7 +71,8 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     float* dirs_deg, *pmap;
-    int nDirs, pmapWidth, hfov, aspectRatio;
+    int nDirs, pmapWidth, hfov;
+    float aspectRatio;
     Rectangle<int> localBounds;
 
     bool finishedRefresh;
