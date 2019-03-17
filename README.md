@@ -13,7 +13,7 @@ This repository contains the following VST plug-ins:
 * **AmbiENC** - An ambisonic encoder/panner (up to 7th order), with support for up to 64 input channels; the directions for which may also be imported via JSON configuration files. 
 * **Array2SH** - A microphone array spatial encoder (up to 7th order), with presets for several commercially available A-format and higher-order microphone arrays. The plug-in can also present objective evaluation metrics for the currently selected configuration.
 * **Binauraliser** - A binaural panner (up to 64 input channels) with a built-in SOFA loader and head-tracking support via OSC messages.
-* **DirASS** - A sound-field visualiser based on re-assigning the energy of beamformers, based on extracting the DoA from "spatially-constrained" regions, which are centred around each beamformer look-direction. 
+* **DirASS** - A sound-field visualiser based on re-assigning the energy of beamformers. This re-assigment is based on DoA estimates extracted from "spatially-constrained" regions, which are centred around each beamformer look-direction. 
 * **Panner** - A frequency-dependent 3-D panner using the VBAP method (up to 64 inputs and outputs).
 * **PowerMap** - A sound-field visualisation plug-in based on ambisonic signals as input (up to 7th order), with PWD/MVDR/MUSIC/Min-Norm options.
 * **Rotator** - A flexible ambisonic rotator (up to 7th order) with head-tracking support via OSC messages. 
@@ -24,8 +24,6 @@ This repository contains the following VST plug-ins:
 These instructions will help you compile the individual VST audio plug-ins. Alternatively, they can be downloaded from here:
 * [Pre-built](http://research.spa.aalto.fi/projects/sparta_vsts/) - for Windows (64-bit) and Mac OSX (10.10 or higher)
 
-**NOTE: As of 4.12.2018, the code requires [JUCE v5.3.2](https://github.com/WeAreROLI/JUCE/releases) and [vstsdk3610_11_06_2018_build_37](https://github.com/steinbergmedia/vst3sdk) or older. We are currently looking into how to accommodate the recent changes.**
-
 ### Prerequisites
 
 To compile the plugins yourself, the following SDKs and frameworks must be placed in the 'SDKs' folder like so
@@ -33,13 +31,13 @@ To compile the plugins yourself, the following SDKs and frameworks must be place
 ```
 SDKs/modules
 SDKs/Spatial_Audio_Framework
-SDKs/VST3_SDK
+SDKs/VST2_SDK
 ```
 And can be obtained from:
 
 * [modules (JUCE)](https://shop.juce.com/get-juce/download) - For audio plug-in wrappers and the GUIs
 * [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework) - For the internal code used by the plug-ins
-* [VST3_SDK](https://www.steinberg.net/en/company/developers.html) - The VST SDK
+* [VST2_SDK](https://github.com/steinbergmedia/vst3sdk/releases) - The VST2 SDK (found in vstsdk3610_11_06_2018_build_37 or older)
 
 You must also install a custom [Intel MKL](https://software.intel.com/en-us/articles/free-ipsxe-tools-and-libraries) .dll/.dylib in a system path folder. More details on this can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework). However, Mac users may elect to remove the "SAF_USE_INTEL_MKL" flag in the global pre-precessor definitions, in order to get around this requirement; albeit, at the expense of a reduction in performance.
 
@@ -51,7 +49,7 @@ For each individual plug-in, simply open the Visual Studio (2015/2017) or X-code
 audio_plugins/_SPARTA_X_/make/
 ```
 
-To generate project files for other IDEs or Linux makefiles, you can open and configure the included .jucer files with JUCE's Projucer App accordingly; however, these are currently not officially supported. 
+To generate project files for other IDEs or Linux makefiles, you can open and configure the included .jucer files with JUCE's Projucer App accordingly.
 
 ## Authors
 

@@ -2,10 +2,10 @@ Please place the following external SDKs/Frameworks in this folder like so:
 
 SDKs/modules
 SDKs/Spatial_Audio_Framework
-SDKs/VST3_SDK
+SDKs/VST2_SDK
 
 - modules can be obtained from here: "https://shop.juce.com/get-juce/download"
 - Spatial_Audio_Framework can be obtained from here: "https://github.com/leomccormack/Spatial_Audio_Framework"
-- VST3_SDK can be obtained from here: "https://www.steinberg.net/en/company/developers.html"
+- VST2_SDK can be obtained from: vstsdk3610_11_06_2018_build_37 or older
 
-For Windows users only: Intel's MKL must be installed, which can be found here: "https://software.intel.com/en-us/articles/free-ipsxe-tools-and-libraries"
+

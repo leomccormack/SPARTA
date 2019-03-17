@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.3
 
   ------------------------------------------------------------------------------
 
@@ -113,6 +113,7 @@ private:
     std::unique_ptr<ToggleButton> TBcompEQ;
     std::unique_ptr<ToggleButton> TBrpyFlag;
     std::unique_ptr<ToggleButton> TBenableRot;
+    std::unique_ptr<ComboBox> CBdecoderMethod;
 
 
     //==============================================================================
@@ -121,3 +122,4 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

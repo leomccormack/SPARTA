@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.3
 
   ------------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
-#include "saf_hoa.h"
+//#include "saf_hoa.h"
 //[/MiscUserDefs]
 
 //==============================================================================
@@ -51,7 +51,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorderPreset->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBorderPreset->addListener (this);
 
-    CBorderPreset->setBounds (122, 62, 90, 20);
+    CBorderPreset->setBounds (136, 63, 104, 18);
 
     CBchFormat.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBchFormat.get());
@@ -62,7 +62,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBchFormat->addItem (TRANS("ACN"), 1);
     CBchFormat->addListener (this);
 
-    CBchFormat->setBounds (314, 63, 112, 20);
+    CBchFormat->setBounds (329, 63, 98, 18);
 
     CBnormScheme.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBnormScheme.get());
@@ -74,14 +74,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormScheme->addItem (TRANS("SN3D"), 2);
     CBnormScheme->addListener (this);
 
-    CBnormScheme->setBounds (314, 88, 112, 20);
+    CBnormScheme->setBounds (329, 88, 98, 18);
 
     TBmaxRE.reset (new ToggleButton ("new toggle button"));
     addAndMakeVisible (TBmaxRE.get());
     TBmaxRE->setButtonText (String());
     TBmaxRE->addListener (this);
 
-    TBmaxRE->setBounds (132, 86, 22, 24);
+    TBmaxRE->setBounds (352, 16, 22, 24);
 
     s_yaw.reset (new Slider ("new slider"));
     addAndMakeVisible (s_yaw.get());
@@ -227,6 +227,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     TBenableRot->setBounds (59, 138, 24, 24);
 
+    CBdecoderMethod.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (CBdecoderMethod.get());
+    CBdecoderMethod->setEditableText (false);
+    CBdecoderMethod->setJustificationType (Justification::centredLeft);
+    CBdecoderMethod->setTextWhenNothingSelected (TRANS("Default"));
+    CBdecoderMethod->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBdecoderMethod->addListener (this);
+
+    CBdecoderMethod->setBounds (88, 89, 152, 18);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -244,7 +254,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     openGLContext.attachTo(*this);
 
     /* add options to combo boxes */
-    CBorderPreset->addItem (TRANS("Omni"), INPUT_OMNI);
     CBorderPreset->addItem (TRANS("1st order"), INPUT_ORDER_FIRST);
     CBorderPreset->addItem (TRANS("2nd order"), INPUT_ORDER_SECOND);
     CBorderPreset->addItem (TRANS("3rd order"), INPUT_ORDER_THIRD);
@@ -252,6 +261,11 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorderPreset->addItem (TRANS("5th order"), INPUT_ORDER_FIFTH);
     CBorderPreset->addItem (TRANS("6th order"), INPUT_ORDER_SIXTH);
     CBorderPreset->addItem (TRANS("7th order"), INPUT_ORDER_SEVENTH);
+    CBdecoderMethod->addItem(TRANS("Least-Squares (LS)"), DECODING_METHOD_LS);
+    CBdecoderMethod->addItem(TRANS("LS with Diff-EQ"), DECODING_METHOD_LSDIFFEQ);
+    CBdecoderMethod->addItem(TRANS("Spatial Resampling"), DECODING_METHOD_SPR);
+    CBdecoderMethod->addItem(TRANS("Time-alignment"), DECODING_METHOD_TAC);
+    CBdecoderMethod->addItem(TRANS("Magnitude-LS"), DECODING_METHOD_MAGLS);
 
     /* file loader */
     addAndMakeVisible (fileChooser);
@@ -259,12 +273,12 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     fileChooser.setBounds (458, 86, 168, 20);
 
     /* grab current parameter settings */
+    CBdecoderMethod->setSelectedId(ambi_bin_getDecodingMethod(hVst->hAmbi), dontSendNotification);
     TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hVst->hAmbi), dontSendNotification);
     CBchFormat->setSelectedId(ambi_bin_getChOrder(hVst->hAmbi), dontSendNotification);
     CBnormScheme->setSelectedId(ambi_bin_getNormType(hVst->hAmbi), dontSendNotification);
     CBorderPreset->setSelectedId(ambi_bin_getInputOrderPreset(hVst->hAmbi), dontSendNotification);
     TBmaxRE->setToggleState(ambi_bin_getDecEnableMaxrE(hVst->hAmbi), dontSendNotification);
-    TBcompEQ->setToggleState(ambi_bin_getEnablePhaseManip(hVst->hAmbi), dontSendNotification);
     TBenableRot->setToggleState(ambi_bin_getEnableRotation(hVst->hAmbi), dontSendNotification);
     s_yaw->setValue(ambi_bin_getYaw(hVst->hAmbi), dontSendNotification);
     s_pitch->setValue(ambi_bin_getPitch(hVst->hAmbi), dontSendNotification);
@@ -308,6 +322,7 @@ PluginEditor::~PluginEditor()
     TBcompEQ = nullptr;
     TBrpyFlag = nullptr;
     TBenableRot = nullptr;
+    CBdecoderMethod = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -330,8 +345,8 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (fillColour1,
-                                       336.0f - 0.0f + x,
-                                       152.0f - 30.0f + y,
+                                       352.0f - 0.0f + x,
+                                       120.0f - 30.0f + y,
                                        fillColour2,
                                        656.0f - 0.0f + x,
                                        232.0f - 30.0f + y,
@@ -343,7 +358,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 12, y = 58, width = 207, height = 54;
+        int x = 12, y = 58, width = 237, height = 54;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -356,7 +371,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 12, y = 57, width = 207, height = 29;
+        int x = 12, y = 57, width = 237, height = 29;
         Colour fillColour = Colour (0x08f4f4f4);
         Colour strokeColour = Colour (0x35a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -395,7 +410,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 218, y = 58, width = 218, height = 54;
+        int x = 248, y = 58, width = 188, height = 54;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -470,8 +485,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 19, y = 56, width = 125, height = 30;
-        String text (TRANS("Decode Order:"));
+        int x = 19, y = 56, width = 141, height = 30;
+        String text (TRANS("Decoding Order:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -482,7 +497,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 227, y = 56, width = 132, height = 30;
+        int x = 255, y = 56, width = 132, height = 30;
         String text (TRANS("CH Order:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -494,7 +509,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 227, y = 82, width = 132, height = 30;
+        int x = 255, y = 82, width = 132, height = 30;
         String text (TRANS("Norm:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -519,7 +534,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 19, y = 82, width = 125, height = 30;
-        String text (TRANS("Enable max_rE:"));
+        String text (TRANS("Method:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -869,7 +884,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == TBcompEQ.get())
     {
         //[UserButtonCode_TBcompEQ] -- add your button handler code here..
-        ambi_bin_setEnablePhaseManip(hVst->hAmbi, (int)TBcompEQ->getToggleState());
+
         //[/UserButtonCode_TBcompEQ]
     }
     else if (buttonThatWasClicked == TBrpyFlag.get())
@@ -911,6 +926,12 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
         //[UserComboBoxCode_CBnormScheme] -- add your combo box handling code here..
         ambi_bin_setNormType(hVst->hAmbi, CBnormScheme->getSelectedId());
         //[/UserComboBoxCode_CBnormScheme]
+    }
+    else if (comboBoxThatHasChanged == CBdecoderMethod.get())
+    {
+        //[UserComboBoxCode_CBdecoderMethod] -- add your combo box handling code here..
+        ambi_bin_setDecodingMethod(hVst->hAmbi, (DECODING_METHODS)CBdecoderMethod->getSelectedId());
+        //[/UserComboBoxCode_CBdecoderMethod]
     }
 
     //[UsercomboBoxChanged_Post]
@@ -1033,141 +1054,138 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="656" initialHeight="232">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 656 202" fill=" radial: 336 152, 656 232, 0=ff5b6d76, 1=ff073642"
+    <RECT pos="0 30 656 202" fill=" radial: 352 120, 656 232, 0=ff5b6d76, 1=ff073642"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
-    <RECT pos="12 58 207 54" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 58 237 54" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 57 207 29" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 57 237 29" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 35a0a0a0"/>
     <RECT pos="12 111 424 112" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 136 73 87" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 3aa0a0a0"/>
-    <RECT pos="218 58 218 54" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="248 58 188 54" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="446 58 196 54" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="0 0 656 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
     <TEXT pos="164 32 149 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Settings"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="520 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Output"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="459 56 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="19 56 125 30" fill="solid: ffffffff" hasStroke="0" text="Decode Order:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="227 56 132 30" fill="solid: ffffffff" hasStroke="0" text="CH Order:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="227 82 132 30" fill="solid: ffffffff" hasStroke="0" text="Norm:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="19 56 141 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Order:"
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="255 56 132 30" fill="solid: ffffffff" hasStroke="0" text="CH Order:"
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="255 82 132 30" fill="solid: ffffffff" hasStroke="0" text="Norm:"
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 108 133 30" fill="solid: ffffffff" hasStroke="0" text="Rotation"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="19 82 125 30" fill="solid: ffffffff" hasStroke="0" text="Enable max_rE:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="19 82 125 30" fill="solid: ffffffff" hasStroke="0" text="Method:"
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="125 117 63 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[0]"
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="36"/>
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="0"
+          italic="0" justification="36"/>
     <TEXT pos="223 117 63 30" fill="solid: ffffffff" hasStroke="0" text="Pitch"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="341 117 63 30" fill="solid: ffffffff" hasStroke="0" text="Roll"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="355 200 63 24" fill="solid: ffffffff" hasStroke="0" text="+/-"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="240 197 63 27" fill="solid: ffffffff" hasStroke="0" text="+/-"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="109 197 63 27" fill="solid: ffffffff" hasStroke="0" text="+/-"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="93 117 60 30" fill="solid: ffffffff" hasStroke="0" text="Yaw"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="261 117 63 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[1]"
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="36"/>
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="0"
+          italic="0" justification="36"/>
     <TEXT pos="373 117 63 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[2]"
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="36"/>
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="0"
+          italic="0" justification="36"/>
     <RECT pos="446 111 196 112" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="459 116 132 30" fill="solid: ffffffff" hasStroke="0" text="N dirs:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="459 140 132 30" fill="solid: ffffffff" hasStroke="0" text="HRIR len:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="459 164 132 30" fill="solid: ffffffff" hasStroke="0" text="HRIR fs:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="459 188 132 30" fill="solid: ffffffff" hasStroke="0" text="DAW fs:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 180 63 23" fill="solid: ffffffff" hasStroke="0" text="OSC port:"
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="659 -15 80 30" fill="solid: ffffffff" hasStroke="0" text="Comp. EQ:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 160 63 23" fill="solid: ffffffff" hasStroke="0" text="R-P-Y:"
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 138 61 23" fill="solid: ffffffff" hasStroke="0" text="Enable:"
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 0 196 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 0 184 32" fill="solid: ffdf8400" hasStroke="0" text="AmbiBIN"
-          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
                 virtualName="" explicitFocusOrder="0" pos="614 60 21 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <COMBOBOX name="new combo box" id="d83602bab6f1a999" memberName="CBorderPreset"
-            virtualName="" explicitFocusOrder="0" pos="122 62 90 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="136 63 104 18" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="a36915795f16ceb6" memberName="CBchFormat"
-            virtualName="" explicitFocusOrder="0" pos="314 63 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="329 63 98 18" editable="0"
             layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="e10be54628a6df43" memberName="CBnormScheme"
-            virtualName="" explicitFocusOrder="0" pos="314 88 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="329 88 98 18" editable="0"
             layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <TOGGLEBUTTON name="new toggle button" id="943aa789e193d13a" memberName="TBmaxRE"
-                virtualName="" explicitFocusOrder="0" pos="132 86 22 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="352 16 22 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <SLIDER name="new slider" id="ace036a85eec9703" memberName="s_yaw" virtualName=""
           explicitFocusOrder="0" pos="80 144 120 38" bkgcol="ff263238"
           trackcol="ff181f22" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="-180.00000000000000000000" max="180.00000000000000000000"
-          int="0.01000000000000000021" style="LinearHorizontal" textBoxPos="TextBoxAbove"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
-          needsCallback="1"/>
+          min="-1.8e2" max="1.8e2" int="1e-2" style="LinearHorizontal"
+          textBoxPos="TextBoxAbove" textBoxEditable="1" textBoxWidth="80"
+          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
   <SLIDER name="new slider" id="9af7dd86cd139d85" memberName="s_pitch"
           virtualName="" explicitFocusOrder="0" pos="208 110 96 112" bkgcol="ff263238"
           trackcol="ff181f22" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="-180.00000000000000000000" max="180.00000000000000000000"
-          int="0.01000000000000000021" style="LinearVertical" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          min="-1.8e2" max="1.8e2" int="1e-2" style="LinearVertical" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <SLIDER name="new slider" id="b5d39bb257b3289a" memberName="s_roll" virtualName=""
           explicitFocusOrder="0" pos="328 110 96 112" bkgcol="ff263238"
           trackcol="ff181f22" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="-180.00000000000000000000" max="180.00000000000000000000"
-          int="0.01000000000000000021" style="LinearVertical" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          min="-1.8e2" max="1.8e2" int="1e-2" style="LinearVertical" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <TEXTEDITOR name="new text editor" id="1799da9e8cf495d6" memberName="te_oscport"
               virtualName="" explicitFocusOrder="0" pos="16 200 56 18" textcol="ffffffff"
@@ -1177,26 +1195,22 @@ BEGIN_JUCER_METADATA
          virtualName="" explicitFocusOrder="0" pos="536 120 96 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         fontsize="1.5e1" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="e14d1c2e00d7849b" memberName="label_HRIR_len"
          virtualName="" explicitFocusOrder="0" pos="536 144 96 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         fontsize="1.5e1" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="f8b5274e0c8768f4" memberName="label_HRIR_fs"
          virtualName="" explicitFocusOrder="0" pos="536 168 96 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         fontsize="1.5e1" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="c59fb2aab2496c4e" memberName="label_DAW_fs"
          virtualName="" explicitFocusOrder="0" pos="536 192 96 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         fontsize="1.5e1" kerning="0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="c58241ee52766d62" memberName="t_flipPitch"
                 virtualName="" explicitFocusOrder="0" pos="260 182 23 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
@@ -1215,6 +1229,9 @@ BEGIN_JUCER_METADATA
   <TOGGLEBUTTON name="new toggle button" id="dfb8e588ab02032d" memberName="TBenableRot"
                 virtualName="" explicitFocusOrder="0" pos="59 138 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <COMBOBOX name="new combo box" id="a7219c15eb41112a" memberName="CBdecoderMethod"
+            virtualName="" explicitFocusOrder="0" pos="88 89 152 18" editable="0"
+            layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
@@ -1224,3 +1241,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

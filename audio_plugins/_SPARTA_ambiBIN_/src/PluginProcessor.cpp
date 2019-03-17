@@ -309,13 +309,13 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
     XmlElement xml("AMBIBINPLUGINSETTINGS");
     
-    xml.setAttribute("orderPreset", ambi_bin_getInputOrderPreset(hAmbi));
+    xml.setAttribute("order", ambi_bin_getInputOrderPreset(hAmbi));
   
     xml.setAttribute("UseDefaultHRIRset", ambi_bin_getUseDefaultHRIRsflag(hAmbi));
     xml.setAttribute("Norm", ambi_bin_getNormType(hAmbi));
     xml.setAttribute("ChOrder", ambi_bin_getChOrder(hAmbi));
     xml.setAttribute("maxrE", ambi_bin_getDecEnableMaxrE(hAmbi));
-    xml.setAttribute("PhaseManip", ambi_bin_getEnablePhaseManip(hAmbi));
+    xml.setAttribute("method", ambi_bin_getDecodingMethod(hAmbi));
     
     xml.setAttribute("ENABLEROT", ambi_bin_getEnableRotation(hAmbi));
     xml.setAttribute("YAW", ambi_bin_getYaw(hAmbi));
@@ -341,8 +341,8 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     if (xmlState != nullptr) {
         if (xmlState->hasTagName("AMBIBINPLUGINSETTINGS")) {
             
-            if(xmlState->hasAttribute("orderPreset"))
-                ambi_bin_setInputOrderPreset(hAmbi, (INPUT_ORDERS)xmlState->getIntAttribute("orderPreset", 2));
+            if(xmlState->hasAttribute("order"))
+                ambi_bin_setInputOrderPreset(hAmbi, (INPUT_ORDERS)xmlState->getIntAttribute("order", 2));
             if(xmlState->hasAttribute("UseDefaultHRIRset"))
                 ambi_bin_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
             if(xmlState->hasAttribute("Norm"))
@@ -351,8 +351,8 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 ambi_bin_setChOrder(hAmbi, xmlState->getIntAttribute("ChOrder", 1));
             if(xmlState->hasAttribute("maxrE"))
                 ambi_bin_setDecEnableMaxrE(hAmbi,xmlState->getIntAttribute("maxrE", 1));
-            if(xmlState->hasAttribute("PhaseManip"))
-                ambi_bin_setEnablePhaseManip(hAmbi,xmlState->getIntAttribute("PhaseManip", 1));
+            if(xmlState->hasAttribute("method"))
+                ambi_bin_setDecodingMethod(hAmbi, (DECODING_METHODS)xmlState->getIntAttribute("method", 1));
             
             if(xmlState->hasAttribute("ENABLEROT"))
                 ambi_bin_setEnableRotation(hAmbi, xmlState->getIntAttribute("ENABLEROT", 0));
