@@ -1,13 +1,15 @@
 SDKs/modules
 SDKs/VST3_SDK
+SDKs/VST2_SDK
 SDKs/Spatial_Audio_Framework
+audio_plugins/_SPARTA_ambiBIN_/obj
 audio_plugins/_SPARTA_ambiDEC_/obj
+audio_plugins/_SPARTA_ambiDRC_/obj
 audio_plugins/_SPARTA_ambiENC_/obj
 audio_plugins/_SPARTA_array2sh_/obj
 audio_plugins/_SPARTA_beamformer_/obj
 audio_plugins/_SPARTA_binauraliser_/obj
-audio_plugins/_SPARTA_mcDelay_/obj
-audio_plugins/_SPARTA_mcEQ_/obj
+audio_plugins/_SPARTA_dirass_/obj
 audio_plugins/_SPARTA_panner_/obj
 audio_plugins/_SPARTA_powermap_/obj
 audio_plugins/_SPARTA_rotator_/obj

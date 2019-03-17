@@ -18,9 +18,9 @@
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.2.3</string>
+    <string>1.3.0</string>
     <key>CFBundleVersion</key>
-    <string>1.2.3</string>
+    <string>1.3.0</string>
     <key>NSHumanReadableCopyright</key>
     <string>Aalto</string>
     <key>NSHighResolutionCapable</key>
