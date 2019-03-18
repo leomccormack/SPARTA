@@ -314,7 +314,9 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("UseDefaultHRIRset", ambi_bin_getUseDefaultHRIRsflag(hAmbi));
     xml.setAttribute("Norm", ambi_bin_getNormType(hAmbi));
     xml.setAttribute("ChOrder", ambi_bin_getChOrder(hAmbi));
-    xml.setAttribute("maxrE", ambi_bin_getDecEnableMaxrE(hAmbi));
+    xml.setAttribute("maxrE", ambi_bin_getEnableMaxRE(hAmbi));
+    xml.setAttribute("diffMatch", ambi_bin_getEnableDiffuseMatching(hAmbi));
+    xml.setAttribute("phaseWarp", ambi_bin_getEnablePhaseWarping(hAmbi));
     xml.setAttribute("method", ambi_bin_getDecodingMethod(hAmbi));
     
     xml.setAttribute("ENABLEROT", ambi_bin_getEnableRotation(hAmbi));
@@ -350,7 +352,11 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if(xmlState->hasAttribute("ChOrder"))
                 ambi_bin_setChOrder(hAmbi, xmlState->getIntAttribute("ChOrder", 1));
             if(xmlState->hasAttribute("maxrE"))
-                ambi_bin_setDecEnableMaxrE(hAmbi,xmlState->getIntAttribute("maxrE", 1));
+                ambi_bin_setEnableMaxRE(hAmbi,xmlState->getIntAttribute("maxrE", 1));
+            if(xmlState->hasAttribute("diffMatch"))
+                ambi_bin_setEnableDiffuseMatching(hAmbi,xmlState->getIntAttribute("diffMatch", 1));
+            if(xmlState->hasAttribute("phaseWarp"))
+                ambi_bin_setEnablePhaseWarping(hAmbi,xmlState->getIntAttribute("phaseWarp", 1));
             if(xmlState->hasAttribute("method"))
                 ambi_bin_setDecodingMethod(hAmbi, (DECODING_METHODS)xmlState->getIntAttribute("method", 1));
             
