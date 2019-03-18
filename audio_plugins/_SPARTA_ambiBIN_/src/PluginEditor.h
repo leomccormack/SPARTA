@@ -114,6 +114,8 @@ private:
     std::unique_ptr<ToggleButton> TBrpyFlag;
     std::unique_ptr<ToggleButton> TBenableRot;
     std::unique_ptr<ComboBox> CBdecoderMethod;
+    std::unique_ptr<ToggleButton> TBdiffMatching;
+    std::unique_ptr<ToggleButton> TBphaseWarping;
 
 
     //==============================================================================
