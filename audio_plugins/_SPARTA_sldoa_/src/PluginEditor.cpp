@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.3
 
   ------------------------------------------------------------------------------
 
@@ -909,68 +909,67 @@ BEGIN_JUCER_METADATA
     <RECT pos="0 0 634 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
     <TEXT pos="14 410 96 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
-          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="14 468 112 30" fill="solid: ffffffff" hasStroke="0" text="Avg (ms):"
-          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="14 440 127 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
-          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="216 405 312 30" fill="solid: ffffffff" hasStroke="0" text="Analysis Order Per Frequency Band"
-          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="611 466 13 30" fill="solid: ffffffff" hasStroke="0" text="1"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="211 478 37 30" fill="solid: ffffffff" hasStroke="0" text="100"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="366 478 37 30" fill="solid: ffffffff" hasStroke="0" text="1k"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="520 478 37 30" fill="solid: ffffffff" hasStroke="0" text="10k"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="402 478 93 30" fill="solid: ffffffff" hasStroke="0" text="Frequency (Hz)"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="563 478 37 30" fill="solid: ffffffff" hasStroke="0" text="20k"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="216 376 160 30" fill="solid: ffffffff" hasStroke="0" text="Minimum Freq (Hz):"
-          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="422 376 162 30" fill="solid: ffffffff" hasStroke="0" text="Maximum Freq (Hz):"
-          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="14 376 104 30" fill="solid: ffffffff" hasStroke="0" text="Max Order:"
-          fontname="Default font" fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 0 112 32" fill="solid: ffff4848" hasStroke="0" text="SLDoA"
-          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="584 32 29 30" fill="solid: ffffffff" hasStroke="0" text="GS:"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="536 32 37 30" fill="solid: ffffffff" hasStroke="0" text="U|D:"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="490 32 37 30" fill="solid: ffffffff" hasStroke="0" text="L|R:"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="267 33 125 30" fill="solid: ffffffff" hasStroke="0" text="Display Window"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <SLIDER name="new slider" id="86d1295f97e935ba" memberName="avgSlider"
-          virtualName="" explicitFocusOrder="0" pos="80 473 118 24" min="0.00000000000000000000"
-          max="2000.00000000000000000000" int="0.10000000000000000555"
-          style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
-          textBoxWidth="45" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="80 473 118 24" min="0"
+          max="2e3" int="1e-1" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="3d1c447f9542fa94" memberName="CB_CHorder"
             virtualName="" explicitFocusOrder="0" pos="66 447 62 18" editable="0"
@@ -980,24 +979,21 @@ BEGIN_JUCER_METADATA
             layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="50ea77f60aadeeca" memberName="slider_anaOrder"
           virtualName="" explicitFocusOrder="0" pos="576 424 40 66" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="0.00000000000000000000" max="1.00000000000000000000"
-          int="1.00000000000000000000" style="LinearVertical" textBoxPos="NoTextBox"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
-          needsCallback="1"/>
+          textboxbkgd="ffffff" min="0" max="1" int="1" style="LinearVertical"
+          textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
+          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
   <COMBOBOX name="new combo box" id="932ca035edce041d" memberName="CBinputTypePreset"
             virtualName="" explicitFocusOrder="0" pos="96 417 103 18" editable="0"
             layout="33" items="Ideal SH" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="905f4ab0adab1f4f" memberName="s_minFreq"
-          virtualName="" explicitFocusOrder="0" pos="352 382 56 20" min="0.00000000000000000000"
-          max="24000.00000000000000000000" int="1.00000000000000000000"
-          style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
-          textBoxWidth="45" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="352 382 56 20" min="0"
+          max="2.4e4" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <SLIDER name="new slider" id="3aad5000f228ef1b" memberName="s_maxFreq"
-          virtualName="" explicitFocusOrder="0" pos="560 382 56 20" min="0.00000000000000000000"
-          max="24000.00000000000000000000" int="1.00000000000000000000"
-          style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
-          textBoxWidth="45" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          virtualName="" explicitFocusOrder="0" pos="560 382 56 20" min="0"
+          max="2.4e4" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="346a30a1bf8969e9" memberName="CBmasterOrder"
             virtualName="" explicitFocusOrder="0" pos="96 384 103 18" editable="0"
@@ -1023,3 +1019,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

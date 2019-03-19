@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_ambiENC" projectType="audioplug" version="1.2.4"
+<JUCERPROJECT id="lfkRjX" name="sparta_ambiENC" projectType="audioplug" version="1.2.5"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiENC" pluginDesc="sparta_ambiENC"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="AEOA"
@@ -8,7 +8,7 @@
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="sparta_ambiENCAU" pluginRTASCategory=""
               aaxIdentifier="com.yourcompany.sparta" pluginAAXCategory="2"
-              jucerVersion="5.3.2" buildVST3="0" buildRTAS="0" buildAAX="0"
+              jucerVersion="5.4.3" buildVST3="0" buildRTAS="0" buildAAX="0"
               pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE = 256&#10;SAF_USE_INTEL_MKL"
               companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
@@ -129,12 +129,12 @@
             userNotes="mkl_intel_lp64.lib&#10;mkl_sequential.lib &#10;mkl_core.lib&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_ambiENC_debug" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
-                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
+                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK"
                        binaryPath="../../../../lib/Win64_Debug" intermediatesPath="../../../obj/Win64_Debug"
                        enablePluginBinaryCopyStep="0" userNotes="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win"
                        linkTimeOptimisation="0"/>
         <CONFIGURATION isDebug="0" name="Release" binaryPath="../../../../lib/Win64_Release"
-                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
+                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK"
                        targetName="sparta_ambiENC" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../obj/Win64_Release" linkTimeOptimisation="1"
                        enablePluginBinaryCopyStep="0"/>
@@ -161,12 +161,12 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="sparta_ambiENC_debug"
-                       binaryPath="../../../../lib/Win64_Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
+                       binaryPath="../../../../lib/Win64_Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../obj/Win64_Debug" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="0"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="sparta_ambiENC" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
+                       isDebug="0" optimisation="3" targetName="sparta_ambiENC" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK"
                        binaryPath="../../../../lib/Win64_Release" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../obj/sparta_ambiENC/Win64_Release"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
@@ -193,11 +193,11 @@
                vst3Folder="../../../../SDKs/VST3_SDK/">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_ambiENC_debug"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/VST2_SDK"
                        osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib&#10;"
                        enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="sparta_ambiENC"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/VST2_SDK"
                        osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib&#10;"
                        enablePluginBinaryCopyStep="1" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>

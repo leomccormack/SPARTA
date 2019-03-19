@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.3
 
   ------------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
-#include "saf_hoa.h"
+
 //[/MiscUserDefs]
 
 //==============================================================================
@@ -247,14 +247,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBmasterOrder->addItem (TRANS("7th order"), MASTER_ORDER_SEVENTH);
 
     /* add decorder options */
-    CBdec1method->addItem(TRANS("SAD"), DECODER_SAD);
-    CBdec1method->addItem(TRANS("MMD"), DECODER_MMD);
-    CBdec1method->addItem(TRANS("EPAD"), DECODER_EPAD);
-    CBdec1method->addItem(TRANS("AllRAD"), DECODER_ALLRAD);
-    CBdec2method->addItem(TRANS("SAD"), DECODER_SAD);
-    CBdec2method->addItem(TRANS("MMD"), DECODER_MMD);
-    CBdec2method->addItem(TRANS("EPAD"), DECODER_EPAD);
-    CBdec2method->addItem(TRANS("AllRAD"), DECODER_ALLRAD);
+    CBdec1method->addItem(TRANS("SAD"), DECODING_METHOD_SAD);
+    CBdec1method->addItem(TRANS("MMD"), DECODING_METHOD_MMD);
+    CBdec1method->addItem(TRANS("EPAD"), DECODING_METHOD_EPAD);
+    CBdec1method->addItem(TRANS("AllRAD"), DECODING_METHOD_ALLRAD);
+    CBdec2method->addItem(TRANS("SAD"), DECODING_METHOD_SAD);
+    CBdec2method->addItem(TRANS("MMD"), DECODING_METHOD_MMD);
+    CBdec2method->addItem(TRANS("EPAD"), DECODING_METHOD_EPAD);
+    CBdec2method->addItem(TRANS("AllRAD"), DECODING_METHOD_ALLRAD);
 
     /* add diffuse-eq options */
     CBdec1normtype->addItem(TRANS("AP"), AMPLITUDE_PRESERVING);
@@ -1180,90 +1180,90 @@ BEGIN_JUCER_METADATA
     <RECT pos="0 0 656 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
     <TEXT pos="455 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 159 424 105" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="502 124 105 32" fill="solid: ffffffff" hasStroke="0" text="Azi    #    Elev"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="455 86 113 30" fill="solid: ffffffff" hasStroke="0" text="N Chan:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="164 32 149 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Settings"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="524 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Outputs"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="234 90 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
-          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 90 132 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 122 132 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="234 58 189 30" fill="solid: ffffffff" hasStroke="0" text="Binauralise Loudspeakers:"
-          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 263 141 81" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="51 261 96 30" fill="solid: ffffffff" hasStroke="0" text="Decoder 1"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="168 262 120 30" fill="solid: ffffffff" hasStroke="0" text="Cross-over (Hz)"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="339 261 96 30" fill="solid: ffffffff" hasStroke="0" text="Decoder 2"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="82 308 96 30" fill="solid: ffffffff" hasStroke="0" text="max_rE:"
-          fontname="Default font" fontsize="10.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1e1" kerning="0" bold="1" italic="0"
+          justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 156 261 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Order Per Frequency Band"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 238 37 30" fill="solid: ffffffff" hasStroke="0" text="100"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="174 238 37 30" fill="solid: ffffffff" hasStroke="0" text="1k"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="328 238 37 30" fill="solid: ffffffff" hasStroke="0" text="10k"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="210 238 93 30" fill="solid: ffffffff" hasStroke="0" text="Frequency (Hz)"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="371 238 37 30" fill="solid: ffffffff" hasStroke="0" text="20k"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="366 308 96 30" fill="solid: ffffffff" hasStroke="0" text="max_rE:"
-          fontname="Default font" fontsize="10.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1e1" kerning="0" bold="1" italic="0"
+          justification="33" typefaceStyle="Bold"/>
     <TEXT pos="419 230 13 30" fill="solid: ffffffff" hasStroke="0" text="1"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 58 132 30" fill="solid: ffffffff" hasStroke="0" text="Max Order:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 0 112 32" fill="solid: ff00d8df" hasStroke="0" text="AmbiDEC"
-          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="5a2f99f88aa51390" memberName="CBoutputDirsPreset"
             virtualName="" explicitFocusOrder="0" pos="520 64 112 20" editable="0"
             layout="33" items="Default" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_loudspeakers"
-          virtualName="" explicitFocusOrder="0" pos="520 90 112 24" min="1.00000000000000000000"
-          max="64.00000000000000000000" int="1.00000000000000000000" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
-          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="520 90 112 24" min="1"
+          max="6.4e1" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1"
+          needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
                 virtualName="" explicitFocusOrder="0" pos="408 94 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
@@ -1278,10 +1278,9 @@ BEGIN_JUCER_METADATA
             layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="27b7eb906eb4d4f" memberName="SL_transitionFreq"
           virtualName="" explicitFocusOrder="0" pos="168 296 112 40" bkgcol="ff263238"
-          trackcol="ff181f22" min="500.00000000000000000000" max="2000.00000000000000000000"
-          int="0.10000000000000000555" style="LinearHorizontal" textBoxPos="TextBoxAbove"
-          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.00000000000000000000"
-          needsCallback="1"/>
+          trackcol="ff181f22" min="5e2" max="2e3" int="1e-1" style="LinearHorizontal"
+          textBoxPos="TextBoxAbove" textBoxEditable="1" textBoxWidth="60"
+          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
   <COMBOBOX name="new combo box" id="6fe8e095551b1808" memberName="CBdec1method"
             virtualName="" explicitFocusOrder="0" pos="24 288 116 20" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
@@ -1306,9 +1305,8 @@ BEGIN_JUCER_METADATA
   <SLIDER name="new slider" id="50ea77f60aadeeca" memberName="s_decOrder"
           virtualName="" explicitFocusOrder="0" pos="384 176 40 80" bkgcol="ff263238"
           trackcol="ff181f22" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="0.00000000000000000000" max="1.00000000000000000000" int="1.00000000000000000000"
-          style="LinearVertical" textBoxPos="NoTextBox" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          min="0" max="1" int="1" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON"
               virtualName="" explicitFocusOrder="0" pos="447 40 34 14" bgColOff="ff14889e"
@@ -1329,3 +1327,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+
