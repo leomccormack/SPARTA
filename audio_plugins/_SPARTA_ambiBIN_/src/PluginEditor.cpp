@@ -1042,6 +1042,9 @@ void PluginEditor::timerCallback()
 		fileChooser.setEnabled(false);
 		TBuseDefaultHRIRs->setEnabled(false);
 		TBmaxRE->setEnabled(false);
+		TBdiffMatching->setEnabled(false);
+		TBphaseWarping->setEnabled(false);
+		CBdecoderMethod->setEnabled(false);
 	}
 	else {
 		CBorderPreset->setWantsKeyboardFocus(false);
@@ -1049,6 +1052,9 @@ void PluginEditor::timerCallback()
 		fileChooser.setEnabled(true);
 		TBuseDefaultHRIRs->setEnabled(true);
 		TBmaxRE->setEnabled(true);
+		TBdiffMatching->setEnabled(true); 
+		TBphaseWarping->setEnabled(true);
+		CBdecoderMethod->setEnabled(true);
 		ambi_bin_checkReInit(hVst->hAmbi);
 	}
 #endif
