@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_sldoa" projectType="audioplug" version="1.3.0"
+<JUCERPROJECT id="lfkRjX" name="sparta_sldoa" projectType="audioplug" version="1.3.1"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_sldoa" pluginDesc="sparta_sldoa"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="SLOA"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="sparta_sldoaAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.sldoa"
-              pluginAAXCategory="2" jucerVersion="5.3.2" buildVST3="0" buildRTAS="0"
+              pluginAAXCategory="2" jucerVersion="5.4.3" buildVST3="0" buildRTAS="0"
               buildAAX="0" pluginManufacturerEmail="support@yourcompany.com"
               defines="FRAME_SIZE = 512&#10;SAF_USE_INTEL_MKL" companyName="Aalto"
               companyEmail="leo.t.mccormack@gmail.com" userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
@@ -130,10 +130,10 @@
             externalLibraries="saf_mkl_custom.lib">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" binaryPath="../../../../lib/Win64_Debug"
-                       headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
+                       headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../../SDKs/VST2_SDK"
                        libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        targetName="sparta_sldoad" intermediatesPath="../../../../obj/sparta_sldoa/Win64_Debug"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../../SDKs/VST2_SDK"
                        libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../../obj/sparta_sldoa/Win64_Release"
                        targetName="sparta_sldoa" binaryPath="../../../../lib/Win64_Release"/>
@@ -159,10 +159,10 @@
             externalLibraries="saf_mkl_custom.lib">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" binaryPath="../../../../lib/Win64_Debug"
-                       headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
+                       headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../../SDKs/VST2_SDK"
                        libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        targetName="sparta_sldoad" intermediatesPath="../../../../obj/sparta_sldoa/Win64_Debug"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../../SDKs/VST2_SDK"
                        libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../../obj/sparta_sldoa/Win64_Release"
                        targetName="sparta_sldoa" binaryPath="../../../../lib/Win64_Release"/>
@@ -188,11 +188,11 @@
                extraFrameworks="QTKit" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_sldoad"
-                       binaryPath="" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
+                       binaryPath="" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../../SDKs/VST2_SDK"
                        osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"
                        libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib&#10;"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="sparta_sldoa"
-                       binaryPath="" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
+                       binaryPath="" headerPath="../../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../../SDKs/VST2_SDK"
                        osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"
                        libraryPath="../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib&#10;"/>
       </CONFIGURATIONS>

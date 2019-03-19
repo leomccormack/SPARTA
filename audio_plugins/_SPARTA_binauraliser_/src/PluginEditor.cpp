@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.3
 
   ------------------------------------------------------------------------------
 
@@ -1187,15 +1187,15 @@ BEGIN_JUCER_METADATA
     <RECT pos="0 0 920 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
     <TEXT pos="23 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 58 480 240" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 121 196 225" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="70 123 105 32" fill="solid: ffffffff" hasStroke="0" text="Azi    #   Elev"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="448 308 252 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="712 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
@@ -1203,102 +1203,100 @@ BEGIN_JUCER_METADATA
     <RECT pos="712 290 196 56" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="23 88 113 30" fill="solid: ffffffff" hasStroke="0" text="N Chan:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="84 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="788 32 113 30" fill="solid: ffffffff" hasStroke="0" text="HRIRs"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="392 32 136 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="720 58 160 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="457 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
-          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="582 314 122 30" fill="solid: ffffffff" hasStroke="0" text="Show HRIRs:"
-          fontname="Default font" fontsize="14.50000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 308 229 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="229 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Interp. Mode:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="719 316 89 30" fill="solid: ffffffff" hasStroke="0" text="HRIR/DAW Fs:"
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="719 294 132 30" fill="solid: ffffffff" hasStroke="0" text="N Dirs/Tri:"
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="712 176 196 115" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="735 174 49 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[0]"
-          fontname="Default font" fontsize="10.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="36"/>
+          fontname="Default font" fontsize="1e1" kerning="0" bold="0" italic="0"
+          justification="36"/>
     <TEXT pos="775 174 46 30" fill="solid: ffffffff" hasStroke="0" text="Pitch"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="831 174 54 30" fill="solid: ffffffff" hasStroke="0" text="Roll"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="831 262 63 30" fill="solid: ffffffff" hasStroke="0" text="+/-"
-          fontname="Default font" fontsize="13.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="703 262 63 30" fill="solid: ffffffff" hasStroke="0" text="+/-"
-          fontname="Default font" fontsize="13.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="767 262 63 30" fill="solid: ffffffff" hasStroke="0" text="+/-"
-          fontname="Default font" fontsize="13.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="799 142 91 35" fill="solid: ffffffff" hasStroke="0" text="OSC port:"
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="698 174 65 30" fill="solid: ffffffff" hasStroke="0" text="Yaw"
-          fontname="Default font" fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="808 174 40 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[1]"
-          fontname="Default font" fontsize="10.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="36"/>
+          fontname="Default font" fontsize="1e1" kerning="0" bold="0" italic="0"
+          justification="36"/>
     <TEXT pos="864 174 40 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[2]"
-          fontname="Default font" fontsize="10.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="36"/>
+          fontname="Default font" fontsize="1e1" kerning="0" bold="0" italic="0"
+          justification="36"/>
     <TEXT pos="711 142 54 35" fill="solid: ffffffff" hasStroke="0" text="R-P-Y:"
-          fontname="Default font" fontsize="11.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="719 120 160 30" fill="solid: ffffffff" hasStroke="0" text="Enable Rotation:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 0 112 32" fill="solid: ffff73f9" hasStroke="0" text="Binauraliser"
-          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="5a2f99f88aa51390" memberName="CBsourceDirsPreset"
             virtualName="" explicitFocusOrder="0" pos="88 64 112 20" editable="0"
             layout="33" items="Default" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_sources"
-          virtualName="" explicitFocusOrder="0" pos="80 92 120 24" min="1.00000000000000000000"
-          max="64.00000000000000000000" int="1.00000000000000000000" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
-          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="80 92 120 24" min="1"
+          max="6.4e1" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1"
+          needsCallback="1"/>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_N_dirs"
          virtualName="" explicitFocusOrder="0" pos="797 297 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         fontsize="1.5e1" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="f8b5274e0c8768f4" memberName="label_HRIR_fs"
          virtualName="" explicitFocusOrder="0" pos="797 321 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         fontsize="1.5e1" kerning="0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
                 virtualName="" explicitFocusOrder="0" pos="876 61 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
@@ -1306,8 +1304,7 @@ BEGIN_JUCER_METADATA
          virtualName="" explicitFocusOrder="0" pos="851 321 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         fontsize="1.5e1" kerning="0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="74817bb8a57611dc" memberName="TB_showInputs"
                 virtualName="" explicitFocusOrder="0" pos="552 317 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
@@ -1318,8 +1315,7 @@ BEGIN_JUCER_METADATA
          virtualName="" explicitFocusOrder="0" pos="851 297 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         fontsize="1.5e1" kerning="0" bold="0" italic="0" justification="33"/>
   <COMBOBOX name="new combo box" id="aeb0b2f644784061" memberName="CBinterpMode"
             virtualName="" explicitFocusOrder="0" pos="328 318 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
@@ -1332,22 +1328,19 @@ BEGIN_JUCER_METADATA
               radioGroupId="0"/>
   <SLIDER name="new slider" id="ace036a85eec9703" memberName="s_yaw" virtualName=""
           explicitFocusOrder="0" pos="717 196 60 68" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="-180.00000000000000000000" max="180.00000000000000000000"
-          int="0.01000000000000000021" style="RotaryHorizontalVerticalDrag"
+          textboxbkgd="ffffff" min="-1.8e2" max="1.8e2" int="1e-2" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="58"
-          textBoxHeight="15" skewFactor="1.00000000000000000000" needsCallback="1"/>
+          textBoxHeight="15" skewFactor="1" needsCallback="1"/>
   <SLIDER name="new slider" id="9af7dd86cd139d85" memberName="s_pitch"
           virtualName="" explicitFocusOrder="0" pos="780 196 60 68" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="-180.00000000000000000000" max="180.00000000000000000000"
-          int="0.01000000000000000021" style="RotaryHorizontalVerticalDrag"
+          textboxbkgd="ffffff" min="-1.8e2" max="1.8e2" int="1e-2" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="58"
-          textBoxHeight="15" skewFactor="1.00000000000000000000" needsCallback="1"/>
+          textBoxHeight="15" skewFactor="1" needsCallback="1"/>
   <SLIDER name="new slider" id="b5d39bb257b3289a" memberName="s_roll" virtualName=""
           explicitFocusOrder="0" pos="843 196 60 68" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="-180.00000000000000000000" max="180.00000000000000000000"
-          int="0.01000000000000000021" style="RotaryHorizontalVerticalDrag"
+          textboxbkgd="ffffff" min="-1.8e2" max="1.8e2" int="1e-2" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="58"
-          textBoxHeight="15" skewFactor="1.00000000000000000000" needsCallback="1"/>
+          textBoxHeight="15" skewFactor="1" needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="ac47b63592b1d4cf" memberName="t_flipYaw"
                 virtualName="" explicitFocusOrder="0" pos="749 265 23 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
@@ -1376,3 +1369,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

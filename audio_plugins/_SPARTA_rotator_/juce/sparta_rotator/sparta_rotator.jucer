@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_rotator" projectType="audioplug" version="1.1.3"
+<JUCERPROJECT id="lfkRjX" name="sparta_rotator" projectType="audioplug" version="1.1.4"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_rotator" pluginDesc="sparta_rotator"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ROOA"
@@ -8,7 +8,7 @@
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="sparta_rotator_o3AU" pluginRTASCategory=""
               aaxIdentifier="com.yourcompany.rotator" pluginAAXCategory="2"
-              jucerVersion="5.3.2" buildVST3="0" buildRTAS="0" buildAAX="0"
+              jucerVersion="5.4.3" buildVST3="0" buildRTAS="0" buildAAX="0"
               pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE  = 256&#10;SAF_USE_INTEL_MKL"
               companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
@@ -119,11 +119,11 @@
   <EXPORTFORMATS>
     <VS2017 targetFolder="../../make/win64/VisualStudio2017/" externalLibraries="saf_mkl_custom.lib">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        targetName="sparta_rotator_debug" binaryPath="../../../../lib/Win64_Debug"
                        intermediatesPath="../../../obj/Win64_Debug"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        targetName="sparta_rotator" binaryPath="../../../../lib/Win64_Release"
                        intermediatesPath="../../../obj/Win64_Release"/>
@@ -151,12 +151,12 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="sparta_rotator" binaryPath="../../../../lib/Win64_Debug"
-                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
+                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../obj/Win64_Debug" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="sparta_rotator" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include"
+                       isDebug="0" optimisation="3" targetName="sparta_rotator" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK"
                        binaryPath="../../../../lib/Win64_Release" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../obj/Win64_Release" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1"/>
@@ -183,11 +183,11 @@
                extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_rotator_debug"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/VST2_SDK"
                        osxArchitecture="64BitIntel" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib&#10;"
                        osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="sparta_rotator"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/VST2_SDK"
                        osxArchitecture="64BitIntel" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib&#10;"
                        osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"/>
       </CONFIGURATIONS>

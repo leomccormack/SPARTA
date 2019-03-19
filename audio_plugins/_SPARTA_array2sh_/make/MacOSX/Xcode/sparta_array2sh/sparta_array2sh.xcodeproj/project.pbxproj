@@ -1318,8 +1318,8 @@
 					"FRAME_SIZE=256",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_5EDCFD90=1",
-					"JUCE_APP_VERSION=1.4.5",
-					"JUCE_APP_VERSION_HEX=0x10405",
+					"JUCE_APP_VERSION=1.4.6",
+					"JUCE_APP_VERSION_HEX=0x10406",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1338,6 +1338,7 @@
 					"../../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include",
 					"../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
+					"../../../../../../SDKs/VST2_SDK",
 					"../../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1378,8 +1379,8 @@
 					"FRAME_SIZE=256",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_5EDCFD90=1",
-					"JUCE_APP_VERSION=1.4.5",
-					"JUCE_APP_VERSION_HEX=0x10405",
+					"JUCE_APP_VERSION=1.4.6",
+					"JUCE_APP_VERSION_HEX=0x10406",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1399,6 +1400,7 @@
 					"../../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include",
 					"../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
+					"../../../../../../SDKs/VST2_SDK",
 					"../../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1438,8 +1440,8 @@
 					"FRAME_SIZE=256",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_5EDCFD90=1",
-					"JUCE_APP_VERSION=1.4.5",
-					"JUCE_APP_VERSION_HEX=0x10405",
+					"JUCE_APP_VERSION=1.4.6",
+					"JUCE_APP_VERSION_HEX=0x10406",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1458,6 +1460,7 @@
 					"../../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include",
 					"../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
+					"../../../../../../SDKs/VST2_SDK",
 					"../../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1493,8 +1496,8 @@
 					"FRAME_SIZE=256",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_5EDCFD90=1",
-					"JUCE_APP_VERSION=1.4.5",
-					"JUCE_APP_VERSION_HEX=0x10405",
+					"JUCE_APP_VERSION=1.4.6",
+					"JUCE_APP_VERSION_HEX=0x10406",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1514,6 +1517,7 @@
 					"../../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include",
 					"../../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
+					"../../../../../../SDKs/VST2_SDK",
 					"../../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1554,7 +1558,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
@@ -1572,7 +1576,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PRODUCT_NAME = "sparta_array2shd";
-				WARNING_CFLAGS = -Wreorder;
+				WARNING_CFLAGS = "-Wreorder";
 				ZERO_LINK = NO;
 			};
 			name = Debug;
@@ -1599,7 +1603,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
@@ -1616,7 +1620,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PRODUCT_NAME = "sparta_array2sh";
-				WARNING_CFLAGS = -Wreorder;
+				WARNING_CFLAGS = "-Wreorder";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -1794,13 +1798,14 @@
 		030CE0186C510D1FDA6ED6A6 = {
 			isa = PBXProject;
 			buildConfigurationList = D66792391EEF08ACA447E192;
-			attributes = { LastUpgradeCheck = 0930; ORGANIZATIONNAME = "Aalto"; TargetAttributes = { 637B0DF4ED253147FAB02C55 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; };52B20B8A73E772FFE4672ADB = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; };1913975A7EF2E7A8FAA91C38 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; };
+			attributes = { LastUpgradeCheck = 0930; ORGANIZATIONNAME = "Aalto"; TargetAttributes = { 637B0DF4ED253147FAB02C55 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; };52B20B8A73E772FFE4672ADB = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; };1913975A7EF2E7A8FAA91C38 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 0;
 			mainGroup = D2E828249AD63D01CF4A6A14;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (637B0DF4ED253147FAB02C55, 52B20B8A73E772FFE4672ADB, 1913975A7EF2E7A8FAA91C38);
+			knownRegions = (en, Base);
 		};
 	};
 	rootObject = 030CE0186C510D1FDA6ED6A6;

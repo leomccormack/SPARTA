@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.3
 
   ------------------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_pValue->setTextBoxStyle (Slider::TextBoxRight, false, 50, 20);
     SL_pValue->addListener (this);
 
-    SL_pValue->setBounds (354, 326, 120, 15);
+    SL_pValue->setBounds (432, 321, 42, 15);
 
     CBsLoudspeakerDirsPreset.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBsLoudspeakerDirsPreset.get());
@@ -141,7 +141,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_spread->setTextBoxStyle (Slider::TextBoxRight, false, 50, 20);
     SL_spread->addListener (this);
 
-    SL_spread->setBounds (224, 326, 120, 15);
+    SL_spread->setBounds (296, 320, 48, 15);
 
 
     //[UserPreSize]
@@ -158,6 +158,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* init OpenGL */
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
+
+    /* remove slider bit from these sliders */
+    SL_pValue->setColour(Slider::trackColourId, Colours::transparentBlack);
+    SL_pValue->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    SL_pValue->setSliderSnapsToMousePosition(false);
+    SL_spread->setColour(Slider::trackColourId, Colours::transparentBlack);
+    SL_spread->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    SL_spread->setSliderSnapsToMousePosition(false);
 
     /* add source preset options */
 #ifdef ENABLE_MONO_PRESET
@@ -598,15 +606,15 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 354, y = 303, width = 123, height = 30;
-        String text (TRANS("pValue Coeff:"));
+        int x = 355, y = 306, width = 123, height = 30;
+        String text (TRANS("Room coeff:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
+                    Justification::centredLeft, true);
     }
 
     {
@@ -669,6 +677,30 @@ void PluginEditor::paint (Graphics& g)
                     Justification::centredLeft, true);
     }
 
+    {
+        int x = 227, y = 313, width = 123, height = 30;
+        String text (CharPointer_UTF8 ("Spread (\xc2\xb0):"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 356, y = 322, width = 72, height = 24;
+        String text (TRANS("(0: Wet, 1: Dry)"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (10.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
@@ -676,23 +708,6 @@ void PluginEditor::paint (Graphics& g)
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
 		175, 16, 530, 11,
 		Justification::centredLeft, true);
-
-    /* spread text*/
-    {
-#ifdef __APPLE__
-        float kerningFactor = 0.5f * panner_getSpread(hVst->hPan)/90.0f;
-#else
-		float kerningFactor = 0.0f;
-#endif
-        int x = 205, y = 303, width = 167, height = 30;
-        String text (CharPointer_UTF8 ("Spread (\xc2\xb0):"));
-        Colour fillColour = Colours::white;
-        g.setColour (fillColour);
-        //g.setOpacity(1.0f-kerningFactor);
-        g.setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Bold").withExtraKerningFactor (kerningFactor));
-        g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
-    }
 
     /* display warning message */
     g.setColour(Colours::red);
@@ -969,15 +984,15 @@ BEGIN_JUCER_METADATA
     <RECT pos="0 0 920 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
     <TEXT pos="23 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 58 480 240" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 121 196 225" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="70 123 105 32" fill="solid: ffffffff" hasStroke="0" text="Azi    #   Elev"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="480 308 220 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="712 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
@@ -985,50 +1000,56 @@ BEGIN_JUCER_METADATA
     <RECT pos="712 121 196 225" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="23 88 113 30" fill="solid: ffffffff" hasStroke="0" text="N Chan:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="84 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="789 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Outputs"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="404 32 156 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="486 313 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
-          fontname="Default font" fontsize="13.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="588 313 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Outputs:"
-          fontname="Default font" fontsize="13.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="354 303 123 30" fill="solid: ffffffff" hasStroke="0" text="pValue Coeff:"
-          fontname="Default font" fontsize="13.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="355 306 123 30" fill="solid: ffffffff" hasStroke="0" text="Room coeff:"
+          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="723 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="770 123 105 32" fill="solid: ffffffff" hasStroke="0" text="Azi    #   Elev"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="723 88 113 30" fill="solid: ffffffff" hasStroke="0" text="N Chan:"
-          fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="18.80000000000000071054" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 0 112 32" fill="solid: ff0eff00" hasStroke="0" text="Panner"
-          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="227 313 123 30" fill="solid: ffffffff" hasStroke="0" text="Spread (&#176;):"
+          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="356 322 72 24" fill="solid: ffffffff" hasStroke="0" text="(0: Wet, 1: Dry)"
+          fontname="Default font" fontsize="1e1" kerning="0" bold="1" italic="0"
+          justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="5a2f99f88aa51390" memberName="CBsourceDirsPreset"
             virtualName="" explicitFocusOrder="0" pos="88 64 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_sources"
-          virtualName="" explicitFocusOrder="0" pos="80 92 120 24" min="1.00000000000000000000"
-          max="64.00000000000000000000" int="1.00000000000000000000" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
-          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="80 92 120 24" min="1"
+          max="6.4e1" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1"
+          needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="74817bb8a57611dc" memberName="TB_showInputs"
                 virtualName="" explicitFocusOrder="0" pos="561 316 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
@@ -1036,18 +1057,18 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="672 316 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <SLIDER name="new slider" id="5b4f982e7ea9b2d5" memberName="SL_pValue"
-          virtualName="" explicitFocusOrder="0" pos="354 326 120 15" min="0.00000000000000000000"
-          max="1.00000000000000000000" int="0.01000000000000000021" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="50"
-          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="432 321 42 15" min="0"
+          max="1" int="1e-2" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1"
+          needsCallback="1"/>
   <COMBOBOX name="new combo box" id="cfd23f574e19957c" memberName="CBsLoudspeakerDirsPreset"
             virtualName="" explicitFocusOrder="0" pos="788 66 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="cbb243fa14b960d0" memberName="SL_num_loudspeakers"
-          virtualName="" explicitFocusOrder="0" pos="780 92 120 24" min="2.00000000000000000000"
-          max="64.00000000000000000000" int="1.00000000000000000000" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="60"
-          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="780 92 120 24" min="2"
+          max="6.4e1" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1"
+          needsCallback="1"/>
   <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON_src"
               virtualName="" explicitFocusOrder="0" pos="140 41 34 14" bgColOff="ff14889e"
               buttonText="Import" connectedEdges="2" needsCallback="1" radioGroupId="0"/>
@@ -1063,10 +1084,10 @@ BEGIN_JUCER_METADATA
               bgColOn="ff181f9a" buttonText="Export" connectedEdges="1" needsCallback="1"
               radioGroupId="0"/>
   <SLIDER name="new slider" id="502f78257b11f666" memberName="SL_spread"
-          virtualName="" explicitFocusOrder="0" pos="224 326 120 15" min="0.00000000000000000000"
-          max="90.00000000000000000000" int="1.00000000000000000000" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="50"
-          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="296 320 48 15" min="0"
+          max="9e1" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1"
+          needsCallback="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
@@ -1076,3 +1097,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

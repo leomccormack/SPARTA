@@ -15,8 +15,6 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C4438A43-EB43-B2A1-6BBC-CA236E44500E}</ProjectGuid>
-    <PlatformToolset>v141</PlatformToolset>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"
@@ -25,8 +23,7 @@
     <UseOfMfc>false</UseOfMfc>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <PlatformToolset>v141</PlatformToolset>
-    <PlatformToolset>v141</PlatformToolset>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == ''">$([Microsoft.Build.Utilities.ToolLocationHelper]::GetLatestSDKTargetPlatformVersion('Windows', '10.0'))</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'"
                  Label="Configuration">
@@ -34,8 +31,7 @@
     <UseOfMfc>false</UseOfMfc>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v141</PlatformToolset>
-    <PlatformToolset>v141</PlatformToolset>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == ''">$([Microsoft.Build.Utilities.ToolLocationHelper]::GetLatestSDKTargetPlatformVersion('Windows', '10.0'))</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
   <ImportGroup Label="ExtensionSettings"/>
@@ -44,10 +40,6 @@
             Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')"
             Label="LocalAppDataPlatform"/>
   </ImportGroup>
-  <PropertyGroup Label="UserMacros">
-    <PlatformToolset>v141</PlatformToolset>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
-  </PropertyGroup>
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <TargetExt>.dll</TargetExt>
@@ -61,8 +53,6 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">sparta_panner</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib;.\..\..\..\..\..\lib\Win64_Release\Shared Code</LibraryPath>
-    <PlatformToolset>v141</PlatformToolset>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -75,8 +65,8 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\..\juce\sparta_panner\JuceLibraryCode;..\..\..\..\..\SDKs\modules;../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../SDKs/Spatial_Audio_Framework/examples/panner/include;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;FRAME_SIZE=256;JUCER_VS2017_833F50B0=1;JUCE_APP_VERSION=1.4.0;JUCE_APP_VERSION_HEX=0x10400;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\..\SDKs\modules\juce_audio_processors\format_types\VST3_SDK;..\..\..\juce\sparta_panner\JuceLibraryCode;..\..\..\..\..\SDKs\modules;../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../SDKs/Spatial_Audio_Framework/examples/panner/include;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include;../../../../../SDKs/VST2_SDK;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;FRAME_SIZE=256;JUCER_VS2017_833F50B0=1;JUCE_APP_VERSION=1.4.1;JUCE_APP_VERSION_HEX=0x10401;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -121,8 +111,8 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\juce\sparta_panner\JuceLibraryCode;..\..\..\..\..\SDKs\modules;../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../SDKs/Spatial_Audio_Framework/examples/panner/include;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;FRAME_SIZE=256;JUCER_VS2017_833F50B0=1;JUCE_APP_VERSION=1.4.0;JUCE_APP_VERSION_HEX=0x10400;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\..\SDKs\modules\juce_audio_processors\format_types\VST3_SDK;..\..\..\juce\sparta_panner\JuceLibraryCode;..\..\..\..\..\SDKs\modules;../../../../../SDKs/Spatial_Audio_Framework/framework/include;../../../../../SDKs/Spatial_Audio_Framework/examples/panner/include;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include;../../../../../SDKs/VST2_SDK;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;FRAME_SIZE=256;JUCER_VS2017_833F50B0=1;JUCE_APP_VERSION=1.4.1;JUCE_APP_VERSION_HEX=0x10401;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
