@@ -46,7 +46,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsourceDirsPreset->addItem (TRANS("Default"), 1);
     CBsourceDirsPreset->addListener (this);
 
-    CBsourceDirsPreset->setBounds (88, 64, 112, 20);
+    CBsourceDirsPreset->setBounds (88, 66, 112, 20);
 
     SL_num_sources.reset (new Slider ("new slider"));
     addAndMakeVisible (SL_num_sources.get());
@@ -55,7 +55,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_sources->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
 
-    SL_num_sources->setBounds (80, 92, 120, 24);
+    SL_num_sources->setBounds (152, 94, 48, 20);
 
     label_N_dirs.reset (new Label ("new label",
                                    String()));
@@ -105,14 +105,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_showInputs->setButtonText (String());
     TB_showInputs->addListener (this);
 
-    TB_showInputs->setBounds (552, 317, 24, 24);
+    TB_showInputs->setBounds (550, 316, 24, 24);
 
     TB_showOutputs.reset (new ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_showOutputs.get());
     TB_showOutputs->setButtonText (String());
     TB_showOutputs->addListener (this);
 
-    TB_showOutputs->setBounds (674, 317, 24, 24);
+    TB_showOutputs->setBounds (672, 316, 24, 24);
 
     label_N_Tri.reset (new Label ("new label",
                                   String()));
@@ -253,6 +253,11 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* init OpenGL */
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
+
+    /* remove slider bit of these sliders */
+    SL_num_sources->setColour(Slider::trackColourId, Colours::transparentBlack);
+    SL_num_sources->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    SL_num_sources->setSliderSnapsToMousePosition(false);
 
     /* interp modes */
     CBinterpMode->addItem(TRANS("Triangular"), INTERP_TRI);
@@ -517,18 +522,6 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 70, y = 123, width = 105, height = 32;
-        String text (TRANS("Azi    #   Elev"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
-    }
-
-    {
         int x = 448, y = 308, width = 252, height = 38;
         Colour fillColour = Colour (0x13f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
@@ -568,8 +561,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 23, y = 88, width = 113, height = 30;
-        String text (TRANS("N Chan:"));
+        int x = 23, y = 88, width = 153, height = 30;
+        String text (TRANS("Number of Inputs:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -628,7 +621,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 457, y = 314, width = 132, height = 30;
+        int x = 457, y = 312, width = 132, height = 30;
         String text (TRANS("Show Inputs:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -640,7 +633,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 582, y = 314, width = 122, height = 30;
+        int x = 582, y = 312, width = 122, height = 30;
         String text (TRANS("Show HRIRs:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -665,7 +658,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 229, y = 314, width = 132, height = 30;
+        int x = 229, y = 312, width = 132, height = 30;
         String text (TRANS("Interp. Mode:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -877,6 +870,18 @@ void PluginEditor::paint (Graphics& g)
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 68, y = 122, width = 108, height = 28;
+        String text (CharPointer_UTF8 ("Azi\xc2\xb0   #   Elev\xc2\xb0"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -1193,16 +1198,13 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 121 196 225" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="70 123 105 32" fill="solid: ffffffff" hasStroke="0" text="Azi    #   Elev"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="448 308 252 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="712 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="712 290 196 56" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="23 88 113 30" fill="solid: ffffffff" hasStroke="0" text="N Chan:"
+    <TEXT pos="23 88 153 30" fill="solid: ffffffff" hasStroke="0" text="Number of Inputs:"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="84 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
@@ -1217,15 +1219,15 @@ BEGIN_JUCER_METADATA
     <TEXT pos="720 58 160 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="457 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
+    <TEXT pos="457 312 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
           fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="582 314 122 30" fill="solid: ffffffff" hasStroke="0" text="Show HRIRs:"
+    <TEXT pos="582 312 122 30" fill="solid: ffffffff" hasStroke="0" text="Show HRIRs:"
           fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 308 229 38" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="229 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Interp. Mode:"
+    <TEXT pos="229 312 132 30" fill="solid: ffffffff" hasStroke="0" text="Interp. Mode:"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="719 316 89 30" fill="solid: ffffffff" hasStroke="0" text="HRIR/DAW Fs:"
@@ -1278,12 +1280,15 @@ BEGIN_JUCER_METADATA
     <TEXT pos="92 0 112 32" fill="solid: ffff73f9" hasStroke="0" text="Binauraliser"
           fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="68 122 108 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
+          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="5a2f99f88aa51390" memberName="CBsourceDirsPreset"
-            virtualName="" explicitFocusOrder="0" pos="88 64 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="88 66 112 20" editable="0"
             layout="33" items="Default" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_sources"
-          virtualName="" explicitFocusOrder="0" pos="80 92 120 24" min="1"
+          virtualName="" explicitFocusOrder="0" pos="152 94 48 20" min="1"
           max="6.4e1" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
@@ -1306,10 +1311,10 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="1.5e1" kerning="0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="74817bb8a57611dc" memberName="TB_showInputs"
-                virtualName="" explicitFocusOrder="0" pos="552 317 24 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="550 316 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="1a1dfbb1d4296140" memberName="TB_showOutputs"
-                virtualName="" explicitFocusOrder="0" pos="674 317 24 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="672 316 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <LABEL name="new label" id="2c30657926641642" memberName="label_N_Tri"
          virtualName="" explicitFocusOrder="0" pos="851 297 51 20" outlineCol="68a3a2a2"

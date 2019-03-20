@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.1.2
+  Created with Projucer version: 5.4.3
 
   ------------------------------------------------------------------------------
 
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2017 - ROLI Ltd.
 
   ==============================================================================
 */
@@ -57,15 +57,15 @@ public:
         num_X_points = nPoints;
         useIntValues = true;
     }
-    
+
     bool getRefreshValuesFLAG(){
         return refreshValues;
     }
-    
+
     void setRefreshValuesFLAG(bool newState){
         refreshValues = newState;
     }
-    
+
     void setYrange(int _min_Y_value, int _max_Y_value){
         min_Y_value = _min_Y_value;
         max_Y_value = _max_Y_value;
@@ -85,7 +85,7 @@ private:
     int width, height;
     float min_X_value, max_X_value, min_Y_value, max_Y_value;
     int nDecimalPoints;
-    
+
     bool refreshValues;
 
     bool useIntValues;
@@ -104,3 +104,4 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+
