@@ -284,7 +284,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* file loader */
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
-    fileChooser.setBounds (458, 86, 168, 20);
+    fileChooser.setBounds (458, 86, 174, 20);
 
     /* grab current parameter settings */
     CBdecoderMethod->setSelectedId(ambi_bin_getDecodingMethod(hVst->hAmbi), dontSendNotification);
@@ -1052,7 +1052,7 @@ void PluginEditor::timerCallback()
 		fileChooser.setEnabled(true);
 		TBuseDefaultHRIRs->setEnabled(true);
 		TBmaxRE->setEnabled(true);
-		TBdiffMatching->setEnabled(true); 
+		TBdiffMatching->setEnabled(true);
 		TBphaseWarping->setEnabled(true);
 		CBdecoderMethod->setEnabled(true);
 		ambi_bin_checkReInit(hVst->hAmbi);

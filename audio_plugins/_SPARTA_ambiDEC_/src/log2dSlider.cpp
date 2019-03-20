@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.1.2
+  Created with Projucer version: 5.4.3
 
   ------------------------------------------------------------------------------
 
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2017 - ROLI Ltd.
 
   ==============================================================================
 */
@@ -139,7 +139,7 @@ void log2dSlider::paint (Graphics& g)
     g.drawLine(0.0f, 3.0f*(float)height/4.0f, (float)width,  3.0f*(float)height/4.0f, 1.0f);
 
     /* draw data */
-    
+
     if( (X_vector!=NULL) && (useIntValues ? (Y_values_int!=NULL) : (Y_values!=NULL)) ){
         float y_range = max_Y_value - min_Y_value;
         for(int xIdx = 0; xIdx<num_X_points-1; xIdx++){
@@ -267,3 +267,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

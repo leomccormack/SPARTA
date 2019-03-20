@@ -54,14 +54,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_loudspeakers->setTextBoxStyle (Slider::TextBoxRight, false, 60, 20);
     SL_num_loudspeakers->addListener (this);
 
-    SL_num_loudspeakers->setBounds (520, 90, 112, 24);
+    SL_num_loudspeakers->setBounds (592, 92, 40, 20);
 
     TBuseDefaultHRIRs.reset (new ToggleButton ("new toggle button"));
     addAndMakeVisible (TBuseDefaultHRIRs.get());
     TBuseDefaultHRIRs->setButtonText (String());
     TBuseDefaultHRIRs->addListener (this);
 
-    TBuseDefaultHRIRs->setBounds (408, 94, 32, 24);
+    TBuseDefaultHRIRs->setBounds (409, 94, 24, 24);
 
     CBsourcePreset.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBsourcePreset.get());
@@ -157,7 +157,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBBinauraliseLS->setButtonText (String());
     TBBinauraliseLS->addListener (this);
 
-    TBBinauraliseLS->setBounds (408, 62, 32, 24);
+    TBBinauraliseLS->setBounds (409, 62, 24, 24);
 
     CBdec2normtype.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBdec2normtype.get());
@@ -226,6 +226,11 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* init OpenGL */
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
+
+    /* remove slider bit of these sliders */
+    SL_num_loudspeakers->setColour(Slider::trackColourId, Colours::transparentBlack);
+    SL_num_loudspeakers->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    SL_num_loudspeakers->setSliderSnapsToMousePosition(false);
 
     /* create 2d Slider for the decoding order parameter */
     int nPoints;
@@ -565,8 +570,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 502, y = 124, width = 105, height = 32;
-        String text (TRANS("Azi    #    Elev"));
+        int x = 500, y = 122, width = 105, height = 28;
+        String text (CharPointer_UTF8 ("Azi\xc2\xb0   #   Elev\xc2\xb0"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -577,8 +582,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 455, y = 86, width = 113, height = 30;
-        String text (TRANS("N Chan:"));
+        int x = 455, y = 86, width = 169, height = 30;
+        String text (TRANS("Number of Outputs:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1184,10 +1189,10 @@ BEGIN_JUCER_METADATA
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 159 424 105" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="502 124 105 32" fill="solid: ffffffff" hasStroke="0" text="Azi    #    Elev"
+    <TEXT pos="500 122 105 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="455 86 113 30" fill="solid: ffffffff" hasStroke="0" text="N Chan:"
+    <TEXT pos="455 86 169 30" fill="solid: ffffffff" hasStroke="0" text="Number of Outputs:"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="164 32 149 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Settings"
@@ -1260,12 +1265,12 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="520 64 112 20" editable="0"
             layout="33" items="Default" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_loudspeakers"
-          virtualName="" explicitFocusOrder="0" pos="520 90 112 24" min="1"
+          virtualName="" explicitFocusOrder="0" pos="592 92 40 20" min="1"
           max="6.4e1" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
-                virtualName="" explicitFocusOrder="0" pos="408 94 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="409 94 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <COMBOBOX name="new combo box" id="d83602bab6f1a999" memberName="CBsourcePreset"
             virtualName="" explicitFocusOrder="0" pos="98 97 118 20" editable="0"
@@ -1297,7 +1302,7 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="24 314 52 20" editable="0"
             layout="33" items="" textWhenNonSelected="EP" textWhenNoItems="(no choices)"/>
   <TOGGLEBUTTON name="new toggle button" id="86c014bf0612a514" memberName="TBBinauraliseLS"
-                virtualName="" explicitFocusOrder="0" pos="408 62 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="409 62 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <COMBOBOX name="new combo box" id="da63cfe9ccba1746" memberName="CBdec2normtype"
             virtualName="" explicitFocusOrder="0" pos="308 314 52 20" editable="0"
