@@ -509,7 +509,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -521,7 +521,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -545,7 +545,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -798,7 +798,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -810,7 +810,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -822,7 +822,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -1140,16 +1140,16 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 57 141 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Order:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 109 132 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 136 133 30" fill="solid: ffffffff" hasStroke="0" text="Rotation"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 84 125 30" fill="solid: ffffffff" hasStroke="0" text="Method:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="125 145 63 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[0]"
           fontname="Default font" fontsize="1.1e1" kerning="0" bold="0"
@@ -1211,13 +1211,13 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="255 57 185 30" fill="solid: ffffffff" hasStroke="0" text="Apply MaxRE Weights:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="255 84 185 30" fill="solid: ffffffff" hasStroke="0" text="Diffuse Correction:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="255 109 185 30" fill="solid: ffffffff" hasStroke="0" text="Apply Phase Warping: "
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"

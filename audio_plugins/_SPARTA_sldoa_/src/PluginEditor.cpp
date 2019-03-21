@@ -53,7 +53,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CB_CHorder->addItem (TRANS("ACN"), 1);
     CB_CHorder->addListener (this);
 
-    CB_CHorder->setBounds (66, 447, 62, 18);
+    CB_CHorder->setBounds (67, 447, 61, 18);
 
     CB_Norm.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CB_Norm.get());
@@ -540,7 +540,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -552,7 +552,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -564,7 +564,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -954,13 +954,13 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="584 32 29 30" fill="solid: ffffffff" hasStroke="0" text="GS:"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="536 32 37 30" fill="solid: ffffffff" hasStroke="0" text="U|D:"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="490 32 37 30" fill="solid: ffffffff" hasStroke="0" text="L|R:"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="267 33 125 30" fill="solid: ffffffff" hasStroke="0" text="Display Window"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
@@ -972,7 +972,7 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="3d1c447f9542fa94" memberName="CB_CHorder"
-            virtualName="" explicitFocusOrder="0" pos="66 447 62 18" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="67 447 61 18" editable="0"
             layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="d046f2696f3a4a04" memberName="CB_Norm"
             virtualName="" explicitFocusOrder="0" pos="131 447 68 18" editable="0"

@@ -570,7 +570,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 500, y = 122, width = 105, height = 28;
+        int x = 499, y = 122, width = 105, height = 28;
         String text (CharPointer_UTF8 ("Azi\xc2\xb0   #   Elev\xc2\xb0"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -588,7 +588,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -618,7 +618,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 234, y = 90, width = 165, height = 30;
+        int x = 232, y = 90, width = 165, height = 30;
         String text (TRANS("Use Default HRIR set:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -636,7 +636,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -648,13 +648,13 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
 
     {
-        int x = 234, y = 58, width = 189, height = 30;
+        int x = 232, y = 58, width = 189, height = 30;
         String text (TRANS("Binauralise Loudspeakers:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -829,7 +829,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -1189,11 +1189,11 @@ BEGIN_JUCER_METADATA
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 159 424 105" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="500 122 105 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
+    <TEXT pos="499 122 105 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="455 86 169 30" fill="solid: ffffffff" hasStroke="0" text="Number of Outputs:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="164 32 149 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Settings"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
@@ -1201,16 +1201,16 @@ BEGIN_JUCER_METADATA
     <TEXT pos="524 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Outputs"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="234 90 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
+    <TEXT pos="232 90 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
           fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 90 132 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 122 132 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="234 58 189 30" fill="solid: ffffffff" hasStroke="0" text="Binauralise Loudspeakers:"
+    <TEXT pos="232 58 189 30" fill="solid: ffffffff" hasStroke="0" text="Binauralise Loudspeakers:"
           fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 263 141 81" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
@@ -1252,7 +1252,7 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 58 132 30" fill="solid: ffffffff" hasStroke="0" text="Max Order:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
           fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"

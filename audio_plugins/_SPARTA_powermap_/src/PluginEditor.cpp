@@ -175,21 +175,21 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_greyScale->setButtonText (String());
     TB_greyScale->addListener (this);
 
-    TB_greyScale->setBounds (638, 36, 24, 24);
+    TB_greyScale->setBounds (639, 36, 24, 24);
 
     TB_flipUD.reset (new ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_flipUD.get());
     TB_flipUD->setButtonText (String());
     TB_flipUD->addListener (this);
 
-    TB_flipUD->setBounds (597, 36, 24, 24);
+    TB_flipUD->setBounds (598, 36, 24, 24);
 
     TB_flipLR.reset (new ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_flipLR.get());
     TB_flipLR->setButtonText (String());
     TB_flipLR->addListener (this);
 
-    TB_flipLR->setBounds (549, 36, 24, 24);
+    TB_flipLR->setBounds (550, 36, 24, 24);
 
 
     //[UserPreSize]
@@ -810,7 +810,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -822,7 +822,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -834,7 +834,7 @@ void PluginEditor::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }
@@ -1312,13 +1312,13 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="624 32 29 30" fill="solid: ffffffff" hasStroke="0" text="GS:"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="576 32 37 30" fill="solid: ffffffff" hasStroke="0" text="U|D:"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="530 32 37 30" fill="solid: ffffffff" hasStroke="0" text="L|R:"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="283 33 125 30" fill="solid: ffffffff" hasStroke="0" text="Display Window"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
@@ -1374,13 +1374,13 @@ BEGIN_JUCER_METADATA
             explicitFocusOrder="0" pos="433 39 92 17" editable="0" layout="33"
             items="" textWhenNonSelected="" textWhenNoItems=""/>
   <TOGGLEBUTTON name="new toggle button" id="78ff43e4ccfdc462" memberName="TB_greyScale"
-                virtualName="" explicitFocusOrder="0" pos="638 36 24 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="639 36 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="f4031e45e07a36d" memberName="TB_flipUD"
-                virtualName="" explicitFocusOrder="0" pos="597 36 24 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="598 36 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="bb60feb319e3e7d4" memberName="TB_flipLR"
-                virtualName="" explicitFocusOrder="0" pos="549 36 24 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="550 36 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
