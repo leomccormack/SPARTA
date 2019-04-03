@@ -1276,9 +1276,10 @@
 					"_DEBUG=1",
 					"DEBUG=1",
 					"FRAME_SIZE=256",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.4.1",
-					"JUCE_APP_VERSION_HEX=0x10401",
+					"JUCE_APP_VERSION=1.4.2",
+					"JUCE_APP_VERSION_HEX=0x10402",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1310,7 +1311,7 @@
 				);
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_LDFLAGS = "-bundle -lsparta_panner_debug";
+				OTHER_LDFLAGS = "-bundle -lsparta_panner_debug -L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_panner_debug";
 				USE_HEADERMAP = NO;
@@ -1336,9 +1337,10 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"FRAME_SIZE=256",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.4.1",
-					"JUCE_APP_VERSION_HEX=0x10401",
+					"JUCE_APP_VERSION=1.4.2",
+					"JUCE_APP_VERSION_HEX=0x10402",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1372,7 +1374,7 @@
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_LDFLAGS = "-bundle -lsparta_panner";
+				OTHER_LDFLAGS = "-bundle -lsparta_panner -L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_panner";
 				USE_HEADERMAP = NO;
@@ -1396,9 +1398,10 @@
 					"_DEBUG=1",
 					"DEBUG=1",
 					"FRAME_SIZE=256",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.4.1",
-					"JUCE_APP_VERSION_HEX=0x10401",
+					"JUCE_APP_VERSION=1.4.2",
+					"JUCE_APP_VERSION_HEX=0x10402",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1427,6 +1430,7 @@
 					"\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_panner_debug";
 				SKIP_INSTALL = YES;
@@ -1450,9 +1454,10 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"FRAME_SIZE=256",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.4.1",
-					"JUCE_APP_VERSION_HEX=0x10401",
+					"JUCE_APP_VERSION=1.4.2",
+					"JUCE_APP_VERSION_HEX=0x10402",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1483,6 +1488,7 @@
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_panner";
 				SKIP_INSTALL = YES;

@@ -1138,13 +1138,15 @@ void PluginEditor::cameraDeviceOpenResult (CameraDevice* device, const String& e
 
 void PluginEditor::updateCameraList()
 {
+    int i;
     CB_webcam->clear();
     CB_webcam->addItem ("No camera", 1);
     CB_webcam->addSeparator();
 
     auto cameras = CameraDevice::getAvailableDevices();
-    for (int i = 0; i < cameras.size(); ++i)
-        CB_webcam->addItem (cameras[i], i + 2);
+    for (i = 0; i < cameras.size(); ++i)
+        CB_webcam->addItem (cameras[i], i + 2); 
+    
     CB_webcam->setSelectedId(1);
 }
 

@@ -9,22 +9,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/panner/src/panner.c"
-            timestampString = "570017579.9927239"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "185"
-            endingLineNumber = "185"
-            landmarkName = "panner_process"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/panner/src/panner_internal.c"
             timestampString = "570016974.5993789"
             startingColumnNumber = "9223372036854775807"
@@ -143,8 +127,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "425"
             endingLineNumber = "425"
-            landmarkName = "panner_setDTT"
-            landmarkType = "9">
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -159,7 +143,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "427"
             endingLineNumber = "427"
-            landmarkName = "panner_setDTT"
+            landmarkName = "panner_setSpread"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -207,7 +191,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "333"
             endingLineNumber = "333"
-            landmarkName = "panner_setSourceAzi_deg"
+            landmarkName = "panner_setSourceElev_deg"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -223,7 +207,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "334"
             endingLineNumber = "334"
-            landmarkName = "panner_setSourceAzi_deg"
+            landmarkName = "panner_setSourceElev_deg"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -271,7 +255,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "417"
             endingLineNumber = "417"
-            landmarkName = "panner_setInputConfigPreset"
+            landmarkName = "panner_setDTT"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -335,7 +319,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "356"
             endingLineNumber = "356"
-            landmarkName = "panner_setNumSources"
+            landmarkName = "panner_setLoudspeakerAzi_deg"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -351,7 +335,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "406"
             endingLineNumber = "406"
-            landmarkName = "panner_setOutputConfigPreset"
+            landmarkName = "panner_setInputConfigPreset"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -415,8 +399,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "404"
             endingLineNumber = "404"
-            landmarkName = "panner_setOutputConfigPreset"
-            landmarkType = "9">
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -495,23 +479,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "370"
             endingLineNumber = "370"
-            landmarkName = "panner_setLoudspeakerAzi_deg"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/panner/src/panner.c"
-            timestampString = "570017579.998336"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "188"
-            endingLineNumber = "188"
-            landmarkName = "panner_process"
+            landmarkName = "panner_setLoudspeakerElev_deg"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

@@ -78,6 +78,10 @@ public:
     bool getFlipLR(){ return flipLR;}
     bool getFlipUD(){ return flipUD;}
     bool getGreyScale(){ return greyScale;}
+    
+    /* Used to determine whether playback is currently ongoing */
+    AudioPlayHead* playHead;
+    AudioPlayHead::CurrentPositionInfo currentPosition;
  
 public:
     PluginProcessor();
