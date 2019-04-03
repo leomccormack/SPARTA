@@ -192,14 +192,24 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
             for (int ch = 0; ch < nNumInputs; ch++)
                 for (int i = 0; i < FRAME_SIZE; i++)
                     bufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-            
+
             /* determine if there is actually audio in the damn buffer */
             for(int j=0; j<nNumInputs; j++){
                 isPlaying = buffer.getRMSLevel(j, 0, nCurrentBlockSize)>1e-5f ? true : false;
                 if(isPlaying)
                     break;
             }
- 
+            
+            /* If there is no audio in buffer, check whether the playhead is moving */
+            if(!isPlaying){
+                playHead = getPlayHead();
+                bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
+                if (PlayHeadAvailable == true)
+                    isPlaying = currentPosition.isPlaying;
+                else
+                    isPlaying = false;
+            }
+            
             /* perform processing */
             array2sh_process(hA2sh, bufferInputs, bufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
             

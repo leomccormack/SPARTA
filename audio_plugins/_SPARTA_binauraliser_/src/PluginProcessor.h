@@ -113,6 +113,10 @@ public:
         return osc_connected;
     }
     
+    /* Used to determine whether playback is currently ongoing */
+    AudioPlayHead* playHead;
+    AudioPlayHead::CurrentPositionInfo currentPosition;
+    
     /***************************************************************************\
                                     JUCE Functions
     \***************************************************************************/

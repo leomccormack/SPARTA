@@ -83,6 +83,10 @@ public:
     bool getFlipUD(){ return flipUD;}
     bool getGreyScale(){ return greyScale;}
     
+    /* Used to determine whether playback is currently ongoing */
+    AudioPlayHead* playHead;
+    AudioPlayHead::CurrentPositionInfo currentPosition;
+    
     /***************************************************************************\
                                     JUCE Functions
     \***************************************************************************/

@@ -196,6 +196,16 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
                     break;
             }
             
+            /* If there is no audio in buffer, check whether the playhead is moving */
+            if(!isPlaying){
+                playHead = getPlayHead();
+                bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
+                if (PlayHeadAvailable == true)
+                    isPlaying = currentPosition.isPlaying;
+                else
+                    isPlaying = false;
+            }
+            
             /* perform processing */
             powermap_analysis( hPm, bufferInputs, nNumInputs, FRAME_SIZE, isPlaying);
         }

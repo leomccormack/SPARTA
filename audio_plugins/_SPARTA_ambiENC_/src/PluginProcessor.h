@@ -90,6 +90,10 @@ public:
         return 0;
     }
     
+    /* Used to determine whether playback is currently ongoing */
+    AudioPlayHead* playHead;
+    AudioPlayHead::CurrentPositionInfo currentPosition;
+    
     /***************************************************************************\
                                     JUCE Functions
     \***************************************************************************/
