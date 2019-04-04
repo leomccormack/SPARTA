@@ -47,9 +47,6 @@ public:
 	int nSampleRate;                        /* current host sample rate */
     int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
     void* hAmbi;                            /* ambi_enclib handle */
- 
-    float** bufferInputs;
-    float** bufferOutputs;
     
     bool isPlaying;
     

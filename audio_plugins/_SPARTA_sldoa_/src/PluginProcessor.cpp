@@ -30,11 +30,6 @@ PluginProcessor::PluginProcessor() :
 {
 	nHostBlockSize = FRAME_SIZE;
 	nSampleRate = 48000;
-
-	bufferInputs = new float*[MAX_NUM_CHANNELS];
-	for (int i = 0; i < MAX_NUM_CHANNELS; i++)
-		bufferInputs[i] = new float[FRAME_SIZE];
- 
 	sldoa_create(&hSld);
     
     /* camera default settings */
@@ -46,10 +41,6 @@ PluginProcessor::PluginProcessor() :
 PluginProcessor::~PluginProcessor()
 {
 	sldoa_destroy(&hSld);
-
-	for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-		delete[] bufferInputs[i];
-	delete[] bufferInputs;
 }
 
 void PluginProcessor::setParameter (int index, float newValue)
@@ -181,33 +172,33 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
 {
 	int nCurrentBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
-    const float** bufferData = buffer.getArrayOfReadPointers();
+    float** bufferData = buffer.getArrayOfWritePointers();
+    float* pFrameData[MAX_NUM_CHANNELS];
  
     if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
-        for (int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
-            for (int ch = 0; ch < nNumInputs; ch++)
-                for (int i = 0; i < FRAME_SIZE; i++)
-                    bufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
+        for(int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
+            for(int ch = 0; ch < buffer.getNumChannels(); ch++)
+                pFrameData[ch] = &bufferData[ch][frame*FRAME_SIZE];
             
-            /* determine if there is actually audio in the damn buffer */
-            for(int j=0; j<nNumInputs; j++){
-                isPlaying = buffer.getRMSLevel(j, 0, nCurrentBlockSize)>1e-5f ? true : false;
-                if(isPlaying)
-                    break;
-            }
+            /* check whether the playhead is moving */
+            playHead = getPlayHead();
+            bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
+            if (PlayHeadAvailable == true)
+                isPlaying = currentPosition.isPlaying;
+            else
+                isPlaying = false;
             
-            /* If there is no audio in buffer, check whether the playhead is moving */
+            /* If there is no playhead, or it is not moving, see if there is audio in the buffer */
             if(!isPlaying){
-                playHead = getPlayHead();
-                bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-                if (PlayHeadAvailable == true)
-                    isPlaying = currentPosition.isPlaying;
-                else
-                    isPlaying = false;
+                for(int j=0; j<nNumInputs; j++){
+                    isPlaying = buffer.getMagnitude(j, 0, 8 /* should be enough */)>1e-5f ? true : false;
+                    if(isPlaying)
+                        break;
+                }
             }
             
             /* perform processing */
-            sldoa_analysis(hSld, bufferInputs, nNumInputs, FRAME_SIZE, isPlaying);
+            sldoa_analysis(hSld, pFrameData, nNumInputs, FRAME_SIZE, isPlaying);
         }
     }
 }

@@ -51,9 +51,6 @@ public:
     int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
     void* hBin;                             /* binauraliser handle */
  
-    float** bufferInputs;
-    float** bufferOutputs;
- 
     bool isPlaying;
     
 	bool getIsPlaying() {

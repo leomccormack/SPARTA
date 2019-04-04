@@ -49,8 +49,6 @@ public:
 	int nSampleRate;                        /* current host sample rate */
     int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
     void* hSld;                             /* handle */
-	 
-    float** bufferInputs;
     
     bool isPlaying;
     

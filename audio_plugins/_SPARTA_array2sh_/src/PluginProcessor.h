@@ -50,9 +50,6 @@ public:
     int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
     void* hA2sh;                            /* array2sh handle */
  
-    float** bufferInputs;
-    float** bufferOutputs;
-    
     bool isPlaying;
     
 	bool getIsPlaying() {

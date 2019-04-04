@@ -9,7 +9,7 @@
               pluginAUExportPrefix="sparta_rotator_o3AU" pluginRTASCategory=""
               aaxIdentifier="com.yourcompany.rotator" pluginAAXCategory="2"
               jucerVersion="5.4.3" buildVST3="0" buildRTAS="0" buildAAX="0"
-              pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE  = 256&#10;SAF_USE_INTEL_MKL"
+              pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE  = 64&#10;SAF_USE_INTEL_MKL"
               companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
               buildAUv3="0" pluginIsMidiEffectPlugin="0" displaySplashScreen="0"

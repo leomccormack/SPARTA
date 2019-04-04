@@ -54,9 +54,6 @@ public:
     int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
     void* hAmbi;                            /* ambi_dec handle */
  
-    float** bufferInputs;
-    float** bufferOutputs;
- 
     bool isPlaying;
     
 	bool getIsPlaying() {

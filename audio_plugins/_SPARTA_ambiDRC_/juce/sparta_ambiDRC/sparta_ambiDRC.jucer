@@ -9,7 +9,7 @@
               pluginAUExportPrefix="sparta_ambiDRCAU" pluginRTASCategory=""
               aaxIdentifier="com.yourcompany.SPARTA" pluginAAXCategory="2"
               jucerVersion="5.4.3" buildVST3="0" buildRTAS="0" buildAAX="0"
-              pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE  = 256"
+              pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE  = 128"
               companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
               buildAUv3="0" pluginIsMidiEffectPlugin="0" displaySplashScreen="0"
