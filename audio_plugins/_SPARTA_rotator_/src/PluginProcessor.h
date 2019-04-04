@@ -54,9 +54,6 @@ public:
     int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
     void* hRot;                             /* handle */
 
-    float** bufferInputs;
-    float** bufferOutputs;
-    
     bool isPlaying;
     
     int getCurrentBlockSize(){

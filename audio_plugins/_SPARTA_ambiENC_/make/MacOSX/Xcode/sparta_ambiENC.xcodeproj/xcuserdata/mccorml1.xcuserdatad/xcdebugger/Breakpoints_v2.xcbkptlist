@@ -42,43 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/src/ambi_enc.c"
-            timestampString = "570010170.9425499"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
-            landmarkName = "ambi_enc_process"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/src/ambi_enc.c"
             timestampString = "570010170.942592"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "103"
             endingLineNumber = "103"
-            landmarkName = "ambi_enc_process"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/src/ambi_enc.c"
-            timestampString = "570010170.942632"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "141"
-            endingLineNumber = "141"
             landmarkName = "ambi_enc_process"
             landmarkType = "9">
          </BreakpointContent>
@@ -127,7 +95,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "59"
             endingLineNumber = "59"
-            landmarkName = "PluginProcessor::setParameter (int index, float newValue)"
+            landmarkName = "PluginProcessor::setCurrentProgram (int index)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -143,7 +111,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "60"
             endingLineNumber = "60"
-            landmarkName = "PluginProcessor::setParameter (int index, float newValue)"
+            landmarkName = "PluginProcessor::setCurrentProgram (int index)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -159,8 +127,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "61"
             endingLineNumber = "61"
-            landmarkName = "PluginProcessor::setParameter (int index, float newValue)"
-            landmarkType = "7">
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -175,7 +143,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "72"
             endingLineNumber = "72"
-            landmarkName = "PluginProcessor::setParameter (int index, float newValue)"
+            landmarkName = "PluginProcessor::getNumParameters()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -209,6 +177,22 @@
             endingLineNumber = "634"
             landmarkName = "PluginEditor::timerCallback()"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/src/ambi_enc.c"
+            timestampString = "576059632.9156981"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "127"
+            endingLineNumber = "127"
+            landmarkName = "ambi_enc_process"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

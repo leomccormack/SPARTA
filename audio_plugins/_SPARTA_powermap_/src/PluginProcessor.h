@@ -43,8 +43,6 @@ public:
     int nHostBlockSize;                     /* typical host block size to expect, in samples */
     void* hPm;                              /* powermap handle */
     
-    float** bufferInputs;
-    
 	bool getIsPlaying() {
 		return isPlaying;
 	}

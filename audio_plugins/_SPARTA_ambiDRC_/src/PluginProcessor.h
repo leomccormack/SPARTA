@@ -43,9 +43,6 @@ public:
 	int nSampleRate;                        /* current host sample rate */
     int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
     void* hAmbi;                            /* dynamic range compressor handle */
-
-    float** bufferInputs;
-    float** bufferOutputs;
     
     bool isPlaying;
     

@@ -374,10 +374,10 @@
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AUExportPrefix
- #define JucePlugin_AUExportPrefix         sparta_ambiDEC_o7AU
+ #define JucePlugin_AUExportPrefix         sparta_ambiDECAU
 #endif
 #ifndef  JucePlugin_AUExportPrefixQuoted
- #define JucePlugin_AUExportPrefixQuoted   "sparta_ambiDEC_o7AU"
+ #define JucePlugin_AUExportPrefixQuoted   "sparta_ambiDECAU"
 #endif
 #ifndef  JucePlugin_AUManufacturerCode
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode

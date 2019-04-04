@@ -31,14 +31,6 @@ PluginProcessor::PluginProcessor() :
     nHostBlockSize = FRAME_SIZE;
 	rotator_create(&hRot);
 
-    bufferInputs = new float*[MAX_NUM_CHANNELS];
-    for (int i = 0; i < MAX_NUM_CHANNELS; i++)
-        bufferInputs[i] = new float[FRAME_SIZE];
-    
-    bufferOutputs = new float*[MAX_NUM_CHANNELS];
-    for (int i = 0; i < MAX_NUM_CHANNELS; i++)
-        bufferOutputs[i] = new float[FRAME_SIZE];
-
     /* specify here on which UDP port number to receive incoming OSC messages */
     osc_port_ID = DEFAULT_OSC_PORT;
     osc_connected = osc.connect(osc_port_ID);
@@ -52,14 +44,6 @@ PluginProcessor::~PluginProcessor()
     osc.removeListener(this);
     
 	rotator_destroy(&hRot);
-
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        delete[] bufferInputs[i];
-    delete[] bufferInputs;
-    
-    for (int i = 0; i < MAX_NUM_CHANNELS; ++i)
-        delete[] bufferOutputs[i];
-    delete[] bufferOutputs;
 }
 
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
@@ -261,38 +245,32 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
+    float* pFrameData[MAX_NUM_CHANNELS];
 
-	if (nCurrentBlockSize % FRAME_SIZE == 0) { /* divisible by frame size */
-		for (int frame = 0; frame < nCurrentBlockSize / FRAME_SIZE; frame++) {
-			for (int ch = 0; ch < nNumInputs; ch++)
-				for (int i = 0; i < FRAME_SIZE; i++)
-					bufferInputs[ch][i] = bufferData[ch][frame*FRAME_SIZE + i];
-
-            /* determine if there is actually audio in the damn buffer */
-            for(int j=0; j<nNumInputs; j++){
-                isPlaying = buffer.getRMSLevel(j, 0, nCurrentBlockSize)>1e-5f ? true : false;
-                if(isPlaying)
-                    break;
-            }
+	if(nCurrentBlockSize % FRAME_SIZE == 0) { /* divisible by frame size */
+        for(int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
+            for(int ch = 0; ch < buffer.getNumChannels(); ch++)
+                pFrameData[ch] = &bufferData[ch][frame*FRAME_SIZE];
             
-            /* If there is no audio in buffer, check whether the playhead is moving */
+            /* check whether the playhead is moving */
+            playHead = getPlayHead();
+            bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
+            if (PlayHeadAvailable == true)
+                isPlaying = currentPosition.isPlaying;
+            else
+                isPlaying = false;
+            
+            /* If there is no playhead, or it is not moving, see if there is audio in the buffer */
             if(!isPlaying){
-                playHead = getPlayHead();
-                bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-                if (PlayHeadAvailable == true)
-                    isPlaying = currentPosition.isPlaying;
-                else
-                    isPlaying = false;
+                for(int j=0; j<nNumInputs; j++){
+                    isPlaying = buffer.getMagnitude(j, 0, 8 /* should be enough */)>1e-5f ? true : false;
+                    if(isPlaying)
+                        break;
+                }
             }
         
 			/* perform processing */
-			rotator_process(hRot, bufferInputs, bufferOutputs, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
-
-			/* replace buffer with new audio */
-			buffer.clear(frame*FRAME_SIZE, FRAME_SIZE);
-			for (int ch = 0; ch < nNumOutputs; ch++)
-				for (int i = 0; i < FRAME_SIZE; i++)
-					bufferData[ch][frame*FRAME_SIZE + i] = bufferOutputs[ch][i];
+			rotator_process(hRot, pFrameData, pFrameData, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
 		}
 	}
 	else
