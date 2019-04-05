@@ -672,7 +672,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 356, y = 322, width = 72, height = 24;
+        int x = 356, y = 322, width = 108, height = 24;
         String text (TRANS("(0: Wet, 1: Dry)"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -1038,7 +1038,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="227 313 123 30" fill="solid: ffffffff" hasStroke="0" text="Spread (&#176;):"
           fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="356 322 72 24" fill="solid: ffffffff" hasStroke="0" text="(0: Wet, 1: Dry)"
+    <TEXT pos="356 322 108 24" fill="solid: ffffffff" hasStroke="0" text="(0: Wet, 1: Dry)"
           fontname="Default font" fontsize="1e1" kerning="0" bold="1" italic="0"
           justification="33" typefaceStyle="Bold"/>
     <TEXT pos="66 122 108 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
