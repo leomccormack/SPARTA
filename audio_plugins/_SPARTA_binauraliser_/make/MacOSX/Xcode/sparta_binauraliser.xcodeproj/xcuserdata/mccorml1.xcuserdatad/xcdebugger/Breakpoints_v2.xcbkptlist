@@ -45,7 +45,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "88"
             endingLineNumber = "88"
-            landmarkName = "binauraliser_interpHRTFs"
+            landmarkName = "binauraliser_interpHRTFs()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -61,7 +61,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "63"
             endingLineNumber = "63"
-            landmarkName = "binauraliser_interpHRTFs"
+            landmarkName = "binauraliser_interpHRTFs()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -77,7 +77,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "193"
             endingLineNumber = "193"
-            landmarkName = "binauraliser_process"
+            landmarkName = "binauraliser_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

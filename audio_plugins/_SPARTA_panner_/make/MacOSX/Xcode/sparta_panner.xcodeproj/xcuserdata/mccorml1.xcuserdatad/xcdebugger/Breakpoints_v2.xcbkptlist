@@ -31,7 +31,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "196"
             endingLineNumber = "196"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -47,7 +47,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "189"
             endingLineNumber = "189"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -79,39 +79,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "266"
             endingLineNumber = "266"
-            landmarkName = "panner_process"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/panner/src/panner.c"
-            timestampString = "570017579.993708"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "290"
-            endingLineNumber = "290"
-            landmarkName = "panner_process"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/panner/src/panner.c"
-            timestampString = "570017579.99392"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "289"
-            endingLineNumber = "289"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -127,8 +95,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "425"
             endingLineNumber = "425"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            landmarkName = "panner_setDTT()"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -143,7 +111,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "427"
             endingLineNumber = "427"
-            landmarkName = "panner_setSpread"
+            landmarkName = "panner_setDTT()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -159,7 +127,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "203"
             endingLineNumber = "203"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -175,7 +143,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "208"
             endingLineNumber = "208"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -191,7 +159,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "333"
             endingLineNumber = "333"
-            landmarkName = "panner_setSourceElev_deg"
+            landmarkName = "panner_setSourceAzi_deg()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -207,7 +175,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "334"
             endingLineNumber = "334"
-            landmarkName = "panner_setSourceElev_deg"
+            landmarkName = "panner_setSourceAzi_deg()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -223,7 +191,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "351"
             endingLineNumber = "351"
-            landmarkName = "panner_setNumSources"
+            landmarkName = "panner_setNumSources()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -239,7 +207,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "413"
             endingLineNumber = "413"
-            landmarkName = "panner_setInputConfigPreset"
+            landmarkName = "panner_setInputConfigPreset()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -255,23 +223,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "417"
             endingLineNumber = "417"
-            landmarkName = "panner_setDTT"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../../../../SDKs/Spatial_Audio_Framework/examples/panner/src/panner.c"
-            timestampString = "570017579.995912"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "173"
-            endingLineNumber = "173"
-            landmarkName = "panner_process"
+            landmarkName = "panner_setInputConfigPreset()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -287,7 +239,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "179"
             endingLineNumber = "179"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -303,7 +255,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "223"
             endingLineNumber = "223"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -319,7 +271,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "356"
             endingLineNumber = "356"
-            landmarkName = "panner_setLoudspeakerAzi_deg"
+            landmarkName = "panner_setNumSources()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -335,7 +287,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "406"
             endingLineNumber = "406"
-            landmarkName = "panner_setInputConfigPreset"
+            landmarkName = "panner_setOutputConfigPreset()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -351,8 +303,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "400"
             endingLineNumber = "400"
-            landmarkName = "panner_setOutputConfigPreset"
-            landmarkType = "9">
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -367,7 +319,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "401"
             endingLineNumber = "401"
-            landmarkName = "panner_setOutputConfigPreset"
+            landmarkName = "panner_setOutputConfigPreset()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -383,7 +335,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "403"
             endingLineNumber = "403"
-            landmarkName = "panner_setOutputConfigPreset"
+            landmarkName = "panner_setOutputConfigPreset()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -399,8 +351,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "404"
             endingLineNumber = "404"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            landmarkName = "panner_setOutputConfigPreset()"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -431,7 +383,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "204"
             endingLineNumber = "204"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -463,7 +415,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "202"
             endingLineNumber = "202"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -479,7 +431,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "370"
             endingLineNumber = "370"
-            landmarkName = "panner_setLoudspeakerElev_deg"
+            landmarkName = "panner_setLoudspeakerAzi_deg()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -495,7 +447,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "205"
             endingLineNumber = "205"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -511,7 +463,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "220"
             endingLineNumber = "220"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -527,7 +479,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "222"
             endingLineNumber = "222"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -543,7 +495,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "198"
             endingLineNumber = "198"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -559,7 +511,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "199"
             endingLineNumber = "199"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -575,7 +527,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "200"
             endingLineNumber = "200"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -607,7 +559,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "209"
             endingLineNumber = "209"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -623,7 +575,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "221"
             endingLineNumber = "221"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -639,7 +591,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "217"
             endingLineNumber = "217"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -655,7 +607,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "214"
             endingLineNumber = "214"
-            landmarkName = "panner_process"
+            landmarkName = "panner_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

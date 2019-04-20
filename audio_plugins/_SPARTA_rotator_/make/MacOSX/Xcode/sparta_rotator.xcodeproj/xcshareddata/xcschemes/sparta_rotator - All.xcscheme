@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0920"
+   LastUpgradeVersion = "1020"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "637B0DF4ED253147FAB02C55"
-               BuildableName = "sparta_ambiENC - All"
-               BlueprintName = "sparta_ambiENC - All"
-               ReferencedContainer = "container:sparta_ambiENC.xcodeproj">
+               BuildableName = "sparta_rotator - All"
+               BlueprintName = "sparta_rotator - All"
+               ReferencedContainer = "container:sparta_rotator.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -46,9 +46,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "637B0DF4ED253147FAB02C55"
-            BuildableName = "sparta_ambiENC - All"
-            BlueprintName = "sparta_ambiENC - All"
-            ReferencedContainer = "container:sparta_ambiENC.xcodeproj">
+            BuildableName = "sparta_rotator - All"
+            BlueprintName = "sparta_rotator - All"
+            ReferencedContainer = "container:sparta_rotator.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -64,9 +64,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "637B0DF4ED253147FAB02C55"
-            BuildableName = "sparta_ambiENC - All"
-            BlueprintName = "sparta_ambiENC - All"
-            ReferencedContainer = "container:sparta_ambiENC.xcodeproj">
+            BuildableName = "sparta_rotator - All"
+            BlueprintName = "sparta_rotator - All"
+            ReferencedContainer = "container:sparta_rotator.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
