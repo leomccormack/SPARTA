@@ -127,7 +127,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "453"
             endingLineNumber = "453"
-            landmarkName = "ambi_drc_getSamplerate"
+            landmarkName = "ambi_drc_getSamplerate()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -143,7 +143,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "416"
             endingLineNumber = "416"
-            landmarkName = "ambi_drc_getAttack"
+            landmarkName = "ambi_drc_getAttack()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -159,7 +159,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "417"
             endingLineNumber = "417"
-            landmarkName = "ambi_drc_getAttack"
+            landmarkName = "ambi_drc_getAttack()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -191,7 +191,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "135"
             endingLineNumber = "135"
-            landmarkName = "ambi_drc_init"
+            landmarkName = "ambi_drc_init()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -207,7 +207,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "139"
             endingLineNumber = "139"
-            landmarkName = "ambi_drc_init"
+            landmarkName = "ambi_drc_init()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -223,7 +223,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "141"
             endingLineNumber = "141"
-            landmarkName = "ambi_drc_init"
+            landmarkName = "ambi_drc_init()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -255,7 +255,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "179"
             endingLineNumber = "179"
-            landmarkName = "ambi_drc_process"
+            landmarkName = "ambi_drc_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -367,7 +367,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "225"
             endingLineNumber = "225"
-            landmarkName = "ambi_drc_process"
+            landmarkName = "ambi_drc_process()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

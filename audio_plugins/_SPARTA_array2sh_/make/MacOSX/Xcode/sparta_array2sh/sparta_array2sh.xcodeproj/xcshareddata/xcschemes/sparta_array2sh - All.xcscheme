@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0920"
+   LastUpgradeVersion = "1020"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "637B0DF4ED253147FAB02C55"
-               BuildableName = "sparta_ambiDEC - All"
-               BlueprintName = "sparta_ambiDEC - All"
-               ReferencedContainer = "container:sparta_ambiDEC.xcodeproj">
+               BuildableName = "sparta_array2sh - All"
+               BlueprintName = "sparta_array2sh - All"
+               ReferencedContainer = "container:sparta_array2sh.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -46,9 +46,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "637B0DF4ED253147FAB02C55"
-            BuildableName = "sparta_ambiDEC - All"
-            BlueprintName = "sparta_ambiDEC - All"
-            ReferencedContainer = "container:sparta_ambiDEC.xcodeproj">
+            BuildableName = "sparta_array2sh - All"
+            BlueprintName = "sparta_array2sh - All"
+            ReferencedContainer = "container:sparta_array2sh.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -64,9 +64,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "637B0DF4ED253147FAB02C55"
-            BuildableName = "sparta_ambiDEC - All"
-            BlueprintName = "sparta_ambiDEC - All"
-            ReferencedContainer = "container:sparta_ambiDEC.xcodeproj">
+            BuildableName = "sparta_array2sh - All"
+            BlueprintName = "sparta_array2sh - All"
+            ReferencedContainer = "container:sparta_array2sh.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
