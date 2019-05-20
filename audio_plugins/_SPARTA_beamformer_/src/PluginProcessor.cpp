@@ -1,44 +1,58 @@
-
+/*
+ ==============================================================================
+ 
+ This file is part of SPARTA; a suite of spatial audio plug-ins.
+ Copyright (c) 2018 - Leo McCormack.
+ 
+ SPARTA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ SPARTA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ ==============================================================================
+*/
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-PluginProcessor::PluginProcessor()
+PluginProcessor::PluginProcessor() : 
+	AudioProcessor(BusesProperties()
+		.withInput("Input", AudioChannelSet::discreteChannels(64), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
-	nHostBlockSize = FRAME_SIZE;
-	nSampleRate = 48000;
-
-	ringBufferInputs = new float*[MAX_NUM_CHANNELS];
-	for (int i = 0; i < MAX_NUM_CHANNELS; i++)
-		ringBufferInputs[i] = new float[FRAME_SIZE];
-
-	ringBufferOutputs = new float*[MAX_NUM_CHANNELS];
-	for (int i = 0; i < MAX_NUM_CHANNELS; i++)
-		ringBufferOutputs[i] = new float[FRAME_SIZE];
-
-	sfcropaclib_create(&hSfcropac);
+	beamformer_create(&hBeam);
+    refreshWindow = true;
 }
 
 PluginProcessor::~PluginProcessor()
 {
-	sfcropaclib_destroy(&hSfcropac);
-
-	for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
-		delete[] ringBufferInputs[i];
-	}
-	delete[] ringBufferInputs;
-
-	for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
-		delete[] ringBufferOutputs[i];
-	}
-	delete[] ringBufferOutputs;
+	beamformer_destroy(&hBeam);
 }
 
 void PluginProcessor::setParameter (int index, float newValue)
 {
-	switch (index)
-	{
-		default: break;
-	}
+    float newValueScaled;
+    if (!(index % 2)){
+        newValueScaled = (newValue - 0.5f)*360.0f;
+        if (newValueScaled != beamformer_getBeamAzi_deg(hBeam, index/2)){
+            beamformer_setBeamAzi_deg(hBeam, index/2, newValueScaled);
+            refreshWindow = true;
+        }
+    }
+    else{
+        newValueScaled = (newValue - 0.5f)*180.0f;
+        if (newValueScaled != beamformer_getBeamElev_deg(hBeam, index/2)){
+            beamformer_setBeamElev_deg(hBeam, index/2, newValueScaled);
+            refreshWindow = true;
+        }
+    } 
 }
 
 void PluginProcessor::setCurrentProgram (int index)
@@ -47,15 +61,15 @@ void PluginProcessor::setCurrentProgram (int index)
 
 float PluginProcessor::getParameter (int index)
 {
-    switch (index)
-	{
-		default: return 0.0f;
-	}
+    if (!(index % 2))
+        return (beamformer_getBeamAzi_deg(hBeam, index/2)/360.0f) + 0.5f;
+    else
+        return (beamformer_getBeamElev_deg(hBeam, (index-1)/2)/180.0f) + 0.5f;
 }
 
 int PluginProcessor::getNumParameters()
 {
-	return k_NumOfParameters;
+	return MIN(2*beamformer_getMaxNumBeams(), 2*NUM_OF_AUTOMATABLE_SOURCES);
 }
 
 const String PluginProcessor::getName() const
@@ -65,15 +79,18 @@ const String PluginProcessor::getName() const
 
 const String PluginProcessor::getParameterName (int index)
 {
-    switch (index)
-	{
-		default: return "NULL";
-	}
+    if (!(index % 2))
+        return TRANS("Azim_") + String(index/2);
+    else
+        return TRANS("Elev_") + String((index-1)/2);
 }
 
 const String PluginProcessor::getParameterText(int index)
 {
-	return String(getParameter(index), 1);    
+    if (!(index % 2))
+        return String(beamformer_getBeamAzi_deg(hBeam, index/2));
+    else
+        return String(beamformer_getBeamElev_deg(hBeam, (index-1)/2));
 }
 
 const String PluginProcessor::getInputChannelName (int channelIndex) const
@@ -103,8 +120,9 @@ int PluginProcessor::getCurrentProgram()
 
 const String PluginProcessor::getProgramName (int index)
 {
-    return String::empty;
+    return String();
 }
+
 
 bool PluginProcessor::isInputChannelStereoPair (int index) const
 {
@@ -115,6 +133,7 @@ bool PluginProcessor::isOutputChannelStereoPair (int index) const
 {
     return true;
 }
+
 
 bool PluginProcessor::acceptsMidi() const
 {
@@ -145,28 +164,13 @@ void PluginProcessor::changeProgramName (int index, const String& newName)
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-	nHostBlockSize = samplesPerBlock;
-	nSampleRate = (int)(sampleRate + 0.5);
+    nHostBlockSize = samplesPerBlock;
+    nNumInputs =  getTotalNumInputChannels();
+    nNumOutputs = getTotalNumOutputChannels();
+    nSampleRate = (int)(sampleRate + 0.5);
+    isPlaying = false;
 
-    nNumInputs = getNumInputChannels();
-    nNumOutputs = getNumOutputChannels();
-
-	setPlayConfigDetails(nNumInputs, nNumOutputs, (double)nSampleRate, nHostBlockSize);	
-	numChannelsChanged(); 
-
-	for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
-		memset(ringBufferInputs[i], 0, FRAME_SIZE * sizeof(float));
-	}
-	for (int i = 0; i < MAX_NUM_CHANNELS; ++i) {
-		memset(ringBufferOutputs[i], 0, FRAME_SIZE * sizeof(float));
-	}
-	wIdx = 1; rIdx = 1; /* read/write indices for ring buffers */
-
-#ifdef ENABLE_IS_PLAYING_CHECK
-	isPlaying = false;
-#endif
-
-	sfcropaclib_init(hSfcropac, sampleRate);
+	beamformer_init(hBeam, sampleRate);
 }
 
 void PluginProcessor::releaseResources()
@@ -176,52 +180,40 @@ void PluginProcessor::releaseResources()
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
-	int nCurrentBlockSize = buffer.getNumSamples();
-	float** bufferData = buffer.getArrayOfWritePointers();
-	float** outputs = new float*[nNumOutputs];
-	for (int i = 0; i < nNumOutputs; i++) {
-		outputs[i] = new float[FRAME_SIZE];
-	}
+    int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
+    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
+    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
+    float** bufferData = buffer.getArrayOfWritePointers();
+    float* pFrameData[MAX_NUM_CHANNELS];
+    
+    if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
+        for (int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
+            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+                pFrameData[ch] = &bufferData[ch][frame*FRAME_SIZE];
+        
+            /* check whether the playhead is moving */
+            playHead = getPlayHead();
+            bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
+            if (PlayHeadAvailable == true)
+                isPlaying = currentPosition.isPlaying;
+            else
+                isPlaying = false;
 
-#ifdef ENABLE_IS_PLAYING_CHECK
-	playHead = getPlayHead();
-	bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-	if (PlayHeadAvailable == true)
-		isPlaying = currentPosition.isPlaying;
-	else
-		isPlaying = false;
-
-	if (isPlaying) {
-#endif
-		switch (nCurrentBlockSize) {   
-
-		case FRAME_SIZE: 
-			sfcropaclib_process(hSfcropac, bufferData, outputs, nNumInputs, nNumOutputs, FRAME_SIZE);
-			buffer.clear();
-			for (int ch = 0; ch < nNumOutputs; ch++) {
-				for (int i = 0; i < FRAME_SIZE; i++) {
-					bufferData[ch][i] = outputs[ch][i];
-				}
-			}
-			break;
-
-		default:
-			buffer.clear();
-			break;
-		}
-#ifdef ENABLE_IS_PLAYING_CHECK
-	}
-#endif
-
-	if (nHostBlockSize == (FRAME_SIZE / 2)) {
-		wIdx++; if (wIdx > 1) { wIdx = 0; }
-		rIdx++; if (rIdx > 1) { rIdx = 0; }
-	}
-
-	for (int i = 0; i < nNumOutputs; ++i) {
-		delete[] outputs[i];
-	}
-	delete[] outputs;
+            /* If there is no playhead, or it is not moving, see if there is audio in the buffer */
+            if(!isPlaying){
+                for(int j=0; j<nNumInputs; j++){
+                    isPlaying = buffer.getMagnitude(j, 0, 8 /* should be enough */)>1e-5f ? true : false;
+                    if(isPlaying)
+                        break;
+                }
+            }
+            
+            /* perform processing */
+            beamformer_process(hBeam, pFrameData, pFrameData, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
+        }
+    }
+    else
+        buffer.clear();
 }
 
 //==============================================================================
@@ -238,31 +230,47 @@ AudioProcessorEditor* PluginProcessor::createEditor()
 //==============================================================================
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-	/* Create an outer XML element.. */ 
-	XmlElement xml("SFCROPACAUDIOPLUGINSETTINGS");
-
-	/* add attributes */
-	//xml.setAttribute("POWERMAP_MODE", (int)accropaclib_getPowermapMode(hAccropac));
-	//xml.setAttribute("_360DEG_MODE", accropaclib_get360degMode(hAccropac));
- 
-	/* then use this helper function to stuff it into the binary blob and return it.. */
-	copyXmlToBinary(xml, destData);
+    XmlElement xml("BEAMFORMERPLUGINSETTINGS");
+    for(int i=0; i<beamformer_getMaxNumBeams(); i++){
+        xml.setAttribute("BeamAziDeg" + String(i), beamformer_getBeamAzi_deg(hBeam,i));
+        xml.setAttribute("BeamElevDeg" + String(i), beamformer_getBeamElev_deg(hBeam,i));
+    }
+    xml.setAttribute("NORM", beamformer_getNormType(hBeam));
+    xml.setAttribute("CHORDER", beamformer_getChOrder(hBeam));
+    xml.setAttribute("beamOrder", beamformer_getBeamOrder(hBeam));
+    xml.setAttribute("nBeams", beamformer_getNumBeams(hBeam));
+    xml.setAttribute("beamType", beamformer_getBeamType(hBeam));
+    
+    copyXmlToBinary(xml, destData);
 }
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-	/* This getXmlFromBinary() function retrieves XML from the binary blob */
-	ScopedPointer<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    ScopedPointer<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
 
-	if (xmlState != nullptr) {
-		/* make sure that it's actually the correct type of XML object */
-		if (xmlState->hasTagName("SFCROPACAUDIOPLUGINSETTINGS")) {
-			/* pull attributes */
-           // accropaclib_setPowermapMode(hAccropac, xmlState->getIntAttribute("POWERMAP_MODE", 1));
-			//accropaclib_set360degMode(hAccropac, xmlState->getIntAttribute("_360DEG_MODE", 1));
+    if (xmlState != nullptr) {
+        if (xmlState->hasTagName("BEAMFORMERPLUGINSETTINGS")) {
+            for(int i=0; i<beamformer_getMaxNumBeams(); i++){
+                if(xmlState->hasAttribute("BeamAziDeg" + String(i)))
+                    beamformer_setBeamAzi_deg(hBeam, i, (float)xmlState->getDoubleAttribute("BeamAziDeg" + String(i), 0.0f));
+                if(xmlState->hasAttribute("BeamElevDeg" + String(i)))
+                    beamformer_setBeamElev_deg(hBeam, i, (float)xmlState->getDoubleAttribute("BeamElevDeg" + String(i), 0.0f));
+            }
+            if(xmlState->hasAttribute("nBeams"))
+                beamformer_setNumBeams(hBeam, xmlState->getIntAttribute("nBeams", 1));
+            
+            if(xmlState->hasAttribute("NORM"))
+                beamformer_setNormType(hBeam, xmlState->getIntAttribute("NORM", 1));
+            if(xmlState->hasAttribute("CHORDER"))
+                beamformer_setChOrder(hBeam, xmlState->getIntAttribute("CHORDER", 1));
+            if(xmlState->hasAttribute("beamOrder"))
+                beamformer_setBeamOrder(hBeam, xmlState->getIntAttribute("beamOrder", 1));
+            if(xmlState->hasAttribute("beamType"))
+                beamformer_setBeamType(hBeam, xmlState->getIntAttribute("beamType", 1));
+            
+            beamformer_refreshSettings(hBeam);
         }
-
-	}
+    }
 }
 
 //==============================================================================

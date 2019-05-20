@@ -423,7 +423,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 30, width = 656, height = 326;
-        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff1f3b49), fillColour2 = Colour (0xff0a2931);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -455,7 +455,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 12, y = 58, width = 213, height = 33;
-        Colour fillColour = Colour (0x08f4f4f4);
+        Colour fillColour = Colour (0x10f4f4f4);
         Colour strokeColour = Colour (0x35a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -533,14 +533,14 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 0, width = 656, height = 32;
-        Colour fillColour = Colour (0xff073642);
+        Colour fillColour = Colour (0xff05222a);
         Colour strokeColour = Colour (0xdcbdbdbd);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 3);
+        g.drawRect (x, y, width, height, 2);
 
     }
 
@@ -1166,11 +1166,11 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="656" initialHeight="356">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 656 326" fill=" radial: 336 184, 656 352, 0=ff5b6d76, 1=ff073642"
-          hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
+    <RECT pos="0 30 656 326" fill=" radial: 336 184, 656 352, 0=ff1f3b49, 1=ff0a2931"
+          hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="12 58 213 102" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 58 213 33" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 58 213 33" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 35a0a0a0"/>
     <RECT pos="152 263 145 81" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1182,7 +1182,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="446 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="0 0 656 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
+    <RECT pos="0 0 656 32" fill="solid: ff05222a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
     <TEXT pos="455 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"

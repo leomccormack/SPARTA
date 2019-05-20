@@ -345,20 +345,46 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 30, width = 672, height = 622;
-        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff1f3b49), fillColour2 = Colour (0xff0a2931);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (fillColour1,
-                                       336.0f - 0.0f + x,
-                                       208.0f - 30.0f + y,
+                                       352.0f - 0.0f + x,
+                                       288.0f - 30.0f + y,
                                        fillColour2,
-                                       360.0f - 0.0f + x,
-                                       552.0f - 30.0f + y,
+                                       672.0f - 0.0f + x,
+                                       656.0f - 30.0f + y,
                                        true));
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 2);
+
+    }
+
+    {
+        int x = 13, y = 504, width = 214, height = 36;
+        Colour fillColour = Colour (0x10f4f4f4);
+        Colour strokeColour = Colour (0x33a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
+    {
+        int x = 13, y = 398, width = 214, height = 36;
+        Colour fillColour = Colour (0x10f4f4f4);
+        Colour strokeColour = Colour (0x35a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
 
     }
 
@@ -390,14 +416,14 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 0, width = 672, height = 32;
-        Colour fillColour = Colour (0xff073642);
+        Colour fillColour = Colour (0xff05222a);
         Colour strokeColour = Colour (0xdcbdbdbd);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 3);
+        g.drawRect (x, y, width, height, 2);
 
     }
 
@@ -754,32 +780,6 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 13, y = 398, width = 214, height = 36;
-        Colour fillColour = Colour (0x08f4f4f4);
-        Colour strokeColour = Colour (0x35a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        int x = 13, y = 504, width = 214, height = 36;
-        Colour fillColour = Colour (0x08f4f4f4);
-        Colour strokeColour = Colour (0x33a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
         int x = 16, y = 0, width = 100, height = 32;
         String text (TRANS("SPARTA|"));
         Colour fillColour = Colours::white;
@@ -860,7 +860,7 @@ void PluginEditor::paint (Graphics& g)
 		Justification::centredLeft, true);
 
     /* label for max ORDER */
-    int x = 643, y = 530, width = 13, height = 30;
+    int x = 643, y = 540, width = 13, height = 30;
     String text  = String(powermap_getMasterOrder(hVst->hPm));
     Colour fillColour = Colours::white;
     g.setColour (fillColour);
@@ -1145,8 +1145,8 @@ void PluginEditor::updateCameraList()
 
     auto cameras = CameraDevice::getAvailableDevices();
     for (i = 0; i < cameras.size(); ++i)
-        CB_webcam->addItem (cameras[i], i + 2); 
-    
+        CB_webcam->addItem (cameras[i], i + 2);
+
     CB_webcam->setSelectedId(1);
 }
 
@@ -1212,13 +1212,17 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="672" initialHeight="652">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 672 622" fill=" radial: 336 208, 360 552, 0=ff5b6d76, 1=ff073642"
-          hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
+    <RECT pos="0 30 672 622" fill=" radial: 352 288, 672 656, 0=ff1f3b49, 1=ff0a2931"
+          hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffa3a4a5"/>
+    <RECT pos="13 504 214 36" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 33a0a0a0"/>
+    <RECT pos="13 398 214 36" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 35a0a0a0"/>
     <RECT pos="13 398 214 107" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="13 504 214 136" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="0 0 672 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
+    <RECT pos="0 0 672 32" fill="solid: ff05222a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
     <RECT pos="12 59 648 325" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1303,10 +1307,6 @@ BEGIN_JUCER_METADATA
     <TEXT pos="456 400 132 30" fill="solid: ffffffff" hasStroke="0" text="Aspect Ratio:"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="13 398 214 36" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 35a0a0a0"/>
-    <RECT pos="13 504 214 36" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 33a0a0a0"/>
     <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
           fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>

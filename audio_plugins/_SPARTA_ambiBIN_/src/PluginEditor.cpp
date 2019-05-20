@@ -358,7 +358,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 30, width = 656, height = 232;
-        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
+        Colour fillColour1 = Colour (0xff1f3b49), fillColour2 = Colour (0xff0a2931);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -390,7 +390,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 12, y = 58, width = 237, height = 29;
-        Colour fillColour = Colour (0x08f4f4f4);
+        Colour fillColour = Colour (0x10f4f4f4);
         Colour strokeColour = Colour (0x35a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -416,7 +416,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 12, y = 164, width = 73, height = 87;
-        Colour fillColour = Colour (0x08f4f4f4);
+        Colour fillColour = Colour (0x10f4f4f4);
         Colour strokeColour = Colour (0x3aa0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -455,14 +455,14 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 0, width = 656, height = 32;
-        Colour fillColour = Colour (0xff073642);
+        Colour fillColour = Colour (0xff05222a);
         Colour strokeColour = Colour (0xdcbdbdbd);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 3);
+        g.drawRect (x, y, width, height, 2);
 
     }
 
@@ -1114,21 +1114,21 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="656" initialHeight="262">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 656 232" fill=" radial: 336 136, 656 264, 0=ff5b6d76, 1=ff073642"
-          hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
+    <RECT pos="0 30 656 232" fill=" radial: 336 136, 656 264, 0=ff1f3b49, 1=ff0a2931"
+          hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="12 58 237 82" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 58 237 29" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 58 237 29" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 35a0a0a0"/>
     <RECT pos="12 139 424 112" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 164 73 87" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 164 73 87" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 3aa0a0a0"/>
     <RECT pos="248 58 188 82" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="446 58 196 54" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="0 0 656 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
+    <RECT pos="0 0 656 32" fill="solid: ff05222a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
     <TEXT pos="164 32 149 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Settings"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"

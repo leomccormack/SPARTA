@@ -247,17 +247,17 @@ void PluginEditor::paint (Graphics& g)
     g.fillAll (Colours::white);
 
     {
-        int x = 0, y = 0, width = 550, height = 440;
-        Colour fillColour1 = Colour (0xff5b6d76), fillColour2 = Colour (0xff073642);
+        int x = 0, y = 30, width = 550, height = 410;
+        Colour fillColour1 = Colour (0xff1f3b49), fillColour2 = Colour (0xff0a2931);
         Colour strokeColour = Colour (0xffa3a4a5);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (fillColour1,
                                        272.0f - 0.0f + x,
-                                       152.0f - 0.0f + y,
+                                       208.0f - 30.0f + y,
                                        fillColour2,
-                                       288.0f - 0.0f + x,
-                                       440.0f - 0.0f + y,
+                                       552.0f - 0.0f + x,
+                                       440.0f - 30.0f + y,
                                        true));
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -293,14 +293,14 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 0, width = 550, height = 32;
-        Colour fillColour = Colour (0xff073642);
+        Colour fillColour = Colour (0xff05222a);
         Colour strokeColour = Colour (0xdcbdbdbd);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 3);
+        g.drawRect (x, y, width, height, 2);
 
     }
 
@@ -754,7 +754,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 10, y = 288, width = 193, height = 33;
-        Colour fillColour = Colour (0x08c7c7c7);
+        Colour fillColour = Colour (0x10c7c7c7);
         Colour strokeColour = Colour (0x1fffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1009,13 +1009,13 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="550" initialHeight="440">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 0 550 440" fill=" radial: 272 152, 288 440, 0=ff5b6d76, 1=ff073642"
+    <RECT pos="0 30 550 410" fill=" radial: 272 208, 552 440, 0=ff1f3b49, 1=ff0a2931"
           hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
     <RECT pos="10 36 530 246" fill="solid: 17c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
     <RECT pos="88 320 224 112" fill="solid: 17c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
-    <RECT pos="0 0 550 32" fill="solid: ff073642" hasStroke="1" stroke="2.7, mitered, butt"
+    <RECT pos="0 0 550 32" fill="solid: ff05222a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: dcbdbdbd"/>
     <TEXT pos="96 325 60 30" fill="solid: ffffffff" hasStroke="0" text="Thresh."
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
@@ -1124,7 +1124,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="502 220 26 30" fill="solid: ffffffff" hasStroke="0" text="-14"
           fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="10 288 193 33" fill="solid: 8c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+    <RECT pos="10 288 193 33" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
     <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
           fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
