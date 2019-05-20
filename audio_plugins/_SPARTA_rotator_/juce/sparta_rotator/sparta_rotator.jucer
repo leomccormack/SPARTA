@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_rotator" projectType="audioplug" version="1.1.7"
+<JUCERPROJECT id="lfkRjX" name="sparta_rotator" projectType="audioplug" version="1.1.8"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_rotator" pluginDesc="sparta_rotator"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ROOA"

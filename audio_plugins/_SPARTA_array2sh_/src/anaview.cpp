@@ -149,7 +149,7 @@ void anaview::paint (Graphics& g)
     }
 
     /* Axis labels */
-    textWidth = 110;
+    textWidth = 125;
     textHeight = 50;
     g.drawText(xlabel, (anaview_windowIncluded->getWidth())/2+border_pixels_left - textWidth/2,
                anaview_windowIncluded->getHeight() + border_pixels_top,

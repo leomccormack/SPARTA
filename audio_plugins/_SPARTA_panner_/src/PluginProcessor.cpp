@@ -242,6 +242,12 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("nSources", panner_getNumSources(hPan));
     xml.setAttribute("DTT", panner_getDTT(hPan));
     xml.setAttribute("Spread", panner_getSpread(hPan));
+    xml.setAttribute("YAW", panner_getYaw(hPan));
+    xml.setAttribute("PITCH", panner_getPitch(hPan));
+    xml.setAttribute("ROLL", panner_getRoll(hPan));
+    xml.setAttribute("FLIP_YAW", panner_getFlipYaw(hPan));
+    xml.setAttribute("FLIP_PITCH", panner_getFlipPitch(hPan));
+    xml.setAttribute("FLIP_ROLL", panner_getFlipRoll(hPan));
     
     xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
     
@@ -272,6 +278,18 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 panner_setDTT(hPan, (float)xmlState->getDoubleAttribute("DTT", 0.5f));
             if(xmlState->hasAttribute("Spread"))
                 panner_setSpread(hPan, (float)xmlState->getDoubleAttribute("Spread", 0.0f));
+            if(xmlState->hasAttribute("YAW"))
+                panner_setYaw(hPan, (float)xmlState->getDoubleAttribute("YAW", 0.0f));
+            if(xmlState->hasAttribute("PITCH"))
+                panner_setPitch(hPan, (float)xmlState->getDoubleAttribute("PITCH", 0.0f));
+            if(xmlState->hasAttribute("ROLL"))
+                panner_setRoll(hPan, (float)xmlState->getDoubleAttribute("ROLL", 0.0f));
+            if(xmlState->hasAttribute("FLIP_YAW"))
+                panner_setFlipYaw(hPan, xmlState->getIntAttribute("FLIP_YAW", 0));
+            if(xmlState->hasAttribute("FLIP_PITCH"))
+                panner_setFlipPitch(hPan, xmlState->getIntAttribute("FLIP_PITCH", 0));
+            if(xmlState->hasAttribute("FLIP_ROLL"))
+                panner_setFlipRoll(hPan, xmlState->getIntAttribute("FLIP_ROLL", 0));
             
             if(xmlState->hasAttribute("JSONFilePath"))
                 lastDir = xmlState->getStringAttribute("JSONFilePath", "");

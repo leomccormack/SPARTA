@@ -107,6 +107,12 @@ private:
     std::unique_ptr<TextButton> tb_loadJSON_ls;
     std::unique_ptr<TextButton> tb_saveJSON_ls;
     std::unique_ptr<Slider> SL_spread;
+    std::unique_ptr<Slider> s_yaw;
+    std::unique_ptr<ToggleButton> t_flipYaw;
+    std::unique_ptr<ToggleButton> t_flipPitch;
+    std::unique_ptr<ToggleButton> t_flipRoll;
+    std::unique_ptr<Slider> s_pitch;
+    std::unique_ptr<Slider> s_roll;
 
 
     //==============================================================================
