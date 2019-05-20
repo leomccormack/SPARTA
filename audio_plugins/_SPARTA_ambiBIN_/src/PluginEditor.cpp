@@ -304,6 +304,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     t_flipRoll->setToggleState((bool)ambi_bin_getFlipRoll(hVst->hAmbi), dontSendNotification);
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
     TBrpyFlag->setToggleState((bool)ambi_bin_getRPYflag(hVst->hAmbi), dontSendNotification);
+    
+    TBphaseWarping->setEnabled(false); // coming soon
 
 	/* Specify screen refresh rate */
     startTimer(40);//80); /*ms (40ms = 25 frames per second) */
