@@ -107,7 +107,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_beams->setColour(Slider::trackColourId, Colours::transparentBlack);
     SL_num_beams->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
     SL_num_beams->setSliderSnapsToMousePosition(false);
- 
+
     /* add combobox options */
     CBorder->addItem (TRANS("1st order"), BEAM_ORDER_FIRST);
     CBorder->addItem (TRANS("2nd order"), BEAM_ORDER_SECOND);
