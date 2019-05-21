@@ -1045,7 +1045,7 @@ void PluginEditor::timerCallback()
 		TBuseDefaultHRIRs->setEnabled(false);
 		TBmaxRE->setEnabled(false);
 		TBdiffMatching->setEnabled(false);
-		TBphaseWarping->setEnabled(false);
+		///////////TBphaseWarping->setEnabled(false);
 		CBdecoderMethod->setEnabled(false);
 	}
 	else {
@@ -1055,7 +1055,7 @@ void PluginEditor::timerCallback()
 		TBuseDefaultHRIRs->setEnabled(true);
 		TBmaxRE->setEnabled(true);
 		TBdiffMatching->setEnabled(true);
-		TBphaseWarping->setEnabled(true);
+		/////////TBphaseWarping->setEnabled(true);
 		CBdecoderMethod->setEnabled(true);
 		ambi_bin_checkReInit(hVst->hAmbi);
 	}
