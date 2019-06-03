@@ -148,7 +148,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
-        <MODULEPATH id="juce_osc" path="../../../../SDKs/modules"/>
+        <MODULEPATH id="juce_osc" path="../../../../SDKs/modules/"/>
       </MODULEPATHS>
     </VS2017>
     <VS2015 targetFolder="../../make/win64/VisualStudio2015/" vstFolder="C://SDKs/VST3 SDK"
@@ -182,7 +182,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
-        <MODULEPATH id="juce_osc" path="../../../../SDKs/modules"/>
+        <MODULEPATH id="juce_osc" path="../../../../SDKs/modules/"/>
       </MODULEPATHS>
     </VS2015>
     <XCODE_MAC targetFolder="../../make/MacOSX/Xcode/" vstFolder="../../../SDKs/VST3 SDK"
@@ -212,9 +212,34 @@
         <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
-        <MODULEPATH id="juce_osc" path="../../../../SDKs/modules"/>
+        <MODULEPATH id="juce_osc" path="../../../../SDKs/modules/"/>
       </MODULEPATHS>
     </XCODE_MAC>
+    <LINUX_MAKE targetFolder="../../make/LinuxMakefile" extraLinkerFlags="-L/usr/lib -lsaf_mkl_custom&#10;-L/lib/x86_64-linux-gnu -lnetcdf">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_ambiBIN_debug" linkTimeOptimisation="1"
+                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/include&#10;../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include"
+                       binaryPath="../../../../lib/"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="sparta_ambiBIN" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/include&#10;../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include"
+                       linkTimeOptimisation="1" binaryPath="../../../../lib/"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_osc" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_opengl" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_graphics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_events" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_cryptography" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_core" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
   </EXPORTFORMATS>
   <MODULES>
     <MODULES id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
@@ -236,5 +261,6 @@
   <LIVE_SETTINGS>
     <WINDOWS/>
     <OSX/>
+    <LINUX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>
