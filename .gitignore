@@ -15,19 +15,19 @@ audio_plugins/_SPARTA_powermap_/obj
 audio_plugins/_SPARTA_rotator_/obj
 audio_plugins/_SPARTA_sldoa_/obj
 audio_plugins/_SPARTA_upmix_/obj
-/home/leo/Documents/git_repos/SPARTA/audio_plugins/_SPARTA_ambiBIN_/make/LinuxMakefile/build
-/home/leo/Documents/git_repos/SPARTA/audio_plugins/_SPARTA_ambiDEC_/make/LinuxMakefile/build
-/home/leo/Documents/git_repos/SPARTA/audio_plugins/_SPARTA_ambiDRC_/make/LinuxMakefile/build
-/home/leo/Documents/git_repos/SPARTA/audio_plugins/_SPARTA_ambiENC_/make/LinuxMakefile/build
-/home/leo/Documents/git_repos/SPARTA/audio_plugins/_SPARTA_array2sh_/make/LinuxMakefile/build
-/home/leo/Documents/git_repos/SPARTA/audio_plugins/_SPARTA_beamformer_/make/LinuxMakefile/build
-/home/leo/Documents/git_repos/SPARTA/audio_plugins/_SPARTA_binauraliser_/make/LinuxMakefile/build
-/home/leo/Documents/git_repos/SPARTA/audio_plugins/_SPARTA_dirass_/make/LinuxMakefile/build
-/home/leo/Documents/git_repos/SPARTA/audio_plugins/_SPARTA_panner_/make/LinuxMakefile/build
-/home/leo/Documents/git_repos/SPARTA/audio_plugins/_SPARTA_powermap_/make/LinuxMakefile/build
-/home/leo/Documents/git_repos/SPARTA/audio_plugins/_SPARTA_rotator_/make/LinuxMakefile/build
-/home/leo/Documents/git_repos/SPARTA/audio_plugins/_SPARTA_sldoa_/make/LinuxMakefile/build
-/home/leo/Documents/git_repos/SPARTA/audio_plugins/_SPARTA_upmix_/make/LinuxMakefile/build
+audio_plugins/_SPARTA_ambiBIN_/make/LinuxMakefile/build
+udio_plugins/_SPARTA_ambiDEC_/make/LinuxMakefile/build
+audio_plugins/_SPARTA_ambiDRC_/make/LinuxMakefile/build
+audio_plugins/_SPARTA_ambiENC_/make/LinuxMakefile/build
+audio_plugins/_SPARTA_array2sh_/make/LinuxMakefile/build
+audio_plugins/_SPARTA_beamformer_/make/LinuxMakefile/build
+audio_plugins/_SPARTA_binauraliser_/make/LinuxMakefile/build
+audio_plugins/_SPARTA_dirass_/make/LinuxMakefile/build
+audio_plugins/_SPARTA_panner_/make/LinuxMakefile/build
+audio_plugins/_SPARTA_powermap_/make/LinuxMakefile/build
+audio_plugins/_SPARTA_rotator_/make/LinuxMakefile/build
+audio_plugins/_SPARTA_sldoa_/make/LinuxMakefile/build
+audio_plugins/_SPARTA_upmix_/make/LinuxMakefile/build
 lib
 
 # User-specific files
@@ -87,4 +87,3 @@ ipch/
 *.obj
 *.tlog
 *.log
-audio_plugins/_SPARTA_ambiDRC_/obj/
