@@ -20,7 +20,17 @@ PluginProcessor::~PluginProcessor()
 void PluginProcessor::setParameter (int index, float newValue)
 {
 	switch (index)
-	{ 
+	{
+        case k_inputOrder:   ambi_drc_setInputPreset(hAmbi, (INPUT_ORDER)(newValue*(float)(AMBI_DRC_MAX_SH_ORDER-1) + 1.5f)); break;
+        case k_channelOrder: ambi_drc_setChOrder(hAmbi, (int)(newValue*(float)(AMBI_DRC_NUM_CH_ORDERINGS-1) + 1.5f)); break;
+        case k_normType:     ambi_drc_setNormType(hAmbi, (int)(newValue*(float)(AMBI_DRC_NUM_NORM_TYPES-1) + 1.5f)); break;
+        case k_theshold:     ambi_drc_setThreshold(hAmbi, newValue*(AMBI_DRC_THRESHOLD_MAX_VAL-AMBI_DRC_THRESHOLD_MIN_VAL)+AMBI_DRC_THRESHOLD_MIN_VAL); break;
+        case k_ratio:        ambi_drc_setRatio(hAmbi, newValue*(AMBI_DRC_RATIO_MAX_VAL-AMBI_DRC_RATIO_MIN_VAL)+AMBI_DRC_RATIO_MIN_VAL); break;
+        case k_knee:         ambi_drc_setKnee(hAmbi, newValue*(AMBI_DRC_KNEE_MAX_VAL-AMBI_DRC_KNEE_MIN_VAL)+AMBI_DRC_KNEE_MIN_VAL); break;
+        case k_inGain:       ambi_drc_setInGain(hAmbi, newValue*(AMBI_DRC_IN_GAIN_MAX_VAL-AMBI_DRC_IN_GAIN_MIN_VAL)+AMBI_DRC_IN_GAIN_MIN_VAL); break;
+        case k_outGain:      ambi_drc_setOutGain(hAmbi, newValue*(AMBI_DRC_OUT_GAIN_MAX_VAL-AMBI_DRC_OUT_GAIN_MIN_VAL)+AMBI_DRC_OUT_GAIN_MIN_VAL); break;
+        case k_attack_ms:    ambi_drc_setAttack(hAmbi, newValue*(AMBI_DRC_ATTACK_MAX_VAL-AMBI_DRC_ATTACK_MIN_VAL)+AMBI_DRC_ATTACK_MIN_VAL); break;
+        case k_release_ms:   ambi_drc_setRelease(hAmbi, newValue*(AMBI_DRC_RELEASE_MAX_VAL-AMBI_DRC_RELEASE_MIN_VAL)+AMBI_DRC_RELEASE_MIN_VAL); break;
 		default: break;
 	} 
 }
@@ -32,7 +42,17 @@ void PluginProcessor::setCurrentProgram (int index)
 float PluginProcessor::getParameter (int index)
 {
     switch (index)
-	{   
+	{
+        case k_inputOrder:   return (float)(ambi_drc_getInputPreset(hAmbi)-1)/(float)(AMBI_DRC_MAX_SH_ORDER-1);
+        case k_channelOrder: return (float)(ambi_drc_getChOrder(hAmbi)-1)/(float)(AMBI_DRC_NUM_NORM_TYPES-1);
+        case k_normType:     return (float)(ambi_drc_getNormType(hAmbi)-1)/(float)(AMBI_DRC_NUM_NORM_TYPES-1);
+        case k_theshold:     return (ambi_drc_getThreshold(hAmbi)-AMBI_DRC_THRESHOLD_MIN_VAL)/(AMBI_DRC_THRESHOLD_MAX_VAL-AMBI_DRC_THRESHOLD_MIN_VAL);
+        case k_ratio:        return (ambi_drc_getThreshold(hAmbi)-AMBI_DRC_RATIO_MIN_VAL)/(AMBI_DRC_RATIO_MAX_VAL-AMBI_DRC_RATIO_MIN_VAL);
+        case k_knee:         return (ambi_drc_getKnee(hAmbi)-AMBI_DRC_KNEE_MIN_VAL)/(AMBI_DRC_KNEE_MAX_VAL-AMBI_DRC_KNEE_MIN_VAL);
+        case k_inGain:       return (ambi_drc_getInGain(hAmbi)-AMBI_DRC_IN_GAIN_MIN_VAL)/(AMBI_DRC_IN_GAIN_MAX_VAL-AMBI_DRC_IN_GAIN_MIN_VAL);
+        case k_outGain:      return (ambi_drc_getOutGain(hAmbi)-AMBI_DRC_OUT_GAIN_MIN_VAL)/(AMBI_DRC_OUT_GAIN_MAX_VAL-AMBI_DRC_OUT_GAIN_MIN_VAL);
+        case k_attack_ms:    return (ambi_drc_getAttack(hAmbi)-AMBI_DRC_ATTACK_MIN_VAL)/(AMBI_DRC_ATTACK_MAX_VAL-AMBI_DRC_ATTACK_MIN_VAL);
+        case k_release_ms:   return (ambi_drc_getRelease(hAmbi)-AMBI_DRC_RELEASE_MIN_VAL)/(AMBI_DRC_RELEASE_MAX_VAL-AMBI_DRC_RELEASE_MIN_VAL);
 		default: return 0.0f;
 	}
 }
@@ -51,13 +71,48 @@ const String PluginProcessor::getParameterName (int index)
 {
     switch (index)
 	{
+        case k_inputOrder:   return "order";
+        case k_channelOrder: return "channel_order";
+        case k_normType:     return "norm_type";
+        case k_theshold:     return "threshold";
+        case k_ratio:        return "ratio";
+        case k_knee:         return "knee";
+        case k_inGain:       return "in_gain";
+        case k_outGain:      return "out_gain";
+        case k_attack_ms:    return "attack";
+        case k_release_ms:   return "release";
 		default: return "NULL";
 	}
 }
 
 const String PluginProcessor::getParameterText(int index)
 {
-	return String(getParameter(index), 1);    
+    switch (index)
+    {
+        case k_inputOrder: return String(ambi_drc_getInputPreset(hAmbi));
+        case k_channelOrder:
+            switch(ambi_drc_getChOrder(hAmbi)){
+                case CH_ACN:  return "ACN";
+                case CH_FUMA: return "FuMa";
+                default: return "NULL";
+            }
+        case k_normType:
+            switch(ambi_drc_getNormType(hAmbi)){
+                case NORM_N3D:  return "N3D";
+                case NORM_SN3D: return "SN3D";
+                case NORM_FUMA: return "FuMa";
+                default: return "NULL";
+            }
+        case k_theshold:     return String(ambi_drc_getThreshold(hAmbi));
+        case k_ratio:        return String(ambi_drc_getRatio(hAmbi));
+        case k_knee:         return String(ambi_drc_getKnee(hAmbi));
+        case k_inGain:       return String(ambi_drc_getInGain(hAmbi));
+        case k_outGain:      return String(ambi_drc_getOutGain(hAmbi));
+        case k_attack_ms:    return String(ambi_drc_getAttack(hAmbi));
+        case k_release_ms:   return String(ambi_drc_getRelease(hAmbi));
+            
+        default: return "NULL";
+    }
 }
 
 const String PluginProcessor::getInputChannelName (int channelIndex) const

@@ -26,11 +26,8 @@
 #include "ambi_enc.h"
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1 
 #include "../../resources/ConfigurationHelper.h"
-
 #define BUILD_VER_SUFFIX "beta"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
-#define NUM_OF_AUTOMATABLE_SOURCES 32
-
 #ifndef MIN
   #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
 #endif
@@ -38,44 +35,36 @@
   #define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
 #endif
 
+/* Parameter tags: for the default VST GUI */
+enum {
+    k_outputOrder,
+    k_channelOrder,
+    k_normType,
+    k_numSources,
+    
+    k_NumOfParameters /* not including source directions */
+};
+
 class PluginProcessor  : public AudioProcessor,
                          public VSTCallbackHandler
 {
 public:
-    int nNumInputs;                         /* current number of input channels */
-	int nNumOutputs;                        /* current number of output channels */
-	int nSampleRate;                        /* current host sample rate */
-    int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
-    void* hAmbi;                            /* ambi_enclib handle */
+    /* Get functions */
+    void* getFXHandle() { return hAmbi; }
+    int getIsPlaying(){ return isPlaying; }
+    int getCurrentBlockSize(){ return nHostBlockSize; }
+    int getCurrentNumInputs(){ return nNumInputs; }
+    int getCurrentNumOutputs(){ return nNumOutputs; }
     
-    bool isPlaying;
-    
-    int getCurrentBlockSize(){
-        return nHostBlockSize;
-    }
-    int getCurrentNumInputs(){
-        return nNumInputs;
-    }
-    int getCurrentNumOutputs(){
-        return nNumOutputs;
-    }
-    
-    /* For refreshing window during automation */
-    bool refreshWindow;
-    void setRefreshWindow(bool newState) {
-        refreshWindow = newState;
-    }
-    bool getRefreshWindow() {
-        return refreshWindow;
-    }
+    /* For refreshing window during automation */ 
+    void setRefreshWindow(bool newState) { refreshWindow = newState; }
+    bool getRefreshWindow() { return refreshWindow; }
     
     /* JSON */
     void saveConfigurationToFile (File destination);
     void loadConfiguration (const File& presetFile);
-    ValueTree sources {"Sources"};
     void setLastDir(File newLastDir){ lastDir = newLastDir; }
     File getLastDir() {return lastDir;};
-    File lastDir;
     
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 index, pointer_sized_int value, void* ptr, float opt) override { return 0; };
@@ -87,8 +76,17 @@ public:
         return 0;
     }
     
-    /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead* playHead;
+private:
+    void* hAmbi;          /* ambi_enc handle */
+    int nNumInputs;       /* current number of input channels */
+    int nNumOutputs;      /* current number of output channels */
+    int nSampleRate;      /* current host sample rate */
+    int nHostBlockSize;   /* typical host block size to expect, in samples */
+    bool isPlaying;
+    bool refreshWindow;
+    File lastDir;
+    ValueTree sources {"Sources"};
+    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
     
     /***************************************************************************\

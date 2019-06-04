@@ -31,6 +31,16 @@
 
 enum {	
     /* For the default VST GUI */
+    k_inputOrder,
+    k_channelOrder,
+    k_normType,
+    k_theshold,
+    k_ratio,
+    k_knee,
+    k_inGain,
+    k_outGain,
+    k_attack_ms,
+    k_release_ms,
 	k_NumOfParameters
 };
 
@@ -38,23 +48,12 @@ class PluginProcessor  : public AudioProcessor,
                          public VSTCallbackHandler
 {
 public:
-    int nNumInputs;                         /* current number of input channels */
-	int nNumOutputs;                        /* current number of output channels */
-	int nSampleRate;                        /* current host sample rate */
-    int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
-    void* hAmbi;                            /* dynamic range compressor handle */
-    
-    bool isPlaying;
-    
-    int getCurrentBlockSize(){
-        return nHostBlockSize;
-    }
-    int getCurrentNumInputs(){
-        return nNumInputs;
-    }
-    int getCurrentNumOutputs(){
-        return nNumOutputs;
-    }
+    /* Get functions */
+    void* getFXHandle() { return hAmbi; }
+    bool getIsPlaying() { return isPlaying; }
+    int getCurrentBlockSize(){ return nHostBlockSize; }
+    int getCurrentNumInputs(){ return nNumInputs; }
+    int getCurrentNumOutputs(){ return nNumOutputs; }
     
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 index, pointer_sized_int value, void* ptr, float opt) override { return 0; };
@@ -66,8 +65,14 @@ public:
         return 0;
     }
     
-    /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead* playHead;
+private:
+    void* hAmbi;                            /* dynamic range compressor handle */
+    int nNumInputs;                         /* current number of input channels */
+    int nNumOutputs;                        /* current number of output channels */
+    int nSampleRate;                        /* current host sample rate */
+    int nHostBlockSize;                     /* typical host block size to expect, in samples */
+    bool isPlaying;
+    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
 
     /***************************************************************************\

@@ -46,8 +46,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-	PluginProcessor* hVst;
-
+	 
     void setFreqVector(float* _freqVector, int _numFreqPoints)
     {
         freqVector = _freqVector;
@@ -63,6 +62,8 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    PluginProcessor* hVst;
+    void* hAmbi;
 	Rectangle<float> TFtiles[HYBRID_BANDS][NUM_DISPLAY_TIME_SLOTS];
     int numFreqPoints, width, height, min_freq, max_freq, min_dB, max_dB;
     float* freqVector;

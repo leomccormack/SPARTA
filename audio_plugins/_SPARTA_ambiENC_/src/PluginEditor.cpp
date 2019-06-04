@@ -60,7 +60,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBoutputFormat->setJustificationType (Justification::centredLeft);
     CBoutputFormat->setTextWhenNothingSelected (TRANS("ACN"));
     CBoutputFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBoutputFormat->addItem (TRANS("ACN"), 1);
     CBoutputFormat->addListener (this);
 
     CBoutputFormat->setBounds (343, 316, 112, 20);
@@ -71,8 +70,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormalisation->setJustificationType (Justification::centredLeft);
     CBnormalisation->setTextWhenNothingSelected (TRANS("N3D"));
     CBnormalisation->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBnormalisation->addItem (TRANS("N3D"), 1);
-    CBnormalisation->addItem (TRANS("SN3D"), 2);
     CBnormalisation->addListener (this);
 
     CBnormalisation->setBounds (578, 316, 112, 20);
@@ -117,6 +114,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* handle to pluginProcessor */
 	hVst = ownerFilter;
+    hAmbi = hVst->getFXHandle();
 
     /* init OpenGL */
     openGLContext.setMultisamplingEnabled(true);
@@ -191,7 +189,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 #ifdef ENABLE_T_DESIGN_60_PRESET
     CBsourceDirsPreset->addItem (TRANS("T-design (60)"), PRESET_T_DESIGN_60);
 #endif
-    CBorder->addItem (TRANS("0th (Omni)"), OUTPUT_OMNI);
     CBorder->addItem (TRANS("1st order"), OUTPUT_ORDER_FIRST);
     CBorder->addItem (TRANS("2nd order"), OUTPUT_ORDER_SECOND);
     CBorder->addItem (TRANS("3rd order"), OUTPUT_ORDER_THIRD);
@@ -199,21 +196,28 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorder->addItem (TRANS("5th order"), OUTPUT_ORDER_FIFTH);
     CBorder->addItem (TRANS("6th order"), OUTPUT_ORDER_SIXTH);
     CBorder->addItem (TRANS("7th order"), OUTPUT_ORDER_SEVENTH);
+    CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
+    CBoutputFormat->addItem (TRANS("FuMa"), CH_FUMA);
+    CBnormalisation->addItem (TRANS("N3D"), NORM_N3D);
+    CBnormalisation->addItem (TRANS("SN3D"), NORM_SN3D);
+    CBnormalisation->addItem (TRANS("FuMa"), NORM_FUMA);
 
     /* source coordinates viewport */
     addAndMakeVisible (sourceCoordsVP = new Viewport ("new viewport"));
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_CHANNELS, ambi_enc_getNumSources(hVst->hAmbi));
+    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_CHANNELS, ambi_enc_getNumSources(hAmbi));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
     sourceCoordsVP->setBounds(22, 183, 184, 155);
-    sourceCoordsView_handle->setNCH(ambi_enc_getNumSources(hVst->hAmbi));
+    sourceCoordsView_handle->setNCH(ambi_enc_getNumSources(hAmbi));
 
     /* grab current parameter settings */
-    SL_num_sources->setValue(ambi_enc_getNumSources(hVst->hAmbi),dontSendNotification);
-    CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hVst->hAmbi), dontSendNotification);
-    CBnormalisation->setSelectedId(ambi_enc_getNormType(hVst->hAmbi), dontSendNotification);
-    CBorder->setSelectedId(ambi_enc_getOutputOrder(hVst->hAmbi), dontSendNotification);
+    SL_num_sources->setValue(ambi_enc_getNumSources(hAmbi),dontSendNotification);
+    CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hAmbi), dontSendNotification);
+    CBorder->setSelectedId(ambi_enc_getOutputOrder(hAmbi), dontSendNotification);
+    CBnormalisation->setSelectedId(ambi_enc_getNormType(hAmbi), dontSendNotification);
+    CBoutputFormat->setItemEnabled(CH_FUMA, ambi_enc_getOutputOrder(hAmbi)==OUTPUT_ORDER_FIRST ? true : false);
+    CBnormalisation->setItemEnabled(NORM_FUMA, ambi_enc_getOutputOrder(hAmbi)==OUTPUT_ORDER_FIRST ? true : false);
 
     /* create panning window */
     addAndMakeVisible (panWindow = new pannerView(ownerFilter, 480, 240));
@@ -507,13 +511,13 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(ambi_enc_getNumSources(hVst->hAmbi)) + TRANS(")"),
+                       TRANS("/") + String(ambi_enc_getNumSources(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
-                       TRANS("/") + String(ambi_enc_getNSHrequired(hVst->hAmbi)) + TRANS(")"),
+                       TRANS("/") + String(ambi_enc_getNSHrequired(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -541,26 +545,26 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
     {
         //[UserComboBoxCode_CBsourceDirsPreset] -- add your combo box handling code here..
-        ambi_enc_setInputConfigPreset(hVst->hAmbi, CBsourceDirsPreset->getSelectedId());
+        ambi_enc_setInputConfigPreset(hAmbi, CBsourceDirsPreset->getSelectedId());
         refreshPanViewWindow = true;
         //[/UserComboBoxCode_CBsourceDirsPreset]
     }
     else if (comboBoxThatHasChanged == CBoutputFormat.get())
     {
         //[UserComboBoxCode_CBoutputFormat] -- add your combo box handling code here..
-        ambi_enc_setChOrder(hVst->hAmbi, CBoutputFormat->getSelectedId());
+        ambi_enc_setChOrder(hAmbi, CBoutputFormat->getSelectedId());
         //[/UserComboBoxCode_CBoutputFormat]
     }
     else if (comboBoxThatHasChanged == CBnormalisation.get())
     {
         //[UserComboBoxCode_CBnormalisation] -- add your combo box handling code here..
-        ambi_enc_setNormType(hVst->hAmbi, CBnormalisation->getSelectedId());
+        ambi_enc_setNormType(hAmbi, CBnormalisation->getSelectedId());
         //[/UserComboBoxCode_CBnormalisation]
     }
     else if (comboBoxThatHasChanged == CBorder.get())
     {
         //[UserComboBoxCode_CBorder] -- add your combo box handling code here..
-        ambi_enc_setOutputOrder(hVst->hAmbi, CBorder->getSelectedId());
+        ambi_enc_setOutputOrder(hAmbi, CBorder->getSelectedId());
         //[/UserComboBoxCode_CBorder]
     }
 
@@ -576,7 +580,7 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == SL_num_sources.get())
     {
         //[UserSliderCode_SL_num_sources] -- add your slider handling code here..
-        ambi_enc_setNumSources(hVst->hAmbi, (int)SL_num_sources->getValue());
+        ambi_enc_setNumSources(hAmbi, (int)SL_num_sources->getValue());
         refreshPanViewWindow = true;
         //[/UserSliderCode_SL_num_sources]
     }
@@ -626,9 +630,13 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PluginEditor::timerCallback()
 {
-    /* update number of sources */
-    sourceCoordsView_handle->setNCH(ambi_enc_getNumSources(hVst->hAmbi));
-    SL_num_sources->setValue(ambi_enc_getNumSources(hVst->hAmbi),dontSendNotification);
+    /* parameters whos values can change internally should be periodically refreshed */
+    sourceCoordsView_handle->setNCH(ambi_enc_getNumSources(hAmbi));
+    SL_num_sources->setValue(ambi_enc_getNumSources(hAmbi),dontSendNotification);
+    CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hAmbi), dontSendNotification);
+    CBnormalisation->setSelectedId(ambi_enc_getNormType(hAmbi), dontSendNotification);
+    CBoutputFormat->setItemEnabled(CH_FUMA, ambi_enc_getOutputOrder(hAmbi)==OUTPUT_ORDER_FIRST ? true : false);
+    CBnormalisation->setItemEnabled(NORM_FUMA, ambi_enc_getOutputOrder(hAmbi)==OUTPUT_ORDER_FIRST ? true : false);
 
     /* refresh pan view */
     if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) ||
@@ -644,11 +652,11 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < ambi_enc_getNumSources(hVst->hAmbi))){
+    else if ((hVst->getCurrentNumInputs() < ambi_enc_getNumSources(hAmbi))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumOutputs() < ambi_enc_getNSHrequired(hVst->hAmbi))){
+    else if ((hVst->getCurrentNumOutputs() < ambi_enc_getNSHrequired(hAmbi))){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -735,10 +743,10 @@ BEGIN_JUCER_METADATA
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="63f8ff411606aafd" memberName="CBoutputFormat"
             virtualName="" explicitFocusOrder="0" pos="343 316 112 20" editable="0"
-            layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
+            layout="33" items="" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="27f130362a28f1eb" memberName="CBnormalisation"
             virtualName="" explicitFocusOrder="0" pos="578 316 112 20" editable="0"
-            layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
+            layout="33" items="" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="56ba0566c2fe39e0" memberName="CBorder"
             virtualName="" explicitFocusOrder="0" pos="88 64 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>

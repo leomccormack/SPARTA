@@ -49,6 +49,7 @@ TFview::TFview (PluginProcessor* ownerFilter, int _width, int _height, float _mi
     //[Constructor] You can add your own custom stuff here..
     /* local pars */
 	hVst = ownerFilter;
+    hAmbi = hVst->getFXHandle();
     width = _width;
     height = _height;
     min_freq = _min_freq;
@@ -119,8 +120,8 @@ void TFview::paint (Graphics& g)
         }
 
         /* Fill in TF tiles */ //MIN_DISPLAY_DB
-        float**gainTF = ambi_drc_getGainTF(hVst->hAmbi);
-        int wIdx = ambi_drc_getGainTFwIdx(hVst->hAmbi);
+        float**gainTF = ambi_drc_getGainTF(hAmbi);
+        int wIdx = ambi_drc_getGainTFwIdx(hAmbi);
         int rIdx;
         float logScale = (log10f(1.0f) - log10f(SPECTRAL_FLOOR));
         g.setOpacity(1.0f);
@@ -168,7 +169,7 @@ void TFview::paint (Graphics& g)
     }
 
 	/* Draw scroll line */
-    int wIdx = ambi_drc_getGainTFwIdx(hVst->hAmbi);
+    int wIdx = ambi_drc_getGainTFwIdx(hAmbi);
 	float linePos = (float)wIdx*(width / (float)NUM_DISPLAY_TIME_SLOTS);
 	g.setColour(Colours::white);
 	g.setOpacity(1.0f);
