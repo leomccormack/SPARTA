@@ -173,6 +173,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     //[Constructor] You can add your own custom stuff here..
 	hVst = ownerFilter;
+    hAmbi = hVst->getFXHandle();
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
 
@@ -182,14 +183,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TFviewIncluded->setTopLeftPosition(46, 44);
     TFviewIncluded->setVisible(true);
     int numFreqPoints;
-    float* freqVector = ambi_drc_getFreqVector(hVst->hAmbi, &numFreqPoints);
+    float* freqVector = ambi_drc_getFreqVector(hAmbi, &numFreqPoints);
     TFviewIncluded->setFreqVector(freqVector, numFreqPoints);
 
     /* add options to drop down boxes */
     normalisationCB->addItem (TRANS("N3D"), NORM_N3D);
     normalisationCB->addItem (TRANS("SN3D"), NORM_SN3D);
+    normalisationCB->addItem (TRANS("FuMa"), NORM_FUMA);
     CHOrderingCB->addItem (TRANS("ACN"), CH_ACN);
-    presetCB->addItem(TRANS("Omni"), INPUT_OMNI);
+    CHOrderingCB->addItem (TRANS("FuMa"), CH_FUMA);
     presetCB->addItem(TRANS("1st order"), INPUT_ORDER_1);
     presetCB->addItem(TRANS("2nd order"), INPUT_ORDER_2);
     presetCB->addItem(TRANS("3rd order"), INPUT_ORDER_3);
@@ -199,16 +201,25 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     presetCB->addItem(TRANS("7th order"), INPUT_ORDER_7);
 
 	/* fetch current configuration */
-	s_thresh->setValue(ambi_drc_getThreshold(hVst->hAmbi), dontSendNotification);
-	s_ratio->setValue(ambi_drc_getRatio(hVst->hAmbi), dontSendNotification);
-	s_knee->setValue(ambi_drc_getKnee(hVst->hAmbi), dontSendNotification);
-	s_ingain->setValue(ambi_drc_getInGain(hVst->hAmbi), dontSendNotification);
-    s_outgain->setValue(ambi_drc_getOutGain(hVst->hAmbi), dontSendNotification);
-	s_attack->setValue(ambi_drc_getAttack(hVst->hAmbi), dontSendNotification);
-	s_release->setValue(ambi_drc_getRelease(hVst->hAmbi), dontSendNotification);
-    CHOrderingCB->setSelectedId(ambi_drc_getChOrder(hVst->hAmbi), dontSendNotification);
-    normalisationCB->setSelectedId(ambi_drc_getNormType(hVst->hAmbi), dontSendNotification);
-    presetCB->setSelectedId(ambi_drc_getInputPreset(hVst->hAmbi), dontSendNotification);
+    s_thresh->setRange(AMBI_DRC_THRESHOLD_MIN_VAL, AMBI_DRC_THRESHOLD_MAX_VAL, 0.01);
+	s_thresh->setValue(ambi_drc_getThreshold(hAmbi), dontSendNotification);
+    s_ratio->setRange(AMBI_DRC_RATIO_MIN_VAL, AMBI_DRC_RATIO_MAX_VAL, 0.01);
+	s_ratio->setValue(ambi_drc_getRatio(hAmbi), dontSendNotification);
+    s_knee->setRange(AMBI_DRC_KNEE_MIN_VAL, AMBI_DRC_KNEE_MAX_VAL, 0.01);
+	s_knee->setValue(ambi_drc_getKnee(hAmbi), dontSendNotification);
+    s_ingain->setRange(AMBI_DRC_IN_GAIN_MIN_VAL, AMBI_DRC_IN_GAIN_MAX_VAL, 0.01);
+	s_ingain->setValue(ambi_drc_getInGain(hAmbi), dontSendNotification);
+    s_outgain->setRange(AMBI_DRC_OUT_GAIN_MIN_VAL, AMBI_DRC_OUT_GAIN_MAX_VAL, 0.01);
+    s_outgain->setValue(ambi_drc_getOutGain(hAmbi), dontSendNotification);
+    s_attack->setRange(AMBI_DRC_ATTACK_MIN_VAL, AMBI_DRC_ATTACK_MAX_VAL, 0.01);
+	s_attack->setValue(ambi_drc_getAttack(hAmbi), dontSendNotification);
+    s_release->setRange(AMBI_DRC_RELEASE_MIN_VAL, AMBI_DRC_RELEASE_MAX_VAL, 0.01);
+	s_release->setValue(ambi_drc_getRelease(hAmbi), dontSendNotification);
+    CHOrderingCB->setSelectedId(ambi_drc_getChOrder(hAmbi), dontSendNotification);
+    normalisationCB->setSelectedId(ambi_drc_getNormType(hAmbi), dontSendNotification);
+    presetCB->setSelectedId(ambi_drc_getInputPreset(hAmbi), dontSendNotification);
+    CHOrderingCB->setItemEnabled(CH_FUMA, ambi_drc_getInputPreset(hAmbi)==INPUT_ORDER_1 ? true : false);
+    normalisationCB->setItemEnabled(NORM_FUMA, ambi_drc_getInputPreset(hAmbi)==INPUT_ORDER_1 ? true : false);
 
     startTimer(80); /*ms (40ms = 25 frames per second) */
 
@@ -811,19 +822,19 @@ void PluginEditor::paint (Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_supported_fs:
-            g.drawText(TRANS("Sample rate (") + String(ambi_drc_getSamplerate(hVst->hAmbi)) + TRANS(") is unsupported"),
+            g.drawText(TRANS("Sample rate (") + String(ambi_drc_getSamplerate(hAmbi)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(ambi_drc_getNSHrequired(hVst->hAmbi)) + TRANS(")"),
+                       TRANS("/") + String(ambi_drc_getNSHrequired(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
-                       TRANS("/") + String(ambi_drc_getNSHrequired(hVst->hAmbi)) + TRANS(")"),
+                       TRANS("/") + String(ambi_drc_getNSHrequired(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -883,43 +894,43 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == s_thresh.get())
     {
         //[UserSliderCode_s_thresh] -- add your slider handling code here..
-		ambi_drc_setThreshold(hVst->hAmbi, s_thresh->getValue());
+		ambi_drc_setThreshold(hAmbi, s_thresh->getValue());
         //[/UserSliderCode_s_thresh]
     }
     else if (sliderThatWasMoved == s_ratio.get())
     {
         //[UserSliderCode_s_ratio] -- add your slider handling code here..
-		ambi_drc_setRatio(hVst->hAmbi, s_ratio->getValue());
+		ambi_drc_setRatio(hAmbi, s_ratio->getValue());
         //[/UserSliderCode_s_ratio]
     }
     else if (sliderThatWasMoved == s_knee.get())
     {
         //[UserSliderCode_s_knee] -- add your slider handling code here..
-		ambi_drc_setKnee(hVst->hAmbi, s_knee->getValue());
+		ambi_drc_setKnee(hAmbi, s_knee->getValue());
         //[/UserSliderCode_s_knee]
     }
     else if (sliderThatWasMoved == s_attack.get())
     {
         //[UserSliderCode_s_attack] -- add your slider handling code here..
-		ambi_drc_setAttack(hVst->hAmbi, s_attack->getValue());
+		ambi_drc_setAttack(hAmbi, s_attack->getValue());
         //[/UserSliderCode_s_attack]
     }
     else if (sliderThatWasMoved == s_release.get())
     {
         //[UserSliderCode_s_release] -- add your slider handling code here..
-		ambi_drc_setRelease(hVst->hAmbi, s_release->getValue());
+		ambi_drc_setRelease(hAmbi, s_release->getValue());
         //[/UserSliderCode_s_release]
     }
     else if (sliderThatWasMoved == s_outgain.get())
     {
         //[UserSliderCode_s_outgain] -- add your slider handling code here..
-        ambi_drc_setOutGain(hVst->hAmbi, s_outgain->getValue());
+        ambi_drc_setOutGain(hAmbi, s_outgain->getValue());
         //[/UserSliderCode_s_outgain]
     }
     else if (sliderThatWasMoved == s_ingain.get())
     {
         //[UserSliderCode_s_ingain] -- add your slider handling code here..
-        ambi_drc_setInGain(hVst->hAmbi, s_ingain->getValue());
+        ambi_drc_setInGain(hAmbi, s_ingain->getValue());
         //[/UserSliderCode_s_ingain]
     }
 
@@ -935,19 +946,19 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == presetCB.get())
     {
         //[UserComboBoxCode_presetCB] -- add your combo box handling code here..
-        ambi_drc_setInputPreset(hVst->hAmbi, (INPUT_ORDER)presetCB->getSelectedId());
+        ambi_drc_setInputPreset(hAmbi, (INPUT_ORDER)presetCB->getSelectedId());
         //[/UserComboBoxCode_presetCB]
     }
     else if (comboBoxThatHasChanged == CHOrderingCB.get())
     {
         //[UserComboBoxCode_CHOrderingCB] -- add your combo box handling code here..
-        ambi_drc_setChOrder(hVst->hAmbi, CHOrderingCB->getSelectedId());
+        ambi_drc_setChOrder(hAmbi, CHOrderingCB->getSelectedId());
         //[/UserComboBoxCode_CHOrderingCB]
     }
     else if (comboBoxThatHasChanged == normalisationCB.get())
     {
         //[UserComboBoxCode_normalisationCB] -- add your combo box handling code here..
-        ambi_drc_setNormType(hVst->hAmbi, normalisationCB->getSelectedId());
+        ambi_drc_setNormType(hAmbi, normalisationCB->getSelectedId());
         //[/UserComboBoxCode_normalisationCB]
     }
 
@@ -960,8 +971,14 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PluginEditor::timerCallback()
 {
-    if (hVst->isPlaying) {
-        int wIdx = ambi_drc_getGainTFwIdx(hVst->hAmbi);
+    /* parameters whos values can change internally should be periodically refreshed */
+    CHOrderingCB->setSelectedId(ambi_drc_getChOrder(hAmbi), dontSendNotification);
+    normalisationCB->setSelectedId(ambi_drc_getNormType(hAmbi), dontSendNotification);
+    CHOrderingCB->setItemEnabled(CH_FUMA, ambi_drc_getInputPreset(hAmbi)==INPUT_ORDER_1 ? true : false);
+    normalisationCB->setItemEnabled(NORM_FUMA, ambi_drc_getInputPreset(hAmbi)==INPUT_ORDER_1 ? true : false);
+
+    if (hVst->getIsPlaying()) {
+        int wIdx = ambi_drc_getGainTFwIdx(hAmbi);
         float linePos = (float)wIdx*((float)TFviewIncluded->getWidth() / (float)NUM_DISPLAY_TIME_SLOTS);
         TFviewIncluded->repaint(linePos-10, 0, TFviewIncluded->getWidth(), TFviewIncluded->getHeight());
     }
@@ -971,15 +988,15 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint();
     }
-    else if ( !((ambi_drc_getSamplerate(hVst->hAmbi) == 44.1e3) || (ambi_drc_getSamplerate(hVst->hAmbi) == 48e3)) ){
+    else if ( !((ambi_drc_getSamplerate(hAmbi) == 44.1e3) || (ambi_drc_getSamplerate(hAmbi) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < ambi_drc_getNSHrequired(hVst->hAmbi))){
+    else if ((hVst->getCurrentNumInputs() < ambi_drc_getNSHrequired(hAmbi))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumOutputs() < ambi_drc_getNSHrequired(hVst->hAmbi))){
+    else if ((hVst->getCurrentNumOutputs() < ambi_drc_getNSHrequired(hAmbi))){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }

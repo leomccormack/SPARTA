@@ -45,16 +45,17 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
 
     //[Constructor] You can add your own custom stuff here..
     hVst = ownerFilter;
+    hAmbi = hVst->getFXHandle();
     width = _width;
     height = _height;
 
     for(int src=0; src<MAX_NUM_CHANNELS; src++){
-        SourceIcons[src].setBounds(width - width*(ambi_enc_getSourceAzi_deg(hVst->hAmbi, src) + 180.0f)/360.f - icon_size/2.0f,
-                                   height - height*(ambi_enc_getSourceElev_deg(hVst->hAmbi, src) + 90.0f)/180.0f - icon_size/2.0f,
+        SourceIcons[src].setBounds(width - width*(ambi_enc_getSourceAzi_deg(hAmbi, src) + 180.0f)/360.f - icon_size/2.0f,
+                                   height - height*(ambi_enc_getSourceElev_deg(hAmbi, src) + 90.0f)/180.0f - icon_size/2.0f,
                                    icon_size,
                                    icon_size);
     }
-    NSources = ambi_enc_getNumSources(hVst->hAmbi);
+    NSources = ambi_enc_getNumSources(hAmbi);
 
     //[/Constructor]
 }
@@ -189,9 +190,9 @@ void pannerView::mouseDrag (const MouseEvent& e)
     if(sourceIconIsClicked){
         Point<float> point;
         point.setXY((float)e.getPosition().getX()-icon_size/2.0f, (float)e.getPosition().getY()-icon_size/2.0f);
-        ambi_enc_setSourceAzi_deg(hVst->hAmbi, indexOfClickedSource,
+        ambi_enc_setSourceAzi_deg(hAmbi, indexOfClickedSource,
                                    ((width - (point.getX() + icon_size/2.0f))*360.0f)/width-180.0f);
-        ambi_enc_setSourceElev_deg(hVst->hAmbi, indexOfClickedSource,
+        ambi_enc_setSourceElev_deg(hAmbi, indexOfClickedSource,
                                    ((height - (point.getY() + icon_size/2.0f))*180.0f)/height - 90.0f);
     }
 
@@ -211,12 +212,12 @@ void pannerView::mouseUp (const MouseEvent& e)
 void pannerView::refreshPanView()
 {
     for(int src=0; src<MAX_NUM_CHANNELS; src++){
-        SourceIcons[src].setBounds(width - width*(ambi_enc_getSourceAzi_deg(hVst->hAmbi, src) + 180.0f)/360.f - icon_size/2.0f,
-                                   height - height*(ambi_enc_getSourceElev_deg(hVst->hAmbi, src) + 90.0f)/180.0f - icon_size/2.0f,
+        SourceIcons[src].setBounds(width - width*(ambi_enc_getSourceAzi_deg(hAmbi, src) + 180.0f)/360.f - icon_size/2.0f,
+                                   height - height*(ambi_enc_getSourceElev_deg(hAmbi, src) + 90.0f)/180.0f - icon_size/2.0f,
                                    icon_size,
                                    icon_size);
     }
-    NSources = ambi_enc_getNumSources(hVst->hAmbi);
+    NSources = ambi_enc_getNumSources(hAmbi);
 
     repaint();
 }

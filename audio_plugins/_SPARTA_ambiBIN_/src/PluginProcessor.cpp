@@ -68,27 +68,22 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 
 void PluginProcessor::setParameter (int index, float newValue)
 {
-    switch (index)
-    {
-        case k_yaw:
-            ambi_bin_setYaw(hAmbi, (newValue-0.5f)*360.0f );
-            break;
-        case k_pitch:
-            ambi_bin_setPitch(hAmbi, (newValue - 0.5f)*180.0f);
-            break;
-        case k_roll:
-            ambi_bin_setRoll(hAmbi, (newValue - 0.5f)*180.0f);
-            break;
-        case k_flipYaw:
-            ambi_bin_setFlipYaw(hAmbi, (int)(newValue + 0.5f));
-            break;
-        case k_flipPitch:
-            ambi_bin_setFlipPitch(hAmbi, (int)(newValue + 0.5f));
-            break;
-        case k_flipRoll:
-            ambi_bin_setFlipRoll(hAmbi, (int)(newValue + 0.5f));
-            break;
-            
+    switch (index) {
+        case k_inputOrder:            ambi_bin_setInputOrderPreset(hAmbi, (INPUT_ORDERS)(newValue*(float)(AMBI_BIN_MAX_SH_ORDER-1) + 1.5f)); break;
+        case k_channelOrder:          ambi_bin_setChOrder(hAmbi, (int)(newValue*(float)(AMBI_BIN_NUM_CH_ORDERINGS-1) + 1.5f)); break;
+        case k_normType:              ambi_bin_setNormType(hAmbi, (int)(newValue*(float)(AMBI_BIN_NUM_NORM_TYPES-1) + 1.5f)); break;
+        case k_decMethod:             ambi_bin_setDecodingMethod(hAmbi, (DECODING_METHODS)(newValue*(float)(AMBI_BIN_NUM_DECODING_METHODS-1) + 1.5f)); break;
+        case k_enableDiffuseMatching: ambi_bin_setEnableDiffuseMatching(hAmbi, (int)(newValue + 0.5f)); break;
+        case k_enableMaxRE:           ambi_bin_setEnableMaxRE(hAmbi, (int)(newValue + 0.5f)); break;
+        case k_enableRotation:        ambi_bin_setEnableRotation(hAmbi, (int)(newValue + 0.5f)); break;
+        case k_useRollPitchYaw:       ambi_bin_setRPYflag(hAmbi, (int)(newValue + 0.5f)); break;
+        case k_yaw:                   ambi_bin_setYaw(hAmbi, (newValue-0.5f)*360.0f ); break;
+        case k_pitch:                 ambi_bin_setPitch(hAmbi, (newValue - 0.5f)*180.0f); break;
+        case k_roll:                  ambi_bin_setRoll(hAmbi, (newValue - 0.5f)*180.0f); break;
+        case k_flipYaw:               ambi_bin_setFlipYaw(hAmbi, (int)(newValue + 0.5f));  break;
+        case k_flipPitch:             ambi_bin_setFlipPitch(hAmbi, (int)(newValue + 0.5f)); break;
+        case k_flipRoll:              ambi_bin_setFlipRoll(hAmbi, (int)(newValue + 0.5f)); break;
+         
         default: break;
     }
 }
@@ -99,21 +94,22 @@ void PluginProcessor::setCurrentProgram (int index)
 
 float PluginProcessor::getParameter (int index)
 {
-    switch (index)
-    {
-        case k_yaw:
-            return (ambi_bin_getYaw(hAmbi)/360.0f) + 0.5f;
-        case k_pitch:
-            return (ambi_bin_getPitch(hAmbi)/180.0f) + 0.5f;
-        case k_roll:
-            return (ambi_bin_getRoll(hAmbi)/180.0f) + 0.5f;
-        case k_flipYaw:
-            return (float)ambi_bin_getFlipYaw(hAmbi);
-        case k_flipPitch:
-            return (float)ambi_bin_getFlipPitch(hAmbi);
-        case k_flipRoll:
-            return (float)ambi_bin_getFlipRoll(hAmbi);
-            
+    switch (index) {
+        case k_inputOrder:            return (float)(ambi_bin_getInputOrderPreset(hAmbi)-1)/(float)(AMBI_BIN_MAX_SH_ORDER-1);
+        case k_channelOrder:          return (float)(ambi_bin_getChOrder(hAmbi)-1)/(float)(AMBI_BIN_NUM_NORM_TYPES-1);
+        case k_normType:              return (float)(ambi_bin_getNormType(hAmbi)-1)/(float)(AMBI_BIN_NUM_NORM_TYPES-1);
+        case k_decMethod:             return (float)(ambi_bin_getDecodingMethod(hAmbi)-1)/(float)(AMBI_BIN_NUM_DECODING_METHODS-1);
+        case k_enableDiffuseMatching: return (float)ambi_bin_getEnableDiffuseMatching(hAmbi);
+        case k_enableMaxRE:           return (float)ambi_bin_getEnableMaxRE(hAmbi);
+        case k_enableRotation:        return (float)ambi_bin_getEnableRotation(hAmbi);
+        case k_useRollPitchYaw:       return (float)ambi_bin_getRPYflag(hAmbi);
+        case k_yaw:                   return (ambi_bin_getYaw(hAmbi)/360.0f) + 0.5f;
+        case k_pitch:                 return (ambi_bin_getPitch(hAmbi)/180.0f) + 0.5f;
+        case k_roll:                  return (ambi_bin_getRoll(hAmbi)/180.0f) + 0.5f;
+        case k_flipYaw:               return (float)ambi_bin_getFlipYaw(hAmbi);
+        case k_flipPitch:             return (float)ambi_bin_getFlipPitch(hAmbi);
+        case k_flipRoll:              return (float)ambi_bin_getFlipRoll(hAmbi);
+        
         default: return 0.0f;
     }
 }
@@ -130,27 +126,65 @@ const String PluginProcessor::getName() const
 
 const String PluginProcessor::getParameterName (int index)
 {
-    switch (index)
-    {
-        case k_yaw:
-            return "yaw";
-        case k_pitch:
-            return "pitch";
-        case k_roll:
-            return "roll";
-        case k_flipYaw:
-            return "flip_yaw";
-        case k_flipPitch:
-            return "flip_pitch";
-        case k_flipRoll:
-            return "flip_roll";
+    switch (index) {
+        case k_inputOrder:            return "order";
+        case k_channelOrder:          return "channel_order";
+        case k_normType:              return "norm_type";
+        case k_decMethod:             return "decode_method";
+        case k_enableDiffuseMatching: return "apply_diff_match";
+        case k_enableMaxRE:           return "apply_maxre_weights";
+        case k_enableRotation:        return "enable_rotation";
+        case k_useRollPitchYaw:       return "use_rpy";
+        case k_yaw:                   return "yaw";
+        case k_pitch:                 return "pitch";
+        case k_roll:                  return "roll";
+        case k_flipYaw:               return "flip_yaw";
+        case k_flipPitch:             return "flip_pitch";
+        case k_flipRoll:              return "flip_roll";
+       
         default: return "NULL";
     }
 }
 
 const String PluginProcessor::getParameterText(int index)
 {
-	return String(getParameter(index), 1);    
+    switch (index) {
+        case k_inputOrder: return String(ambi_bin_getInputOrderPreset(hAmbi));
+        case k_channelOrder:
+            switch(ambi_bin_getChOrder(hAmbi)){
+                case CH_ACN:  return "ACN";
+                case CH_FUMA: return "FuMa";
+                default: return "NULL";
+            }
+        case k_normType:
+            switch(ambi_bin_getNormType(hAmbi)){
+                case NORM_N3D:  return "N3D";
+                case NORM_SN3D: return "SN3D";
+                case NORM_FUMA: return "FuMa";
+                default: return "NULL";
+            }
+        case k_decMethod:
+            switch(ambi_bin_getDecodingMethod(hAmbi)){
+                case DECODING_METHOD_LS:       return "LS";
+                case DECODING_METHOD_LSDIFFEQ: return "LS-DiffEQ";
+                case DECODING_METHOD_SPR:      return "SPR";
+                case DECODING_METHOD_TA:       return "TA";
+                case DECODING_METHOD_MAGLS:    return "Mag-LS";
+                default: return "NULL";
+            }
+        case k_enableDiffuseMatching: return !ambi_bin_getEnableDiffuseMatching(hAmbi) ? "Off" : "On";
+        case k_enableMaxRE:           return !ambi_bin_getEnableMaxRE(hAmbi) ? "Off" : "On";
+        case k_enableRotation:        return !ambi_bin_getEnableRotation(hAmbi) ? "Off" : "On";
+        case k_useRollPitchYaw:       return !ambi_bin_getRPYflag(hAmbi) ? "YPR" : "RPY";
+        case k_yaw:                   return String(ambi_bin_getYaw(hAmbi));
+        case k_pitch:                 return String(ambi_bin_getPitch(hAmbi));
+        case k_roll:                  return String(ambi_bin_getRoll(hAmbi));
+        case k_flipYaw:               return !ambi_bin_getFlipYaw(hAmbi) ? "No-Flip" : "Flip";
+        case k_flipPitch:             return !ambi_bin_getFlipPitch(hAmbi) ? "No-Flip" : "Flip";
+        case k_flipRoll:              return !ambi_bin_getFlipRoll(hAmbi) ? "No-Flip" : "Flip";
+            
+        default: return "NULL";
+    }
 }
 
 const String PluginProcessor::getInputChannelName (int channelIndex) const

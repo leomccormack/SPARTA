@@ -25,13 +25,20 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ambi_bin.h"
 #include <string.h>
-
-#define BUILD_VER_SUFFIX "beta"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
+#define BUILD_VER_SUFFIX "beta" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
 #define DEFAULT_OSC_PORT 9000
 
-enum {	
-    /* For the default VST GUI */
+/* Parameter tags: for the default VST GUI */
+enum {	 
+    k_inputOrder,
+    k_channelOrder,
+    k_normType,
+    k_decMethod,
+    k_enableDiffuseMatching,
+    k_enableMaxRE,
+    k_enableRotation,
+    k_useRollPitchYaw,
     k_yaw,
     k_pitch,
     k_roll,
@@ -42,32 +49,17 @@ enum {
 	k_NumOfParameters
 };
 
-
 class PluginProcessor  : public AudioProcessor,  
                          private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
                          public VSTCallbackHandler
 {
 public:
-    int nNumInputs;                         /* current number of input channels */
-	int nNumOutputs;                        /* current number of output channels */
-	int nSampleRate;                        /* current host sample rate */
-    int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
-    void* hAmbi;                            /* ambi_dec handle */
- 
-    bool isPlaying;
-    
-	bool getIsPlaying() {
-		return isPlaying;
-	}
-    int getCurrentBlockSize(){
-        return nHostBlockSize;
-    }
-    int getCurrentNumInputs(){
-        return nNumInputs;
-    }
-    int getCurrentNumOutputs(){
-        return nNumOutputs;
-    } 
+    /* Get functions */
+    void* getFXHandle() { return hAmbi; }
+	bool getIsPlaying() { return isPlaying; }
+    int getCurrentBlockSize(){ return nHostBlockSize; }
+    int getCurrentNumInputs(){ return nNumInputs; }
+    int getCurrentNumOutputs(){  return nNumOutputs; }
     
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 index, pointer_sized_int value, void* ptr, float opt) override { return 0; };
@@ -80,10 +72,7 @@ public:
     }
     
     /* OSC */
-    OSCReceiver osc;
-    bool osc_connected;
     void oscMessageReceived(const OSCMessage& message) override;
-    int osc_port_ID;
     void setOscPortID(int newID){
         osc.disconnect();
         osc_port_ID = newID;
@@ -96,8 +85,17 @@ public:
         return osc_connected;
     }
     
-    /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead* playHead;
+private:
+    void* hAmbi;             /* ambi_bin handle */
+    int nNumInputs;          /* current number of input channels */
+    int nNumOutputs;         /* current number of output channels */
+    int nSampleRate;         /* current host sample rate */
+    int nHostBlockSize;      /* typical host block size to expect, in samples */
+    bool isPlaying;          /* flag. 0: no audio playback, 1: playback ongoing */
+    OSCReceiver osc;         /* OSC receiver object */
+    bool osc_connected;      /* flag. 0: not connected, 1: connect to "osc_port_ID"  */
+    int osc_port_ID;         /* port ID */
+    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
     
     /***************************************************************************\

@@ -38,21 +38,34 @@ PluginProcessor::~PluginProcessor()
 
 void PluginProcessor::setParameter (int index, float newValue)
 {
-    float newValueScaled;
-    if (!(index % 2)){
-        newValueScaled = (newValue - 0.5f)*360.0f;
-        if (newValueScaled != ambi_enc_getSourceAzi_deg(hAmbi, index/2)){
-            ambi_enc_setSourceAzi_deg(hAmbi, index/2, newValueScaled);
-            refreshWindow = true;
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_outputOrder:   ambi_enc_setOutputOrder(hAmbi, (OUTPUT_ORDERS)(newValue*(float)(AMBI_ENC_MAX_SH_ORDER-1) + 1.5f)); break;
+            case k_channelOrder:  ambi_enc_setChOrder(hAmbi, (int)(newValue*(float)(AMBI_ENC_NUM_CH_ORDERINGS-1) + 1.5f)); break;
+            case k_normType:      ambi_enc_setNormType(hAmbi, (int)(newValue*(float)(AMBI_ENC_NUM_NORM_TYPES-1) + 1.5f)); break;
+            case k_numSources:    ambi_enc_setNumSources(hAmbi, (int)(newValue*(float)(AMBI_ENC_MAX_NUM_INPUTS)+0.5)); break;
         }
     }
+    /* source direction parameters */
     else{
-        newValueScaled = (newValue - 0.5f)*180.0f;
-        if (newValueScaled != ambi_enc_getSourceElev_deg(hAmbi, index/2)){
-            ambi_enc_setSourceElev_deg(hAmbi, index/2, newValueScaled);
-            refreshWindow = true;
+        index-=k_NumOfParameters;
+        float newValueScaled;
+        if (!(index % 2)){
+            newValueScaled = (newValue - 0.5f)*360.0f;
+            if (newValueScaled != ambi_enc_getSourceAzi_deg(hAmbi, index/2)){
+                ambi_enc_setSourceAzi_deg(hAmbi, index/2, newValueScaled);
+                refreshWindow = true;
+            }
         }
-    } 
+        else{
+            newValueScaled = (newValue - 0.5f)*180.0f;
+            if (newValueScaled != ambi_enc_getSourceElev_deg(hAmbi, index/2)){
+                ambi_enc_setSourceElev_deg(hAmbi, index/2, newValueScaled);
+                refreshWindow = true;
+            }
+        }
+    }
 }
 
 void PluginProcessor::setCurrentProgram (int index)
@@ -61,15 +74,29 @@ void PluginProcessor::setCurrentProgram (int index)
 
 float PluginProcessor::getParameter (int index)
 {
-    if (!(index % 2))
-        return (ambi_enc_getSourceAzi_deg(hAmbi, index/2)/360.0f) + 0.5f;
-    else
-        return (ambi_enc_getSourceElev_deg(hAmbi, (index-1)/2)/180.0f) + 0.5f;
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_outputOrder:   return (float)(ambi_enc_getOutputOrder(hAmbi)-1)/(float)(AMBI_ENC_MAX_SH_ORDER-1);
+            case k_channelOrder:  return (float)(ambi_enc_getChOrder(hAmbi)-1)/(float)(AMBI_ENC_NUM_NORM_TYPES-1);
+            case k_normType:      return (float)(ambi_enc_getNormType(hAmbi)-1)/(float)(AMBI_ENC_NUM_NORM_TYPES-1);
+            case k_numSources:    return (float)(ambi_enc_getNumSources(hAmbi))/(float)(AMBI_ENC_MAX_NUM_INPUTS);
+            default: return 0.0f;
+        }
+    }
+    /* source direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        if (!(index % 2))
+            return (ambi_enc_getSourceAzi_deg(hAmbi, index/2)/360.0f) + 0.5f;
+        else
+            return (ambi_enc_getSourceElev_deg(hAmbi, (index-1)/2)/180.0f) + 0.5f;
+    }
 }
 
 int PluginProcessor::getNumParameters()
 {
-	return MIN(2*ambi_enc_getMaxNumSources(), 2*NUM_OF_AUTOMATABLE_SOURCES);
+	return k_NumOfParameters + 2*AMBI_ENC_MAX_NUM_INPUTS;
 }
 
 const String PluginProcessor::getName() const
@@ -79,18 +106,57 @@ const String PluginProcessor::getName() const
 
 const String PluginProcessor::getParameterName (int index)
 {
-    if (!(index % 2))
-        return TRANS("Azim_") + String(index/2);
-    else
-        return TRANS("Elev_") + String((index-1)/2);
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_outputOrder:  return "order";
+            case k_channelOrder: return "channel_order";
+            case k_normType:     return "norm_type";
+            case k_numSources:   return "num_sources";
+            default: return "NULL";
+        }
+    }
+    /* source direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        if (!(index % 2))
+            return TRANS("Azim_") + String(index/2);
+        else
+            return TRANS("Elev_") + String((index-1)/2);
+    }
 }
 
 const String PluginProcessor::getParameterText(int index)
 {
-    if (!(index % 2))
-        return String(ambi_enc_getSourceAzi_deg(hAmbi, index/2));
-    else
-        return String(ambi_enc_getSourceElev_deg(hAmbi, (index-1)/2));
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_outputOrder: return String(ambi_enc_getOutputOrder(hAmbi));
+            case k_channelOrder:
+                switch(ambi_enc_getChOrder(hAmbi)){
+                    case CH_ACN:  return "ACN";
+                    case CH_FUMA: return "FuMa";
+                    default: return "NULL";
+                }
+            case k_normType:
+                switch(ambi_enc_getNormType(hAmbi)){
+                    case NORM_N3D:  return "N3D";
+                    case NORM_SN3D: return "SN3D";
+                    case NORM_FUMA: return "FuMa";
+                    default: return "NULL";
+                }
+            case k_numSources: return String(ambi_enc_getNumSources(hAmbi));
+            default: return "NULL";
+        }
+    }
+    /* source direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        if (!(index % 2))
+            return String(ambi_enc_getSourceAzi_deg(hAmbi, index/2));
+        else
+            return String(ambi_enc_getSourceElev_deg(hAmbi, (index-1)/2));
+    }
 }
 
 const String PluginProcessor::getInputChannelName (int channelIndex) const

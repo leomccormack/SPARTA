@@ -242,13 +242,6 @@
 			path = "sparta_ambiDRC.vst";
 			sourceTree = "BUILT_PRODUCTS_DIR";
 		};
-		04ED9BE468CDE97F564A5758 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_graphics";
-			path = "../../../../../../SDKs/modules/juce_graphics";
-			sourceTree = "SOURCE_ROOT";
-		};
 		08C2458BCBB8EF403D0AF339 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
@@ -263,11 +256,11 @@
 			path = ../../../src/TFview.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		0D614617A85F3371231759B0 = {
+		0E5BED8710D85249E474B51A = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
-			name = "juce_data_structures";
-			path = "../../../../../../SDKs/modules/juce_data_structures";
+			name = "juce_cryptography";
+			path = "../../../../../SDKs/modules/juce_cryptography";
 			sourceTree = "SOURCE_ROOT";
 		};
 		0F1D6066CDDD565AA98BD5B9 = {
@@ -324,20 +317,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = "saf_utilities.h";
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/include/saf_utilities.h";
-			sourceTree = "SOURCE_ROOT";
-		};
-		2ED509F5363DB49CD86EAD87 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_gui_extra";
-			path = "../../../../../../SDKs/modules/juce_gui_extra";
-			sourceTree = "SOURCE_ROOT";
-		};
-		30347574AF27DA75C705DA3B = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_cryptography";
-			path = "../../../../../../SDKs/modules/juce_cryptography";
 			sourceTree = "SOURCE_ROOT";
 		};
 		317A3E88ED6BA849D8376625 = {
@@ -403,19 +382,19 @@
 			path = "../../../juce/sparta_ambiDRC/JuceLibraryCode/include_juce_gui_basics.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
-		4BB6EA76E53C9E31F3716D85 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_audio_devices";
-			path = "../../../../../../SDKs/modules/juce_audio_devices";
-			sourceTree = "SOURCE_ROOT";
-		};
 		4CBDDE93A686112FB6E60438 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = AudioToolbox.framework;
 			path = System/Library/Frameworks/AudioToolbox.framework;
 			sourceTree = SDKROOT;
+		};
+		4F4ACCB532D3011F9EB83841 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_graphics";
+			path = "../../../../../SDKs/modules/juce_graphics";
+			sourceTree = "SOURCE_ROOT";
 		};
 		557142F034A1732F233359C8 = {
 			isa = PBXFileReference;
@@ -438,11 +417,11 @@
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sort.c";
 			sourceTree = "SOURCE_ROOT";
 		};
-		5C0F2B0DA97149FF0D58EA88 = {
+		5A42360031FB68EB1D0D04AD = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
-			name = "juce_audio_processors";
-			path = "../../../../../../SDKs/modules/juce_audio_processors";
+			name = "juce_gui_extra";
+			path = "../../../../../SDKs/modules/juce_gui_extra";
 			sourceTree = "SOURCE_ROOT";
 		};
 		5D6AB89AA571BE585E3606E7 = {
@@ -494,13 +473,6 @@
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/include/saf_cdf4sap.h";
 			sourceTree = "SOURCE_ROOT";
 		};
-		62F0B2F13794D301CC97CE9E = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_audio_plugin_client";
-			path = "../../../../../../SDKs/modules/juce_audio_plugin_client";
-			sourceTree = "SOURCE_ROOT";
-		};
 		651BAB01E1FEE24665082A02 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
@@ -529,19 +501,19 @@
 			path = "../../../../../SDKs/modules/juce_audio_basics";
 			sourceTree = "SOURCE_ROOT";
 		};
-		6CA9D9D86F26A04790F51DFF = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_audio_formats";
-			path = "../../../../../../SDKs/modules/juce_audio_formats";
-			sourceTree = "SOURCE_ROOT";
-		};
 		6F67DB9471547286ACF4FE48 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = Cocoa.framework;
 			path = System/Library/Frameworks/Cocoa.framework;
 			sourceTree = SDKROOT;
+		};
+		70C8519D3AA64E1EE24B4474 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_audio_formats";
+			path = "../../../../../SDKs/modules/juce_audio_formats";
+			sourceTree = "SOURCE_ROOT";
 		};
 		7A7BECA080814172A9AE3642 = {
 			isa = PBXFileReference;
@@ -592,11 +564,11 @@
 			path = ../../../src/PluginProcessor.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		8DC36A617A9A4E051CA6BD98 = {
+		8CD4BC5740788DBB320BB286 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
-			name = "juce_gui_basics";
-			path = "../../../../../../SDKs/modules/juce_gui_basics";
+			name = "juce_audio_processors";
+			path = "../../../../../SDKs/modules/juce_audio_processors";
 			sourceTree = "SOURCE_ROOT";
 		};
 		8E22117478745F1FC98909C3 = {
@@ -648,11 +620,32 @@
 			path = "../../../juce/sparta_ambiDRC/JuceLibraryCode/include_juce_audio_plugin_client_VST_utils.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
+		9AFD42D394E0FA85216E2B74 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_opengl";
+			path = "../../../../../SDKs/modules/juce_opengl";
+			sourceTree = "SOURCE_ROOT";
+		};
+		9C7379669645619438421877 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_core";
+			path = "../../../../../SDKs/modules/juce_core";
+			sourceTree = "SOURCE_ROOT";
+		};
 		9EBF8EE54DF66E607A5A2C15 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = "saf_hrir_internal.h";
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/saf_hrir/saf_hrir_internal.h";
+			sourceTree = "SOURCE_ROOT";
+		};
+		9FB4DA99C9FBDCBFC71B95F6 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_gui_basics";
+			path = "../../../../../SDKs/modules/juce_gui_basics";
 			sourceTree = "SOURCE_ROOT";
 		};
 		A1D24EB3ED48846FA2937914 = {
@@ -718,6 +711,13 @@
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/saf_utilities/saf_sensorarray_presets.h";
 			sourceTree = "SOURCE_ROOT";
 		};
+		B685B86BBA0E8F262E1C62E1 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_audio_devices";
+			path = "../../../../../SDKs/modules/juce_audio_devices";
+			sourceTree = "SOURCE_ROOT";
+		};
 		BAC24670576B78A3366091BD = {
 			isa = PBXFileReference;
 			lastKnownFileType = text.plist.xml;
@@ -737,6 +737,13 @@
 			lastKnownFileType = sourcecode.c.c;
 			name = "saf_hrir_internal.c";
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/saf_hrir/saf_hrir_internal.c";
+			sourceTree = "SOURCE_ROOT";
+		};
+		C8F701B43A7F61F0E64951F8 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_events";
+			path = "../../../../../SDKs/modules/juce_events";
 			sourceTree = "SOURCE_ROOT";
 		};
 		C914102D22994E76F958691E = {
@@ -760,13 +767,6 @@
 			path = "../../../juce/sparta_ambiDRC/JuceLibraryCode/include_juce_opengl.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
-		CEF37AE39A09D01EA1870939 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_opengl";
-			path = "../../../../../../SDKs/modules/juce_opengl";
-			sourceTree = "SOURCE_ROOT";
-		};
 		D26BA971A8DD6570405269E7 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
@@ -781,18 +781,18 @@
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/saf_cdf4sap/saf_cdf4sap.c";
 			sourceTree = "SOURCE_ROOT";
 		};
-		D63E7CAC1464B576C52C8F55 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_core";
-			path = "../../../../../../SDKs/modules/juce_core";
-			sourceTree = "SOURCE_ROOT";
-		};
 		D841B69367AF58A487459DCE = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = "ambi_drc_database.h";
 			path = "../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/src/ambi_drc_database.h";
+			sourceTree = "SOURCE_ROOT";
+		};
+		D9151D0B6FF1120CB523EAC2 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_audio_plugin_client";
+			path = "../../../../../SDKs/modules/juce_audio_plugin_client";
 			sourceTree = "SOURCE_ROOT";
 		};
 		DA7E887B002F2E7DBD1BE442 = {
@@ -807,6 +807,13 @@
 			lastKnownFileType = sourcecode.cpp.objcpp;
 			name = "include_juce_data_structures.mm";
 			path = "../../../juce/sparta_ambiDRC/JuceLibraryCode/include_juce_data_structures.mm";
+			sourceTree = "SOURCE_ROOT";
+		};
+		DD59848C95187A2A2A5A7A0D = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_data_structures";
+			path = "../../../../../SDKs/modules/juce_data_structures";
 			sourceTree = "SOURCE_ROOT";
 		};
 		DE81A583A3E0B13E3539ABF4 = {
@@ -885,13 +892,6 @@
 			name = WebKit.framework;
 			path = System/Library/Frameworks/WebKit.framework;
 			sourceTree = SDKROOT;
-		};
-		F298683495A329E8DAFA014E = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_events";
-			path = "../../../../../../SDKs/modules/juce_events";
-			sourceTree = "SOURCE_ROOT";
 		};
 		F395B64E2BE5D3F24FE56B5F = {
 			isa = PBXFileReference;
@@ -1115,18 +1115,18 @@
 			isa = PBXGroup;
 			children = (
 				6C2B9B06BFE88A7AB752340E,
-				4BB6EA76E53C9E31F3716D85,
-				6CA9D9D86F26A04790F51DFF,
-				62F0B2F13794D301CC97CE9E,
-				5C0F2B0DA97149FF0D58EA88,
-				D63E7CAC1464B576C52C8F55,
-				30347574AF27DA75C705DA3B,
-				0D614617A85F3371231759B0,
-				F298683495A329E8DAFA014E,
-				04ED9BE468CDE97F564A5758,
-				8DC36A617A9A4E051CA6BD98,
-				2ED509F5363DB49CD86EAD87,
-				CEF37AE39A09D01EA1870939,
+				B685B86BBA0E8F262E1C62E1,
+				70C8519D3AA64E1EE24B4474,
+				D9151D0B6FF1120CB523EAC2,
+				8CD4BC5740788DBB320BB286,
+				9C7379669645619438421877,
+				0E5BED8710D85249E474B51A,
+				DD59848C95187A2A2A5A7A0D,
+				C8F701B43A7F61F0E64951F8,
+				4F4ACCB532D3011F9EB83841,
+				9FB4DA99C9FBDCBFC71B95F6,
+				5A42360031FB68EB1D0D04AD,
+				9AFD42D394E0FA85216E2B74,
 			);
 			name = "JUCE Modules";
 			sourceTree = "<group>";
@@ -1236,9 +1236,10 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"FRAME_SIZE=128",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.1.7",
-					"JUCE_APP_VERSION_HEX=0x10107",
+					"JUCE_APP_VERSION=1.1.8",
+					"JUCE_APP_VERSION_HEX=0x10108",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1255,12 +1256,11 @@
 					"\"../../../../../SDKs/VST3 SDK\"",
 					"../../../juce/sparta_ambiDRC/JuceLibraryCode",
 					"../../../../../SDKs/modules",
-					"../../../../../../SDKs/modules",
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
-					"../../../../../../SDKs/modules/juce_audio_plugin_client",
+					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-VST.plist;
@@ -1273,7 +1273,7 @@
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_LDFLAGS = "-bundle -lsparta_ambiDRC";
+				OTHER_LDFLAGS = "-bundle -lsparta_ambiDRC -L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoMcCormack.SPARTA;
 				PRODUCT_NAME = "sparta_ambiDRC";
 				USE_HEADERMAP = NO;
@@ -1299,9 +1299,10 @@
 					"_DEBUG=1",
 					"DEBUG=1",
 					"FRAME_SIZE=128",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.1.7",
-					"JUCE_APP_VERSION_HEX=0x10107",
+					"JUCE_APP_VERSION=1.1.8",
+					"JUCE_APP_VERSION_HEX=0x10108",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1317,12 +1318,11 @@
 					"\"../../../../../SDKs/VST3 SDK\"",
 					"../../../juce/sparta_ambiDRC/JuceLibraryCode",
 					"../../../../../SDKs/modules",
-					"../../../../../../SDKs/modules",
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
-					"../../../../../../SDKs/modules/juce_audio_plugin_client",
+					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-VST.plist;
@@ -1334,7 +1334,7 @@
 				);
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_LDFLAGS = "-bundle -lsparta_ambiDRC_debug";
+				OTHER_LDFLAGS = "-bundle -lsparta_ambiDRC_debug -L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoMcCormack.SPARTA;
 				PRODUCT_NAME = "sparta_ambiDRC_debug";
 				USE_HEADERMAP = NO;
@@ -1358,9 +1358,10 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"FRAME_SIZE=128",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.1.7",
-					"JUCE_APP_VERSION_HEX=0x10107",
+					"JUCE_APP_VERSION=1.1.8",
+					"JUCE_APP_VERSION_HEX=0x10108",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1377,12 +1378,11 @@
 					"\"../../../../../SDKs/VST3 SDK\"",
 					"../../../juce/sparta_ambiDRC/JuceLibraryCode",
 					"../../../../../SDKs/modules",
-					"../../../../../../SDKs/modules",
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
-					"../../../../../../SDKs/modules/juce_audio_plugin_client",
+					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -1392,6 +1392,7 @@
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoMcCormack.SPARTA;
 				PRODUCT_NAME = "sparta_ambiDRC";
 				SKIP_INSTALL = YES;
@@ -1415,9 +1416,10 @@
 					"_DEBUG=1",
 					"DEBUG=1",
 					"FRAME_SIZE=128",
+					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.1.7",
-					"JUCE_APP_VERSION_HEX=0x10107",
+					"JUCE_APP_VERSION=1.1.8",
+					"JUCE_APP_VERSION_HEX=0x10108",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1433,12 +1435,11 @@
 					"\"../../../../../SDKs/VST3 SDK\"",
 					"../../../juce/sparta_ambiDRC/JuceLibraryCode",
 					"../../../../../SDKs/modules",
-					"../../../../../../SDKs/modules",
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
-					"../../../../../../SDKs/modules/juce_audio_plugin_client",
+					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -1447,6 +1448,7 @@
 					"\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoMcCormack.SPARTA;
 				PRODUCT_NAME = "sparta_ambiDRC_debug";
 				SKIP_INSTALL = YES;

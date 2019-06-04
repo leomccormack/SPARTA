@@ -59,10 +59,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBchFormat->setJustificationType (Justification::centredLeft);
     CBchFormat->setTextWhenNothingSelected (TRANS("ACN"));
     CBchFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBchFormat->addItem (TRANS("ACN"), 1);
     CBchFormat->addListener (this);
 
-    CBchFormat->setBounds (88, 116, 67, 18);
+    CBchFormat->setBounds (88, 116, 72, 18);
 
     CBnormScheme.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBnormScheme.get());
@@ -70,8 +69,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormScheme->setJustificationType (Justification::centredLeft);
     CBnormScheme->setTextWhenNothingSelected (TRANS("N3D"));
     CBnormScheme->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBnormScheme->addItem (TRANS("N3D"), 1);
-    CBnormScheme->addItem (TRANS("SN3D"), 2);
     CBnormScheme->addListener (this);
 
     CBnormScheme->setBounds (164, 116, 76, 18);
@@ -260,8 +257,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     //[Constructor] You can add your own custom stuff here..
 
-    /* handle to pluginProcessor */
+    /* handles */
 	hVst = ownerFilter;
+    hAmbi = hVst->getFXHandle();
 
     /* init OpenGL */
     openGLContext.setMultisamplingEnabled(true);
@@ -280,6 +278,11 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBdecoderMethod->addItem(TRANS("Spatial Resampling"), DECODING_METHOD_SPR);
     CBdecoderMethod->addItem(TRANS("Time-alignment (TA)"), DECODING_METHOD_TA);
     CBdecoderMethod->addItem(TRANS("Magnitude-LS"), DECODING_METHOD_MAGLS);
+    CBchFormat->addItem (TRANS("ACN"), CH_ACN);
+    CBchFormat->addItem (TRANS("FuMa"), CH_FUMA);
+    CBnormScheme->addItem (TRANS("N3D"), NORM_N3D);
+    CBnormScheme->addItem (TRANS("SN3D"), NORM_SN3D);
+    CBnormScheme->addItem (TRANS("FuMa"), NORM_FUMA);
 
     /* file loader */
     addAndMakeVisible (fileChooser);
@@ -287,24 +290,26 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     fileChooser.setBounds (458, 86, 174, 20);
 
     /* grab current parameter settings */
-    CBdecoderMethod->setSelectedId(ambi_bin_getDecodingMethod(hVst->hAmbi), dontSendNotification);
-    TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hVst->hAmbi), dontSendNotification);
-    CBchFormat->setSelectedId(ambi_bin_getChOrder(hVst->hAmbi), dontSendNotification);
-    CBnormScheme->setSelectedId(ambi_bin_getNormType(hVst->hAmbi), dontSendNotification);
-    CBorderPreset->setSelectedId(ambi_bin_getInputOrderPreset(hVst->hAmbi), dontSendNotification);
-    TBmaxRE->setToggleState(ambi_bin_getEnableMaxRE(hVst->hAmbi), dontSendNotification);
-    TBdiffMatching->setToggleState(ambi_bin_getEnableDiffuseMatching(hVst->hAmbi), dontSendNotification);
-    TBphaseWarping->setToggleState(ambi_bin_getEnablePhaseWarping(hVst->hAmbi), dontSendNotification);
-    TBenableRot->setToggleState(ambi_bin_getEnableRotation(hVst->hAmbi), dontSendNotification);
-    s_yaw->setValue(ambi_bin_getYaw(hVst->hAmbi), dontSendNotification);
-    s_pitch->setValue(ambi_bin_getPitch(hVst->hAmbi), dontSendNotification);
-    s_roll->setValue(ambi_bin_getRoll(hVst->hAmbi), dontSendNotification);
-    t_flipYaw->setToggleState((bool)ambi_bin_getFlipYaw(hVst->hAmbi), dontSendNotification);
-    t_flipPitch->setToggleState((bool)ambi_bin_getFlipPitch(hVst->hAmbi), dontSendNotification);
-    t_flipRoll->setToggleState((bool)ambi_bin_getFlipRoll(hVst->hAmbi), dontSendNotification);
+    CBdecoderMethod->setSelectedId(ambi_bin_getDecodingMethod(hAmbi), dontSendNotification);
+    TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
+    CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), dontSendNotification);
+    CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), dontSendNotification);
+    CBorderPreset->setSelectedId(ambi_bin_getInputOrderPreset(hAmbi), dontSendNotification);
+    TBmaxRE->setToggleState(ambi_bin_getEnableMaxRE(hAmbi), dontSendNotification);
+    TBdiffMatching->setToggleState(ambi_bin_getEnableDiffuseMatching(hAmbi), dontSendNotification);
+    TBphaseWarping->setToggleState(ambi_bin_getEnablePhaseWarping(hAmbi), dontSendNotification);
+    TBenableRot->setToggleState(ambi_bin_getEnableRotation(hAmbi), dontSendNotification);
+    s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
+    s_pitch->setValue(ambi_bin_getPitch(hAmbi), dontSendNotification);
+    s_roll->setValue(ambi_bin_getRoll(hAmbi), dontSendNotification);
+    t_flipYaw->setToggleState((bool)ambi_bin_getFlipYaw(hAmbi), dontSendNotification);
+    t_flipPitch->setToggleState((bool)ambi_bin_getFlipPitch(hAmbi), dontSendNotification);
+    t_flipRoll->setToggleState((bool)ambi_bin_getFlipRoll(hAmbi), dontSendNotification);
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
-    TBrpyFlag->setToggleState((bool)ambi_bin_getRPYflag(hVst->hAmbi), dontSendNotification);
-    
+    TBrpyFlag->setToggleState((bool)ambi_bin_getRPYflag(hAmbi), dontSendNotification);
+    CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
+
     TBphaseWarping->setEnabled(false); // coming soon
 
 	/* Specify screen refresh rate */
@@ -849,7 +854,7 @@ void PluginEditor::paint (Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_supported_fs:
-            g.drawText(TRANS("Sample rate (") + String(ambi_bin_getDAWsamplerate(hVst->hAmbi)) + TRANS(") is unsupported"),
+            g.drawText(TRANS("Sample rate (") + String(ambi_bin_getDAWsamplerate(hAmbi)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -860,7 +865,7 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(ambi_bin_getNSHrequired(hVst->hAmbi)) + TRANS(")"),
+                       TRANS("/") + String(ambi_bin_getNSHrequired(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -898,31 +903,31 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == TBuseDefaultHRIRs.get())
     {
         //[UserButtonCode_TBuseDefaultHRIRs] -- add your button handler code here..
-        ambi_bin_setUseDefaultHRIRsflag(hVst->hAmbi, (int)TBuseDefaultHRIRs->getToggleState());
+        ambi_bin_setUseDefaultHRIRsflag(hAmbi, (int)TBuseDefaultHRIRs->getToggleState());
         //[/UserButtonCode_TBuseDefaultHRIRs]
     }
     else if (buttonThatWasClicked == TBmaxRE.get())
     {
         //[UserButtonCode_TBmaxRE] -- add your button handler code here..
-        ambi_bin_setEnableMaxRE(hVst->hAmbi, (int)TBmaxRE->getToggleState());
+        ambi_bin_setEnableMaxRE(hAmbi, (int)TBmaxRE->getToggleState());
         //[/UserButtonCode_TBmaxRE]
     }
     else if (buttonThatWasClicked == t_flipPitch.get())
     {
         //[UserButtonCode_t_flipPitch] -- add your button handler code here..
-        ambi_bin_setFlipPitch(hVst->hAmbi, (int)t_flipPitch->getToggleState());
+        ambi_bin_setFlipPitch(hAmbi, (int)t_flipPitch->getToggleState());
         //[/UserButtonCode_t_flipPitch]
     }
     else if (buttonThatWasClicked == t_flipRoll.get())
     {
         //[UserButtonCode_t_flipRoll] -- add your button handler code here..
-        ambi_bin_setFlipRoll(hVst->hAmbi, (int)t_flipRoll->getToggleState());
+        ambi_bin_setFlipRoll(hAmbi, (int)t_flipRoll->getToggleState());
         //[/UserButtonCode_t_flipRoll]
     }
     else if (buttonThatWasClicked == t_flipYaw.get())
     {
         //[UserButtonCode_t_flipYaw] -- add your button handler code here..
-        ambi_bin_setFlipYaw(hVst->hAmbi, (int)t_flipYaw->getToggleState());
+        ambi_bin_setFlipYaw(hAmbi, (int)t_flipYaw->getToggleState());
         //[/UserButtonCode_t_flipYaw]
     }
     else if (buttonThatWasClicked == TBcompEQ.get())
@@ -934,25 +939,25 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == TBrpyFlag.get())
     {
         //[UserButtonCode_TBrpyFlag] -- add your button handler code here..
-        ambi_bin_setRPYflag(hVst->hAmbi, (int)TBrpyFlag->getToggleState());
+        ambi_bin_setRPYflag(hAmbi, (int)TBrpyFlag->getToggleState());
         //[/UserButtonCode_TBrpyFlag]
     }
     else if (buttonThatWasClicked == TBenableRot.get())
     {
         //[UserButtonCode_TBenableRot] -- add your button handler code here..
-        ambi_bin_setEnableRotation(hVst->hAmbi, (int)TBenableRot->getToggleState());
+        ambi_bin_setEnableRotation(hAmbi, (int)TBenableRot->getToggleState());
         //[/UserButtonCode_TBenableRot]
     }
     else if (buttonThatWasClicked == TBdiffMatching.get())
     {
         //[UserButtonCode_TBdiffMatching] -- add your button handler code here..
-        ambi_bin_setEnableDiffuseMatching(hVst->hAmbi, (int)TBdiffMatching->getToggleState());
+        ambi_bin_setEnableDiffuseMatching(hAmbi, (int)TBdiffMatching->getToggleState());
         //[/UserButtonCode_TBdiffMatching]
     }
     else if (buttonThatWasClicked == TBphaseWarping.get())
     {
         //[UserButtonCode_TBphaseWarping] -- add your button handler code here..
-        ambi_bin_setEnablePhaseWarping(hVst->hAmbi, (int)TBphaseWarping->getToggleState());
+        ambi_bin_setEnablePhaseWarping(hAmbi, (int)TBphaseWarping->getToggleState());
         //[/UserButtonCode_TBphaseWarping]
     }
 
@@ -968,25 +973,25 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBorderPreset.get())
     {
         //[UserComboBoxCode_CBorderPreset] -- add your combo box handling code here..
-        ambi_bin_setInputOrderPreset(hVst->hAmbi, (INPUT_ORDERS)CBorderPreset->getSelectedId());
+        ambi_bin_setInputOrderPreset(hAmbi, (INPUT_ORDERS)CBorderPreset->getSelectedId());
         //[/UserComboBoxCode_CBorderPreset]
     }
     else if (comboBoxThatHasChanged == CBchFormat.get())
     {
         //[UserComboBoxCode_CBchFormat] -- add your combo box handling code here..
-        ambi_bin_setChOrder(hVst->hAmbi, CBchFormat->getSelectedId());
+        ambi_bin_setChOrder(hAmbi, CBchFormat->getSelectedId());
         //[/UserComboBoxCode_CBchFormat]
     }
     else if (comboBoxThatHasChanged == CBnormScheme.get())
     {
         //[UserComboBoxCode_CBnormScheme] -- add your combo box handling code here..
-        ambi_bin_setNormType(hVst->hAmbi, CBnormScheme->getSelectedId());
+        ambi_bin_setNormType(hAmbi, CBnormScheme->getSelectedId());
         //[/UserComboBoxCode_CBnormScheme]
     }
     else if (comboBoxThatHasChanged == CBdecoderMethod.get())
     {
         //[UserComboBoxCode_CBdecoderMethod] -- add your combo box handling code here..
-        ambi_bin_setDecodingMethod(hVst->hAmbi, (DECODING_METHODS)CBdecoderMethod->getSelectedId());
+        ambi_bin_setDecodingMethod(hAmbi, (DECODING_METHODS)CBdecoderMethod->getSelectedId());
         //[/UserComboBoxCode_CBdecoderMethod]
     }
 
@@ -1002,19 +1007,19 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == s_yaw.get())
     {
         //[UserSliderCode_s_yaw] -- add your slider handling code here..
-        ambi_bin_setYaw(hVst->hAmbi, (float)s_yaw->getValue());
+        ambi_bin_setYaw(hAmbi, (float)s_yaw->getValue());
         //[/UserSliderCode_s_yaw]
     }
     else if (sliderThatWasMoved == s_pitch.get())
     {
         //[UserSliderCode_s_pitch] -- add your slider handling code here..
-        ambi_bin_setPitch(hVst->hAmbi, (float)s_pitch->getValue());
+        ambi_bin_setPitch(hAmbi, (float)s_pitch->getValue());
         //[/UserSliderCode_s_pitch]
     }
     else if (sliderThatWasMoved == s_roll.get())
     {
         //[UserSliderCode_s_roll] -- add your slider handling code here..
-        ambi_bin_setRoll(hVst->hAmbi, (float)s_roll->getValue());
+        ambi_bin_setRoll(hAmbi, (float)s_roll->getValue());
         //[/UserSliderCode_s_roll]
     }
 
@@ -1028,14 +1033,18 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
-    TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hVst->hAmbi), dontSendNotification);
-    label_N_dirs->setText(String(ambi_bin_getNDirs(hVst->hAmbi)), dontSendNotification);
-    label_HRIR_len->setText(String(ambi_bin_getHRIRlength(hVst->hAmbi)), dontSendNotification);
-    label_HRIR_fs->setText(String(ambi_bin_getHRIRsamplerate(hVst->hAmbi)), dontSendNotification);
-    label_DAW_fs->setText(String(ambi_bin_getDAWsamplerate(hVst->hAmbi)), dontSendNotification);
-    s_yaw->setValue(ambi_bin_getYaw(hVst->hAmbi), dontSendNotification);
-    s_pitch->setValue(ambi_bin_getPitch(hVst->hAmbi), dontSendNotification);
-    s_roll->setValue(ambi_bin_getRoll(hVst->hAmbi), dontSendNotification);
+    TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
+    label_N_dirs->setText(String(ambi_bin_getNDirs(hAmbi)), dontSendNotification);
+    label_HRIR_len->setText(String(ambi_bin_getHRIRlength(hAmbi)), dontSendNotification);
+    label_HRIR_fs->setText(String(ambi_bin_getHRIRsamplerate(hAmbi)), dontSendNotification);
+    label_DAW_fs->setText(String(ambi_bin_getDAWsamplerate(hAmbi)), dontSendNotification);
+    s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
+    s_pitch->setValue(ambi_bin_getPitch(hAmbi), dontSendNotification);
+    s_roll->setValue(ambi_bin_getRoll(hAmbi), dontSendNotification);
+    CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), dontSendNotification);
+    CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), dontSendNotification);
+    CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
 
 #ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
@@ -1057,7 +1066,7 @@ void PluginEditor::timerCallback()
 		TBdiffMatching->setEnabled(true);
 		/////////TBphaseWarping->setEnabled(true);
 		CBdecoderMethod->setEnabled(true);
-		ambi_bin_checkReInit(hVst->hAmbi);
+		ambi_bin_checkReInit(hAmbi);
 	}
 #endif
 
@@ -1066,15 +1075,15 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ( !((ambi_bin_getDAWsamplerate(hVst->hAmbi) == 44.1e3) || (ambi_bin_getDAWsamplerate(hVst->hAmbi) == 48e3)) ){
+    else if ( !((ambi_bin_getDAWsamplerate(hAmbi) == 44.1e3) || (ambi_bin_getDAWsamplerate(hAmbi) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
-    else if (ambi_bin_getDAWsamplerate(hVst->hAmbi) != ambi_bin_getHRIRsamplerate(hVst->hAmbi)){
+    else if (ambi_bin_getDAWsamplerate(hAmbi) != ambi_bin_getHRIRsamplerate(hAmbi)){
         currentWarning = k_warning_mismatch_fs;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < ambi_bin_getNSHrequired(hVst->hAmbi))){
+    else if ((hVst->getCurrentNumInputs() < ambi_bin_getNSHrequired(hAmbi))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -1082,7 +1091,7 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if(!hVst->getOscPortConnected() && ambi_bin_getEnableRotation(hVst->hAmbi)){
+    else if(!hVst->getOscPortConnected() && ambi_bin_getEnableRotation(hAmbi)){
         currentWarning = k_warning_osc_connection_fail;
         repaint(0,0,getWidth(),32);
     }
@@ -1229,11 +1238,11 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="136 63 104 18" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="a36915795f16ceb6" memberName="CBchFormat"
-            virtualName="" explicitFocusOrder="0" pos="88 116 67 18" editable="0"
-            layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
+            virtualName="" explicitFocusOrder="0" pos="88 116 72 18" editable="0"
+            layout="33" items="" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="e10be54628a6df43" memberName="CBnormScheme"
             virtualName="" explicitFocusOrder="0" pos="164 116 76 18" editable="0"
-            layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
+            layout="33" items="" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <TOGGLEBUTTON name="new toggle button" id="943aa789e193d13a" memberName="TBmaxRE"
                 virtualName="" explicitFocusOrder="0" pos="409 60 22 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>

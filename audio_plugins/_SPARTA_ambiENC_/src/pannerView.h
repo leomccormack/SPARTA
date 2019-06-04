@@ -45,14 +45,11 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    PluginProcessor* hVst;
-
+    
     void refreshPanView();
-
     bool getSourceIconIsClicked(){
         return sourceIconIsClicked;
-    }
-
+    } 
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -65,6 +62,8 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    PluginProcessor* hVst;
+    void* hAmbi;
     int width;
     int height;
 
