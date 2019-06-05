@@ -158,7 +158,6 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nSampleRate = (int)(sampleRate + 0.5);
     nNumInputs = getTotalNumInputChannels(); 
     isPlaying = false;
-
     dirass_init(hDir, sampleRate);
 }
 
@@ -172,7 +171,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
     int nCurrentBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
-    float* pFrameData[MAX_NUM_CHANNELS];
+    float* pFrameData[DIRASS_MAX_NUM_INPUT_CHANNELS];
  
     if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
         for(int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
@@ -231,7 +230,6 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("ARoption", dirass_getAspectRatio(hDir));
     xml.setAttribute("MapAvg", dirass_getMapAvgCoeff(hDir));
     xml.setAttribute("DispWidth", dirass_getDispWidth(hDir));
-    
     xml.setAttribute("cameraID", cameraID);
     xml.setAttribute("flipLR", flipLR);
     xml.setAttribute("flipUD", flipUD);
@@ -272,7 +270,6 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 dirass_setMapAvgCoeff(hDir, (float)xmlState->getDoubleAttribute("MapAvg", 0.5f));
             if(xmlState->hasAttribute("DispWidth"))
                 dirass_setDispWidth(hDir, (float)xmlState->getDoubleAttribute("DispWidth", 120));
-            
             if(xmlState->hasAttribute("cameraID"))
                 cameraID = (int)xmlState->getIntAttribute("cameraID", 1);
             if(xmlState->hasAttribute("flipLR"))

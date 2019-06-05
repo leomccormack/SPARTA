@@ -110,7 +110,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBoutputFormat->setJustificationType (Justification::centredLeft);
     CBoutputFormat->setTextWhenNothingSelected (TRANS("ACN"));
     CBoutputFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBoutputFormat->addItem (TRANS("ACN"), 1);
     CBoutputFormat->addListener (this);
 
     CBoutputFormat->setBounds (94, 78, 76, 20);
@@ -121,9 +120,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnorm->setJustificationType (Justification::centredLeft);
     CBnorm->setTextWhenNothingSelected (TRANS("N3D"));
     CBnorm->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBnorm->addItem (TRANS("N3D"), 1);
-    CBnorm->addItem (TRANS("SN3D"), 2);
-    CBnorm->addSeparator();
     CBnorm->addListener (this);
 
     CBnorm->setBounds (94, 105, 76, 20);
@@ -154,29 +150,36 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     //[Constructor] You can add your own custom stuff here..
 	hVst = ownerFilter;
+    hRot = hVst->getFXHandle();
 
     /* add combo box options */
-    CBorder->addItem (TRANS("0th (Omni)"), OUTPUT_OMNI);
-    CBorder->addItem (TRANS("1st order"), OUTPUT_ORDER_FIRST);
-    CBorder->addItem (TRANS("2nd order"), OUTPUT_ORDER_SECOND);
-    CBorder->addItem (TRANS("3rd order"), OUTPUT_ORDER_THIRD);
-    CBorder->addItem (TRANS("4th order"), OUTPUT_ORDER_FOURTH);
-    CBorder->addItem (TRANS("5th order"), OUTPUT_ORDER_FIFTH);
-    CBorder->addItem (TRANS("6th order"), OUTPUT_ORDER_SIXTH);
-    CBorder->addItem (TRANS("7th order"), OUTPUT_ORDER_SEVENTH);
+    CBorder->addItem (TRANS("1st order"), INPUT_ORDER_FIRST);
+    CBorder->addItem (TRANS("2nd order"), INPUT_ORDER_SECOND);
+    CBorder->addItem (TRANS("3rd order"), INPUT_ORDER_THIRD);
+    CBorder->addItem (TRANS("4th order"), INPUT_ORDER_FOURTH);
+    CBorder->addItem (TRANS("5th order"), INPUT_ORDER_FIFTH);
+    CBorder->addItem (TRANS("6th order"), INPUT_ORDER_SIXTH);
+    CBorder->addItem (TRANS("7th order"), INPUT_ORDER_SEVENTH);
+    CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
+    CBoutputFormat->addItem (TRANS("FuMa"), CH_FUMA);
+    CBnorm->addItem (TRANS("N3D"), NORM_N3D);
+    CBnorm->addItem (TRANS("SN3D"), NORM_SN3D);
+    CBnorm->addItem (TRANS("FuMa"), NORM_FUMA);
 
 	/* fetch current configuration */
-	s_yaw->setValue(rotator_getYaw(hVst->hRot), dontSendNotification);
-    s_pitch->setValue(rotator_getPitch(hVst->hRot), dontSendNotification);
-    s_roll->setValue(rotator_getRoll(hVst->hRot), dontSendNotification);
-    t_flipYaw->setToggleState((bool)rotator_getFlipYaw(hVst->hRot), dontSendNotification);
-    t_flipPitch->setToggleState((bool)rotator_getFlipPitch(hVst->hRot), dontSendNotification);
-    t_flipRoll->setToggleState((bool)rotator_getFlipRoll(hVst->hRot), dontSendNotification);
-    CBnorm->setSelectedId(rotator_getNormType(hVst->hRot), dontSendNotification);
-    CBoutputFormat->setSelectedId(rotator_getChOrder(hVst->hRot), dontSendNotification);
-    CBorder->setSelectedId(rotator_getOrder(hVst->hRot), dontSendNotification);
+	s_yaw->setValue(rotator_getYaw(hRot), dontSendNotification);
+    s_pitch->setValue(rotator_getPitch(hRot), dontSendNotification);
+    s_roll->setValue(rotator_getRoll(hRot), dontSendNotification);
+    t_flipYaw->setToggleState((bool)rotator_getFlipYaw(hRot), dontSendNotification);
+    t_flipPitch->setToggleState((bool)rotator_getFlipPitch(hRot), dontSendNotification);
+    t_flipRoll->setToggleState((bool)rotator_getFlipRoll(hRot), dontSendNotification);
+    CBnorm->setSelectedId(rotator_getNormType(hRot), dontSendNotification);
+    CBoutputFormat->setSelectedId(rotator_getChOrder(hRot), dontSendNotification);
+    CBorder->setSelectedId(rotator_getOrder(hRot), dontSendNotification);
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
-    TBrpyFlag->setToggleState((bool)rotator_getRPYflag(hVst->hRot), dontSendNotification);
+    TBrpyFlag->setToggleState((bool)rotator_getRPYflag(hRot), dontSendNotification);
+    CBoutputFormat->setItemEnabled(CH_FUMA, rotator_getOrder(hRot)==INPUT_ORDER_FIRST ? true : false);
+    CBnorm->setItemEnabled(NORM_FUMA, rotator_getOrder(hRot)==INPUT_ORDER_FIRST ? true : false);
 
     /* Specify screen refresh rate */
     startTimer(30); /*ms (40ms = 25 frames per second) */
@@ -515,13 +518,13 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(rotator_getNSHrequired(hVst->hRot)) + TRANS(")"),
+                       TRANS("/") + String(rotator_getNSHrequired(hRot)) + TRANS(")"),
                        getBounds().getWidth()-225, 6, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
-                       TRANS("/") + String(rotator_getNSHrequired(hVst->hRot)) + TRANS(")"),
+                       TRANS("/") + String(rotator_getNSHrequired(hRot)) + TRANS(")"),
                        getBounds().getWidth()-225, 6, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -555,19 +558,19 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == s_yaw.get())
     {
         //[UserSliderCode_s_yaw] -- add your slider handling code here..
-        rotator_setYaw(hVst->hRot, (float)s_yaw->getValue());
+        rotator_setYaw(hRot, (float)s_yaw->getValue());
         //[/UserSliderCode_s_yaw]
     }
     else if (sliderThatWasMoved == s_pitch.get())
     {
         //[UserSliderCode_s_pitch] -- add your slider handling code here..
-        rotator_setPitch(hVst->hRot, (float)s_pitch->getValue());
+        rotator_setPitch(hRot, (float)s_pitch->getValue());
         //[/UserSliderCode_s_pitch]
     }
     else if (sliderThatWasMoved == s_roll.get())
     {
         //[UserSliderCode_s_roll] -- add your slider handling code here..
-        rotator_setRoll(hVst->hRot, (float)s_roll->getValue());
+        rotator_setRoll(hRot, (float)s_roll->getValue());
         //[/UserSliderCode_s_roll]
     }
 
@@ -583,25 +586,25 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == t_flipYaw.get())
     {
         //[UserButtonCode_t_flipYaw] -- add your button handler code here..
-        rotator_setFlipYaw(hVst->hRot, (int)t_flipYaw->getToggleState());
+        rotator_setFlipYaw(hRot, (int)t_flipYaw->getToggleState());
         //[/UserButtonCode_t_flipYaw]
     }
     else if (buttonThatWasClicked == t_flipPitch.get())
     {
         //[UserButtonCode_t_flipPitch] -- add your button handler code here..
-        rotator_setFlipPitch(hVst->hRot, (int)t_flipPitch->getToggleState());
+        rotator_setFlipPitch(hRot, (int)t_flipPitch->getToggleState());
         //[/UserButtonCode_t_flipPitch]
     }
     else if (buttonThatWasClicked == t_flipRoll.get())
     {
         //[UserButtonCode_t_flipRoll] -- add your button handler code here..
-        rotator_setFlipRoll(hVst->hRot, (int)t_flipRoll->getToggleState());
+        rotator_setFlipRoll(hRot, (int)t_flipRoll->getToggleState());
         //[/UserButtonCode_t_flipRoll]
     }
     else if (buttonThatWasClicked == TBrpyFlag.get())
     {
         //[UserButtonCode_TBrpyFlag] -- add your button handler code here..
-        rotator_setRPYflag(hVst->hRot, (int)TBrpyFlag->getToggleState());
+        rotator_setRPYflag(hRot, (int)TBrpyFlag->getToggleState());
         //[/UserButtonCode_TBrpyFlag]
     }
 
@@ -617,19 +620,19 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBoutputFormat.get())
     {
         //[UserComboBoxCode_CBoutputFormat] -- add your combo box handling code here..
-        rotator_setChOrder(hVst->hRot, CBoutputFormat->getSelectedId());
+        rotator_setChOrder(hRot, CBoutputFormat->getSelectedId());
         //[/UserComboBoxCode_CBoutputFormat]
     }
     else if (comboBoxThatHasChanged == CBnorm.get())
     {
         //[UserComboBoxCode_CBnorm] -- add your combo box handling code here..
-        rotator_setNormType(hVst->hRot, CBnorm->getSelectedId());
+        rotator_setNormType(hRot, CBnorm->getSelectedId());
         //[/UserComboBoxCode_CBnorm]
     }
     else if (comboBoxThatHasChanged == CBorder.get())
     {
         //[UserComboBoxCode_CBorder] -- add your combo box handling code here..
-        rotator_setOrder(hVst->hRot, CBorder->getSelectedId());
+        rotator_setOrder(hRot, CBorder->getSelectedId());
         //[/UserComboBoxCode_CBorder]
     }
 
@@ -643,20 +646,24 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
-    s_yaw->setValue(rotator_getYaw(hVst->hRot), dontSendNotification);
-    s_pitch->setValue(rotator_getPitch(hVst->hRot), dontSendNotification);
-    s_roll->setValue(rotator_getRoll(hVst->hRot), dontSendNotification);
+    s_yaw->setValue(rotator_getYaw(hRot), dontSendNotification);
+    s_pitch->setValue(rotator_getPitch(hRot), dontSendNotification);
+    s_roll->setValue(rotator_getRoll(hRot), dontSendNotification);
+    CBoutputFormat->setSelectedId(rotator_getChOrder(hRot), dontSendNotification);
+    CBnorm->setSelectedId(rotator_getNormType(hRot), dontSendNotification);
+    CBoutputFormat->setItemEnabled(CH_FUMA, rotator_getOrder(hRot)==INPUT_ORDER_FIRST ? true : false);
+    CBnorm->setItemEnabled(NORM_FUMA, rotator_getOrder(hRot)==INPUT_ORDER_FIRST ? true : false);
 
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < rotator_getNSHrequired(hVst->hRot))){
+    else if ((hVst->getCurrentNumInputs() < rotator_getNSHrequired(hRot))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumOutputs() < rotator_getNSHrequired(hVst->hRot))){
+    else if ((hVst->getCurrentNumOutputs() < rotator_getNSHrequired(hRot))){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -785,11 +792,10 @@ BEGIN_JUCER_METADATA
               retKeyStartsLine="0" readonly="0" scrollbars="1" caret="0" popupmenu="1"/>
   <COMBOBOX name="new combo box" id="63f8ff411606aafd" memberName="CBoutputFormat"
             virtualName="" explicitFocusOrder="0" pos="94 78 76 20" editable="0"
-            layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
+            layout="33" items="" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="2d87659a256dc599" memberName="CBnorm"
             virtualName="" explicitFocusOrder="0" pos="94 105 76 20" editable="0"
-            layout="33" items="N3D&#10;SN3D&#10;" textWhenNonSelected="N3D"
-            textWhenNoItems="(no choices)"/>
+            layout="33" items="" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="6482174c8b11c0b5" memberName="CBorder"
             virtualName="" explicitFocusOrder="0" pos="65 46 106 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>

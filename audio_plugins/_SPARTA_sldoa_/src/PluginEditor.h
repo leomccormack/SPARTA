@@ -63,11 +63,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    PluginProcessor* hVst;
-    void timerCallback() override;
 
-    /* OVERLAY */
-    ScopedPointer<overlay> overlayIncluded;
 
     //[/UserMethods]
 
@@ -81,9 +77,15 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    PluginProcessor* hVst;
+    void* hSld;
+    void timerCallback() override;
     ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
 	OpenGLContext openGLContext;
     ScopedPointer<log2dSlider> anaOrder2dSlider;
+
+    /* OVERLAY */
+    ScopedPointer<overlay> overlayIncluded;
 
     /* for webcam support */
     Rectangle<int> previewArea;

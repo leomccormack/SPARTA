@@ -72,7 +72,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsourcePreset->addItem (TRANS("Ideal SH"), 1);
     CBsourcePreset->addListener (this);
 
-    CBsourcePreset->setBounds (98, 97, 118, 20);
+    CBsourcePreset->setBounds (98, 98, 118, 20);
 
     CBchFormat.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBchFormat.get());
@@ -80,10 +80,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBchFormat->setJustificationType (Justification::centredLeft);
     CBchFormat->setTextWhenNothingSelected (TRANS("ACN"));
     CBchFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBchFormat->addItem (TRANS("ACN"), 1);
     CBchFormat->addListener (this);
 
-    CBchFormat->setBounds (75, 128, 64, 20);
+    CBchFormat->setBounds (74, 130, 68, 20);
 
     CBnormScheme.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CBnormScheme.get());
@@ -91,11 +90,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormScheme->setJustificationType (Justification::centredLeft);
     CBnormScheme->setTextWhenNothingSelected (TRANS("N3D"));
     CBnormScheme->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBnormScheme->addItem (TRANS("N3D"), 1);
-    CBnormScheme->addItem (TRANS("SN3D"), 2);
     CBnormScheme->addListener (this);
 
-    CBnormScheme->setBounds (144, 128, 72, 20);
+    CBnormScheme->setBounds (144, 130, 72, 20);
 
     SL_transitionFreq.reset (new Slider ("new slider"));
     addAndMakeVisible (SL_transitionFreq.get());
@@ -222,6 +219,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* handle to pluginProcessor */
 	hVst = ownerFilter;
+    hAmbi = hVst->getFXHandle();
 
     /* init OpenGL */
     openGLContext.setMultisamplingEnabled(true);
@@ -236,10 +234,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     int nPoints;
     float* pX_vector;
     int* pY_values_int;
-    addAndMakeVisible (decOrder2dSlider = new log2dSlider(360, 63, 100, 20e3, 1, ambi_dec_getMasterDecOrder(hVst->hAmbi), 0));
+    addAndMakeVisible (decOrder2dSlider = new log2dSlider(360, 63, 100, 20e3, 1, ambi_dec_getMasterDecOrder(hAmbi), 0));
     decOrder2dSlider->setAlwaysOnTop(true);
     decOrder2dSlider->setTopLeftPosition(25, 183);
-    ambi_dec_getDecOrderHandle(hVst->hAmbi, &pX_vector, &pY_values_int, &nPoints);
+    ambi_dec_getDecOrderHandle(hAmbi, &pX_vector, &pY_values_int, &nPoints);
     decOrder2dSlider->setDataHandlesInt(pX_vector, pY_values_int, nPoints);
 
     /* add master decoding order options */
@@ -251,7 +249,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBmasterOrder->addItem (TRANS("6th order"), MASTER_ORDER_SIXTH);
     CBmasterOrder->addItem (TRANS("7th order"), MASTER_ORDER_SEVENTH);
 
-    /* add decorder options */
+    /* add decoder options */
     CBdec1method->addItem(TRANS("SAD"), DECODING_METHOD_SAD);
     CBdec1method->addItem(TRANS("MMD"), DECODING_METHOD_MMD);
     CBdec1method->addItem(TRANS("EPAD"), DECODING_METHOD_EPAD);
@@ -266,6 +264,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBdec1normtype->addItem(TRANS("EP"), ENERGY_PRESERVING);
     CBdec2normtype->addItem(TRANS("AP"), AMPLITUDE_PRESERVING);
     CBdec2normtype->addItem(TRANS("EP"), ENERGY_PRESERVING);
+
+    /* ambi convention options */
+    CBchFormat->addItem (TRANS("ACN"), CH_ACN);
+    CBchFormat->addItem (TRANS("FuMa"), CH_FUMA);
+    CBnormScheme->addItem (TRANS("N3D"), NORM_N3D);
+    CBnormScheme->addItem (TRANS("SN3D"), NORM_SN3D);
+    CBnormScheme->addItem (TRANS("FuMa"), NORM_FUMA);
 
     /* add microphone preset options */
 #ifdef ENABLE_ZYLIA_MIC_PRESET
@@ -345,12 +350,12 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* source coordinate viewport */
     addAndMakeVisible (outputCoordsVP = new Viewport ("new viewport"));
-    outputCoordsView_handle = new outputCoordsView(ownerFilter, MAX_NUM_CHANNELS, ambi_dec_getNumLoudspeakers(hVst->hAmbi));
+    outputCoordsView_handle = new outputCoordsView(ownerFilter, MAX_NUM_CHANNELS, ambi_dec_getNumLoudspeakers(hAmbi));
     outputCoordsVP->setViewedComponent (outputCoordsView_handle);
     outputCoordsVP->setScrollBarsShown (true, false);
     outputCoordsVP->setAlwaysOnTop(true);
     outputCoordsVP->setBounds(455, 153, 184, 180);
-    outputCoordsView_handle->setNCH(ambi_dec_getNumLoudspeakers(hVst->hAmbi));
+    outputCoordsView_handle->setNCH(ambi_dec_getNumLoudspeakers(hAmbi));
 
     /* file loader */
     addAndMakeVisible (fileChooser);
@@ -358,21 +363,24 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     fileChooser.setBounds (232, 128, 195, 20);
 
     /* grab current parameter settings */
-    CBmasterOrder->setSelectedId(ambi_dec_getMasterDecOrder(hVst->hAmbi), dontSendNotification);
-    TBuseDefaultHRIRs->setToggleState(ambi_dec_getUseDefaultHRIRsflag(hVst->hAmbi), dontSendNotification);
-    SL_num_loudspeakers->setValue(ambi_dec_getNumLoudspeakers(hVst->hAmbi),dontSendNotification);
-    CBchFormat->setSelectedId(ambi_dec_getChOrder(hVst->hAmbi), dontSendNotification);
-    CBnormScheme->setSelectedId(ambi_dec_getNormType(hVst->hAmbi), dontSendNotification);
-    s_decOrder->setRange(1, ambi_dec_getMasterDecOrder(hVst->hAmbi), 1);
-    s_decOrder->setValue(ambi_dec_getDecOrderAllBands(hVst->hAmbi), dontSendNotification);
-    TBBinauraliseLS->setToggleState(ambi_dec_getBinauraliseLSflag(hVst->hAmbi), dontSendNotification);
-    CBdec1method->setSelectedId(ambi_dec_getDecMethod(hVst->hAmbi, 0), dontSendNotification);
-    CBdec2method->setSelectedId(ambi_dec_getDecMethod(hVst->hAmbi, 1), dontSendNotification);
-    TBdec1EnableMaxrE->setToggleState(ambi_dec_getDecEnableMaxrE(hVst->hAmbi, 0), dontSendNotification);
-    TBdec2EnableMaxrE->setToggleState(ambi_dec_getDecEnableMaxrE(hVst->hAmbi, 1), dontSendNotification);
-    CBdec1normtype->setSelectedId(ambi_dec_getDecNormType(hVst->hAmbi, 0), dontSendNotification);
-    CBdec2normtype->setSelectedId(ambi_dec_getDecNormType(hVst->hAmbi, 1), dontSendNotification);
-    SL_transitionFreq->setValue(ambi_dec_getTransitionFreq(hVst->hAmbi), dontSendNotification);
+    CBmasterOrder->setSelectedId(ambi_dec_getMasterDecOrder(hAmbi), dontSendNotification);
+    TBuseDefaultHRIRs->setToggleState(ambi_dec_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
+    SL_num_loudspeakers->setValue(ambi_dec_getNumLoudspeakers(hAmbi),dontSendNotification);
+    CBchFormat->setSelectedId(ambi_dec_getChOrder(hAmbi), dontSendNotification);
+    CBnormScheme->setSelectedId(ambi_dec_getNormType(hAmbi), dontSendNotification);
+    s_decOrder->setRange(1, ambi_dec_getMasterDecOrder(hAmbi), 1);
+    s_decOrder->setValue(ambi_dec_getDecOrderAllBands(hAmbi), dontSendNotification);
+    TBBinauraliseLS->setToggleState(ambi_dec_getBinauraliseLSflag(hAmbi), dontSendNotification);
+    CBdec1method->setSelectedId(ambi_dec_getDecMethod(hAmbi, 0), dontSendNotification);
+    CBdec2method->setSelectedId(ambi_dec_getDecMethod(hAmbi, 1), dontSendNotification);
+    TBdec1EnableMaxrE->setToggleState(ambi_dec_getDecEnableMaxrE(hAmbi, 0), dontSendNotification);
+    TBdec2EnableMaxrE->setToggleState(ambi_dec_getDecEnableMaxrE(hAmbi, 1), dontSendNotification);
+    CBdec1normtype->setSelectedId(ambi_dec_getDecNormType(hAmbi, 0), dontSendNotification);
+    CBdec2normtype->setSelectedId(ambi_dec_getDecNormType(hAmbi, 1), dontSendNotification);
+    SL_transitionFreq->setRange(AMBI_DEC_TRANSITION_MIN_VALUE, AMBI_DEC_TRANSITION_MAX_VALUE, 0.1f);
+    SL_transitionFreq->setValue(ambi_dec_getTransitionFreq(hAmbi), dontSendNotification);
+    CBchFormat->setItemEnabled(CH_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==MASTER_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==MASTER_ORDER_FIRST ? true : false);
 
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
@@ -630,7 +638,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 19, y = 90, width = 132, height = 30;
+        int x = 19, y = 92, width = 132, height = 30;
         String text (TRANS("Mic Preset:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -642,7 +650,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 19, y = 122, width = 132, height = 30;
+        int x = 19, y = 124, width = 132, height = 30;
         String text (TRANS("Format:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -888,7 +896,7 @@ void PluginEditor::paint (Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_supported_fs:
-            g.drawText(TRANS("Sample rate (") + String(ambi_dec_getDAWsamplerate(hVst->hAmbi)) + TRANS(") is unsupported"),
+            g.drawText(TRANS("Sample rate (") + String(ambi_dec_getDAWsamplerate(hAmbi)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -899,13 +907,13 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(ambi_dec_getNSHrequired(hVst->hAmbi)) + TRANS(")"),
+                       TRANS("/") + String(ambi_dec_getNSHrequired(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
-                       TRANS("/") + String((ambi_dec_getBinauraliseLSflag(hVst->hAmbi) ? 2 : ambi_dec_getNumLoudspeakers(hVst->hAmbi)) ) + TRANS(")"),
+                       TRANS("/") + String((ambi_dec_getBinauraliseLSflag(hAmbi) ? 2 : ambi_dec_getNumLoudspeakers(hAmbi)) ) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -932,57 +940,57 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBoutputDirsPreset.get())
     {
         //[UserComboBoxCode_CBoutputDirsPreset] -- add your combo box handling code here..
-        ambi_dec_setOutputConfigPreset(hVst->hAmbi, CBoutputDirsPreset->getSelectedId());
+        ambi_dec_setOutputConfigPreset(hAmbi, CBoutputDirsPreset->getSelectedId());
         //[/UserComboBoxCode_CBoutputDirsPreset]
     }
     else if (comboBoxThatHasChanged == CBsourcePreset.get())
     {
         //[UserComboBoxCode_CBsourcePreset] -- add your combo box handling code here..
-        ambi_dec_setSourcePreset(hVst->hAmbi, CBsourcePreset->getSelectedId());
+        ambi_dec_setSourcePreset(hAmbi, CBsourcePreset->getSelectedId());
 		decOrder2dSlider->setRefreshValuesFLAG(true);
         //[/UserComboBoxCode_CBsourcePreset]
     }
     else if (comboBoxThatHasChanged == CBchFormat.get())
     {
         //[UserComboBoxCode_CBchFormat] -- add your combo box handling code here..
-        ambi_dec_setChOrder(hVst->hAmbi, CBchFormat->getSelectedId());
+        ambi_dec_setChOrder(hAmbi, CBchFormat->getSelectedId());
         //[/UserComboBoxCode_CBchFormat]
     }
     else if (comboBoxThatHasChanged == CBnormScheme.get())
     {
         //[UserComboBoxCode_CBnormScheme] -- add your combo box handling code here..
-        ambi_dec_setNormType(hVst->hAmbi, CBnormScheme->getSelectedId());
+        ambi_dec_setNormType(hAmbi, CBnormScheme->getSelectedId());
         //[/UserComboBoxCode_CBnormScheme]
     }
     else if (comboBoxThatHasChanged == CBdec1method.get())
     {
         //[UserComboBoxCode_CBdec1method] -- add your combo box handling code here..
-        ambi_dec_setDecMethod(hVst->hAmbi, 0, CBdec1method->getSelectedId());
+        ambi_dec_setDecMethod(hAmbi, 0, CBdec1method->getSelectedId());
         //[/UserComboBoxCode_CBdec1method]
     }
     else if (comboBoxThatHasChanged == CBdec2method.get())
     {
         //[UserComboBoxCode_CBdec2method] -- add your combo box handling code here..
-        ambi_dec_setDecMethod(hVst->hAmbi, 1, CBdec2method->getSelectedId());
+        ambi_dec_setDecMethod(hAmbi, 1, CBdec2method->getSelectedId());
         //[/UserComboBoxCode_CBdec2method]
     }
     else if (comboBoxThatHasChanged == CBdec1normtype.get())
     {
         //[UserComboBoxCode_CBdec1normtype] -- add your combo box handling code here..
-        ambi_dec_setDecNormType(hVst->hAmbi, 0, CBdec1normtype->getSelectedId());
+        ambi_dec_setDecNormType(hAmbi, 0, CBdec1normtype->getSelectedId());
         //[/UserComboBoxCode_CBdec1normtype]
     }
     else if (comboBoxThatHasChanged == CBdec2normtype.get())
     {
         //[UserComboBoxCode_CBdec2normtype] -- add your combo box handling code here..
-        ambi_dec_setDecNormType(hVst->hAmbi, 1, CBdec2normtype->getSelectedId());
+        ambi_dec_setDecNormType(hAmbi, 1, CBdec2normtype->getSelectedId());
         //[/UserComboBoxCode_CBdec2normtype]
     }
     else if (comboBoxThatHasChanged == CBmasterOrder.get())
     {
         //[UserComboBoxCode_CBmasterOrder] -- add your combo box handling code here..
-        ambi_dec_setMasterDecOrder(hVst->hAmbi, CBmasterOrder->getSelectedId());
-        ambi_dec_setDecOrderAllBands(hVst->hAmbi, CBmasterOrder->getSelectedId());
+        ambi_dec_setMasterDecOrder(hAmbi, CBmasterOrder->getSelectedId());
+        ambi_dec_setDecOrderAllBands(hAmbi, CBmasterOrder->getSelectedId());
         decOrder2dSlider->setYrange(1, CBmasterOrder->getSelectedId());
         decOrder2dSlider->setRefreshValuesFLAG(true);
         s_decOrder->setRange(1, CBmasterOrder->getSelectedId(), 1);
@@ -1003,19 +1011,19 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == SL_num_loudspeakers.get())
     {
         //[UserSliderCode_SL_num_loudspeakers] -- add your slider handling code here..
-        ambi_dec_setNumLoudspeakers(hVst->hAmbi, (int)SL_num_loudspeakers->getValue());
+        ambi_dec_setNumLoudspeakers(hAmbi, (int)SL_num_loudspeakers->getValue());
         //[/UserSliderCode_SL_num_loudspeakers]
     }
     else if (sliderThatWasMoved == SL_transitionFreq.get())
     {
         //[UserSliderCode_SL_transitionFreq] -- add your slider handling code here..
-        ambi_dec_setTransitionFreq(hVst->hAmbi, (float)SL_transitionFreq->getValue());
+        ambi_dec_setTransitionFreq(hAmbi, (float)SL_transitionFreq->getValue());
         //[/UserSliderCode_SL_transitionFreq]
     }
     else if (sliderThatWasMoved == s_decOrder.get())
     {
         //[UserSliderCode_s_decOrder] -- add your slider handling code here..
-        ambi_dec_setDecOrderAllBands(hVst->hAmbi, (int)s_decOrder->getValue());
+        ambi_dec_setDecOrderAllBands(hAmbi, (int)s_decOrder->getValue());
 		decOrder2dSlider->setRefreshValuesFLAG(true);
         //[/UserSliderCode_s_decOrder]
     }
@@ -1032,25 +1040,25 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == TBuseDefaultHRIRs.get())
     {
         //[UserButtonCode_TBuseDefaultHRIRs] -- add your button handler code here..
-        ambi_dec_setUseDefaultHRIRsflag(hVst->hAmbi, TBuseDefaultHRIRs->getToggleState());
+        ambi_dec_setUseDefaultHRIRsflag(hAmbi, TBuseDefaultHRIRs->getToggleState());
         //[/UserButtonCode_TBuseDefaultHRIRs]
     }
     else if (buttonThatWasClicked == TBdec1EnableMaxrE.get())
     {
         //[UserButtonCode_TBdec1EnableMaxrE] -- add your button handler code here..
-        ambi_dec_setDecEnableMaxrE(hVst->hAmbi, 0, TBdec1EnableMaxrE->getToggleState());
+        ambi_dec_setDecEnableMaxrE(hAmbi, 0, TBdec1EnableMaxrE->getToggleState());
         //[/UserButtonCode_TBdec1EnableMaxrE]
     }
     else if (buttonThatWasClicked == TBdec2EnableMaxrE.get())
     {
         //[UserButtonCode_TBdec2EnableMaxrE] -- add your button handler code here..
-        ambi_dec_setDecEnableMaxrE(hVst->hAmbi, 1, TBdec2EnableMaxrE->getToggleState());
+        ambi_dec_setDecEnableMaxrE(hAmbi, 1, TBdec2EnableMaxrE->getToggleState());
         //[/UserButtonCode_TBdec2EnableMaxrE]
     }
     else if (buttonThatWasClicked == TBBinauraliseLS.get())
     {
         //[UserButtonCode_TBBinauraliseLS] -- add your button handler code here..
-        ambi_dec_setBinauraliseLSflag(hVst->hAmbi, TBBinauraliseLS->getToggleState());
+        ambi_dec_setBinauraliseLSflag(hAmbi, TBBinauraliseLS->getToggleState());
         //[/UserButtonCode_TBBinauraliseLS]
     }
     else if (buttonThatWasClicked == tb_loadJSON.get())
@@ -1090,12 +1098,16 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
-    TBuseDefaultHRIRs->setToggleState(ambi_dec_getUseDefaultHRIRsflag(hVst->hAmbi), dontSendNotification);
-    TBBinauraliseLS->setToggleState(ambi_dec_getBinauraliseLSflag(hVst->hAmbi), dontSendNotification);
-    outputCoordsView_handle->setNCH(ambi_dec_getNumLoudspeakers(hVst->hAmbi));
-    SL_num_loudspeakers->setValue(ambi_dec_getNumLoudspeakers(hVst->hAmbi),dontSendNotification);
-	CBdec1method->setSelectedId(ambi_dec_getDecMethod(hVst->hAmbi, 0));
-	CBdec2method->setSelectedId(ambi_dec_getDecMethod(hVst->hAmbi, 1));
+    TBuseDefaultHRIRs->setToggleState(ambi_dec_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
+    TBBinauraliseLS->setToggleState(ambi_dec_getBinauraliseLSflag(hAmbi), dontSendNotification);
+    outputCoordsView_handle->setNCH(ambi_dec_getNumLoudspeakers(hAmbi));
+    SL_num_loudspeakers->setValue(ambi_dec_getNumLoudspeakers(hAmbi),dontSendNotification);
+	CBdec1method->setSelectedId(ambi_dec_getDecMethod(hAmbi, 0));
+	CBdec2method->setSelectedId(ambi_dec_getDecMethod(hAmbi, 1));
+    CBchFormat->setSelectedId(ambi_dec_getChOrder(hAmbi), dontSendNotification);
+    CBnormScheme->setSelectedId(ambi_dec_getNormType(hAmbi), dontSendNotification);
+    CBchFormat->setItemEnabled(CH_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==MASTER_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==MASTER_ORDER_FIRST ? true : false);
 
     /* refresh */
 	if (decOrder2dSlider->getRefreshValuesFLAG()) {
@@ -1114,7 +1126,7 @@ void PluginEditor::timerCallback()
 		fileChooser.setEnabled(true);
 		TBuseDefaultHRIRs->setEnabled(true);
 		TBBinauraliseLS->setEnabled(true);
-		ambi_dec_checkReInit(hVst->hAmbi);
+		ambi_dec_checkReInit(hAmbi);
 	}
 #endif
 
@@ -1123,20 +1135,20 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ( !((ambi_dec_getDAWsamplerate(hVst->hAmbi) == 44.1e3) || (ambi_dec_getDAWsamplerate(hVst->hAmbi) == 48e3)) ){
+    else if ( !((ambi_dec_getDAWsamplerate(hAmbi) == 44.1e3) || (ambi_dec_getDAWsamplerate(hAmbi) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
-    else if (ambi_dec_getDAWsamplerate(hVst->hAmbi) != ambi_dec_getHRIRsamplerate(hVst->hAmbi)){
+    else if (ambi_dec_getDAWsamplerate(hAmbi) != ambi_dec_getHRIRsamplerate(hAmbi)){
         currentWarning = k_warning_mismatch_fs;
         repaint(0,0,getWidth(),32);
     }
-    else if (hVst->getCurrentNumInputs() < ambi_dec_getNSHrequired(hVst->hAmbi)){
+    else if (hVst->getCurrentNumInputs() < ambi_dec_getNSHrequired(hAmbi)){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
     else if (hVst->getCurrentNumOutputs() <
-              (ambi_dec_getBinauraliseLSflag(hVst->hAmbi) ? 2 : ambi_dec_getNumLoudspeakers(hVst->hAmbi)) ){
+              (ambi_dec_getBinauraliseLSflag(hAmbi) ? 2 : ambi_dec_getNumLoudspeakers(hAmbi)) ){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -1204,10 +1216,10 @@ BEGIN_JUCER_METADATA
     <TEXT pos="232 90 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
           fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="19 90 132 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
+    <TEXT pos="19 92 132 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
           fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="19 122 132 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
+    <TEXT pos="19 124 132 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
           fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="232 58 189 30" fill="solid: ffffffff" hasStroke="0" text="Binauralise Loudspeakers:"
@@ -1273,14 +1285,14 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="409 94 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <COMBOBOX name="new combo box" id="d83602bab6f1a999" memberName="CBsourcePreset"
-            virtualName="" explicitFocusOrder="0" pos="98 97 118 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="98 98 118 20" editable="0"
             layout="33" items="Ideal SH" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="a36915795f16ceb6" memberName="CBchFormat"
-            virtualName="" explicitFocusOrder="0" pos="75 128 64 20" editable="0"
-            layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
+            virtualName="" explicitFocusOrder="0" pos="74 130 68 20" editable="0"
+            layout="33" items="" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="e10be54628a6df43" memberName="CBnormScheme"
-            virtualName="" explicitFocusOrder="0" pos="144 128 72 20" editable="0"
-            layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
+            virtualName="" explicitFocusOrder="0" pos="144 130 72 20" editable="0"
+            layout="33" items="" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="27b7eb906eb4d4f" memberName="SL_transitionFreq"
           virtualName="" explicitFocusOrder="0" pos="168 296 112 40" bkgcol="ff263238"
           trackcol="ff181f22" min="5e2" max="2e3" int="1e-1" style="LinearHorizontal"

@@ -56,13 +56,9 @@ public:
 		}
     }
 
-    bool getHasASliderChanged(){
-        return sliderHasChanged;
-    }
-
-    void setHasASliderChange(bool newState){
-        sliderHasChanged = newState;
-    }
+    bool getHasASliderChanged(){ return sliderHasChanged; }
+    void setHasASliderChange(bool newState){ sliderHasChanged = newState; }
+    
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -74,14 +70,11 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
-
+    void* hAmbi;
     void refreshCoords();
-
     ScopedPointer<Slider>* aziSliders;
     ScopedPointer<Slider>* elevSliders;
-
     int maxNCH, currentNCH;
-
     bool sliderHasChanged;
 
     //[/UserVariables]

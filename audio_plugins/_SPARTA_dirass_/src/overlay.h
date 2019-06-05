@@ -54,12 +54,8 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
 
     void refreshPowerMap(float* _dirs_deg, float* _pmap, int _nDirs, int _pmapWidth, int _hfov, float _aspectRatio );
-    bool getFinishedRefresh(){
-        return finishedRefresh;
-    }
-    void setEnableTransparency(bool newState){
-        enableTransparency = newState;
-    }
+    bool getFinishedRefresh(){ return finishedRefresh; }
+    void setEnableTransparency(bool newState){ enableTransparency = newState; }
 
     //[/UserMethods]
 
@@ -73,8 +69,7 @@ private:
     float* dirs_deg, *pmap;
     int nDirs, pmapWidth, hfov;
     float aspectRatio;
-    Rectangle<int> localBounds;
-
+    Rectangle<int> localBounds; 
     bool finishedRefresh;
     bool enableTransparency;
     //[/UserVariables]

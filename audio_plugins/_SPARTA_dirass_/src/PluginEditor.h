@@ -63,8 +63,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    PluginProcessor* hVst;
-    void timerCallback() override;
+
 
 
     //[/UserMethods]
@@ -79,6 +78,9 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    PluginProcessor* hVst;
+    void* hDir;
+    void timerCallback() override;
 
     /* for openGL speed-ups */
     ScopedPointer<OpenGLGraphicsContextCustomShader> shader;

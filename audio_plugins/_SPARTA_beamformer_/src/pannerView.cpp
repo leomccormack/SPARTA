@@ -45,16 +45,17 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
 
     //[Constructor] You can add your own custom stuff here..
     hVst = ownerFilter;
+    hBeam = hVst->getFXHandle();
     width = _width;
     height = _height;
 
     for(int beam=0; beam<MAX_NUM_CHANNELS; beam++){
-        BeamIcons[beam].setBounds(width - width*(beamformer_getBeamAzi_deg(hVst->hBeam, beam) + 180.0f)/360.f - icon_size/2.0f,
-                                   height - height*(beamformer_getBeamElev_deg(hVst->hBeam, beam) + 90.0f)/180.0f - icon_size/2.0f,
+        BeamIcons[beam].setBounds(width - width*(beamformer_getBeamAzi_deg(hBeam, beam) + 180.0f)/360.f - icon_size/2.0f,
+                                   height - height*(beamformer_getBeamElev_deg(hBeam, beam) + 90.0f)/180.0f - icon_size/2.0f,
                                    icon_size,
                                    icon_size);
     }
-    NBeams = beamformer_getNumBeams(hVst->hBeam);
+    NBeams = beamformer_getNumBeams(hBeam);
 
     //[/Constructor]
 }
@@ -189,9 +190,9 @@ void pannerView::mouseDrag (const MouseEvent& e)
     if(beamIconIsClicked){
         Point<float> point;
         point.setXY((float)e.getPosition().getX()-icon_size/2.0f, (float)e.getPosition().getY()-icon_size/2.0f);
-        beamformer_setBeamAzi_deg(hVst->hBeam, indexOfClickedBeam,
+        beamformer_setBeamAzi_deg(hBeam, indexOfClickedBeam,
                                    ((width - (point.getX() + icon_size/2.0f))*360.0f)/width-180.0f);
-        beamformer_setBeamElev_deg(hVst->hBeam, indexOfClickedBeam,
+        beamformer_setBeamElev_deg(hBeam, indexOfClickedBeam,
                                    ((height - (point.getY() + icon_size/2.0f))*180.0f)/height - 90.0f);
     }
 
@@ -211,12 +212,12 @@ void pannerView::mouseUp (const MouseEvent& e)
 void pannerView::refreshPanView()
 {
     for(int beam=0; beam<MAX_NUM_CHANNELS; beam++){
-        BeamIcons[beam].setBounds(width - width*(beamformer_getBeamAzi_deg(hVst->hBeam, beam) + 180.0f)/360.f - icon_size/2.0f,
-                                   height - height*(beamformer_getBeamElev_deg(hVst->hBeam, beam) + 90.0f)/180.0f - icon_size/2.0f,
+        BeamIcons[beam].setBounds(width - width*(beamformer_getBeamAzi_deg(hBeam, beam) + 180.0f)/360.f - icon_size/2.0f,
+                                   height - height*(beamformer_getBeamElev_deg(hBeam, beam) + 90.0f)/180.0f - icon_size/2.0f,
                                    icon_size,
                                    icon_size);
     }
-    NBeams = beamformer_getNumBeams(hVst->hBeam);
+    NBeams = beamformer_getNumBeams(hBeam);
 
     repaint();
 }

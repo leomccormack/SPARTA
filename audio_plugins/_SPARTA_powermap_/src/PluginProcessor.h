@@ -26,34 +26,21 @@
 #include "powermap.h"
 
 #define BUILD_VER_SUFFIX "beta"                 /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
-#define MAX_NUM_CHANNELS 64
 
 enum {	
     /* For the default VST GUI */
 	k_NumOfParameters
 };
 
-
 class PluginProcessor  : public AudioProcessor,
                          public VSTCallbackHandler
 {
 public:
-    int nNumInputs;                         /* current number of input channels */ 
-    int nSampleRate;                        /* current host sample rate */
-    int nHostBlockSize;                     /* typical host block size to expect, in samples */
-    void* hPm;                              /* powermap handle */
-    
-	bool getIsPlaying() {
-		return isPlaying;
-	}
-    int getCurrentBlockSize(){
-        return nHostBlockSize;
-    }
-    int getCurrentNumInputs(){
-        return nNumInputs;
-    }
-	
-	bool isPlaying;
+    /* Get functions */
+    void* getFXHandle() { return hPm; }
+	bool getIsPlaying() { return isPlaying; }
+    int getCurrentBlockSize(){ return nHostBlockSize; }
+    int getCurrentNumInputs(){ return nNumInputs; }
     
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 index, pointer_sized_int value, void* ptr, float opt) override { return 0; };
@@ -66,8 +53,6 @@ public:
     }
     
     /* for camera */
-    int cameraID;
-    bool flipLR, flipUD, greyScale;
     void setCameraID(int newID){ cameraID = newID;}
     void setFlipLR(bool newState){ flipLR = newState;}
     void setFlipUD(bool newState){ flipUD = newState;}
@@ -77,8 +62,15 @@ public:
     bool getFlipUD(){ return flipUD;}
     bool getGreyScale(){ return greyScale;}
     
-    /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead* playHead;
+private:
+    void* hPm;              /* powermap handle */
+    int nNumInputs;         /* current number of input channels */
+    int nSampleRate;        /* current host sample rate */
+    int nHostBlockSize;     /* typical host block size to expect, in samples */
+    bool isPlaying;
+    int cameraID;
+    bool flipLR, flipUD, greyScale;
+    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
  
 public:

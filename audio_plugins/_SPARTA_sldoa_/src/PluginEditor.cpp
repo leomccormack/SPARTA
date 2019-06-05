@@ -50,10 +50,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CB_CHorder->setJustificationType (Justification::centredLeft);
     CB_CHorder->setTextWhenNothingSelected (TRANS("ACN"));
     CB_CHorder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CB_CHorder->addItem (TRANS("ACN"), 1);
     CB_CHorder->addListener (this);
 
-    CB_CHorder->setBounds (67, 447, 61, 18);
+    CB_CHorder->setBounds (66, 447, 64, 18);
 
     CB_Norm.reset (new ComboBox ("new combo box"));
     addAndMakeVisible (CB_Norm.get());
@@ -61,8 +60,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CB_Norm->setJustificationType (Justification::centredLeft);
     CB_Norm->setTextWhenNothingSelected (TRANS("N3D"));
     CB_Norm->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CB_Norm->addItem (TRANS("N3D"), 1);
-    CB_Norm->addItem (TRANS("SN3D"), 2);
     CB_Norm->addListener (this);
 
     CB_Norm->setBounds (131, 447, 68, 18);
@@ -157,6 +154,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     //[Constructor] You can add your own custom stuff here..
 	hVst = ownerFilter;
+    hSld = hVst->getFXHandle();
 	openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
 
@@ -187,10 +185,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     int nPoints;
     float* pX_vector;
     int* pY_values_int;
-    addAndMakeVisible (anaOrder2dSlider = new log2dSlider(360, 54, 100, 20e3, 1, sldoa_getMasterOrder(hVst->hSld), 0));
+    addAndMakeVisible (anaOrder2dSlider = new log2dSlider(360, 54, 100, 20e3, 1, sldoa_getMasterOrder(hSld), 0));
     anaOrder2dSlider->setAlwaysOnTop(true);
     anaOrder2dSlider->setTopLeftPosition(218, 432);
-    sldoa_getAnaOrderHandle(hVst->hSld, &pX_vector, &pY_values_int, &nPoints);
+    sldoa_getAnaOrderHandle(hSld, &pX_vector, &pY_values_int, &nPoints);
     anaOrder2dSlider->setDataHandlesInt(pX_vector, pY_values_int, nPoints);
 
     /* add master analysis order options */
@@ -201,6 +199,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBmasterOrder->addItem (TRANS("5th order"), MASTER_ORDER_FIFTH);
     CBmasterOrder->addItem (TRANS("6th order"), MASTER_ORDER_SIXTH);
     CBmasterOrder->addItem (TRANS("7th order"), MASTER_ORDER_SEVENTH);
+
+    /* add ambisonic convention options */
+    CB_CHorder->addItem(TRANS("ACN"), CH_ACN);
+    CB_CHorder->addItem(TRANS("FuMa"), CH_FUMA);
+    CB_Norm->addItem(TRANS("N3D"), NORM_N3D);
+    CB_Norm->addItem(TRANS("SN3D"), NORM_SN3D);
+    CB_Norm->addItem(TRANS("FuMa"), NORM_FUMA);
 
     /* add microphone preset options */
 #ifdef ENABLE_ZYLIA_MIC_PRESET
@@ -214,18 +219,20 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 #endif
 
 	/* fetch current configuration */
-    CBmasterOrder->setSelectedId(sldoa_getMasterOrder(hVst->hSld), dontSendNotification);
-    avgSlider->setValue((float)sldoa_getAvg(hVst->hSld), dontSendNotification);
-    CB_CHorder->setSelectedId(sldoa_getChOrder(hVst->hSld), dontSendNotification);
-    CB_Norm->setSelectedId(sldoa_getNormType(hVst->hSld), dontSendNotification);
-    slider_anaOrder->setRange(1, sldoa_getMasterOrder(hVst->hSld), 1);
-    slider_anaOrder->setValue(sldoa_getAnaOrderAllBands(hVst->hSld), dontSendNotification);
-    s_minFreq->setRange(0.0f, sldoa_getSamplingRate(hVst->hSld)/2.0f, 1.0f);
-    s_maxFreq->setRange(0.0f, sldoa_getSamplingRate(hVst->hSld)/2.0f, 1.0f);
+    CBmasterOrder->setSelectedId(sldoa_getMasterOrder(hSld), dontSendNotification);
+    avgSlider->setValue((float)sldoa_getAvg(hSld), dontSendNotification);
+    CB_CHorder->setSelectedId(sldoa_getChOrder(hSld), dontSendNotification);
+    CB_Norm->setSelectedId(sldoa_getNormType(hSld), dontSendNotification);
+    slider_anaOrder->setRange(1, sldoa_getMasterOrder(hSld), 1);
+    slider_anaOrder->setValue(sldoa_getAnaOrderAllBands(hSld), dontSendNotification);
+    s_minFreq->setRange(0.0f, sldoa_getSamplingRate(hSld)/2.0f, 1.0f);
+    s_maxFreq->setRange(0.0f, sldoa_getSamplingRate(hSld)/2.0f, 1.0f);
     s_minFreq->setSkewFactor(0.5f);
     s_maxFreq->setSkewFactor(0.5f);
-    s_minFreq->setValue(sldoa_getMinFreq(hVst->hSld));
-    s_maxFreq->setValue(sldoa_getMaxFreq(hVst->hSld));
+    s_minFreq->setValue(sldoa_getMinFreq(hSld));
+    s_maxFreq->setValue(sldoa_getMaxFreq(hSld));
+    CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
+    CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
 
 	/* Specify screen refresh rate */
     startTimer(100);//80); /*ms (40ms = 25 frames per second) */
@@ -598,7 +605,7 @@ void PluginEditor::paint (Graphics& g)
     /* label for max ORDER */
     {
         int x = 610, y = 412, width = 13, height = 30;
-        String text = String(sldoa_getMasterOrder(hVst->hSld));
+        String text = String(sldoa_getMasterOrder(hSld));
         Colour fillColour = Colours::white;
         g.setColour (fillColour);
         g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
@@ -618,13 +625,13 @@ void PluginEditor::paint (Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_supported_fs:
-            g.drawText(TRANS("Sample rate (") + String(sldoa_getSamplingRate(hVst->hSld)) + TRANS(") is unsupported"),
+            g.drawText(TRANS("Sample rate (") + String(sldoa_getSamplingRate(hSld)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(sldoa_getNSHrequired(hVst->hSld)) + TRANS(")"),
+                       TRANS("/") + String(sldoa_getNSHrequired(hSld)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -657,20 +664,20 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == avgSlider.get())
     {
         //[UserSliderCode_avgSlider] -- add your slider handling code here..
-        sldoa_setAvg(hVst->hSld, (float)avgSlider->getValue());
+        sldoa_setAvg(hSld, (float)avgSlider->getValue());
         //[/UserSliderCode_avgSlider]
     }
     else if (sliderThatWasMoved == slider_anaOrder.get())
     {
         //[UserSliderCode_slider_anaOrder] -- add your slider handling code here..
-        sldoa_setAnaOrderAllBands(hVst->hSld, (int)(slider_anaOrder->getValue()+0.5));
+        sldoa_setAnaOrderAllBands(hSld, (int)(slider_anaOrder->getValue()+0.5));
         anaOrder2dSlider->setRefreshValuesFLAG(true);
         //[/UserSliderCode_slider_anaOrder]
     }
     else if (sliderThatWasMoved == s_minFreq.get())
     {
         //[UserSliderCode_s_minFreq] -- add your slider handling code here..
-        sldoa_setMinFreq(hVst->hSld, (float)s_minFreq->getValue());
+        sldoa_setMinFreq(hSld, (float)s_minFreq->getValue());
 
 
         //[/UserSliderCode_s_minFreq]
@@ -678,7 +685,7 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     else if (sliderThatWasMoved == s_maxFreq.get())
     {
         //[UserSliderCode_s_maxFreq] -- add your slider handling code here..
-        sldoa_setMaxFreq(hVst->hSld, (float)s_maxFreq->getValue());
+        sldoa_setMaxFreq(hSld, (float)s_maxFreq->getValue());
         //[/UserSliderCode_s_maxFreq]
     }
 
@@ -694,29 +701,29 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CB_CHorder.get())
     {
         //[UserComboBoxCode_CB_CHorder] -- add your combo box handling code here..
-        sldoa_setChOrder(hVst->hSld, CB_CHorder->getSelectedId());
+        sldoa_setChOrder(hSld, CB_CHorder->getSelectedId());
         //[/UserComboBoxCode_CB_CHorder]
     }
     else if (comboBoxThatHasChanged == CB_Norm.get())
     {
         //[UserComboBoxCode_CB_Norm] -- add your combo box handling code here..
-        sldoa_setNormType(hVst->hSld, CB_Norm->getSelectedId());
+        sldoa_setNormType(hSld, CB_Norm->getSelectedId());
         //[/UserComboBoxCode_CB_Norm]
     }
     else if (comboBoxThatHasChanged == CBinputTypePreset.get())
     {
         //[UserComboBoxCode_CBinputTypePreset] -- add your combo box handling code here..
-        sldoa_setSourcePreset(hVst->hSld, CBinputTypePreset->getSelectedId());
+        sldoa_setSourcePreset(hSld, CBinputTypePreset->getSelectedId());
         anaOrder2dSlider->setRefreshValuesFLAG(true);
         //[/UserComboBoxCode_CBinputTypePreset]
     }
     else if (comboBoxThatHasChanged == CBmasterOrder.get())
     {
         //[UserComboBoxCode_CBmasterOrder] -- add your combo box handling code here..
-        sldoa_setMasterOrder(hVst->hSld, CBmasterOrder->getSelectedId());
+        sldoa_setMasterOrder(hSld, CBmasterOrder->getSelectedId());
         CBinputTypePreset->setSelectedId(1);
         anaOrder2dSlider->setYrange(1, CBmasterOrder->getSelectedId());
-        sldoa_setAnaOrderAllBands(hVst->hSld, CBmasterOrder->getSelectedId());
+        sldoa_setAnaOrderAllBands(hSld, CBmasterOrder->getSelectedId());
         anaOrder2dSlider->setRefreshValuesFLAG(true);
         slider_anaOrder->setRange(1, CBmasterOrder->getSelectedId(), 1);
         slider_anaOrder->setValue(CBmasterOrder->getSelectedId());
@@ -772,6 +779,12 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PluginEditor::timerCallback()
 {
+    /* parameters whos values can change internally should be periodically refreshed */
+    CB_CHorder->setSelectedId(sldoa_getChOrder(hSld), dontSendNotification);
+    CB_Norm->setSelectedId(sldoa_getNormType(hSld), dontSendNotification);
+    CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
+    CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
+
     /* take webcam picture */
     if(CB_webcam->getSelectedId()>1){
         handleAsyncUpdate();
@@ -780,24 +793,24 @@ void PluginEditor::timerCallback()
     }
 
     /* refresh overlay */
-	if ((overlayIncluded != nullptr) && (hVst->isPlaying))
+	if ((overlayIncluded != nullptr) && (hVst->getIsPlaying()))
 		overlayIncluded->repaint();
     if (anaOrder2dSlider->getRefreshValuesFLAG())
         anaOrder2dSlider->repaint();
 
-    s_minFreq->setValue(sldoa_getMinFreq(hVst->hSld));
-    s_maxFreq->setValue(sldoa_getMaxFreq(hVst->hSld));
+    s_minFreq->setValue(sldoa_getMinFreq(hSld));
+    s_maxFreq->setValue(sldoa_getMaxFreq(hSld));
 
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ( !((sldoa_getSamplingRate(hVst->hSld) == 44.1e3) || (sldoa_getSamplingRate(hVst->hSld) == 48e3)) ){
+    else if ( !((sldoa_getSamplingRate(hSld) == 44.1e3) || (sldoa_getSamplingRate(hSld) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < sldoa_getNSHrequired(hVst->hSld))){
+    else if ((hVst->getCurrentNumInputs() < sldoa_getNSHrequired(hSld))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -972,11 +985,11 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="3d1c447f9542fa94" memberName="CB_CHorder"
-            virtualName="" explicitFocusOrder="0" pos="67 447 61 18" editable="0"
-            layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
+            virtualName="" explicitFocusOrder="0" pos="66 447 64 18" editable="0"
+            layout="33" items="" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="d046f2696f3a4a04" memberName="CB_Norm"
             virtualName="" explicitFocusOrder="0" pos="131 447 68 18" editable="0"
-            layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
+            layout="33" items="" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="50ea77f60aadeeca" memberName="slider_anaOrder"
           virtualName="" explicitFocusOrder="0" pos="576 424 40 66" textboxtext="ffffffff"
           textboxbkgd="ffffff" min="0" max="1" int="1" style="LinearVertical"

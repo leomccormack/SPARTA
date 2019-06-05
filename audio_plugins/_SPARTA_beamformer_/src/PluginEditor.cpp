@@ -50,7 +50,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBoutputFormat->setJustificationType (Justification::centredLeft);
     CBoutputFormat->setTextWhenNothingSelected (TRANS("ACN"));
     CBoutputFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBoutputFormat->addItem (TRANS("ACN"), 1);
     CBoutputFormat->addListener (this);
 
     CBoutputFormat->setBounds (133, 316, 112, 20);
@@ -61,8 +60,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormalisation->setJustificationType (Justification::centredLeft);
     CBnormalisation->setTextWhenNothingSelected (TRANS("N3D"));
     CBnormalisation->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBnormalisation->addItem (TRANS("N3D"), 1);
-    CBnormalisation->addItem (TRANS("SN3D"), 2);
     CBnormalisation->addListener (this);
 
     CBnormalisation->setBounds (368, 316, 112, 20);
@@ -98,6 +95,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* handle to pluginProcessor */
 	hVst = ownerFilter;
+    hBeam = hVst->getFXHandle();
 
     /* init OpenGL */
     openGLContext.setMultisamplingEnabled(true);
@@ -119,22 +117,29 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBbeamType->addItem(TRANS("Card"), BEAM_TYPE_CARDIOID);
     CBbeamType->addItem(TRANS("HyperCard"), BEAM_TYPE_HYPERCARDIOID);
     CBbeamType->addItem(TRANS("MaxEV"), BEAM_TYPE_MAX_EV);
+    CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
+    CBoutputFormat->addItem (TRANS("FuMa"), CH_FUMA);
+    CBnormalisation->addItem (TRANS("N3D"), NORM_N3D);
+    CBnormalisation->addItem (TRANS("SN3D"), NORM_SN3D);
+    CBnormalisation->addItem (TRANS("FuMa"), NORM_FUMA);
 
     /* source coordinates viewport */
     addAndMakeVisible (sourceCoordsVP = new Viewport ("new viewport"));
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_CHANNELS, beamformer_getNumBeams(hVst->hBeam));
+    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_CHANNELS, beamformer_getNumBeams(hBeam));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
     sourceCoordsVP->setBounds(510, 183, 184, 155);
-    sourceCoordsView_handle->setNCH(beamformer_getNumBeams(hVst->hBeam));
+    sourceCoordsView_handle->setNCH(beamformer_getNumBeams(hBeam));
 
     /* grab current parameter settings */
-    SL_num_beams->setValue(beamformer_getNumBeams(hVst->hBeam),dontSendNotification);
-    CBoutputFormat->setSelectedId(beamformer_getChOrder(hVst->hBeam), dontSendNotification);
-    CBnormalisation->setSelectedId(beamformer_getNormType(hVst->hBeam), dontSendNotification);
-    CBorder->setSelectedId(beamformer_getBeamOrder(hVst->hBeam), dontSendNotification);
-    CBbeamType->setSelectedId(beamformer_getBeamType(hVst->hBeam), dontSendNotification);
+    SL_num_beams->setValue(beamformer_getNumBeams(hBeam),dontSendNotification);
+    CBoutputFormat->setSelectedId(beamformer_getChOrder(hBeam), dontSendNotification);
+    CBnormalisation->setSelectedId(beamformer_getNormType(hBeam), dontSendNotification);
+    CBorder->setSelectedId(beamformer_getBeamOrder(hBeam), dontSendNotification);
+    CBbeamType->setSelectedId(beamformer_getBeamType(hBeam), dontSendNotification);
+    CBoutputFormat->setItemEnabled(CH_FUMA, beamformer_getBeamOrder(hBeam)==BEAM_ORDER_FIRST ? true : false);
+    CBnormalisation->setItemEnabled(NORM_FUMA, beamformer_getBeamOrder(hBeam)==BEAM_ORDER_FIRST ? true : false);
 
     /* create panning window */
     addAndMakeVisible (panWindow = new pannerView(ownerFilter, 480, 240));
@@ -426,13 +431,13 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(beamformer_getNumBeams(hVst->hBeam)) + TRANS(")"),
+                       TRANS("/") + String(beamformer_getNumBeams(hBeam)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
-                       TRANS("/") + String(beamformer_getNSHrequired(hVst->hBeam)) + TRANS(")"),
+                       TRANS("/") + String(beamformer_getNSHrequired(hBeam)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -460,7 +465,7 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == SL_num_beams.get())
     {
         //[UserSliderCode_SL_num_beams] -- add your slider handling code here..
-        beamformer_setNumBeams(hVst->hBeam, (float)SL_num_beams->getValue());
+        beamformer_setNumBeams(hBeam, (float)SL_num_beams->getValue());
         //[/UserSliderCode_SL_num_beams]
     }
 
@@ -476,25 +481,25 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBoutputFormat.get())
     {
         //[UserComboBoxCode_CBoutputFormat] -- add your combo box handling code here..
-        beamformer_setChOrder(hVst->hBeam, CBoutputFormat->getSelectedId());
+        beamformer_setChOrder(hBeam, CBoutputFormat->getSelectedId());
         //[/UserComboBoxCode_CBoutputFormat]
     }
     else if (comboBoxThatHasChanged == CBnormalisation.get())
     {
         //[UserComboBoxCode_CBnormalisation] -- add your combo box handling code here..
-        beamformer_setNormType(hVst->hBeam, CBnormalisation->getSelectedId());
+        beamformer_setNormType(hBeam, CBnormalisation->getSelectedId());
         //[/UserComboBoxCode_CBnormalisation]
     }
     else if (comboBoxThatHasChanged == CBorder.get())
     {
         //[UserComboBoxCode_CBorder] -- add your combo box handling code here..
-        beamformer_setBeamOrder(hVst->hBeam, CBorder->getSelectedId());
+        beamformer_setBeamOrder(hBeam, CBorder->getSelectedId());
         //[/UserComboBoxCode_CBorder]
     }
     else if (comboBoxThatHasChanged == CBbeamType.get())
     {
         //[UserComboBoxCode_CBbeamType] -- add your combo box handling code here..
-        beamformer_setBeamType(hVst->hBeam, CBbeamType->getSelectedId());
+        beamformer_setBeamType(hBeam, CBbeamType->getSelectedId());
         //[/UserComboBoxCode_CBbeamType]
     }
 
@@ -507,9 +512,13 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PluginEditor::timerCallback()
 {
-    /* update number of sources */
-    sourceCoordsView_handle->setNCH(beamformer_getNumBeams(hVst->hBeam));
-    SL_num_beams->setValue(beamformer_getNumBeams(hVst->hBeam),dontSendNotification);
+    /* parameters whos values can change internally should be periodically refreshed */
+    sourceCoordsView_handle->setNCH(beamformer_getNumBeams(hBeam));
+    SL_num_beams->setValue(beamformer_getNumBeams(hBeam),dontSendNotification);
+    CBoutputFormat->setSelectedId(beamformer_getChOrder(hBeam), dontSendNotification);
+    CBnormalisation->setSelectedId(beamformer_getNormType(hBeam), dontSendNotification);
+    CBoutputFormat->setItemEnabled(CH_FUMA, beamformer_getBeamOrder(hBeam)==BEAM_ORDER_FIRST ? true : false);
+    CBnormalisation->setItemEnabled(NORM_FUMA, beamformer_getBeamOrder(hBeam)==BEAM_ORDER_FIRST ? true : false);
 
     /* refresh pan view */
     if((refreshPanViewWindow == true) || (panWindow->getBeamIconIsClicked()) ||
@@ -525,11 +534,11 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < beamformer_getNumBeams(hVst->hBeam))){
+    else if ((hVst->getCurrentNumInputs() < beamformer_getNumBeams(hBeam))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumOutputs() < beamformer_getNSHrequired(hVst->hBeam))){
+    else if ((hVst->getCurrentNumOutputs() < beamformer_getNSHrequired(hBeam))){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -613,10 +622,10 @@ BEGIN_JUCER_METADATA
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="63f8ff411606aafd" memberName="CBoutputFormat"
             virtualName="" explicitFocusOrder="0" pos="133 316 112 20" editable="0"
-            layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
+            layout="33" items="" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="27f130362a28f1eb" memberName="CBnormalisation"
             virtualName="" explicitFocusOrder="0" pos="368 316 112 20" editable="0"
-            layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
+            layout="33" items="" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="56ba0566c2fe39e0" memberName="CBorder"
             virtualName="" explicitFocusOrder="0" pos="578 64 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>

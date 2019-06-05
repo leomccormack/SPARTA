@@ -53,8 +53,8 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
 
     //[Constructor] You can add your own custom stuff here..
     setSize (sensorEdit_width, sensorEdit_height*currentNCH);
-
     hVst = ownerFilter;
+    hBeam = hVst->getFXHandle();
     maxNCH = _maxNCH ;
     currentNCH =_currentNCH;
     aziSliders =  new ScopedPointer<Slider>[maxNCH];
@@ -64,7 +64,7 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         /* create and initialise azimuth sliders */
         addAndMakeVisible (aziSliders[i] = new Slider ("new slider"));
         aziSliders[i]->setRange (-360.0, 360.0, 0.001);
-        aziSliders[i]->setValue(beamformer_getBeamAzi_deg(hVst->hBeam, i));
+        aziSliders[i]->setValue(beamformer_getBeamAzi_deg(hBeam, i));
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
         aziSliders[i]->setBounds(-25, 8 + i*sensorEdit_height, 96, 16);
@@ -73,7 +73,7 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         /* create and initialise elevation sliders */
         addAndMakeVisible (elevSliders[i] = new Slider ("new slider"));
         elevSliders[i]->setRange (-180.0, 180.0, 0.001);
-        elevSliders[i]->setValue(beamformer_getBeamElev_deg(hVst->hBeam, i));
+        elevSliders[i]->setValue(beamformer_getBeamElev_deg(hBeam, i));
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
         elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 96, 16);
@@ -180,11 +180,11 @@ void inputCoordsView::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     for(int i=0; i<maxNCH; i++){
         if (sliderThatWasMoved == aziSliders[i]) {
-            beamformer_setBeamAzi_deg(hVst->hBeam, i, (float)aziSliders[i]->getValue());
+            beamformer_setBeamAzi_deg(hBeam, i, (float)aziSliders[i]->getValue());
             break;
         }
         if (sliderThatWasMoved == elevSliders[i]) {
-            beamformer_setBeamElev_deg(hVst->hBeam, i, (float)elevSliders[i]->getValue());
+            beamformer_setBeamElev_deg(hBeam, i, (float)elevSliders[i]->getValue());
             break;
         }
     }
@@ -210,9 +210,9 @@ void inputCoordsView::refreshCoords(){
     /* update slider values and limits */
     for( int i=0; i<maxNCH; i++){
         aziSliders[i]->setRange (-360.0, 360.0, 0.001);
-        aziSliders[i]->setValue(beamformer_getBeamAzi_deg(hVst->hBeam, i), dontSendNotification);
+        aziSliders[i]->setValue(beamformer_getBeamAzi_deg(hBeam, i), dontSendNotification);
         elevSliders[i]->setRange (-180.0, 180.0, 0.001);
-        elevSliders[i]->setValue(beamformer_getBeamElev_deg(hVst->hBeam, i), dontSendNotification);
+        elevSliders[i]->setValue(beamformer_getBeamElev_deg(hBeam, i), dontSendNotification);
     }
 }
 

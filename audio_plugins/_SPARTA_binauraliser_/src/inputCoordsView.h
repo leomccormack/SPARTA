@@ -47,22 +47,17 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     void setNCH(int newNCH){
-		newNCH = newNCH > MAX_NUM_CHANNELS ? MAX_NUM_CHANNELS : newNCH;
+		newNCH = newNCH > BINAURALISER_MAX_NUM_INPUTS ? BINAURALISER_MAX_NUM_INPUTS : newNCH;
 		refreshCoords();
 		if (newNCH != currentNCH) {
 			currentNCH = newNCH;
 			resized();
 			sliderHasChanged = true;
 		}
-    }
-
-    bool getHasASliderChanged(){
-        return sliderHasChanged;
-    }
-
-    void setHasASliderChange(bool newState){
-        sliderHasChanged = newState;
-    }
+    } 
+    bool getHasASliderChanged(){ return sliderHasChanged; }
+    void setHasASliderChange(bool newState){ sliderHasChanged = newState; }
+    
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -74,14 +69,11 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
-
+    void* hBin;
     void refreshCoords();
-
     ScopedPointer<Slider>* aziSliders;
     ScopedPointer<Slider>* elevSliders;
-
     int maxNCH, currentNCH;
-
     bool sliderHasChanged;
 
     //[/UserVariables]

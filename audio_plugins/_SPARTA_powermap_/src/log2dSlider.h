@@ -43,8 +43,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    Rectangle<int> localBounds;
-
+   
     void setDataHandles(float* _X_vector, float* _Y_values, int nPoints){
         X_vector = _X_vector;
         Y_values = _Y_values;
@@ -58,13 +57,8 @@ public:
         useIntValues = true;
     }
     
-    bool getRefreshValuesFLAG(){
-        return refreshValues;
-    }
-    
-    void setRefreshValuesFLAG(bool newFlag){
-        refreshValues = newFlag;
-    }
+    bool getRefreshValuesFLAG(){ return refreshValues; }
+    void setRefreshValuesFLAG(bool newFlag){ refreshValues = newFlag; }
     
     void setYrange(int _min_Y_value, int _max_Y_value){
         min_Y_value = _min_Y_value;
@@ -82,12 +76,11 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    Rectangle<int> localBounds;
     int width, height;
     float min_X_value, max_X_value, min_Y_value, max_Y_value;
     int nDecimalPoints;
-    
     bool refreshValues;
-
     bool useIntValues;
     int* Y_values_int;
     float* Y_values;

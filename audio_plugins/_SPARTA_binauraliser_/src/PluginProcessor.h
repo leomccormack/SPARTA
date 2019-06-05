@@ -26,12 +26,8 @@
 #include "binauraliser.h"
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
 #include "../../resources/ConfigurationHelper.h"
-
-#define BUILD_VER_SUFFIX "beta"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
-#define MAX_NUM_CHANNELS 64
-#define NUM_OF_AUTOMATABLE_SOURCES 32
+#define BUILD_VER_SUFFIX "beta" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define DEFAULT_OSC_PORT 9000
-
 #ifndef MIN
   #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
 #endif
@@ -39,49 +35,43 @@
   #define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
 #endif
 
+/* Parameter tags: for the default VST GUI */
+enum {
+    k_enableRotation,
+    k_useRollPitchYaw,
+    k_yaw,
+    k_pitch,
+    k_roll,
+    k_flipYaw,
+    k_flipPitch,
+    k_flipRoll,
+    k_numInputs,
+    
+    k_NumOfParameters
+};
 
 class PluginProcessor  : public AudioProcessor,
                          private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
                          public VSTCallbackHandler
 {
 public:
-    int nNumInputs;                         /* current number of input channels */
-	int nNumOutputs;                        /* current number of output channels */
-	int nSampleRate;                        /* current host sample rate */
-    int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
-    void* hBin;                             /* binauraliser handle */
- 
-    bool isPlaying;
-    
-	bool getIsPlaying() {
-		return isPlaying;
-	}
-    int getCurrentBlockSize(){
-        return nHostBlockSize;
-    }
-    int getCurrentNumInputs(){
-        return nNumInputs;
-    }
-    int getCurrentNumOutputs(){
-        return nNumOutputs;
-    }
+    /* Get functions */
+    void* getFXHandle() { return hBin; } 
+	bool getIsPlaying() { return isPlaying; }
+    int getCurrentBlockSize(){ return nHostBlockSize; }
+    int getCurrentNumInputs(){ return nNumInputs; }
+    int getCurrentNumOutputs(){ return nNumOutputs; }
     
     /* For refreshing window during automation */
     bool refreshWindow;
-    void setRefreshWindow(bool newState) {
-        refreshWindow = newState;
-    }
-    bool getRefreshWindow() {
-        return refreshWindow;
-    }
+    void setRefreshWindow(bool newState) { refreshWindow = newState; }
+    bool getRefreshWindow() { return refreshWindow; }
     
     /* JSON */
     void saveConfigurationToFile (File destination);
     void loadConfiguration (const File& presetFile);
-    ValueTree sources {"Sources"};
     void setLastDir(File newLastDir){ lastDir = newLastDir; }
     File getLastDir() {return lastDir;};
-    File lastDir;
     
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 index, pointer_sized_int value, void* ptr, float opt) override { return 0; };
@@ -94,24 +84,28 @@ public:
     } 
     
     /* OSC */
-    OSCReceiver osc;
-    bool osc_connected;
     void oscMessageReceived(const OSCMessage& message) override;
-    int osc_port_ID;
     void setOscPortID(int newID){
         osc.disconnect();
         osc_port_ID = newID;
         osc_connected = osc.connect(osc_port_ID);
     }
-    int getOscPortID(){
-        return osc_port_ID;
-    }
-    bool getOscPortConnected(){
-        return osc_connected;
-    }
+    int getOscPortID(){ return osc_port_ID; }
+    bool getOscPortConnected(){ return osc_connected; }
     
-    /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead* playHead;
+private:
+    void* hBin;           /* binauraliser handle */
+    int nNumInputs;       /* current number of input channels */
+    int nNumOutputs;      /* current number of output channels */
+    int nSampleRate;      /* current host sample rate */
+    int nHostBlockSize;   /* typical host block size to expect, in samples */
+    bool isPlaying;
+    File lastDir;
+    ValueTree sources {"Sources"};
+    OSCReceiver osc;
+    bool osc_connected;
+    int osc_port_ID;
+    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
     
     /***************************************************************************\

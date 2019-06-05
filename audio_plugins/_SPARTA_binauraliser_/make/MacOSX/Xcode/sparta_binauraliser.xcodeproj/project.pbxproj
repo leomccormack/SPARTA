@@ -1278,8 +1278,8 @@
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.3.9",
-					"JUCE_APP_VERSION_HEX=0x10309",
+					"JUCE_APP_VERSION=1.4.0",
+					"JUCE_APP_VERSION_HEX=0x10400",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1311,7 +1311,7 @@
 				);
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_LDFLAGS = "-bundle -lsparta_binauraliser_debug -lnetcdf -lhdf5 -lhdf5_hl -lz";
+				OTHER_LDFLAGS = "-bundle -lsparta_binauraliser_debug -L/usr/local/lib -lsaf_mkl_custom -lnetcdf -lhdf5 -lhdf5_hl -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_binauraliser_debug";
 				USE_HEADERMAP = NO;
@@ -1339,8 +1339,8 @@
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.3.9",
-					"JUCE_APP_VERSION_HEX=0x10309",
+					"JUCE_APP_VERSION=1.4.0",
+					"JUCE_APP_VERSION_HEX=0x10400",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1373,7 +1373,7 @@
 				);
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_LDFLAGS = "-bundle -lsparta_binauraliser -lnetcdf -lhdf5 -lhdf5_hl -lz";
+				OTHER_LDFLAGS = "-bundle -lsparta_binauraliser -L/usr/local/lib -lsaf_mkl_custom -lnetcdf -lhdf5 -lhdf5_hl -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_binauraliser";
 				USE_HEADERMAP = NO;
@@ -1399,8 +1399,8 @@
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.3.9",
-					"JUCE_APP_VERSION_HEX=0x10309",
+					"JUCE_APP_VERSION=1.4.0",
+					"JUCE_APP_VERSION_HEX=0x10400",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1429,7 +1429,7 @@
 					"\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_LDFLAGS = "-lnetcdf -lhdf5 -lhdf5_hl -lz";
+				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom -lnetcdf -lhdf5 -lhdf5_hl -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_binauraliser_debug";
 				SKIP_INSTALL = YES;
@@ -1455,8 +1455,8 @@
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.3.9",
-					"JUCE_APP_VERSION_HEX=0x10309",
+					"JUCE_APP_VERSION=1.4.0",
+					"JUCE_APP_VERSION_HEX=0x10400",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1486,7 +1486,7 @@
 					"\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_LDFLAGS = "-lnetcdf -lhdf5 -lhdf5_hl -lz";
+				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom -lnetcdf -lhdf5 -lhdf5_hl -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_binauraliser";
 				SKIP_INSTALL = YES;

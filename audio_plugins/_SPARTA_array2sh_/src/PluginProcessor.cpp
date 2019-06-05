@@ -37,10 +37,40 @@ PluginProcessor::~PluginProcessor()
 
 void PluginProcessor::setParameter (int index, float newValue)
 {
-	switch (index)
-	{
-		default: break;
-	}
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_outputOrder:   array2sh_setEncodingOrder(hA2sh, (ENCODING_ORDERS)(newValue*(float)(ARRAY2SH_MAX_SH_ORDER-1) + 1.5f)); break;
+            case k_channelOrder:  array2sh_setChOrder(hA2sh, (int)(newValue*(float)(ARRAY2SH_NUM_CH_ORDERINGS-1) + 1.5f)); break;
+            case k_normType:      array2sh_setNormType(hA2sh, (int)(newValue*(float)(ARRAY2SH_NUM_NORM_TYPES-1) + 1.5f)); break;
+            case k_filterType:    array2sh_setFilterType(hA2sh, (FILTER_TYPES)(newValue*(float)(ARRAY2SH_NUM_FILTER_TYPES-1) + 1.5f)); break;
+            case k_maxGain:       array2sh_setRegPar(hA2sh, newValue*(ARRAY2SH_MAX_GAIN_MAX_VALUE-ARRAY2SH_MAX_GAIN_MIN_VALUE)+ARRAY2SH_MAX_GAIN_MIN_VALUE); break;
+            case k_postGain:      array2sh_setGain(hA2sh, newValue*(ARRAY2SH_POST_GAIN_MAX_VALUE-ARRAY2SH_POST_GAIN_MIN_VALUE)+ARRAY2SH_POST_GAIN_MIN_VALUE); break;
+            case k_speedOfSound:  array2sh_setc(hA2sh, newValue*(ARRAY2SH_SPEED_OF_SOUND_MAX_VALUE-ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE)+ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE); break;
+            case k_arrayRadius:   array2sh_setr(hA2sh, (newValue*(ARRAY2SH_ARRAY_RADIUS_MAX_VALUE-ARRAY2SH_ARRAY_RADIUS_MIN_VALUE)+ARRAY2SH_ARRAY_RADIUS_MIN_VALUE)/1e3f); break;
+            case k_baffleRadius:  array2sh_setR(hA2sh, (newValue*(ARRAY2SH_BAFFLE_RADIUS_MAX_VALUE-ARRAY2SH_BAFFLE_RADIUS_MIN_VALUE)+ARRAY2SH_BAFFLE_RADIUS_MIN_VALUE)/1e3f); break;
+            case k_arrayType:     array2sh_setArrayType(hA2sh, (ARRAY_TYPES)(newValue*(float)(ARRAY2SH_NUM_ARRAY_TYPES-1) + 1.5f)); break;
+            case k_weightType:    array2sh_setWeightType(hA2sh, (WEIGHT_TYPES)(newValue*(float)(ARRAY2SH_NUM_WEIGHT_TYPES-1) + 1.5f)); break;
+            case k_numSensors:    array2sh_setNumSensors(hA2sh, (int)(newValue*(float)(ARRAY2SH_MAX_NUM_SENSORS)+0.5)); break;
+        }
+    }
+    /* sensor direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        float newValueScaled;
+        if (!(index % 2)){
+            newValueScaled = (newValue - 0.5f)*360.0f;
+            if (newValueScaled != array2sh_getSensorAzi_deg(hA2sh, index/2)){
+                array2sh_setSensorAzi_deg(hA2sh, index/2, newValueScaled);
+            }
+        }
+        else{
+            newValueScaled = (newValue - 0.5f)*180.0f;
+            if (newValueScaled != array2sh_getSensorElev_deg(hA2sh, index/2)){
+                array2sh_setSensorElev_deg(hA2sh, index/2, newValueScaled);
+            }
+        }
+    }
 }
 
 void PluginProcessor::setCurrentProgram (int index)
@@ -49,15 +79,37 @@ void PluginProcessor::setCurrentProgram (int index)
 
 float PluginProcessor::getParameter (int index)
 {
-    switch (index)
-	{
-		default: return 0.0f;
-	}
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_outputOrder:   return (float)(array2sh_getEncodingOrder(hA2sh)-1)/(float)(ARRAY2SH_MAX_SH_ORDER-1);
+            case k_channelOrder:  return (float)(array2sh_getChOrder(hA2sh)-1)/(float)(ARRAY2SH_NUM_CH_ORDERINGS-1);
+            case k_normType:      return (float)(array2sh_getNormType(hA2sh)-1)/(float)(ARRAY2SH_NUM_NORM_TYPES-1);
+            case k_filterType:    return (float)(array2sh_getFilterType(hA2sh)-1)/(float)(ARRAY2SH_NUM_FILTER_TYPES-1);
+            case k_maxGain:       return (array2sh_getRegPar(hA2sh)-ARRAY2SH_MAX_GAIN_MIN_VALUE)/(ARRAY2SH_MAX_GAIN_MAX_VALUE-ARRAY2SH_MAX_GAIN_MIN_VALUE);
+            case k_postGain:      return (array2sh_getGain(hA2sh)-ARRAY2SH_POST_GAIN_MIN_VALUE)/(ARRAY2SH_POST_GAIN_MAX_VALUE-ARRAY2SH_POST_GAIN_MIN_VALUE);
+            case k_speedOfSound:  return (array2sh_getc(hA2sh)-ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE)/(ARRAY2SH_SPEED_OF_SOUND_MAX_VALUE-ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE);
+            case k_arrayRadius:   return (/*m->mm*/1e3f*array2sh_getr(hA2sh)-ARRAY2SH_ARRAY_RADIUS_MIN_VALUE)/(ARRAY2SH_ARRAY_RADIUS_MAX_VALUE-ARRAY2SH_ARRAY_RADIUS_MIN_VALUE);
+            case k_baffleRadius:  return (/*m->mm*/1e3f*array2sh_getR(hA2sh)-ARRAY2SH_BAFFLE_RADIUS_MIN_VALUE)/(ARRAY2SH_BAFFLE_RADIUS_MAX_VALUE-ARRAY2SH_BAFFLE_RADIUS_MIN_VALUE);
+            case k_arrayType:     return (float)(array2sh_getArrayType(hA2sh)-1)/(float)(ARRAY2SH_NUM_ARRAY_TYPES-1);
+            case k_weightType:    return (float)(array2sh_getWeightType(hA2sh)-1)/(float)(ARRAY2SH_NUM_WEIGHT_TYPES-1);
+            case k_numSensors:    return (float)(array2sh_getNumSensors(hA2sh))/(float)(ARRAY2SH_MAX_NUM_SENSORS);
+            default: return 0.0f;
+        }
+    }
+    /* sensor direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        if (!(index % 2))
+            return (array2sh_getSensorAzi_deg(hA2sh, index/2)/360.0f) + 0.5f;
+        else
+            return (array2sh_getSensorElev_deg(hA2sh, (index-1)/2)/180.0f) + 0.5f;
+    }
 }
 
 int PluginProcessor::getNumParameters()
 {
-	return k_NumOfParameters;
+	return k_NumOfParameters + 2*ARRAY2SH_MAX_NUM_SENSORS;
 }
 
 const String PluginProcessor::getName() const
@@ -67,15 +119,95 @@ const String PluginProcessor::getName() const
 
 const String PluginProcessor::getParameterName (int index)
 {
-    switch (index)
-	{
-		default: return "NULL";
-	}
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_outputOrder:     return "order";
+            case k_channelOrder:    return "channel_order";
+            case k_normType:        return "norm_type";
+            case k_filterType:      return "filter_type";
+            case k_maxGain:         return "max_gain";
+            case k_postGain:        return "post_gain";
+            case k_speedOfSound:    return "speed_of_sound";
+            case k_arrayRadius:     return "array_radius";
+            case k_baffleRadius:    return "baffle_radius";
+            case k_arrayType:       return "array_type";
+            case k_weightType:      return "weight_type";
+            case k_numSensors:      return "num_sensors";
+            default: return "NULL";
+        }
+    }
+    /* sensor direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        if (!(index % 2))
+            return TRANS("Azim_") + String(index/2);
+        else
+            return TRANS("Elev_") + String((index-1)/2);
+    }
 }
 
 const String PluginProcessor::getParameterText(int index)
 {
-	return String(getParameter(index), 1);    
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_outputOrder: return String(array2sh_getEncodingOrder(hA2sh));
+            case k_channelOrder:
+                switch(array2sh_getChOrder(hA2sh)){
+                    case CH_ACN:  return "ACN";
+                    case CH_FUMA: return "FuMa";
+                    default: return "NULL";
+                }
+            case k_normType:
+                switch(array2sh_getNormType(hA2sh)){
+                    case NORM_N3D:  return "N3D";
+                    case NORM_SN3D: return "SN3D";
+                    case NORM_FUMA: return "FuMa";
+                    default: return "NULL";
+                }
+                
+            case k_filterType:
+                switch(array2sh_getFilterType(hA2sh)){
+                    case FILTER_SOFT_LIM:      return "Soft-Limiting";
+                    case FILTER_TIKHONOV:      return "Tikhonov";
+                    case FILTER_Z_STYLE:       return "Z-style";
+                    case FILTER_Z_STYLE_MAXRE: return "Z-style (max_rE)";
+                    default: return "NULL";
+                }
+            case k_maxGain:      return String(array2sh_getRegPar(hA2sh)) + " dB";
+            case k_postGain:     return String(array2sh_getGain(hA2sh)) + " dB";
+            case k_speedOfSound: return String(array2sh_getc(hA2sh)) + " m/s";
+            case k_arrayRadius:  return String(/*m->mm*/1e3f*array2sh_getr(hA2sh)) + " mm";
+            case k_baffleRadius: return String(/*m->mm*/1e3f*array2sh_getR(hA2sh)) + " mm";
+            case k_arrayType:
+                switch(array2sh_getArrayType(hA2sh)){
+                    case ARRAY_SPHERICAL:   return "Spherical";
+                    case ARRAY_CYLINDRICAL: return "Cylindrical";
+                    default: return "NULL";
+                }
+            case k_weightType:
+                switch(array2sh_getWeightType(hA2sh)){
+                    case WEIGHT_RIGID_OMNI:   return "Rigid-Omni";
+                    case WEIGHT_RIGID_CARD:   return "Rigid-Card";
+                    case WEIGHT_RIGID_DIPOLE: return "Rigid-Dipole";
+                    case WEIGHT_OPEN_OMNI:    return "Open-Omni";
+                    case WEIGHT_OPEN_CARD:    return "Open-Card";
+                    case WEIGHT_OPEN_DIPOLE:  return "Open-Dipole";
+                    default: return "NULL";
+                }
+            case k_numSensors: return String(array2sh_getNumSensors(hA2sh));
+            default: return "NULL";
+        }
+    }
+    /* sensor direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        if (!(index % 2))
+            return String(array2sh_getSensorAzi_deg(hA2sh, index/2));
+        else
+            return String(array2sh_getSensorElev_deg(hA2sh, (index-1)/2));
+    }
 }
 
 const String PluginProcessor::getInputChannelName (int channelIndex) const

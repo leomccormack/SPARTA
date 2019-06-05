@@ -54,10 +54,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    PluginProcessor* hVst;
-    Rectangle<int> localBounds;
-
-    bool hasFinishedDrawing;
+    
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -69,7 +66,10 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-
+    PluginProcessor* hVst;
+    void* hSld;
+    Rectangle<int> localBounds;
+    bool hasFinishedDrawing;
     //[/UserVariables]
 
     //==============================================================================

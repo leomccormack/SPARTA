@@ -60,8 +60,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    PluginProcessor* hVst;
-    void timerCallback() override;
+    
 
     //[/UserMethods]
 
@@ -75,20 +74,22 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    PluginProcessor* hVst;
+    void* hBin;
+    void timerCallback() override;
     ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
 
     /* source coordinates viewport */
     ScopedPointer<Viewport> sourceCoordsVP;
     inputCoordsView* sourceCoordsView_handle;
-
     FilenameComponent fileChooser;
 
     /* sofa file loading */
     void filenameComponentChanged (FilenameComponent*) override  {
         String directory = fileChooser.getCurrentFile().getFullPathName();
         const char* new_cstring = (const char*)directory.toUTF8();
-        binauraliser_setSofaFilePath(hVst->hBin, new_cstring);
+        binauraliser_setSofaFilePath(hBin, new_cstring);
         refreshPanViewWindow = true;
     }
 

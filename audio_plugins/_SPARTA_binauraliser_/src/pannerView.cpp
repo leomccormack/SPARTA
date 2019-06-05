@@ -44,20 +44,21 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
 
     //[Constructor] You can add your own custom stuff here..
     hVst = ownerFilter;
+    hBin = hVst->getFXHandle();
     width = _width;
     height = _height;
 
-    for(int src=0; src<MAX_NUM_CHANNELS; src++){
-        SourceIcons[src].setBounds(width - width*(binauraliser_getSourceAzi_deg(hVst->hBin, src) + 180.0f)/360.f - icon_size/2.0f,
-                                   height - height*(binauraliser_getSourceElev_deg(hVst->hBin, src) + 90.0f)/180.0f - icon_size/2.0f,
+    for(int src=0; src<BINAURALISER_MAX_NUM_INPUTS; src++){
+        SourceIcons[src].setBounds(width - width*(binauraliser_getSourceAzi_deg(hBin, src) + 180.0f)/360.f - icon_size/2.0f,
+                                   height - height*(binauraliser_getSourceElev_deg(hBin, src) + 90.0f)/180.0f - icon_size/2.0f,
                                    icon_size,
                                    icon_size);
     }
-    NSources = binauraliser_getNumSources(hVst->hBin);
-    NLoudspeakers = binauraliser_getNDirs(hVst->hBin)>MAX_NUM_OUT_DIRS? MAX_NUM_OUT_DIRS : binauraliser_getNDirs(hVst->hBin);
+    NSources = binauraliser_getNumSources(hBin);
+    NLoudspeakers = binauraliser_getNDirs(hBin)>MAX_NUM_OUT_DIRS? MAX_NUM_OUT_DIRS : binauraliser_getNDirs(hBin);
     for(int ls=0; ls<NLoudspeakers; ls++){
-        LoudspeakerIcons[ls].setBounds(width - width*(binauraliser_getHRIRAzi_deg(hVst->hBin, ls) + 180.0f)/360.f - icon_size/2.0f,
-                                       height - height*(binauraliser_getHRIRElev_deg(hVst->hBin, ls)+90.0f)/180.0f - icon_size/2.0f,
+        LoudspeakerIcons[ls].setBounds(width - width*(binauraliser_getHRIRAzi_deg(hBin, ls) + 180.0f)/360.f - icon_size/2.0f,
+                                       height - height*(binauraliser_getHRIRElev_deg(hBin, ls)+90.0f)/180.0f - icon_size/2.0f,
                                        icon_size,
                                        icon_size);
     }
@@ -212,9 +213,9 @@ void pannerView::mouseDrag (const MouseEvent& e)
     if(sourceIconIsClicked){
         Point<float> point;
         point.setXY((float)e.getPosition().getX()-icon_size/2.0f, (float)e.getPosition().getY()-icon_size/2.0f);
-        binauraliser_setSourceAzi_deg(hVst->hBin, indexOfClickedSource,
+        binauraliser_setSourceAzi_deg(hBin, indexOfClickedSource,
                                    ((width - (point.getX() + icon_size/2.0f))*360.0f)/width-180.0f);
-        binauraliser_setSourceElev_deg(hVst->hBin, indexOfClickedSource,
+        binauraliser_setSourceElev_deg(hBin, indexOfClickedSource,
                                    ((height - (point.getY() + icon_size/2.0f))*180.0f)/height - 90.0f);
     }
 
@@ -233,17 +234,17 @@ void pannerView::mouseUp (const MouseEvent& e)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void pannerView::refreshPanView()
 {
-    for(int src=0; src<MAX_NUM_CHANNELS; src++){
-        SourceIcons[src].setBounds(width - width*(binauraliser_getSourceAzi_deg(hVst->hBin, src) + 180.0f)/360.f - icon_size/2.0f,
-                                   height - height*(binauraliser_getSourceElev_deg(hVst->hBin, src) + 90.0f)/180.0f - icon_size/2.0f,
+    for(int src=0; src<BINAURALISER_MAX_NUM_INPUTS; src++){
+        SourceIcons[src].setBounds(width - width*(binauraliser_getSourceAzi_deg(hBin, src) + 180.0f)/360.f - icon_size/2.0f,
+                                   height - height*(binauraliser_getSourceElev_deg(hBin, src) + 90.0f)/180.0f - icon_size/2.0f,
                                    icon_size,
                                    icon_size);
     }
-    NSources = binauraliser_getNumSources(hVst->hBin);
-    NLoudspeakers = binauraliser_getNDirs(hVst->hBin)>MAX_NUM_OUT_DIRS ? MAX_NUM_OUT_DIRS : binauraliser_getNDirs(hVst->hBin);
+    NSources = binauraliser_getNumSources(hBin);
+    NLoudspeakers = binauraliser_getNDirs(hBin)>MAX_NUM_OUT_DIRS ? MAX_NUM_OUT_DIRS : binauraliser_getNDirs(hBin);
     for(int ls=0; ls<NLoudspeakers; ls++){
-        LoudspeakerIcons[ls].setBounds(width - width*(binauraliser_getHRIRAzi_deg(hVst->hBin, ls) + 180.0f)/360.f - icon_size/2.0f,
-                                       height - height*(binauraliser_getHRIRElev_deg(hVst->hBin, ls) + 90.0f)/180.0f - icon_size/2.0f,
+        LoudspeakerIcons[ls].setBounds(width - width*(binauraliser_getHRIRAzi_deg(hBin, ls) + 180.0f)/360.f - icon_size/2.0f,
+                                       height - height*(binauraliser_getHRIRElev_deg(hBin, ls) + 90.0f)/180.0f - icon_size/2.0f,
                                        icon_size,
                                        icon_size);
     }

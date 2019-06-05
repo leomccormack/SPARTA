@@ -50,8 +50,8 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
 
     //[Constructor] You can add your own custom stuff here..
     setSize (sensorEdit_width, sensorEdit_height*currentNCH);
-
     hVst = ownerFilter;
+    hPan = hVst->getFXHandle();
     maxNCH = _maxNCH ;
     currentNCH =_currentNCH;
     aziSliders =  new ScopedPointer<Slider>[maxNCH];
@@ -61,7 +61,7 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
         /* create and initialise azimuth sliders */
         addAndMakeVisible (aziSliders[i] = new Slider ("new slider"));
         aziSliders[i]->setRange (-360.0, 360.0, 0.001);
-        aziSliders[i]->setValue(panner_getLoudspeakerAzi_deg(hVst->hPan, i));
+        aziSliders[i]->setValue(panner_getLoudspeakerAzi_deg(hPan, i));
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
         aziSliders[i]->setBounds(-25, 8 + i*sensorEdit_height, 96, 16);
@@ -70,7 +70,7 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
         /* create and initialise elevation sliders */
         addAndMakeVisible (elevSliders[i] = new Slider ("new slider"));
         elevSliders[i]->setRange (-180.0, 180.0, 0.001);
-        elevSliders[i]->setValue(panner_getLoudspeakerElev_deg(hVst->hPan, i));
+        elevSliders[i]->setValue(panner_getLoudspeakerElev_deg(hPan, i));
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
         elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 96, 16);
@@ -179,11 +179,11 @@ void outputCoordsView::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     for(int i=0; i<maxNCH; i++){
         if (sliderThatWasMoved == aziSliders[i]) {
-            panner_setLoudspeakerAzi_deg(hVst->hPan, i, (float)aziSliders[i]->getValue());
+            panner_setLoudspeakerAzi_deg(hPan, i, (float)aziSliders[i]->getValue());
             break;
         }
         if (sliderThatWasMoved == elevSliders[i]) {
-            panner_setLoudspeakerElev_deg(hVst->hPan, i, (float)elevSliders[i]->getValue());
+            panner_setLoudspeakerElev_deg(hPan, i, (float)elevSliders[i]->getValue());
             break;
         }
     }
@@ -209,9 +209,9 @@ void outputCoordsView::refreshCoords(){
     /* update slider values and limits */
     for( int i=0; i<maxNCH; i++){
         aziSliders[i]->setRange (-360.0, 360.0, 0.001);
-        aziSliders[i]->setValue(panner_getLoudspeakerAzi_deg(hVst->hPan, i), dontSendNotification);
+        aziSliders[i]->setValue(panner_getLoudspeakerAzi_deg(hPan, i), dontSendNotification);
         elevSliders[i]->setRange (-180.0, 180.0, 0.001);
-        elevSliders[i]->setValue(panner_getLoudspeakerElev_deg(hVst->hPan, i), dontSendNotification);
+        elevSliders[i]->setValue(panner_getLoudspeakerElev_deg(hPan, i), dontSendNotification);
     }
 }
 

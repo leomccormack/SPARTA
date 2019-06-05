@@ -26,7 +26,7 @@
 #include "ambi_enc.h"
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1 
 #include "../../resources/ConfigurationHelper.h"
-#define BUILD_VER_SUFFIX "beta"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
+#define BUILD_VER_SUFFIX "beta" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
 #ifndef MIN
   #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))

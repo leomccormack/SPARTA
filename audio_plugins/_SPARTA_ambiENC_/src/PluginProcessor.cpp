@@ -78,7 +78,7 @@ float PluginProcessor::getParameter (int index)
     if(index < k_NumOfParameters){
         switch (index) {
             case k_outputOrder:   return (float)(ambi_enc_getOutputOrder(hAmbi)-1)/(float)(AMBI_ENC_MAX_SH_ORDER-1);
-            case k_channelOrder:  return (float)(ambi_enc_getChOrder(hAmbi)-1)/(float)(AMBI_ENC_NUM_NORM_TYPES-1);
+            case k_channelOrder:  return (float)(ambi_enc_getChOrder(hAmbi)-1)/(float)(AMBI_ENC_NUM_CH_ORDERINGS-1);
             case k_normType:      return (float)(ambi_enc_getNormType(hAmbi)-1)/(float)(AMBI_ENC_NUM_NORM_TYPES-1);
             case k_numSources:    return (float)(ambi_enc_getNumSources(hAmbi))/(float)(AMBI_ENC_MAX_NUM_INPUTS);
             default: return 0.0f;
@@ -303,7 +303,6 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     }
     
     xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
-    
     xml.setAttribute("NORM", ambi_enc_getNormType(hAmbi));
     xml.setAttribute("CHORDER", ambi_enc_getChOrder(hAmbi));
     xml.setAttribute("OUT_ORDER", ambi_enc_getOutputOrder(hAmbi));

@@ -45,13 +45,9 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    PluginProcessor* hVst;
-
+    
     void refreshPanView();
-
-    bool getBeamIconIsClicked(){
-        return beamIconIsClicked;
-    }
+    bool getBeamIconIsClicked(){  return beamIconIsClicked;  }
 
     //[/UserMethods]
 
@@ -65,12 +61,12 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    PluginProcessor* hVst;
+    void* hBeam;
     int width;
     int height;
-
     Rectangle<float> BeamIcons[MAX_NUM_CHANNELS];
     int NBeams;
-
     bool beamIconIsClicked;
     int indexOfClickedBeam;
     //[/UserVariables]

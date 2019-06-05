@@ -78,8 +78,7 @@ private:
     float* solidCurves;
     int numCurves;
     int numFreqPoints;
-
-
+ 
     //[/UserVariables]
 
     //==============================================================================

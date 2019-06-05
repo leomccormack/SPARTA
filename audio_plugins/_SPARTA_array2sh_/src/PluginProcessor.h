@@ -26,52 +26,46 @@
 #include "array2sh.h"
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
 #include "../../resources/ConfigurationHelper.h"
-
-#define BUILD_VER_SUFFIX "beta"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
+#define BUILD_VER_SUFFIX "beta"   /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
-
 #ifndef M_PI
-#define M_PI ( 3.14159265358979323846264338327950288f )
+  #define M_PI ( 3.14159265358979323846264338327950288f )
 #endif
 
-enum {	
-    /* For the default VST GUI */
+/* Parameter tags: for the default VST GUI */
+enum {
+    k_outputOrder,
+    k_channelOrder,
+    k_normType,
+    k_filterType,
+    k_maxGain,
+    k_postGain,
+    k_speedOfSound,
+    k_arrayRadius,
+    k_baffleRadius,
+    k_arrayType,
+    k_weightType,
+    k_numSensors,
+    
 	k_NumOfParameters
 };
-
 
 class PluginProcessor  : public AudioProcessor,
                          public VSTCallbackHandler
 {
 public:
-    int nNumInputs;                         /* current number of input channels */
-	int nNumOutputs;                        /* current number of output channels */
-	int nSampleRate;                        /* current host sample rate */
-    int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
-    void* hA2sh;                            /* array2sh handle */
- 
-    bool isPlaying;
-    
-	bool getIsPlaying() {
-		return isPlaying;
-	}
-    int getCurrentBlockSize(){
-        return nHostBlockSize;
-    }
-    int getCurrentNumInputs(){
-        return nNumInputs;
-    }
-    int getCurrentNumOutputs(){
-        return nNumOutputs;
-    }
+    /* Get functions */
+    void* getFXHandle() { return hA2sh; }
+	bool getIsPlaying() { return isPlaying; }
+    int getCurrentBlockSize(){ return nHostBlockSize; }
+    int getCurrentNumInputs(){ return nNumInputs; }
+    int getCurrentNumOutputs(){ return nNumOutputs; }
     
     /* JSON */
     void saveConfigurationToFile (File destination);
     void loadConfiguration (const File& presetFile);
-    ValueTree sensors {"Sensors"};
     void setLastDir(File newLastDir){ lastDir = newLastDir; }
     File getLastDir() {return lastDir;};
-    File lastDir;
     
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 index, pointer_sized_int value, void* ptr, float opt) override { return 0; };
@@ -83,8 +77,16 @@ public:
         return 0;
     }
     
-    /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead* playHead;
+private:
+    void* hA2sh;           /* array2sh handle */
+    int nNumInputs;        /* current number of input channels */
+    int nNumOutputs;       /* current number of output channels */
+    int nSampleRate;       /* current host sample rate */
+    int nHostBlockSize;    /* typical host block size to expect, in samples */
+    bool isPlaying;
+    File lastDir;
+    ValueTree sensors {"Sensors"};
+    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
     
     /***************************************************************************\

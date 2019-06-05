@@ -26,13 +26,15 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "rotator.h"
 #include <string.h>
-
-#define MAX_NUM_CHANNELS 64
-#define BUILD_VER_SUFFIX "beta"            /* String to be added before the version name on the GUI (beta, alpha etc..) */
+#define BUILD_VER_SUFFIX "beta" /* String to be added before the version name on the GUI (beta, alpha etc..) */
 #define DEFAULT_OSC_PORT 9000
 
 enum {	
     /* For the default VST GUI */
+    k_inputOrder,
+    k_channelOrder,
+    k_normType,
+    k_useRollPitchYaw,
     k_yaw,
     k_pitch,
     k_roll,
@@ -48,23 +50,11 @@ class PluginProcessor  : public AudioProcessor,
                          public VSTCallbackHandler
 {
 public:
-    int nNumInputs;                         /* current number of input channels */
-	int nNumOutputs;                        /* current number of output channels */
-	int nSampleRate;                        /* current host sample rate */
-    int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
-    void* hRot;                             /* handle */
-
-    bool isPlaying;
-    
-    int getCurrentBlockSize(){
-        return nHostBlockSize;
-    }
-    int getCurrentNumInputs(){
-        return nNumInputs;
-    }
-    int getCurrentNumOutputs(){
-        return nNumOutputs;
-    }
+    /* Get functions */
+    void* getFXHandle() { return hRot; }
+    int getCurrentBlockSize(){ return nHostBlockSize; }
+    int getCurrentNumInputs(){ return nNumInputs; }
+    int getCurrentNumOutputs(){ return nNumOutputs; }
     
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 index, pointer_sized_int value, void* ptr, float opt) override { return 0; };
@@ -77,24 +67,26 @@ public:
     } 
 	
     /* OSC */
-    OSCReceiver osc;
-    bool osc_connected;
     void oscMessageReceived(const OSCMessage& message) override;
-    int osc_port_ID;
     void setOscPortID(int newID){
         osc.disconnect();
         osc_port_ID = newID;
         osc_connected = osc.connect(osc_port_ID);
     }
-    int getOscPortID(){
-        return osc_port_ID;
-    }
-    bool getOscPortConnected(){
-        return osc_connected;
-    }
+    int getOscPortID(){ return osc_port_ID; }
+    bool getOscPortConnected(){ return osc_connected; }
     
-    /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead* playHead;
+private:
+    void* hRot;             /* rotator handle */
+    int nNumInputs;         /* current number of input channels */
+    int nNumOutputs;        /* current number of output channels */
+    int nSampleRate;        /* current host sample rate */
+    int nHostBlockSize;     /* typical host block size to expect, in samples */
+    bool isPlaying;
+    OSCReceiver osc;
+    bool osc_connected;
+    int osc_port_ID;
+    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
 
     /***************************************************************************\
