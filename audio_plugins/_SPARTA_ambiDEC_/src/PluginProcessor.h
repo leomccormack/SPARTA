@@ -31,8 +31,7 @@
 #define MAX_NUM_CHANNELS 64
 
 /* Parameter tags: for the default VST GUI */
-enum {	
-    /* For the default VST GUI */
+enum {	 
     k_inputOrder,
     k_channelOrder,
     k_normType,

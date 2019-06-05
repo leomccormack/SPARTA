@@ -279,7 +279,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBdecoderMethod->addItem(TRANS("Time-alignment (TA)"), DECODING_METHOD_TA);
     CBdecoderMethod->addItem(TRANS("Magnitude-LS"), DECODING_METHOD_MAGLS);
     CBchFormat->addItem (TRANS("ACN"), CH_ACN);
-    
+    CBchFormat->addItem (TRANS("FuMa"), CH_FUMA);
     CBnormScheme->addItem (TRANS("N3D"), NORM_N3D);
     CBnormScheme->addItem (TRANS("SN3D"), NORM_SN3D);
     CBnormScheme->addItem (TRANS("FuMa"), NORM_FUMA);
