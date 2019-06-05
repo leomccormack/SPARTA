@@ -205,6 +205,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* handle for pluginProcessor */
 	hVst = ownerFilter;
+    hDir = hVst->getFXHandle();
 
     /* OpenGL init */
     openGLContext.setMultisamplingEnabled(true);
@@ -278,8 +279,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* Add remaining options */
     CBchFormat->addItem(TRANS("ACN"), CH_ACN);
+    CBchFormat->addItem(TRANS("FuMa"), CH_FUMA);
     CBnormScheme->addItem(TRANS("N3D"), NORM_N3D);
     CBnormScheme->addItem(TRANS("SN3D"), NORM_SN3D);
+    CBnormScheme->addItem(TRANS("FuMa"), NORM_FUMA);
     CB_hfov->addItem(TRANS("360"), HFOV_360);
     CB_hfov->addItem(TRANS("180"), HFOV_180);
     CB_hfov->addItem(TRANS("90"), HFOV_90);
@@ -304,21 +307,23 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_flipUD->setToggleState(hVst->getFlipUD(), dontSendNotification);
 
     /* fetch current configuration */
-    CBinputOrder->setSelectedId(dirass_getInputOrder(hVst->hDir), dontSendNotification);
-    CBbeamType->setSelectedId(dirass_getBeamType(hVst->hDir), dontSendNotification);
-    CBgridOption->setSelectedId(dirass_getDisplayGridOption(hVst->hDir), dontSendNotification);
-    CBupscaleOrder->setSelectedId(dirass_getUpscaleOrder(hVst->hDir), dontSendNotification);
-    CBdirassMode->setSelectedId(dirass_getDiRAssMode(hVst->hDir), dontSendNotification);
-    s_minFreq->setValue((double)dirass_getMinFreq(hVst->hDir), dontSendNotification);
-    s_maxFreq->setValue((double)dirass_getMaxFreq(hVst->hDir), dontSendNotification);
-    CBchFormat->setSelectedId(dirass_getChOrder(hVst->hDir), dontSendNotification);
-    CBnormScheme->setSelectedId(dirass_getNormType(hVst->hDir), dontSendNotification);
-    CB_hfov->setSelectedId(dirass_getDispFOV(hVst->hDir), dontSendNotification);
-    CB_aspectRatio->setSelectedId(dirass_getAspectRatio(hVst->hDir), dontSendNotification);
-    SLmapAvg->setValue(dirass_getMapAvgCoeff(hVst->hDir), dontSendNotification);
-    s_interpWidth->setValue(dirass_getDispWidth(hVst->hDir), dontSendNotification);
-    CBupscaleOrder->setEnabled(dirass_getDiRAssMode(hVst->hDir) == REASS_UPSCALE ? true : false);
+    CBinputOrder->setSelectedId(dirass_getInputOrder(hDir), dontSendNotification);
+    CBbeamType->setSelectedId(dirass_getBeamType(hDir), dontSendNotification);
+    CBgridOption->setSelectedId(dirass_getDisplayGridOption(hDir), dontSendNotification);
+    CBupscaleOrder->setSelectedId(dirass_getUpscaleOrder(hDir), dontSendNotification);
+    CBdirassMode->setSelectedId(dirass_getDiRAssMode(hDir), dontSendNotification);
+    s_minFreq->setValue((double)dirass_getMinFreq(hDir), dontSendNotification);
+    s_maxFreq->setValue((double)dirass_getMaxFreq(hDir), dontSendNotification);
+    CBchFormat->setSelectedId(dirass_getChOrder(hDir), dontSendNotification);
+    CBnormScheme->setSelectedId(dirass_getNormType(hDir), dontSendNotification);
+    CB_hfov->setSelectedId(dirass_getDispFOV(hDir), dontSendNotification);
+    CB_aspectRatio->setSelectedId(dirass_getAspectRatio(hDir), dontSendNotification);
+    SLmapAvg->setValue(dirass_getMapAvgCoeff(hDir), dontSendNotification);
+    s_interpWidth->setValue(dirass_getDispWidth(hDir), dontSendNotification);
+    CBupscaleOrder->setEnabled(dirass_getDiRAssMode(hDir) == REASS_UPSCALE ? true : false);
     resolutionHasChanged = false;
+    CBchFormat->setItemEnabled(CH_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
 
 	/* Specify screen refresh rate */
     startTimer(140);//80); /*ms (40ms = 25 frames per second) */
@@ -699,13 +704,13 @@ void PluginEditor::paint (Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_supported_fs:
-            g.drawText(TRANS("Sample rate (") + String(dirass_getSamplingRate(hVst->hDir)) + TRANS(") is unsupported"),
+            g.drawText(TRANS("Sample rate (") + String(dirass_getSamplingRate(hDir)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(dirass_getNSHrequired(hVst->hDir)) + TRANS(")"),
+                       TRANS("/") + String(dirass_getNSHrequired(hDir)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -740,56 +745,56 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBbeamType.get())
     {
         //[UserComboBoxCode_CBbeamType] -- add your combo box handling code here..
-        dirass_setBeamType(hVst->hDir, CBbeamType->getSelectedId());
+        dirass_setBeamType(hDir, CBbeamType->getSelectedId());
         //[/UserComboBoxCode_CBbeamType]
     }
     else if (comboBoxThatHasChanged == CBchFormat.get())
     {
         //[UserComboBoxCode_CBchFormat] -- add your combo box handling code here..
-        dirass_setChOrder(hVst->hDir, CBchFormat->getSelectedId());
+        dirass_setChOrder(hDir, CBchFormat->getSelectedId());
         //[/UserComboBoxCode_CBchFormat]
     }
     else if (comboBoxThatHasChanged == CBnormScheme.get())
     {
         //[UserComboBoxCode_CBnormScheme] -- add your combo box handling code here..
-        dirass_setNormType(hVst->hDir, CBnormScheme->getSelectedId());
+        dirass_setNormType(hDir, CBnormScheme->getSelectedId());
         //[/UserComboBoxCode_CBnormScheme]
     }
     else if (comboBoxThatHasChanged == CB_hfov.get())
     {
         //[UserComboBoxCode_CB_hfov] -- add your combo box handling code here..
-        dirass_setDispFOV(hVst->hDir, CB_hfov->getSelectedId());
+        dirass_setDispFOV(hDir, CB_hfov->getSelectedId());
         //[/UserComboBoxCode_CB_hfov]
     }
     else if (comboBoxThatHasChanged == CB_aspectRatio.get())
     {
         //[UserComboBoxCode_CB_aspectRatio] -- add your combo box handling code here..
-        dirass_setAspectRatio(hVst->hDir, CB_aspectRatio->getSelectedId());
+        dirass_setAspectRatio(hDir, CB_aspectRatio->getSelectedId());
         //[/UserComboBoxCode_CB_aspectRatio]
     }
     else if (comboBoxThatHasChanged == CBinputOrder.get())
     {
         //[UserComboBoxCode_CBinputOrder] -- add your combo box handling code here..
-        dirass_setInputOrder(hVst->hDir, CBinputOrder->getSelectedId());
+        dirass_setInputOrder(hDir, CBinputOrder->getSelectedId());
         //[/UserComboBoxCode_CBinputOrder]
     }
     else if (comboBoxThatHasChanged == CBgridOption.get())
     {
         //[UserComboBoxCode_CBgridOption] -- add your combo box handling code here..
-        dirass_setDisplayGridOption(hVst->hDir, CBgridOption->getSelectedId());
+        dirass_setDisplayGridOption(hDir, CBgridOption->getSelectedId());
         //[/UserComboBoxCode_CBgridOption]
     }
     else if (comboBoxThatHasChanged == CBupscaleOrder.get())
     {
         //[UserComboBoxCode_CBupscaleOrder] -- add your combo box handling code here..
-        dirass_setUpscaleOrder(hVst->hDir, CBupscaleOrder->getSelectedId());
+        dirass_setUpscaleOrder(hDir, CBupscaleOrder->getSelectedId());
         //[/UserComboBoxCode_CBupscaleOrder]
     }
     else if (comboBoxThatHasChanged == CBdirassMode.get())
     {
         //[UserComboBoxCode_CBdirassMode] -- add your combo box handling code here..
-        dirass_setDiRAssMode(hVst->hDir, CBdirassMode->getSelectedId());
-        CBupscaleOrder->setEnabled(dirass_getDiRAssMode(hVst->hDir) == REASS_UPSCALE ? true : false);
+        dirass_setDiRAssMode(hDir, CBdirassMode->getSelectedId());
+        CBupscaleOrder->setEnabled(dirass_getDiRAssMode(hDir) == REASS_UPSCALE ? true : false);
         //[/UserComboBoxCode_CBdirassMode]
     }
     else if (comboBoxThatHasChanged == CB_webcam.get())
@@ -816,25 +821,25 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == SLmapAvg.get())
     {
         //[UserSliderCode_SLmapAvg] -- add your slider handling code here..
-        dirass_setMapAvgCoeff(hVst->hDir, (float)SLmapAvg->getValue());
+        dirass_setMapAvgCoeff(hDir, (float)SLmapAvg->getValue());
         //[/UserSliderCode_SLmapAvg]
     }
     else if (sliderThatWasMoved == s_minFreq.get())
     {
         //[UserSliderCode_s_minFreq] -- add your slider handling code here..
-        dirass_setMinFreq(hVst->hDir, (float)s_minFreq->getValue());
+        dirass_setMinFreq(hDir, (float)s_minFreq->getValue());
         //[/UserSliderCode_s_minFreq]
     }
     else if (sliderThatWasMoved == s_maxFreq.get())
     {
         //[UserSliderCode_s_maxFreq] -- add your slider handling code here..
-        dirass_setMaxFreq(hVst->hDir, (float)s_maxFreq->getValue());
+        dirass_setMaxFreq(hDir, (float)s_maxFreq->getValue());
         //[/UserSliderCode_s_maxFreq]
     }
     else if (sliderThatWasMoved == s_interpWidth.get())
     {
         //[UserSliderCode_s_interpWidth] -- add your slider handling code here..
-        dirass_setDispWidth(hVst->hDir, (int)s_interpWidth->getValue());
+        dirass_setDispWidth(hDir, (int)s_interpWidth->getValue());
         //[/UserSliderCode_s_interpWidth]
     }
 
@@ -875,6 +880,12 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PluginEditor::timerCallback()
 {
+    /* parameters whos values can change internally should be periodically refreshed */
+    CBchFormat->setSelectedId(dirass_getChOrder(hDir), dontSendNotification);
+    CBnormScheme->setSelectedId(dirass_getNormType(hDir), dontSendNotification);
+    CBchFormat->setItemEnabled(CH_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
+
 #ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
 	if (hVst->getIsPlaying()) {
@@ -889,7 +900,7 @@ void PluginEditor::timerCallback()
 		CBgridOption->setEnabled(true);
 		s_interpWidth->setEnabled(true);
 
-		dirass_checkReInit(hVst->hDir);
+		dirass_checkReInit(hDir);
 	}
 #endif
     CBgridOption->setEnabled(hVst->getIsPlaying() ? false : true);
@@ -903,17 +914,17 @@ void PluginEditor::timerCallback()
     }
 
     /* refresh the powermap display */
-    if ((overlayIncluded != nullptr) && (hVst->isPlaying)) {
+    if ((overlayIncluded != nullptr) && (hVst->getIsPlaying())) {
         float* dirs_deg, *pmap;
         int nDirs, pmapReady, pmapWidth, hfov;
         float aspectRatio;
-        pmapReady = dirass_getPmap(hVst->hDir, &dirs_deg, &pmap, &nDirs, &pmapWidth, &hfov, &aspectRatio);
+        pmapReady = dirass_getPmap(hDir, &dirs_deg, &pmap, &nDirs, &pmapWidth, &hfov, &aspectRatio);
         overlayIncluded->setEnableTransparency(CB_webcam->getSelectedId() > 1 ? true : false);
         if(pmapReady){
             overlayIncluded->refreshPowerMap(dirs_deg, pmap, nDirs, pmapWidth, hfov, aspectRatio);
         }
         if(overlayIncluded->getFinishedRefresh()){
-            dirass_requestPmapUpdate(hVst->hDir);
+            dirass_requestPmapUpdate(hDir);
         }
     }
 
@@ -922,11 +933,11 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ( !((dirass_getSamplingRate(hVst->hDir) == 44.1e3) || (dirass_getSamplingRate(hVst->hDir) == 48e3)) ){
+    else if ( !((dirass_getSamplingRate(hDir) == 44.1e3) || (dirass_getSamplingRate(hDir) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < dirass_getNSHrequired(hVst->hDir))){
+    else if ((hVst->getCurrentNumInputs() < dirass_getNSHrequired(hDir))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -961,7 +972,6 @@ void PluginEditor::updateCameraList()
         CB_webcam->addItem (cameras[i], i + 2);
     CB_webcam->setSelectedId(1);
 }
-
 
 void PluginEditor::imageReceived(const Image& image)
 {

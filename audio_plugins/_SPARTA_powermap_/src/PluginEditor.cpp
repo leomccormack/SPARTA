@@ -202,6 +202,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* handle for pluginProcessor */
 	hVst = ownerFilter;
+    hPm = hVst->getFXHandle();
 
     /* OpenGL init */
     openGLContext.setMultisamplingEnabled(true);
@@ -216,16 +217,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     int nPoints;
     float* pX_vector, *pY_values;
     int* pY_values_int;
-    addAndMakeVisible (anaOrder2dSlider = new log2dSlider(360, 63, 100, 20e3, 1, powermap_getMasterOrder(hVst->hPm), 0));
+    addAndMakeVisible (anaOrder2dSlider = new log2dSlider(360, 63, 100, 20e3, 1, powermap_getMasterOrder(hPm), 0));
     anaOrder2dSlider->setAlwaysOnTop(true);
     anaOrder2dSlider->setTopLeftPosition(248, 558);
-    powermap_getAnaOrderHandle(hVst->hPm, &pX_vector, &pY_values_int, &nPoints);
+    powermap_getAnaOrderHandle(hPm, &pX_vector, &pY_values_int, &nPoints);
     anaOrder2dSlider->setDataHandlesInt(pX_vector, pY_values_int, nPoints);
 
     addAndMakeVisible (pmapEQ2dSlider = new log2dSlider(360, 63, 100, 20e3, 0.0, 2.0, 3));
     pmapEQ2dSlider->setAlwaysOnTop(true);
     pmapEQ2dSlider->setTopLeftPosition(248, 454);
-    powermap_getPowermapEQHandle(hVst->hPm, &pX_vector, &pY_values, &nPoints);
+    powermap_getPowermapEQHandle(hPm, &pX_vector, &pY_values, &nPoints);
     pmapEQ2dSlider->setDataHandles(pX_vector, pY_values, nPoints);
 
     /* add master analysis order options */
@@ -260,8 +261,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* Add the remaining options */
     CBchFormat->addItem(TRANS("ACN"), CH_ACN);
+    CBchFormat->addItem(TRANS("FuMa"), CH_FUMA);
     CBnormScheme->addItem(TRANS("N3D"), NORM_N3D);
     CBnormScheme->addItem(TRANS("SN3D"), NORM_SN3D);
+    CBnormScheme->addItem(TRANS("FuMa"), NORM_FUMA);
     CB_hfov->addItem(TRANS("360"), HFOV_360);
     CB_aspectRatio->addItem(TRANS("2:1"), ASPECT_RATIO_2_1);
 
@@ -281,22 +284,24 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_flipUD->setToggleState(hVst->getFlipUD(), dontSendNotification);
 
     /* fetch current configuration */
-    CBmasterOrder->setSelectedId(powermap_getMasterOrder(hVst->hPm), dontSendNotification);
-    CBpmap_method->setSelectedId(powermap_getPowermapMode(hVst->hPm), dontSendNotification);
-    s_covAvg->setValue(powermap_getCovAvgCoeff(hVst->hPm), dontSendNotification);
-    s_pmapEQ->setValue(powermap_getPowermapEQAllBands(hVst->hPm), dontSendNotification);
-    s_anaOrder->setRange(1, powermap_getMasterOrder(hVst->hPm), 1);
-    s_anaOrder->setValue(powermap_getAnaOrderAllBands(hVst->hPm), dontSendNotification);
-    CBchFormat->setSelectedId(powermap_getChOrder(hVst->hPm), dontSendNotification);
-    CBnormScheme->setSelectedId(powermap_getNormType(hVst->hPm), dontSendNotification);
-    s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired(hVst->hPm)/2.0f), 1);
-    s_Nsources->setValue(powermap_getNumSources(hVst->hPm), dontSendNotification);
-    s_Nsources->setEnabled((powermap_getPowermapMode(hVst->hPm)==PM_MODE_MINNORM ||
-                            powermap_getPowermapMode(hVst->hPm)==PM_MODE_MUSIC) ? true : false);
-    CB_hfov->setSelectedId(powermap_getDispFOV(hVst->hPm), dontSendNotification);
-    CB_aspectRatio->setSelectedId(powermap_getAspectRatio(hVst->hPm), dontSendNotification);
-    s_pmapAvg->setValue(powermap_getPowermapAvgCoeff(hVst->hPm), dontSendNotification);
+    CBmasterOrder->setSelectedId(powermap_getMasterOrder(hPm), dontSendNotification);
+    CBpmap_method->setSelectedId(powermap_getPowermapMode(hPm), dontSendNotification);
+    s_covAvg->setValue(powermap_getCovAvgCoeff(hPm), dontSendNotification);
+    s_pmapEQ->setValue(powermap_getPowermapEQAllBands(hPm), dontSendNotification);
+    s_anaOrder->setRange(1, powermap_getMasterOrder(hPm), 1);
+    s_anaOrder->setValue(powermap_getAnaOrderAllBands(hPm), dontSendNotification);
+    CBchFormat->setSelectedId(powermap_getChOrder(hPm), dontSendNotification);
+    CBnormScheme->setSelectedId(powermap_getNormType(hPm), dontSendNotification);
+    s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired(hPm)/2.0f), 1);
+    s_Nsources->setValue(powermap_getNumSources(hPm), dontSendNotification);
+    s_Nsources->setEnabled((powermap_getPowermapMode(hPm)==PM_MODE_MINNORM ||
+                            powermap_getPowermapMode(hPm)==PM_MODE_MUSIC) ? true : false);
+    CB_hfov->setSelectedId(powermap_getDispFOV(hPm), dontSendNotification);
+    CB_aspectRatio->setSelectedId(powermap_getAspectRatio(hPm), dontSendNotification);
+    s_pmapAvg->setValue(powermap_getPowermapAvgCoeff(hPm), dontSendNotification);
     resolutionHasChanged = false;
+    CBchFormat->setItemEnabled(CH_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
 
 	/* Specify screen refresh rate */
     startTimer(120);//80); /*ms (40ms = 25 frames per second) */
@@ -861,7 +866,7 @@ void PluginEditor::paint (Graphics& g)
 
     /* label for max ORDER */
     int x = 643, y = 540, width = 13, height = 30;
-    String text  = String(powermap_getMasterOrder(hVst->hPm));
+    String text  = String(powermap_getMasterOrder(hPm));
     Colour fillColour = Colours::white;
     g.setColour (fillColour);
     g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
@@ -880,13 +885,13 @@ void PluginEditor::paint (Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_supported_fs:
-            g.drawText(TRANS("Sample rate (") + String(powermap_getSamplingRate(hVst->hPm)) + TRANS(") is unsupported"),
+            g.drawText(TRANS("Sample rate (") + String(powermap_getSamplingRate(hPm)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(powermap_getNSHrequired(hVst->hPm)) + TRANS(")"),
+                       TRANS("/") + String(powermap_getNSHrequired(hPm)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -920,15 +925,15 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBpmap_method.get())
     {
         //[UserComboBoxCode_CBpmap_method] -- add your combo box handling code here..
-        powermap_setPowermapMode(hVst->hPm, CBpmap_method->getSelectedId());
-        s_Nsources->setEnabled((powermap_getPowermapMode(hVst->hPm)==PM_MODE_MINNORM ||
-                                powermap_getPowermapMode(hVst->hPm)==PM_MODE_MUSIC) ? true : false);
+        powermap_setPowermapMode(hPm, CBpmap_method->getSelectedId());
+        s_Nsources->setEnabled((powermap_getPowermapMode(hPm)==PM_MODE_MINNORM ||
+                                powermap_getPowermapMode(hPm)==PM_MODE_MUSIC) ? true : false);
         //[/UserComboBoxCode_CBpmap_method]
     }
     else if (comboBoxThatHasChanged == CBsourcePreset.get())
     {
         //[UserComboBoxCode_CBsourcePreset] -- add your combo box handling code here..
-        powermap_setSourcePreset(hVst->hPm, CBsourcePreset->getSelectedId());
+        powermap_setSourcePreset(hPm, CBsourcePreset->getSelectedId());
 		anaOrder2dSlider->setRefreshValuesFLAG(true);
 		pmapEQ2dSlider->setRefreshValuesFLAG(true);
         //[/UserComboBoxCode_CBsourcePreset]
@@ -936,31 +941,31 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == CBchFormat.get())
     {
         //[UserComboBoxCode_CBchFormat] -- add your combo box handling code here..
-        powermap_setChOrder(hVst->hPm, CBchFormat->getSelectedId());
+        powermap_setChOrder(hPm, CBchFormat->getSelectedId());
         //[/UserComboBoxCode_CBchFormat]
     }
     else if (comboBoxThatHasChanged == CBnormScheme.get())
     {
         //[UserComboBoxCode_CBnormScheme] -- add your combo box handling code here..
-        powermap_setNormType(hVst->hPm, CBnormScheme->getSelectedId());
+        powermap_setNormType(hPm, CBnormScheme->getSelectedId());
         //[/UserComboBoxCode_CBnormScheme]
     }
     else if (comboBoxThatHasChanged == CB_hfov.get())
     {
         //[UserComboBoxCode_CB_hfov] -- add your combo box handling code here..
-        powermap_setDispFOV(hVst->hPm, CB_hfov->getSelectedId());
+        powermap_setDispFOV(hPm, CB_hfov->getSelectedId());
         //[/UserComboBoxCode_CB_hfov]
     }
     else if (comboBoxThatHasChanged == CB_aspectRatio.get())
     {
         //[UserComboBoxCode_CB_aspectRatio] -- add your combo box handling code here..
-        powermap_setAspectRatio(hVst->hPm, CB_aspectRatio->getSelectedId());
+        powermap_setAspectRatio(hPm, CB_aspectRatio->getSelectedId());
         //[/UserComboBoxCode_CB_aspectRatio]
     }
     else if (comboBoxThatHasChanged == CBmasterOrder.get())
     {
         //[UserComboBoxCode_CBmasterOrder] -- add your combo box handling code here..
-        powermap_setMasterOrder(hVst->hPm, CBmasterOrder->getSelectedId());
+        powermap_setMasterOrder(hPm, CBmasterOrder->getSelectedId());
         anaOrder2dSlider->setYrange(1, CBmasterOrder->getSelectedId());
         anaOrder2dSlider->setRefreshValuesFLAG(true);
         s_anaOrder->setRange(1, CBmasterOrder->getSelectedId(), 1);
@@ -992,33 +997,33 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == s_anaOrder.get())
     {
         //[UserSliderCode_s_anaOrder] -- add your slider handling code here..
-        powermap_setAnaOrderAllBands(hVst->hPm, (int)(s_anaOrder->getValue()+0.5));
+        powermap_setAnaOrderAllBands(hPm, (int)(s_anaOrder->getValue()+0.5));
 		anaOrder2dSlider->setRefreshValuesFLAG(true);
         //[/UserSliderCode_s_anaOrder]
     }
     else if (sliderThatWasMoved == s_pmapEQ.get())
     {
         //[UserSliderCode_s_pmapEQ] -- add your slider handling code here..
-        powermap_setPowermapEQAllBands(hVst->hPm, (s_pmapEQ->getValue()));
+        powermap_setPowermapEQAllBands(hPm, (s_pmapEQ->getValue()));
 		pmapEQ2dSlider->setRefreshValuesFLAG(true);
         //[/UserSliderCode_s_pmapEQ]
     }
     else if (sliderThatWasMoved == s_covAvg.get())
     {
         //[UserSliderCode_s_covAvg] -- add your slider handling code here..
-        powermap_setCovAvgCoeff(hVst->hPm, (float)s_covAvg->getValue());
+        powermap_setCovAvgCoeff(hPm, (float)s_covAvg->getValue());
         //[/UserSliderCode_s_covAvg]
     }
     else if (sliderThatWasMoved == s_Nsources.get())
     {
         //[UserSliderCode_s_Nsources] -- add your slider handling code here..
-        powermap_setNumSources(hVst->hPm, (int)(s_Nsources->getValue()+0.5));
+        powermap_setNumSources(hPm, (int)(s_Nsources->getValue()+0.5));
         //[/UserSliderCode_s_Nsources]
     }
     else if (sliderThatWasMoved == s_pmapAvg.get())
     {
         //[UserSliderCode_s_pmapAvg] -- add your slider handling code here..
-        powermap_setPowermapAvgCoeff(hVst->hPm, (float)s_pmapAvg->getValue());
+        powermap_setPowermapAvgCoeff(hPm, (float)s_pmapAvg->getValue());
         //[/UserSliderCode_s_pmapAvg]
     }
 
@@ -1059,8 +1064,14 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PluginEditor::timerCallback()
 {
+    /* parameters whos values can change internally should be periodically refreshed */
+    CBchFormat->setSelectedId(powermap_getChOrder(hPm), dontSendNotification);
+    CBnormScheme->setSelectedId(powermap_getNormType(hPm), dontSendNotification);
+    CBchFormat->setItemEnabled(CH_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
+
     /* Nsource slider range */
-    s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired(hVst->hPm)/2.0f), 1);
+    s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired(hPm)/2.0f), 1);
 
 #ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
@@ -1068,7 +1079,7 @@ void PluginEditor::timerCallback()
 		CBmasterOrder->setEnabled(false);
 	else {
 		CBmasterOrder->setEnabled(true);
-		powermap_checkReInit(hVst->hPm);
+		powermap_checkReInit(hPm);
 	}
 #endif
 
@@ -1080,16 +1091,16 @@ void PluginEditor::timerCallback()
     }
 
     /* refresh the powermap display */
-    if ((overlayIncluded != nullptr) && (hVst->isPlaying)) {
+    if ((overlayIncluded != nullptr) && (hVst->getIsPlaying())) {
         float* dirs_deg, *pmap;
         int nDirs, pmapReady, pmapWidth, hfov, aspectRatio;
-        pmapReady = powermap_getPmap(hVst->hPm, &dirs_deg, &pmap, &nDirs, &pmapWidth, &hfov, &aspectRatio);
+        pmapReady = powermap_getPmap(hPm, &dirs_deg, &pmap, &nDirs, &pmapWidth, &hfov, &aspectRatio);
         overlayIncluded->setEnableTransparency(CB_webcam->getSelectedId() > 1 ? true : false);
         if(pmapReady){
             overlayIncluded->refreshPowerMap(dirs_deg, pmap, nDirs, pmapWidth, hfov, aspectRatio);
         }
         if(overlayIncluded->getFinishedRefresh()){
-            powermap_requestPmapUpdate(hVst->hPm);
+            powermap_requestPmapUpdate(hPm);
         }
     }
 
@@ -1108,11 +1119,11 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ( !((powermap_getSamplingRate(hVst->hPm) == 44.1e3) || (powermap_getSamplingRate(hVst->hPm) == 48e3)) ){
+    else if ( !((powermap_getSamplingRate(hPm) == 44.1e3) || (powermap_getSamplingRate(hPm) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < powermap_getNSHrequired(hVst->hPm))){
+    else if ((hVst->getCurrentNumInputs() < powermap_getNSHrequired(hPm))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }

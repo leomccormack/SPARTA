@@ -67,6 +67,7 @@ overlay::overlay (PluginProcessor* ownerFilter)
 
     //[Constructor] You can add your own custom stuff here..
     hVst = ownerFilter;
+    hSld = hVst->getFXHandle();
     hasFinishedDrawing = true;
     //[/Constructor]
 }
@@ -104,7 +105,7 @@ void overlay::paint (Graphics& g)
         int maxNumSectors, startBand, endBand;
         int* nSectorsPerBand;
         float* hAzi_deg, *hElev_deg, *hScaleColour, *hScaleAlpha;
-        sldoa_getDisplayData(hVst->hSld, &hAzi_deg, &hElev_deg, &hScaleColour, &hScaleAlpha, &nSectorsPerBand, &maxNumSectors, &startBand, &endBand);
+        sldoa_getDisplayData(hSld, &hAzi_deg, &hElev_deg, &hScaleColour, &hScaleAlpha, &nSectorsPerBand, &maxNumSectors, &startBand, &endBand);
 
         /* Draw the DoAs */
         for(int band=MAX(startBand,1); band<endBand; band++){ /* ignore DC */

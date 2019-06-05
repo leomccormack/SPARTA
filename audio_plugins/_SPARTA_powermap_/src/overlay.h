@@ -23,12 +23,11 @@
  
 #include "PluginProcessor.h"
 #include "powermap.h"
-
 #ifndef MIN
-#define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
+  #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
 #endif
 #ifndef MAX
-#define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
+  #define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
 #endif
 
 //[/Headers]
@@ -54,12 +53,8 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
     
     void refreshPowerMap(float* _dirs_deg, float* _pmap, int _nDirs, int _pmapWidth, int _hfov, int _aspectRatio );
-    bool getFinishedRefresh(){
-        return finishedRefresh;
-    }
-    void setEnableTransparency(bool newState){
-        enableTransparency = newState;
-    }
+    bool getFinishedRefresh(){ return finishedRefresh; }
+    void setEnableTransparency(bool newState){ enableTransparency = newState; }
     
     //[/UserMethods]
 
@@ -72,8 +67,7 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     float* dirs_deg, *pmap; 
     int nDirs, pmapWidth, hfov, aspectRatio;
-    Rectangle<int> localBounds;
-    
+    Rectangle<int> localBounds; 
     bool finishedRefresh;
     bool enableTransparency;
     //[/UserVariables]

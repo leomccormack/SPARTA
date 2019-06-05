@@ -61,8 +61,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    PluginProcessor* hVst;
-    void timerCallback() override;
+
 
     //[/UserMethods]
 
@@ -76,6 +75,9 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    PluginProcessor* hVst;
+    void* hAmbi;
+    void timerCallback() override;
     ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
 
@@ -91,7 +93,7 @@ private:
     void filenameComponentChanged (FilenameComponent*) override  {
         String directory = fileChooser.getCurrentFile().getFullPathName();
         const char* new_cstring = (const char*)directory.toUTF8();
-        ambi_dec_setSofaFilePath(hVst->hAmbi, new_cstring);
+        ambi_dec_setSofaFilePath(hAmbi, new_cstring);
     }
 
     /* warnings */

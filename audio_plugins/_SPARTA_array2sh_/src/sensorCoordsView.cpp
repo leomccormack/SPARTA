@@ -51,9 +51,9 @@ sensorCoordsView::sensorCoordsView (PluginProcessor* ownerFilter, int _maxQ, int
 
 
     //[Constructor] You can add your own custom stuff here..
-    setSize (sensorEdit_width, sensorEdit_height*_currentQ);
-
+    setSize (sensorEdit_width, sensorEdit_height*_currentQ); 
     hVst = ownerFilter;
+    hA2sh = hVst->getFXHandle();
     maxQ = _maxQ;
     currentQ =_currentQ;
     useDegreesInstead =  _useDegreesInstead;
@@ -65,11 +65,11 @@ sensorCoordsView::sensorCoordsView (PluginProcessor* ownerFilter, int _maxQ, int
         addAndMakeVisible (aziSliders[i] = new Slider ("new slider"));
         if(useDegreesInstead){
             aziSliders[i]->setRange (-360.0, 360.0, 0.001);
-            aziSliders[i]->setValue(array2sh_getSensorAzi_deg(hVst->hA2sh, i));
+            aziSliders[i]->setValue(array2sh_getSensorAzi_deg(hA2sh, i));
         }
         else{
             aziSliders[i]->setRange (-2.0*M_PI, 2.0*M_PI, 0.00001);
-            aziSliders[i]->setValue(array2sh_getSensorAzi_rad(hVst->hA2sh, i));
+            aziSliders[i]->setValue(array2sh_getSensorAzi_rad(hA2sh, i));
         }
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
@@ -80,11 +80,11 @@ sensorCoordsView::sensorCoordsView (PluginProcessor* ownerFilter, int _maxQ, int
         addAndMakeVisible (elevSliders[i] = new Slider ("new slider"));
         if(useDegreesInstead){
             elevSliders[i]->setRange (-180.0, 180.0, 0.001);
-            elevSliders[i]->setValue(array2sh_getSensorElev_deg(hVst->hA2sh, i));
+            elevSliders[i]->setValue(array2sh_getSensorElev_deg(hA2sh, i));
         }
         else {
             elevSliders[i]->setRange (-M_PI, M_PI, 0.00001);
-            elevSliders[i]->setValue(array2sh_getSensorElev_rad(hVst->hA2sh, i));
+            elevSliders[i]->setValue(array2sh_getSensorElev_rad(hA2sh, i));
         }
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
@@ -192,16 +192,16 @@ void sensorCoordsView::sliderValueChanged (Slider* sliderThatWasMoved)
     for(int i=0; i<maxQ; i++){
         if (sliderThatWasMoved == aziSliders[i]) {
             if(useDegreesInstead)
-                array2sh_setSensorAzi_deg(hVst->hA2sh, i, (float)aziSliders[i]->getValue());
+                array2sh_setSensorAzi_deg(hA2sh, i, (float)aziSliders[i]->getValue());
             else
-                array2sh_setSensorAzi_rad(hVst->hA2sh, i, (float)aziSliders[i]->getValue());
+                array2sh_setSensorAzi_rad(hA2sh, i, (float)aziSliders[i]->getValue());
             break;
         }
         if (sliderThatWasMoved == elevSliders[i]) {
             if(useDegreesInstead)
-                array2sh_setSensorElev_deg(hVst->hA2sh, i, (float)elevSliders[i]->getValue());
+                array2sh_setSensorElev_deg(hA2sh, i, (float)elevSliders[i]->getValue());
             else
-                array2sh_setSensorElev_rad(hVst->hA2sh, i, (float)elevSliders[i]->getValue());
+                array2sh_setSensorElev_rad(hA2sh, i, (float)elevSliders[i]->getValue());
             break;
         }
     }
@@ -227,15 +227,15 @@ void sensorCoordsView::refreshCoords(){
     for( int i=0; i<maxQ; i++){
         if(useDegreesInstead){
             aziSliders[i]->setRange (-360.0, 360.0, 0.001);
-            aziSliders[i]->setValue(array2sh_getSensorAzi_deg(hVst->hA2sh, i), dontSendNotification);
+            aziSliders[i]->setValue(array2sh_getSensorAzi_deg(hA2sh, i), dontSendNotification);
             elevSliders[i]->setRange (-180.0, 180.0, 0.001);
-            elevSliders[i]->setValue(array2sh_getSensorElev_deg(hVst->hA2sh, i), dontSendNotification);
+            elevSliders[i]->setValue(array2sh_getSensorElev_deg(hA2sh, i), dontSendNotification);
         }
         else{
             aziSliders[i]->setRange (-2.0*M_PI, 2.0*M_PI, 0.00001);
-            aziSliders[i]->setValue(array2sh_getSensorAzi_rad(hVst->hA2sh, i), dontSendNotification);
+            aziSliders[i]->setValue(array2sh_getSensorAzi_rad(hA2sh, i), dontSendNotification);
             elevSliders[i]->setRange (-M_PI, M_PI, 0.00001);
-            elevSliders[i]->setValue(array2sh_getSensorElev_rad(hVst->hA2sh, i), dontSendNotification);
+            elevSliders[i]->setValue(array2sh_getSensorElev_rad(hA2sh, i), dontSendNotification);
         }
     }
 }

@@ -249,7 +249,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* handle to pluginProcessor */
 	hVst = ownerFilter;
-
+    hBin = hVst->getFXHandle();
+    
     /* init OpenGL */
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
@@ -335,37 +336,37 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* source coordinate viewport */
     addAndMakeVisible (sourceCoordsVP = new Viewport ("new viewport"));
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_CHANNELS, binauraliser_getNumSources(hVst->hBin));
+    sourceCoordsView_handle = new inputCoordsView(ownerFilter, BINAURALISER_MAX_NUM_INPUTS, binauraliser_getNumSources(hBin));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
     sourceCoordsVP->setBounds(22, 153, 184, 180);
-    sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hVst->hBin));
+    sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
 
     /* file loader */
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
     fileChooser.setBounds (718, 92, 180, 20);
     StringArray filenames;
-    filenames.add(binauraliser_getSofaFilePath(hVst->hBin));
+    filenames.add(binauraliser_getSofaFilePath(hBin));
     fileChooser.setRecentlyUsedFilenames(filenames);
     fileChooser.setFilenameIsEditable(true);
 
     /* grab current parameter settings */
-    TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hVst->hBin), dontSendNotification);
-    SL_num_sources->setValue(binauraliser_getNumSources(hVst->hBin),dontSendNotification);
+    TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
+    SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(true, dontSendNotification);
-    CBinterpMode->setSelectedId(binauraliser_getInterpMode(hVst->hBin), dontSendNotification);
-    TBenableRotation->setToggleState((bool)binauraliser_getEnableRotation(hVst->hBin), dontSendNotification);
-    s_yaw->setValue(binauraliser_getYaw(hVst->hBin), dontSendNotification);
-    s_pitch->setValue(binauraliser_getPitch(hVst->hBin), dontSendNotification);
-    s_roll->setValue(binauraliser_getRoll(hVst->hBin), dontSendNotification);
-    t_flipYaw->setToggleState((bool)binauraliser_getFlipYaw(hVst->hBin), dontSendNotification);
-    t_flipPitch->setToggleState((bool)binauraliser_getFlipPitch(hVst->hBin), dontSendNotification);
-    t_flipRoll->setToggleState((bool)binauraliser_getFlipRoll(hVst->hBin), dontSendNotification);
+    CBinterpMode->setSelectedId(binauraliser_getInterpMode(hBin), dontSendNotification);
+    TBenableRotation->setToggleState((bool)binauraliser_getEnableRotation(hBin), dontSendNotification);
+    s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
+    s_pitch->setValue(binauraliser_getPitch(hBin), dontSendNotification);
+    s_roll->setValue(binauraliser_getRoll(hBin), dontSendNotification);
+    t_flipYaw->setToggleState((bool)binauraliser_getFlipYaw(hBin), dontSendNotification);
+    t_flipPitch->setToggleState((bool)binauraliser_getFlipPitch(hBin), dontSendNotification);
+    t_flipRoll->setToggleState((bool)binauraliser_getFlipRoll(hBin), dontSendNotification);
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
-    TBrpyFlag->setToggleState((bool)binauraliser_getRPYflag(hVst->hBin), dontSendNotification);
+    TBrpyFlag->setToggleState((bool)binauraliser_getRPYflag(hBin), dontSendNotification);
 
     /* create panning window */
     addAndMakeVisible (panWindow = new pannerView(ownerFilter, 480, 240));
@@ -905,7 +906,7 @@ void PluginEditor::paint (Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_supported_fs:
-            g.drawText(TRANS("Sample rate (") + String(binauraliser_getDAWsamplerate(hVst->hBin)) + TRANS(") is unsupported"),
+            g.drawText(TRANS("Sample rate (") + String(binauraliser_getDAWsamplerate(hBin)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -916,7 +917,7 @@ void PluginEditor::paint (Graphics& g)
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(binauraliser_getNumSources(hVst->hBin)) + TRANS(")"),
+                       TRANS("/") + String(binauraliser_getNumSources(hBin)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -954,14 +955,14 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
     {
         //[UserComboBoxCode_CBsourceDirsPreset] -- add your combo box handling code here..
-        binauraliser_setInputConfigPreset(hVst->hBin, CBsourceDirsPreset->getSelectedId());
+        binauraliser_setInputConfigPreset(hBin, CBsourceDirsPreset->getSelectedId());
         refreshPanViewWindow = true;
         //[/UserComboBoxCode_CBsourceDirsPreset]
     }
     else if (comboBoxThatHasChanged == CBinterpMode.get())
     {
         //[UserComboBoxCode_CBinterpMode] -- add your combo box handling code here..
-        binauraliser_setInterpMode(hVst->hBin, CBinterpMode->getSelectedId());
+        binauraliser_setInterpMode(hBin, CBinterpMode->getSelectedId());
         //[/UserComboBoxCode_CBinterpMode]
     }
 
@@ -977,26 +978,26 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == SL_num_sources.get())
     {
         //[UserSliderCode_SL_num_sources] -- add your slider handling code here..
-        binauraliser_setNumSources(hVst->hBin, (int)SL_num_sources->getValue());
+        binauraliser_setNumSources(hBin, (int)SL_num_sources->getValue());
         refreshPanViewWindow = true;
         //[/UserSliderCode_SL_num_sources]
     }
     else if (sliderThatWasMoved == s_yaw.get())
     {
         //[UserSliderCode_s_yaw] -- add your slider handling code here..
-        binauraliser_setYaw(hVst->hBin, (float)s_yaw->getValue());
+        binauraliser_setYaw(hBin, (float)s_yaw->getValue());
         //[/UserSliderCode_s_yaw]
     }
     else if (sliderThatWasMoved == s_pitch.get())
     {
         //[UserSliderCode_s_pitch] -- add your slider handling code here..
-        binauraliser_setPitch(hVst->hBin, (float)s_pitch->getValue());
+        binauraliser_setPitch(hBin, (float)s_pitch->getValue());
         //[/UserSliderCode_s_pitch]
     }
     else if (sliderThatWasMoved == s_roll.get())
     {
         //[UserSliderCode_s_roll] -- add your slider handling code here..
-        binauraliser_setRoll(hVst->hBin, (float)s_roll->getValue());
+        binauraliser_setRoll(hBin, (float)s_roll->getValue());
         //[/UserSliderCode_s_roll]
     }
 
@@ -1012,7 +1013,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == TBuseDefaultHRIRs.get())
     {
         //[UserButtonCode_TBuseDefaultHRIRs] -- add your button handler code here..
-        binauraliser_setUseDefaultHRIRsflag(hVst->hBin, (int)TBuseDefaultHRIRs->getToggleState());
+        binauraliser_setUseDefaultHRIRsflag(hBin, (int)TBuseDefaultHRIRs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TBuseDefaultHRIRs]
     }
@@ -1059,31 +1060,31 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == t_flipYaw.get())
     {
         //[UserButtonCode_t_flipYaw] -- add your button handler code here..
-        binauraliser_setFlipYaw(hVst->hBin, (int)t_flipYaw->getToggleState());
+        binauraliser_setFlipYaw(hBin, (int)t_flipYaw->getToggleState());
         //[/UserButtonCode_t_flipYaw]
     }
     else if (buttonThatWasClicked == t_flipPitch.get())
     {
         //[UserButtonCode_t_flipPitch] -- add your button handler code here..
-        binauraliser_setFlipPitch(hVst->hBin, (int)t_flipPitch->getToggleState());
+        binauraliser_setFlipPitch(hBin, (int)t_flipPitch->getToggleState());
         //[/UserButtonCode_t_flipPitch]
     }
     else if (buttonThatWasClicked == t_flipRoll.get())
     {
         //[UserButtonCode_t_flipRoll] -- add your button handler code here..
-        binauraliser_setFlipRoll(hVst->hBin, (int)t_flipRoll->getToggleState());
+        binauraliser_setFlipRoll(hBin, (int)t_flipRoll->getToggleState());
         //[/UserButtonCode_t_flipRoll]
     }
     else if (buttonThatWasClicked == TBrpyFlag.get())
     {
         //[UserButtonCode_TBrpyFlag] -- add your button handler code here..
-        binauraliser_setRPYflag(hVst->hBin, (int)TBrpyFlag->getToggleState());
+        binauraliser_setRPYflag(hBin, (int)TBrpyFlag->getToggleState());
         //[/UserButtonCode_TBrpyFlag]
     }
     else if (buttonThatWasClicked == TBenableRotation.get())
     {
         //[UserButtonCode_TBenableRotation] -- add your button handler code here..
-        binauraliser_setEnableRotation(hVst->hBin, (int)TBenableRotation->getToggleState());
+        binauraliser_setEnableRotation(hBin, (int)TBenableRotation->getToggleState());
         //[/UserButtonCode_TBenableRotation]
     }
 
@@ -1097,18 +1098,18 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 void PluginEditor::timerCallback()
 {
     /* labels for HRIR details */
-    label_N_dirs->setText(String(binauraliser_getNDirs(hVst->hBin)), dontSendNotification);
-    label_HRIR_fs->setText(String(binauraliser_getHRIRsamplerate(hVst->hBin)), dontSendNotification);
-    label_DAW_fs->setText(String(binauraliser_getDAWsamplerate(hVst->hBin)), dontSendNotification);
-    label_N_Tri->setText(String(binauraliser_getNTriangles(hVst->hBin)), dontSendNotification);
+    label_N_dirs->setText(String(binauraliser_getNDirs(hBin)), dontSendNotification);
+    label_HRIR_fs->setText(String(binauraliser_getHRIRsamplerate(hBin)), dontSendNotification);
+    label_DAW_fs->setText(String(binauraliser_getDAWsamplerate(hBin)), dontSendNotification);
+    label_N_Tri->setText(String(binauraliser_getNTriangles(hBin)), dontSendNotification);
 
     /* parameters whos values can change internally should be periodically refreshed */
-    TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hVst->hBin), dontSendNotification);
-    sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hVst->hBin));
-    SL_num_sources->setValue(binauraliser_getNumSources(hVst->hBin),dontSendNotification);
-    s_yaw->setValue(binauraliser_getYaw(hVst->hBin), dontSendNotification);
-    s_pitch->setValue(binauraliser_getPitch(hVst->hBin), dontSendNotification);
-    s_roll->setValue(binauraliser_getRoll(hVst->hBin), dontSendNotification);
+    TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
+    sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
+    SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
+    s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
+    s_pitch->setValue(binauraliser_getPitch(hBin), dontSendNotification);
+    s_roll->setValue(binauraliser_getRoll(hBin), dontSendNotification);
 
 #ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
@@ -1119,7 +1120,7 @@ void PluginEditor::timerCallback()
 	else {
 		fileChooser.setEnabled(true);
 		TBuseDefaultHRIRs->setEnabled(true);
-		binauraliser_checkReInit(hVst->hBin);
+		binauraliser_checkReInit(hBin);
 	}
 #endif
 
@@ -1136,15 +1137,15 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ( !((binauraliser_getDAWsamplerate(hVst->hBin) == 44.1e3) || (binauraliser_getDAWsamplerate(hVst->hBin) == 48e3)) ){
+    else if ( !((binauraliser_getDAWsamplerate(hBin) == 44.1e3) || (binauraliser_getDAWsamplerate(hBin) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
-    else if (binauraliser_getDAWsamplerate(hVst->hBin) != binauraliser_getHRIRsamplerate(hVst->hBin)){
+    else if (binauraliser_getDAWsamplerate(hBin) != binauraliser_getHRIRsamplerate(hBin)){
         currentWarning = k_warning_mismatch_fs;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < binauraliser_getNumSources(hVst->hBin))){
+    else if ((hVst->getCurrentNumInputs() < binauraliser_getNumSources(hBin))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -1152,7 +1153,7 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if(!hVst->getOscPortConnected() && binauraliser_getEnableRotation(hVst->hBin)){
+    else if(!hVst->getOscPortConnected() && binauraliser_getEnableRotation(hBin)){
         currentWarning = k_warning_osc_connection_fail;
         repaint(0,0,getWidth(),32);
     }

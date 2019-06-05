@@ -87,8 +87,7 @@ private:
     float** faintCurves;
     int numCurves;
     int numFreqPoints;
-
-
+ 
     //[/UserVariables]
 
     //==============================================================================

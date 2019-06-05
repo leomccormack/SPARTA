@@ -74,14 +74,11 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
-
+    void* hBeam;
     void refreshCoords();
-
     ScopedPointer<Slider>* aziSliders;
     ScopedPointer<Slider>* elevSliders;
-
     int maxNCH, currentNCH;
-
     bool sliderHasChanged;
 
     //[/UserVariables]

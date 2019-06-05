@@ -78,12 +78,8 @@ public:
         osc_port_ID = newID;
         osc_connected = osc.connect(osc_port_ID);
     }
-    int getOscPortID(){
-        return osc_port_ID;
-    }
-    bool getOscPortConnected(){
-        return osc_connected;
-    }
+    int getOscPortID(){ return osc_port_ID; }
+    bool getOscPortConnected(){ return osc_connected; }
     
 private:
     void* hAmbi;             /* ambi_bin handle */

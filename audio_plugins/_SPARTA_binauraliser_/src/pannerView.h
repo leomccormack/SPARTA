@@ -24,7 +24,7 @@
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
 
-#define MAX_NUM_OUT_DIRS 12000
+#define MAX_NUM_OUT_DIRS 15000
 //[/Headers]
 
 
@@ -46,20 +46,11 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    PluginProcessor* hVst;
-
-    void refreshPanView();
-
-    void setShowInputs(bool state){
-        showInputs = state;
-    }
-    void setShowOutputs(bool state){
-        showOutputs = state;
-    }
-
-    bool getSourceIconIsClicked(){
-        return sourceIconIsClicked;
-    }
+    
+    void refreshPanView(); 
+    void setShowInputs(bool state){ showInputs = state; }
+    void setShowOutputs(bool state){ showOutputs = state; }
+    bool getSourceIconIsClicked(){ return sourceIconIsClicked; }
 
     //[/UserMethods]
 
@@ -73,16 +64,16 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    PluginProcessor* hVst;
+    void* hBin;
     int width;
     int height;
-
     bool showInputs;
     bool showOutputs;
-    Rectangle<float> SourceIcons[MAX_NUM_CHANNELS];
+    Rectangle<float> SourceIcons[BINAURALISER_MAX_NUM_INPUTS];
     Rectangle<float> LoudspeakerIcons[MAX_NUM_OUT_DIRS];
     int NSources;
     int NLoudspeakers;
-
     bool sourceIconIsClicked;
     int indexOfClickedSource;
     //[/UserVariables]

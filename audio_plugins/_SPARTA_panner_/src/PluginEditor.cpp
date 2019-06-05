@@ -211,6 +211,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* handle to pluginProcessor */
 	hVst = ownerFilter;
+    hPan = hVst->getFXHandle();
 
     /* init OpenGL */
     openGLContext.setMultisamplingEnabled(true);
@@ -365,34 +366,35 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* source coordinates viewport */
     addAndMakeVisible (sourceCoordsVP = new Viewport ("new viewport"));
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_CHANNELS, panner_getNumSources(hVst->hPan));
+    sourceCoordsView_handle = new inputCoordsView(ownerFilter, PANNER_MAX_NUM_INPUTS, panner_getNumSources(hPan));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
     sourceCoordsVP->setBounds(22, 153, 184, 210);
-    sourceCoordsView_handle->setNCH(panner_getNumSources(hVst->hPan));
+    sourceCoordsView_handle->setNCH(panner_getNumSources(hPan));
 
     /* loudspeaker coordinates viewport */
     addAndMakeVisible (loudspeakerCoordsVP = new Viewport ("new viewport"));
-    loudspeakerCoordsView_handle = new outputCoordsView(ownerFilter, MAX_NUM_CHANNELS, panner_getNumLoudspeakers(hVst->hPan));
+    loudspeakerCoordsView_handle = new outputCoordsView(ownerFilter, PANNER_MAX_NUM_OUTPUTS, panner_getNumLoudspeakers(hPan));
     loudspeakerCoordsVP->setViewedComponent (loudspeakerCoordsView_handle);
     loudspeakerCoordsVP->setScrollBarsShown (true, false);
     loudspeakerCoordsVP->setAlwaysOnTop(true);
     loudspeakerCoordsVP->setBounds(722, 153, 184, 210);
-    loudspeakerCoordsView_handle->setNCH(panner_getNumLoudspeakers(hVst->hPan));
+    loudspeakerCoordsView_handle->setNCH(panner_getNumLoudspeakers(hPan));
 
     /* grab current parameter settings */
-    SL_num_sources->setValue(panner_getNumSources(hVst->hPan),dontSendNotification);
+    SL_num_sources->setValue(panner_getNumSources(hPan),dontSendNotification);
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(true, dontSendNotification);
-    SL_pValue->setValue(panner_getDTT(hVst->hPan), dontSendNotification);
-    SL_spread->setValue(panner_getSpread(hVst->hPan), dontSendNotification);
-    s_yaw->setValue(panner_getYaw(hVst->hPan), dontSendNotification);
-    s_pitch->setValue(panner_getPitch(hVst->hPan), dontSendNotification);
-    s_roll->setValue(panner_getRoll(hVst->hPan), dontSendNotification);
-    t_flipYaw->setToggleState((bool)panner_getFlipYaw(hVst->hPan), dontSendNotification);
-    t_flipPitch->setToggleState((bool)panner_getFlipPitch(hVst->hPan), dontSendNotification);
-    t_flipRoll->setToggleState((bool)panner_getFlipRoll(hVst->hPan), dontSendNotification);
+    SL_pValue->setValue(panner_getDTT(hPan), dontSendNotification);
+    SL_spread->setRange(PANNER_SPREAD_MIN_VALUE, PANNER_SPREAD_MAX_VALUE, 0.01f);
+    SL_spread->setValue(panner_getSpread(hPan), dontSendNotification);
+    s_yaw->setValue(panner_getYaw(hPan), dontSendNotification);
+    s_pitch->setValue(panner_getPitch(hPan), dontSendNotification);
+    s_roll->setValue(panner_getRoll(hPan), dontSendNotification);
+    t_flipYaw->setToggleState((bool)panner_getFlipYaw(hPan), dontSendNotification);
+    t_flipPitch->setToggleState((bool)panner_getFlipPitch(hPan), dontSendNotification);
+    t_flipRoll->setToggleState((bool)panner_getFlipRoll(hPan), dontSendNotification);
 
     /* create panning window */
     addAndMakeVisible (panWindow = new pannerView(ownerFilter, 480, 240));
@@ -881,19 +883,19 @@ void PluginEditor::paint (Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_supported_fs:
-            g.drawText(TRANS("Sample rate (") + String(panner_getDAWsamplerate(hVst->hPan)) + TRANS(") is unsupported"),
+            g.drawText(TRANS("Sample rate (") + String(panner_getDAWsamplerate(hPan)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(panner_getNumSources(hVst->hPan)) + TRANS(")"),
+                       TRANS("/") + String(panner_getNumSources(hPan)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
-                       TRANS("/") + String(panner_getNumLoudspeakers(hVst->hPan)) + TRANS(")"),
+                       TRANS("/") + String(panner_getNumLoudspeakers(hPan)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -920,14 +922,14 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
     {
         //[UserComboBoxCode_CBsourceDirsPreset] -- add your combo box handling code here..
-        panner_setInputConfigPreset(hVst->hPan, CBsourceDirsPreset->getSelectedId());
+        panner_setInputConfigPreset(hPan, CBsourceDirsPreset->getSelectedId());
         refreshPanViewWindow = true;
         //[/UserComboBoxCode_CBsourceDirsPreset]
     }
     else if (comboBoxThatHasChanged == CBsLoudspeakerDirsPreset.get())
     {
         //[UserComboBoxCode_CBsLoudspeakerDirsPreset] -- add your combo box handling code here..
-        panner_setOutputConfigPreset(hVst->hPan, CBsLoudspeakerDirsPreset->getSelectedId());
+        panner_setOutputConfigPreset(hPan, CBsLoudspeakerDirsPreset->getSelectedId());
         refreshPanViewWindow = true;
         //[/UserComboBoxCode_CBsLoudspeakerDirsPreset]
     }
@@ -944,26 +946,26 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == SL_num_sources.get())
     {
         //[UserSliderCode_SL_num_sources] -- add your slider handling code here..
-        panner_setNumSources(hVst->hPan, (int)SL_num_sources->getValue());
+        panner_setNumSources(hPan, (int)SL_num_sources->getValue());
         refreshPanViewWindow = true;
         //[/UserSliderCode_SL_num_sources]
     }
     else if (sliderThatWasMoved == SL_pValue.get())
     {
         //[UserSliderCode_SL_pValue] -- add your slider handling code here..
-        panner_setDTT(hVst->hPan, (float)SL_pValue->getValue());
+        panner_setDTT(hPan, (float)SL_pValue->getValue());
         //[/UserSliderCode_SL_pValue]
     }
     else if (sliderThatWasMoved == SL_num_loudspeakers.get())
     {
         //[UserSliderCode_SL_num_loudspeakers] -- add your slider handling code here..
-        panner_setNumLoudspeakers(hVst->hPan, (int)SL_num_loudspeakers->getValue());
+        panner_setNumLoudspeakers(hPan, (int)SL_num_loudspeakers->getValue());
         //[/UserSliderCode_SL_num_loudspeakers]
     }
     else if (sliderThatWasMoved == SL_spread.get())
     {
         //[UserSliderCode_SL_spread] -- add your slider handling code here..
-        panner_setSpread(hVst->hPan, (float)SL_spread->getValue());
+        panner_setSpread(hPan, (float)SL_spread->getValue());
 #ifdef __APPLE__
         repaint(203, 303, 167, 30);
 #endif
@@ -972,19 +974,19 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     else if (sliderThatWasMoved == s_yaw.get())
     {
         //[UserSliderCode_s_yaw] -- add your slider handling code here..
-        panner_setYaw(hVst->hPan, (float)s_yaw->getValue());
+        panner_setYaw(hPan, (float)s_yaw->getValue());
         //[/UserSliderCode_s_yaw]
     }
     else if (sliderThatWasMoved == s_pitch.get())
     {
         //[UserSliderCode_s_pitch] -- add your slider handling code here..
-        panner_setPitch(hVst->hPan, (float)s_pitch->getValue());
+        panner_setPitch(hPan, (float)s_pitch->getValue());
         //[/UserSliderCode_s_pitch]
     }
     else if (sliderThatWasMoved == s_roll.get())
     {
         //[UserSliderCode_s_roll] -- add your slider handling code here..
-        panner_setRoll(hVst->hPan, (float)s_roll->getValue());
+        panner_setRoll(hPan, (float)s_roll->getValue());
         //[/UserSliderCode_s_roll]
     }
 
@@ -1066,19 +1068,19 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == t_flipYaw.get())
     {
         //[UserButtonCode_t_flipYaw] -- add your button handler code here..
-        panner_setFlipYaw(hVst->hPan, (int)t_flipYaw->getToggleState());
+        panner_setFlipYaw(hPan, (int)t_flipYaw->getToggleState());
         //[/UserButtonCode_t_flipYaw]
     }
     else if (buttonThatWasClicked == t_flipPitch.get())
     {
         //[UserButtonCode_t_flipPitch] -- add your button handler code here..
-        panner_setFlipPitch(hVst->hPan, (int)t_flipPitch->getToggleState());
+        panner_setFlipPitch(hPan, (int)t_flipPitch->getToggleState());
         //[/UserButtonCode_t_flipPitch]
     }
     else if (buttonThatWasClicked == t_flipRoll.get())
     {
         //[UserButtonCode_t_flipRoll] -- add your button handler code here..
-        panner_setFlipRoll(hVst->hPan, (int)t_flipRoll->getToggleState());
+        panner_setFlipRoll(hPan, (int)t_flipRoll->getToggleState());
         //[/UserButtonCode_t_flipRoll]
     }
 
@@ -1092,13 +1094,13 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 void PluginEditor::timerCallback()
 {
     /* refresh parameters that can change internally */
-    sourceCoordsView_handle->setNCH(panner_getNumSources(hVst->hPan));
-    loudspeakerCoordsView_handle->setNCH(panner_getNumLoudspeakers(hVst->hPan));
-    SL_num_sources->setValue(panner_getNumSources(hVst->hPan),dontSendNotification);
-    SL_num_loudspeakers->setValue(panner_getNumLoudspeakers(hVst->hPan),dontSendNotification);
-    s_yaw->setValue(panner_getYaw(hVst->hPan), dontSendNotification);
-    s_pitch->setValue(panner_getPitch(hVst->hPan), dontSendNotification);
-    s_roll->setValue(panner_getRoll(hVst->hPan), dontSendNotification);
+    sourceCoordsView_handle->setNCH(panner_getNumSources(hPan));
+    loudspeakerCoordsView_handle->setNCH(panner_getNumLoudspeakers(hPan));
+    SL_num_sources->setValue(panner_getNumSources(hPan),dontSendNotification);
+    SL_num_loudspeakers->setValue(panner_getNumLoudspeakers(hPan),dontSendNotification);
+    s_yaw->setValue(panner_getYaw(hPan), dontSendNotification);
+    s_pitch->setValue(panner_getPitch(hPan), dontSendNotification);
+    s_roll->setValue(panner_getRoll(hPan), dontSendNotification);
 
 #ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
@@ -1111,7 +1113,7 @@ void PluginEditor::timerCallback()
 		SL_num_loudspeakers->setEnabled(true);
 		loudspeakerCoordsView_handle->setEnabled(true);
 		CBsLoudspeakerDirsPreset->setEnabled(true);
-		panner_checkReInit(hVst->hPan);
+		panner_checkReInit(hPan);
 	}
 #endif
     if (hVst->getIsPlaying())
@@ -1134,15 +1136,15 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ( !((panner_getDAWsamplerate(hVst->hPan) == 44.1e3) || (panner_getDAWsamplerate(hVst->hPan) == 48e3)) ){
+    else if ( !((panner_getDAWsamplerate(hPan) == 44.1e3) || (panner_getDAWsamplerate(hPan) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < panner_getNumSources(hVst->hPan))){
+    else if ((hVst->getCurrentNumInputs() < panner_getNumSources(hPan))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumOutputs() < panner_getNumLoudspeakers(hVst->hPan))){
+    else if ((hVst->getCurrentNumOutputs() < panner_getNumLoudspeakers(hPan))){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }

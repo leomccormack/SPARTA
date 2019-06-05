@@ -66,8 +66,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    PluginProcessor* hVst;
-    void timerCallback() override;
+
 
     //[/UserMethods]
 
@@ -81,6 +80,9 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    PluginProcessor* hVst;
+    void* hA2sh;
+    void timerCallback() override;
     ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
 

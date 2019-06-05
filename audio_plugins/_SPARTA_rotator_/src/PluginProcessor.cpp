@@ -70,27 +70,17 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 
 void PluginProcessor::setParameter (int index, float newValue)
 {
-	switch (index)
-	{
-        case k_yaw:
-            rotator_setYaw(hRot, (newValue-0.5f)*360.0f );
-            break;
-        case k_pitch:
-            rotator_setPitch(hRot, (newValue - 0.5f)*180.0f);
-            break;
-        case k_roll:
-            rotator_setRoll(hRot, (newValue - 0.5f)*180.0f);
-            break;
-        case k_flipYaw:
-    		rotator_setFlipYaw(hRot, (int)(newValue + 0.5f));
-            break;
-        case k_flipPitch:
-            rotator_setFlipPitch(hRot, (int)(newValue + 0.5f));
-            break;
-        case k_flipRoll:
-            rotator_setFlipRoll(hRot, (int)(newValue + 0.5f));
-            break;
-            
+	switch (index) {
+        case k_inputOrder:      rotator_setOrder(hRot, (INPUT_ORDERS)(newValue*(float)(ROTATOR_MAX_SH_ORDER-1) + 1.5f)); break;
+        case k_channelOrder:    rotator_setChOrder(hRot, (int)(newValue*(float)(ROTATOR_NUM_CH_ORDERINGS-1) + 1.5f)); break;
+        case k_normType:        rotator_setNormType(hRot, (int)(newValue*(float)(ROTATOR_NUM_NORM_TYPES-1) + 1.5f)); break;
+        case k_useRollPitchYaw: rotator_setRPYflag(hRot, (int)(newValue + 0.5f)); break;
+        case k_yaw:             rotator_setYaw(hRot, (newValue-0.5f)*360.0f ); break;
+        case k_pitch:           rotator_setPitch(hRot, (newValue - 0.5f)*180.0f); break;
+        case k_roll:            rotator_setRoll(hRot, (newValue - 0.5f)*180.0f); break;
+        case k_flipYaw:         rotator_setFlipYaw(hRot, (int)(newValue + 0.5f)); break;
+        case k_flipPitch:       rotator_setFlipPitch(hRot, (int)(newValue + 0.5f)); break;
+        case k_flipRoll:        rotator_setFlipRoll(hRot, (int)(newValue + 0.5f)); break;
 		default: break;
 	}
 }
@@ -101,21 +91,17 @@ void PluginProcessor::setCurrentProgram (int index)
 
 float PluginProcessor::getParameter (int index)
 {
-    switch (index)
-	{
-        case k_yaw:
-            return (rotator_getYaw(hRot)/360.0f) + 0.5f;
-        case k_pitch:
-            return (rotator_getPitch(hRot)/180.0f) + 0.5f;
-        case k_roll:
-            return (rotator_getRoll(hRot)/180.0f) + 0.5f;
-        case k_flipYaw:
-            return (float)rotator_getFlipYaw(hRot);
-        case k_flipPitch:
-            return (float)rotator_getFlipPitch(hRot);
-        case k_flipRoll:
-            return (float)rotator_getFlipRoll(hRot);
-            
+    switch (index) {
+        case k_inputOrder:      return (float)(rotator_getOrder(hRot)-1)/(float)(ROTATOR_MAX_SH_ORDER-1);
+        case k_channelOrder:    return (float)(rotator_getChOrder(hRot)-1)/(float)(ROTATOR_NUM_NORM_TYPES-1);
+        case k_normType:        return (float)(rotator_getNormType(hRot)-1)/(float)(ROTATOR_NUM_NORM_TYPES-1);
+        case k_useRollPitchYaw: return (float)rotator_getRPYflag(hRot);
+        case k_yaw:             return (rotator_getYaw(hRot)/360.0f) + 0.5f;
+        case k_pitch:           return (rotator_getPitch(hRot)/180.0f) + 0.5f;
+        case k_roll:            return (rotator_getRoll(hRot)/180.0f) + 0.5f;
+        case k_flipYaw:         return (float)rotator_getFlipYaw(hRot);
+        case k_flipPitch:       return (float)rotator_getFlipPitch(hRot);
+        case k_flipRoll:        return (float)rotator_getFlipRoll(hRot);
 		default: return 0.0f;
 	}
 }
@@ -132,27 +118,47 @@ const String PluginProcessor::getName() const
 
 const String PluginProcessor::getParameterName (int index)
 {
-    switch (index)
-	{
-        case k_yaw:
-            return "yaw";
-        case k_pitch:
-            return "pitch";
-        case k_roll:
-            return "roll";
-        case k_flipYaw:
-            return "flip_yaw";
-        case k_flipPitch:
-            return "flip_pitch";
-        case k_flipRoll:
-            return "flip_roll";
+    switch (index){
+        case k_inputOrder:      return "order";
+        case k_channelOrder:    return "channel_order";
+        case k_normType:        return "norm_type";
+        case k_useRollPitchYaw: return "use_rpy";
+        case k_yaw:             return "yaw";
+        case k_pitch:           return "pitch";
+        case k_roll:            return "roll";
+        case k_flipYaw:         return "flip_yaw";
+        case k_flipPitch:       return "flip_pitch";
+        case k_flipRoll:        return "flip_roll";
 		default: return "NULL";
 	}
 }
 
 const String PluginProcessor::getParameterText(int index)
 {
-	return String(getParameter(index), 1);    
+    switch (index) {
+        case k_inputOrder: return String(rotator_getOrder(hRot));
+        case k_channelOrder:
+            switch(rotator_getChOrder(hRot)){
+                case CH_ACN:  return "ACN";
+                case CH_FUMA: return "FuMa";
+                default: return "NULL";
+            }
+        case k_normType:
+            switch(rotator_getNormType(hRot)){
+                case NORM_N3D:  return "N3D";
+                case NORM_SN3D: return "SN3D";
+                case NORM_FUMA: return "FuMa";
+                default: return "NULL";
+            }
+        case k_useRollPitchYaw: return !rotator_getRPYflag(hRot) ? "YPR" : "RPY";
+        case k_yaw:             return String(rotator_getYaw(hRot));
+        case k_pitch:           return String(rotator_getPitch(hRot));
+        case k_roll:            return String(rotator_getRoll(hRot));
+        case k_flipYaw:         return !rotator_getFlipYaw(hRot) ? "No-Flip" : "Flip";
+        case k_flipPitch:       return !rotator_getFlipPitch(hRot) ? "No-Flip" : "Flip";
+        case k_flipRoll:        return !rotator_getFlipRoll(hRot) ? "No-Flip" : "Flip";
+        default: return "NULL";
+    }
 }
 
 const String PluginProcessor::getInputChannelName (int channelIndex) const
@@ -245,7 +251,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
-    float* pFrameData[MAX_NUM_CHANNELS];
+    float* pFrameData[ROTATOR_MAX_NUM_CHANNELS];
 
 	if(nCurrentBlockSize % FRAME_SIZE == 0) { /* divisible by frame size */
         for(int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {

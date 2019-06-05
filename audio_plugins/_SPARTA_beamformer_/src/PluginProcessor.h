@@ -24,13 +24,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "beamformer.h"
-#define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1 
-#include "../../resources/ConfigurationHelper.h"
-
-#define BUILD_VER_SUFFIX "beta"            /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
-#define MAX_NUM_CHANNELS 64
-#define NUM_OF_AUTOMATABLE_SOURCES 32
-
+#define BUILD_VER_SUFFIX "beta"  /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
+#define MAX_NUM_CHANNELS 64 
 #ifndef MIN
   #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
 #endif
@@ -38,36 +33,30 @@
   #define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
 #endif
 
+/* Parameter tags: for the default VST GUI */
+enum {
+    k_inputOrder,
+    k_channelOrder,
+    k_normType,
+    k_beamType,
+    k_numBeams,
+    
+    k_NumOfParameters /* not including beam directions */
+};
+
 class PluginProcessor  : public AudioProcessor,
                          public VSTCallbackHandler
 {
 public:
-    int nNumInputs;                         /* current number of input channels */
-	int nNumOutputs;                        /* current number of output channels */
-	int nSampleRate;                        /* current host sample rate */
-    int nHostBlockSize;                     /* typical host block size to expect, in samples */ 
-    void* hBeam;                            /* beamformerlib handle */
-    
-    bool isPlaying;
-    
-    int getCurrentBlockSize(){
-        return nHostBlockSize;
-    }
-    int getCurrentNumInputs(){
-        return nNumInputs;
-    }
-    int getCurrentNumOutputs(){
-        return nNumOutputs;
-    }
+    /* Get functions */
+    void* getFXHandle() { return hBeam; }
+    int getCurrentBlockSize(){ return nHostBlockSize; }
+    int getCurrentNumInputs(){ return nNumInputs; }
+    int getCurrentNumOutputs(){ return nNumOutputs; }
     
     /* For refreshing window during automation */
-    bool refreshWindow;
-    void setRefreshWindow(bool newState) {
-        refreshWindow = newState;
-    }
-    bool getRefreshWindow() {
-        return refreshWindow;
-    } 
+    void setRefreshWindow(bool newState) { refreshWindow = newState; }
+    bool getRefreshWindow() { return refreshWindow; }
     
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 index, pointer_sized_int value, void* ptr, float opt) override { return 0; };
@@ -79,8 +68,15 @@ public:
         return 0;
     }
     
-    /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead* playHead;
+private:
+    void* hBeam;          /* beamformer handle */
+    int nNumInputs;       /* current number of input channels */
+    int nNumOutputs;      /* current number of output channels */
+    int nSampleRate;      /* current host sample rate */
+    int nHostBlockSize;   /* typical host block size to expect, in samples */
+    bool isPlaying;
+    bool refreshWindow;
+    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
     
     /***************************************************************************\

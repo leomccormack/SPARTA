@@ -131,7 +131,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CHOrderingCB->setJustificationType (Justification::centredLeft);
     CHOrderingCB->setTextWhenNothingSelected (TRANS("ACN"));
     CHOrderingCB->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CHOrderingCB->addItem (TRANS("ACN"), 1);
+    CHOrderingCB->addSeparator();
+    CHOrderingCB->addSeparator();
     CHOrderingCB->addListener (this);
 
     CHOrderingCB->setBounds (640, 377, 128, 16);
@@ -142,8 +143,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     normalisationCB->setJustificationType (Justification::centredLeft);
     normalisationCB->setTextWhenNothingSelected (TRANS("N3D"));
     normalisationCB->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    normalisationCB->addItem (TRANS("N3D"), 1);
-    normalisationCB->addItem (TRANS("SN3D"), 2);
+    normalisationCB->addSeparator();
+    normalisationCB->addSeparator();
     normalisationCB->addListener (this);
 
     normalisationCB->setBounds (640, 409, 128, 16);
@@ -231,6 +232,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     //[Constructor] You can add your own custom stuff here..
 	hVst = ownerFilter;
+    hA2sh = hVst->getFXHandle();
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
 
@@ -275,73 +277,61 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* pass handles to data required for eq and analysis displays */
     int numFreqPoints, numCurves;
-    float* freqVector = array2sh_getFreqVector(hVst->hA2sh, &numFreqPoints);
-    float** solidCurves = array2sh_getbN_inv(hVst->hA2sh, &numCurves, &numFreqPoints);
+    float* freqVector = array2sh_getFreqVector(hA2sh, &numFreqPoints);
+    float** solidCurves = array2sh_getbN_inv(hA2sh, &numCurves, &numFreqPoints);
     eqviewIncluded->setSolidCurves_Handle(freqVector, solidCurves, numFreqPoints, numCurves);
-    float** faintCurves = array2sh_getbN_modal(hVst->hA2sh, &numCurves, &numFreqPoints);
+    float** faintCurves = array2sh_getbN_modal(hA2sh, &numCurves, &numFreqPoints);
     eqviewIncluded->setFaintCurves_Handle(freqVector, faintCurves, numFreqPoints, numCurves);
-    float* dataHandle = array2sh_getSpatialCorrelation_Handle(hVst->hA2sh, &numCurves, &numFreqPoints);
+    float* dataHandle = array2sh_getSpatialCorrelation_Handle(hA2sh, &numCurves, &numFreqPoints);
     cohviewIncluded->setSolidCurves_Handle(freqVector, dataHandle, numFreqPoints, numCurves);
-    dataHandle = array2sh_getLevelDifference_Handle(hVst->hA2sh, &numCurves, &numFreqPoints);
+    dataHandle = array2sh_getLevelDifference_Handle(hA2sh, &numCurves, &numFreqPoints);
     ldiffviewIncluded->setSolidCurves_Handle(freqVector, dataHandle, numFreqPoints, numCurves);
-
-    /* grab current parameter settings */
-    CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hVst->hA2sh), dontSendNotification);
-    arrayTypeCB->setSelectedId(array2sh_getArrayType(hVst->hA2sh), dontSendNotification);
-    QSlider->setRange(array2sh_getMinNumSensors(hVst->hA2sh), array2sh_getMaxNumSensors(), 1);
-    QSlider->setValue(array2sh_getNumSensors(hVst->hA2sh), dontSendNotification);
-    rSlider->setValue(array2sh_getr(hVst->hA2sh)*1e3f, dontSendNotification);
-    RSlider->setValue(array2sh_getR(hVst->hA2sh)*1e3f, dontSendNotification);
-    cSlider->setValue(array2sh_getc(hVst->hA2sh), dontSendNotification);
-    regAmountSlider->setValue(array2sh_getRegPar(hVst->hA2sh), dontSendNotification);
-    CHOrderingCB->setSelectedId(array2sh_getChOrder(hVst->hA2sh), dontSendNotification);
-    normalisationCB->setSelectedId(array2sh_getNormType(hVst->hA2sh), dontSendNotification);
-    gainSlider->setValue(array2sh_getGain(hVst->hA2sh), dontSendNotification);
-    showDegreesInstead = false;
-    degRadTB->setToggleState(showDegreesInstead, dontSendNotification);
 
     /* add filter options */
     filterTypeCB->addItem (TRANS("Soft-Limiting"), FILTER_SOFT_LIM);
     filterTypeCB->addItem (TRANS("Tikhonov"), FILTER_TIKHONOV);
     filterTypeCB->addItem (TRANS("Z-Style"), FILTER_Z_STYLE);
     filterTypeCB->addItem (TRANS("Z-Style (max_rE)"), FILTER_Z_STYLE_MAXRE);
-    filterTypeCB->setSelectedId(array2sh_getFilterType(hVst->hA2sh), dontSendNotification);
+    filterTypeCB->setSelectedId(array2sh_getFilterType(hA2sh), dontSendNotification);
 
     /* add weight options */
     weightTypeCB->addItem (TRANS("Rigid-omni"), WEIGHT_RIGID_OMNI);
     weightTypeCB->addItem (TRANS("Rigid-cardioid"), WEIGHT_RIGID_CARD);
-    //weightTypeCB->addItem (TRANS("Rigid-dipole"), WEIGHT_RIGID_DIPOLE);
+    weightTypeCB->addItem (TRANS("Rigid-dipole"), WEIGHT_RIGID_DIPOLE);
     weightTypeCB->addItem (TRANS("Open-omni"), WEIGHT_OPEN_OMNI);
     weightTypeCB->addItem (TRANS("Open-cardioid"), WEIGHT_OPEN_CARD);
-    //weightTypeCB->addItem (TRANS("Open-dipole"), WEIGHT_OPEN_DIPOLE);
-    weightTypeCB->setSelectedId(array2sh_getWeightType(hVst->hA2sh), dontSendNotification);
+    weightTypeCB->addItem (TRANS("Open-dipole"), WEIGHT_OPEN_DIPOLE);
+    weightTypeCB->setSelectedId(array2sh_getWeightType(hA2sh), dontSendNotification);
+
+    /* add channel format and norm scheme options */
+    CHOrderingCB->addItem (TRANS("ACN"), CH_ACN);
+    CHOrderingCB->addItem (TRANS("FuMa"), CH_FUMA);
+    normalisationCB->addItem (TRANS("N3D"), NORM_N3D);
+    normalisationCB->addItem (TRANS("SN3D"), NORM_SN3D);
+    normalisationCB->addItem (TRANS("FuMa"), NORM_FUMA);
 
     /* Hide decoding orders that are unsuitable for number of sensors */
     for(int i=1; i<=7; i++)
-        CBencodingOrder->setItemEnabled(i, (i+1)*(i+1) <= array2sh_getNumSensors(hVst->hA2sh) ? true : false);
-
-    /* gain range should change with order */
-    int curOrder = array2sh_getEncodingOrder(hVst->hA2sh);
-    gainSlider->setRange (-10-(curOrder*curOrder), 5+curOrder, 0.01);
+        CBencodingOrder->setItemEnabled(i, (i+1)*(i+1) <= array2sh_getNumSensors(hA2sh) ? true : false);
 
     /* sensor coord table */
     addAndMakeVisible (sensorCoordsVP = new Viewport ("new viewport"));
-    sensorCoordsView_handle = new sensorCoordsView(ownerFilter, MAX_NUM_CHANNELS, array2sh_getNumSensors(hVst->hA2sh), showDegreesInstead);
+    sensorCoordsView_handle = new sensorCoordsView(ownerFilter, MAX_NUM_CHANNELS, array2sh_getNumSensors(hA2sh), showDegreesInstead);
     sensorCoordsVP->setViewedComponent (sensorCoordsView_handle);
     sensorCoordsVP->setScrollBarsShown (true, false);
     sensorCoordsVP->setAlwaysOnTop(true);
     sensorCoordsVP->setBounds(24, 224, 184, 200);
-    sensorCoordsView_handle->setQ(array2sh_getNumSensors(hVst->hA2sh));
+    sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));
 
     /* disable unsuitable parameters */
-    bool shouldBeEnabled = array2sh_getWeightType(hVst->hA2sh) > WEIGHT_RIGID_DIPOLE ? false : true; /* is it a rigid array? */
+    bool shouldBeEnabled = array2sh_getWeightType(hA2sh) > WEIGHT_RIGID_DIPOLE ? false : true; /* is it a rigid array? */
     RSlider->setEnabled(shouldBeEnabled);
-    shouldBeEnabled = array2sh_getArrayType(hVst->hA2sh) != ARRAY_SPHERICAL ? false : true;  /* is it a cylindrical array? */
+    shouldBeEnabled = array2sh_getArrayType(hA2sh) != ARRAY_SPHERICAL ? false : true;  /* is it a cylindrical array? */
     weightTypeCB->setItemEnabled(WEIGHT_RIGID_CARD, shouldBeEnabled);
     weightTypeCB->setItemEnabled(WEIGHT_RIGID_DIPOLE, shouldBeEnabled);
     weightTypeCB->setItemEnabled(WEIGHT_OPEN_CARD, shouldBeEnabled);
     weightTypeCB->setItemEnabled(WEIGHT_OPEN_DIPOLE, shouldBeEnabled);
-//    if((array2sh_getWeightType(hVst->hA2sh) == 3) || (array2sh_getWeightType(hVst->hA2sh) == 4 ))
+//    if((array2sh_getWeightType(hA2sh) == 3) || (array2sh_getWeightType(hA2sh) == 4 ))
 //        weightTypeCB->setSelectedId(1, dontSendNotification);
 //    regAmountSlider->setEnabled(shouldBeEnabled);
 
@@ -368,6 +358,29 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 #ifdef ENABLE_AALTO_HYDROPHONE_PRESET
     presetCB->addItem (TRANS("Aalto Hydro"), PRESET_AALTO_HYDROPHONE);
 #endif
+
+    /* grab current parameter settings */
+    CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);
+    arrayTypeCB->setSelectedId(array2sh_getArrayType(hA2sh), dontSendNotification);
+    QSlider->setRange(array2sh_getMinNumSensors(hA2sh), array2sh_getMaxNumSensors(), 1);
+    QSlider->setValue(array2sh_getNumSensors(hA2sh), dontSendNotification);
+    rSlider->setRange(ARRAY2SH_ARRAY_RADIUS_MIN_VALUE, ARRAY2SH_ARRAY_RADIUS_MAX_VALUE, 0.01f);
+    rSlider->setValue(array2sh_getr(hA2sh)*1e3f, dontSendNotification);
+    RSlider->setRange(ARRAY2SH_BAFFLE_RADIUS_MIN_VALUE, ARRAY2SH_BAFFLE_RADIUS_MAX_VALUE, 0.01f);
+    RSlider->setValue(array2sh_getR(hA2sh)*1e3f, dontSendNotification);
+    cSlider->setRange(ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE, ARRAY2SH_SPEED_OF_SOUND_MAX_VALUE, 0.01f);
+    cSlider->setValue(array2sh_getc(hA2sh), dontSendNotification);
+    regAmountSlider->setRange(ARRAY2SH_MAX_GAIN_MIN_VALUE, ARRAY2SH_MAX_GAIN_MAX_VALUE, 0.01f);
+    regAmountSlider->setValue(array2sh_getRegPar(hA2sh), dontSendNotification);
+    CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), dontSendNotification);
+    normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), dontSendNotification);
+    gainSlider->setRange(ARRAY2SH_POST_GAIN_MIN_VALUE, ARRAY2SH_POST_GAIN_MAX_VALUE, 0.01f);
+    gainSlider->setValue(array2sh_getGain(hA2sh), dontSendNotification);
+    showDegreesInstead = false;
+    degRadTB->setToggleState(showDegreesInstead, dontSendNotification);
+    CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
+    normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
+
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
 
@@ -529,7 +542,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 228, y = 264, width = 279, height = 36;
+        int x = 228, y = 264, width = 279, height = 38;
         Colour fillColour = Colour (0x10f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -592,7 +605,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 20, y = 123, width = 116, height = 30;
+        int x = 20, y = 123, width = 180, height = 30;
         String text (TRANS("Array radius (mm):"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -970,19 +983,19 @@ void PluginEditor::paint (Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_supported_fs:
-            g.drawText(TRANS("Sample rate (") + String(array2sh_getSamplingRate(hVst->hA2sh)) + TRANS(") is unsupported"),
+            g.drawText(TRANS("Sample rate (") + String(array2sh_getSamplingRate(hA2sh)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(array2sh_getNumSensors(hVst->hA2sh)) + TRANS(")"),
+                       TRANS("/") + String(array2sh_getNumSensors(hA2sh)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
-                       TRANS("/") + String(array2sh_getNSHrequired(hVst->hA2sh)) + TRANS(")"),
+                       TRANS("/") + String(array2sh_getNSHrequired(hA2sh)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -1010,26 +1023,26 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == presetCB.get())
     {
         //[UserComboBoxCode_presetCB] -- add your combo box handling code here..
-        array2sh_setPreset(hVst->hA2sh, (int)presetCB->getSelectedId());
+        array2sh_setPreset(hA2sh, (int)presetCB->getSelectedId());
 
         /* grab current parameter settings */
-        arrayTypeCB->setSelectedId(array2sh_getArrayType(hVst->hA2sh), dontSendNotification);
-        CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hVst->hA2sh), dontSendNotification);
+        arrayTypeCB->setSelectedId(array2sh_getArrayType(hA2sh), dontSendNotification);
+        CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);
         int curOrder = CBencodingOrder->getSelectedId();
         QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
-        QSlider->setValue(array2sh_getNumSensors(hVst->hA2sh), dontSendNotification);
-        rSlider->setValue(array2sh_getr(hVst->hA2sh)*1e3f, dontSendNotification);
-        RSlider->setValue(array2sh_getR(hVst->hA2sh)*1e3f, dontSendNotification);
-        cSlider->setValue(array2sh_getc(hVst->hA2sh), dontSendNotification);
-        weightTypeCB->setSelectedId(array2sh_getWeightType(hVst->hA2sh), dontSendNotification);
-        filterTypeCB->setSelectedId(array2sh_getFilterType(hVst->hA2sh), dontSendNotification);
-        regAmountSlider->setValue(array2sh_getRegPar(hVst->hA2sh), dontSendNotification);
-        CHOrderingCB->setSelectedId(array2sh_getChOrder(hVst->hA2sh), dontSendNotification);
-        normalisationCB->setSelectedId(array2sh_getNormType(hVst->hA2sh), dontSendNotification);
-        gainSlider->setValue(array2sh_getGain(hVst->hA2sh), dontSendNotification);
+        QSlider->setValue(array2sh_getNumSensors(hA2sh), dontSendNotification);
+        rSlider->setValue(array2sh_getr(hA2sh)*1e3f, dontSendNotification);
+        RSlider->setValue(array2sh_getR(hA2sh)*1e3f, dontSendNotification);
+        cSlider->setValue(array2sh_getc(hA2sh), dontSendNotification);
+        weightTypeCB->setSelectedId(array2sh_getWeightType(hA2sh), dontSendNotification);
+        filterTypeCB->setSelectedId(array2sh_getFilterType(hA2sh), dontSendNotification);
+        regAmountSlider->setValue(array2sh_getRegPar(hA2sh), dontSendNotification);
+        CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), dontSendNotification);
+        normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), dontSendNotification);
+        gainSlider->setValue(array2sh_getGain(hA2sh), dontSendNotification);
 
         /* update view windows */
-        sensorCoordsView_handle->setQ(array2sh_getNumSensors(hVst->hA2sh));
+        sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));
 
         needScreenRefreshFLAG = true;
         //[/UserComboBoxCode_presetCB]
@@ -1037,34 +1050,34 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == arrayTypeCB.get())
     {
         //[UserComboBoxCode_arrayTypeCB] -- add your combo box handling code here..
-        array2sh_setArrayType(hVst->hA2sh, arrayTypeCB->getSelectedId());
+        array2sh_setArrayType(hA2sh, arrayTypeCB->getSelectedId());
         needScreenRefreshFLAG = true;
         //[/UserComboBoxCode_arrayTypeCB]
     }
     else if (comboBoxThatHasChanged == weightTypeCB.get())
     {
         //[UserComboBoxCode_weightTypeCB] -- add your combo box handling code here..
-        array2sh_setWeightType(hVst->hA2sh, weightTypeCB->getSelectedId());
+        array2sh_setWeightType(hA2sh, weightTypeCB->getSelectedId());
         needScreenRefreshFLAG = true;
         //[/UserComboBoxCode_weightTypeCB]
     }
     else if (comboBoxThatHasChanged == filterTypeCB.get())
     {
         //[UserComboBoxCode_filterTypeCB] -- add your combo box handling code here..
-        array2sh_setFilterType(hVst->hA2sh, filterTypeCB->getSelectedId());
+        array2sh_setFilterType(hA2sh, filterTypeCB->getSelectedId());
         needScreenRefreshFLAG = true;
         //[/UserComboBoxCode_filterTypeCB]
     }
     else if (comboBoxThatHasChanged == CHOrderingCB.get())
     {
         //[UserComboBoxCode_CHOrderingCB] -- add your combo box handling code here..
-        array2sh_setChOrder(hVst->hA2sh, CHOrderingCB->getSelectedId());
+        array2sh_setChOrder(hA2sh, CHOrderingCB->getSelectedId());
         //[/UserComboBoxCode_CHOrderingCB]
     }
     else if (comboBoxThatHasChanged == normalisationCB.get())
     {
         //[UserComboBoxCode_normalisationCB] -- add your combo box handling code here..
-        array2sh_setNormType(hVst->hA2sh, normalisationCB->getSelectedId());
+        array2sh_setNormType(hA2sh, normalisationCB->getSelectedId());
         //[/UserComboBoxCode_normalisationCB]
     }
     else if (comboBoxThatHasChanged == dispWindow.get())
@@ -1078,21 +1091,21 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     {
         //[UserComboBoxCode_CBencodingOrder] -- add your combo box handling code here..
         int newOrder = CBencodingOrder->getSelectedId();
-        array2sh_setEncodingOrder(hVst->hA2sh, newOrder);
+        array2sh_setEncodingOrder(hA2sh, newOrder);
         needScreenRefreshFLAG = true;
         //[/UserComboBoxCode_CBencodingOrder]
     }
 
     //[UsercomboBoxChanged_Post]
     /* disable unsuitable parameters */
-    bool shouldBeEnabled = array2sh_getWeightType(hVst->hA2sh) > WEIGHT_RIGID_DIPOLE ? false : true; /* is it a rigid array? */
+    bool shouldBeEnabled = array2sh_getWeightType(hA2sh) > WEIGHT_RIGID_DIPOLE ? false : true; /* is it a rigid array? */
     RSlider->setEnabled(shouldBeEnabled);
-    shouldBeEnabled = array2sh_getArrayType(hVst->hA2sh) != ARRAY_SPHERICAL ? false : true;  /* is it a cylindrical array? */
+    shouldBeEnabled = array2sh_getArrayType(hA2sh) != ARRAY_SPHERICAL ? false : true;  /* is it a cylindrical array? */
     weightTypeCB->setItemEnabled(WEIGHT_RIGID_CARD, shouldBeEnabled);
     weightTypeCB->setItemEnabled(WEIGHT_RIGID_DIPOLE, shouldBeEnabled);
     weightTypeCB->setItemEnabled(WEIGHT_OPEN_CARD, shouldBeEnabled);
     weightTypeCB->setItemEnabled(WEIGHT_OPEN_DIPOLE, shouldBeEnabled);
-//    if( (array2sh_getArrayType(hVst->hA2sh) == 2) && ((array2sh_getWeightType(hVst->hA2sh) == 3) || (array2sh_getWeightType(hVst->hA2sh) == 4)) )
+//    if( (array2sh_getArrayType(hA2sh) == 2) && ((array2sh_getWeightType(hA2sh) == 3) || (array2sh_getWeightType(hA2sh) == 4)) )
 //        weightTypeCB->setSelectedId(1, sendNotification); /* force a suitable option */
 
     //[/UsercomboBoxChanged_Post]
@@ -1106,27 +1119,27 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == QSlider.get())
     {
         //[UserSliderCode_QSlider] -- add your slider handling code here..
-        if(array2sh_getMinNumSensors(hVst->hA2sh)<= (int)QSlider->getValue())
-            array2sh_setNumSensors(hVst->hA2sh, (int)QSlider->getValue());
+        if(array2sh_getMinNumSensors(hA2sh)<= (int)QSlider->getValue())
+            array2sh_setNumSensors(hA2sh, (int)QSlider->getValue());
         needScreenRefreshFLAG = true;
         //[/UserSliderCode_QSlider]
     }
     else if (sliderThatWasMoved == rSlider.get())
     {
         //[UserSliderCode_rSlider] -- add your slider handling code here..
-        array2sh_setr(hVst->hA2sh, (float)rSlider->getValue()/1e3f);
+        array2sh_setr(hA2sh, (float)rSlider->getValue()/1e3f);
         needScreenRefreshFLAG = true;
         //[/UserSliderCode_rSlider]
     }
     else if (sliderThatWasMoved == RSlider.get())
     {
         //[UserSliderCode_RSlider] -- add your slider handling code here..
-        array2sh_setR(hVst->hA2sh, (float)RSlider->getValue()/1e3f);
-        bool changerToo = (array2sh_getWeightType(hVst->hA2sh) == WEIGHT_RIGID_OMNI) ||
-            (array2sh_getWeightType(hVst->hA2sh) == WEIGHT_RIGID_CARD) ||
-            (array2sh_getWeightType(hVst->hA2sh) == WEIGHT_RIGID_DIPOLE) ? true : false; /* is it a rigid array? */
+        array2sh_setR(hA2sh, (float)RSlider->getValue()/1e3f);
+        bool changerToo = (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_OMNI) ||
+            (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_CARD) ||
+            (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_DIPOLE) ? true : false; /* is it a rigid array? */
         if(changerToo){
-            array2sh_setr(hVst->hA2sh, (float)RSlider->getValue()/1e3f);
+            array2sh_setr(hA2sh, (float)RSlider->getValue()/1e3f);
             rSlider->setValue(RSlider->getValue(), dontSendNotification);
         }
         needScreenRefreshFLAG = true;
@@ -1135,21 +1148,21 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     else if (sliderThatWasMoved == cSlider.get())
     {
         //[UserSliderCode_cSlider] -- add your slider handling code here..
-        array2sh_setc(hVst->hA2sh, (float)cSlider->getValue());
+        array2sh_setc(hA2sh, (float)cSlider->getValue());
         needScreenRefreshFLAG = true;
         //[/UserSliderCode_cSlider]
     }
     else if (sliderThatWasMoved == regAmountSlider.get())
     {
         //[UserSliderCode_regAmountSlider] -- add your slider handling code here..
-        array2sh_setRegPar(hVst->hA2sh, (float)regAmountSlider->getValue());
+        array2sh_setRegPar(hA2sh, (float)regAmountSlider->getValue());
         needScreenRefreshFLAG = true;
         //[/UserSliderCode_regAmountSlider]
     }
     else if (sliderThatWasMoved == gainSlider.get())
     {
         //[UserSliderCode_gainSlider] -- add your slider handling code here..
-        array2sh_setGain(hVst->hA2sh, (float)gainSlider->getValue());
+        array2sh_setGain(hA2sh, (float)gainSlider->getValue());
         //[/UserSliderCode_gainSlider]
     }
 
@@ -1172,7 +1185,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == textButton.get())
     {
         //[UserButtonCode_textButton] -- add your button handler code here..
-        array2sh_evaluateFilters(hVst->hA2sh);
+        array2sh_evaluateFilters(hA2sh);
         //[/UserButtonCode_textButton]
     }
     else if (buttonThatWasClicked == tb_loadJSON.get())
@@ -1204,7 +1217,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == applyDiffEQ.get())
     {
         //[UserButtonCode_applyDiffEQ] -- add your button handler code here..
-        array2sh_applyDiffEQpastAliasing(hVst->hA2sh);
+        array2sh_applyDiffEQpastAliasing(hA2sh);
         //[/UserButtonCode_applyDiffEQ]
     }
 
@@ -1217,13 +1230,17 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PluginEditor::timerCallback()
 {
-    /* these parameters can change internally */
-    RSlider->setValue(array2sh_getR(hVst->hA2sh)*1e3f, dontSendNotification);
-    CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hVst->hA2sh), dontSendNotification);
+    /* parameters whos values can change internally should be periodically refreshed */
+    RSlider->setValue(array2sh_getR(hA2sh)*1e3f, dontSendNotification);
+    CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);
     int curOrder = CBencodingOrder->getSelectedId();
     QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
-    QSlider->setValue(array2sh_getNumSensors(hVst->hA2sh), dontSendNotification);
-    sensorCoordsView_handle->setQ(array2sh_getNumSensors(hVst->hA2sh));
+    QSlider->setValue(array2sh_getNumSensors(hA2sh), dontSendNotification);
+    sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));
+    CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), dontSendNotification);
+    normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), dontSendNotification);
+    CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
+    normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
 
 #ifndef __APPLE__
 	/* Some parameters shouldn't be enabled if playback is ongoing */
@@ -1234,16 +1251,16 @@ void PluginEditor::timerCallback()
 	else {
 		textButton->setEnabled(true);
         applyDiffEQ->setEnabled(true);
-		array2sh_checkReInit(hVst->hA2sh);
+		array2sh_checkReInit(hA2sh);
 	}
 #endif
 
     /* draw magnitude/spatial-correlation/level-difference curves */
-    if (needScreenRefreshFLAG || array2sh_getEvalReady(hVst->hA2sh)){
+    if (needScreenRefreshFLAG || array2sh_getEvalReady(hA2sh)){
         switch(dispID){
             default:
             case SHOW_EQ:
-                eqviewIncluded->setNumCurves(array2sh_getEncodingOrder(hVst->hA2sh)+1);
+                eqviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
                 eqviewIncluded->setVisible(true);
                 cohviewIncluded->setVisible(false);
                 ldiffviewIncluded->setVisible(false);
@@ -1252,8 +1269,8 @@ void PluginEditor::timerCallback()
             case SHOW_SPATIAL_COH:
                 eqviewIncluded->setVisible(false);
                 ldiffviewIncluded->setVisible(false);
-                if(array2sh_getIsEvalValid(hVst->hA2sh)){
-                    cohviewIncluded->setNumCurves(array2sh_getEncodingOrder(hVst->hA2sh)+1);
+                if(array2sh_getIsEvalValid(hA2sh)){
+                    cohviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
                     cohviewIncluded->setVisible(true);
                     cohviewIncluded->repaint();
                 }
@@ -1263,8 +1280,8 @@ void PluginEditor::timerCallback()
             case SHOW_LEVEL_DIFF:
                 eqviewIncluded->setVisible(false);
                 cohviewIncluded->setVisible(false);
-                if(array2sh_getIsEvalValid(hVst->hA2sh)){
-                    ldiffviewIncluded->setNumCurves(array2sh_getEncodingOrder(hVst->hA2sh)+1);
+                if(array2sh_getIsEvalValid(hA2sh)){
+                    ldiffviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
                     ldiffviewIncluded->setVisible(true);
                     ldiffviewIncluded->repaint();
                 }
@@ -1275,27 +1292,24 @@ void PluginEditor::timerCallback()
         needScreenRefreshFLAG = false;
     }
 
-    /* gain range should ideally change with order */
-    gainSlider->setRange (-10-(curOrder*curOrder), 5+curOrder, 0.01);
-
     /* Hide decoding orders that are unsuitable for the current number of sensors */
     for(int i=1; i<=7; i++)
-        CBencodingOrder->setItemEnabled(i, (i+1)*(i+1) <= array2sh_getNumSensors(hVst->hA2sh) ? true : false);
+        CBencodingOrder->setItemEnabled(i, (i+1)*(i+1) <= array2sh_getNumSensors(hA2sh) ? true : false);
 
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ( !((array2sh_getSamplingRate(hVst->hA2sh) == 44.1e3) || (array2sh_getSamplingRate(hVst->hA2sh) == 48e3)) ){
+    else if ( !((array2sh_getSamplingRate(hA2sh) == 44.1e3) || (array2sh_getSamplingRate(hA2sh) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < array2sh_getNumSensors(hVst->hA2sh))){
+    else if ((hVst->getCurrentNumInputs() < array2sh_getNumSensors(hA2sh))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumOutputs() < array2sh_getNSHrequired(hVst->hA2sh))){
+    else if ((hVst->getCurrentNumOutputs() < array2sh_getNSHrequired(hA2sh))){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -1341,7 +1355,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="228 264 279 172" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="228 264 279 36" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="228 264 279 38" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 87 204 106" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1353,7 +1367,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="20 91 180 30" fill="solid: ffffffff" hasStroke="0" text="Number of Sensors: "
           fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="20 123 116 30" fill="solid: ffffffff" hasStroke="0" text="Array radius (mm):"
+    <TEXT pos="20 123 180 30" fill="solid: ffffffff" hasStroke="0" text="Array radius (mm):"
           fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="20 155 180 30" fill="solid: ffffffff" hasStroke="0" text="Baffle radius (mm):"
@@ -1482,10 +1496,10 @@ BEGIN_JUCER_METADATA
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="44b90530e58253e" memberName="CHOrderingCB"
             virtualName="" explicitFocusOrder="0" pos="640 377 128 16" editable="0"
-            layout="33" items="ACN" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
+            layout="33" items="&#10;" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="caeee0fc74db72a4" memberName="normalisationCB"
             virtualName="" explicitFocusOrder="0" pos="640 409 128 16" editable="0"
-            layout="33" items="N3D&#10;SN3D" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
+            layout="33" items="&#10;" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="ee4c42494881e7dc" memberName="gainSlider"
           virtualName="" explicitFocusOrder="0" pos="640 341 128 16" min="-6e1"
           max="6e1" int="1e-2" style="LinearHorizontal" textBoxPos="TextBoxRight"

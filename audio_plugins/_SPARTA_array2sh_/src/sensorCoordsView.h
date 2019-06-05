@@ -65,7 +65,7 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
-
+    void* hA2sh;
     void refreshCoords();
     
     ScopedPointer<Slider>* aziSliders;

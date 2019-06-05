@@ -37,10 +37,41 @@ PluginProcessor::~PluginProcessor()
 
 void PluginProcessor::setParameter (int index, float newValue)
 {
-	switch (index)
-	{
-		default: break;
-	}
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_inputOrder:      ambi_dec_setMasterDecOrder(hAmbi, (MASTER_ORDERS)(newValue*(float)(AMBI_DEC_MAX_SH_ORDER-1) + 1.5f));
+                                    ambi_dec_setDecOrderAllBands(hAmbi, (newValue*(float)(AMBI_DEC_MAX_SH_ORDER-1) + 1.5f)); break;
+            case k_channelOrder:    ambi_dec_setChOrder(hAmbi, (int)(newValue*(float)(AMBI_DEC_NUM_CH_ORDERINGS-1) + 1.5f)); break;
+            case k_normType:        ambi_dec_setNormType(hAmbi, (int)(newValue*(float)(AMBI_DEC_NUM_NORM_TYPES-1) + 1.5f)); break;
+            case k_numLoudspeakers: ambi_dec_setNumLoudspeakers(hAmbi, (int)(newValue*(float)(AMBI_DEC_MAX_NUM_OUTPUTS)+0.5)); break;
+            case k_decMethod1:      ambi_dec_setDecMethod(hAmbi, 0, (DECODING_METHODS)(newValue*(float)(AMBI_DEC_NUM_DECODING_METHODS-1) + 1.5f)); break;
+            case k_decMethod2:      ambi_dec_setDecMethod(hAmbi, 1, (DECODING_METHODS)(newValue*(float)(AMBI_DEC_NUM_DECODING_METHODS-1) + 1.5f)); break;
+            case k_maxREweight1:    ambi_dec_setDecEnableMaxrE(hAmbi, 0, (int)(newValue+0.5f)); break;
+            case k_maxREweight2:    ambi_dec_setDecEnableMaxrE(hAmbi, 1, (int)(newValue+0.5f)); break;
+            case k_diffEQ1:         ambi_dec_setDecNormType(hAmbi, 0, (int)(newValue+1.5f)); break;
+            case k_diffEQ2:         ambi_dec_setDecNormType(hAmbi, 0, (int)(newValue+1.5f)); break;
+            case k_transitionFreq:  ambi_dec_setTransitionFreq(hAmbi, newValue*(AMBI_DEC_TRANSITION_MAX_VALUE-AMBI_DEC_TRANSITION_MIN_VALUE)+AMBI_DEC_TRANSITION_MIN_VALUE); break;
+            case k_binauraliseLS:   ambi_dec_setBinauraliseLSflag(hAmbi, (int)(newValue+0.5f)); break;
+        }
+    }
+    /* loudspeaker direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        float newValueScaled;
+        if (!(index % 2)){
+            newValueScaled = (newValue - 0.5f)*360.0f;
+            if (newValueScaled != ambi_dec_getLoudspeakerAzi_deg(hAmbi, index/2)){
+                ambi_dec_setLoudspeakerAzi_deg(hAmbi, index/2, newValueScaled);
+            }
+        }
+        else{
+            newValueScaled = (newValue - 0.5f)*180.0f;
+            if (newValueScaled != ambi_dec_getLoudspeakerElev_deg(hAmbi, index/2)){
+                ambi_dec_setLoudspeakerElev_deg(hAmbi, index/2, newValueScaled);
+            }
+        }
+    }
 }
 
 void PluginProcessor::setCurrentProgram (int index)
@@ -49,15 +80,37 @@ void PluginProcessor::setCurrentProgram (int index)
 
 float PluginProcessor::getParameter (int index)
 {
-    switch (index)
-	{
-		default: return 0.0f;
-	}
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_inputOrder:      return (float)(ambi_dec_getMasterDecOrder(hAmbi)-1)/(float)(AMBI_DEC_MAX_SH_ORDER-1);
+            case k_channelOrder:    return (float)(ambi_dec_getChOrder(hAmbi)-1)/(float)(AMBI_DEC_NUM_CH_ORDERINGS-1);
+            case k_normType:        return (float)(ambi_dec_getNormType(hAmbi)-1)/(float)(AMBI_DEC_NUM_NORM_TYPES-1);
+            case k_numLoudspeakers: return (float)(ambi_dec_getNumLoudspeakers(hAmbi))/(float)(AMBI_DEC_MAX_NUM_OUTPUTS);
+            case k_decMethod1:      return (float)(ambi_dec_getDecMethod(hAmbi,0)-1)/(float)(AMBI_DEC_NUM_DECODING_METHODS-1);
+            case k_decMethod2:      return (float)(ambi_dec_getDecMethod(hAmbi,1)-1)/(float)(AMBI_DEC_NUM_DECODING_METHODS-1);
+            case k_maxREweight1:    return (float)(ambi_dec_getDecEnableMaxrE(hAmbi, 0));
+            case k_maxREweight2:    return (float)(ambi_dec_getDecEnableMaxrE(hAmbi, 1));
+            case k_diffEQ1:         return (float)(ambi_dec_getDecNormType(hAmbi, 0)-1);
+            case k_diffEQ2:         return (float)(ambi_dec_getDecNormType(hAmbi, 1)-1);
+            case k_transitionFreq:  return (ambi_dec_getTransitionFreq(hAmbi)-AMBI_DEC_TRANSITION_MIN_VALUE)/(AMBI_DEC_TRANSITION_MAX_VALUE-AMBI_DEC_TRANSITION_MIN_VALUE);
+            case k_binauraliseLS:   return (float)(ambi_dec_getBinauraliseLSflag(hAmbi));
+            default: return 0.0f;
+        }
+    }
+    /* loudspeaker direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        if (!(index % 2))
+            return (ambi_dec_getLoudspeakerAzi_deg(hAmbi, index/2)/360.0f) + 0.5f;
+        else
+            return (ambi_dec_getLoudspeakerElev_deg(hAmbi, (index-1)/2)/180.0f) + 0.5f;
+    }
 }
 
 int PluginProcessor::getNumParameters()
 {
-	return k_NumOfParameters;
+	return k_NumOfParameters + 2*AMBI_DEC_MAX_NUM_OUTPUTS;
 }
 
 const String PluginProcessor::getName() const
@@ -67,15 +120,99 @@ const String PluginProcessor::getName() const
 
 const String PluginProcessor::getParameterName (int index)
 {
-    switch (index)
-	{
-		default: return "NULL";
-	}
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_inputOrder:      return "order";
+            case k_channelOrder:    return "channel_order";
+            case k_normType:        return "norm_type";
+            case k_numLoudspeakers: return "num_loudspeakers";
+            case k_decMethod1:      return "dec_method_LF";
+            case k_decMethod2:      return "dec_method_HF";
+            case k_maxREweight1:    return "maxre_weight_LF";
+            case k_maxREweight2:    return "maxre_weight_HF";
+            case k_diffEQ1:         return "diffeq_LF";
+            case k_diffEQ2:         return "diffeq_HF";
+            case k_transitionFreq:  return "transition_freq";
+            case k_binauraliseLS:   return "binauralise_ls";
+            default: return "NULL";
+        }
+    }
+    /* loudspeaker direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        if (!(index % 2))
+            return TRANS("Azim_") + String(index/2);
+        else
+            return TRANS("Elev_") + String((index-1)/2);
+    }
 }
 
 const String PluginProcessor::getParameterText(int index)
 {
-	return String(getParameter(index), 1);    
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_inputOrder: return String(ambi_dec_getMasterDecOrder(hAmbi));
+            case k_channelOrder:
+                switch(ambi_dec_getChOrder(hAmbi)){
+                    case CH_ACN:  return "ACN";
+                    case CH_FUMA: return "FuMa";
+                    default: return "NULL";
+                }
+            case k_normType:
+                switch(ambi_dec_getNormType(hAmbi)){
+                    case NORM_N3D:  return "N3D";
+                    case NORM_SN3D: return "SN3D";
+                    case NORM_FUMA: return "FuMa";
+                    default: return "NULL";
+                }
+                
+            case k_numLoudspeakers:  return String(ambi_dec_getNumLoudspeakers(hAmbi));
+            case k_decMethod1:
+                switch(ambi_dec_getDecMethod(hAmbi,0)){
+                    case DECODING_METHOD_SAD:    return "SAD";
+                    case DECODING_METHOD_MMD:    return "MMD";
+                    case DECODING_METHOD_EPAD:   return "EPAD";
+                    case DECODING_METHOD_ALLRAD: return "AllRAD";
+                    default: return "NULL";
+                }
+            case k_decMethod2:
+                switch(ambi_dec_getDecMethod(hAmbi,1)){
+                    case DECODING_METHOD_SAD:    return "SAD";
+                    case DECODING_METHOD_MMD:    return "MMD";
+                    case DECODING_METHOD_EPAD:   return "EPAD";
+                    case DECODING_METHOD_ALLRAD: return "AllRAD";
+                    default: return "NULL";
+                }
+            case k_maxREweight1: return !ambi_dec_getDecEnableMaxrE(hAmbi, 0) ? "Off" : "On";
+            case k_maxREweight2: return !ambi_dec_getDecEnableMaxrE(hAmbi, 1) ? "Off" : "On";
+            case k_diffEQ1:
+                switch(ambi_dec_getDecNormType(hAmbi,0)){
+                    case AMPLITUDE_PRESERVING: return "AP";
+                    case ENERGY_PRESERVING: return "EP";
+                    default: return "NULL";
+                }
+            case k_diffEQ2:
+                switch(ambi_dec_getDecNormType(hAmbi,1)){
+                    case AMPLITUDE_PRESERVING: return "AP";
+                    case ENERGY_PRESERVING: return "EP";
+                    default: return "NULL";
+                }
+            case k_transitionFreq: return String(ambi_dec_getTransitionFreq(hAmbi)) + " Hz";
+            case k_binauraliseLS:  return !ambi_dec_getBinauraliseLSflag(hAmbi) ? "Off" : "On";
+        
+            default: return "NULL";
+        }
+    }
+    /* loudspeaker direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        if (!(index % 2))
+            return String(ambi_dec_getLoudspeakerAzi_deg(hAmbi, index/2));
+        else
+            return String(ambi_dec_getLoudspeakerElev_deg(hAmbi, (index-1)/2));
+    }
 }
 
 const String PluginProcessor::getInputChannelName (int channelIndex) const

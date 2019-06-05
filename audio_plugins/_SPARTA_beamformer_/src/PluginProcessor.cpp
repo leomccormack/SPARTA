@@ -38,21 +38,35 @@ PluginProcessor::~PluginProcessor()
 
 void PluginProcessor::setParameter (int index, float newValue)
 {
-    float newValueScaled;
-    if (!(index % 2)){
-        newValueScaled = (newValue - 0.5f)*360.0f;
-        if (newValueScaled != beamformer_getBeamAzi_deg(hBeam, index/2)){
-            beamformer_setBeamAzi_deg(hBeam, index/2, newValueScaled);
-            refreshWindow = true;
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_inputOrder:   beamformer_setBeamOrder(hBeam, (BEAM_ORDERS)(newValue*(float)(BEAMFORMER_MAX_SH_ORDER-1) + 1.5f)); break;
+            case k_channelOrder: beamformer_setChOrder(hBeam, (int)(newValue*(float)(BEAMFORMER_NUM_CH_ORDERINGS-1) + 1.5f)); break;
+            case k_normType:     beamformer_setNormType(hBeam, (int)(newValue*(float)(BEAMFORMER_NUM_NORM_TYPES-1) + 1.5f)); break;
+            case k_beamType:     beamformer_setBeamType(hBeam, (BEAM_TYPES)(newValue*(float)(BEAMFORMER_NUM_BEAM_TYPES-1) + 1.5f)); break;
+            case k_numBeams:     beamformer_setNumBeams(hBeam, (int)(newValue*(float)(BEAMFORMER_MAX_NUM_BEAMS)+0.5)); break;
         }
     }
+    /* source direction parameters */
     else{
-        newValueScaled = (newValue - 0.5f)*180.0f;
-        if (newValueScaled != beamformer_getBeamElev_deg(hBeam, index/2)){
-            beamformer_setBeamElev_deg(hBeam, index/2, newValueScaled);
-            refreshWindow = true;
+        index-=k_NumOfParameters;
+        float newValueScaled;
+        if (!(index % 2)){
+            newValueScaled = (newValue - 0.5f)*360.0f;
+            if (newValueScaled != beamformer_getBeamAzi_deg(hBeam, index/2)){
+                beamformer_setBeamAzi_deg(hBeam, index/2, newValueScaled);
+                refreshWindow = true;
+            }
         }
-    } 
+        else{
+            newValueScaled = (newValue - 0.5f)*180.0f;
+            if (newValueScaled != beamformer_getBeamElev_deg(hBeam, index/2)){
+                beamformer_setBeamElev_deg(hBeam, index/2, newValueScaled);
+                refreshWindow = true;
+            }
+        }
+    }
 }
 
 void PluginProcessor::setCurrentProgram (int index)
@@ -61,15 +75,30 @@ void PluginProcessor::setCurrentProgram (int index)
 
 float PluginProcessor::getParameter (int index)
 {
-    if (!(index % 2))
-        return (beamformer_getBeamAzi_deg(hBeam, index/2)/360.0f) + 0.5f;
-    else
-        return (beamformer_getBeamElev_deg(hBeam, (index-1)/2)/180.0f) + 0.5f;
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_inputOrder:   return (float)(beamformer_getBeamOrder(hBeam)-1)/(float)(BEAMFORMER_MAX_SH_ORDER-1);
+            case k_channelOrder: return (float)(beamformer_getChOrder(hBeam)-1)/(float)(BEAMFORMER_NUM_CH_ORDERINGS-1);
+            case k_normType:     return (float)(beamformer_getNormType(hBeam)-1)/(float)(BEAMFORMER_NUM_NORM_TYPES-1);
+            case k_beamType:     return (float)(beamformer_getBeamType(hBeam)-1)/(float)(BEAMFORMER_NUM_BEAM_TYPES-1);
+            case k_numBeams:     return (float)(beamformer_getNumBeams(hBeam))/(float)(BEAMFORMER_MAX_NUM_BEAMS);
+            default: return 0.0f;
+        }
+    }
+    /* source direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        if (!(index % 2))
+            return (beamformer_getBeamAzi_deg(hBeam, index/2)/360.0f) + 0.5f;
+        else
+            return (beamformer_getBeamElev_deg(hBeam, (index-1)/2)/180.0f) + 0.5f;
+    }
 }
 
 int PluginProcessor::getNumParameters()
 {
-	return MIN(2*beamformer_getMaxNumBeams(), 2*NUM_OF_AUTOMATABLE_SOURCES);
+	return k_NumOfParameters + 2*BEAMFORMER_MAX_NUM_BEAMS;
 }
 
 const String PluginProcessor::getName() const
@@ -79,18 +108,65 @@ const String PluginProcessor::getName() const
 
 const String PluginProcessor::getParameterName (int index)
 {
-    if (!(index % 2))
-        return TRANS("Azim_") + String(index/2);
-    else
-        return TRANS("Elev_") + String((index-1)/2);
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_inputOrder:   return "order";
+            case k_channelOrder: return "channel_order";
+            case k_normType:     return "norm_type";
+            case k_beamType:     return "beam_type";
+            case k_numBeams:     return "num_beams";
+            default: return "NULL";
+        }
+    }
+    /* source direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        if (!(index % 2))
+            return TRANS("Azim_") + String(index/2);
+        else
+            return TRANS("Elev_") + String((index-1)/2);
+    }
 }
 
 const String PluginProcessor::getParameterText(int index)
 {
-    if (!(index % 2))
-        return String(beamformer_getBeamAzi_deg(hBeam, index/2));
-    else
-        return String(beamformer_getBeamElev_deg(hBeam, (index-1)/2));
+    /* standard parameters */
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_inputOrder: return String(beamformer_getBeamOrder(hBeam));
+            case k_channelOrder:
+                switch(beamformer_getChOrder(hBeam)){
+                    case CH_ACN:  return "ACN";
+                    case CH_FUMA: return "FuMa";
+                    default: return "NULL";
+                }
+            case k_normType:
+                switch(beamformer_getNormType(hBeam)){
+                    case NORM_N3D:  return "N3D";
+                    case NORM_SN3D: return "SN3D";
+                    case NORM_FUMA: return "FuMa";
+                    default: return "NULL";
+                }
+            case k_beamType:
+                switch(beamformer_getBeamType(hBeam)){
+                    case BEAM_TYPE_HYPERCARDIOID: return "Hyper-Card";
+                    case BEAM_TYPE_CARDIOID:      return "Cardioid";
+                    case BEAM_TYPE_MAX_EV:        return "Max-EV";
+                    default: return "NULL";
+                }
+            case k_numBeams: return String(beamformer_getNumBeams(hBeam));
+            default: return "NULL";
+        }
+    }
+    /* source direction parameters */
+    else{
+        index-=k_NumOfParameters;
+        if (!(index % 2))
+            return String(beamformer_getBeamAzi_deg(hBeam, index/2));
+        else
+            return String(beamformer_getBeamElev_deg(hBeam, (index-1)/2));
+    }
 }
 
 const String PluginProcessor::getInputChannelName (int channelIndex) const
