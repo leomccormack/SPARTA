@@ -21,7 +21,7 @@ void PluginProcessor::setParameter (int index, float newValue)
 {
 	switch (index)
 	{
-        case k_inputOrder:   ambi_drc_setInputPreset(hAmbi, (INPUT_ORDER)(newValue*(float)(AMBI_DRC_MAX_SH_ORDER-1) + 1.5f)); break;
+        case k_inputOrder:   ambi_drc_setInputPreset(hAmbi, (INPUT_ORDER)(int)(newValue*(float)(AMBI_DRC_MAX_SH_ORDER-1) + 1.5f)); break;
         case k_channelOrder: ambi_drc_setChOrder(hAmbi, (int)(newValue*(float)(AMBI_DRC_NUM_CH_ORDERINGS-1) + 1.5f)); break;
         case k_normType:     ambi_drc_setNormType(hAmbi, (int)(newValue*(float)(AMBI_DRC_NUM_NORM_TYPES-1) + 1.5f)); break;
         case k_theshold:     ambi_drc_setThreshold(hAmbi, newValue*(AMBI_DRC_THRESHOLD_MAX_VAL-AMBI_DRC_THRESHOLD_MIN_VAL)+AMBI_DRC_THRESHOLD_MIN_VAL); break;
