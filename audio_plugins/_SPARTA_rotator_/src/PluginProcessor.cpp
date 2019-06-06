@@ -71,7 +71,7 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 void PluginProcessor::setParameter (int index, float newValue)
 {
 	switch (index) {
-        case k_inputOrder:      rotator_setOrder(hRot, (INPUT_ORDERS)(newValue*(float)(ROTATOR_MAX_SH_ORDER-1) + 1.5f)); break;
+        case k_inputOrder:      rotator_setOrder(hRot, (INPUT_ORDERS)(int)(newValue*(float)(ROTATOR_MAX_SH_ORDER-1) + 1.5f)); break;
         case k_channelOrder:    rotator_setChOrder(hRot, (int)(newValue*(float)(ROTATOR_NUM_CH_ORDERINGS-1) + 1.5f)); break;
         case k_normType:        rotator_setNormType(hRot, (int)(newValue*(float)(ROTATOR_NUM_NORM_TYPES-1) + 1.5f)); break;
         case k_useRollPitchYaw: rotator_setRPYflag(hRot, (int)(newValue + 0.5f)); break;

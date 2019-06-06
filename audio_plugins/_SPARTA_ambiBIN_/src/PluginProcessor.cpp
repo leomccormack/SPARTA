@@ -69,10 +69,10 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 void PluginProcessor::setParameter (int index, float newValue)
 {
     switch (index) {
-        case k_inputOrder:            ambi_bin_setInputOrderPreset(hAmbi, (INPUT_ORDERS)(newValue*(float)(AMBI_BIN_MAX_SH_ORDER-1) + 1.5f)); break;
+        case k_inputOrder:            ambi_bin_setInputOrderPreset(hAmbi, (INPUT_ORDERS)(int)(newValue*(float)(AMBI_BIN_MAX_SH_ORDER-1) + 1.5f)); break;
         case k_channelOrder:          ambi_bin_setChOrder(hAmbi, (int)(newValue*(float)(AMBI_BIN_NUM_CH_ORDERINGS-1) + 1.5f)); break;
         case k_normType:              ambi_bin_setNormType(hAmbi, (int)(newValue*(float)(AMBI_BIN_NUM_NORM_TYPES-1) + 1.5f)); break;
-        case k_decMethod:             ambi_bin_setDecodingMethod(hAmbi, (DECODING_METHODS)(newValue*(float)(AMBI_BIN_NUM_DECODING_METHODS-1) + 1.5f)); break;
+        case k_decMethod:             ambi_bin_setDecodingMethod(hAmbi, (DECODING_METHODS)(int)(newValue*(float)(AMBI_BIN_NUM_DECODING_METHODS-1) + 1.5f)); break;
         case k_enableDiffuseMatching: ambi_bin_setEnableDiffuseMatching(hAmbi, (int)(newValue + 0.5f)); break;
         case k_enableMaxRE:           ambi_bin_setEnableMaxRE(hAmbi, (int)(newValue + 0.5f)); break;
         case k_enableRotation:        ambi_bin_setEnableRotation(hAmbi, (int)(newValue + 0.5f)); break;

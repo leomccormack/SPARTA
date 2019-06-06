@@ -40,17 +40,17 @@ void PluginProcessor::setParameter (int index, float newValue)
     /* standard parameters */
     if(index < k_NumOfParameters){
         switch (index) {
-            case k_outputOrder:   array2sh_setEncodingOrder(hA2sh, (ENCODING_ORDERS)(newValue*(float)(ARRAY2SH_MAX_SH_ORDER-1) + 1.5f)); break;
+            case k_outputOrder:   array2sh_setEncodingOrder(hA2sh, (ENCODING_ORDERS)(int)(newValue*(float)(ARRAY2SH_MAX_SH_ORDER-1) + 1.5f)); break;
             case k_channelOrder:  array2sh_setChOrder(hA2sh, (int)(newValue*(float)(ARRAY2SH_NUM_CH_ORDERINGS-1) + 1.5f)); break;
             case k_normType:      array2sh_setNormType(hA2sh, (int)(newValue*(float)(ARRAY2SH_NUM_NORM_TYPES-1) + 1.5f)); break;
-            case k_filterType:    array2sh_setFilterType(hA2sh, (FILTER_TYPES)(newValue*(float)(ARRAY2SH_NUM_FILTER_TYPES-1) + 1.5f)); break;
+            case k_filterType:    array2sh_setFilterType(hA2sh, (FILTER_TYPES)(int)(newValue*(float)(ARRAY2SH_NUM_FILTER_TYPES-1) + 1.5f)); break;
             case k_maxGain:       array2sh_setRegPar(hA2sh, newValue*(ARRAY2SH_MAX_GAIN_MAX_VALUE-ARRAY2SH_MAX_GAIN_MIN_VALUE)+ARRAY2SH_MAX_GAIN_MIN_VALUE); break;
             case k_postGain:      array2sh_setGain(hA2sh, newValue*(ARRAY2SH_POST_GAIN_MAX_VALUE-ARRAY2SH_POST_GAIN_MIN_VALUE)+ARRAY2SH_POST_GAIN_MIN_VALUE); break;
             case k_speedOfSound:  array2sh_setc(hA2sh, newValue*(ARRAY2SH_SPEED_OF_SOUND_MAX_VALUE-ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE)+ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE); break;
             case k_arrayRadius:   array2sh_setr(hA2sh, (newValue*(ARRAY2SH_ARRAY_RADIUS_MAX_VALUE-ARRAY2SH_ARRAY_RADIUS_MIN_VALUE)+ARRAY2SH_ARRAY_RADIUS_MIN_VALUE)/1e3f); break;
             case k_baffleRadius:  array2sh_setR(hA2sh, (newValue*(ARRAY2SH_BAFFLE_RADIUS_MAX_VALUE-ARRAY2SH_BAFFLE_RADIUS_MIN_VALUE)+ARRAY2SH_BAFFLE_RADIUS_MIN_VALUE)/1e3f); break;
-            case k_arrayType:     array2sh_setArrayType(hA2sh, (ARRAY_TYPES)(newValue*(float)(ARRAY2SH_NUM_ARRAY_TYPES-1) + 1.5f)); break;
-            case k_weightType:    array2sh_setWeightType(hA2sh, (WEIGHT_TYPES)(newValue*(float)(ARRAY2SH_NUM_WEIGHT_TYPES-1) + 1.5f)); break;
+            case k_arrayType:     array2sh_setArrayType(hA2sh, (ARRAY_TYPES)(int)(newValue*(float)(ARRAY2SH_NUM_ARRAY_TYPES-1) + 1.5f)); break;
+            case k_weightType:    array2sh_setWeightType(hA2sh, (WEIGHT_TYPES)(int)(newValue*(float)(ARRAY2SH_NUM_WEIGHT_TYPES-1) + 1.5f)); break;
             case k_numSensors:    array2sh_setNumSensors(hA2sh, (int)(newValue*(float)(ARRAY2SH_MAX_NUM_SENSORS)+0.5)); break;
         }
     }

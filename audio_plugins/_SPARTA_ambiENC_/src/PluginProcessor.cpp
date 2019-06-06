@@ -41,7 +41,7 @@ void PluginProcessor::setParameter (int index, float newValue)
     /* standard parameters */
     if(index < k_NumOfParameters){
         switch (index) {
-            case k_outputOrder:   ambi_enc_setOutputOrder(hAmbi, (OUTPUT_ORDERS)(newValue*(float)(AMBI_ENC_MAX_SH_ORDER-1) + 1.5f)); break;
+            case k_outputOrder:   ambi_enc_setOutputOrder(hAmbi, (OUTPUT_ORDERS)(int)(newValue*(float)(AMBI_ENC_MAX_SH_ORDER-1) + 1.5f)); break;
             case k_channelOrder:  ambi_enc_setChOrder(hAmbi, (int)(newValue*(float)(AMBI_ENC_NUM_CH_ORDERINGS-1) + 1.5f)); break;
             case k_normType:      ambi_enc_setNormType(hAmbi, (int)(newValue*(float)(AMBI_ENC_NUM_NORM_TYPES-1) + 1.5f)); break;
             case k_numSources:    ambi_enc_setNumSources(hAmbi, (int)(newValue*(float)(AMBI_ENC_MAX_NUM_INPUTS)+0.5)); break;
