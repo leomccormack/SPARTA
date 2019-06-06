@@ -1254,6 +1254,10 @@ void PluginEditor::timerCallback()
 		array2sh_checkReInit(hA2sh);
 	}
 #endif
+//    if (hVst->getIsPlaying())
+//        CBencodingOrder->setEnabled(false);
+//    else
+//        CBencodingOrder->setEnabled(true);
 
     /* draw magnitude/spatial-correlation/level-difference curves */
     if (needScreenRefreshFLAG || array2sh_getEvalReady(hA2sh)){
