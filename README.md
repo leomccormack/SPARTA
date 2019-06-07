@@ -7,8 +7,8 @@ SPatial Audio Real-Time Applications (SPARTA). A collection of VST audio plug-in
 ## The Plug-ins
 
 This repository contains the following VST plug-ins:
-* **AmbiBIN** - A binaural ambisonic decoder (up to 7th order) with a built-in SOFA loader and head-tracking support via OSC messages.
-* **AmbiDEC** - A frequency-dependent loudspeaker ambisonic decoder (up to 7th order) with user specifiable loudspeaker directions (up to 64), which may be optionally imported via JSON configuration files. It includes AllRAD/EPAD/SAD/MMD decoding methods. The loudspeaker signals may also be binauralised for headphone playback.
+* **AmbiBIN** - A binaural ambisonic decoder (up to 7th order) with a built-in SOFA loader and head-tracking support via OSC messages. Includes: Least-Squares (LS), spatial re-sampling (SPR), time-alignment (TA), and magnitude least-squares (Mag-LS) decoding options.
+* **AmbiDEC** - A frequency-dependent loudspeaker ambisonic decoder (up to 7th order) with user specifiable loudspeaker directions (up to 64), which may be optionally imported via JSON configuration files. Includes: All-Round (AllRAD), Energy-Preserving (EPAD), Spatial (SAD), and Mode-Matching (MMD) ambisonic decoding options. The loudspeaker signals may also be binauralised for headphone playback.
 * **AmbiDRC** - A frequency-dependent dynamic range compressor for ambisonic signals (up to 7th order). 
 * **AmbiENC** - An ambisonic encoder/panner (up to 7th order), with support for up to 64 input channels; the directions for which may also be imported via JSON configuration files. 
 * **Array2SH** - A microphone array spatial encoder (up to 7th order), with presets for several commercially available A-format and higher-order microphone arrays. The plug-in can also present objective evaluation metrics for the currently selected configuration.
@@ -23,7 +23,7 @@ This repository contains the following VST plug-ins:
 ## Getting Started
 
 These instructions will help you compile the individual VST audio plug-ins. Alternatively, they can be downloaded from here:
-* [Pre-built](http://research.spa.aalto.fi/projects/sparta_vsts/) - for Windows (64-bit) and Mac OSX (10.10 or higher)
+* [Pre-built](http://research.spa.aalto.fi/projects/sparta_vsts/) - for Windows (64-bit), Mac OSX (10.10 or higher), and Linux (x86_64)
 
 ### Prerequisites
 
@@ -44,13 +44,13 @@ You must also install a custom [Intel MKL](https://software.intel.com/en-us/arti
 
 ### Installing
 
-For each individual plug-in, simply open the Visual Studio (2015/2017) or X-code project file and build a release version
+Visual Studio (2015/2017) solutions, X-code project files, and Linux Makefiles are included in:
 
 ```
 audio_plugins/_SPARTA_X_/make/
 ```
 
-To generate project files for other IDEs or Linux makefiles, you can open and configure the included .jucer files with JUCE's Projucer App accordingly.
+To generate project files for other IDEs, you can open and configure the included .jucer files with JUCE's Projucer App accordingly.
 
 ## Authors
 
