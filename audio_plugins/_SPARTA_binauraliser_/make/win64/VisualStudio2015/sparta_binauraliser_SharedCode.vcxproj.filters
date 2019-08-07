@@ -14,26 +14,38 @@
     <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\include">
       <UniqueIdentifier>{170DD338-B683-6ABC-9FF4-0798E8DA50FC}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\saf_afstft">
-      <UniqueIdentifier>{967D9AAF-C85A-76FF-A0C1-BDB65FC9A9B3}</UniqueIdentifier>
+    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_cdf4sap">
+      <UniqueIdentifier>{ACA4C71D-B9EE-9625-5726-49469EDFDF70}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\saf_cdf4sap">
-      <UniqueIdentifier>{E48C7AE8-DFC8-3DD4-67E4-C5A781C93D6A}</UniqueIdentifier>
+    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_hoa">
+      <UniqueIdentifier>{C31E77C6-51CF-EA3C-0115-472AF6625E2F}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\saf_hoa">
-      <UniqueIdentifier>{E7937EC1-2559-C6BF-85CD-715AFA16C674}</UniqueIdentifier>
+    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_hrir">
+      <UniqueIdentifier>{2AC6210F-5EC5-193E-9403-3E4FBCBBA8DA}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\saf_hrir">
-      <UniqueIdentifier>{87BA15AF-D494-EF2A-F173-AEAD3D28F838}</UniqueIdentifier>
+    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_sh">
+      <UniqueIdentifier>{75D56EF0-359E-CC4D-9C5B-379482695AD2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\saf_sh">
-      <UniqueIdentifier>{3956A54F-3D14-01C5-722A-D7B6CEEEF097}</UniqueIdentifier>
+    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities">
+      <UniqueIdentifier>{09736028-4ABA-A23A-6201-EBA630F42595}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities">
-      <UniqueIdentifier>{BAE3FF79-004D-142D-81A5-5F88B2913216}</UniqueIdentifier>
+    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_vbap">
+      <UniqueIdentifier>{2EA8A03C-B738-4636-5289-994FCC61BD62}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\saf_vbap">
-      <UniqueIdentifier>{4FBA229D-DF51-966D-16B4-AFC88044288F}</UniqueIdentifier>
+    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\modules">
+      <UniqueIdentifier>{46C08D67-12AF-A887-9CCF-F10B716CC1E5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\resources\afSTFT">
+      <UniqueIdentifier>{DACD743F-12E6-90F0-9870-386B297B3B9E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\resources\convhull_3d">
+      <UniqueIdentifier>{06D9DFA7-BBC1-7BB1-67B3-5CFF24B10246}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\resources\md_malloc">
+      <UniqueIdentifier>{8D754976-1DA5-BCF2-E810-D89ED92C4CE5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework\resources">
+      <UniqueIdentifier>{55DBA127-1D05-CF21-88E8-BB5B21692F08}</UniqueIdentifier>
     </Filter>
     <Filter Include="sparta_binauraliser\Spatial_Audio_Framework\framework">
       <UniqueIdentifier>{4C7AE285-E4C6-A6D1-1CFC-5D249B4830DB}</UniqueIdentifier>
@@ -478,68 +490,86 @@
     <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\binauraliser\src\binauraliser_internal.c">
       <Filter>sparta_binauraliser\binauraliser\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\binauraliser\src\binauraliser_database.c">
-      <Filter>sparta_binauraliser\binauraliser\Source Files</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_cdf4sap\saf_cdf4sap.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_cdf4sap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\afSTFTlib.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_afstft</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hoa\saf_hoa.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_hoa</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\fft4g.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_afstft</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hoa\saf_hoa_internal.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_hoa</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\vecTools.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_afstft</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_default_hrirs.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_cdf4sap\saf_cdf4sap.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_cdf4sap</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_hrir.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_hoa\saf_hoa.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_hoa</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_hrir_internal.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_hoa\saf_hoa_internal.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_hoa</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_sofa_reader.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_hrir\saf_hrir.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_hrir</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_sh\saf_sh.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_sh</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_hrir\saf_hrir_internal.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_hrir</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_sh\saf_sh_internal.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_sh</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_sh\saf_sh.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_sh</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_complex.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_sh\saf_sh_internal.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_sh</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_decor.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_calloc.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_erb.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_complex.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_error.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_free.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_fft.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_loudspeaker_presets.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_filters.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_malloc.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_loudspeaker_presets.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_sensorarray_presets.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_matrixConv.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_sort.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_sensorarray_presets.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_veclib.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_sort.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_vbap\saf_vbap.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_vbap</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_veclib.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_vbap\saf_vbap_internal.c">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_vbap</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_vbap\saf_vbap.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_vbap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_vbap\saf_vbap_internal.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_vbap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\afSTFTlib.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\fft4g.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\vecTools.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\convhull_3d\convhull_3d.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\resources\convhull_3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\md_malloc\md_malloc.c">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\resources\md_malloc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_basics\buffers\juce_AudioChannelSet.cpp">
       <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
@@ -2505,83 +2535,92 @@
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\binauraliser\src\binauraliser_internal.h">
       <Filter>sparta_binauraliser\binauraliser\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\binauraliser\src\binauraliser_database.h">
-      <Filter>sparta_binauraliser\binauraliser\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\afSTFTlib.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf.h">
       <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_cdf4sap.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_cdf4sap\saf_cdf4sap.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_cdf4sap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_hoa.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hoa\saf_hoa.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_hoa</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_hrir.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hoa\saf_hoa_internal.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_hoa</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_sh.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_hrir.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_sofa_reader.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_hrir_internal.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_utilities.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_sofa_reader.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_vbap.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_sh\saf_sh.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_sh</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\afSTFT_protoFilter.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_afstft</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_sh\saf_sh_internal.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_sh</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\fft4g.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_afstft</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_complex.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\vecTools.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_afstft</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_decor.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_hoa\saf_hoa_internal.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_hoa</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_erb.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_hrir\saf_hrir_internal.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_hrir</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_error.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_sh\saf_sh_internal.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_sh</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_fft.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_calloc.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_filters.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_complex.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_loudspeaker_presets.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_free.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_matrixConv.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_loudspeaker_presets.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_sensorarray_presets.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_malloc.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_sort.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_sensorarray_presets.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_utilities.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_sort.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_veclib.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_veclib.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_vbap\saf_vbap.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_vbap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_vbap\convhull_3d.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_vbap</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_vbap\saf_vbap_internal.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\modules\saf_vbap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_vbap\saf_vbap_internal.h">
-      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\saf_vbap</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\afSTFT_protoFilter.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\afSTFTlib.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\fft4g.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\vecTools.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\convhull_3d\convhull_3d.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\resources\convhull_3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\md_malloc\md_malloc.h">
+      <Filter>sparta_binauraliser\Spatial_Audio_Framework\framework\resources\md_malloc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h">
       <Filter>JUCE Modules\juce_audio_basics\audio_play_head</Filter>
