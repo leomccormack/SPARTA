@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="sparta_dirass\dirass\Header Files">
@@ -13,26 +14,38 @@
     <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\include">
       <UniqueIdentifier>{8C41EEF8-9FEB-3F74-393A-AD02824827BD}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\saf_afstft">
-      <UniqueIdentifier>{D41519BE-0F27-CE96-3D2F-C6090E8C72F8}</UniqueIdentifier>
+    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_cdf4sap">
+      <UniqueIdentifier>{D6F8C4C4-1F01-58CF-86C4-53EF21DC8FDF}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\saf_cdf4sap">
-      <UniqueIdentifier>{6B0BA385-32C4-BAD2-7A49-EB05E7A85CF2}</UniqueIdentifier>
+    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_hoa">
+      <UniqueIdentifier>{BAE0848E-07DB-E7E0-8299-9216CA31E182}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\saf_hoa">
-      <UniqueIdentifier>{9870B097-D95A-0109-20D6-589EF1F900EE}</UniqueIdentifier>
+    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_hrir">
+      <UniqueIdentifier>{04A5DC21-5E6F-1444-9B7C-8A4C0FE681F6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\saf_hrir">
-      <UniqueIdentifier>{7FA7D958-F4C0-85DD-2B63-BD35FC0CA73F}</UniqueIdentifier>
+    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_sh">
+      <UniqueIdentifier>{89290496-4D6F-5269-97CD-8261C520A9EB}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\saf_sh">
-      <UniqueIdentifier>{C2CABC98-A102-FA17-B56B-46922CEFEDD2}</UniqueIdentifier>
+    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities">
+      <UniqueIdentifier>{F5334D31-C799-6A1B-A6B8-519DE4F8E1E0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities">
-      <UniqueIdentifier>{9B167DA2-4DF6-4A1A-53E0-02D353931C44}</UniqueIdentifier>
+    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_vbap">
+      <UniqueIdentifier>{FBA235A6-C8BA-DAD4-BF0F-161EA4664DAE}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\saf_vbap">
-      <UniqueIdentifier>{95D16761-D6BD-D01A-CDB8-7AE82881E615}</UniqueIdentifier>
+    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\modules">
+      <UniqueIdentifier>{46CBE8FD-D0A7-562A-CA38-E411FF2C75F0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\resources\afSTFT">
+      <UniqueIdentifier>{31EB095E-0095-F4DF-3233-21F54A64DDAE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\resources\convhull_3d">
+      <UniqueIdentifier>{81704A0D-8A4E-4320-5116-39761BB6448F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\resources\md_malloc">
+      <UniqueIdentifier>{7EA22226-1C4C-3811-552E-7522972D84E6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework\resources">
+      <UniqueIdentifier>{5170C2EA-FF47-F600-4433-1CE215C10AE5}</UniqueIdentifier>
     </Filter>
     <Filter Include="sparta_dirass\Spatial_Audio_Framework\framework">
       <UniqueIdentifier>{BD76096A-7FA9-69FC-3847-A9FD2524A76B}</UniqueIdentifier>
@@ -480,68 +493,86 @@
     <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\dirass\src\dirass_internal.c">
       <Filter>sparta_dirass\dirass\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\afSTFTlib.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_afstft</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_cdf4sap\saf_cdf4sap.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_cdf4sap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\fft4g.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_afstft</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hoa\saf_hoa.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_hoa</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\vecTools.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_afstft</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hoa\saf_hoa_internal.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_hoa</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_cdf4sap\saf_cdf4sap.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_cdf4sap</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_default_hrirs.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_hoa\saf_hoa.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_hoa</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_hrir.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_hoa\saf_hoa_internal.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_hoa</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_hrir_internal.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_hrir\saf_hrir.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_hrir</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_sofa_reader.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_hrir\saf_hrir_internal.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_hrir</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_sh\saf_sh.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_sh</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_sh\saf_sh.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_sh</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_sh\saf_sh_internal.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_sh</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_sh\saf_sh_internal.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_sh</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_complex.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_calloc.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_decor.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_complex.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_erb.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_filters.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_error.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_free.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_fft.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_loudspeaker_presets.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_filters.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_malloc.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_loudspeaker_presets.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_sensorarray_presets.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_matrixConv.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_sort.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_sensorarray_presets.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_veclib.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_sort.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_vbap\saf_vbap.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_vbap</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_veclib.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_vbap\saf_vbap_internal.c">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_vbap</Filter>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_vbap\saf_vbap.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_vbap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_vbap\saf_vbap_internal.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_vbap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\afSTFTlib.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\fft4g.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\vecTools.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\convhull_3d\convhull_3d.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\resources\convhull_3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\md_malloc\md_malloc.c">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\resources\md_malloc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_basics\buffers\juce_AudioChannelSet.cpp">
       <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
@@ -642,6 +673,9 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_basics\juce_audio_basics.cpp">
       <Filter>JUCE Modules\juce_audio_basics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_basics\juce_audio_basics.mm">
+      <Filter>JUCE Modules\juce_audio_basics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_devices\audio_io\juce_AudioDeviceManager.cpp">
       <Filter>JUCE Modules\juce_audio_devices\audio_io</Filter>
     </ClCompile>
@@ -709,6 +743,9 @@
       <Filter>JUCE Modules\juce_audio_devices\sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_devices\juce_audio_devices.cpp">
+      <Filter>JUCE Modules\juce_audio_devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_devices\juce_audio_devices.mm">
       <Filter>JUCE Modules\juce_audio_devices</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_formats\codecs\flac\libFLAC\bitmath.c">
@@ -879,6 +916,9 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_formats\juce_audio_formats.cpp">
       <Filter>JUCE Modules\juce_audio_formats</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_formats\juce_audio_formats.mm">
+      <Filter>JUCE Modules\juce_audio_formats</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_plugin_client\AU\CoreAudioUtilityClasses\AUBase.cpp">
       <Filter>JUCE Modules\juce_audio_plugin_client\AU\CoreAudioUtilityClasses</Filter>
     </ClCompile>
@@ -948,7 +988,13 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_plugin_client\VST\juce_VST_Wrapper.cpp">
       <Filter>JUCE Modules\juce_audio_plugin_client\VST</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_plugin_client\VST\juce_VST_Wrapper.mm">
+      <Filter>JUCE Modules\juce_audio_plugin_client\VST</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_plugin_client\juce_audio_plugin_client_utils.cpp">
+      <Filter>JUCE Modules\juce_audio_plugin_client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_plugin_client\juce_audio_plugin_client_VST_utils.mm">
       <Filter>JUCE Modules\juce_audio_plugin_client</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_processors\format\juce_AudioPluginFormat.cpp">
@@ -1026,6 +1072,9 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstpresetfile.cpp">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_processors\format_types\juce_AudioUnitPluginFormat.mm">
+      <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_processors\format_types\juce_LADSPAPluginFormat.cpp">
       <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
     </ClCompile>
@@ -1075,6 +1124,9 @@
       <Filter>JUCE Modules\juce_audio_processors\utilities</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_processors\juce_audio_processors.cpp">
+      <Filter>JUCE Modules\juce_audio_processors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_audio_processors\juce_audio_processors.mm">
       <Filter>JUCE Modules\juce_audio_processors</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\containers\juce_AbstractFifo.cpp">
@@ -1207,6 +1259,21 @@
       <Filter>JUCE Modules\juce_core\native</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\native\juce_linux_Threads.cpp">
+      <Filter>JUCE Modules\juce_core\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\native\juce_mac_Files.mm">
+      <Filter>JUCE Modules\juce_core\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\native\juce_mac_Network.mm">
+      <Filter>JUCE Modules\juce_core\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\native\juce_mac_Strings.mm">
+      <Filter>JUCE Modules\juce_core\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\native\juce_mac_SystemStats.mm">
+      <Filter>JUCE Modules\juce_core\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\native\juce_mac_Threads.mm">
       <Filter>JUCE Modules\juce_core\native</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\native\juce_posix_NamedPipe.cpp">
@@ -1380,6 +1447,9 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\juce_core.cpp">
       <Filter>JUCE Modules\juce_core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_core\juce_core.mm">
+      <Filter>JUCE Modules\juce_core</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_cryptography\encryption\juce_BlowFish.cpp">
       <Filter>JUCE Modules\juce_cryptography\encryption</Filter>
     </ClCompile>
@@ -1399,6 +1469,9 @@
       <Filter>JUCE Modules\juce_cryptography\hashing</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_cryptography\juce_cryptography.cpp">
+      <Filter>JUCE Modules\juce_cryptography</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_cryptography\juce_cryptography.mm">
       <Filter>JUCE Modules\juce_cryptography</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_data_structures\app_properties\juce_ApplicationProperties.cpp">
@@ -1426,6 +1499,9 @@
       <Filter>JUCE Modules\juce_data_structures\values</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_data_structures\juce_data_structures.cpp">
+      <Filter>JUCE Modules\juce_data_structures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_data_structures\juce_data_structures.mm">
       <Filter>JUCE Modules\juce_data_structures</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_events\broadcasters\juce_ActionBroadcaster.cpp">
@@ -1464,7 +1540,13 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_events\native\juce_android_Messaging.cpp">
       <Filter>JUCE Modules\juce_events\native</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_events\native\juce_ios_MessageManager.mm">
+      <Filter>JUCE Modules\juce_events\native</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_events\native\juce_linux_Messaging.cpp">
+      <Filter>JUCE Modules\juce_events\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_events\native\juce_mac_MessageManager.mm">
       <Filter>JUCE Modules\juce_events\native</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_events\native\juce_win32_Messaging.cpp">
@@ -1480,6 +1562,9 @@
       <Filter>JUCE Modules\juce_events\timers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_events\juce_events.cpp">
+      <Filter>JUCE Modules\juce_events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_events\juce_events.mm">
       <Filter>JUCE Modules\juce_events</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_graphics\colour\juce_Colour.cpp">
@@ -1764,6 +1849,12 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_graphics\native\juce_linux_IconHelpers.cpp">
       <Filter>JUCE Modules\juce_graphics\native</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_graphics\native\juce_mac_CoreGraphicsContext.mm">
+      <Filter>JUCE Modules\juce_graphics\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_graphics\native\juce_mac_Fonts.mm">
+      <Filter>JUCE Modules\juce_graphics\native</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_graphics\native\juce_mac_IconHelpers.cpp">
       <Filter>JUCE Modules\juce_graphics\native</Filter>
     </ClCompile>
@@ -1786,6 +1877,9 @@
       <Filter>JUCE Modules\juce_graphics\placement</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_graphics\juce_graphics.cpp">
+      <Filter>JUCE Modules\juce_graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_graphics\juce_graphics.mm">
       <Filter>JUCE Modules\juce_graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\application\juce_Application.cpp">
@@ -2055,6 +2149,15 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\native\juce_ios_ContentSharer.cpp">
       <Filter>JUCE Modules\juce_gui_basics\native</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\native\juce_ios_FileChooser.mm">
+      <Filter>JUCE Modules\juce_gui_basics\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\native\juce_ios_UIViewComponentPeer.mm">
+      <Filter>JUCE Modules\juce_gui_basics\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\native\juce_ios_Windowing.mm">
+      <Filter>JUCE Modules\juce_gui_basics\native</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\native\juce_linux_FileChooser.cpp">
       <Filter>JUCE Modules\juce_gui_basics\native</Filter>
     </ClCompile>
@@ -2065,6 +2168,21 @@
       <Filter>JUCE Modules\juce_gui_basics\native</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\native\juce_linux_X11_Windowing.cpp">
+      <Filter>JUCE Modules\juce_gui_basics\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\native\juce_mac_FileChooser.mm">
+      <Filter>JUCE Modules\juce_gui_basics\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\native\juce_mac_MainMenu.mm">
+      <Filter>JUCE Modules\juce_gui_basics\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\native\juce_mac_MouseCursor.mm">
+      <Filter>JUCE Modules\juce_gui_basics\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\native\juce_mac_NSViewComponentPeer.mm">
+      <Filter>JUCE Modules\juce_gui_basics\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\native\juce_mac_Windowing.mm">
       <Filter>JUCE Modules\juce_gui_basics\native</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\native\juce_win32_DragAndDrop.cpp">
@@ -2190,6 +2308,9 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\juce_gui_basics.cpp">
       <Filter>JUCE Modules\juce_gui_basics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_basics\juce_gui_basics.mm">
+      <Filter>JUCE Modules\juce_gui_basics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_extra\code_editor\juce_CodeDocument.cpp">
       <Filter>JUCE Modules\juce_gui_extra\code_editor</Filter>
     </ClCompile>
@@ -2250,6 +2371,9 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_extra\native\juce_ios_PushNotifications.cpp">
       <Filter>JUCE Modules\juce_gui_extra\native</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_extra\native\juce_ios_UIViewComponent.mm">
+      <Filter>JUCE Modules\juce_gui_extra\native</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_extra\native\juce_linux_X11_SystemTrayIcon.cpp">
       <Filter>JUCE Modules\juce_gui_extra\native</Filter>
     </ClCompile>
@@ -2259,10 +2383,19 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_extra\native\juce_linux_XEmbedComponent.cpp">
       <Filter>JUCE Modules\juce_gui_extra\native</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_extra\native\juce_mac_AppleRemote.mm">
+      <Filter>JUCE Modules\juce_gui_extra\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_extra\native\juce_mac_NSViewComponent.mm">
+      <Filter>JUCE Modules\juce_gui_extra\native</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_extra\native\juce_mac_PushNotifications.cpp">
       <Filter>JUCE Modules\juce_gui_extra\native</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_extra\native\juce_mac_SystemTrayIcon.cpp">
+      <Filter>JUCE Modules\juce_gui_extra\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_extra\native\juce_mac_WebBrowserComponent.mm">
       <Filter>JUCE Modules\juce_gui_extra\native</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_extra\native\juce_win32_ActiveXComponent.cpp">
@@ -2275,6 +2408,9 @@
       <Filter>JUCE Modules\juce_gui_extra\native</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_extra\juce_gui_extra.cpp">
+      <Filter>JUCE Modules\juce_gui_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_gui_extra\juce_gui_extra.mm">
       <Filter>JUCE Modules\juce_gui_extra</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_opengl\opengl\juce_OpenGLContext.cpp">
@@ -2307,6 +2443,9 @@
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_opengl\juce_opengl.cpp">
       <Filter>JUCE Modules\juce_opengl</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_opengl\juce_opengl.mm">
+      <Filter>JUCE Modules\juce_opengl</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_video\capture\juce_CameraDevice.cpp">
       <Filter>JUCE Modules\juce_video\capture</Filter>
     </ClCompile>
@@ -2314,6 +2453,9 @@
       <Filter>JUCE Modules\juce_video\playback</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_video\juce_video.cpp">
+      <Filter>JUCE Modules\juce_video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\modules\juce_video\juce_video.mm">
       <Filter>JUCE Modules\juce_video</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\juce\sparta_dirass\JuceLibraryCode\include_juce_audio_basics.cpp">
@@ -2375,83 +2517,92 @@
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\examples\dirass\src\dirass_internal.h">
       <Filter>sparta_dirass\dirass\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\afSTFTlib.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf.h">
       <Filter>sparta_dirass\Spatial_Audio_Framework\framework\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_cdf4sap.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_cdf4sap\saf_cdf4sap.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_cdf4sap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_hoa.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hoa\saf_hoa.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_hoa</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_hrir.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hoa\saf_hoa_internal.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_hoa</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_sh.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_hrir.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_sofa_reader.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_hrir_internal.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_utilities.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_hrir\saf_sofa_reader.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_hrir</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\include\saf_vbap.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\include</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_sh\saf_sh.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_sh</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\afSTFT_protoFilter.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_afstft</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_sh\saf_sh_internal.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_sh</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\fft4g.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_afstft</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_complex.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_afstft\vecTools.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_afstft</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_decor.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_hoa\saf_hoa_internal.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_hoa</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_erb.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_hrir\saf_hrir_internal.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_hrir</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_error.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_sh\saf_sh_internal.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_sh</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_fft.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_calloc.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_filters.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_complex.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_loudspeaker_presets.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_filters.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_matrixConv.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_free.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_sensorarray_presets.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_loudspeaker_presets.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_sort.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_malloc.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_utilities.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_sensorarray_presets.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_utilities\saf_veclib.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_sort.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_vbap\saf_vbap.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_vbap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_utilities\saf_veclib.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_utilities</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\modules\saf_vbap\saf_vbap_internal.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\modules\saf_vbap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_vbap\convhull_3d.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_vbap</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\afSTFT_protoFilter.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\saf_vbap\saf_vbap_internal.h">
-      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\saf_vbap</Filter>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\afSTFTlib.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\fft4g.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\vecTools.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\convhull_3d\convhull_3d.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\resources\convhull_3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\md_malloc\md_malloc.h">
+      <Filter>sparta_dirass\Spatial_Audio_Framework\framework\resources\md_malloc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\SDKs\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h">
       <Filter>JUCE Modules\juce_audio_basics\audio_play_head</Filter>

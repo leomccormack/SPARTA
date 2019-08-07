@@ -65,12 +65,9 @@ private:
     PluginProcessor* hVst;
     void* hAmbi;
     int width;
-    int height;
-
+    int height; 
     Rectangle<float> SourceIcons[MAX_NUM_CHANNELS];
     int NSources;
-    int NLoudspeakers;
-
     bool sourceIconIsClicked;
     int indexOfClickedSource;
     //[/UserVariables]
