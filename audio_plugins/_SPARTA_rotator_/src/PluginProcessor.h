@@ -26,7 +26,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "rotator.h"
 #include <string.h>
-#define BUILD_VER_SUFFIX "beta" /* String to be added before the version name on the GUI (beta, alpha etc..) */
+#define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (beta, alpha etc..) */
 #define DEFAULT_OSC_PORT 9000
 
 enum {	

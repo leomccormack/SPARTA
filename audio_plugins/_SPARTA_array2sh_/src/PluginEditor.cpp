@@ -121,6 +121,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     regAmountSlider->setRange (0, 80, 0.01);
     regAmountSlider->setSliderStyle (Slider::LinearHorizontal);
     regAmountSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
+    regAmountSlider->setColour (Slider::backgroundColourId, Colour (0xff5c5d5e));
+    regAmountSlider->setColour (Slider::trackColourId, Colour (0xff315b6d));
     regAmountSlider->addListener (this);
 
     regAmountSlider->setBounds (640, 308, 128, 16);
@@ -154,6 +156,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     gainSlider->setRange (-60, 60, 0.01);
     gainSlider->setSliderStyle (Slider::LinearHorizontal);
     gainSlider->setTextBoxStyle (Slider::TextBoxRight, false, 55, 20);
+    gainSlider->setColour (Slider::backgroundColourId, Colour (0xff5c5d5e));
+    gainSlider->setColour (Slider::trackColourId, Colour (0xff315b6d));
     gainSlider->addListener (this);
 
     gainSlider->setBounds (640, 341, 128, 16);
@@ -432,27 +436,56 @@ void PluginEditor::paint (Graphics& g)
     g.fillAll (Colours::white);
 
     {
-        int x = 0, y = 30, width = 800, height = 420;
-        Colour fillColour1 = Colour (0xff1f3b49), fillColour2 = Colour (0xff0a2931);
-        Colour strokeColour = Colour (0xffa3a4a5);
+        int x = 0, y = 240, width = 800, height = 210;
+        Colour fillColour1 = Colour (0xff1c3949), fillColour2 = Colour (0xff071e22);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (fillColour1,
-                                       416.0f - 0.0f + x,
-                                       232.0f - 30.0f + y,
+                                       8.0f - 0.0f + x,
+                                       448.0f - 240.0f + y,
                                        fillColour2,
-                                       792.0f - 0.0f + x,
-                                       448.0f - 30.0f + y,
-                                       true));
+                                       8.0f - 0.0f + x,
+                                       352.0f - 240.0f + y,
+                                       false));
         g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 2);
+    }
 
+    {
+        int x = 0, y = 30, width = 800, height = 210;
+        Colour fillColour1 = Colour (0xff1c3949), fillColour2 = Colour (0xff071e22);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       8.0f - 0.0f + x,
+                                       32.0f - 30.0f + y,
+                                       fillColour2,
+                                       8.0f - 0.0f + x,
+                                       128.0f - 30.0f + y,
+                                       false));
+        g.fillRect (x, y, width, height);
+    }
+
+    {
+        float x = 1.0f, y = 2.0f, width = 798.0f, height = 31.0f;
+        Colour fillColour1 = Colour (0xff061c20), fillColour2 = Colour (0xff1c3949);
+        Colour strokeColour = Colour (0xffb9b9b9);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       0.0f - 1.0f + x,
+                                       32.0f - 2.0f + y,
+                                       fillColour2,
+                                       792.0f - 1.0f + x,
+                                       24.0f - 2.0f + y,
+                                       false));
+        g.fillRoundedRectangle (x, y, width, height, 5.000f);
+        g.setColour (strokeColour);
+        g.drawRoundedRectangle (x, y, width, height, 5.000f, 2.000f);
     }
 
     {
         int x = 12, y = 56, width = 204, height = 32;
-        Colour fillColour = Colour (0x13f4f4f4);
+        Colour fillColour = Colour (0x10f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -465,7 +498,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 228, y = 56, width = 556, height = 209;
-        Colour fillColour = Colour (0x13f4f4f4);
+        Colour fillColour = Colour (0x10f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -491,7 +524,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 506, y = 264, width = 278, height = 104;
-        Colour fillColour = Colour (0x13f4f4f4);
+        Colour fillColour = Colour (0x10f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -504,7 +537,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 506, y = 264, width = 278, height = 104;
-        Colour fillColour = Colour (0x10f4f4f4);
+        Colour fillColour = Colour (0x08f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -530,19 +563,6 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 228, y = 264, width = 279, height = 172;
-        Colour fillColour = Colour (0x13f4f4f4);
-        Colour strokeColour = Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        int x = 228, y = 264, width = 279, height = 38;
         Colour fillColour = Colour (0x10f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -555,8 +575,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 12, y = 87, width = 204, height = 106;
-        Colour fillColour = Colour (0x13f4f4f4);
+        int x = 228, y = 264, width = 279, height = 38;
+        Colour fillColour = Colour (0x08f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -568,15 +588,15 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 0, y = 0, width = 800, height = 32;
-        Colour fillColour = Colour (0xff05222a);
-        Colour strokeColour = Colour (0xdcbdbdbd);
+        int x = 12, y = 87, width = 204, height = 106;
+        Colour fillColour = Colour (0x10f4f4f4);
+        Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 2);
+        g.drawRect (x, y, width, height, 1);
 
     }
 
@@ -630,7 +650,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 12, y = 192, width = 204, height = 244;
-        Colour fillColour = Colour (0x13f4f4f4);
+        Colour fillColour = Colour (0x10f4f4f4);
         Colour strokeColour = Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -808,7 +828,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 16, y = 0, width = 100, height = 32;
+        int x = 16, y = 1, width = 100, height = 32;
         String text (TRANS("SPARTA|"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -820,7 +840,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 92, y = 0, width = 112, height = 32;
+        int x = 92, y = 1, width = 112, height = 32;
         String text (TRANS("Array2SH"));
         Colour fillColour = Colour (0xffe9ff00);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -961,6 +981,59 @@ void PluginEditor::paint (Graphics& g)
         g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
+    }
+
+    {
+        int x = 0, y = 0, width = 802, height = 2;
+        Colour strokeColour = Colour (0xffb9b9b9);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 2);
+
+    }
+
+    {
+        int x = 0, y = 448, width = 802, height = 2;
+        Colour strokeColour = Colour (0xffb9b9b9);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 2);
+
+    }
+
+    {
+        int x = 0, y = 0, width = 2, height = 450;
+        Colour strokeColour = Colour (0xffb9b9b9);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 2);
+
+    }
+
+    {
+        int x = 798, y = 0, width = 2, height = 450;
+        Colour strokeColour = Colour (0xffb9b9b9);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 2);
+
+    }
+
+    {
+        int x = 12, y = 56, width = 204, height = 32;
+        Colour fillColour = Colour (0x08f4f4f4);
+        Colour strokeColour = Colour (0x67a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
     }
 
     //[UserPaint] Add your own custom painting code here..
@@ -1343,28 +1416,30 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="800" initialHeight="450">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 800 420" fill=" radial: 416 232, 792 448, 0=ff1f3b49, 1=ff0a2931"
-          hasStroke="1" stroke="1.9, mitered, butt" strokeColour="solid: ffa3a4a5"/>
-    <RECT pos="12 56 204 32" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="0 240 800 210" fill="linear: 8 448, 8 352, 0=ff1c3949, 1=ff071e22"
+          hasStroke="0"/>
+    <RECT pos="0 30 800 210" fill="linear: 8 32, 8 128, 0=ff1c3949, 1=ff071e22"
+          hasStroke="0"/>
+    <ROUNDRECT pos="1 2 798 31" cornerSize="5" fill="linear: 0 32, 792 24, 0=ff061c20, 1=ff1c3949"
+               hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
+    <RECT pos="12 56 204 32" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="228 56 556 209" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="228 56 556 209" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="280 70 456 158" fill="solid: 13000000" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="506 264 278 104" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
     <RECT pos="506 264 278 104" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 67a0a0a0"/>
+    <RECT pos="506 264 278 104" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="506 367 278 69" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="228 264 279 172" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="228 264 279 172" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="228 264 279 38" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="228 264 279 38" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 87 204 106" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 87 204 106" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="0 0 800 32" fill="solid: ff05222a" hasStroke="1" stroke="2.5, mitered, butt"
-          strokeColour="solid: dcbdbdbd"/>
     <TEXT pos="20 55 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
@@ -1377,7 +1452,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="20 155 180 30" fill="solid: ffffffff" hasStroke="0" text="Baffle radius (mm):"
           fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="12 192 204 244" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 192 204 244" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="240 337 172 30" fill="solid: ffffffff" hasStroke="0" text="Speed of Sound (m/s):"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
@@ -1420,10 +1495,10 @@ BEGIN_JUCER_METADATA
     <TEXT pos="240 268 172 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Order:"
           fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="16 0 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
+    <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
           fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="92 0 112 32" fill="solid: ffe9ff00" hasStroke="0" text="Array2SH"
+    <TEXT pos="92 1 112 32" fill="solid: ffe9ff00" hasStroke="0" text="Array2SH"
           fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="240 305 172 30" fill="solid: ffffffff" hasStroke="0" text="Diffuse-EQ Past Aliasing:"
@@ -1459,6 +1534,16 @@ BEGIN_JUCER_METADATA
     <TEXT pos="673 33 119 25" fill="solid: ffffffff" hasStroke="0" text="Display:"
           fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
+    <RECT pos="0 0 802 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+          strokeColour="solid: ffb9b9b9"/>
+    <RECT pos="0 448 802 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+          strokeColour="solid: ffb9b9b9"/>
+    <RECT pos="0 0 2 450" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+          strokeColour="solid: ffb9b9b9"/>
+    <RECT pos="798 0 2 450" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+          strokeColour="solid: ffb9b9b9"/>
+    <RECT pos="12 56 204 32" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 67a0a0a0"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="abcd469891fabf2d" memberName="presetCB"
             virtualName="" explicitFocusOrder="0" pos="88 64 120 16" editable="0"
@@ -1494,10 +1579,10 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="640 276 128 16" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="9f4f4ac547d19161" memberName="regAmountSlider"
-          virtualName="" explicitFocusOrder="0" pos="640 308 128 16" min="0"
-          max="8e1" int="1e-2" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1"
-          needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="640 308 128 16" bkgcol="ff5c5d5e"
+          trackcol="ff315b6d" min="0" max="8e1" int="1e-2" style="LinearHorizontal"
+          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
+          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
   <COMBOBOX name="new combo box" id="44b90530e58253e" memberName="CHOrderingCB"
             virtualName="" explicitFocusOrder="0" pos="640 377 128 16" editable="0"
             layout="33" items="&#10;" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
@@ -1505,10 +1590,10 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="640 409 128 16" editable="0"
             layout="33" items="&#10;" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="ee4c42494881e7dc" memberName="gainSlider"
-          virtualName="" explicitFocusOrder="0" pos="640 341 128 16" min="-6e1"
-          max="6e1" int="1e-2" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1"
-          needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="640 341 128 16" bkgcol="ff5c5d5e"
+          trackcol="ff315b6d" min="-6e1" max="6e1" int="1e-2" style="LinearHorizontal"
+          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
+          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="3fdbf3711d00f4db" memberName="degRadTB"
                 virtualName="" explicitFocusOrder="0" pos="186 198 23 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>

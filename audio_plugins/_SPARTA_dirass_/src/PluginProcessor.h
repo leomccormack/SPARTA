@@ -24,7 +24,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "dirass.h"
-#define BUILD_VER_SUFFIX "beta"                 /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
+#define BUILD_VER_SUFFIX ""                 /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 
 enum {	
     /* For the default VST GUI */

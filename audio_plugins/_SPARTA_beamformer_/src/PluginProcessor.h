@@ -24,7 +24,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "beamformer.h"
-#define BUILD_VER_SUFFIX "beta"  /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
+#define BUILD_VER_SUFFIX ""  /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64 
 #ifndef MIN
   #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
