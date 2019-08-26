@@ -347,6 +347,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 #ifdef ENABLE_CORE_SOUND_TETRAMIC_PRESET
     presetCB->addItem (TRANS("Core Sound TetraMic"), PRESET_CORE_SOUND_TETRAMIC);
 #endif
+#ifdef ENABLE_ZOOM_H3VR_PRESET
+    presetCB->addItem (TRANS("Zoom H3-VR"), PRESET_ZOOM_H3VR_PRESET);
+#endif
 #ifdef ENABLE_SOUND_FIELD_SPS200_PRESET
     presetCB->addItem (TRANS("Sound-field SPS200"), PRESET_SOUND_FIELD_SPS200);
 #endif
