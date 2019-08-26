@@ -20,19 +20,21 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
+
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
-#include "inputCoordsView.h"
-#include "pannerView.h"
+#include "overlay.h"
+#include "log2dSlider.h"
+
+#ifndef M_PI
+  #define M_PI (3.14159265359f)
+#endif
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
     k_warning_frameSize,
     k_warning_supported_fs,
-    k_warning_mismatch_fs,
-    k_warning_NinputCH,
-    k_warning_NoutputCH,
-    k_warning_osc_connection_fail
+    k_warning_NinputCH
 }SPARTA_WARNINGS;
 //[/Headers]
 
@@ -48,7 +50,8 @@ typedef enum _SPARTA_WARNINGS{
 */
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
-                      private FilenameComponentListener,
+                      private CameraDevice::Listener,
+                      public AsyncUpdater,
                       public ComboBox::Listener,
                       public Slider::Listener,
                       public Button::Listener
@@ -60,7 +63,6 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-
 
     //[/UserMethods]
 
@@ -75,54 +77,54 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
-    void* hBin;
+    void* hPm;
     void timerCallback() override;
+
+    /* for openGL speed-ups */
     ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
 
-    /* source coordinates viewport */
-    ScopedPointer<Viewport> sourceCoordsVP;
-    inputCoordsView* sourceCoordsView_handle;
-    FilenameComponent fileChooser;
+    /* for the powermap overlay */
+    Rectangle<int> previewArea;
+    ScopedPointer<overlay> overlayIncluded;
+    bool resolutionHasChanged;
 
-    /* sofa file loading */
-    void filenameComponentChanged (FilenameComponent*) override  {
-        String directory = fileChooser.getCurrentFile().getFullPathName();
-        const char* new_cstring = (const char*)directory.toUTF8();
-        binauraliser_setSofaFilePath(hBin, new_cstring);
-        refreshPanViewWindow = true;
-    }
+    /* for freq-dependent analysis order + EQ */
+    ScopedPointer<log2dSlider> anaOrder2dSlider;
+    ScopedPointer<log2dSlider> pmapEQ2dSlider;
 
-    /* panning window */
-    ScopedPointer<pannerView> panWindow;
-    bool refreshPanViewWindow;
+    /* for webcam support */
+    void updateCameraList();
+    void imageReceived(const Image& image) override;
+    void handleAsyncUpdate() override;
+    std::unique_ptr<CameraDevice> cameraDevice;
+    ImageComponent lastSnapshot;
+    Image incomingImage;
+    void cameraChanged();
+    void cameraDeviceOpenResult (CameraDevice* device, const String& error);
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
+
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<ComboBox> CBsourceDirsPreset;
-    std::unique_ptr<Slider> SL_num_sources;
-    std::unique_ptr<Label> label_N_dirs;
-    std::unique_ptr<Label> label_HRIR_fs;
-    std::unique_ptr<ToggleButton> TBuseDefaultHRIRs;
-    std::unique_ptr<Label> label_DAW_fs;
-    std::unique_ptr<ToggleButton> TB_showInputs;
-    std::unique_ptr<ToggleButton> TB_showOutputs;
-    std::unique_ptr<Label> label_N_Tri;
-    std::unique_ptr<ComboBox> CBinterpMode;
-    std::unique_ptr<TextButton> tb_loadJSON;
-    std::unique_ptr<TextButton> tb_saveJSON;
-    std::unique_ptr<Slider> s_yaw;
-    std::unique_ptr<Slider> s_pitch;
-    std::unique_ptr<Slider> s_roll;
-    std::unique_ptr<ToggleButton> t_flipYaw;
-    std::unique_ptr<ToggleButton> t_flipPitch;
-    std::unique_ptr<ToggleButton> t_flipRoll;
-    std::unique_ptr<TextEditor> te_oscport;
-    std::unique_ptr<ToggleButton> TBrpyFlag;
-    std::unique_ptr<ToggleButton> TBenableRotation;
+    std::unique_ptr<ComboBox> CBpmap_method;
+    std::unique_ptr<ComboBox> CBsourcePreset;
+    std::unique_ptr<ComboBox> CBchFormat;
+    std::unique_ptr<ComboBox> CBnormScheme;
+    std::unique_ptr<Slider> s_anaOrder;
+    std::unique_ptr<Slider> s_pmapEQ;
+    std::unique_ptr<Slider> s_covAvg;
+    std::unique_ptr<Slider> s_Nsources;
+    std::unique_ptr<ComboBox> CB_hfov;
+    std::unique_ptr<ComboBox> CB_aspectRatio;
+    std::unique_ptr<Slider> s_pmapAvg;
+    std::unique_ptr<ComboBox> CBmasterOrder;
+    std::unique_ptr<ComboBox> CB_webcam;
+    std::unique_ptr<ToggleButton> TB_greyScale;
+    std::unique_ptr<ToggleButton> TB_flipUD;
+    std::unique_ptr<ToggleButton> TB_flipLR;
 
 
     //==============================================================================

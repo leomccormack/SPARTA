@@ -27,7 +27,7 @@
 #include "ambi_drc.h"
 
 #define MAX_NUM_CHANNELS 64
-#define BUILD_VER_SUFFIX "beta"
+#define BUILD_VER_SUFFIX ""
 
 enum {	
     /* For the default VST GUI */

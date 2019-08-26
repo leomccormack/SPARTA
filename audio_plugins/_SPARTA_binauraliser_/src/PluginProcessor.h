@@ -26,7 +26,7 @@
 #include "binauraliser.h"
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
 #include "../../resources/ConfigurationHelper.h"
-#define BUILD_VER_SUFFIX "beta" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
+#define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define DEFAULT_OSC_PORT 9000
 #ifndef MIN
   #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))

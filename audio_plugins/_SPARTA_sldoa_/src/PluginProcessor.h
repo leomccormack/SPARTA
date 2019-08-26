@@ -26,7 +26,7 @@
 #include "JuceHeader.h"
 #include "sldoa.h"
 
-#define BUILD_VER_SUFFIX "beta"
+#define BUILD_VER_SUFFIX ""
 #ifndef MIN
   #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
 #endif
