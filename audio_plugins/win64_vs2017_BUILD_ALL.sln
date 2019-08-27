@@ -9,13 +9,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_ambiBIN_VST", "_SPAR
 		{AD4E2C71-5FD2-1C60-BB48-F1510F031B1B} = {AD4E2C71-5FD2-1C60-BB48-F1510F031B1B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_ambiDEC_SharedCode", "_SPARTA_ambiDEC_\make\win64\VisualStudio2017\sparta_ambiDEC\sparta_ambiDEC_SharedCode.vcxproj", "{5CAF343F-9462-4686-A0AE-D3D094FAD4B7}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_ambiDEC_VST", "_SPARTA_ambiDEC_\make\win64\VisualStudio2017\sparta_ambiDEC\sparta_ambiDEC_VST.vcxproj", "{DDE11271-C217-4D3E-830A-BBA91FEA16EA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{5CAF343F-9462-4686-A0AE-D3D094FAD4B7} = {5CAF343F-9462-4686-A0AE-D3D094FAD4B7}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_ambiDRC_SharedCode", "_SPARTA_ambiDRC_\make\win64\VisualStudio2017\sparta_ambiDRC_SharedCode.vcxproj", "{07B79572-F91E-4953-AD5E-53FDD82E7197}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_ambiDRC_VST", "_SPARTA_ambiDRC_\make\win64\VisualStudio2017\sparta_ambiDRC_VST.vcxproj", "{620506F5-708A-4ACB-BA91-20285E66A267}"
@@ -28,13 +21,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_ambiENC_VST", "_SPARTA_ambiENC_\make\win64\VisualStudio2017\sparta_ambiENC_VST.vcxproj", "{8F9C5050-DF66-4A46-85E4-5195EAF12450}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8CDA9863-C6CD-4331-A3B4-F07B77E5DA84} = {8CDA9863-C6CD-4331-A3B4-F07B77E5DA84}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_array2sh_SharedCode", "_SPARTA_array2sh_\make\win64\VisualStudio2017\sparta_array2sh\sparta_array2sh_SharedCode.vcxproj", "{2355C267-3A6F-444A-8B97-15F3DEAC182A}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_array2sh_VST", "_SPARTA_array2sh_\make\win64\VisualStudio2017\sparta_array2sh\sparta_array2sh_VST.vcxproj", "{C451C9F3-0117-46EC-8105-84607E2CA6D7}"
-	ProjectSection(ProjectDependencies) = postProject
-		{2355C267-3A6F-444A-8B97-15F3DEAC182A} = {2355C267-3A6F-444A-8B97-15F3DEAC182A}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_beamformer_SharedCode", "_SPARTA_beamformer_\make\win64\VisualStudio2017\sparta_beamformer_SharedCode.vcxproj", "{B8CE8851-D76A-4165-AA7F-4E4B2BEB0D32}"
@@ -65,13 +51,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_panner_VST", "_SPART
 		{1D463B2F-9269-4E8B-8AD5-780D8E8F65D1} = {1D463B2F-9269-4E8B-8AD5-780D8E8F65D1}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_powermap_SharedCode", "_SPARTA_powermap_\make\win64\VisualStudio2017\sparta_powermap\sparta_powermap_SharedCode.vcxproj", "{FC8795C7-A5B4-4B1E-B2BD-5B702C3053D0}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_powermap_VST", "_SPARTA_powermap_\make\win64\VisualStudio2017\sparta_powermap\sparta_powermap_VST.vcxproj", "{9CC1ECCD-70E7-4F77-B9A6-BE1D94F08D09}"
-	ProjectSection(ProjectDependencies) = postProject
-		{FC8795C7-A5B4-4B1E-B2BD-5B702C3053D0} = {FC8795C7-A5B4-4B1E-B2BD-5B702C3053D0}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_rotator_SharedCode", "_SPARTA_rotator_\make\win64\VisualStudio2017\sparta_rotator_SharedCode.vcxproj", "{D4E95969-D822-41B1-83BE-409DE0792DD7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_rotator_VST", "_SPARTA_rotator_\make\win64\VisualStudio2017\sparta_rotator_VST.vcxproj", "{D2AD5AE6-8FD3-4DD8-A1B0-7C248E40D64B}"
@@ -79,11 +58,32 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_rotator_VST", "_SPAR
 		{D4E95969-D822-41B1-83BE-409DE0792DD7} = {D4E95969-D822-41B1-83BE-409DE0792DD7}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_sldoa_SharedCode", "_SPARTA_sldoa_\make\win64\VisualStudio2017\sparta_sldoa\sparta_sldoa_SharedCode.vcxproj", "{797D092E-830D-4D2E-A811-9744C6655772}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_ambiDEC_SharedCode", "_SPARTA_ambiDEC_\make\win64\VisualStudio2017\sparta_ambiDEC_SharedCode.vcxproj", "{5C8FBD60-9CB1-4A8B-B049-F73B738D551F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_sldoa_VST", "_SPARTA_sldoa_\make\win64\VisualStudio2017\sparta_sldoa\sparta_sldoa_VST.vcxproj", "{9D4AF8D9-7C74-4D7D-AEC0-6EF611B7F8A6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_ambiDEC_VST", "_SPARTA_ambiDEC_\make\win64\VisualStudio2017\sparta_ambiDEC_VST.vcxproj", "{0B7D97F5-EC13-4BD7-881C-D3CC487619FB}"
 	ProjectSection(ProjectDependencies) = postProject
-		{797D092E-830D-4D2E-A811-9744C6655772} = {797D092E-830D-4D2E-A811-9744C6655772}
+		{5C8FBD60-9CB1-4A8B-B049-F73B738D551F} = {5C8FBD60-9CB1-4A8B-B049-F73B738D551F}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_array2sh_SharedCode", "_SPARTA_array2sh_\make\win64\VisualStudio2017\sparta_array2sh_SharedCode.vcxproj", "{DEBE4055-DAF7-4215-850C-9717E5427F81}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_array2sh_VST", "_SPARTA_array2sh_\make\win64\VisualStudio2017\sparta_array2sh_VST.vcxproj", "{DD519FD6-64C9-4282-8F4C-76C0C612BECA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DEBE4055-DAF7-4215-850C-9717E5427F81} = {DEBE4055-DAF7-4215-850C-9717E5427F81}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_powermap_SharedCode", "_SPARTA_powermap_\make\win64\VisualStudio2017\sparta_powermap_SharedCode.vcxproj", "{979A0378-3819-4CD2-8325-3D16C3FF216E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_powermap_VST", "_SPARTA_powermap_\make\win64\VisualStudio2017\sparta_powermap_VST.vcxproj", "{5325F124-0866-4C7C-BC4A-3AC47B7F33E5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{979A0378-3819-4CD2-8325-3D16C3FF216E} = {979A0378-3819-4CD2-8325-3D16C3FF216E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_sldoa_SharedCode", "_SPARTA_sldoa_\make\win64\VisualStudio2017\sparta_sldoa_SharedCode.vcxproj", "{E041D6F3-D0A4-4E9C-8898-33B171300878}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sparta_sldoa_VST", "_SPARTA_sldoa_\make\win64\VisualStudio2017\sparta_sldoa_VST.vcxproj", "{9B35B7C3-BF6C-47B9-9040-19B11A937986}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E041D6F3-D0A4-4E9C-8898-33B171300878} = {E041D6F3-D0A4-4E9C-8898-33B171300878}
 	EndProjectSection
 EndProject
 Global
@@ -100,14 +100,6 @@ Global
 		{C4438A43-EB43-B2A1-6BBC-CA236E44500E}.Debug|x64.Build.0 = Debug|x64
 		{C4438A43-EB43-B2A1-6BBC-CA236E44500E}.Release|x64.ActiveCfg = Release|x64
 		{C4438A43-EB43-B2A1-6BBC-CA236E44500E}.Release|x64.Build.0 = Release|x64
-		{5CAF343F-9462-4686-A0AE-D3D094FAD4B7}.Debug|x64.ActiveCfg = Debug|x64
-		{5CAF343F-9462-4686-A0AE-D3D094FAD4B7}.Debug|x64.Build.0 = Debug|x64
-		{5CAF343F-9462-4686-A0AE-D3D094FAD4B7}.Release|x64.ActiveCfg = Release|x64
-		{5CAF343F-9462-4686-A0AE-D3D094FAD4B7}.Release|x64.Build.0 = Release|x64
-		{DDE11271-C217-4D3E-830A-BBA91FEA16EA}.Debug|x64.ActiveCfg = Debug|x64
-		{DDE11271-C217-4D3E-830A-BBA91FEA16EA}.Debug|x64.Build.0 = Debug|x64
-		{DDE11271-C217-4D3E-830A-BBA91FEA16EA}.Release|x64.ActiveCfg = Release|x64
-		{DDE11271-C217-4D3E-830A-BBA91FEA16EA}.Release|x64.Build.0 = Release|x64
 		{07B79572-F91E-4953-AD5E-53FDD82E7197}.Debug|x64.ActiveCfg = Debug|x64
 		{07B79572-F91E-4953-AD5E-53FDD82E7197}.Debug|x64.Build.0 = Debug|x64
 		{07B79572-F91E-4953-AD5E-53FDD82E7197}.Release|x64.ActiveCfg = Release|x64
@@ -124,14 +116,6 @@ Global
 		{8F9C5050-DF66-4A46-85E4-5195EAF12450}.Debug|x64.Build.0 = Debug|x64
 		{8F9C5050-DF66-4A46-85E4-5195EAF12450}.Release|x64.ActiveCfg = Release|x64
 		{8F9C5050-DF66-4A46-85E4-5195EAF12450}.Release|x64.Build.0 = Release|x64
-		{2355C267-3A6F-444A-8B97-15F3DEAC182A}.Debug|x64.ActiveCfg = Debug|x64
-		{2355C267-3A6F-444A-8B97-15F3DEAC182A}.Debug|x64.Build.0 = Debug|x64
-		{2355C267-3A6F-444A-8B97-15F3DEAC182A}.Release|x64.ActiveCfg = Release|x64
-		{2355C267-3A6F-444A-8B97-15F3DEAC182A}.Release|x64.Build.0 = Release|x64
-		{C451C9F3-0117-46EC-8105-84607E2CA6D7}.Debug|x64.ActiveCfg = Debug|x64
-		{C451C9F3-0117-46EC-8105-84607E2CA6D7}.Debug|x64.Build.0 = Debug|x64
-		{C451C9F3-0117-46EC-8105-84607E2CA6D7}.Release|x64.ActiveCfg = Release|x64
-		{C451C9F3-0117-46EC-8105-84607E2CA6D7}.Release|x64.Build.0 = Release|x64
 		{B8CE8851-D76A-4165-AA7F-4E4B2BEB0D32}.Debug|x64.ActiveCfg = Debug|x64
 		{B8CE8851-D76A-4165-AA7F-4E4B2BEB0D32}.Debug|x64.Build.0 = Debug|x64
 		{B8CE8851-D76A-4165-AA7F-4E4B2BEB0D32}.Release|x64.ActiveCfg = Release|x64
@@ -164,14 +148,6 @@ Global
 		{D24BCD40-AE99-4B59-8D97-72255C6606F2}.Debug|x64.Build.0 = Debug|x64
 		{D24BCD40-AE99-4B59-8D97-72255C6606F2}.Release|x64.ActiveCfg = Release|x64
 		{D24BCD40-AE99-4B59-8D97-72255C6606F2}.Release|x64.Build.0 = Release|x64
-		{FC8795C7-A5B4-4B1E-B2BD-5B702C3053D0}.Debug|x64.ActiveCfg = Debug|x64
-		{FC8795C7-A5B4-4B1E-B2BD-5B702C3053D0}.Debug|x64.Build.0 = Debug|x64
-		{FC8795C7-A5B4-4B1E-B2BD-5B702C3053D0}.Release|x64.ActiveCfg = Release|x64
-		{FC8795C7-A5B4-4B1E-B2BD-5B702C3053D0}.Release|x64.Build.0 = Release|x64
-		{9CC1ECCD-70E7-4F77-B9A6-BE1D94F08D09}.Debug|x64.ActiveCfg = Debug|x64
-		{9CC1ECCD-70E7-4F77-B9A6-BE1D94F08D09}.Debug|x64.Build.0 = Debug|x64
-		{9CC1ECCD-70E7-4F77-B9A6-BE1D94F08D09}.Release|x64.ActiveCfg = Release|x64
-		{9CC1ECCD-70E7-4F77-B9A6-BE1D94F08D09}.Release|x64.Build.0 = Release|x64
 		{D4E95969-D822-41B1-83BE-409DE0792DD7}.Debug|x64.ActiveCfg = Debug|x64
 		{D4E95969-D822-41B1-83BE-409DE0792DD7}.Debug|x64.Build.0 = Debug|x64
 		{D4E95969-D822-41B1-83BE-409DE0792DD7}.Release|x64.ActiveCfg = Release|x64
@@ -180,14 +156,38 @@ Global
 		{D2AD5AE6-8FD3-4DD8-A1B0-7C248E40D64B}.Debug|x64.Build.0 = Debug|x64
 		{D2AD5AE6-8FD3-4DD8-A1B0-7C248E40D64B}.Release|x64.ActiveCfg = Release|x64
 		{D2AD5AE6-8FD3-4DD8-A1B0-7C248E40D64B}.Release|x64.Build.0 = Release|x64
-		{797D092E-830D-4D2E-A811-9744C6655772}.Debug|x64.ActiveCfg = Debug|x64
-		{797D092E-830D-4D2E-A811-9744C6655772}.Debug|x64.Build.0 = Debug|x64
-		{797D092E-830D-4D2E-A811-9744C6655772}.Release|x64.ActiveCfg = Release|x64
-		{797D092E-830D-4D2E-A811-9744C6655772}.Release|x64.Build.0 = Release|x64
-		{9D4AF8D9-7C74-4D7D-AEC0-6EF611B7F8A6}.Debug|x64.ActiveCfg = Debug|x64
-		{9D4AF8D9-7C74-4D7D-AEC0-6EF611B7F8A6}.Debug|x64.Build.0 = Debug|x64
-		{9D4AF8D9-7C74-4D7D-AEC0-6EF611B7F8A6}.Release|x64.ActiveCfg = Release|x64
-		{9D4AF8D9-7C74-4D7D-AEC0-6EF611B7F8A6}.Release|x64.Build.0 = Release|x64
+		{5C8FBD60-9CB1-4A8B-B049-F73B738D551F}.Debug|x64.ActiveCfg = Debug|x64
+		{5C8FBD60-9CB1-4A8B-B049-F73B738D551F}.Debug|x64.Build.0 = Debug|x64
+		{5C8FBD60-9CB1-4A8B-B049-F73B738D551F}.Release|x64.ActiveCfg = Release|x64
+		{5C8FBD60-9CB1-4A8B-B049-F73B738D551F}.Release|x64.Build.0 = Release|x64
+		{0B7D97F5-EC13-4BD7-881C-D3CC487619FB}.Debug|x64.ActiveCfg = Debug|x64
+		{0B7D97F5-EC13-4BD7-881C-D3CC487619FB}.Debug|x64.Build.0 = Debug|x64
+		{0B7D97F5-EC13-4BD7-881C-D3CC487619FB}.Release|x64.ActiveCfg = Release|x64
+		{0B7D97F5-EC13-4BD7-881C-D3CC487619FB}.Release|x64.Build.0 = Release|x64
+		{DEBE4055-DAF7-4215-850C-9717E5427F81}.Debug|x64.ActiveCfg = Debug|x64
+		{DEBE4055-DAF7-4215-850C-9717E5427F81}.Debug|x64.Build.0 = Debug|x64
+		{DEBE4055-DAF7-4215-850C-9717E5427F81}.Release|x64.ActiveCfg = Release|x64
+		{DEBE4055-DAF7-4215-850C-9717E5427F81}.Release|x64.Build.0 = Release|x64
+		{DD519FD6-64C9-4282-8F4C-76C0C612BECA}.Debug|x64.ActiveCfg = Debug|x64
+		{DD519FD6-64C9-4282-8F4C-76C0C612BECA}.Debug|x64.Build.0 = Debug|x64
+		{DD519FD6-64C9-4282-8F4C-76C0C612BECA}.Release|x64.ActiveCfg = Release|x64
+		{DD519FD6-64C9-4282-8F4C-76C0C612BECA}.Release|x64.Build.0 = Release|x64
+		{979A0378-3819-4CD2-8325-3D16C3FF216E}.Debug|x64.ActiveCfg = Debug|x64
+		{979A0378-3819-4CD2-8325-3D16C3FF216E}.Debug|x64.Build.0 = Debug|x64
+		{979A0378-3819-4CD2-8325-3D16C3FF216E}.Release|x64.ActiveCfg = Release|x64
+		{979A0378-3819-4CD2-8325-3D16C3FF216E}.Release|x64.Build.0 = Release|x64
+		{5325F124-0866-4C7C-BC4A-3AC47B7F33E5}.Debug|x64.ActiveCfg = Debug|x64
+		{5325F124-0866-4C7C-BC4A-3AC47B7F33E5}.Debug|x64.Build.0 = Debug|x64
+		{5325F124-0866-4C7C-BC4A-3AC47B7F33E5}.Release|x64.ActiveCfg = Release|x64
+		{5325F124-0866-4C7C-BC4A-3AC47B7F33E5}.Release|x64.Build.0 = Release|x64
+		{E041D6F3-D0A4-4E9C-8898-33B171300878}.Debug|x64.ActiveCfg = Debug|x64
+		{E041D6F3-D0A4-4E9C-8898-33B171300878}.Debug|x64.Build.0 = Debug|x64
+		{E041D6F3-D0A4-4E9C-8898-33B171300878}.Release|x64.ActiveCfg = Release|x64
+		{E041D6F3-D0A4-4E9C-8898-33B171300878}.Release|x64.Build.0 = Release|x64
+		{9B35B7C3-BF6C-47B9-9040-19B11A937986}.Debug|x64.ActiveCfg = Debug|x64
+		{9B35B7C3-BF6C-47B9-9040-19B11A937986}.Debug|x64.Build.0 = Debug|x64
+		{9B35B7C3-BF6C-47B9-9040-19B11A937986}.Release|x64.ActiveCfg = Release|x64
+		{9B35B7C3-BF6C-47B9-9040-19B11A937986}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
