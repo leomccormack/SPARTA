@@ -402,7 +402,24 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     panWindow->setShowInputs(TB_showInputs->getToggleState());
     panWindow->setShowOutputs(TB_showOutputs->getToggleState());
     refreshPanViewWindow = true;
-
+    
+    /* tooltips */
+    CBsourceDirsPreset->setTooltip("Presets for source directions to use for spatialisation.");
+    CBsLoudspeakerDirsPreset->setTooltip("Presets for loudspeaker directions to pan to.");
+    s_yaw->setTooltip("Sets the 'Yaw' rotation angle (in degrees).");
+    s_pitch->setTooltip("Sets the 'Pitch' rotation angle (in degrees).");
+    s_roll->setTooltip("Sets the 'Roll' rotation angle (in degrees).");
+    t_flipYaw->setTooltip("Flips the sign (+/-) of the 'Yaw' rotation angle.");
+    t_flipPitch->setTooltip("Flips the sign (+/-) of the 'Pitch' rotation angle.");
+    t_flipRoll->setTooltip("Flips the sign (+/-) of the 'Roll' rotation angle.");
+    TB_showInputs->setTooltip("Enables/Disables displaying the source directions in the panning window.");
+    TB_showOutputs->setTooltip("Enables/Disables displaying the loudspeaker directions in the panning window.");
+    tb_loadJSON_src->setTooltip("Loads source directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
+    tb_saveJSON_src->setTooltip("Saves the current source directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
+    tb_loadJSON_ls->setTooltip("Loads loudspeaker directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
+    tb_saveJSON_ls->setTooltip("Saves the current loudspeaker directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
+    
+    
 	/* Specify screen refresh rate */
     startTimer(35);//80); /*ms (40ms = 25 frames per second) */
 

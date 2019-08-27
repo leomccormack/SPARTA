@@ -187,6 +187,19 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBoutputFormat->setItemEnabled(CH_FUMA, rotator_getOrder(hRot)==INPUT_ORDER_FIRST ? true : false);
     CBnorm->setItemEnabled(NORM_FUMA, rotator_getOrder(hRot)==INPUT_ORDER_FIRST ? true : false);
 
+    /* tooltips */
+    CBorder->setTooltip("Input/output order. Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
+    CBoutputFormat->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
+    CBnorm->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
+    s_yaw->setTooltip("Sets the 'Yaw' rotation angle (in degrees).");
+    s_pitch->setTooltip("Sets the 'Pitch' rotation angle (in degrees).");
+    s_roll->setTooltip("Sets the 'Roll' rotation angle (in degrees).");
+    t_flipYaw->setTooltip("Flips the sign (+/-) of the 'Yaw' rotation angle.");
+    t_flipPitch->setTooltip("Flips the sign (+/-) of the 'Pitch' rotation angle.");
+    t_flipRoll->setTooltip("Flips the sign (+/-) of the 'Roll' rotation angle.");
+    te_oscport->setTooltip("The OSC port at which to receive the rotation angles. To facilitate head-tracking, send the rotation angles (in degrees) to this port ID as a 3-element vector 'ypr[3]', following the yaw-pitch-roll convention.");
+    TBrpyFlag->setTooltip("If enabled, the plug-in will use the roll-pitch-yaw rotation order convention. If disabled, it will use the yaw-pitch-roll convention.");
+    
     /* Specify screen refresh rate */
     startTimer(30); /*ms (40ms = 25 frames per second) */
 

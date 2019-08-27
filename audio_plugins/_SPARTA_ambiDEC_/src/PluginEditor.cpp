@@ -381,7 +381,28 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_transitionFreq->setValue(ambi_dec_getTransitionFreq(hAmbi), dontSendNotification);
     CBchFormat->setItemEnabled(CH_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==MASTER_ORDER_FIRST ? true : false);
     CBnormScheme->setItemEnabled(NORM_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==MASTER_ORDER_FIRST ? true : false);
-
+    
+    /* tooltips */
+    CBmasterOrder->setTooltip("Maximum decoding order (can be lower at different frequencies). Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
+    TBuseDefaultHRIRs->setTooltip("If this is 'ticked', the plug-in is using the default HRIR set from the Spatial_Audio_Framework.");
+    fileChooser.setTooltip("Optionally, a custom HRIR set may be loaded via the SOFA standard. Note that if the plug-in fails to load the specified .sofa file, it will revert to the default HRIR data.");
+    SL_num_loudspeakers->setTooltip("Number of loudspeakers to decode to.");
+    CBchFormat->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
+    CBnormScheme->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
+    s_decOrder->setTooltip("This sets the decoding order for all frequencies. Use the 2-D slider to change the decoding order for specific frequencies.");
+    TBBinauraliseLS->setTooltip("If enabled, the loudspeaker signals are binauralised and sent to the first 2 output channels.");
+    CBdec1method->setTooltip("Decoding method for the low-frequencies. The methods are equivalent if the loudspeakers are uniformly distributed (e.g. a t-design). Sampling Ambisonic Decoder (SAD) is the simplest, as it simply steers a hyper-cardioid beamformer to each loudspeaker direction. Mode-Matching Decoder (MMD), lends more energy to parts of the sphere which are more sparsely populated with loudspeakers (therefore, be careful! as a lot of energy can go to VOG, for example). AllRAD first decodes to a t-design and pans the t-design signals to the loudspeaker set-up using VBAP (most recommended for irregular loudspeaker arrangements).");
+    CBdec2method->setTooltip("Decoding method for the high-frequencies. The methods are equivalent if the loudspeakers are uniformly distributed (e.g. a t-design). Sampling Ambisonic Decoder (SAD) is the simplest, as it simply steers a hyper-cardioid beamformer to each loudspeaker direction. Mode-Matching Decoder (MMD), lends more energy to parts of the sphere which are more sparsely populated with loudspeakers (therefore, be careful! as a lot of energy can go to VOG, for example). AllRAD first decodes to a t-design and pans the t-design signals to the loudspeaker set-up using VBAP (most recommended for irregular loudspeaker arrangements).");
+    TBdec1EnableMaxrE->setTooltip("Enables/Disables the max_rE weights applied to the low-frequency decoding matrix.");
+    TBdec2EnableMaxrE->setTooltip("Enables/Disables the max_rE weights applied to the high-frequency decoding matrix.");
+    CBdec1normtype->setTooltip("The plug-in applies a frequency-dependent normalisation factor, which helps preserve omni-directional amplitude or energy when the decoding order differs for different frequencies. Generally, it is recommended to preserve amplitude (AP) at low-frequencies, and preserve high-frequencies (EP) at high-frequencies.");
+    CBdec2normtype->setTooltip("The plug-in applies a frequency-dependent normalisation factor, which helps preserve omni-directional amplitude or energy when the decoding order differs for different frequencies. Generally, it is recommended to preserve amplitude (AP) at low-frequencies, and preserve high-frequencies (EP) at high-frequencies.");
+    SL_transitionFreq->setTooltip("Sets the frequency at which to transition from the low-frequency decoder, to the high-frequency decoder.");
+    CBsourcePreset->setTooltip("Presets for for various higher-order microphone arrays, which configure the frequency-dependent decoding order.");
+    CBoutputDirsPreset->setTooltip("Presets for loudspeaker arrangements to decode to.");
+    tb_loadJSON->setTooltip("Loads loudspeaker directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
+    tb_saveJSON->setTooltip("Saves the current loudspeaker directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
+    
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
 

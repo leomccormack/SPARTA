@@ -91,6 +91,9 @@ private:
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
+    
+    /* tooltips */
+    SharedResourcePointer<TooltipWindow> tipWindow;
 
     //[/UserVariables]
 

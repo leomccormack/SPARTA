@@ -380,6 +380,29 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     panWindow->setShowInputs(TB_showInputs->getToggleState());
     panWindow->setShowOutputs(TB_showOutputs->getToggleState());
     refreshPanViewWindow = true;
+    
+    /* tooltips */
+    CBsourceDirsPreset->setTooltip("Presets for source directions to use for spatialisation.");
+    TBuseDefaultHRIRs->setTooltip("If this is 'ticked', the plug-in is using the default HRIR set from the Spatial_Audio_Framework.");
+    fileChooser.setTooltip("Optionally, a custom HRIR set may be loaded via the SOFA standard. Note that if the plug-in fails to load the specified .sofa file, it will revert to the default HRIR data.");
+    CBinterpMode->setTooltip("Interpolation approach. Currently only triangular (via amplitude-normalised VBAP gains). TODO: add an option to quantise to nearest HRIR direction (for large grids).");
+    TBenableRotation->setTooltip("Enables/Disables rotation of the source directions.");
+    s_yaw->setTooltip("Sets the 'Yaw' rotation angle (in degrees).");
+    s_pitch->setTooltip("Sets the 'Pitch' rotation angle (in degrees).");
+    s_roll->setTooltip("Sets the 'Roll' rotation angle (in degrees).");
+    t_flipYaw->setTooltip("Flips the sign (+/-) of the 'Yaw' rotation angle.");
+    t_flipPitch->setTooltip("Flips the sign (+/-) of the 'Pitch' rotation angle.");
+    t_flipRoll->setTooltip("Flips the sign (+/-) of the 'Roll' rotation angle.");
+    te_oscport->setTooltip("The OSC port at which to receive the rotation angles. To facilitate head-tracking, send the rotation angles (in degrees) to this port ID as a 3-element vector 'ypr[3]', following the yaw-pitch-roll convention.");
+    TBrpyFlag->setTooltip("If enabled, the plug-in will use the roll-pitch-yaw rotation order convention. If disabled, it will use the yaw-pitch-roll convention.");
+    label_N_dirs->setTooltip("Number of HRIR directions in the current HRIR set.");
+    label_N_Tri->setTooltip("Number of triangles found when computing the Convex Hull of the HRIR grid.");
+    label_HRIR_fs->setTooltip("Sampling rate used when measuring/modelling the HRIRs.");
+    label_DAW_fs->setTooltip("Current sampling rate, as dictated by the DAW/Host.");
+    TB_showInputs->setTooltip("Enables/Disables displaying the source directions in the panning window.");
+    TB_showOutputs->setTooltip("Enables/Disables displaying the HRIR directions in the panning window.");
+    tb_loadJSON->setTooltip("Loads source directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
+    tb_saveJSON->setTooltip("Saves the current source directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
 
 	/* Specify screen refresh rate */
     startTimer(40);//80); /*ms (40ms = 25 frames per second) */

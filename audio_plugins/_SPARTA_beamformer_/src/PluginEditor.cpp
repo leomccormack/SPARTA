@@ -145,6 +145,12 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (panWindow = new pannerView(ownerFilter, 480, 240));
     panWindow->setBounds (12, 58, 480, 240);
     refreshPanViewWindow = true;
+    
+    /* tooltips */
+    CBorder->setTooltip("Beamforming order. Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
+    CBbeamType->setTooltip("Beamformer pattern.");
+    CBoutputFormat->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
+    CBnormalisation->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
 
 	/* Specify screen refresh rate */
     startTimer(40);//80); /*ms (40ms = 25 frames per second) */

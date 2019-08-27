@@ -311,6 +311,23 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBchFormat->setItemEnabled(CH_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
     CBnormScheme->setItemEnabled(NORM_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
 
+    /* tooltips */
+    CBmasterOrder->setTooltip("Maximum analysis order (can be lower at different frequencies). Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
+    CBpmap_method->setTooltip("Activity-map method to use. Plane-wave decomposition (PWD) and minimum-variance distortion-less response (MVDR) options are examples of beamforming based approaches, where static (PWD) or adaptive (MVDR) beamformers are steered towards the grid directions, and the map is derived from their relative energy/power (hence PowerMap). Minimum norm (min-Norm) and Multiple-signal classification (MUSIC) are examples of subspace-based approaches, which operate on the noise or signal subspaces derived from truncating the eigen vectors extracted from the input covariance matrix, subsquently conducting the scanning in this sub-space. The truncation of the eigen-vector matrix is dependent on the number of sources.");
+    CBchFormat->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
+    CBnormScheme->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
+    s_anaOrder->setTooltip("This sets the analysis order for all frequencies. Use the 2-D slider to change the analysis order for specific frequencies.");
+    s_pmapEQ->setTooltip("This sets the EQ value for all frequencies (so just a gain). Use the 2-D slider to change the gain for specific frequencies, thus adjusting the contribution of particular frequencies to the output activity-map.");
+    CBsourcePreset->setTooltip("Presets for for various higher-order microphone arrays, which configure the frequency-dependent analysis order.");
+    s_covAvg->setTooltip("Covariance matrix averaging coefficient (one-pole filter).");
+    s_pmapAvg->setTooltip("Activity-map averaging coefficient (one-pole filter).");
+    CB_webcam->setTooltip("Optionally, the video from a webcam may be streamed behind the activity-map; allowing for a make-shift acoustic camera. This is particularly effective when using, for example, a 360degree Ricoh Theta camera.");
+    TB_greyScale->setTooltip("Sets the plug-in to display the webcam image in 'grey-scale'.");
+    TB_flipUD->setTooltip("Flips the webcam image up-down, as it may be preferable to mount the camera upside-down on top of the microphone array; in order to bring the origin of the camera closer to that of the array.");
+    TB_flipLR->setTooltip("Flips the webcam image left-right, as some webcams mirror the images taken.");
+    CB_hfov->setTooltip("Horizontal field-of-view (FOV) options.");
+    CB_aspectRatio->setTooltip("Aspect ratio options.");
+    
 	/* Specify screen refresh rate */
     startTimer(120);//80); /*ms (40ms = 25 frames per second) */
 

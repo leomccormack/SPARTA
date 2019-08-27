@@ -301,10 +301,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* add weight options */
     weightTypeCB->addItem (TRANS("Rigid-omni"), WEIGHT_RIGID_OMNI);
     weightTypeCB->addItem (TRANS("Rigid-cardioid"), WEIGHT_RIGID_CARD);
-    weightTypeCB->addItem (TRANS("Rigid-dipole"), WEIGHT_RIGID_DIPOLE);
+    /*weightTypeCB->addItem (TRANS("Rigid-dipole"), WEIGHT_RIGID_DIPOLE);*/
     weightTypeCB->addItem (TRANS("Open-omni"), WEIGHT_OPEN_OMNI);
     weightTypeCB->addItem (TRANS("Open-cardioid"), WEIGHT_OPEN_CARD);
-    weightTypeCB->addItem (TRANS("Open-dipole"), WEIGHT_OPEN_DIPOLE);
+    /*weightTypeCB->addItem (TRANS("Open-dipole"), WEIGHT_OPEN_DIPOLE);*/
     weightTypeCB->setSelectedId(array2sh_getWeightType(hA2sh), dontSendNotification);
 
     /* add channel format and norm scheme options */
@@ -388,6 +388,24 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
     normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
 
+    /* tooltips */
+    CBencodingOrder->setTooltip("Encoding order. Note that the plug-in will require at least (order+1)^2 microphone array signals as input.");
+    presetCB->setTooltip("Presets for for various microphone arrays, which appropriately configures the sensor directions and specifications.");
+    cSlider->setTooltip("Speed of sound of the medium. Air ~343 m/s, water ~1484 m/s (temperature and salinity dependent).");
+    regAmountSlider->setTooltip("Maximum gain amplification permitted. Higher-values give a wider frequency range of usable spherical harmonic components, but at the cost of increased noise.");
+    gainSlider->setTooltip("Post-gain factor (in dB).");
+    arrayTypeCB->setTooltip("Array type. Since the plug-in relies purely on theory, only shapes which have analytical descriptions available are supported; namely, spheres or infinite cylinders.");
+    weightTypeCB->setTooltip("Array construction and sensor directivity. Either open (e.g. A-format/Octo-mic) or rigid (e.g. Eigenmike/Zylia), with cardioid or omnidirectional sensors.");
+    filterTypeCB->setTooltip("Encoding filter design approach. Tikhonov is generally recommended as a starting point. However, Z-style may work better for Ambisonic reproduction purposes, and it can also have max_rE weights baked into the signals at the encoding stage.");
+    CHOrderingCB->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
+    normalisationCB->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
+    tb_loadJSON->setTooltip("Loads microphone array sensor directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
+    tb_saveJSON->setTooltip("Saves the current microphone array sensor directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
+    degRadTB->setTooltip("If 'ticked', the sensor directions are given in degrees [azi, elev] convention. If not 'ticked', they are in radians.");
+    textButton->setTooltip("Anlyses the performance of the currently configured microphone array, based on established objective metrics. The plug-in first simulates the microphone array and applies the current encoding matrix to it, subsequently comparing the resulting patterns with ideal spherical harmonics.");
+    dispWindow->setTooltip("Switches between the different display options. \n\nFilters: order-dependent equalisation curves, which are applied to eliminate the effect of the sphere. \n\nCorr: The spatial correlation is derived by comparing the patterns of the array responses with the patterns of ideal spherical harmonics, where '1' means they are perfect, and '0' completely uncorrelated; the spatial aliasing frequency can therefore be observed for each order, as the point where the spatial correlation tends towards 0. \n\nLdiff: The level difference is the mean level difference over all directions (diffuse level difference) between the ideal and simulated components. One can observe that higher permitted amplification limits [Max Gain (dB)] will result in noisier signals; however, this will also result in a wider frequency range of useful spherical harmonic components at each order.");
+    applyDiffEQ->setTooltip("Applies diffuse-field equalisation past the theoretical spatial aliasing frequency of the currently configured microphone array. This may help reduce any 'harshness' perceived at the high frequencies after decoding.");
+    
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
 
