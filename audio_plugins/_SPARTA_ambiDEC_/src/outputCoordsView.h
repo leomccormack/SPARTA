@@ -76,6 +76,8 @@ private:
     ScopedPointer<Slider>* elevSliders;
     int maxNCH, currentNCH;
     bool sliderHasChanged;
+    /* tooltips */
+    SharedResourcePointer<TooltipWindow> tipWindow;
 
     //[/UserVariables]
 

@@ -237,7 +237,19 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_maxFreq->setValue(sldoa_getMaxFreq(hSld));
     CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
     CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
-
+ 
+    /* tooltips */
+    CBmasterOrder->setTooltip("Maximum analysis order (can be lower at different frequencies). Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input");
+    avgSlider->setTooltip("Temporal averaging (in miliseconds)");
+    slider_anaOrder->setTooltip("This sets the analysis order for all frequencies. Use the 2-D slider to change the analysis order for specific frequencies.");
+    CBinputTypePreset->setTooltip("Presets for for various higher-order microphone arrays, which configure the frequency-dependent analysis order.");
+    CB_CHorder->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
+    CB_Norm->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
+    CB_webcam->setTooltip("Optionally, the video from a webcam may be streamed behind the activity-map; allowing for a make-shift acoustic camera. This is particularly effective when using, for example, a 360degree Ricoh Theta camera.");
+    TB_greyScale->setTooltip("Sets the plug-in to display the webcam image in 'grey-scale'.");
+    TB_flipUD->setTooltip("Flips the webcam image up-down, as it may be preferable to mount the camera upside-down on top of the microphone array; in order to bring the origin of the camera closer to that of the array.");
+    TB_flipLR->setTooltip("Flips the webcam image left-right, as some webcams mirror the images taken.");
+    
 	/* Specify screen refresh rate */
     startTimer(100);//80); /*ms (40ms = 25 frames per second) */
 

@@ -225,6 +225,19 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CHOrderingCB->setItemEnabled(CH_FUMA, ambi_drc_getInputPreset(hAmbi)==INPUT_ORDER_1 ? true : false);
     normalisationCB->setItemEnabled(NORM_FUMA, ambi_drc_getInputPreset(hAmbi)==INPUT_ORDER_1 ? true : false);
 
+    /* tooltips */
+    presetCB->setTooltip("The input/output order. Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals. The plug-in derives the frequency-dependent gain factors based on the omni-directional component, which are then applied to all input signals equally. Therefore, the spatial characteristics are preserved; however, your perception of them may change.");
+    CHOrderingCB->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
+    normalisationCB->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
+    s_thresh->setTooltip("Compressor threshold (in dB).");
+    s_ratio->setTooltip("Compression ratio (X:1).");
+    s_knee->setTooltip("Compressor knee (in dB). Hard-knee: when set to 0; soft-knee: when set to more than 0.");
+    s_ingain->setTooltip("Input gain (in dB).");
+    s_outgain->setTooltip("Output/Make-up gain (in dB).");
+    s_attack->setTooltip("Envelope attack time (in miliseconds).");
+    s_release->setTooltip("Envelope release time (in miliseconds).");
+    
+    /* Specify screen refresh rate */
     startTimer(80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */

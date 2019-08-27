@@ -66,6 +66,7 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
         aziSliders[i]->setBounds(-25, 8 + i*sensorEdit_height, 96, 16);
         aziSliders[i]->addListener (this);
+        aziSliders[i]->setTooltip("Azimuth angle (in degrees) of loudspeaker No. " + String(i+1));
 
         /* create and initialise elevation sliders */
         addAndMakeVisible (elevSliders[i] = new Slider ("new slider"));
@@ -75,6 +76,7 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
         elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 96, 16);
         elevSliders[i]->addListener (this);
+        elevSliders[i]->setTooltip("Elevation angle (in degrees) of loudspeaker No. " + String(i+1));
     }
 
     sliderHasChanged = true;

@@ -274,8 +274,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorderPreset->addItem (TRANS("6th order"), INPUT_ORDER_SIXTH);
     CBorderPreset->addItem (TRANS("7th order"), INPUT_ORDER_SEVENTH);
     CBdecoderMethod->addItem(TRANS("Least-Squares (LS)"), DECODING_METHOD_LS);
-    CBdecoderMethod->addItem(TRANS("LS with Diff-EQ"), DECODING_METHOD_LSDIFFEQ);
-    CBdecoderMethod->addItem(TRANS("Spatial Resampling"), DECODING_METHOD_SPR);
+    CBdecoderMethod->addItem(TRANS("LS with Diffuse-EQ"), DECODING_METHOD_LSDIFFEQ);
+    CBdecoderMethod->addItem(TRANS("Spatial Resampling (SPR)"), DECODING_METHOD_SPR);
     CBdecoderMethod->addItem(TRANS("Time-alignment (TA)"), DECODING_METHOD_TA);
     CBdecoderMethod->addItem(TRANS("Magnitude-LS"), DECODING_METHOD_MAGLS);
     CBchFormat->addItem (TRANS("ACN"), CH_ACN);
@@ -309,9 +309,32 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBrpyFlag->setToggleState((bool)ambi_bin_getRPYflag(hAmbi), dontSendNotification);
     CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
     CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
-
     TBphaseWarping->setEnabled(false); // coming soon
 
+    /* tooltips */
+    CBdecoderMethod->setTooltip("Decoding method. 'Least-squares' is the simplest option, but it can give strong colourations at lower-orders. Diffuse-EQ helps with this, as does spatial resampling (SPR). However, the best options, (which also improve spatial performance at lower orders), are Time-alignment (TA) or Magnitude-LS.");
+    TBuseDefaultHRIRs->setTooltip("If this is 'ticked', the plug-in is using the default HRIR set from the Spatial_Audio_Framework.");
+    fileChooser.setTooltip("Optionally, a custom HRIR set may be loaded via the SOFA standard. Note that if the plug-in fails to load the specified .sofa file, it will revert to the default HRIR data.");
+    CBchFormat->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
+    CBnormScheme->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
+    CBorderPreset->setTooltip("Decoding order. Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
+    TBmaxRE->setTooltip("Enables/Disables the max_rE weights applied to the decoding matrix.");
+    TBdiffMatching->setTooltip("Enables/Disables the diffuse correction applied to the decoding matrix. This is the 'C' part of the 'TAC' decoder. However, in this plug-in, it is given as a separate option so it can be applied to any of the available decoding methods.");
+    TBphaseWarping->setTooltip("Not implemented yet.");
+    TBenableRot->setTooltip("Enables/Disables sound-field rotation prior to decoding.");
+    s_yaw->setTooltip("Sets the 'Yaw' rotation angle (in degrees).");
+    s_pitch->setTooltip("Sets the 'Pitch' rotation angle (in degrees).");
+    s_roll->setTooltip("Sets the 'Roll' rotation angle (in degrees).");
+    t_flipYaw->setTooltip("Flips the sign (+/-) of the 'Yaw' rotation angle.");
+    t_flipPitch->setTooltip("Flips the sign (+/-) of the 'Pitch' rotation angle.");
+    t_flipRoll->setTooltip("Flips the sign (+/-) of the 'Roll' rotation angle.");
+    te_oscport->setTooltip("The OSC port at which to receive the rotation angles. To facilitate head-tracking, send the rotation angles (in degrees) to this port ID as a 3-element vector 'ypr[3]', following the yaw-pitch-roll convention.");
+    TBrpyFlag->setTooltip("If enabled, the plug-in will use the roll-pitch-yaw rotation order convention. If disabled, it will use the yaw-pitch-roll convention.");
+    label_N_dirs->setTooltip("Number of HRIR directions in the current HRIR set.");
+    label_HRIR_len->setTooltip("HRIR length in samples.");
+    label_HRIR_fs->setTooltip("Sampling rate used when measuring/modelling the HRIRs.");
+    label_DAW_fs->setTooltip("Current sampling rate, as dictated by the DAW/Host.");
+    
 	/* Specify screen refresh rate */
     startTimer(40);//80); /*ms (40ms = 25 frames per second) */
 

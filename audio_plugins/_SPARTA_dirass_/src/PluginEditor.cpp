@@ -327,6 +327,22 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBchFormat->setItemEnabled(CH_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
     CBnormScheme->setItemEnabled(NORM_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
 
+    /* tooltips */
+    CBinputOrder->setTooltip("Analysis order. Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
+    CBbeamType->setTooltip("Sector beamforming pattern to use.");
+    CBgridOption->setTooltip("Analysis/scanning grid options.");
+    CBupscaleOrder->setTooltip("Sets the upscaling order. Since the plug-in is not bound by the VST channel limit, we can go pretty crazy here.");
+    CBdirassMode->setTooltip("Off: direction-reassignment (DirASS) is disabled, and the plug-in displays a basic steered-response power (SRP) activity-map. \n\nNearest: for each scanning direction, the direction of arrival is estimated within the sector beam-pattern and the energy of the beamformer is quantised to the nearest display pixel. \n\nUpscale: rather than re-assigning the energy to the nearest pixel, the sector-beamformer is encoded into an order higher than that of the input. The upscaled energy is then used for the activity-map.");
+    CB_hfov->setTooltip("Horizontal field-of-view (FOV) options.");
+    CB_aspectRatio->setTooltip("Aspect ratio options.");
+    SLmapAvg->setTooltip("Activity-map averaging coefficient (one-pole filter).");
+    CBchFormat->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
+    CBnormScheme->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
+    CB_webcam->setTooltip("Optionally, the video from a webcam may be streamed behind the activity-map; allowing for a make-shift acoustic camera. This is particularly effective when using, for example, a 360degree Ricoh Theta camera.");
+    TB_greyScale->setTooltip("Sets the plug-in to display the webcam image in 'grey-scale'.");
+    TB_flipUD->setTooltip("Flips the webcam image up-down, as it may be preferable to mount the camera upside-down on top of the microphone array; in order to bring the origin of the camera closer to that of the array.");
+    TB_flipLR->setTooltip("Flips the webcam image left-right, as some webcams mirror the images taken.");
+    
 	/* Specify screen refresh rate */
     startTimer(140);//80); /*ms (40ms = 25 frames per second) */
 
