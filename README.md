@@ -38,7 +38,7 @@ And can be obtained from:
 
 * [modules (JUCE)](https://shop.juce.com/get-juce/download) - For audio plug-in wrappers and the GUIs
 * [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework) - For the internal code used by the plug-ins
-* [VST2_SDK](https://github.com/steinbergmedia/vst3sdk/releases) - The VST2 SDK (found in vstsdk3610_11_06_2018_build_37 or older)
+* [VST2_SDK](https://github.com/steinbergmedia/vst3sdk/releases) - The VST2 SDK (found in [vstsdk3610_11_06_2018_build_37 or older](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip))
 
 You must also install a custom [Intel MKL](https://software.intel.com/en-us/articles/free-ipsxe-tools-and-libraries) .dll/.dylib in a system path folder. More details on this can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework). However, Mac users may elect to remove the "SAF_USE_INTEL_MKL" flag in the global pre-precessor definitions, in order to get around this requirement; albeit, at the expense of a reduction in performance.
 
@@ -54,10 +54,10 @@ To generate project files for other IDEs, you can open and configure the include
 
 ## Authors
 
-* **Leo McCormack** - C/C++ programmer and DSP researcher (contact: leo.mccormack@aalto.fi)
-* **Symeon Delikaris-Manias** - DSP researcher
-* **Archontis Politis** -  DSP researcher
-* **Ville Pulkki** - DSP researcher
+* **Leo McCormack** - C/C++ programmer and DSP design (contact: leo.mccormack@aalto.fi)
+* **Symeon Delikaris-Manias** - DSP design
+* **Archontis Politis** -  DSP design
+* **Ville Pulkki** - DSP design
 
 
 ## License
