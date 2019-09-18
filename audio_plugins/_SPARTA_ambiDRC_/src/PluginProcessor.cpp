@@ -273,7 +273,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
 	/* This getXmlFromBinary() function retrieves XML from the binary blob */
-	ScopedPointer<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+	std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
 
 	if (xmlState != nullptr) {
 		/* make sure that it's actually the correct type of XML object */

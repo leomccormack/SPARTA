@@ -83,12 +83,12 @@ private:
     void timerCallback() override;
 
     /* for openGL speed-ups */
-    ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
+    std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
 
     /* for the powermap overlay */
     Rectangle<int> previewArea;
-    ScopedPointer<overlay> overlayIncluded;
+    std::unique_ptr<overlay> overlayIncluded;
     bool resolutionHasChanged;
 
     /* for webcam support */

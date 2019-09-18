@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -225,13 +225,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     int nPoints;
     float* pX_vector, *pY_values;
     int* pY_values_int;
-    addAndMakeVisible (anaOrder2dSlider = new log2dSlider(360, 63, 100, 20e3, 1, powermap_getMasterOrder(hPm), 0));
+    anaOrder2dSlider.reset (new log2dSlider(360, 63, 100, 20e3, 1, powermap_getMasterOrder(hPm), 0));
+    addAndMakeVisible (anaOrder2dSlider.get());
     anaOrder2dSlider->setAlwaysOnTop(true);
     anaOrder2dSlider->setTopLeftPosition(248, 558);
     powermap_getAnaOrderHandle(hPm, &pX_vector, &pY_values_int, &nPoints);
     anaOrder2dSlider->setDataHandlesInt(pX_vector, pY_values_int, nPoints);
-
-    addAndMakeVisible (pmapEQ2dSlider = new log2dSlider(360, 63, 100, 20e3, 0.0, 2.0, 3));
+ 
+    pmapEQ2dSlider.reset (new log2dSlider(360, 63, 100, 20e3, 0.0, 2.0, 3));
+    addAndMakeVisible (pmapEQ2dSlider.get());
     pmapEQ2dSlider->setAlwaysOnTop(true);
     pmapEQ2dSlider->setTopLeftPosition(248, 454);
     powermap_getPowermapEQHandle(hPm, &pX_vector, &pY_values, &nPoints);
@@ -278,7 +280,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* Overlay */
     previewArea.setBounds(13, 60, 646, 323);
-    addAndMakeVisible (overlayIncluded = new overlay(ownerFilter));
+    overlayIncluded.reset (new overlay(ownerFilter));
+    addAndMakeVisible (overlayIncluded.get());
     overlayIncluded->setAlwaysOnTop(true);
     overlayIncluded->setBounds(previewArea);
 
@@ -327,7 +330,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_flipLR->setTooltip("Flips the webcam image left-right, as some webcams mirror the images taken.");
     CB_hfov->setTooltip("Horizontal field-of-view (FOV) options.");
     CB_aspectRatio->setTooltip("Aspect ratio options.");
-    
+
 	/* Specify screen refresh rate */
     startTimer(120);//80); /*ms (40ms = 25 frames per second) */
 
@@ -1316,7 +1319,7 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 30 672 311" fill="linear: 344 32, 344 120, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 1 670 32" cornerSize="5" fill="linear: 0 32, 672 32, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 1 670 32" cornerSize="5.0" fill="linear: 0 32, 672 32, 0=ff061c20, 1=ff1c3949"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="0 341 672 311" fill="linear: 336 656, 336 568, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>
@@ -1327,103 +1330,103 @@ BEGIN_JUCER_METADATA
     <RECT pos="12 59 648 325" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="23 402 132 30" fill="solid: ffffffff" hasStroke="0" text="Max Order:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="23 466 132 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="23 434 132 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="236 536 424 105" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="243 532 325 30" fill="solid: ffffffff" hasStroke="0" text="Analysis Order Per Frequency Band"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="243 614 37 30" fill="solid: ffffffff" hasStroke="0" text="100"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="398 614 37 30" fill="solid: ffffffff" hasStroke="0" text="1k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="552 614 37 30" fill="solid: ffffffff" hasStroke="0" text="10k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="434 614 93 30" fill="solid: ffffffff" hasStroke="0" text="Frequency (Hz)"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="595 614 37 30" fill="solid: ffffffff" hasStroke="0" text="20k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="643 606 13 30" fill="solid: ffffffff" hasStroke="0" text="1"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="236 432 424 105" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="243 428 133 30" fill="solid: ffffffff" hasStroke="0" text="Equalisation"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="243 510 37 30" fill="solid: ffffffff" hasStroke="0" text="100"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="398 510 37 30" fill="solid: ffffffff" hasStroke="0" text="1k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="552 510 37 30" fill="solid: ffffffff" hasStroke="0" text="10k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="434 510 93 30" fill="solid: ffffffff" hasStroke="0" text="Frequency (Hz)"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="595 510 37 30" fill="solid: ffffffff" hasStroke="0" text="20k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="643 502 13 30" fill="solid: ffffffff" hasStroke="0" text="0"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="23 571 132 30" fill="solid: ffffffff" hasStroke="0" text="Map Avg:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="23 507 132 30" fill="solid: ffffffff" hasStroke="0" text="Map Mode:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="23 603 132 30" fill="solid: ffffffff" hasStroke="0" text="Cov. Avg:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="643 443 13 30" fill="solid: ffffffff" hasStroke="0" text="2"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="643 473 13 30" fill="solid: ffffffff" hasStroke="0" text="1"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="23 540 153 30" fill="solid: ffffffff" hasStroke="0" text="Number of Sources:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="236 398 424 35" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="243 400 132 30" fill="solid: ffffffff" hasStroke="0" text="Horizontal FOV:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="456 400 132 30" fill="solid: ffffffff" hasStroke="0" text="Aspect Ratio:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 1 112 32" fill="solid: fffffc08" hasStroke="0" text="PowerMap"
-          fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="624 32 29 30" fill="solid: ffffffff" hasStroke="0" text="GS:"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="576 32 37 30" fill="solid: ffffffff" hasStroke="0" text="U|D:"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="530 32 37 30" fill="solid: ffffffff" hasStroke="0" text="L|R:"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="283 33 125 30" fill="solid: ffffffff" hasStroke="0" text="Display Window"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 2 652" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
@@ -1455,26 +1458,26 @@ BEGIN_JUCER_METADATA
   <SLIDER name="new slider" id="50ea77f60aadeeca" memberName="s_anaOrder"
           virtualName="" explicitFocusOrder="0" pos="608 552 40 80" bkgcol="ff5c5d5e"
           trackcol="ff315b6d" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="0" max="1" int="1" style="LinearVertical" textBoxPos="NoTextBox"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
+          min="0.0" max="1.0" int="1.0" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="48058a6b0227b38b" memberName="s_pmapEQ"
           virtualName="" explicitFocusOrder="0" pos="608 448 40 80" bkgcol="ff5c5d5e"
           trackcol="ff315b6d" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="0" max="2" int="1e-2" style="LinearVertical" textBoxPos="NoTextBox"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
+          min="0.0" max="2.0" int="0.01" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="9f910fb3b8d0dcf3" memberName="s_covAvg"
           virtualName="" explicitFocusOrder="0" pos="106 608 112 24" bkgcol="ff5c5d5e"
           trackcol="ff315b6d" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="0" max="1" int="1e-2" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1"
+          min="0.0" max="1.0" int="0.01" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="2778ed8914910289" memberName="s_Nsources"
           virtualName="" explicitFocusOrder="0" pos="168 546 50 20" textboxtext="ffffffff"
-          textboxbkgd="ffffff" min="1" max="8" int="1" style="LinearHorizontal"
+          textboxbkgd="ffffff" min="1.0" max="8.0" int="1.0" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="50"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <COMBOBOX name="" id="e69fd08ce7960e5e" memberName="CB_hfov" virtualName=""
             explicitFocusOrder="0" pos="357 406 96 20" editable="0" layout="33"
             items="" textWhenNonSelected="Default" textWhenNoItems=""/>
@@ -1484,8 +1487,8 @@ BEGIN_JUCER_METADATA
   <SLIDER name="new slider" id="d9acd6687ea4c8b5" memberName="s_pmapAvg"
           virtualName="" explicitFocusOrder="0" pos="106 576 112 24" bkgcol="ff5c5d5e"
           trackcol="ff315b6d" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="0" max="1" int="1e-2" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1"
+          min="0.0" max="1.0" int="0.01" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="a465903000494955" memberName="CBmasterOrder"
             virtualName="" explicitFocusOrder="0" pos="106 407 112 20" editable="0"

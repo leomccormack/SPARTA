@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -126,7 +126,7 @@ void overlay::paint (Graphics& g)
             finishedRefresh = true;
             return;
         }
-        
+
         Colour col;
         Image myImage (Image::PixelFormat::ARGB, pmapWidth, pmapHeight, false);
         Image myImageScaled;
@@ -236,3 +236,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

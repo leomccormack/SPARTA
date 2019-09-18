@@ -73,15 +73,15 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
     void* hAmbi;
-    ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
+    std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
 
     /* source coordinates viewport */
-    ScopedPointer<Viewport> sourceCoordsVP;
+    std::unique_ptr<Viewport> sourceCoordsVP;
     inputCoordsView* sourceCoordsView_handle;
 
     /* panning window */
-    ScopedPointer<pannerView> panWindow;
+    std::unique_ptr<pannerView> panWindow;
     bool refreshPanViewWindow;
 
     /* warnings */

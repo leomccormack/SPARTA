@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.0.2
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2017 - ROLI Ltd.
 
   ==============================================================================
 */
@@ -45,21 +45,21 @@ const Colour mapColourTable[114] = {
     Colour::fromRGB(21, 176, 204), Colour::fromRGB(21, 180, 204), Colour::fromRGB(20, 183, 204), Colour::fromRGB(19, 187, 204),
     Colour::fromRGB(18, 191, 204), Colour::fromRGB(17, 194, 204), Colour::fromRGB(17, 198, 204), Colour::fromRGB(16, 202, 213),
     Colour::fromRGB(15, 205, 204), Colour::fromRGB(14, 209, 204), Colour::fromRGB(13, 213, 204), Colour::fromRGB(13, 217, 204),
-    
+
     /* Inverse-HSV colour gradient from 0DD9CC->93E151 (skipping first) */
     Colour::fromRGB(16, 217, 189), Colour::fromRGB(19, 217, 176), Colour::fromRGB(23, 218, 162), Colour::fromRGB(26, 218, 150),
     Colour::fromRGB(30, 218, 137), Colour::fromRGB(33, 219, 125), Colour::fromRGB(37, 219, 114), Colour::fromRGB(41, 220, 103),
     Colour::fromRGB(44, 220, 93), Colour::fromRGB(48, 221, 83), Colour::fromRGB(51, 221, 73), Colour::fromRGB(55, 222, 64),
     Colour::fromRGB(61, 222, 59), Colour::fromRGB(77, 222, 62), Colour::fromRGB(106, 223, 69), Colour::fromRGB(120, 224, 73),
     Colour::fromRGB(133, 224, 77), Colour::fromRGB(147, 225, 81),
-    
+
     /* RGB colour gradient from 93E151->FEB506 (skipping first)  */
     Colour::fromRGB(152, 222, 77), Colour::fromRGB(158, 220, 73), Colour::fromRGB(163, 218, 69), Colour::fromRGB(175, 213, 65),
     Colour::fromRGB(180, 211, 57), Colour::fromRGB(186, 208, 53), Colour::fromRGB(192, 206, 49), Colour::fromRGB(197, 204, 45),
     Colour::fromRGB(203, 201, 41), Colour::fromRGB(208, 199, 37), Colour::fromRGB(214, 197, 33), Colour::fromRGB(220, 194, 29),
     Colour::fromRGB(225, 192, 25), Colour::fromRGB(231, 190, 21), Colour::fromRGB(237, 187, 17), Colour::fromRGB(242, 185, 13),
     Colour::fromRGB(248, 183, 9), Colour::fromRGB(254, 181, 6),
-    
+
     /* HSV colour gradient from FEB506->FEFF05 (skipping first)  */
     Colour::fromRGB(254, 184, 5), Colour::fromRGB(254, 188, 5), Colour::fromRGB(254, 192, 5), Colour::fromRGB(254, 196, 5),
     Colour::fromRGB(254, 200, 5), Colour::fromRGB(254, 204, 5), Colour::fromRGB(254, 208, 5), Colour::fromRGB(254, 212, 5),
@@ -114,7 +114,7 @@ void overlay::paint (Graphics& g)
 
     if ( (dirs_deg!=NULL) && (pmap!=NULL) && (finishedRefresh) ){ /* in order to stop it from tripping over itself */
         finishedRefresh = false;
-        
+
         Rectangle<int> r(getLocalBounds());
         localBounds = r;
 
@@ -179,7 +179,7 @@ void overlay::paint (Graphics& g)
                 g.drawText(String((int)(vfov / 2 - i * (int)vfov / numGridLinesY)) + "\xc2\xb0",
                     windowWidth / 2.0f, (float)i*windowHeight / (float)numGridLinesY - 20, 40, 20, Justification::centred, true);
         }
- 
+
         finishedRefresh = true;
     }
 
@@ -202,7 +202,7 @@ void overlay::refreshPowerMap(float* _dirs_deg, float* _pmap, int _nDirs, int _p
 {
     if(finishedRefresh){
         dirs_deg = _dirs_deg;
-        pmap = _pmap; 
+        pmap = _pmap;
         nDirs = _nDirs;
         pmapWidth = _pmapWidth;
         hfov = _hfov;
@@ -237,3 +237,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

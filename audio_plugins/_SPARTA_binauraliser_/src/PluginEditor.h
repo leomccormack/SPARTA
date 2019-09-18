@@ -77,11 +77,11 @@ private:
     PluginProcessor* hVst;
     void* hBin;
     void timerCallback() override;
-    ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
+    std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
 
     /* source coordinates viewport */
-    ScopedPointer<Viewport> sourceCoordsVP;
+    std::unique_ptr<Viewport> sourceCoordsVP;
     inputCoordsView* sourceCoordsView_handle;
     FilenameComponent fileChooser;
 
@@ -94,7 +94,7 @@ private:
     }
 
     /* panning window */
-    ScopedPointer<pannerView> panWindow;
+    std::unique_ptr<pannerView> panWindow;
     bool refreshPanViewWindow;
 
     /* warnings */

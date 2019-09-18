@@ -71,9 +71,9 @@ private:
     PluginProcessor* hVst;
     void* hAmbi;
     void timerCallback() override;
-    ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
+    std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
-    ScopedPointer<TFview> TFviewIncluded;
+    std::unique_ptr<TFview> TFviewIncluded;
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;

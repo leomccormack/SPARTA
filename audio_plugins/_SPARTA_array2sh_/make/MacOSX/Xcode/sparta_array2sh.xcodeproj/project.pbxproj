@@ -1446,8 +1446,8 @@
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.5.2",
-					"JUCE_APP_VERSION_HEX=0x10502",
+					"JUCE_APP_VERSION=1.5.3",
+					"JUCE_APP_VERSION_HEX=0x10503",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1508,8 +1508,8 @@
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.5.2",
-					"JUCE_APP_VERSION_HEX=0x10502",
+					"JUCE_APP_VERSION=1.5.3",
+					"JUCE_APP_VERSION_HEX=0x10503",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1570,8 +1570,8 @@
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.5.2",
-					"JUCE_APP_VERSION_HEX=0x10502",
+					"JUCE_APP_VERSION=1.5.3",
+					"JUCE_APP_VERSION_HEX=0x10503",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1601,7 +1601,6 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CPLUSPLUSFLAGS = "-pedantic -W  -Wall  -Wextra";
-				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_array2shd";
 				SKIP_INSTALL = YES;
@@ -1627,8 +1626,8 @@
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.5.2",
-					"JUCE_APP_VERSION_HEX=0x10502",
+					"JUCE_APP_VERSION=1.5.3",
+					"JUCE_APP_VERSION_HEX=0x10503",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1660,7 +1659,6 @@
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CPLUSPLUSFLAGS = "-pedantic -W  -Wall  -Wextra";
-				OTHER_LDFLAGS = "-L/usr/local/lib -lsaf_mkl_custom";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_array2sh";
 				SKIP_INSTALL = YES;
@@ -1936,7 +1934,7 @@
 		030CE0186C510D1FDA6ED6A6 = {
 			isa = PBXProject;
 			buildConfigurationList = D66792391EEF08ACA447E192;
-			attributes = { LastUpgradeCheck = 0930; ORGANIZATIONNAME = "Aalto"; TargetAttributes = { 637B0DF4ED253147FAB02C55 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; };52B20B8A73E772FFE4672ADB = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; };1913975A7EF2E7A8FAA91C38 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
+			attributes = { LastUpgradeCheck = 1100; ORGANIZATIONNAME = "Aalto"; TargetAttributes = { 637B0DF4ED253147FAB02C55 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; };52B20B8A73E772FFE4672ADB = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; };1913975A7EF2E7A8FAA91C38 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 0;
 			mainGroup = D2E828249AD63D01CF4A6A14;

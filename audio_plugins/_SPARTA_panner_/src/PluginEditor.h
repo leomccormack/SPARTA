@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -76,24 +76,24 @@ private:
     PluginProcessor* hVst;
     void* hPan;
     void timerCallback() override;
-    ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
+    std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
 
     /* source coordinates viewport */
-    ScopedPointer<Viewport> sourceCoordsVP;
+    std::unique_ptr<Viewport> sourceCoordsVP;
     inputCoordsView* sourceCoordsView_handle;
 
     /* loudspeaker coordinates viewport */
-    ScopedPointer<Viewport> loudspeakerCoordsVP;
+    std::unique_ptr<Viewport> loudspeakerCoordsVP;
     outputCoordsView* loudspeakerCoordsView_handle;
 
     /* panning window */
-    ScopedPointer<pannerView> panWindow;
+    std::unique_ptr<pannerView> panWindow;
     bool refreshPanViewWindow;
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
-    
+
     /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
 

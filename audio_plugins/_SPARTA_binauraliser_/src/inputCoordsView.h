@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -54,10 +54,10 @@ public:
 			resized();
 			sliderHasChanged = true;
 		}
-    } 
+    }
     bool getHasASliderChanged(){ return sliderHasChanged; }
     void setHasASliderChange(bool newState){ sliderHasChanged = newState; }
-    
+
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -71,8 +71,8 @@ private:
     PluginProcessor* hVst;
     void* hBin;
     void refreshCoords();
-    ScopedPointer<Slider>* aziSliders;
-    ScopedPointer<Slider>* elevSliders;
+    std::unique_ptr<Slider>* aziSliders;
+    std::unique_ptr<Slider>* elevSliders;
     int maxNCH, currentNCH;
     bool sliderHasChanged;
 

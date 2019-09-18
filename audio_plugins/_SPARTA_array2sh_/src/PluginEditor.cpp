@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -255,15 +255,18 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     cSlider->setSliderSnapsToMousePosition(false);
 
     /* create EQ window and analysis windows */
-    addAndMakeVisible (eqviewIncluded = new eqview(556, 209, 30.0f, 20e3f, -30.0f, 60.0f, 48e3f )); /* TODO: switch to the more general "anaview"  */
+    eqviewIncluded.reset (new eqview(556, 209, 30.0f, 20e3f, -30.0f, 60.0f, 48e3f )); /* TODO: switch to the more general "anaview"  */
+    addAndMakeVisible (eqviewIncluded.get());
     eqviewIncluded->setAlwaysOnTop(true);
     eqviewIncluded->setTopLeftPosition(228, 56);
     eqviewIncluded->setVisible(true);
-    addAndMakeVisible (cohviewIncluded = new anaview(556, 209, 30.0f, 20e3f, 0.0f, 1.0f, TRANS("Spatial Corr. (T:I)"), 1, 48e3f ));
+    cohviewIncluded.reset (new anaview(556, 209, 30.0f, 20e3f, 0.0f, 1.0f, TRANS("Spatial Corr. (T:I)"), 1, 48e3f ));
+    addAndMakeVisible (cohviewIncluded.get());
     cohviewIncluded->setAlwaysOnTop(true);
     cohviewIncluded->setTopLeftPosition(228, 56);
     cohviewIncluded->setVisible(false);
-    addAndMakeVisible (ldiffviewIncluded = new anaview(556, 209, 30.0f, 20e3f, -30, 10, TRANS("Level Diff. (dB)"), 10.0f, 48e3f ));
+    ldiffviewIncluded.reset (new anaview(556, 209, 30.0f, 20e3f, -30, 10, TRANS("Level Diff. (dB)"), 10.0f, 48e3f ));
+    addAndMakeVisible (ldiffviewIncluded.get());
     ldiffviewIncluded->setAlwaysOnTop(true);
     ldiffviewIncluded->setTopLeftPosition(228, 56);
     ldiffviewIncluded->setVisible(false);
@@ -319,7 +322,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
         CBencodingOrder->setItemEnabled(i, (i+1)*(i+1) <= array2sh_getNumSensors(hA2sh) ? true : false);
 
     /* sensor coord table */
-    addAndMakeVisible (sensorCoordsVP = new Viewport ("new viewport"));
+    //addAndMakeVisible (sensorCoordsVP = new Viewport ("new viewport"));
+    sensorCoordsVP.reset(new Viewport ("new viewport"));
+    addAndMakeVisible (sensorCoordsVP.get());
     sensorCoordsView_handle = new sensorCoordsView(ownerFilter, MAX_NUM_CHANNELS, array2sh_getNumSensors(hA2sh), showDegreesInstead);
     sensorCoordsVP->setViewedComponent (sensorCoordsView_handle);
     sensorCoordsVP->setScrollBarsShown (true, false);
@@ -405,7 +410,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     textButton->setTooltip("Anlyses the performance of the currently configured microphone array, based on established objective metrics. The plug-in first simulates the microphone array and applies the current encoding matrix to it, subsequently comparing the resulting patterns with ideal spherical harmonics.");
     dispWindow->setTooltip("Switches between the different display options. \n\nFilters: order-dependent equalisation curves, which are applied to eliminate the effect of the sphere. \n\nCorr: The spatial correlation is derived by comparing the patterns of the array responses with the patterns of ideal spherical harmonics, where '1' means they are perfect, and '0' completely uncorrelated; the spatial aliasing frequency can therefore be observed for each order, as the point where the spatial correlation tends towards 0. \n\nLdiff: The level difference is the mean level difference over all directions (diffuse level difference) between the ideal and simulated components. One can observe that higher permitted amplification limits [Max Gain (dB)] will result in noisier signals; however, this will also result in a wider frequency range of useful spherical harmonic components at each order.");
     applyDiffEQ->setTooltip("Applies diffuse-field equalisation past the theoretical spatial aliasing frequency of the currently configured microphone array. This may help reduce any 'harshness' perceived at the high frequencies after decoding.");
-    
+
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
 
@@ -1441,7 +1446,7 @@ BEGIN_JUCER_METADATA
           hasStroke="0"/>
     <RECT pos="0 30 800 210" fill="linear: 8 32, 8 128, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 2 798 31" cornerSize="5" fill="linear: 0 32, 792 24, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 2 798 31" cornerSize="5.0" fill="linear: 0 32, 792 24, 0=ff061c20, 1=ff1c3949"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="12 56 204 32" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1462,98 +1467,98 @@ BEGIN_JUCER_METADATA
     <RECT pos="12 87 204 106" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="20 55 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="20 91 180 30" fill="solid: ffffffff" hasStroke="0" text="Number of Sensors: "
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="20 123 180 30" fill="solid: ffffffff" hasStroke="0" text="Array radius (mm):"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="20 155 180 30" fill="solid: ffffffff" hasStroke="0" text="Baffle radius (mm):"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 192 204 244" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="240 337 172 30" fill="solid: ffffffff" hasStroke="0" text="Speed of Sound (m/s):"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="240 369 172 30" fill="solid: ffffffff" hasStroke="0" text="Array Type:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="240 401 172 30" fill="solid: ffffffff" hasStroke="0" text="Baffle-Directivity:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="520 268 172 30" fill="solid: ffffffff" hasStroke="0" text="Filter Approach:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="520 301 172 30" fill="solid: ffffffff" hasStroke="0" text="Max Gain (dB):"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="520 369 172 30" fill="solid: ffffffff" hasStroke="0" text="Channel Order:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="520 401 172 30" fill="solid: ffffffff" hasStroke="0" text="Normalisation:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="520 334 172 30" fill="solid: ffffffff" hasStroke="0" text="Post Gain (dB):"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="75 193 101 30" fill="solid: ffffffff" hasStroke="0" text="Azi   #   Elev"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="24 224 184 200" fill="solid: 39a52a" hasStroke="1" stroke="1, mitered, butt"
           strokeColour="solid: 29b6b5b5"/>
     <TEXT pos="179 193 24 23" fill="solid: ffffffff" hasStroke="0" text="&#176;"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 30 88 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="440 30 149 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Settings"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="240 268 172 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Order:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 1 112 32" fill="solid: ffe9ff00" hasStroke="0" text="Array2SH"
-          fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="240 305 172 30" fill="solid: ffffffff" hasStroke="0" text="Diffuse-EQ Past Aliasing:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="328 65 392 31" fill="solid: ffffffff" hasStroke="0" text="Press the &quot;Analyse&quot; button"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="0"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
     <TEXT pos="291 88 477 23" fill="solid: ffffffff" hasStroke="0" text="Corr: The spatial correlation is derived by comparing the patterns of the array responses with"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="0"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
     <TEXT pos="291 104 477 23" fill="solid: ffffffff" hasStroke="0" text="the patterns of ideal spherical harmonics, where '1' means they are perfect, and '0' completely "
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="0"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
     <TEXT pos="291 120 477 23" fill="solid: ffffffff" hasStroke="0" text="uncorrelated; the spatial aliasing frequency can therefore be observed for each order, as the "
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="0"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
     <TEXT pos="291 160 477 23" fill="solid: ffffffff" hasStroke="0" text="Ldiff: The level difference is the mean level difference over all directions (diffuse level differe-"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="0"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
     <TEXT pos="291 192 477 23" fill="solid: ffffffff" hasStroke="0" text="amplification limits [Max Gain (dB)] will result in noisier signals; however, this will also result in "
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="0"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
     <TEXT pos="291 176 477 23" fill="solid: ffffffff" hasStroke="0" text="nce) between the ideal and simulated components. One can observe that higher permitted "
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="0"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
     <TEXT pos="291 136 477 23" fill="solid: ffffffff" hasStroke="0" text="point where the spatial correlation tends towards 0."
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="0"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
     <TEXT pos="291 208 477 23" fill="solid: ffffffff" hasStroke="0" text="a wider frequency range of useful spherical harmonic components at each order."
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="0"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
     <TEXT pos="673 33 119 25" fill="solid: ffffffff" hasStroke="0" text="Display:"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 802 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
@@ -1574,24 +1579,24 @@ BEGIN_JUCER_METADATA
             layout="33" items="Spherical&#10;Cylindrical" textWhenNonSelected="Spherical"
             textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="93dd93c125dcb3b3" memberName="QSlider"
-          virtualName="" explicitFocusOrder="0" pos="156 97 52 20" min="4"
-          max="6.4e1" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="156 97 52 20" min="4.0"
+          max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="f6fe97a46cc051e2" memberName="rSlider"
-          virtualName="" explicitFocusOrder="0" pos="156 129 52 20" min="1"
-          max="2e2" int="1e-2" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="156 129 52 20" min="1.0"
+          max="200.0" int="0.01" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="41d575604e9dcd3a" memberName="RSlider"
           virtualName="" explicitFocusOrder="0" pos="156 161 52 20" trackcol="ff181f22"
-          rotaryslideroutline="ff263238" min="1" max="2e2" int="1e-2" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          rotaryslideroutline="ff263238" min="1.0" max="200.0" int="0.01"
+          style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
+          textBoxWidth="45" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="c3b6d9fc71650ee4" memberName="cSlider"
-          virtualName="" explicitFocusOrder="0" pos="408 346 80 16" min="2e2"
-          max="2e3" int="1e-2" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="408 346 80 16" min="200.0"
+          max="2000.0" int="0.01" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="ea26910fd5e03b81" memberName="weightTypeCB"
             virtualName="" explicitFocusOrder="0" pos="368 410 120 16" editable="0"
@@ -1601,9 +1606,9 @@ BEGIN_JUCER_METADATA
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="9f4f4ac547d19161" memberName="regAmountSlider"
           virtualName="" explicitFocusOrder="0" pos="640 308 128 16" bkgcol="ff5c5d5e"
-          trackcol="ff315b6d" min="0" max="8e1" int="1e-2" style="LinearHorizontal"
+          trackcol="ff315b6d" min="0.0" max="80.0" int="0.01" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <COMBOBOX name="new combo box" id="44b90530e58253e" memberName="CHOrderingCB"
             virtualName="" explicitFocusOrder="0" pos="640 377 128 16" editable="0"
             layout="33" items="&#10;" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
@@ -1612,9 +1617,9 @@ BEGIN_JUCER_METADATA
             layout="33" items="&#10;" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="ee4c42494881e7dc" memberName="gainSlider"
           virtualName="" explicitFocusOrder="0" pos="640 341 128 16" bkgcol="ff5c5d5e"
-          trackcol="ff315b6d" min="-6e1" max="6e1" int="1e-2" style="LinearHorizontal"
+          trackcol="ff315b6d" min="-60.0" max="60.0" int="0.01" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="3fdbf3711d00f4db" memberName="degRadTB"
                 virtualName="" explicitFocusOrder="0" pos="186 198 23 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>

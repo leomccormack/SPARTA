@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -87,7 +87,7 @@ private:
     float** faintCurves;
     int numCurves;
     int numFreqPoints;
- 
+
     //[/UserVariables]
 
     //==============================================================================
@@ -99,3 +99,4 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

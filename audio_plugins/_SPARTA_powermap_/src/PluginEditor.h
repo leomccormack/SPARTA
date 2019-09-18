@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -81,17 +81,17 @@ private:
     void timerCallback() override;
 
     /* for openGL speed-ups */
-    ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
+    std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
 
     /* for the powermap overlay */
     Rectangle<int> previewArea;
-    ScopedPointer<overlay> overlayIncluded;
+    std::unique_ptr<overlay> overlayIncluded;
     bool resolutionHasChanged;
 
     /* for freq-dependent analysis order + EQ */
-    ScopedPointer<log2dSlider> anaOrder2dSlider;
-    ScopedPointer<log2dSlider> pmapEQ2dSlider;
+    std::unique_ptr<log2dSlider> anaOrder2dSlider;
+    std::unique_ptr<log2dSlider> pmapEQ2dSlider;
 
     /* for webcam support */
     void updateCameraList();
@@ -105,7 +105,7 @@ private:
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
-    
+
     /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
 

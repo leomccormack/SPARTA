@@ -46,7 +46,7 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     Rectangle<int> localBounds;
-    ScopedPointer<eqview_window> eqview_windowIncluded;
+    std::unique_ptr<eqview_window> eqview_windowIncluded;
 
     void setSolidCurves_Handle(float* _freqVector, float** _solidCurves, int _numFreqPoints, int _numCurves){
         eqview_windowIncluded->setSolidCurves_Handle(_freqVector, _solidCurves, _numFreqPoints, _numCurves);

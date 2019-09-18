@@ -234,7 +234,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     int nPoints;
     float* pX_vector;
     int* pY_values_int;
-    addAndMakeVisible (decOrder2dSlider = new log2dSlider(360, 63, 100, 20e3, 1, ambi_dec_getMasterDecOrder(hAmbi), 0));
+    decOrder2dSlider.reset (new log2dSlider(360, 63, 100, 20e3, 1, ambi_dec_getMasterDecOrder(hAmbi), 0));
+    addAndMakeVisible (decOrder2dSlider.get());
     decOrder2dSlider->setAlwaysOnTop(true);
     decOrder2dSlider->setTopLeftPosition(25, 183);
     ambi_dec_getDecOrderHandle(hAmbi, &pX_vector, &pY_values_int, &nPoints);
@@ -349,7 +350,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 #endif
 
     /* source coordinate viewport */
-    addAndMakeVisible (outputCoordsVP = new Viewport ("new viewport"));
+    outputCoordsVP.reset (new Viewport ("new viewport"));
+    addAndMakeVisible (outputCoordsVP.get());
     outputCoordsView_handle = new outputCoordsView(ownerFilter, MAX_NUM_CHANNELS, ambi_dec_getNumLoudspeakers(hAmbi));
     outputCoordsVP->setViewedComponent (outputCoordsView_handle);
     outputCoordsVP->setScrollBarsShown (true, false);

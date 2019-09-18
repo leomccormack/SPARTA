@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.1.2
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2017 - ROLI Ltd.
 
   ==============================================================================
 */
@@ -35,11 +35,14 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (dummySlider = new Slider ("new slider"));
+    dummySlider.reset (new Slider ("new slider"));
+    addAndMakeVisible (dummySlider.get());
     dummySlider->setRange (0.01, 0.3, 0.001);
     dummySlider->setSliderStyle (Slider::LinearHorizontal);
     dummySlider->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
     dummySlider->addListener (this);
+
+    dummySlider->setBounds (-176, 144, 96, 16);
 
 
     //[UserPreSize]
@@ -54,12 +57,13 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
     hPan = hVst->getFXHandle();
     maxNCH = _maxNCH ;
     currentNCH =_currentNCH;
-    aziSliders =  new ScopedPointer<Slider>[maxNCH];
-    elevSliders =  new ScopedPointer<Slider>[maxNCH];
+    aziSliders =  new std::unique_ptr<Slider>[maxNCH];
+    elevSliders =  new std::unique_ptr<Slider>[maxNCH];
 
     for( int i=0; i<maxNCH; i++){
         /* create and initialise azimuth sliders */
-        addAndMakeVisible (aziSliders[i] = new Slider ("new slider"));
+        aziSliders[i].reset (new Slider ("new slider"));
+        addAndMakeVisible (aziSliders[i].get());
         aziSliders[i]->setRange (-360.0, 360.0, 0.001);
         aziSliders[i]->setValue(panner_getLoudspeakerAzi_deg(hPan, i));
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
@@ -68,7 +72,8 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
         aziSliders[i]->addListener (this);
 
         /* create and initialise elevation sliders */
-        addAndMakeVisible (elevSliders[i] = new Slider ("new slider"));
+        elevSliders[i].reset (new Slider ("new slider"));
+        addAndMakeVisible (elevSliders[i].get());
         elevSliders[i]->setRange (-180.0, 180.0, 0.001);
         elevSliders[i]->setValue(panner_getLoudspeakerElev_deg(hPan, i));
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
@@ -79,7 +84,7 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
 
     sliderHasChanged = true;
 
-	refreshCoords(); 
+	refreshCoords();
 	resized();
 
     //[/Constructor]
@@ -167,7 +172,6 @@ void outputCoordsView::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    dummySlider->setBounds (-176, 144, 96, 16);
     //[UserResized] Add your own custom resize handling here..
     setSize (sensorEdit_width, sensorEdit_height*currentNCH);
     repaint();
@@ -178,11 +182,11 @@ void outputCoordsView::sliderValueChanged (Slider* sliderThatWasMoved)
 {
     //[UsersliderValueChanged_Pre]
     for(int i=0; i<maxNCH; i++){
-        if (sliderThatWasMoved == aziSliders[i]) {
+        if (sliderThatWasMoved == aziSliders[i].get()) {
             panner_setLoudspeakerAzi_deg(hPan, i, (float)aziSliders[i]->getValue());
             break;
         }
-        if (sliderThatWasMoved == elevSliders[i]) {
+        if (sliderThatWasMoved == elevSliders[i].get()) {
             panner_setLoudspeakerElev_deg(hPan, i, (float)elevSliders[i]->getValue());
             break;
         }
@@ -190,7 +194,7 @@ void outputCoordsView::sliderValueChanged (Slider* sliderThatWasMoved)
 
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == dummySlider)
+    if (sliderThatWasMoved == dummySlider.get())
     {
         //[UserSliderCode_dummySlider] -- add your slider handling code here..
         //[/UserSliderCode_dummySlider]
@@ -239,10 +243,10 @@ BEGIN_JUCER_METADATA
           hasStroke="0"/>
   </BACKGROUND>
   <SLIDER name="new slider" id="4689db34530ab7c7" memberName="dummySlider"
-          virtualName="" explicitFocusOrder="0" pos="-176 144 96 16" min="0.010000000000000000208"
-          max="0.2999999999999999889" int="0.0010000000000000000208" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="70"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="-176 144 96 16" min="0.01"
+          max="0.3" int="0.001" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="70" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
@@ -252,3 +256,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

@@ -46,7 +46,7 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     Rectangle<int> localBounds;
-    ScopedPointer<anaview_window> anaview_windowIncluded;
+    std::unique_ptr<anaview_window> anaview_windowIncluded;
 
     void setSolidCurves_Handle(float* _freqVector, float* _solidCurves, int _numFreqPoints, int _numCurves){
         anaview_windowIncluded->setSolidCurves_Handle(_freqVector, _solidCurves, _numFreqPoints, _numCurves);

@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ private:
     float* dirs_deg, *pmap;
     int nDirs, pmapWidth, hfov;
     float aspectRatio;
-    Rectangle<int> localBounds; 
+    Rectangle<int> localBounds;
     bool finishedRefresh;
     bool enableTransparency;
     //[/UserVariables]
@@ -83,3 +83,4 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

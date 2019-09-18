@@ -78,14 +78,14 @@ private:
     PluginProcessor* hVst;
     void* hAmbi;
     void timerCallback() override;
-    ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
+    std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
 
     /* freq-dependent decoding order */
-    ScopedPointer<log2dSlider> decOrder2dSlider;
+    std::unique_ptr<log2dSlider> decOrder2dSlider;
 
     /* source coordinates viewport */
-    ScopedPointer<Viewport> outputCoordsVP;
+    std::unique_ptr<Viewport> outputCoordsVP;
     outputCoordsView* outputCoordsView_handle;
     FilenameComponent fileChooser;
 
