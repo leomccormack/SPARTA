@@ -182,7 +182,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     openGLContext.attachTo(*this);
 
     /* Init TF view */
-    addAndMakeVisible (TFviewIncluded = new TFview(ownerFilter, 430, 220, 100.0f, 20e3f, -60.0f, 0.0f));
+    TFviewIncluded.reset (new TFview(ownerFilter, 430, 220, 100.0f, 20e3f, -60.0f, 0.0f));
+    addAndMakeVisible (TFviewIncluded.get());
     TFviewIncluded->setAlwaysOnTop(true);
     TFviewIncluded->setTopLeftPosition(46, 44);
     TFviewIncluded->setVisible(true);

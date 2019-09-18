@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -46,8 +46,8 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    
-    void refreshPanView(); 
+
+    void refreshPanView();
     void setShowInputs(bool state){ showInputs = state; }
     void setShowOutputs(bool state){ showOutputs = state; }
     bool getSourceIconIsClicked(){ return sourceIconIsClicked; }
@@ -87,3 +87,4 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

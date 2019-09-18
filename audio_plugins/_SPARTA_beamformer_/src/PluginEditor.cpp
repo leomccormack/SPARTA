@@ -124,7 +124,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormalisation->addItem (TRANS("FuMa"), NORM_FUMA);
 
     /* source coordinates viewport */
-    addAndMakeVisible (sourceCoordsVP = new Viewport ("new viewport"));
+    sourceCoordsVP.reset (new Viewport ("new viewport"));
+    addAndMakeVisible (sourceCoordsVP.get());
     sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_CHANNELS, beamformer_getNumBeams(hBeam));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
@@ -142,7 +143,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormalisation->setItemEnabled(NORM_FUMA, beamformer_getBeamOrder(hBeam)==BEAM_ORDER_FIRST ? true : false);
 
     /* create panning window */
-    addAndMakeVisible (panWindow = new pannerView(ownerFilter, 480, 240));
+    panWindow.reset (new pannerView(ownerFilter, 480, 240));
+    addAndMakeVisible (panWindow.get());
     panWindow->setBounds (12, 58, 480, 240);
     refreshPanViewWindow = true;
     

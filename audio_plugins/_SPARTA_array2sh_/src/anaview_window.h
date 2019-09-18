@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -48,8 +48,7 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     Rectangle<int> localBounds;
-
-
+ 
     void setSolidCurves_Handle(float* _freqVector, float* _solidCurves, int _numFreqPoints, int _numCurves)
     {
         freqVector = _freqVector;
@@ -78,7 +77,7 @@ private:
     float* solidCurves;
     int numCurves;
     int numFreqPoints;
- 
+
     //[/UserVariables]
 
     //==============================================================================
@@ -90,3 +89,4 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

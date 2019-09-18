@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -365,7 +365,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 #endif
 
     /* source coordinates viewport */
-    addAndMakeVisible (sourceCoordsVP = new Viewport ("new viewport"));
+    sourceCoordsVP.reset (new Viewport ("new viewport"));
+    addAndMakeVisible (sourceCoordsVP.get());
     sourceCoordsView_handle = new inputCoordsView(ownerFilter, PANNER_MAX_NUM_INPUTS, panner_getNumSources(hPan));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
@@ -374,7 +375,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     sourceCoordsView_handle->setNCH(panner_getNumSources(hPan));
 
     /* loudspeaker coordinates viewport */
-    addAndMakeVisible (loudspeakerCoordsVP = new Viewport ("new viewport"));
+    loudspeakerCoordsVP.reset (new Viewport ("new viewport"));
+    addAndMakeVisible (loudspeakerCoordsVP.get());
     loudspeakerCoordsView_handle = new outputCoordsView(ownerFilter, PANNER_MAX_NUM_OUTPUTS, panner_getNumLoudspeakers(hPan));
     loudspeakerCoordsVP->setViewedComponent (loudspeakerCoordsView_handle);
     loudspeakerCoordsVP->setScrollBarsShown (true, false);
@@ -397,12 +399,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     t_flipRoll->setToggleState((bool)panner_getFlipRoll(hPan), dontSendNotification);
 
     /* create panning window */
-    addAndMakeVisible (panWindow = new pannerView(ownerFilter, 480, 240));
+    panWindow.reset (new pannerView(ownerFilter, 480, 240));
+    addAndMakeVisible (panWindow.get());
     panWindow->setBounds (220, 58, 480, 240);
     panWindow->setShowInputs(TB_showInputs->getToggleState());
     panWindow->setShowOutputs(TB_showOutputs->getToggleState());
     refreshPanViewWindow = true;
-    
+
     /* tooltips */
     CBsourceDirsPreset->setTooltip("Presets for source directions to use for spatialisation.");
     CBsLoudspeakerDirsPreset->setTooltip("Presets for loudspeaker directions to pan to.");
@@ -418,8 +421,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     tb_saveJSON_src->setTooltip("Saves the current source directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     tb_loadJSON_ls->setTooltip("Loads loudspeaker directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     tb_saveJSON_ls->setTooltip("Saves the current loudspeaker directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
-    
-    
+
+
 	/* Specify screen refresh rate */
     startTimer(35);//80); /*ms (40ms = 25 frames per second) */
 
@@ -1261,7 +1264,7 @@ BEGIN_JUCER_METADATA
           hasStroke="0"/>
     <RECT pos="0 30 920 178" fill="linear: 8 32, 8 104, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 2 918 31" cornerSize="5" fill="linear: 0 32, 912 24, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 2 918 31" cornerSize="5.0" fill="linear: 0 32, 912 24, 0=ff061c20, 1=ff1c3949"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="366 308 211 68" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1272,7 +1275,7 @@ BEGIN_JUCER_METADATA
     <RECT pos="12 58 196 64" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="23 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 58 480 240" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1285,67 +1288,67 @@ BEGIN_JUCER_METADATA
     <RECT pos="712 121 196 255" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="23 88 145 30" fill="solid: ffffffff" hasStroke="0" text="Number of Inputs:"
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="84 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="789 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Outputs"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="404 32 156 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="587 314 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
-          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="587 346 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Outputs:"
-          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="227 338 123 30" fill="solid: ffffffff" hasStroke="0" text="Room coeff:"
-          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="723 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="723 88 157 30" fill="solid: ffffffff" hasStroke="0" text="Number of Outputs:"
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 1 112 32" fill="solid: ff0eff00" hasStroke="0" text="Panner"
-          fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="227 313 123 30" fill="solid: ffffffff" hasStroke="0" text="Spread (&#176;):"
-          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="228 354 108 24" fill="solid: ffffffff" hasStroke="0" text="(0: Wet, 1: Dry)"
-          fontname="Default font" fontsize="1e1" kerning="0" bold="1" italic="0"
-          justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="10.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="66 122 108 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="767 122 108 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="451 306 46 30" fill="solid: ffffffff" hasStroke="0" text="Pitch"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="515 306 54 30" fill="solid: ffffffff" hasStroke="0" text="Roll"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="376 306 58 30" fill="solid: ffffffff" hasStroke="0" text="Yaw"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="495 350 63 26" fill="solid: ffffffff" hasStroke="0" text="+/-"
-          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="362 350 63 26" fill="solid: ffffffff" hasStroke="0" text="+/-"
-          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="429 350 63 26" fill="solid: ffffffff" hasStroke="0" text="+/-"
-          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <RECT pos="0 0 922 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
@@ -1362,9 +1365,9 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="88 66 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_sources"
-          virtualName="" explicitFocusOrder="0" pos="152 94 48 20" min="1"
-          max="6.4e1" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="152 94 48 20" min="1.0"
+          max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="74817bb8a57611dc" memberName="TB_showInputs"
                 virtualName="" explicitFocusOrder="0" pos="672 317 24 24" buttonText=""
@@ -1373,17 +1376,17 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="672 349 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <SLIDER name="new slider" id="5b4f982e7ea9b2d5" memberName="SL_pValue"
-          virtualName="" explicitFocusOrder="0" pos="309 351 48 18" min="0"
-          max="1" int="1e-2" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="309 351 48 18" min="0.0"
+          max="1.0" int="0.01" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="cfd23f574e19957c" memberName="CBsLoudspeakerDirsPreset"
             virtualName="" explicitFocusOrder="0" pos="788 66 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="cbb243fa14b960d0" memberName="SL_num_loudspeakers"
-          virtualName="" explicitFocusOrder="0" pos="860 94 40 20" min="2"
-          max="6.4e1" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="860 94 40 20" min="2.0"
+          max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON_src"
               virtualName="" explicitFocusOrder="0" pos="140 41 34 14" bgColOff="ff14889e"
@@ -1400,15 +1403,15 @@ BEGIN_JUCER_METADATA
               bgColOn="ff181f9a" buttonText="Export" connectedEdges="1" needsCallback="1"
               radioGroupId="0"/>
   <SLIDER name="new slider" id="502f78257b11f666" memberName="SL_spread"
-          virtualName="" explicitFocusOrder="0" pos="309 319 48 18" min="0"
-          max="9e1" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="309 319 48 18" min="0.0"
+          max="90.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="ace036a85eec9703" memberName="s_yaw" virtualName=""
           explicitFocusOrder="0" pos="373 333 63 18" trackcol="ff25637e"
-          textboxtext="ffffffff" textboxbkgd="ffffff" min="-1.8e2" max="1.8e2"
-          int="1e-2" style="LinearBar" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="58" textBoxHeight="14" skewFactor="1" needsCallback="1"/>
+          textboxtext="ffffffff" textboxbkgd="ffffff" min="-180.0" max="180.0"
+          int="0.01" style="LinearBar" textBoxPos="TextBoxBelow" textBoxEditable="1"
+          textBoxWidth="58" textBoxHeight="14" skewFactor="1.0" needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="ac47b63592b1d4cf" memberName="t_flipYaw"
                 virtualName="" explicitFocusOrder="0" pos="406 352 23 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
@@ -1420,14 +1423,14 @@ BEGIN_JUCER_METADATA
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <SLIDER name="new slider" id="392ca672356bf48a" memberName="s_pitch"
           virtualName="" explicitFocusOrder="0" pos="440 333 63 18" trackcol="ff25637e"
-          textboxtext="ffffffff" textboxbkgd="ffffff" min="-9e1" max="9e1"
-          int="1e-2" style="LinearBar" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="58" textBoxHeight="14" skewFactor="1" needsCallback="1"/>
+          textboxtext="ffffffff" textboxbkgd="ffffff" min="-90.0" max="90.0"
+          int="0.01" style="LinearBar" textBoxPos="TextBoxBelow" textBoxEditable="1"
+          textBoxWidth="58" textBoxHeight="14" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="d066861bf0a08264" memberName="s_roll" virtualName=""
           explicitFocusOrder="0" pos="507 333 63 18" trackcol="ff25637e"
-          textboxtext="ffffffff" textboxbkgd="ffffff" min="-9e1" max="9e1"
-          int="1e-2" style="LinearBar" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="58" textBoxHeight="14" skewFactor="1" needsCallback="1"/>
+          textboxtext="ffffffff" textboxbkgd="ffffff" min="-90.0" max="90.0"
+          int="0.01" style="LinearBar" textBoxPos="TextBoxBelow" textBoxEditable="1"
+          textBoxWidth="58" textBoxHeight="14" skewFactor="1.0" needsCallback="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

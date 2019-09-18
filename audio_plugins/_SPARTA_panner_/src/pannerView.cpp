@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -87,7 +87,7 @@ void pannerView::paint (Graphics& g)
     //[/UserPrePaint]
 
     {
-        int x = 0, y = 0, width2 = 480, height = 240;
+        int x = 0, y = 0, width = 480, height = 240;
         Colour fillColour1 = Colour (0xff4e4e4e), fillColour2 = Colour (0xff202020);
         Colour strokeColour = Colour (0xff9e9e9e);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -99,9 +99,9 @@ void pannerView::paint (Graphics& g)
                                        248.0f - 0.0f + x,
                                        240.0f - 0.0f + y,
                                        false));
-        g.fillRect (x, y, width2, height);
+        g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
-        g.drawRect (x, y, width2, height, 1);
+        g.drawRect (x, y, width, height, 1);
 
     }
 
@@ -281,3 +281,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

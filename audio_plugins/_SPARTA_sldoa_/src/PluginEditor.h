@@ -80,12 +80,12 @@ private:
     PluginProcessor* hVst;
     void* hSld;
     void timerCallback() override;
-    ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
+    std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
 	OpenGLContext openGLContext;
-    ScopedPointer<log2dSlider> anaOrder2dSlider;
+    std::unique_ptr<log2dSlider> anaOrder2dSlider;
 
     /* OVERLAY */
-    ScopedPointer<overlay> overlayIncluded;
+    std::unique_ptr<overlay> overlayIncluded;
 
     /* for webcam support */
     Rectangle<int> previewArea;

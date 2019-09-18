@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -45,11 +45,11 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    
+
     void refreshPanView();
     bool getSourceIconIsClicked(){
         return sourceIconIsClicked;
-    } 
+    }
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -65,7 +65,7 @@ private:
     PluginProcessor* hVst;
     void* hAmbi;
     int width;
-    int height; 
+    int height;
     Rectangle<float> SourceIcons[MAX_NUM_CHANNELS];
     int NSources;
     bool sourceIconIsClicked;
@@ -81,3 +81,4 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

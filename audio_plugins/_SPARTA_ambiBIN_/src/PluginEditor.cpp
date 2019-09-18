@@ -334,7 +334,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_HRIR_len->setTooltip("HRIR length in samples.");
     label_HRIR_fs->setTooltip("Sampling rate used when measuring/modelling the HRIRs.");
     label_DAW_fs->setTooltip("Current sampling rate, as dictated by the DAW/Host.");
-    
+
 	/* Specify screen refresh rate */
     startTimer(40);//80); /*ms (40ms = 25 frames per second) */
 

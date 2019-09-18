@@ -60,10 +60,11 @@ eqview::eqview (int _width, int _height, float _min_freq, float _max_freq, float
     //[Constructor] You can add your own custom stuff here..
     setSize (_width, _height);
 
-    addAndMakeVisible (eqview_windowIncluded = new eqview_window(_width-(border_pixels_left+border_pixels_right),
-                                                                 _height-(border_pixels_top+border_pixels_bottom),
-                                                                 _min_freq, _max_freq,
-                                                                 _min_dB, _max_dB, _fs));
+    eqview_windowIncluded.reset (new eqview_window(_width-(border_pixels_left+border_pixels_right),
+                                                   _height-(border_pixels_top+border_pixels_bottom),
+                                                   _min_freq, _max_freq,
+                                                   _min_dB, _max_dB, _fs)); /* TODO: switch to the more general "anaview"  */
+    addAndMakeVisible (eqview_windowIncluded.get()); 
     eqview_windowIncluded->setAlwaysOnTop(true);
     eqview_windowIncluded->setTopLeftPosition(border_pixels_left, border_pixels_top );
 

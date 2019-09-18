@@ -59,10 +59,11 @@ anaview::anaview (int _width, int _height, float _min_freq, float _max_freq, flo
     //[Constructor] You can add your own custom stuff here..
     setSize (_width, _height);
 
-    addAndMakeVisible (anaview_windowIncluded = new anaview_window(_width-(border_pixels_left+border_pixels_right),
-                                                                 _height-(border_pixels_top+border_pixels_bottom),
-                                                                 _min_freq, _max_freq,
-                                                                 _min_Y, _max_Y, _yaxislineStepSize, _fs));
+    anaview_windowIncluded.reset (new anaview_window(_width-(border_pixels_left+border_pixels_right),
+                                                     _height-(border_pixels_top+border_pixels_bottom),
+                                                     _min_freq, _max_freq,
+                                                     _min_Y, _max_Y, _yaxislineStepSize, _fs)); /* TODO: switch to the more general "anaview"  */
+    addAndMakeVisible (anaview_windowIncluded.get()); 
     anaview_windowIncluded->setAlwaysOnTop(true);
     anaview_windowIncluded->setTopLeftPosition(border_pixels_left, border_pixels_top );
 

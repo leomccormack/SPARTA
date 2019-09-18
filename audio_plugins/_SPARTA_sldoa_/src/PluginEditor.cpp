@@ -172,7 +172,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* overlay */
     previewArea.setBounds(13, 59, 608, 303);
-    addAndMakeVisible (overlayIncluded = new overlay(ownerFilter));
+    overlayIncluded.reset (new overlay(ownerFilter));
+    addAndMakeVisible (overlayIncluded.get());
     overlayIncluded->setAlwaysOnTop(true);
     overlayIncluded->setBounds(previewArea);
 
@@ -188,8 +189,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* create 2d Slider for the decoding order parameter */
     int nPoints;
     float* pX_vector;
-    int* pY_values_int;
-    addAndMakeVisible (anaOrder2dSlider = new log2dSlider(360, 54, 100, 20e3, 1, sldoa_getMasterOrder(hSld), 0));
+    int* pY_values_int; 
+    anaOrder2dSlider.reset (new log2dSlider(360, 54, 100, 20e3, 1, sldoa_getMasterOrder(hSld), 0));
+    addAndMakeVisible (anaOrder2dSlider.get());
     anaOrder2dSlider->setAlwaysOnTop(true);
     anaOrder2dSlider->setTopLeftPosition(218, 432);
     sldoa_getAnaOrderHandle(hSld, &pX_vector, &pY_values_int, &nPoints);

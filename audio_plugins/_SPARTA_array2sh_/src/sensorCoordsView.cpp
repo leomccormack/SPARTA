@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -35,7 +35,8 @@ sensorCoordsView::sensorCoordsView (PluginProcessor* ownerFilter, int _maxQ, int
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (dummySlider = new Slider ("new slider"));
+    dummySlider.reset (new Slider ("new slider"));
+    addAndMakeVisible (dummySlider.get());
     dummySlider->setRange (0.01, 0.3, 0.001);
     dummySlider->setSliderStyle (Slider::LinearHorizontal);
     dummySlider->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
@@ -51,18 +52,19 @@ sensorCoordsView::sensorCoordsView (PluginProcessor* ownerFilter, int _maxQ, int
 
 
     //[Constructor] You can add your own custom stuff here..
-    setSize (sensorEdit_width, sensorEdit_height*_currentQ); 
+    setSize (sensorEdit_width, sensorEdit_height*_currentQ);
     hVst = ownerFilter;
     hA2sh = hVst->getFXHandle();
     maxQ = _maxQ;
     currentQ =_currentQ;
     useDegreesInstead =  _useDegreesInstead;
-    aziSliders =  new ScopedPointer<Slider>[maxQ];
-    elevSliders =  new ScopedPointer<Slider>[maxQ];
+    aziSliders =  new std::unique_ptr<Slider>[maxQ];
+    elevSliders =  new std::unique_ptr<Slider>[maxQ];
 
     for( int i=0; i<maxQ; i++){
         /* create and initialise azimuth sliders */
-        addAndMakeVisible (aziSliders[i] = new Slider ("new slider"));
+        aziSliders[i].reset (new Slider ("new slider"));
+        addAndMakeVisible (aziSliders[i].get());
         if(useDegreesInstead){
             aziSliders[i]->setRange (-360.0, 360.0, 0.001);
             aziSliders[i]->setValue(array2sh_getSensorAzi_deg(hA2sh, i));
@@ -77,7 +79,8 @@ sensorCoordsView::sensorCoordsView (PluginProcessor* ownerFilter, int _maxQ, int
         aziSliders[i]->addListener (this);
 
         /* create and initialise elevation sliders */
-        addAndMakeVisible (elevSliders[i] = new Slider ("new slider"));
+        elevSliders[i].reset (new Slider ("new slider"));
+        addAndMakeVisible (elevSliders[i].get());
         if(useDegreesInstead){
             elevSliders[i]->setRange (-180.0, 180.0, 0.001);
             elevSliders[i]->setValue(array2sh_getSensorElev_deg(hA2sh, i));
@@ -91,7 +94,7 @@ sensorCoordsView::sensorCoordsView (PluginProcessor* ownerFilter, int _maxQ, int
         elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 96, 16);
         elevSliders[i]->addListener (this);
     }
-    
+
     refreshCoords();
     resized();
 
@@ -190,14 +193,14 @@ void sensorCoordsView::sliderValueChanged (Slider* sliderThatWasMoved)
 {
     //[UsersliderValueChanged_Pre]
     for(int i=0; i<maxQ; i++){
-        if (sliderThatWasMoved == aziSliders[i]) {
+        if (sliderThatWasMoved == aziSliders[i].get()) {
             if(useDegreesInstead)
                 array2sh_setSensorAzi_deg(hA2sh, i, (float)aziSliders[i]->getValue());
             else
                 array2sh_setSensorAzi_rad(hA2sh, i, (float)aziSliders[i]->getValue());
             break;
         }
-        if (sliderThatWasMoved == elevSliders[i]) {
+        if (sliderThatWasMoved == elevSliders[i].get()) {
             if(useDegreesInstead)
                 array2sh_setSensorElev_deg(hA2sh, i, (float)elevSliders[i]->getValue());
             else
@@ -208,7 +211,7 @@ void sensorCoordsView::sliderValueChanged (Slider* sliderThatWasMoved)
 
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == dummySlider)
+    if (sliderThatWasMoved == dummySlider.get())
     {
         //[UserSliderCode_dummySlider] -- add your slider handling code here..
         //[/UserSliderCode_dummySlider]
@@ -269,10 +272,10 @@ BEGIN_JUCER_METADATA
           hasStroke="0"/>
   </BACKGROUND>
   <SLIDER name="new slider" id="4689db34530ab7c7" memberName="dummySlider"
-          virtualName="" explicitFocusOrder="0" pos="-176 144 96 16" min="0.01000000000000000021"
-          max="0.29999999999999998890" int="0.00100000000000000002" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="70"
-          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="-176 144 96 16" min="0.01"
+          max="0.3" int="0.001" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="70" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
@@ -282,3 +285,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

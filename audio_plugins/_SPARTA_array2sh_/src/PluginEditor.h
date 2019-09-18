@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -83,14 +83,14 @@ private:
     PluginProcessor* hVst;
     void* hA2sh;
     void timerCallback() override;
-    ScopedPointer<OpenGLGraphicsContextCustomShader> shader;
+    std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
 
-    ScopedPointer<Viewport> sensorCoordsVP;
+    std::unique_ptr<Viewport> sensorCoordsVP;
     sensorCoordsView* sensorCoordsView_handle;
-    ScopedPointer<eqview> eqviewIncluded;
-    ScopedPointer<anaview> cohviewIncluded;
-    ScopedPointer<anaview> ldiffviewIncluded;
+    std::unique_ptr<eqview> eqviewIncluded;
+    std::unique_ptr<anaview> cohviewIncluded;
+    std::unique_ptr<anaview> ldiffviewIncluded;
     DISP_WINDOW dispID;
 
     bool needScreenRefreshFLAG;
@@ -98,10 +98,10 @@ private:
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
-    
+
     /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
-    
+
     //[/UserVariables]
 
     //==============================================================================

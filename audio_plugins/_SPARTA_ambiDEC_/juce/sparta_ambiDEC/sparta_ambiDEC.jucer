@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_ambiDEC" projectType="audioplug" version="1.5.0"
+<JUCERPROJECT id="lfkRjX" name="sparta_ambiDEC" projectType="audioplug" version="1.5.1"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiDEC" pluginDesc="sparta_ambiDEC"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ADOA"
@@ -8,7 +8,7 @@
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="sparta_ambiDECAU" pluginRTASCategory=""
               aaxIdentifier="com.yourcompany.panner" pluginAAXCategory="2"
-              jucerVersion="5.4.3" buildVST3="0" buildRTAS="0" buildAAX="0"
+              jucerVersion="5.4.4" buildVST3="0" buildRTAS="0" buildAAX="0"
               pluginManufacturerEmail="support@yourcompany.com" defines="FRAME_SIZE = 128&#10;SAF_USE_INTEL_MKL&#10;"
               companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS&#10;"

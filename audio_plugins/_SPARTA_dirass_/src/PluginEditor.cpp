@@ -295,7 +295,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* Overlay */
     previewArea.setBounds(13, 59, 646, 323);
-    addAndMakeVisible (overlayIncluded = new overlay(ownerFilter));
+    overlayIncluded.reset (new overlay(ownerFilter));
+    addAndMakeVisible (overlayIncluded.get());
     overlayIncluded->setAlwaysOnTop(true);
     overlayIncluded->setBounds(previewArea);
 

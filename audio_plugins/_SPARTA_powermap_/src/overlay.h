@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.0.2
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2017 - ROLI Ltd.
 
   ==============================================================================
 */
@@ -20,7 +20,7 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
- 
+
 #include "PluginProcessor.h"
 #include "powermap.h"
 #ifndef MIN
@@ -51,11 +51,11 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    
+
     void refreshPowerMap(float* _dirs_deg, float* _pmap, int _nDirs, int _pmapWidth, int _hfov, int _aspectRatio );
     bool getFinishedRefresh(){ return finishedRefresh; }
     void setEnableTransparency(bool newState){ enableTransparency = newState; }
-    
+
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -65,9 +65,9 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    float* dirs_deg, *pmap; 
+    float* dirs_deg, *pmap;
     int nDirs, pmapWidth, hfov, aspectRatio;
-    Rectangle<int> localBounds; 
+    Rectangle<int> localBounds;
     bool finishedRefresh;
     bool enableTransparency;
     //[/UserVariables]
@@ -81,3 +81,4 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

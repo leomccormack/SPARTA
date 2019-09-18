@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -57,12 +57,13 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
     hBin = hVst->getFXHandle();
     maxNCH = _maxNCH ;
     currentNCH =_currentNCH;
-    aziSliders =  new ScopedPointer<Slider>[maxNCH];
-    elevSliders =  new ScopedPointer<Slider>[maxNCH];
+    aziSliders =  new std::unique_ptr<Slider>[maxNCH];
+    elevSliders =  new std::unique_ptr<Slider>[maxNCH];
 
     for( int i=0; i<maxNCH; i++){
         /* create and initialise azimuth sliders */
-        addAndMakeVisible (aziSliders[i] = new Slider ("new slider"));
+        aziSliders[i].reset (new Slider ("new slider"));
+        addAndMakeVisible (aziSliders[i].get());
         aziSliders[i]->setRange (-360.0, 360.0, 0.001);
         aziSliders[i]->setValue(binauraliser_getSourceAzi_deg(hBin, i));
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
@@ -71,7 +72,8 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         aziSliders[i]->addListener (this);
 
         /* create and initialise elevation sliders */
-        addAndMakeVisible (elevSliders[i] = new Slider ("new slider"));
+        elevSliders[i].reset (new Slider ("new slider"));
+        addAndMakeVisible (elevSliders[i].get());
         elevSliders[i]->setRange (-180.0, 180.0, 0.001);
         elevSliders[i]->setValue(binauraliser_getSourceElev_deg(hBin, i));
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
@@ -181,11 +183,11 @@ void inputCoordsView::sliderValueChanged (Slider* sliderThatWasMoved)
 {
     //[UsersliderValueChanged_Pre]
     for(int i=0; i<maxNCH; i++){
-        if (sliderThatWasMoved == aziSliders[i]) {
+        if (sliderThatWasMoved == aziSliders[i].get()) {
             binauraliser_setSourceAzi_deg(hBin, i, (float)aziSliders[i]->getValue());
             break;
         }
-        if (sliderThatWasMoved == elevSliders[i]) {
+        if (sliderThatWasMoved == elevSliders[i].get()) {
             binauraliser_setSourceElev_deg(hBin, i, (float)elevSliders[i]->getValue());
             break;
         }
@@ -242,9 +244,9 @@ BEGIN_JUCER_METADATA
           hasStroke="0"/>
   </BACKGROUND>
   <SLIDER name="new slider" id="4689db34530ab7c7" memberName="dummySlider"
-          virtualName="" explicitFocusOrder="0" pos="-176 144 96 16" min="1e-2"
-          max="3e-1" int="1e-3" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="70" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="-176 144 96 16" min="0.01"
+          max="0.3" int="0.001" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="70" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
 </JUCER_COMPONENT>
 

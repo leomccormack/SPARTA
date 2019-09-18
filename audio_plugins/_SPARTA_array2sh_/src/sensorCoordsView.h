@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.1.1
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2017 - ROLI Ltd.
 
   ==============================================================================
 */
@@ -67,9 +67,9 @@ private:
     PluginProcessor* hVst;
     void* hA2sh;
     void refreshCoords();
-    
-    ScopedPointer<Slider>* aziSliders;
-    ScopedPointer<Slider>* elevSliders;
+
+    std::unique_ptr<Slider>* aziSliders;
+    std::unique_ptr<Slider>* elevSliders;
 
     int maxQ, currentQ;
     bool useDegreesInstead;
@@ -77,7 +77,7 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<Slider> dummySlider;
+    std::unique_ptr<Slider> dummySlider;
 
 
     //==============================================================================
@@ -86,3 +86,4 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+
