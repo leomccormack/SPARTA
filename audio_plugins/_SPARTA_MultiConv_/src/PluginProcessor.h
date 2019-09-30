@@ -26,7 +26,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "multiconv.h"
 #include <string.h>
-#define BUILD_VER_SUFFIX "alpha" /* String to be added before the version name on the GUI (beta, alpha etc..) */
+#define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (beta, alpha etc..) */
 
 enum {	
     /* For the default VST GUI */
@@ -38,11 +38,15 @@ class PluginProcessor  : public AudioProcessor,
                          public VSTCallbackHandler
 {
 public:
-    /* Get functions */
+    /* Set/Get functions */
     void* getFXHandle() { return hMCnv; }
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
     int getCurrentNumOutputs(){ return nNumOutputs; }
+    void setWavDirectory(String newDirectory){
+        lastWavDirectory = newDirectory;
+    }
+    String getWavDirectory(){ return lastWavDirectory; }
     
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 index, pointer_sized_int value, void* ptr, float opt) override { return 0; };
@@ -63,6 +67,7 @@ private:
     bool isPlaying;
     AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
+    String lastWavDirectory;
 
     /***************************************************************************\
                                     JUCE Functions
