@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "637B0DF4ED253147FAB02C55"
-               BuildableName = "sparta_multiconv - All"
-               BlueprintName = "sparta_multiconv - All"
-               ReferencedContainer = "container:sparta_multiconv.xcodeproj">
+               BuildableName = "sparta_matrixconv - All"
+               BlueprintName = "sparta_matrixconv - All"
+               ReferencedContainer = "container:sparta_matrixconv.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -51,9 +51,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "637B0DF4ED253147FAB02C55"
-            BuildableName = "sparta_multiconv - All"
-            BlueprintName = "sparta_multiconv - All"
-            ReferencedContainer = "container:sparta_multiconv.xcodeproj">
+            BuildableName = "sparta_matrixconv - All"
+            BlueprintName = "sparta_matrixconv - All"
+            ReferencedContainer = "container:sparta_matrixconv.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -69,9 +69,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "637B0DF4ED253147FAB02C55"
-            BuildableName = "sparta_multiconv - All"
-            BlueprintName = "sparta_multiconv - All"
-            ReferencedContainer = "container:sparta_multiconv.xcodeproj">
+            BuildableName = "sparta_matrixconv - All"
+            BlueprintName = "sparta_matrixconv - All"
+            ReferencedContainer = "container:sparta_matrixconv.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
