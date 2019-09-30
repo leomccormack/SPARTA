@@ -26,10 +26,9 @@
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
-    k_warning_frameSize,
-    k_warning_NinputCH,
-    k_warning_NoutputCH,
-    k_warning_osc_connection_fail
+    k_warning_nCH_nFilters_missmatch,
+    k_warning_sampleRate_missmatch
+
 }SPARTA_WARNINGS;
 //[/Headers]
 
@@ -44,7 +43,10 @@ typedef enum _SPARTA_WARNINGS{
                                                                     //[/Comments]
 */
 class PluginEditor  : public AudioProcessorEditor,
-                      public Timer
+                      public Timer,
+                      private FilenameComponentListener,
+                      public Button::Listener,
+                      public Slider::Listener
 {
 public:
     //==============================================================================
@@ -58,6 +60,8 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
+    void sliderValueChanged (Slider* sliderThatWasMoved) override;
 
 
 
@@ -67,8 +71,37 @@ private:
     void* hMC;
     void timerCallback() override;
 
+    /* sofa loading */
+    FilenameComponent fileChooser;
+
     /* warnings */
     SPARTA_WARNINGS currentWarning;
+
+    /* wav file loading */
+    AudioFormatManager formatManager;
+    AudioSampleBuffer fileBuffer;
+    float durationInSeconds;
+    void filenameComponentChanged (FilenameComponent*) override  {
+        String directory = fileChooser.getCurrentFile().getFullPathName();
+        hVst->setWavDirectory(directory);
+        loadWavFile();
+    }
+    void loadWavFile()
+    {
+        String directory = hVst->getWavDirectory();
+        std::unique_ptr<AudioFormatReader> reader (formatManager.createReaderFor (directory));
+
+        if (reader.get() != nullptr) { /* if file exists */
+            durationInSeconds = (float)reader->lengthInSamples / (float)reader->sampleRate;
+
+            if (reader->numChannels <= MULTICONV_MAX_NUM_CHANNELS) {
+                fileBuffer.setSize (reader->numChannels, (int) reader->lengthInSamples);
+                reader->read (&fileBuffer, 0, (int) reader->lengthInSamples, 0, true, true);
+            }
+            const float** H = fileBuffer.getArrayOfReadPointers();
+            multiconv_setFilters(hMC, H, fileBuffer.getNumChannels(), fileBuffer.getNumSamples(), reader->sampleRate);
+        }
+    }
 
     /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
@@ -76,6 +109,13 @@ private:
     //[/UserVariables]
 
     //==============================================================================
+    std::unique_ptr<ToggleButton> TBenablePartConv;
+    std::unique_ptr<Label> label_hostBlockSize;
+    std::unique_ptr<Label> label_NFilters;
+    std::unique_ptr<Label> label_filterLength;
+    std::unique_ptr<Label> label_hostfs;
+    std::unique_ptr<Label> label_filterfs;
+    std::unique_ptr<Slider> SL_num_inputs;
 
 
     //==============================================================================

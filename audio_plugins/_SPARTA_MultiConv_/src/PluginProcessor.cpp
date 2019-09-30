@@ -28,7 +28,8 @@ PluginProcessor::PluginProcessor() :
 	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
 	nSampleRate = 48000;
-    nHostBlockSize = 0; //FRAME_SIZE;
+    nHostBlockSize = -1;
+    lastWavDirectory = TRANS("no_file");
 	multiconv_create(&hMCnv);
 }
 
@@ -169,32 +170,9 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
-//
-    if(nCurrentBlockSize == nHostBlockSize) {
-//        for(int ch = 0; ch < buffer.getNumChannels(); ch++)
-//            pFrameData[ch] = &bufferData[ch][frame*FRAME_SIZE];
-//
-//        /* check whether the playhead is moving */
-//        playHead = getPlayHead();
-//        bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-//        if (PlayHeadAvailable == true)
-//            isPlaying = currentPosition.isPlaying;
-//        else
-//            isPlaying = false;
-//
-//        /* If there is no playhead, or it is not moving, see if there is audio in the buffer */
-//        if(!isPlaying){
-//            for(int j=0; j<nNumInputs; j++){
-//                isPlaying = buffer.getMagnitude(j, 0, 8 /* should be enough */)>1e-5f ? true : false;
-//                if(isPlaying)
-//                    break;
-//            }
-//        }
-//
-        /* perform processing */
-        multiconv_process(hMCnv, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize, isPlaying);
-//
-    }
+
+    if(nCurrentBlockSize == nHostBlockSize)
+        multiconv_process(hMCnv, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize); 
     else
         buffer.clear();
 }
@@ -215,8 +193,9 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
 	/* Create an outer XML element.. */ 
 	XmlElement xml("MULTICONVAUDIOPLUGINSETTINGS");
-   
-    
+    xml.setAttribute("LastWavFilePath", lastWavDirectory);
+    xml.setAttribute("usePartitionedConv", multiconv_getEnablePart(hMCnv));
+    xml.setAttribute("numChannels", multiconv_getNumChannels(hMCnv));
 	copyXmlToBinary(xml, destData);
 }
 
@@ -229,6 +208,12 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 		/* make sure that it's actually the correct XML object */
 		if (xmlState->hasTagName("MULTICONVAUDIOPLUGINSETTINGS")) {
  
+            if(xmlState->hasAttribute("LastWavFilePath"))
+                lastWavDirectory = xmlState->getStringAttribute("LastWavFilePath", "no_file");
+            if(xmlState->hasAttribute("usePartitionedConv"))
+                multiconv_setEnablePart(hMCnv, xmlState->getIntAttribute("usePartitionedConv", 1));
+            if(xmlState->hasAttribute("numChannels"))
+                multiconv_setNumChannels(hMCnv, xmlState->getIntAttribute("numChannels", 1));
         }
 	}
 }
