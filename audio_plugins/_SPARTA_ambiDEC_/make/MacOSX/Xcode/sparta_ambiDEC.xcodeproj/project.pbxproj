@@ -173,17 +173,17 @@
 			isa = PBXBuildFile;
 			fileRef = E434FCCB391CB55DB65D8455;
 		};
-		D856E6D99882DC7F40C932A7 = {
-			isa = PBXBuildFile;
-			fileRef = 61739747181B18C6F3216CDB;
-		};
-		1A90B7185E45BA71EFB674AC = {
-			isa = PBXBuildFile;
-			fileRef = BB61D4EC1F16F0470E7913C5;
-		};
 		E262C6B217C74DB2FED83C24 = {
 			isa = PBXBuildFile;
 			fileRef = 63496E429AAD142ED725A172;
+		};
+		E6F9BAD7F8CF57A3E96124C0 = {
+			isa = PBXBuildFile;
+			fileRef = 6790462FF58152FDB2ED0603;
+		};
+		0B002A083A660C07924AEAEF = {
+			isa = PBXBuildFile;
+			fileRef = D6862FB84274E700ECDA8AB7;
 		};
 		B17C9B065FB063DCC359CF83 = {
 			isa = PBXBuildFile;
@@ -261,13 +261,6 @@
 			lastKnownFileType = sourcecode.cpp.objcpp;
 			name = "include_juce_data_structures.mm";
 			path = "../../../juce/sparta_ambiDEC/JuceLibraryCode/include_juce_data_structures.mm";
-			sourceTree = "SOURCE_ROOT";
-		};
-		0B746C75FF02801818E29639 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = fft4g.h;
-			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/fft4g.h";
 			sourceTree = "SOURCE_ROOT";
 		};
 		0E5BED8710D85249E474B51A = {
@@ -424,6 +417,13 @@
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_hrir/saf_hrir.h";
 			sourceTree = "SOURCE_ROOT";
 		};
+		4CA368BD5A91A6540DEE8C8A = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "_kiss_fft_guts.h";
+			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/_kiss_fft_guts.h";
+			sourceTree = "SOURCE_ROOT";
+		};
 		4CBDDE93A686112FB6E60438 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -536,13 +536,6 @@
 			path = "Info-VST.plist";
 			sourceTree = "SOURCE_ROOT";
 		};
-		5E8375BD17068F8762A41A76 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = vecTools.h;
-			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/vecTools.h";
-			sourceTree = "SOURCE_ROOT";
-		};
 		5E90D3403C5AD63D723BBDA9 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -564,13 +557,6 @@
 			path = "../../../juce/sparta_ambiDEC/JuceLibraryCode/include_juce_graphics.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
-		61739747181B18C6F3216CDB = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.c;
-			name = fft4g.c;
-			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/fft4g.c";
-			sourceTree = "SOURCE_ROOT";
-		};
 		618A2292F19CDDAC56C0C947 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -590,6 +576,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = "include_juce_audio_plugin_client_VST2.cpp";
 			path = "../../../juce/sparta_ambiDEC/JuceLibraryCode/include_juce_audio_plugin_client_VST2.cpp";
+			sourceTree = "SOURCE_ROOT";
+		};
+		6790462FF58152FDB2ED0603 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = "kiss_fft.c";
+			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fft.c";
 			sourceTree = "SOURCE_ROOT";
 		};
 		69AABFCDE293FFEA4DDC262F = {
@@ -774,6 +767,13 @@
 			path = ../../../src/PluginEditor.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		A36545B8D6D5F997C8B04B04 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "kiss_fftr.h";
+			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fftr.h";
+			sourceTree = "SOURCE_ROOT";
+		};
 		A3C489223E623AFC577235D6 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -858,13 +858,6 @@
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_matrixConv.c";
 			sourceTree = "SOURCE_ROOT";
 		};
-		BB61D4EC1F16F0470E7913C5 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.c;
-			name = vecTools.c;
-			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/vecTools.c";
-			sourceTree = "SOURCE_ROOT";
-		};
 		C0ACB4796A1929F69DCF8750 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -928,6 +921,13 @@
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_vbap/saf_vbap.h";
 			sourceTree = "SOURCE_ROOT";
 		};
+		D6862FB84274E700ECDA8AB7 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = "kiss_fftr.c";
+			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fftr.c";
+			sourceTree = "SOURCE_ROOT";
+		};
 		D9151D0B6FF1120CB523EAC2 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
@@ -968,6 +968,13 @@
 			lastKnownFileType = sourcecode.c.c;
 			name = afSTFTlib.c;
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/afSTFTlib.c";
+			sourceTree = "SOURCE_ROOT";
+		};
+		E7AB0DADC7D20545BAD7B2B4 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "kiss_fft.h";
+			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fft.h";
 			sourceTree = "SOURCE_ROOT";
 		};
 		EC7E179A3A8FF2187F541B7E = {
@@ -1187,10 +1194,6 @@
 				7E6D83D439C67FECA63E9F0C,
 				E434FCCB391CB55DB65D8455,
 				539A570ACE4BC2FAF031FF76,
-				61739747181B18C6F3216CDB,
-				0B746C75FF02801818E29639,
-				BB61D4EC1F16F0470E7913C5,
-				5E8375BD17068F8762A41A76,
 			);
 			name = afSTFT;
 			sourceTree = "<group>";
@@ -1202,6 +1205,18 @@
 				A4159E1CFD61094A870ED0D5,
 			);
 			name = "convhull_3d";
+			sourceTree = "<group>";
+		};
+		7D25329DAB3EA512E60D8C19 = {
+			isa = PBXGroup;
+			children = (
+				4CA368BD5A91A6540DEE8C8A,
+				6790462FF58152FDB2ED0603,
+				E7AB0DADC7D20545BAD7B2B4,
+				D6862FB84274E700ECDA8AB7,
+				A36545B8D6D5F997C8B04B04,
+			);
+			name = kissFFT;
 			sourceTree = "<group>";
 		};
 		49957F0C2C0DB2B10C3F89C9 = {
@@ -1218,6 +1233,7 @@
 			children = (
 				0221AD4242373E2644052DF6,
 				BFE090AF28EC8DF90BF8EF34,
+				7D25329DAB3EA512E60D8C19,
 				49957F0C2C0DB2B10C3F89C9,
 			);
 			name = resources;
@@ -1385,9 +1401,15 @@
 					"DEBUG=1",
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
+					"SAF_ENABLE_AFSTFT",
+					"SAF_ENABLE_HOA",
+					"SAF_ENABLE_SH",
+					"SAF_ENABLE_HRIR",
+					"SAF_ENABLE_VBAP",
+					"SAF_ENABLE_SOFA_READER",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.5.1",
-					"JUCE_APP_VERSION_HEX=0x10501",
+					"JUCE_APP_VERSION=1.5.4",
+					"JUCE_APP_VERSION_HEX=0x10504",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1407,6 +1429,7 @@
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
+					"/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1420,7 +1443,7 @@
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CPLUSPLUSFLAGS = "-pedantic -W  -Wall  -Wextra";
-				OTHER_LDFLAGS = "-bundle -lsparta_ambiDECd -L/usr/local/lib -lsaf_mkl_custom -lnetcdf -lhdf5 -lhdf5_hl -lz";
+				OTHER_LDFLAGS = "-bundle -lsparta_ambiDECd -L/usr/local/lib -lsaf_mkl_custom -L/usr/local/lib -liomp5 -lnetcdf -lhdf5 -lhdf5_hl -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_ambiDECd";
 				USE_HEADERMAP = NO;
@@ -1447,9 +1470,15 @@
 					"NDEBUG=1",
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
+					"SAF_ENABLE_AFSTFT",
+					"SAF_ENABLE_HOA",
+					"SAF_ENABLE_SH",
+					"SAF_ENABLE_HRIR",
+					"SAF_ENABLE_VBAP",
+					"SAF_ENABLE_SOFA_READER",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.5.1",
-					"JUCE_APP_VERSION_HEX=0x10501",
+					"JUCE_APP_VERSION=1.5.4",
+					"JUCE_APP_VERSION_HEX=0x10504",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1470,6 +1499,7 @@
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
+					"/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1484,7 +1514,7 @@
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CPLUSPLUSFLAGS = "-pedantic -W  -Wall  -Wextra";
-				OTHER_LDFLAGS = "-bundle -lsparta_ambiDEC -L/usr/local/lib -lsaf_mkl_custom -lnetcdf -lhdf5 -lhdf5_hl -lz";
+				OTHER_LDFLAGS = "-bundle -lsparta_ambiDEC -L/usr/local/lib -lsaf_mkl_custom -L/usr/local/lib -liomp5 -lnetcdf -lhdf5 -lhdf5_hl -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_ambiDEC";
 				USE_HEADERMAP = NO;
@@ -1509,9 +1539,15 @@
 					"DEBUG=1",
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
+					"SAF_ENABLE_AFSTFT",
+					"SAF_ENABLE_HOA",
+					"SAF_ENABLE_SH",
+					"SAF_ENABLE_HRIR",
+					"SAF_ENABLE_VBAP",
+					"SAF_ENABLE_SOFA_READER",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.5.1",
-					"JUCE_APP_VERSION_HEX=0x10501",
+					"JUCE_APP_VERSION=1.5.4",
+					"JUCE_APP_VERSION_HEX=0x10504",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1531,6 +1567,7 @@
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
+					"/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1565,9 +1602,15 @@
 					"NDEBUG=1",
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
+					"SAF_ENABLE_AFSTFT",
+					"SAF_ENABLE_HOA",
+					"SAF_ENABLE_SH",
+					"SAF_ENABLE_HRIR",
+					"SAF_ENABLE_VBAP",
+					"SAF_ENABLE_SOFA_READER",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.5.1",
-					"JUCE_APP_VERSION_HEX=0x10501",
+					"JUCE_APP_VERSION=1.5.4",
+					"JUCE_APP_VERSION_HEX=0x10504",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1588,6 +1631,7 @@
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
+					"/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1834,9 +1878,9 @@
 				3AF3290C581FA015F357EED0,
 				F4EEA86CA957574DEFCDB6FF,
 				A23F17D48FF506F566FB86FC,
-				D856E6D99882DC7F40C932A7,
-				1A90B7185E45BA71EFB674AC,
 				E262C6B217C74DB2FED83C24,
+				E6F9BAD7F8CF57A3E96124C0,
+				0B002A083A660C07924AEAEF,
 				B17C9B065FB063DCC359CF83,
 				130BF99FDB94FF7B58E6C223,
 				5EABCBD25F07566F4FDD9310,

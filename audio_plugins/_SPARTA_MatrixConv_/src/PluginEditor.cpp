@@ -32,7 +32,7 @@
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     : AudioProcessorEditor(ownerFilter), fileChooser ("File", File(), true, false, false,
       "*.wav;", String(),
-      "Load .wav File")
+      "Load .wav File Here")
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -42,7 +42,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBenablePartConv->setButtonText (String());
     TBenablePartConv->addListener (this);
 
-    TBenablePartConv->setBounds (261, 146, 26, 26);
+    TBenablePartConv->setBounds (261, 94, 26, 26);
 
     label_hostBlockSize.reset (new Label ("new label",
                                           String()));
@@ -66,7 +66,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_NFilters->setColour (TextEditor::textColourId, Colours::black);
     label_NFilters->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    label_NFilters->setBounds (237, 98, 48, 20);
+    label_NFilters->setBounds (237, 150, 48, 20);
 
     label_filterLength.reset (new Label ("new label",
                                          String()));
@@ -168,7 +168,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* file loader */
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
-    fileChooser.setBounds (70, 72, 214, 20);
+    fileChooser.setBounds (16, 72, 268, 20);
     formatManager.registerBasicFormats();
     durationInSeconds = 0.0f;
     if(hVst->getWavDirectory() != TRANS("no_file")){
@@ -182,17 +182,17 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_NFilters->setJustificationType (Justification::centred);
 
     /* tooltips */
-    fileChooser.setTooltip("Load multi-channel *.wav file here. If want to do a 4 x 8 matrix convolution, then the number of inputs should be set to 8, and you should load a 32 channel .wav file, where the filters are stacked on top of each other. This will map the 8 inputs to the 4 outputs, as dictated by your 4 x 8 filter matrix. Also bear in mind, the maximum number of channels for .wav files is 1024 (e.g. 32 x 32)");
+    fileChooser.setTooltip("Load multi-channel *.wav file here. If you want to do a 4 x 8 matrix convolution, then the number of inputs should be set to 8, and you should load a 4 channel .wav file, where the filters are concatenated for each input. This will map the 8 inputs to the 4 outputs, as dictated by your 4 x 8 filter matrix.");
     TBenablePartConv->setTooltip("Enable/Disable partitioned convolution. Try both and use whichever uses less CPU. The end result is the same.");
     label_hostBlockSize->setTooltip("The current host block size. The higher the block size, the less CPU the plug-in will use.");
-    label_NFilters->setTooltip("The number of filters in the loaded wav file. If the number filters is not divisable by the number of input channels, then the plugin will set the number of outputs to 0 and do nothing. Also bear in mind, the maximum number of channels for .wav files is 1024 (e.g. 32 x 32).");
-    label_filterLength->setTooltip("Filter length in seconds. the longer this is the more your CPU will cry.");
+    label_NFilters->setTooltip("The number of filters in the loaded wav file. (Basically, number of inputs multiplied by the number of outputs).");
+    label_filterLength->setTooltip("Filter length in seconds. If this is 0 then something is wrong with the current configuration. (e.g. loaded wav length is not divisable by the number of inputs specified.");
     label_hostfs->setTooltip("The host samplerate. This should match the filter samplerate.");
     label_filterfs->setTooltip("The filter samplerate. This should match the host samplerate.");
     SL_num_inputs->setTooltip("The number of input channels.");
     label_MatrixNInputs->setTooltip("The number of input channels.");
-    label_MatrixNoutputs->setTooltip("The number of output channels. If this is 0, then you loaded an incorrect number of filters for this number of inputs.");
-    label_NOutputs->setTooltip("The number of output channels. If this is 0, then you loaded an incorrect number of filters for this number of inputs.");
+    label_MatrixNoutputs->setTooltip("The number of output channels");
+    label_NOutputs->setTooltip("The number of output channels. (number of channels in the loaded wav file)");
 
     /* Specify screen refresh rate */
     startTimer(30); /*ms (40ms = 25 frames per second) */
@@ -248,19 +248,6 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 304, y = 40, width = 216, height = 29;
-        Colour fillColour = Colour (0x10c7c7c7);
-        Colour strokeColour = Colour (0x1fffffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
         int x = 0, y = 95, width = 530, height = 89;
         Colour fillColour1 = Colour (0xff1c3949), fillColour2 = Colour (0xff071e22);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -277,6 +264,32 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 8, y = 39, width = 288, height = 137;
+        Colour fillColour = Colour (0x10c7c7c7);
+        Colour strokeColour = Colour (0x1fffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
+    {
+        int x = 8, y = 39, width = 288, height = 81;
+        Colour fillColour = Colour (0x08c7c7c7);
+        Colour strokeColour = Colour (0x1fffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
+    {
+        int x = 304, y = 40, width = 216, height = 29;
         Colour fillColour = Colour (0x10c7c7c7);
         Colour strokeColour = Colour (0x1fffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -396,7 +409,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 16, y = 92, width = 232, height = 30;
+        int x = 16, y = 144, width = 232, height = 30;
         String text (TRANS("Number of Filters in .wav File:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -444,7 +457,7 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 16, y = 144, width = 256, height = 30;
+        int x = 16, y = 92, width = 232, height = 30;
         String text (TRANS("Enable Partitioned Convolution:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -458,18 +471,6 @@ void PluginEditor::paint (Graphics& g)
     {
         int x = 16, y = 40, width = 224, height = 30;
         String text (TRANS("Number of Input Channels:"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
-    }
-
-    {
-        int x = 16, y = 66, width = 88, height = 30;
-        String text (TRANS("Filters:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -521,7 +522,7 @@ void PluginEditor::paint (Graphics& g)
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		186, 16, 530, 11,
+		196, 16, 530, 11,
 		Justification::centredLeft, true);
 
     /* display warning message */
@@ -602,8 +603,8 @@ void PluginEditor::timerCallback()
     /* parameters whos values can change internally should be periodically refreshed */
     label_hostBlockSize->setText(String(matrixconv_getHostBlockSize(hMC)), dontSendNotification);
     label_NFilters->setText(String(matrixconv_getNfilters(hMC)), dontSendNotification);
-    //label_filterLength->setText(String(matrixconv_getFilterLength(hMC)), dontSendNotification);
-    label_filterLength->setText(String(durationInSeconds), dontSendNotification);
+    label_filterLength->setText(String((float)matrixconv_getFilterLength(hMC)/(float)matrixconv_getFilterFs(hMC)), dontSendNotification);
+    //label_filterLength->setText(String(durationInSeconds), dontSendNotification);
     label_hostfs->setText(String(matrixconv_getHostFs(hMC)), dontSendNotification);
     label_filterfs->setText(String(matrixconv_getFilterFs(hMC)), dontSendNotification);
     label_MatrixNInputs->setText(String(matrixconv_getNumInputChannels(hMC)), dontSendNotification);
@@ -645,17 +646,19 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
                  parentClasses="public AudioProcessorEditor, public Timer, private FilenameComponentListener"
-                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), fileChooser (&quot;File&quot;, File(), true, false, false,&#10;                       &quot;*.wav;&quot;, String(),&#10;                       &quot;Load .wav File&quot;)"
+                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), fileChooser (&quot;File&quot;, File(), true, false, false,&#10;                       &quot;*.wav;&quot;, String(),&#10;                       &quot;Load .wav File Here&quot;)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="530" initialHeight="184">
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 30 530 65" fill="linear: 8 32, 8 88, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>
-    <RECT pos="304 40 216 29" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
-          strokeColour="solid: 1fffffff"/>
     <RECT pos="0 95 530 89" fill="linear: 8 184, 8 136, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>
     <RECT pos="8 39 288 137" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+          strokeColour="solid: 1fffffff"/>
+    <RECT pos="8 39 288 81" fill="solid: 8c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+          strokeColour="solid: 1fffffff"/>
+    <RECT pos="304 40 216 29" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
     <ROUNDRECT pos="1 2 528 31" cornerSize="5.0" fill="linear: 0 32, 528 32, 0=ff061c20, 1=ff1c3949"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
@@ -678,7 +681,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="312 66 115 30" fill="solid: ffffffff" hasStroke="0" text="Host Block Size:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="16 92 232 30" fill="solid: ffffffff" hasStroke="0" text="Number of Filters in .wav File:"
+    <TEXT pos="16 144 232 30" fill="solid: ffffffff" hasStroke="0" text="Number of Filters in .wav File:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="312 92 200 30" fill="solid: ffffffff" hasStroke="0" text="Filter Length (s):"
@@ -690,13 +693,10 @@ BEGIN_JUCER_METADATA
     <TEXT pos="312 144 144 30" fill="solid: ffffffff" hasStroke="0" text="Host Samplerate:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="16 144 256 30" fill="solid: ffffffff" hasStroke="0" text="Enable Partitioned Convolution:"
+    <TEXT pos="16 92 232 30" fill="solid: ffffffff" hasStroke="0" text="Enable Partitioned Convolution:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 40 224 30" fill="solid: ffffffff" hasStroke="0" text="Number of Input Channels:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="16 66 88 30" fill="solid: ffffffff" hasStroke="0" text="Filters:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 118 232 31" fill="solid: ffffffff" hasStroke="0" text="Number of Output Channels:"
@@ -710,7 +710,7 @@ BEGIN_JUCER_METADATA
           italic="0" justification="33"/>
   </BACKGROUND>
   <TOGGLEBUTTON name="new toggle button" id="abe48e7ad8d6ea52" memberName="TBenablePartConv"
-                virtualName="" explicitFocusOrder="0" pos="261 146 26 26" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="261 94 26 26" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_hostBlockSize"
          virtualName="" explicitFocusOrder="0" pos="451 73 60 20" outlineCol="68a3a2a2"
@@ -718,7 +718,7 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="d9e906d62b5da562" memberName="label_NFilters"
-         virtualName="" explicitFocusOrder="0" pos="237 98 48 20" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="237 150 48 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="36"/>

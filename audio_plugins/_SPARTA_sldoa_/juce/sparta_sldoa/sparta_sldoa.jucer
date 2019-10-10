@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_sldoa" projectType="audioplug" version="1.3.10"
+<JUCERPROJECT id="lfkRjX" name="sparta_sldoa" projectType="audioplug" version="1.4.0"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_sldoa" pluginDesc="sparta_sldoa"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="SLOA"
@@ -9,8 +9,8 @@
               pluginAUExportPrefix="sparta_sldoaAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.sldoa"
               pluginAAXCategory="2" jucerVersion="5.4.4" buildVST3="0" buildRTAS="0"
               buildAAX="0" pluginManufacturerEmail="support@yourcompany.com"
-              defines="FRAME_SIZE = 512&#10;SAF_USE_INTEL_MKL" companyName="Aalto"
-              companyEmail="leo.t.mccormack@gmail.com" userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
+              companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
+              userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
               buildAUv3="0" pluginIsMidiEffectPlugin="0" displaySplashScreen="0"
               reportAppUsage="0" splashScreenColour="Dark" buildStandalone="0"
               enableIAA="0" cppLanguageStandard="14" companyCopyright="Aalto"
@@ -129,14 +129,18 @@
                   file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/afSTFT_protoFilter.h"/>
             <FILE id="bFMNCh" name="afSTFTlib.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/afSTFTlib.c"/>
             <FILE id="CHlShJ" name="afSTFTlib.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/afSTFTlib.h"/>
-            <FILE id="bH919D" name="fft4g.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/fft4g.c"/>
-            <FILE id="VVEo2B" name="fft4g.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/fft4g.h"/>
-            <FILE id="HUdP2d" name="vecTools.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/vecTools.c"/>
-            <FILE id="tNxp6p" name="vecTools.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/vecTools.h"/>
           </GROUP>
           <GROUP id="{66D0ED00-7720-1647-F2AF-3BC437994616}" name="convhull_3d">
             <FILE id="krHryP" name="convhull_3d.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/convhull_3d/convhull_3d.c"/>
             <FILE id="CHul1y" name="convhull_3d.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/convhull_3d/convhull_3d.h"/>
+          </GROUP>
+          <GROUP id="{56DB6CD8-A610-64E3-7BDE-9DA6A5C380BD}" name="kissFFT">
+            <FILE id="T21Ncb" name="_kiss_fft_guts.h" compile="0" resource="0"
+                  file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/_kiss_fft_guts.h"/>
+            <FILE id="QrAAT2" name="kiss_fft.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fft.c"/>
+            <FILE id="SLsp9j" name="kiss_fft.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fft.h"/>
+            <FILE id="j29DXR" name="kiss_fftr.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fftr.c"/>
+            <FILE id="lXngnU" name="kiss_fftr.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fftr.h"/>
           </GROUP>
           <GROUP id="{818F00E7-B80B-D472-0426-7F7B1DD3C0BC}" name="md_malloc">
             <FILE id="MAWyqd" name="md_malloc.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/resources/md_malloc/md_malloc.c"/>
@@ -147,13 +151,14 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2017 targetFolder="../../make/win64/VisualStudio2017/" externalLibraries="saf_mkl_custom.lib">
+    <VS2017 targetFolder="../../make/win64/VisualStudio2017/" externalLibraries="saf_mkl_custom.lib&#10;libiomp5md.lib"
+            extraDefs="FRAME_SIZE = 512&#10;SAF_USE_INTEL_MKL&#10;SAF_ENABLE_AFSTFT&#10;SAF_ENABLE_SH&#10;SAF_ENABLE_VBAP">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" binaryPath="../../../../lib/Win64_Debug"
-                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK"
+                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        targetName="sparta_sldoad" intermediatesPath="../../../obj/Win64_Debug"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK"
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../obj/Win64_Release" targetName="sparta_sldoa"
                        binaryPath="../../../../lib/Win64_Release"/>
@@ -175,13 +180,14 @@
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
       </MODULEPATHS>
     </VS2017>
-    <VS2015 targetFolder="../../make/win64/VisualStudio2015/" externalLibraries="saf_mkl_custom.lib">
+    <VS2015 targetFolder="../../make/win64/VisualStudio2015/" externalLibraries="saf_mkl_custom.lib&#10;libiomp5md.lib"
+            extraDefs="FRAME_SIZE = 512&#10;SAF_USE_INTEL_MKL&#10;SAF_ENABLE_AFSTFT&#10;SAF_ENABLE_SH&#10;SAF_ENABLE_VBAP">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" binaryPath="../../../../lib/Win64_Debug"
-                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK"
+                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        targetName="sparta_sldoad" intermediatesPath="../../../obj/Win64_Debug"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK"
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../obj/Win64_Release" targetName="sparta_sldoa"
                        binaryPath="../../../../lib/Win64_Release"/>
@@ -204,17 +210,16 @@
       </MODULEPATHS>
     </VS2015>
     <XCODE_MAC targetFolder="../../make/MacOSX/Xcode/" vstFolder="../../../SDKs/VST3 SDK"
-               extraFrameworks="QTKit" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom"
-               extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra">
+               extraFrameworks="QTKit" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom&#10;-L/usr/local/lib -liomp5"
+               extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra"
+               extraDefs="FRAME_SIZE = 512&#10;SAF_USE_INTEL_MKL&#10;SAF_ENABLE_AFSTFT&#10;SAF_ENABLE_SH&#10;SAF_ENABLE_VBAP">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_sldoad"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/VST2_SDK"
-                       osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib&#10;"/>
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include"
+                       osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="sparta_sldoa"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/VST2_SDK"
-                       osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib&#10;"/>
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include"
+                       osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_video" path="../../../../SDKs/modules/"/>
@@ -234,7 +239,7 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <LINUX_MAKE targetFolder="../../make/LinuxMakefile" extraLinkerFlags="-L/usr/lib -lsaf_mkl_custom"
-                extraCompilerFlags="-pedantic">
+                extraCompilerFlags="-pedantic" extraDefs="FRAME_SIZE = 512&#10;SAF_USE_INTEL_MKL&#10;SAF_ENABLE_AFSTFT&#10;SAF_ENABLE_SH&#10;SAF_ENABLE_VBAP">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_sldoa_debug" binaryPath="../../../../lib/"
                        linkTimeOptimisation="1" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/sldoa/include&#10;../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/include&#10;../../../../SDKs/VST2_SDK"/>

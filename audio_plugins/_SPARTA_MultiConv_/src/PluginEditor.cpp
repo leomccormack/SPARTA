@@ -430,7 +430,7 @@ void PluginEditor::paint (Graphics& g)
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		180, 16, 530, 11,
+		190, 16, 530, 11,
 		Justification::centredLeft, true);
 
     /* display warning message */
