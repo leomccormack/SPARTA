@@ -41,6 +41,9 @@
     <Filter Include="sparta_panner\Spatial_Audio_Framework\framework\resources\convhull_3d">
       <UniqueIdentifier>{7596FC21-74B8-2F01-1254-2DE3ED51C3D9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sparta_panner\Spatial_Audio_Framework\framework\resources\kissFFT">
+      <UniqueIdentifier>{7B04AB7D-D96D-C098-F7CF-FCD3653F9811}</UniqueIdentifier>
+    </Filter>
     <Filter Include="sparta_panner\Spatial_Audio_Framework\framework\resources\md_malloc">
       <UniqueIdentifier>{3D762423-18E3-ECC5-65B1-C62ED98AB2AA}</UniqueIdentifier>
     </Filter>
@@ -556,14 +559,14 @@
     <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\afSTFTlib.c">
       <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\fft4g.c">
-      <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\vecTools.c">
-      <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\convhull_3d\convhull_3d.c">
       <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\convhull_3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\kissFFT\kiss_fft.c">
+      <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\kissFFT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\kissFFT\kiss_fftr.c">
+      <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\kissFFT</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\md_malloc\md_malloc.c">
       <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\md_malloc</Filter>
@@ -2592,14 +2595,17 @@
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\afSTFTlib.h">
       <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\fft4g.h">
-      <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\vecTools.h">
-      <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\convhull_3d\convhull_3d.h">
       <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\convhull_3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\kissFFT\_kiss_fft_guts.h">
+      <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\kissFFT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\kissFFT\kiss_fft.h">
+      <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\kissFFT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\kissFFT\kiss_fftr.h">
+      <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\kissFFT</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\md_malloc\md_malloc.h">
       <Filter>sparta_panner\Spatial_Audio_Framework\framework\resources\md_malloc</Filter>

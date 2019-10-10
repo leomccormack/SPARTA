@@ -35,7 +35,7 @@ ifeq ($(CONFIG),Debug)
     TARGET_ARCH := -march=native
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DFRAME_SIZE=128 -DSAF_USE_INTEL_MKL -DJUCER_LINUX_MAKE_874B249D=1 -DJUCE_APP_VERSION=1.4.3 -DJUCE_APP_VERSION_HEX=0x10403 $(shell pkg-config --cflags alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl) -pthread -I../../../../SDKs/modules/juce_audio_processors/format_types/VST3_SDK -I../../juce/sparta_binauraliser/JuceLibraryCode -I../../../../SDKs/modules -I../../../../SDKs/Spatial_Audio_Framework/framework/include -I../../../../SDKs/Spatial_Audio_Framework/examples/binauraliser/include -I../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/include -I../../../../SDKs/VST2_SDK -I/usr/include $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DFRAME_SIZE=128 -DSAF_USE_INTEL_MKL -DSAF_ENABLE_AFSTFT -DSAF_ENABLE_HRIR -DSAF_ENABLE_VBAP -DSAF_ENABLE_SH -DSAF_ENABLE_SOFA_READER -DJUCER_LINUX_MAKE_874B249D=1 -DJUCE_APP_VERSION=1.4.4 -DJUCE_APP_VERSION_HEX=0x10404 $(shell pkg-config --cflags alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl) -pthread -I../../../../SDKs/modules/juce_audio_processors/format_types/VST3_SDK -I../../juce/sparta_binauraliser/JuceLibraryCode -I../../../../SDKs/modules -I../../../../SDKs/Spatial_Audio_Framework/framework/include -I../../../../SDKs/Spatial_Audio_Framework/examples/binauraliser/include -I../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/include -I../../../../SDKs/VST2_SDK -I/usr/include $(CPPFLAGS)
 
   JUCE_CPPFLAGS_VST := -DJucePlugin_Build_VST=1 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0
   JUCE_CFLAGS_VST := -fPIC -fvisibility=hidden
@@ -62,7 +62,7 @@ ifeq ($(CONFIG),Release)
     TARGET_ARCH := -march=native
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DFRAME_SIZE=128 -DSAF_USE_INTEL_MKL -DJUCER_LINUX_MAKE_874B249D=1 -DJUCE_APP_VERSION=1.4.3 -DJUCE_APP_VERSION_HEX=0x10403 $(shell pkg-config --cflags alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl) -pthread -I../../../../SDKs/modules/juce_audio_processors/format_types/VST3_SDK -I../../juce/sparta_binauraliser/JuceLibraryCode -I../../../../SDKs/modules -I../../../../SDKs/Spatial_Audio_Framework/framework/include -I../../../../SDKs/Spatial_Audio_Framework/examples/binauraliser/include -I../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/include -I../../../../SDKs/VST2_SDK -I/usr/include $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DFRAME_SIZE=128 -DSAF_USE_INTEL_MKL -DSAF_ENABLE_AFSTFT -DSAF_ENABLE_HRIR -DSAF_ENABLE_VBAP -DSAF_ENABLE_SH -DSAF_ENABLE_SOFA_READER -DJUCER_LINUX_MAKE_874B249D=1 -DJUCE_APP_VERSION=1.4.4 -DJUCE_APP_VERSION_HEX=0x10404 $(shell pkg-config --cflags alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl) -pthread -I../../../../SDKs/modules/juce_audio_processors/format_types/VST3_SDK -I../../juce/sparta_binauraliser/JuceLibraryCode -I../../../../SDKs/modules -I../../../../SDKs/Spatial_Audio_Framework/framework/include -I../../../../SDKs/Spatial_Audio_Framework/examples/binauraliser/include -I../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/include -I../../../../SDKs/VST2_SDK -I/usr/include $(CPPFLAGS)
 
   JUCE_CPPFLAGS_VST := -DJucePlugin_Build_VST=1 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0
   JUCE_CFLAGS_VST := -fPIC -fvisibility=hidden
@@ -114,9 +114,9 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/saf_vbap_a1fd46c0.o \
   $(JUCE_OBJDIR)/saf_vbap_internal_3f2edaa6.o \
   $(JUCE_OBJDIR)/afSTFTlib_53a89331.o \
-  $(JUCE_OBJDIR)/fft4g_21382727.o \
-  $(JUCE_OBJDIR)/vecTools_3dfacd71.o \
   $(JUCE_OBJDIR)/convhull_3d_6ea2ea7e.o \
+  $(JUCE_OBJDIR)/kiss_fft_7a7b7f87.o \
+  $(JUCE_OBJDIR)/kiss_fftr_d4f56a95.o \
   $(JUCE_OBJDIR)/md_malloc_f5f270c0.o \
   $(JUCE_OBJDIR)/include_juce_audio_basics_bf957af6.o \
   $(JUCE_OBJDIR)/include_juce_audio_devices_d6a68fd6.o \
@@ -308,19 +308,19 @@ $(JUCE_OBJDIR)/afSTFTlib_53a89331.o: ../../../../SDKs/Spatial_Audio_Framework/fr
 	@echo "Compiling afSTFTlib.c"
 	$(V_AT)$(CC) $(JUCE_CFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/fft4g_21382727.o: ../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/fft4g.c
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling fft4g.c"
-	$(V_AT)$(CC) $(JUCE_CFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/vecTools_3dfacd71.o: ../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/vecTools.c
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling vecTools.c"
-	$(V_AT)$(CC) $(JUCE_CFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/convhull_3d_6ea2ea7e.o: ../../../../SDKs/Spatial_Audio_Framework/framework/resources/convhull_3d/convhull_3d.c
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling convhull_3d.c"
+	$(V_AT)$(CC) $(JUCE_CFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/kiss_fft_7a7b7f87.o: ../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fft.c
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling kiss_fft.c"
+	$(V_AT)$(CC) $(JUCE_CFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/kiss_fftr_d4f56a95.o: ../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fftr.c
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling kiss_fftr.c"
 	$(V_AT)$(CC) $(JUCE_CFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/md_malloc_f5f270c0.o: ../../../../SDKs/Spatial_Audio_Framework/framework/resources/md_malloc/md_malloc.c

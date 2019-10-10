@@ -112,8 +112,6 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/saf_vbap_a1fd46c0.o \
   $(JUCE_OBJDIR)/saf_vbap_internal_3f2edaa6.o \
   $(JUCE_OBJDIR)/afSTFTlib_53a89331.o \
-  $(JUCE_OBJDIR)/fft4g_21382727.o \
-  $(JUCE_OBJDIR)/vecTools_3dfacd71.o \
   $(JUCE_OBJDIR)/convhull_3d_6ea2ea7e.o \
   $(JUCE_OBJDIR)/kiss_fft_7a7b7f87.o \
   $(JUCE_OBJDIR)/kiss_fftr_d4f56a95.o \
@@ -131,7 +129,6 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/include_juce_gui_basics_6158d0d.o \
   $(JUCE_OBJDIR)/include_juce_gui_extra_2cf75592.o \
   $(JUCE_OBJDIR)/include_juce_opengl_1acffcb3.o \
-  $(JUCE_OBJDIR)/include_juce_osc_1acf13c5.o \
 
 .PHONY: clean all strip VST
 
@@ -298,16 +295,6 @@ $(JUCE_OBJDIR)/afSTFTlib_53a89331.o: ../../../../SDKs/Spatial_Audio_Framework/fr
 	@echo "Compiling afSTFTlib.c"
 	$(V_AT)$(CC) $(JUCE_CFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/fft4g_21382727.o: ../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/fft4g.c
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling fft4g.c"
-	$(V_AT)$(CC) $(JUCE_CFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/vecTools_3dfacd71.o: ../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/vecTools.c
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling vecTools.c"
-	$(V_AT)$(CC) $(JUCE_CFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/convhull_3d_6ea2ea7e.o: ../../../../SDKs/Spatial_Audio_Framework/framework/resources/convhull_3d/convhull_3d.c
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling convhull_3d.c"
@@ -391,11 +378,6 @@ $(JUCE_OBJDIR)/include_juce_gui_extra_2cf75592.o: ../../juce/sparta_matrixconv/J
 $(JUCE_OBJDIR)/include_juce_opengl_1acffcb3.o: ../../juce/sparta_matrixconv/JuceLibraryCode/include_juce_opengl.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_opengl.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/include_juce_osc_1acf13c5.o: ../../juce/sparta_matrixconv/JuceLibraryCode/include_juce_osc.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling include_juce_osc.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 clean:

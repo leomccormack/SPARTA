@@ -123,7 +123,7 @@ private:
     std::unique_ptr<TextButton> tb_loadJSON;
     std::unique_ptr<TextButton> tb_saveJSON;
     std::unique_ptr<ComboBox> CBencodingOrder;
-    std::unique_ptr<TextButton> applyDiffEQ;
+    std::unique_ptr<ToggleButton> applyDiffEQ;
 
 
     //==============================================================================
