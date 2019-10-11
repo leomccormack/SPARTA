@@ -35,19 +35,19 @@ ifeq ($(CONFIG),Debug)
     TARGET_ARCH := -march=native
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DFRAME_SIZE=64 -DSAF_USE_ATLAS -DJUCER_LINUX_MAKE_8057A466=1 -DJUCE_APP_VERSION=1.3.3 -DJUCE_APP_VERSION_HEX=0x10303 $(shell pkg-config --cflags alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl) -pthread -I../../../../SDKs/modules/juce_audio_processors/format_types/VST3_SDK -I../../juce/sparta_ambiENC/JuceLibraryCode -I../../../../SDKs/modules -I../../../../SDKs/Spatial_Audio_Framework/framework/include -I../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include -I../../../../SDKs/VST2_SDK -I/usr/include/arm-linux-gnueabihf $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DFRAME_SIZE=128 -DSAF_USE_ATLAS -DSAF_ENABLE_SOFA_READER -DJUCER_LINUX_MAKE_8057A466=1 -DJUCE_APP_VERSION=1.3.8 -DJUCE_APP_VERSION_HEX=0x10308 $(shell pkg-config --cflags alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl) -pthread -I../../../../SDKs/modules/juce_audio_processors/format_types/VST3_SDK -I../../juce/sparta_ambiBIN/JuceLibraryCode -I../../../../SDKs/modules -I../../../../SDKs/Spatial_Audio_Framework/framework/include -I../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include -I../../../../SDKs/VST2_SDK -I/usr/include/arm-linux-gnueabihf -I/usr/include $(CPPFLAGS)
 
   JUCE_CPPFLAGS_VST := -DJucePlugin_Build_VST=1 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0
   JUCE_CFLAGS_VST := -fPIC -fvisibility=hidden
   JUCE_LDFLAGS_VST := -shared -Wl,--no-undefined
-  JUCE_TARGET_VST := sparta_ambiENC_debug.so
+  JUCE_TARGET_VST := sparta_ambiBIN_debug.so
 
   JUCE_CPPFLAGS_SHARED_CODE := -DJucePlugin_Build_VST=1 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0 -DJUCE_SHARED_CODE=1
-  JUCE_TARGET_SHARED_CODE := sparta_ambiENC_debug.a
+  JUCE_TARGET_SHARED_CODE := sparta_ambiBIN_debug.a
 
-  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -fPIC -g -ggdb -O0 -flto -pedantic $(CFLAGS)
+  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -fPIC -g -ggdb -O0 $(CFLAGS)
   JUCE_CXXFLAGS += $(JUCE_CFLAGS) -std=c++14 $(CXXFLAGS)
-  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) $(shell pkg-config --libs alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl) -flto -L /usr/lib/arm-linux-gnueabihf/atlas -lblas -L /usr/lib/arm-linux-gnueabihf/atlas -llapack -lrt -ldl -lpthread -lGL $(LDFLAGS)
+  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) $(shell pkg-config --libs alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl) -L /usr/lib/arm-linux-gnueabihf/atlas -lblas -L /usr/lib/arm-linux-gnueabihf/atlas -llapack -L/lib/x86_64-linux-gnu -lnetcdf -lrt -ldl -lpthread -lGL $(LDFLAGS)
 
   CLEANCMD = rm -rf $(JUCE_OUTDIR)/$(TARGET) $(JUCE_OBJDIR)
 endif
@@ -62,19 +62,19 @@ ifeq ($(CONFIG),Release)
     TARGET_ARCH := -march=native
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DFRAME_SIZE=64 -DSAF_USE_ATLAS -DJUCER_LINUX_MAKE_8057A466=1 -DJUCE_APP_VERSION=1.3.3 -DJUCE_APP_VERSION_HEX=0x10303 $(shell pkg-config --cflags alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl) -pthread -I../../../../SDKs/modules/juce_audio_processors/format_types/VST3_SDK -I../../juce/sparta_ambiENC/JuceLibraryCode -I../../../../SDKs/modules -I../../../../SDKs/Spatial_Audio_Framework/framework/include -I../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include -I../../../../SDKs/VST2_SDK -I/usr/include/arm-linux-gnueabihf $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DFRAME_SIZE=128 -DSAF_USE_ATLAS -DSAF_ENABLE_SOFA_READER -DJUCER_LINUX_MAKE_8057A466=1 -DJUCE_APP_VERSION=1.3.8 -DJUCE_APP_VERSION_HEX=0x10308 $(shell pkg-config --cflags alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl) -pthread -I../../../../SDKs/modules/juce_audio_processors/format_types/VST3_SDK -I../../juce/sparta_ambiBIN/JuceLibraryCode -I../../../../SDKs/modules -I../../../../SDKs/Spatial_Audio_Framework/framework/include -I../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include -I../../../../SDKs/VST2_SDK -I/usr/include/arm-linux-gnueabihf -I/usr/include $(CPPFLAGS)
 
   JUCE_CPPFLAGS_VST := -DJucePlugin_Build_VST=1 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0
   JUCE_CFLAGS_VST := -fPIC -fvisibility=hidden
   JUCE_LDFLAGS_VST := -shared -Wl,--no-undefined
-  JUCE_TARGET_VST := sparta_ambiENC.so
+  JUCE_TARGET_VST := sparta_ambiBIN.so
 
   JUCE_CPPFLAGS_SHARED_CODE := -DJucePlugin_Build_VST=1 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0 -DJUCE_SHARED_CODE=1
-  JUCE_TARGET_SHARED_CODE := sparta_ambiENC.a
+  JUCE_TARGET_SHARED_CODE := sparta_ambiBIN.a
 
-  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -fPIC -O3 -pedantic $(CFLAGS)
+  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -fPIC -O3 $(CFLAGS)
   JUCE_CXXFLAGS += $(JUCE_CFLAGS) -std=c++14 $(CXXFLAGS)
-  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) $(shell pkg-config --libs alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl) -fvisibility=hidden -L /usr/lib/arm-linux-gnueabihf/atlas -lblas -L /usr/lib/arm-linux-gnueabihf/atlas -llapack -lrt -ldl -lpthread -lGL $(LDFLAGS)
+  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) $(shell pkg-config --libs alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl) -fvisibility=hidden -L /usr/lib/arm-linux-gnueabihf/atlas -lblas -L /usr/lib/arm-linux-gnueabihf/atlas -llapack -L/lib/x86_64-linux-gnu -lnetcdf -lrt -ldl -lpthread -lGL $(LDFLAGS)
 
   CLEANCMD = rm -rf $(JUCE_OUTDIR)/$(TARGET) $(JUCE_OBJDIR)
 endif
@@ -82,15 +82,13 @@ endif
 OBJECTS_ALL := \
 
 OBJECTS_VST := \
-  $(JUCE_OBJDIR)/include_juce_audio_plugin_client_VST2_5bf8103e.o \
+  $(JUCE_OBJDIR)/include_juce_audio_plugin_client_VST2_c654022b.o \
 
 OBJECTS_SHARED_CODE := \
-  $(JUCE_OBJDIR)/PluginEditor_758fa7c0.o \
   $(JUCE_OBJDIR)/PluginProcessor_9be2e769.o \
-  $(JUCE_OBJDIR)/pannerView_14409603.o \
-  $(JUCE_OBJDIR)/inputCoordsView_9cb3c537.o \
-  $(JUCE_OBJDIR)/ambi_enc_6ece9694.o \
-  $(JUCE_OBJDIR)/ambi_enc_internal_44381952.o \
+  $(JUCE_OBJDIR)/PluginEditor_758fa7c0.o \
+  $(JUCE_OBJDIR)/ambi_bin_3edfbfb4.o \
+  $(JUCE_OBJDIR)/ambi_bin_internal_43933432.o \
   $(JUCE_OBJDIR)/saf_cdf4sap_fcdc8d1a.o \
   $(JUCE_OBJDIR)/saf_hoa_e8f374e8.o \
   $(JUCE_OBJDIR)/saf_hoa_internal_cac6197e.o \
@@ -118,19 +116,20 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/kiss_fft_7a7b7f87.o \
   $(JUCE_OBJDIR)/kiss_fftr_d4f56a95.o \
   $(JUCE_OBJDIR)/md_malloc_f5f270c0.o \
-  $(JUCE_OBJDIR)/include_juce_audio_basics_25d2ab80.o \
-  $(JUCE_OBJDIR)/include_juce_audio_devices_380f708c.o \
-  $(JUCE_OBJDIR)/include_juce_audio_formats_eaf6738b.o \
-  $(JUCE_OBJDIR)/include_juce_audio_plugin_client_utils_38ea2f78.o \
-  $(JUCE_OBJDIR)/include_juce_audio_processors_58fbbe9c.o \
-  $(JUCE_OBJDIR)/include_juce_core_373ac111.o \
-  $(JUCE_OBJDIR)/include_juce_cryptography_283c1ade.o \
-  $(JUCE_OBJDIR)/include_juce_data_structures_3294aed.o \
-  $(JUCE_OBJDIR)/include_juce_events_57e00a4b.o \
-  $(JUCE_OBJDIR)/include_juce_graphics_5ee1ff7d.o \
-  $(JUCE_OBJDIR)/include_juce_gui_basics_c0b3003b.o \
-  $(JUCE_OBJDIR)/include_juce_gui_extra_e067c4a4.o \
-  $(JUCE_OBJDIR)/include_juce_opengl_529236e1.o \
+  $(JUCE_OBJDIR)/include_juce_audio_basics_128058ed.o \
+  $(JUCE_OBJDIR)/include_juce_audio_devices_e11770bf.o \
+  $(JUCE_OBJDIR)/include_juce_audio_formats_93fe73be.o \
+  $(JUCE_OBJDIR)/include_juce_audio_plugin_client_utils_1a0c7b2b.o \
+  $(JUCE_OBJDIR)/include_juce_audio_processors_b30aed89.o \
+  $(JUCE_OBJDIR)/include_juce_core_80cf2b7e.o \
+  $(JUCE_OBJDIR)/include_juce_cryptography_14e9c84b.o \
+  $(JUCE_OBJDIR)/include_juce_data_structures_8a320a60.o \
+  $(JUCE_OBJDIR)/include_juce_events_8e038d78.o \
+  $(JUCE_OBJDIR)/include_juce_graphics_9a316b6a.o \
+  $(JUCE_OBJDIR)/include_juce_gui_basics_65d724e8.o \
+  $(JUCE_OBJDIR)/include_juce_gui_extra_f05d657.o \
+  $(JUCE_OBJDIR)/include_juce_opengl_88b5ba0e.o \
+  $(JUCE_OBJDIR)/include_juce_osc_c6eacc4a.o \
 
 .PHONY: clean all strip VST
 
@@ -142,7 +141,7 @@ VST : $(JUCE_OUTDIR)/$(JUCE_TARGET_VST)
 $(JUCE_OUTDIR)/$(JUCE_TARGET_VST) : $(OBJECTS_VST) $(RESOURCES) $(JUCE_OUTDIR)/$(JUCE_TARGET_SHARED_CODE)
 	@command -v pkg-config >/dev/null 2>&1 || { echo >&2 "pkg-config not installed. Please, install it."; exit 1; }
 	@pkg-config --print-errors alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl
-	@echo Linking "sparta_ambiENC - VST"
+	@echo Linking "sparta_ambiBIN - VST"
 	-$(V_AT)mkdir -p $(JUCE_BINDIR)
 	-$(V_AT)mkdir -p $(JUCE_LIBDIR)
 	-$(V_AT)mkdir -p $(JUCE_OUTDIR)
@@ -151,45 +150,35 @@ $(JUCE_OUTDIR)/$(JUCE_TARGET_VST) : $(OBJECTS_VST) $(RESOURCES) $(JUCE_OUTDIR)/$
 $(JUCE_OUTDIR)/$(JUCE_TARGET_SHARED_CODE) : $(OBJECTS_SHARED_CODE) $(RESOURCES)
 	@command -v pkg-config >/dev/null 2>&1 || { echo >&2 "pkg-config not installed. Please, install it."; exit 1; }
 	@pkg-config --print-errors alsa x11 xinerama xext freetype2 webkit2gtk-4.0 gtk+-x11-3.0 libcurl
-	@echo Linking "sparta_ambiENC - Shared Code"
+	@echo Linking "sparta_ambiBIN - Shared Code"
 	-$(V_AT)mkdir -p $(JUCE_BINDIR)
 	-$(V_AT)mkdir -p $(JUCE_LIBDIR)
 	-$(V_AT)mkdir -p $(JUCE_OUTDIR)
 	$(V_AT)$(AR) -rcs $(JUCE_OUTDIR)/$(JUCE_TARGET_SHARED_CODE) $(OBJECTS_SHARED_CODE)
 
-$(JUCE_OBJDIR)/include_juce_audio_plugin_client_VST2_5bf8103e.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_audio_plugin_client_VST2.cpp
+$(JUCE_OBJDIR)/include_juce_audio_plugin_client_VST2_c654022b.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_audio_plugin_client_VST2.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_audio_plugin_client_VST2.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_VST) $(JUCE_CFLAGS_VST) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/PluginEditor_758fa7c0.o: ../../src/PluginEditor.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PluginEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/PluginProcessor_9be2e769.o: ../../src/PluginProcessor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling PluginProcessor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/pannerView_14409603.o: ../../src/pannerView.cpp
+$(JUCE_OBJDIR)/PluginEditor_758fa7c0.o: ../../src/PluginEditor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling pannerView.cpp"
+	@echo "Compiling PluginEditor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/inputCoordsView_9cb3c537.o: ../../src/inputCoordsView.cpp
+$(JUCE_OBJDIR)/ambi_bin_3edfbfb4.o: ../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/src/ambi_bin.c
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling inputCoordsView.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/ambi_enc_6ece9694.o: ../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/src/ambi_enc.c
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ambi_enc.c"
+	@echo "Compiling ambi_bin.c"
 	$(V_AT)$(CC) $(JUCE_CFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/ambi_enc_internal_44381952.o: ../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/src/ambi_enc_internal.c
+$(JUCE_OBJDIR)/ambi_bin_internal_43933432.o: ../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/src/ambi_bin_internal.c
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ambi_enc_internal.c"
+	@echo "Compiling ambi_bin_internal.c"
 	$(V_AT)$(CC) $(JUCE_CFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/saf_cdf4sap_fcdc8d1a.o: ../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_cdf4sap/saf_cdf4sap.c
@@ -327,77 +316,82 @@ $(JUCE_OBJDIR)/md_malloc_f5f270c0.o: ../../../../SDKs/Spatial_Audio_Framework/fr
 	@echo "Compiling md_malloc.c"
 	$(V_AT)$(CC) $(JUCE_CFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_audio_basics_25d2ab80.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_audio_basics.cpp
+$(JUCE_OBJDIR)/include_juce_audio_basics_128058ed.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_audio_basics.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_audio_basics.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_audio_devices_380f708c.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_audio_devices.cpp
+$(JUCE_OBJDIR)/include_juce_audio_devices_e11770bf.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_audio_devices.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_audio_devices.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_audio_formats_eaf6738b.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_audio_formats.cpp
+$(JUCE_OBJDIR)/include_juce_audio_formats_93fe73be.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_audio_formats.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_audio_formats.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_audio_plugin_client_utils_38ea2f78.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_audio_plugin_client_utils.cpp
+$(JUCE_OBJDIR)/include_juce_audio_plugin_client_utils_1a0c7b2b.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_audio_plugin_client_utils.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_audio_plugin_client_utils.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_audio_processors_58fbbe9c.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_audio_processors.cpp
+$(JUCE_OBJDIR)/include_juce_audio_processors_b30aed89.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_audio_processors.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_audio_processors.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_core_373ac111.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_core.cpp
+$(JUCE_OBJDIR)/include_juce_core_80cf2b7e.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_core.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_core.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_cryptography_283c1ade.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_cryptography.cpp
+$(JUCE_OBJDIR)/include_juce_cryptography_14e9c84b.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_cryptography.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_cryptography.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_data_structures_3294aed.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_data_structures.cpp
+$(JUCE_OBJDIR)/include_juce_data_structures_8a320a60.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_data_structures.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_data_structures.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_events_57e00a4b.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_events.cpp
+$(JUCE_OBJDIR)/include_juce_events_8e038d78.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_events.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_events.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_graphics_5ee1ff7d.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_graphics.cpp
+$(JUCE_OBJDIR)/include_juce_graphics_9a316b6a.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_graphics.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_graphics.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_gui_basics_c0b3003b.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_gui_basics.cpp
+$(JUCE_OBJDIR)/include_juce_gui_basics_65d724e8.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_gui_basics.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_gui_basics.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_gui_extra_e067c4a4.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_gui_extra.cpp
+$(JUCE_OBJDIR)/include_juce_gui_extra_f05d657.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_gui_extra.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_gui_extra.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_opengl_529236e1.o: ../../juce/sparta_ambiENC/JuceLibraryCode/include_juce_opengl.cpp
+$(JUCE_OBJDIR)/include_juce_opengl_88b5ba0e.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_opengl.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_opengl.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/include_juce_osc_c6eacc4a.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_osc.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling include_juce_osc.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
 clean:
-	@echo Cleaning sparta_ambiENC
+	@echo Cleaning sparta_ambiBIN
 	$(V_AT)$(CLEANCMD)
 
 strip:
-	@echo Stripping sparta_ambiENC
+	@echo Stripping sparta_ambiBIN
 	-$(V_AT)$(STRIP) --strip-unneeded $(JUCE_OUTDIR)/$(TARGET)
 
 -include $(OBJECTS_VST:%.o=%.d)
