@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -383,7 +383,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_transitionFreq->setValue(ambi_dec_getTransitionFreq(hAmbi), dontSendNotification);
     CBchFormat->setItemEnabled(CH_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==MASTER_ORDER_FIRST ? true : false);
     CBnormScheme->setItemEnabled(NORM_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==MASTER_ORDER_FIRST ? true : false);
-    
+
     /* tooltips */
     CBmasterOrder->setTooltip("Maximum decoding order (can be lower at different frequencies). Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
     TBuseDefaultHRIRs->setTooltip("If this is 'ticked', the plug-in is using the default HRIR set from the Spatial_Audio_Framework.");
@@ -404,7 +404,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBoutputDirsPreset->setTooltip("Presets for loudspeaker arrangements to decode to.");
     tb_loadJSON->setTooltip("Loads loudspeaker directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     tb_saveJSON->setTooltip("Saves the current loudspeaker directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
-    
+
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
 
@@ -1259,7 +1259,7 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 30 656 163" fill="linear: 8 32, 8 104, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 1 654 32" cornerSize="5" fill="linear: 0 32, 656 24, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 1 654 32" cornerSize="5.0" fill="linear: 0 32, 656 24, 0=ff061c20, 1=ff1c3949"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="0 193 656 163" fill="linear: 8 352, 8 280, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>
@@ -1280,80 +1280,80 @@ BEGIN_JUCER_METADATA
     <RECT pos="446 58 196 64" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="455 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 159 424 105" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="499 122 105 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="455 86 169 30" fill="solid: ffffffff" hasStroke="0" text="Number of Outputs:"
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="164 32 149 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Settings"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="524 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Outputs"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="232 90 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 92 132 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 124 132 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="232 58 189 30" fill="solid: ffffffff" hasStroke="0" text="Binauralise Loudspeakers:"
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="12 263 141 81" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="51 261 96 30" fill="solid: ffffffff" hasStroke="0" text="Decoder 1"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="168 262 120 30" fill="solid: ffffffff" hasStroke="0" text="Cross-over (Hz)"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="339 261 96 30" fill="solid: ffffffff" hasStroke="0" text="Decoder 2"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="82 308 96 30" fill="solid: ffffffff" hasStroke="0" text="max_rE:"
-          fontname="Default font" fontsize="1e1" kerning="0" bold="1" italic="0"
-          justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="10.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 156 261 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Order Per Frequency Band"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 238 37 30" fill="solid: ffffffff" hasStroke="0" text="100"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="174 238 37 30" fill="solid: ffffffff" hasStroke="0" text="1k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="328 238 37 30" fill="solid: ffffffff" hasStroke="0" text="10k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="210 238 93 30" fill="solid: ffffffff" hasStroke="0" text="Frequency (Hz)"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="371 238 37 30" fill="solid: ffffffff" hasStroke="0" text="20k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="366 308 96 30" fill="solid: ffffffff" hasStroke="0" text="max_rE:"
-          fontname="Default font" fontsize="1e1" kerning="0" bold="1" italic="0"
-          justification="33" typefaceStyle="Bold"/>
+          fontname="Default font" fontsize="10.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="419 230 13 30" fill="solid: ffffffff" hasStroke="0" text="1"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 58 132 30" fill="solid: ffffffff" hasStroke="0" text="Max Order:"
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 1 112 32" fill="solid: ff00d8df" hasStroke="0" text="AmbiDEC"
-          fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 2 356" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
@@ -1366,9 +1366,9 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="520 64 112 20" editable="0"
             layout="33" items="Default" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_loudspeakers"
-          virtualName="" explicitFocusOrder="0" pos="592 92 40 20" min="1"
-          max="6.4e1" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="592 92 40 20" min="1.0"
+          max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
                 virtualName="" explicitFocusOrder="0" pos="409 94 24 24" buttonText=""
@@ -1384,9 +1384,9 @@ BEGIN_JUCER_METADATA
             layout="33" items="" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="27b7eb906eb4d4f" memberName="SL_transitionFreq"
           virtualName="" explicitFocusOrder="0" pos="168 296 112 40" bkgcol="ff5c5d5e"
-          trackcol="ff315b6d" min="5e2" max="2e3" int="1e-1" style="LinearHorizontal"
+          trackcol="ff315b6d" min="500.0" max="2000.0" int="0.1" style="LinearHorizontal"
           textBoxPos="TextBoxAbove" textBoxEditable="1" textBoxWidth="60"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <COMBOBOX name="new combo box" id="6fe8e095551b1808" memberName="CBdec1method"
             virtualName="" explicitFocusOrder="0" pos="24 288 116 20" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
@@ -1411,8 +1411,8 @@ BEGIN_JUCER_METADATA
   <SLIDER name="new slider" id="50ea77f60aadeeca" memberName="s_decOrder"
           virtualName="" explicitFocusOrder="0" pos="384 176 40 80" bkgcol="ff5c5d5e"
           trackcol="ff315b6d" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="0" max="1" int="1" style="LinearVertical" textBoxPos="NoTextBox"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
+          min="0.0" max="1.0" int="1.0" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON"
               virtualName="" explicitFocusOrder="0" pos="447 40 34 14" bgColOff="ff14889e"
