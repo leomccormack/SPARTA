@@ -277,13 +277,11 @@
                 extraLinkerFlags="-L /usr/lib/arm-linux-gnueabihf/atlas -lblas&#10;-L /usr/lib/arm-linux-gnueabihf/atlas -llapack">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" binaryPath="../../../../lib/" targetName="sparta_ambiENC_debug"
-                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include/arm-linux-gnueabihf&#10;"
-                       libraryPath="../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/lib&#10;"
+                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include/arm-linux-gnueabihf&#10;"
                        userNotes="/usr/lib/arm-linux-gnueabihf/atlas/&#10;/usr/lib/arm-linux-gnueabihf/lapack/"
                        linkTimeOptimisation="1"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="sparta_ambiENC" binaryPath="../../../../lib/"
-                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include/arm-linux-gnueabihf&#10;&#10;"
-                       libraryPath="../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/lib&#10;"
+                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include/arm-linux-gnueabihf&#10;&#10;"
                        userNotes="/usr/lib/arm-linux-gnueabihf/atlas/&#10;/usr/lib/arm-linux-gnueabihf/lapack/"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
