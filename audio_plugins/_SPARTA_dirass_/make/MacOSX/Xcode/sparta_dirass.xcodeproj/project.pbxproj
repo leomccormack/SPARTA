@@ -1450,7 +1450,7 @@
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/dirass/include",
 					"../../../../../SDKs/VST2_SDK",
-					"/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include",
+					"/opt/intel/compilers_and_libraries/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1509,7 +1509,7 @@
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/dirass/include",
 					"../../../../../SDKs/VST2_SDK",
-					"/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include",
+					"/opt/intel/compilers_and_libraries/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1566,7 +1566,7 @@
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/dirass/include",
 					"../../../../../SDKs/VST2_SDK",
-					"/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include",
+					"/opt/intel/compilers_and_libraries/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1619,7 +1619,7 @@
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/dirass/include",
 					"../../../../../SDKs/VST2_SDK",
-					"/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include",
+					"/opt/intel/compilers_and_libraries/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);

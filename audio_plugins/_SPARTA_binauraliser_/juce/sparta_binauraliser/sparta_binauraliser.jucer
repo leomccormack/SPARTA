@@ -226,11 +226,11 @@
                extraDefs="FRAME_SIZE = 128&#10;SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_binauraliser_debug"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/binauraliser/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include"
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/binauraliser/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries/mac/mkl/include"
                        osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"
                        enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="sparta_binauraliser"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/binauraliser/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include"
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/binauraliser/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries/mac/mkl/include"
                        osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"
                        enablePluginBinaryCopyStep="1" linkTimeOptimisation="0"/>
       </CONFIGURATIONS>
