@@ -169,17 +169,17 @@
 			isa = PBXBuildFile;
 			fileRef = E434FCCB391CB55DB65D8455;
 		};
-		D856E6D99882DC7F40C932A7 = {
-			isa = PBXBuildFile;
-			fileRef = 61739747181B18C6F3216CDB;
-		};
-		1A90B7185E45BA71EFB674AC = {
-			isa = PBXBuildFile;
-			fileRef = BB61D4EC1F16F0470E7913C5;
-		};
 		E262C6B217C74DB2FED83C24 = {
 			isa = PBXBuildFile;
 			fileRef = 63496E429AAD142ED725A172;
+		};
+		E6F9BAD7F8CF57A3E96124C0 = {
+			isa = PBXBuildFile;
+			fileRef = 6790462FF58152FDB2ED0603;
+		};
+		0B002A083A660C07924AEAEF = {
+			isa = PBXBuildFile;
+			fileRef = D6862FB84274E700ECDA8AB7;
 		};
 		B17C9B065FB063DCC359CF83 = {
 			isa = PBXBuildFile;
@@ -258,13 +258,6 @@
 			includeInIndex = 0;
 			path = "sparta_ambiDRC.vst";
 			sourceTree = "BUILT_PRODUCTS_DIR";
-		};
-		0B746C75FF02801818E29639 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = fft4g.h;
-			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/fft4g.h";
-			sourceTree = "SOURCE_ROOT";
 		};
 		0D5710B71E3CECC32DFDCC66 = {
 			isa = PBXFileReference;
@@ -399,6 +392,13 @@
 			path = "../../../juce/sparta_ambiDRC/JuceLibraryCode/include_juce_gui_basics.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
+		4CA368BD5A91A6540DEE8C8A = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "_kiss_fft_guts.h";
+			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/_kiss_fft_guts.h";
+			sourceTree = "SOURCE_ROOT";
+		};
 		4CBDDE93A686112FB6E60438 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -504,13 +504,6 @@
 			path = "Info-VST.plist";
 			sourceTree = "SOURCE_ROOT";
 		};
-		5E8375BD17068F8762A41A76 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = vecTools.h;
-			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/vecTools.h";
-			sourceTree = "SOURCE_ROOT";
-		};
 		5E90D3403C5AD63D723BBDA9 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -532,18 +525,18 @@
 			path = "../../../juce/sparta_ambiDRC/JuceLibraryCode/AppConfig.h";
 			sourceTree = "SOURCE_ROOT";
 		};
-		61739747181B18C6F3216CDB = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.c;
-			name = fft4g.c;
-			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/fft4g.c";
-			sourceTree = "SOURCE_ROOT";
-		};
 		63496E429AAD142ED725A172 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = "convhull_3d.c";
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/convhull_3d/convhull_3d.c";
+			sourceTree = "SOURCE_ROOT";
+		};
+		6790462FF58152FDB2ED0603 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = "kiss_fft.c";
+			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fft.c";
 			sourceTree = "SOURCE_ROOT";
 		};
 		68FCB5D2CB357B3BF7FB6DC6 = {
@@ -749,6 +742,13 @@
 			path = ../../../src/PluginEditor.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		A36545B8D6D5F997C8B04B04 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "kiss_fftr.h";
+			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fftr.h";
+			sourceTree = "SOURCE_ROOT";
+		};
 		A3C489223E623AFC577235D6 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -826,13 +826,6 @@
 			path = "sparta_ambiDRC.entitlements";
 			sourceTree = "SOURCE_ROOT";
 		};
-		BB61D4EC1F16F0470E7913C5 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.c;
-			name = vecTools.c;
-			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/vecTools.c";
-			sourceTree = "SOURCE_ROOT";
-		};
 		C158315FCC24648D6F413EC2 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
@@ -896,6 +889,13 @@
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_vbap/saf_vbap.h";
 			sourceTree = "SOURCE_ROOT";
 		};
+		D6862FB84274E700ECDA8AB7 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = "kiss_fftr.c";
+			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fftr.c";
+			sourceTree = "SOURCE_ROOT";
+		};
 		D9151D0B6FF1120CB523EAC2 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
@@ -943,6 +943,13 @@
 			lastKnownFileType = sourcecode.c.c;
 			name = afSTFTlib.c;
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/afSTFTlib.c";
+			sourceTree = "SOURCE_ROOT";
+		};
+		E7AB0DADC7D20545BAD7B2B4 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "kiss_fft.h";
+			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/kissFFT/kiss_fft.h";
 			sourceTree = "SOURCE_ROOT";
 		};
 		EBC60B44EF3FD3291733E113 = {
@@ -1169,10 +1176,6 @@
 				7E6D83D439C67FECA63E9F0C,
 				E434FCCB391CB55DB65D8455,
 				539A570ACE4BC2FAF031FF76,
-				61739747181B18C6F3216CDB,
-				0B746C75FF02801818E29639,
-				BB61D4EC1F16F0470E7913C5,
-				5E8375BD17068F8762A41A76,
 			);
 			name = afSTFT;
 			sourceTree = "<group>";
@@ -1184,6 +1187,18 @@
 				A4159E1CFD61094A870ED0D5,
 			);
 			name = "convhull_3d";
+			sourceTree = "<group>";
+		};
+		6F139104D4A4A2C19FBC6720 = {
+			isa = PBXGroup;
+			children = (
+				4CA368BD5A91A6540DEE8C8A,
+				6790462FF58152FDB2ED0603,
+				E7AB0DADC7D20545BAD7B2B4,
+				D6862FB84274E700ECDA8AB7,
+				A36545B8D6D5F997C8B04B04,
+			);
+			name = kissFFT;
 			sourceTree = "<group>";
 		};
 		8D24327E3E52D873152E8A38 = {
@@ -1200,6 +1215,7 @@
 			children = (
 				BA2553C99EC31AA472321D2F,
 				9373FD515D31165E72019A91,
+				6F139104D4A4A2C19FBC6720,
 				8D24327E3E52D873152E8A38,
 			);
 			name = resources;
@@ -1366,8 +1382,8 @@
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.2.1",
-					"JUCE_APP_VERSION_HEX=0x10201",
+					"JUCE_APP_VERSION=1.2.2",
+					"JUCE_APP_VERSION_HEX=0x10202",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1386,23 +1402,19 @@
 					"../../../../../SDKs/modules",
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include",
-					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
+					"/opt/intel/compilers_and_libraries/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-VST.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST/";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"",
-				);
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CPLUSPLUSFLAGS = "-pedantic -W  -Wall  -Wextra";
-				OTHER_LDFLAGS = "-bundle -lsparta_ambiDRC -L/usr/local/lib -lsaf_mkl_custom";
+				OTHER_LDFLAGS = "-bundle -lsparta_ambiDRC -L/usr/local/lib -lsaf_mkl_custom -L/usr/local/lib -liomp5";
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoMcCormack.SPARTA;
 				PRODUCT_NAME = "sparta_ambiDRC";
 				USE_HEADERMAP = NO;
@@ -1430,8 +1442,8 @@
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.2.1",
-					"JUCE_APP_VERSION_HEX=0x10201",
+					"JUCE_APP_VERSION=1.2.2",
+					"JUCE_APP_VERSION_HEX=0x10202",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1449,22 +1461,18 @@
 					"../../../../../SDKs/modules",
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include",
-					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
+					"/opt/intel/compilers_and_libraries/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-VST.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST/";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"",
-				);
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CPLUSPLUSFLAGS = "-pedantic -W  -Wall  -Wextra";
-				OTHER_LDFLAGS = "-bundle -lsparta_ambiDRC_debug -L/usr/local/lib -lsaf_mkl_custom";
+				OTHER_LDFLAGS = "-bundle -lsparta_ambiDRC_debug -L/usr/local/lib -lsaf_mkl_custom -L/usr/local/lib -liomp5";
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoMcCormack.SPARTA;
 				PRODUCT_NAME = "sparta_ambiDRC_debug";
 				USE_HEADERMAP = NO;
@@ -1490,8 +1498,8 @@
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.2.1",
-					"JUCE_APP_VERSION_HEX=0x10201",
+					"JUCE_APP_VERSION=1.2.2",
+					"JUCE_APP_VERSION_HEX=0x10202",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1510,16 +1518,12 @@
 					"../../../../../SDKs/modules",
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include",
-					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
+					"/opt/intel/compilers_and_libraries/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"",
-				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CPLUSPLUSFLAGS = "-pedantic -W  -Wall  -Wextra";
@@ -1548,8 +1552,8 @@
 					"FRAME_SIZE=128",
 					"SAF_USE_INTEL_MKL",
 					"JUCER_XCODE_MAC_22D397B3=1",
-					"JUCE_APP_VERSION=1.2.1",
-					"JUCE_APP_VERSION_HEX=0x10201",
+					"JUCE_APP_VERSION=1.2.2",
+					"JUCE_APP_VERSION_HEX=0x10202",
 					"JucePlugin_Build_VST=1",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1567,16 +1571,12 @@
 					"../../../../../SDKs/modules",
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_drc/include",
-					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
+					"/opt/intel/compilers_and_libraries/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"",
-				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CPLUSPLUSFLAGS = "-pedantic -W  -Wall  -Wextra";
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoMcCormack.SPARTA;
@@ -1813,9 +1813,9 @@
 				3AF3290C581FA015F357EED0,
 				F4EEA86CA957574DEFCDB6FF,
 				A23F17D48FF506F566FB86FC,
-				D856E6D99882DC7F40C932A7,
-				1A90B7185E45BA71EFB674AC,
 				E262C6B217C74DB2FED83C24,
+				E6F9BAD7F8CF57A3E96124C0,
+				0B002A083A660C07924AEAEF,
 				B17C9B065FB063DCC359CF83,
 				C3DF68394FA86D73B7B319F8,
 				C001E76ECC793F5BBE27A03F,

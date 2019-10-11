@@ -64,9 +64,7 @@ private:
     int nNumOutputs;        /* current number of output channels */
     int nSampleRate;        /* current host sample rate */
     int nHostBlockSize;     /* typical host block size to expect, in samples */
-    bool isPlaying;
-    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead::CurrentPositionInfo currentPosition;
+    bool isPlaying; 
     String lastWavDirectory;
 
     /***************************************************************************\

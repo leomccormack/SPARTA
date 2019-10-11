@@ -165,14 +165,6 @@
 			isa = PBXBuildFile;
 			fileRef = E434FCCB391CB55DB65D8455;
 		};
-		D856E6D99882DC7F40C932A7 = {
-			isa = PBXBuildFile;
-			fileRef = 61739747181B18C6F3216CDB;
-		};
-		1A90B7185E45BA71EFB674AC = {
-			isa = PBXBuildFile;
-			fileRef = BB61D4EC1F16F0470E7913C5;
-		};
 		E262C6B217C74DB2FED83C24 = {
 			isa = PBXBuildFile;
 			fileRef = 63496E429AAD142ED725A172;
@@ -265,13 +257,6 @@
 			lastKnownFileType = file;
 			name = "juce_osc";
 			path = "../../../../../SDKs/modules/juce_osc";
-			sourceTree = "SOURCE_ROOT";
-		};
-		0B746C75FF02801818E29639 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = fft4g.h;
-			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/fft4g.h";
 			sourceTree = "SOURCE_ROOT";
 		};
 		0E5BED8710D85249E474B51A = {
@@ -519,25 +504,11 @@
 			path = "Info-VST.plist";
 			sourceTree = "SOURCE_ROOT";
 		};
-		5E8375BD17068F8762A41A76 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = vecTools.h;
-			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/vecTools.h";
-			sourceTree = "SOURCE_ROOT";
-		};
 		5E90D3403C5AD63D723BBDA9 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = "saf_error.h";
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_error.h";
-			sourceTree = "SOURCE_ROOT";
-		};
-		61739747181B18C6F3216CDB = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.c;
-			name = fft4g.c;
-			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/fft4g.c";
 			sourceTree = "SOURCE_ROOT";
 		};
 		63496E429AAD142ED725A172 = {
@@ -839,13 +810,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = multiconv.h;
 			path = "../../../../../SDKs/Spatial_Audio_Framework/examples/multiconv/include/multiconv.h";
-			sourceTree = "SOURCE_ROOT";
-		};
-		BB61D4EC1F16F0470E7913C5 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.c;
-			name = vecTools.c;
-			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/vecTools.c";
 			sourceTree = "SOURCE_ROOT";
 		};
 		BD134CE10AA903FEADFDC809 = {
@@ -1205,10 +1169,6 @@
 				7E6D83D439C67FECA63E9F0C,
 				E434FCCB391CB55DB65D8455,
 				539A570ACE4BC2FAF031FF76,
-				61739747181B18C6F3216CDB,
-				0B746C75FF02801818E29639,
-				BB61D4EC1F16F0470E7913C5,
-				5E8375BD17068F8762A41A76,
 			);
 			name = afSTFT;
 			sourceTree = "<group>";
@@ -1432,22 +1392,18 @@
 					"../../../../../SDKs/modules",
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/multiconv/include",
-					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
+					"/opt/intel/compilers_and_libraries/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-VST.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST/";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"",
-				);
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CPLUSPLUSFLAGS = "-pedantic -W  -Wall  -Wextra";
-				OTHER_LDFLAGS = "-bundle -lsparta_multiconv_debug -L/usr/local/lib -lsaf_mkl_custom";
+				OTHER_LDFLAGS = "-bundle -lsparta_multiconv_debug -L/usr/local/lib -lsaf_mkl_custom -L/usr/local/lib -liomp5";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_multiconv_debug";
 				USE_HEADERMAP = NO;
@@ -1494,23 +1450,19 @@
 					"../../../../../SDKs/modules",
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/multiconv/include",
-					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
+					"/opt/intel/compilers_and_libraries/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-VST.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST/";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"",
-				);
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CPLUSPLUSFLAGS = "-pedantic -W  -Wall  -Wextra";
-				OTHER_LDFLAGS = "-bundle -lsparta_multiconv -L/usr/local/lib -lsaf_mkl_custom";
+				OTHER_LDFLAGS = "-bundle -lsparta_multiconv -L/usr/local/lib -lsaf_mkl_custom -L/usr/local/lib -liomp5";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
 				PRODUCT_NAME = "sparta_multiconv";
 				USE_HEADERMAP = NO;
@@ -1554,16 +1506,12 @@
 					"../../../../../SDKs/modules",
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/multiconv/include",
-					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
+					"/opt/intel/compilers_and_libraries/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"",
-				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CPLUSPLUSFLAGS = "-pedantic -W  -Wall  -Wextra";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AALTO.SPARTA;
@@ -1610,16 +1558,12 @@
 					"../../../../../SDKs/modules",
 					"../../../../../SDKs/Spatial_Audio_Framework/framework/include",
 					"../../../../../SDKs/Spatial_Audio_Framework/examples/multiconv/include",
-					"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include",
 					"../../../../../SDKs/VST2_SDK",
+					"/opt/intel/compilers_and_libraries/mac/mkl/include",
 					"../../../../../SDKs/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib\"",
-				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CPLUSPLUSFLAGS = "-pedantic -W  -Wall  -Wextra";
@@ -1856,8 +1800,6 @@
 				3AF3290C581FA015F357EED0,
 				F4EEA86CA957574DEFCDB6FF,
 				A23F17D48FF506F566FB86FC,
-				D856E6D99882DC7F40C932A7,
-				1A90B7185E45BA71EFB674AC,
 				E262C6B217C74DB2FED83C24,
 				E6F9BAD7F8CF57A3E96124C0,
 				0B002A083A660C07924AEAEF,
