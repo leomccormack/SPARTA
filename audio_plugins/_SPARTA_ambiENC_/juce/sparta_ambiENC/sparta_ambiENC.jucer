@@ -272,6 +272,36 @@
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
       </MODULEPATHS>
     </LINUX_MAKE>
+    <LINUX_MAKE targetFolder="../../make/LinuxMakefileRaspberryPI" extraDefs="FRAME_SIZE = 64&#10;SAF_USE_ATLAS"
+                extraCompilerFlags="-pedantic" userNotes="/usr/lib/arm-linux-gnueabihf/blas/libblas.so&#10;/usr/lib/arm-linux-gnueabihf/lapack/liblapack.so&#10;/home/pi/openblas-0.2.20/include&#10;/home/pi/openblas-0.2.20/lib&#10;/usr/lib/arm-linux-gnueabihf/atlas/libblas.so&#10;sudo apt-get install libatlas-base-dev&#10;&#10;&#10;wget http://github.com/xianyi/OpenBLAS/archive/v0.2.20.tar.gz&#10;tar zxvf v0.2.20.tar.gz&#10;cd OpenBLAS&#10;make&#10;mkdir ../openblas-0.2.20&#10;make PREFIX=/home/pi/openblas-0.2.20 install"
+                extraLinkerFlags="-L /usr/lib/arm-linux-gnueabihf/atlas -lblas&#10;-L /usr/lib/arm-linux-gnueabihf/atlas -llapack">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" binaryPath="../../../../lib/" targetName="sparta_ambiENC_debug"
+                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include/arm-linux-gnueabihf&#10;"
+                       libraryPath="../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/lib&#10;"
+                       userNotes="/usr/lib/arm-linux-gnueabihf/atlas/&#10;/usr/lib/arm-linux-gnueabihf/lapack/"
+                       linkTimeOptimisation="1"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="sparta_ambiENC" binaryPath="../../../../lib/"
+                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include/arm-linux-gnueabihf&#10;&#10;"
+                       libraryPath="../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/lib&#10;"
+                       userNotes="/usr/lib/arm-linux-gnueabihf/atlas/&#10;/usr/lib/arm-linux-gnueabihf/lapack/"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_opengl" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_graphics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_events" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_cryptography" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_core" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
   </EXPORTFORMATS>
   <MODULES>
     <MODULES id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
