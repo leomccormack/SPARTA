@@ -219,13 +219,12 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBencodingOrder->setBounds (368, 274, 120, 20);
 
-    applyDiffEQ.reset (new TextButton ("new button"));
+    applyDiffEQ.reset (new ToggleButton ("new toggle button"));
     addAndMakeVisible (applyDiffEQ.get());
-    applyDiffEQ->setButtonText (TRANS("Apply"));
+    applyDiffEQ->setButtonText (String());
     applyDiffEQ->addListener (this);
-    applyDiffEQ->setColour (TextButton::buttonColourId, Colour (0xff42a2c8));
 
-    applyDiffEQ->setBounds (427, 313, 61, 16);
+    applyDiffEQ->setBounds (466, 309, 23, 24);
 
 
     //[UserPreSize]
@@ -392,6 +391,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     degRadTB->setToggleState(showDegreesInstead, dontSendNotification);
     CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
     normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
+    applyDiffEQ->setToggleState((bool)array2sh_getDiffEQpastAliasing(hA2sh), dontSendNotification);
 
     /* tooltips */
     CBencodingOrder->setTooltip("Encoding order. Note that the plug-in will require at least (order+1)^2 microphone array signals as input.");
@@ -878,8 +878,8 @@ void PluginEditor::paint (Graphics& g)
     }
 
     {
-        int x = 240, y = 305, width = 172, height = 30;
-        String text (TRANS("Diffuse-EQ Past Aliasing:"));
+        int x = 240, y = 305, width = 248, height = 30;
+        String text (TRANS("Enable Diffuse-EQ Past Aliasing:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1316,7 +1316,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == applyDiffEQ.get())
     {
         //[UserButtonCode_applyDiffEQ] -- add your button handler code here..
-        array2sh_applyDiffEQpastAliasing(hA2sh);
+        array2sh_setDiffEQpastAliasing(hA2sh, (int)applyDiffEQ->getToggleState());
         //[/UserButtonCode_applyDiffEQ]
     }
 
@@ -1527,7 +1527,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="92 1 112 32" fill="solid: ffe9ff00" hasStroke="0" text="Array2SH"
           fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="240 305 172 30" fill="solid: ffffffff" hasStroke="0" text="Diffuse-EQ Past Aliasing:"
+    <TEXT pos="240 305 248 30" fill="solid: ffffffff" hasStroke="0" text="Enable Diffuse-EQ Past Aliasing:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="328 65 392 31" fill="solid: ffffffff" hasStroke="0" text="Press the &quot;Analyse&quot; button"
@@ -1640,9 +1640,9 @@ BEGIN_JUCER_METADATA
   <COMBOBOX name="new combo box" id="a465903000494955" memberName="CBencodingOrder"
             virtualName="" explicitFocusOrder="0" pos="368 274 120 20" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
-  <TEXTBUTTON name="new button" id="9682df42480f4111" memberName="applyDiffEQ"
-              virtualName="" explicitFocusOrder="0" pos="427 313 61 16" bgColOff="ff42a2c8"
-              buttonText="Apply" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TOGGLEBUTTON name="new toggle button" id="5461719ed498c991" memberName="applyDiffEQ"
+                virtualName="" explicitFocusOrder="0" pos="466 309 23 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

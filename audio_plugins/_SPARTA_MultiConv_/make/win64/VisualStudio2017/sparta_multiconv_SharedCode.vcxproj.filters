@@ -556,12 +556,6 @@
     <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\afSTFTlib.c">
       <Filter>sparta_multiconv\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\fft4g.c">
-      <Filter>sparta_multiconv\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\vecTools.c">
-      <Filter>sparta_multiconv\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\convhull_3d\convhull_3d.c">
       <Filter>sparta_multiconv\Spatial_Audio_Framework\framework\resources\convhull_3d</Filter>
     </ClCompile>
@@ -2614,12 +2608,6 @@
       <Filter>sparta_multiconv\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\afSTFTlib.h">
-      <Filter>sparta_multiconv\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\fft4g.h">
-      <Filter>sparta_multiconv\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\afSTFT\vecTools.h">
       <Filter>sparta_multiconv\Spatial_Audio_Framework\framework\resources\afSTFT</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\SDKs\Spatial_Audio_Framework\framework\resources\convhull_3d\convhull_3d.h">

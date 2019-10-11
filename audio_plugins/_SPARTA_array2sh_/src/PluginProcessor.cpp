@@ -367,6 +367,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("c", array2sh_getc(hA2sh));
     xml.setAttribute("gain", array2sh_getGain(hA2sh));
     //xml.setAttribute("maxFreq", array2sh_getMaxFreq(hA2sh));
+    xml.setAttribute("enableDiffPastAliasing", array2sh_getDiffEQpastAliasing(hA2sh));
     
     xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
     
@@ -412,6 +413,8 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 array2sh_setGain(hA2sh, (float)xmlState->getDoubleAttribute("gain", 0.0));
             //if(xmlState->hasAttribute("maxFreq"))
             //    array2sh_setMaxFreq(hA2sh, (float)xmlState->getDoubleAttribute("maxFreq", 20000.0));
+            if(xmlState->hasAttribute("enableDiffPastAliasing"))
+                array2sh_setDiffEQpastAliasing(hA2sh, xmlState->getIntAttribute("enableDiffPastAliasing", 0));
             
             if(xmlState->hasAttribute("JSONFilePath"))
                 lastDir = xmlState->getStringAttribute("JSONFilePath", "");
