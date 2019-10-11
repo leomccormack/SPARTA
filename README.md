@@ -54,11 +54,8 @@ audio_plugins/_SPARTA_X_/make/
 
 To generate project files for other IDEs, you can open and configure the included .jucer files with JUCE's Projucer App accordingly.
 
-We are currently exploring CMake, to make this endeavour more streamlined.
-
 ## Known issues
 
-* Note: since Xcode cannot understand folder/file aliases, if "mkl.h" cannot be found, it is because the current header search path is set to: /opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include. Which may not correspond to your install path (i.e. you have a different version to us). If anyone has a good solution/workaround for this, please let us know : )
 * Linux versions are quite experimental, but have been tested and largely work for us (we have experienced some graphical glitches, but these are consistent with other JUCE-made plugins).  However, please report any weird behaviour. 
 * Due to missing code in the JUCE framework: on MacOSX, the camera ID cannot be changed for the visualisation plugins. And on Linux, the camera cannot be used at all.
 

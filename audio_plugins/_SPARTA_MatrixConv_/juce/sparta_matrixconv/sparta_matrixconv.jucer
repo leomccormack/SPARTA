@@ -210,11 +210,11 @@
                userNotes="-L/usr/local/lib -liomp5&#10;" extraDefs="SAF_USE_INTEL_MKL">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_matrixconv_debug"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/matrixconv/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include"
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/matrixconv/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries/mac/mkl/include"
                        osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"
                        userNotes="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib&#10;"/>
         <CONFIGURATION name="Release" optimisation="3" targetName="sparta_matrixconv"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/matrixconv/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries_2018.5.231/mac/mkl/include"
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/matrixconv/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries/mac/mkl/include"
                        osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"
                        isDebug="0" userNotes="&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"/>
       </CONFIGURATIONS>
