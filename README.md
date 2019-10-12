@@ -42,11 +42,9 @@ And can be obtained from:
 * [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework) - For the internal code used by the plug-ins
 * [VST2_SDK](https://github.com/steinbergmedia/vst3sdk/releases) - The VST2 SDK (found in [vstsdk3610_11_06_2018_build_37](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip) or older)
 
-You must also install a custom [Intel MKL](https://software.intel.com/en-us/articles/free-ipsxe-tools-and-libraries) .dll/.dylib in a system path folder. More details on this can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework). However, MacOSX users may elect to remove the "SAF_USE_INTEL_MKL" flag in the global pre-precessor definitions, in order to get around this requirement; albeit, at the expense of a reduction in performance.
-
 ### Building the plug-ins
 
-Visual Studio (2015/2017) solutions, Xcode project files, and Linux Makefiles are included in:
+Visual Studio (2015/2017) solutions, Xcode project files, Linux Makefiles (amd64), and Raspberry PI Linux Makefiles (ARM) are included in:
 
 ```
 audio_plugins/_SPARTA_X_/make/
@@ -54,9 +52,14 @@ audio_plugins/_SPARTA_X_/make/
 
 To generate project files for other IDEs, you can open and configure the included .jucer files with JUCE's Projucer App accordingly.
 
+**Note**: by default, the MacOSX, Win64 and Linux versions also require a custom Intel MKL library. More details on how to get this library can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md). However, MacOSX users may elect to remove the "SAF_USE_INTEL_MKL" flag in the global pre-precessor definitions, in order to get around this requirement; albeit, at the expense of a reduction in performance. 
+
+**Further note**: the Raspberry PI versions depend on OpenBLAS libraries and the LAPACKE interface (as the default flag is: SAF_USE_OPEN_BLAS_AND_LAPACKE). However, you may instead use the ALTAS library with the flag "SAF_USE_ATLAS", but note that some functionality will be lost; as ALTAS does not fully support LAPACK.
+
 ## Known issues
 
 * Linux versions are quite experimental, but have been tested and largely work for us (we have experienced some graphical glitches, but these are consistent with other JUCE-made plugins).  However, please report any weird behaviour. 
+* Raspberry PI versions are also quite experimental, and experience some graphical glitches, but are mostly working. 
 * Due to missing code in the JUCE framework: on MacOSX, the camera ID cannot be changed for the visualisation plugins. And on Linux, the camera cannot be used at all.
 
 Please let us know if you encounter any other issues (contact via email: leo.mccormack@aalto.fi, or raise a github "issue").
