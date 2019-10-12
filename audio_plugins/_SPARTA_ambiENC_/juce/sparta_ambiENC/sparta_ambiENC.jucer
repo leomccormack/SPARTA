@@ -272,16 +272,16 @@
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
       </MODULEPATHS>
     </LINUX_MAKE>
-    <LINUX_MAKE targetFolder="../../make/LinuxMakefileRaspberryPI" extraDefs="FRAME_SIZE = 64&#10;SAF_USE_ATLAS"
+    <LINUX_MAKE targetFolder="../../make/LinuxMakefileRaspberryPI" extraDefs="FRAME_SIZE = 64&#10;SAF_USE_OPEN_BLAS_AND_LAPACKE"
                 extraCompilerFlags="-pedantic" userNotes="/usr/lib/arm-linux-gnueabihf/blas/libblas.so&#10;/usr/lib/arm-linux-gnueabihf/lapack/liblapack.so&#10;/home/pi/openblas-0.2.20/include&#10;/home/pi/openblas-0.2.20/lib&#10;/usr/lib/arm-linux-gnueabihf/atlas/libblas.so&#10;sudo apt-get install libatlas-base-dev&#10;&#10;&#10;wget http://github.com/xianyi/OpenBLAS/archive/v0.2.20.tar.gz&#10;tar zxvf v0.2.20.tar.gz&#10;cd OpenBLAS&#10;make&#10;mkdir ../openblas-0.2.20&#10;make PREFIX=/home/pi/openblas-0.2.20 install"
-                extraLinkerFlags="-L /usr/lib/arm-linux-gnueabihf/atlas -lblas&#10;-L /usr/lib/arm-linux-gnueabihf/atlas -llapack">
+                extraLinkerFlags="-L/usr/lib -lopenblas&#10;-L/usr/lib/arm-linux-gnueabihf -llapacke">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" binaryPath="../../../../lib/" targetName="sparta_ambiENC_debug"
-                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include/arm-linux-gnueabihf&#10;"
+                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../SDKs/VST2_SDK&#10;/home/pi/openblas-0.2.20/include&#10;/usr/include&#10;"
                        userNotes="/usr/lib/arm-linux-gnueabihf/atlas/&#10;/usr/lib/arm-linux-gnueabihf/lapack/"
                        linkTimeOptimisation="1"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="sparta_ambiENC" binaryPath="../../../../lib/"
-                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include/arm-linux-gnueabihf&#10;&#10;"
+                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_enc/include&#10;../../../../SDKs/VST2_SDK&#10;/home/pi/openblas-0.2.20/include&#10;/usr/include&#10;"
                        userNotes="/usr/lib/arm-linux-gnueabihf/atlas/&#10;/usr/lib/arm-linux-gnueabihf/lapack/"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
