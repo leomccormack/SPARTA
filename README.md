@@ -38,23 +38,35 @@ SDKs/VST2_SDK
 ```
 And can be obtained from:
 
-* [modules (JUCE)](https://shop.juce.com/get-juce/download) - For audio plug-in wrappers and the GUIs (currently tested with: **JUCE v5.4.4**)
+* [modules (JUCE)](https://github.com/WeAreROLI/JUCE/releases) - For audio plug-in wrappers and the GUIs (currently tested with: **JUCE v5.4.4**)
 * [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework) - For the internal code used by the plug-ins
 * [VST2_SDK](https://github.com/steinbergmedia/vst3sdk/releases) - The VST2 SDK (found in [vstsdk3610_11_06_2018_build_37](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip) or older)
 
+Linux users must also install the following libraries:
+
+```
+sudo apt-get update
+sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x11proto-xext-dev libcurl4-openssl-dev libasound2-dev
+sudo apt-get install libhdf5-dev libnetcdf-dev libnetcdff-dev
+```
+
+**Note**: the (x86_64/amd64) MacOSX, Windows and Linux versions also require a custom Intel MKL library. More details on how to get this library can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md). However, MacOSX users may elect to remove the "SAF_USE_INTEL_MKL" flag in the global pre-precessor definitions, in order to get around this requirement; albeit, at the expense of a reduction in performance. 
+
+**Further note**: the (ARM) Raspberry Pi versions also require OpenBLAS and LAPACKE libraries, which may be installed via:
+
+```
+sudo apt install liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
+```
+
 ### Building the plug-ins
 
-Visual Studio (2015/2017) solutions, Xcode project files, Linux Makefiles (amd64), and Raspberry PI Linux Makefiles (ARM) are included in:
+Visual Studio (2015/2017) solutions, Xcode project files, Linux Makefiles (amd64), and Raspberry Pi Linux Makefiles (ARM) are included in:
 
 ```
 audio_plugins/_SPARTA_X_/make/
 ```
 
 To generate project files for other IDEs, you can open and configure the included .jucer files with JUCE's Projucer App accordingly.
-
-**Note**: by default, the MacOSX, Win64 and Linux versions also require a custom Intel MKL library. More details on how to get this library can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md). However, MacOSX users may elect to remove the "SAF_USE_INTEL_MKL" flag in the global pre-precessor definitions, in order to get around this requirement; albeit, at the expense of a reduction in performance. 
-
-**Further note**: the Raspberry PI versions depend on OpenBLAS libraries and the LAPACKE interface (as the default flag is: SAF_USE_OPEN_BLAS_AND_LAPACKE). However, you may instead use the ALTAS library with the flag "SAF_USE_ATLAS", but note that some functionality will be lost; as ALTAS does not fully support LAPACK.
 
 ## Known issues
 
