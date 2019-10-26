@@ -274,12 +274,12 @@
       </MODULEPATHS>
     </LINUX_MAKE>
     <LINUX_MAKE targetFolder="../../make/LinuxMakefileRaspberryPI" extraDefs="FRAME_SIZE = 128&#10;SAF_USE_OPEN_BLAS_AND_LAPACKE"
-                extraLinkerFlags="-L/usr/lib -lopenblas&#10;-L/usr/lib/arm-linux-gnueabihf -llapacke">
+                extraLinkerFlags="-L/usr/lib/arm-linux-gnueabihf -lopenblas -llapacke">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_panner_debug" binaryPath="../../../../lib/"
-                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/panner/include&#10;../../../../SDKs/VST2_SDK&#10;/home/pi/openblas-0.2.20/include&#10;/usr/include&#10;"/>
+                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/panner/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf&#10;"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="sparta_panner" binaryPath="../../../../lib/"
-                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/panner/include&#10;../../../../SDKs/VST2_SDK&#10;/home/pi/openblas-0.2.20/include&#10;/usr/include&#10;"/>
+                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/panner/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf&#10;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../../../SDKs/modules/"/>

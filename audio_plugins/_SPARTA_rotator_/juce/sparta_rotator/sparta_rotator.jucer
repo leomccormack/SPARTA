@@ -260,12 +260,12 @@
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
       </MODULEPATHS>
     </LINUX_MAKE>
-    <LINUX_MAKE targetFolder="../../make/LinuxMakefileRaspberryPI" extraDefs="FRAME_SIZE = 128&#10;SAF_USE_OPEN_BLAS_AND_LAPACKE"
-                extraLinkerFlags="-L/usr/lib -lopenblas&#10;-L/usr/lib/arm-linux-gnueabihf -llapacke">
+    <LINUX_MAKE targetFolder="../../make/LinuxMakefileRaspberryPI" extraDefs="FRAME_SIZE = 64&#10;SAF_USE_OPEN_BLAS_AND_LAPACKE"
+                extraLinkerFlags="-L/usr/lib/arm-linux-gnueabihf -lopenblas -llapacke">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../SDKs/VST2_SDK&#10;/home/pi/openblas-0.2.20/include&#10;/usr/include&#10;"
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf&#10;"
                        targetName="sparta_rotator_debug" binaryPath="../../../../lib/"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../SDKs/VST2_SDK&#10;/home/pi/openblas-0.2.20/include&#10;/usr/include&#10;"
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf&#10;"
                        targetName="sparta_rotator" binaryPath="../../../../lib/"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
