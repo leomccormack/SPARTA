@@ -36,26 +36,26 @@ SDKs/modules
 SDKs/Spatial_Audio_Framework
 SDKs/VST2_SDK
 ```
-And can be obtained from:
+And may be obtained from:
 
 * [modules (JUCE)](https://github.com/WeAreROLI/JUCE/releases) - For audio plug-in wrappers and the GUIs (currently tested with: **JUCE v5.4.4**)
-* [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework) - For the internal code used by the plug-ins
+* [Spatial_Audio_Framework (SAF)](https://github.com/leomccormack/Spatial_Audio_Framework) - For the internal code used by the plug-ins
 * [VST2_SDK](https://github.com/steinbergmedia/vst3sdk/releases) - The VST2 SDK (found in [vstsdk3610_11_06_2018_build_37](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip) or older)
 
-Linux users must also install the following libraries:
+**MacOSX, Windows and Linux (x86_64/amd64) versions**: also require a custom Intel MKL library. Details on how to acquire this library may be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md). 
+
+**Raspberry Pi (ARM) versions** instead require OpenBLAS and LAPACKE libraries:
 
 ```
 sudo apt-get update
+sudo apt install liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
+```
+
+**Linux (amd64/ARM) users** must also install the following libraries (the former line for JUCE, the latter line for SAF):
+
+```
 sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x11proto-xext-dev libcurl4-openssl-dev libasound2-dev
 sudo apt-get install libhdf5-dev libnetcdf-dev libnetcdff-dev
-```
-
-**Note**: the (x86_64/amd64) MacOSX, Windows and Linux versions also require a custom Intel MKL library. More details on how to get this library can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md). However, MacOSX users may elect to remove the "SAF_USE_INTEL_MKL" flag in the global pre-precessor definitions, in order to get around this requirement; albeit, at the expense of a reduction in performance. 
-
-**Further note**: the (ARM) Raspberry Pi versions also require OpenBLAS and LAPACKE libraries, which may be installed via:
-
-```
-sudo apt install liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
 ```
 
 ### Building the plug-ins
@@ -66,7 +66,7 @@ Visual Studio (2015/2017) solutions, Xcode project files, Linux Makefiles (amd64
 audio_plugins/_SPARTA_X_/make/
 ```
 
-To generate project files for other IDEs, you can open and configure the included .jucer files with JUCE's Projucer App accordingly.
+To generate project files for other IDEs, you may open and configure the included .jucer files with JUCE's Projucer App accordingly.
 
 ## Known issues
 
