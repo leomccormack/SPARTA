@@ -299,7 +299,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBpmap_method->setSelectedId(powermap_getPowermapMode(hPm), dontSendNotification);
     s_covAvg->setValue(powermap_getCovAvgCoeff(hPm), dontSendNotification);
     s_pmapEQ->setValue(powermap_getPowermapEQAllBands(hPm), dontSendNotification);
-    s_anaOrder->setRange(1, powermap_getMasterOrder(hPm), 1);
+    s_anaOrder->setRange(1, powermap_getMasterOrder(hPm)+0.1f, 1);
     s_anaOrder->setValue(powermap_getAnaOrderAllBands(hPm), dontSendNotification);
     CBchFormat->setSelectedId(powermap_getChOrder(hPm), dontSendNotification);
     CBnormScheme->setSelectedId(powermap_getNormType(hPm), dontSendNotification);
