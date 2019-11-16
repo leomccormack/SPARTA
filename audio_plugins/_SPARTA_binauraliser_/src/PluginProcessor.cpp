@@ -121,7 +121,7 @@ float PluginProcessor::getParameter (int index)
             case k_flipYaw:         return (float)binauraliser_getFlipYaw(hBin);
             case k_flipPitch:       return (float)binauraliser_getFlipPitch(hBin);
             case k_flipRoll:        return (float)binauraliser_getFlipRoll(hBin);
-            case k_numInputs:      return (float)(binauraliser_getNumSources(hBin))/(float)(BINAURALISER_MAX_NUM_INPUTS);
+            case k_numInputs:       return (float)(binauraliser_getNumSources(hBin))/(float)(BINAURALISER_MAX_NUM_INPUTS);
             default: return 0.0f;
         }
     }
