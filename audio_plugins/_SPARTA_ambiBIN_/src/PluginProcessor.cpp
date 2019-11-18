@@ -292,12 +292,11 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
             
             /* check whether the playhead is moving */
             playHead = getPlayHead();
-            bool PlayHeadAvailable = playHead->getCurrentPosition(currentPosition);
-            if (PlayHeadAvailable == true)
-                isPlaying = currentPosition.isPlaying;
+            if(playHead!=NULL)
+                isPlaying = playHead->getCurrentPosition(currentPosition) == true ? currentPosition.isPlaying : false;
             else
                 isPlaying = false;
-            
+         
             /* If there is no playhead, or it is not moving, see if there is audio in the buffer */
             if(!isPlaying){
                 for(int j=0; j<nNumInputs; j++){

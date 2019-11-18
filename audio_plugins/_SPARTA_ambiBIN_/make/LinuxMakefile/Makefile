@@ -121,6 +121,7 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/include_juce_audio_formats_93fe73be.o \
   $(JUCE_OBJDIR)/include_juce_audio_plugin_client_utils_1a0c7b2b.o \
   $(JUCE_OBJDIR)/include_juce_audio_processors_b30aed89.o \
+  $(JUCE_OBJDIR)/include_juce_audio_utils_59b1d1d3.o \
   $(JUCE_OBJDIR)/include_juce_core_80cf2b7e.o \
   $(JUCE_OBJDIR)/include_juce_cryptography_14e9c84b.o \
   $(JUCE_OBJDIR)/include_juce_data_structures_8a320a60.o \
@@ -339,6 +340,11 @@ $(JUCE_OBJDIR)/include_juce_audio_plugin_client_utils_1a0c7b2b.o: ../../juce/spa
 $(JUCE_OBJDIR)/include_juce_audio_processors_b30aed89.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_audio_processors.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_audio_processors.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/include_juce_audio_utils_59b1d1d3.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_audio_utils.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling include_juce_audio_utils.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/include_juce_core_80cf2b7e.o: ../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_core.cpp
