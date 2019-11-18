@@ -33,9 +33,17 @@
 			isa = PBXBuildFile;
 			fileRef = 36316A25ABCB16A95EE107B9;
 		};
+		77D4A73BDA8BD737AA33AF69 = {
+			isa = PBXBuildFile;
+			fileRef = E6D9139C2DC24FD86AD35FD8;
+		};
 		ADB501A6B74310903CC96848 = {
 			isa = PBXBuildFile;
 			fileRef = E12C5C4DFE19D876DAF8B905;
+		};
+		6181FCDCA25A301A42FF0F3A = {
+			isa = PBXBuildFile;
+			fileRef = AD23179989ECA1FB0747859B;
 		};
 		DADF5D5C4351E65691D220DE = {
 			isa = PBXBuildFile;
@@ -208,6 +216,10 @@
 		705B859E0A3DE137ACBDB482 = {
 			isa = PBXBuildFile;
 			fileRef = 4AB09A09F0AEA747D802C665;
+		};
+		476F6C2A402D5330CB6C4BDC = {
+			isa = PBXBuildFile;
+			fileRef = DC97DDC8C573C2A4EC0F97F4;
 		};
 		DA9F111C412A5338C32C6D58 = {
 			isa = PBXBuildFile;
@@ -467,6 +479,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = "saf_sh.h";
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sh/saf_sh.h";
+			sourceTree = "SOURCE_ROOT";
+		};
+		529584C39F4470A425E3886A = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_audio_utils";
+			path = "../../../../../SDKs/modules/juce_audio_utils";
 			sourceTree = "SOURCE_ROOT";
 		};
 		52CC57518C8F6D9545008591 = {
@@ -777,6 +796,13 @@
 			path = "../../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_audio_formats.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
+		AD23179989ECA1FB0747859B = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = DiscRecording.framework;
+			path = System/Library/Frameworks/DiscRecording.framework;
+			sourceTree = SDKROOT;
+		};
 		AE4D37D4EF57BFFB2DC76DDB = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -903,6 +929,13 @@
 			path = "../../../../../SDKs/modules/juce_audio_plugin_client";
 			sourceTree = "SOURCE_ROOT";
 		};
+		DC97DDC8C573C2A4EC0F97F4 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.objcpp;
+			name = "include_juce_audio_utils.mm";
+			path = "../../../juce/sparta_ambiBIN/JuceLibraryCode/include_juce_audio_utils.mm";
+			sourceTree = "SOURCE_ROOT";
+		};
 		DCB0D1950995A0C6AC1AEE07 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.objcpp;
@@ -951,6 +984,13 @@
 			name = afSTFTlib.c;
 			path = "../../../../../SDKs/Spatial_Audio_Framework/framework/resources/afSTFT/afSTFTlib.c";
 			sourceTree = "SOURCE_ROOT";
+		};
+		E6D9139C2DC24FD86AD35FD8 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = CoreAudioKit.framework;
+			path = System/Library/Frameworks/CoreAudioKit.framework;
+			sourceTree = SDKROOT;
 		};
 		E7AB0DADC7D20545BAD7B2B4 = {
 			isa = PBXFileReference;
@@ -1253,6 +1293,7 @@
 				70C8519D3AA64E1EE24B4474,
 				D9151D0B6FF1120CB523EAC2,
 				8CD4BC5740788DBB320BB286,
+				529584C39F4470A425E3886A,
 				9C7379669645619438421877,
 				0E5BED8710D85249E474B51A,
 				DD59848C95187A2A2A5A7A0D,
@@ -1277,6 +1318,7 @@
 				DE3028896FA86F07E867101B,
 				780E317425B481DF49C788B4,
 				4AB09A09F0AEA747D802C665,
+				DC97DDC8C573C2A4EC0F97F4,
 				3CE6E402DB143DFCE1639A0D,
 				CFB87AEACBF42EA0092AA420,
 				34071FC357EFA8095BEE79AC,
@@ -1308,7 +1350,9 @@
 				EFA1AA062C2371E00A932006,
 				6F67DB9471547286ACF4FE48,
 				36316A25ABCB16A95EE107B9,
+				E6D9139C2DC24FD86AD35FD8,
 				E12C5C4DFE19D876DAF8B905,
+				AD23179989ECA1FB0747859B,
 				0F6B49FBAB625947F2547960,
 				F395B64E2BE5D3F24FE56B5F,
 				69AABFCDE293FFEA4DDC262F,
@@ -1763,7 +1807,9 @@
 				FCA4E29BCA15B6F322441CC4,
 				53B5B7731FBD418EFCFE71E6,
 				32D9F84F9384E87B91603762,
+				77D4A73BDA8BD737AA33AF69,
 				ADB501A6B74310903CC96848,
+				6181FCDCA25A301A42FF0F3A,
 				DADF5D5C4351E65691D220DE,
 				26D124D0FE7E45ED6F9F33C5,
 				BD3CE246D4D6FAABC1140218,
@@ -1838,6 +1884,7 @@
 				F214C731F173F4D0E8B79700,
 				325A2205E64CBDE06AEB5434,
 				705B859E0A3DE137ACBDB482,
+				476F6C2A402D5330CB6C4BDC,
 				DA9F111C412A5338C32C6D58,
 				91276DB563D85A98AE2EFB52,
 				47A26264F04D9574255974BE,

@@ -6,6 +6,8 @@ xcodebuild -project _SPARTA_array2sh_/make/MacOSX/Xcode/sparta_array2sh.xcodepro
 xcodebuild -project _SPARTA_beamformer_/make/MacOSX/Xcode/sparta_beamformer.xcodeproj -alltargets -configuration Release
 xcodebuild -project _SPARTA_binauraliser_/make/MacOSX/Xcode/sparta_binauraliser.xcodeproj -alltargets -configuration Release
 xcodebuild -project _SPARTA_dirass_/make/MacOSX/Xcode/sparta_dirass.xcodeproj -alltargets -configuration Release
+xcodebuild -project _SPARTA_MatrixConv_/make/MacOSX/Xcode/sparta_matrixconv.xcodeproj -alltargets -configuration Release
+xcodebuild -project _SPARTA_MultiConv_/make/MacOSX/Xcode/sparta_multiconv.xcodeproj -alltargets -configuration Release
 xcodebuild -project _SPARTA_panner_/make/MacOSX/Xcode/sparta_panner.xcodeproj -alltargets -configuration Release
 xcodebuild -project _SPARTA_powermap_/make/MacOSX/Xcode/sparta_powermap.xcodeproj -alltargets -configuration Release
 xcodebuild -project _SPARTA_rotator_/make/MacOSX/Xcode/sparta_rotator.xcodeproj -alltargets -configuration Release

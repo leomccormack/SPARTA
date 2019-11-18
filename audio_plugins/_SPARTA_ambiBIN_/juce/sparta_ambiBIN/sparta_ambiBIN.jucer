@@ -170,6 +170,7 @@
         <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_osc" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../SDKs/modules"/>
       </MODULEPATHS>
     </VS2017>
     <VS2015 targetFolder="../../make/win64/VisualStudio2015/" vstFolder="C://SDKs/VST3 SDK"
@@ -204,6 +205,7 @@
         <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_osc" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../SDKs/modules"/>
       </MODULEPATHS>
     </VS2015>
     <XCODE_MAC targetFolder="../../make/MacOSX/Xcode/" vstFolder="../../../SDKs/VST3 SDK"
@@ -235,6 +237,7 @@
         <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_osc" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../SDKs/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <LINUX_MAKE targetFolder="../../make/LinuxMakefile" extraLinkerFlags="-L/usr/lib -lsaf_mkl_custom&#10;-L/lib/x86_64-linux-gnu -lnetcdf"
@@ -261,6 +264,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../SDKs/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
     <LINUX_MAKE targetFolder="../../make/LinuxMakefileRaspberryPI" extraDefs="FRAME_SIZE = 128&#10;SAF_USE_OPEN_BLAS_AND_LAPACKE&#10;SAF_ENABLE_SOFA_READER&#10;"
@@ -286,6 +290,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../SDKs/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
@@ -295,6 +300,7 @@
     <MODULES id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULES id="juce_core" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_cryptography" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
