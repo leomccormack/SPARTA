@@ -232,137 +232,49 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_loudspeakers->setSliderSnapsToMousePosition(false);
 
     /* add source preset options */
-#ifdef ENABLE_MONO_PRESET
     CBsourceDirsPreset->addItem (TRANS("Mono"), PRESET_MONO);
-#endif
-#ifdef ENABLE_STEREO_PRESET
     CBsourceDirsPreset->addItem (TRANS("Stereo"), PRESET_STEREO);
-#endif
-#ifdef ENABLE_5PX_PRESET
     CBsourceDirsPreset->addItem (TRANS("5.x"), PRESET_5PX);
-#endif
-#ifdef ENABLE_7PX_PRESET
     CBsourceDirsPreset->addItem (TRANS("7.x"), PRESET_7PX);
-#endif
-#ifdef ENABLE_8PX_PRESET
     CBsourceDirsPreset->addItem (TRANS("8.x"), PRESET_8PX);
-#endif
-#ifdef ENABLE_9PX_PRESET
     CBsourceDirsPreset->addItem (TRANS("9.x"), PRESET_9PX);
-#endif
-#ifdef ENABLE_10PX_PRESET
     CBsourceDirsPreset->addItem (TRANS("10.x"), PRESET_10PX);
-#endif
-#ifdef ENABLE_11PX_PRESET
     CBsourceDirsPreset->addItem (TRANS("11.x"), PRESET_11PX);
-#endif
-#ifdef ENABLE_11PX_7_4_PRESET
     CBsourceDirsPreset->addItem (TRANS("11.x (7+4)"), PRESET_11PX_7_4);
-#endif
-#ifdef ENABLE_13PX_PRESET
     CBsourceDirsPreset->addItem (TRANS("13.x"), PRESET_13PX);
-#endif
-#ifdef ENABLE_22PX_PRESET
     CBsourceDirsPreset->addItem (TRANS("22.x"), PRESET_22PX);
-#endif
-#ifdef ENABLE_AALTO_MCC_PRESET
     CBsourceDirsPreset->addItem (TRANS("Aalto MCC"), PRESET_AALTO_MCC);
-#endif
-#ifdef ENABLE_AALTO_APAJA_PRESET
     CBsourceDirsPreset->addItem (TRANS("Aalto Apaja"), PRESET_AALTO_APAJA);
-#endif
-#ifdef ENABLE_AALTO_APAJA2_PRESET
-    CBsourceDirsPreset->addItem (TRANS("Aalto Apaja 2.0"), PRESET_AALTO_APAJA2);
-#endif
-#ifdef ENABLE_AALTO_LR_PRESET
     CBsourceDirsPreset->addItem (TRANS("Aalto LR"), PRESET_AALTO_LR);
-#endif
-#ifdef ENABLE_DTU_AVIL_PRESET
     CBsourceDirsPreset->addItem (TRANS("DTU AVIL"), PRESET_DTU_AVIL);
-#endif
-#ifdef ENABLE_T_DESIGN_4_PRESET
     CBsourceDirsPreset->addItem (TRANS("T-design (4)"), PRESET_T_DESIGN_4);
-#endif
-#ifdef ENABLE_T_DESIGN_12_PRESET
     CBsourceDirsPreset->addItem (TRANS("T-design (12)"), PRESET_T_DESIGN_12);
-#endif
-#ifdef ENABLE_T_DESIGN_24_PRESET
     CBsourceDirsPreset->addItem (TRANS("T-design (24)"), PRESET_T_DESIGN_24);
-#endif
-#ifdef ENABLE_T_DESIGN_36_PRESET
     CBsourceDirsPreset->addItem (TRANS("T-design (36)"), PRESET_T_DESIGN_36);
-#endif
-#ifdef ENABLE_T_DESIGN_48_PRESET
     CBsourceDirsPreset->addItem (TRANS("T-design (48)"), PRESET_T_DESIGN_48);
-#endif
-#ifdef ENABLE_T_DESIGN_60_PRESET
     CBsourceDirsPreset->addItem (TRANS("T-design (60)"), PRESET_T_DESIGN_60);
-#endif
 
     /* add Loudspeaker preset options */
-#ifdef ENABLE_STEREO_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("Stereo"), PRESET_STEREO);
-#endif
-#ifdef ENABLE_5PX_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("5.x"), PRESET_5PX);
-#endif
-#ifdef ENABLE_7PX_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("7.x"), PRESET_7PX);
-#endif
-#ifdef ENABLE_8PX_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("8.x"), PRESET_8PX);
-#endif
-#ifdef ENABLE_9PX_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("9.x"), PRESET_9PX);
-#endif
-#ifdef ENABLE_10PX_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("10.x"), PRESET_10PX);
-#endif
-#ifdef ENABLE_11PX_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("11.x"), PRESET_11PX);
-#endif
-#ifdef ENABLE_11PX_7_4_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("11.x (7+4)"), PRESET_11PX_7_4);
-#endif
-#ifdef ENABLE_13PX_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("13.x"), PRESET_13PX);
-#endif
-#ifdef ENABLE_22PX_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("22.x"), PRESET_22PX);
-#endif
-#ifdef ENABLE_AALTO_MCC_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto MCC"), PRESET_AALTO_MCC);
-#endif
-#ifdef ENABLE_AALTO_APAJA_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto Apaja"), PRESET_AALTO_APAJA);
-#endif
-#ifdef ENABLE_AALTO_APAJA2_PRESET
-    CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto Apaja 2.0"), PRESET_AALTO_APAJA2);
-#endif
-#ifdef ENABLE_AALTO_LR_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto LR"), PRESET_AALTO_LR);
-#endif
-#ifdef ENABLE_DTU_AVIL_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("DTU AVIL"), PRESET_DTU_AVIL);
-#endif
-#ifdef ENABLE_T_DESIGN_4_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (4)"), PRESET_T_DESIGN_4);
-#endif
-#ifdef ENABLE_T_DESIGN_12_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (12)"), PRESET_T_DESIGN_12);
-#endif
-#ifdef ENABLE_T_DESIGN_24_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (24)"), PRESET_T_DESIGN_24);
-#endif
-#ifdef ENABLE_T_DESIGN_36_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (36)"), PRESET_T_DESIGN_36);
-#endif
-#ifdef ENABLE_T_DESIGN_48_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (48)"), PRESET_T_DESIGN_48);
-#endif
-#ifdef ENABLE_T_DESIGN_60_PRESET
     CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (60)"), PRESET_T_DESIGN_60);
-#endif
 
     /* source coordinates viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
