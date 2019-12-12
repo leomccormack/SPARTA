@@ -345,30 +345,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* Presets */
     presetCB->setTextWhenNothingSelected (TRANS("Default"));
-#ifdef ENABLE_SENNHEISER_AMBEO_PRESET
-    presetCB->addItem (TRANS("Sennheiser Ambeo"), PRESET_SENNHEISER_AMBEO);
-#endif
-#ifdef ENABLE_CORE_SOUND_TETRAMIC_PRESET
-    presetCB->addItem (TRANS("Core Sound TetraMic"), PRESET_CORE_SOUND_TETRAMIC);
-#endif
-#ifdef ENABLE_ZOOM_H3VR_PRESET
-    presetCB->addItem (TRANS("Zoom H3-VR"), PRESET_ZOOM_H3VR_PRESET);
-#endif
-#ifdef ENABLE_SOUND_FIELD_SPS200_PRESET
-    presetCB->addItem (TRANS("Sound-field SPS200"), PRESET_SOUND_FIELD_SPS200);
-#endif
-#ifdef ENABLE_ZYLIA_1D_PRESET
-    presetCB->addItem (TRANS("Zylia 1D"), PRESET_ZYLIA_1D);
-#endif
-#ifdef ENABLE_EIGENMIKE32_PRESET
-    presetCB->addItem (TRANS("Eigenmike32"), PRESET_EIGENMIKE32);
-#endif
-#ifdef ENABLE_DTU_MIC_PRESET
-    presetCB->addItem (TRANS("DTU mic"), PRESET_DTU_MIC );
-#endif
-#ifdef ENABLE_AALTO_HYDROPHONE_PRESET
-    presetCB->addItem (TRANS("Aalto Hydro"), PRESET_AALTO_HYDROPHONE);
-#endif
+    presetCB->addItem (TRANS("Sennheiser Ambeo"), MICROPHONE_ARRAY_PRESET_SENNHEISER_AMBEO);
+    presetCB->addItem (TRANS("Core Sound TetraMic"), MICROPHONE_ARRAY_PRESET_CORE_SOUND_TETRAMIC);
+    presetCB->addItem (TRANS("Zoom H3-VR"), MICROPHONE_ARRAY_PRESET_ZOOM_H3VR_PRESET);
+    presetCB->addItem (TRANS("Sound-field SPS200"), MICROPHONE_ARRAY_PRESET_SOUND_FIELD_SPS200);
+    presetCB->addItem (TRANS("Zylia 1D"), MICROPHONE_ARRAY_PRESET_ZYLIA_1D);
+    presetCB->addItem (TRANS("Eigenmike32"), MICROPHONE_ARRAY_PRESET_EIGENMIKE32);
+    presetCB->addItem (TRANS("DTU mic"), MICROPHONE_ARRAY_PRESET_DTU_MIC );
+    presetCB->addItem (TRANS("Aalto Hydro"), MICROPHONE_ARRAY_PRESET_AALTO_HYDROPHONE);
 
     /* grab current parameter settings */
     CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);

@@ -125,70 +125,28 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_sources->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
     SL_num_sources->setSliderSnapsToMousePosition(false);
 
-    /* add combo box options */
-#ifdef ENABLE_MONO_PRESET
-    CBsourceDirsPreset->addItem (TRANS("Mono"), PRESET_MONO);
-#endif
-#ifdef ENABLE_STEREO_PRESET
-    CBsourceDirsPreset->addItem (TRANS("Stereo"), PRESET_STEREO);
-#endif
-#ifdef ENABLE_5PX_PRESET
-    CBsourceDirsPreset->addItem (TRANS("5.x"), PRESET_5PX);
-#endif
-#ifdef ENABLE_7PX_PRESET
-    CBsourceDirsPreset->addItem (TRANS("7.x"), PRESET_7PX);
-#endif
-#ifdef ENABLE_8PX_PRESET
-    CBsourceDirsPreset->addItem (TRANS("8.x"), PRESET_8PX);
-#endif
-#ifdef ENABLE_9PX_PRESET
-    CBsourceDirsPreset->addItem (TRANS("9.x"), PRESET_9PX);
-#endif
-#ifdef ENABLE_10PX_PRESET
-    CBsourceDirsPreset->addItem (TRANS("10.x"), PRESET_10PX);
-#endif
-#ifdef ENABLE_11PX_PRESET
-    CBsourceDirsPreset->addItem (TRANS("11.x"), PRESET_11PX);
-#endif
-#ifdef ENABLE_11PX_7_4_PRESET
-    CBsourceDirsPreset->addItem (TRANS("11.x (7+4)"), PRESET_11PX_7_4);
-#endif
-#ifdef ENABLE_13PX_PRESET
-    CBsourceDirsPreset->addItem (TRANS("13.x"), PRESET_13PX);
-#endif
-#ifdef ENABLE_22PX_PRESET
-    CBsourceDirsPreset->addItem (TRANS("22.x"), PRESET_22PX);
-#endif
-#ifdef ENABLE_AALTO_MCC_PRESET
-    CBsourceDirsPreset->addItem (TRANS("Aalto MCC"), PRESET_AALTO_MCC);
-#endif
-#ifdef ENABLE_AALTO_APAJA_PRESET
-    CBsourceDirsPreset->addItem (TRANS("Aalto Apaja"), PRESET_AALTO_APAJA);
-#endif
-#ifdef ENABLE_AALTO_LR_PRESET
-    CBsourceDirsPreset->addItem (TRANS("Aalto LR"), PRESET_AALTO_LR);
-#endif
-#ifdef ENABLE_DTU_AVIL_PRESET
-    CBsourceDirsPreset->addItem (TRANS("DTU AVIL"), PRESET_DTU_AVIL);
-#endif
-#ifdef ENABLE_T_DESIGN_4_PRESET
-    CBsourceDirsPreset->addItem (TRANS("T-design (4)"), PRESET_T_DESIGN_4);
-#endif
-#ifdef ENABLE_T_DESIGN_12_PRESET
-    CBsourceDirsPreset->addItem (TRANS("T-design (12)"), PRESET_T_DESIGN_12);
-#endif
-#ifdef ENABLE_T_DESIGN_24_PRESET
-    CBsourceDirsPreset->addItem (TRANS("T-design (24)"), PRESET_T_DESIGN_24);
-#endif
-#ifdef ENABLE_T_DESIGN_36_PRESET
-    CBsourceDirsPreset->addItem (TRANS("T-design (36)"), PRESET_T_DESIGN_36);
-#endif
-#ifdef ENABLE_T_DESIGN_48_PRESET
-    CBsourceDirsPreset->addItem (TRANS("T-design (48)"), PRESET_T_DESIGN_48);
-#endif
-#ifdef ENABLE_T_DESIGN_60_PRESET
-    CBsourceDirsPreset->addItem (TRANS("T-design (60)"), PRESET_T_DESIGN_60);
-#endif
+    /* add combo box options */ 
+    CBsourceDirsPreset->addItem (TRANS("Mono"), SOURCE_CONFIG_PRESET_MONO);
+    CBsourceDirsPreset->addItem (TRANS("Stereo"), SOURCE_CONFIG_PRESET_STEREO);
+    CBsourceDirsPreset->addItem (TRANS("5.x"), SOURCE_CONFIG_PRESET_5PX);
+    CBsourceDirsPreset->addItem (TRANS("7.x"), SOURCE_CONFIG_PRESET_7PX);
+    CBsourceDirsPreset->addItem (TRANS("8.x"), SOURCE_CONFIG_PRESET_8PX);
+    CBsourceDirsPreset->addItem (TRANS("9.x"), SOURCE_CONFIG_PRESET_9PX);
+    CBsourceDirsPreset->addItem (TRANS("10.x"), SOURCE_CONFIG_PRESET_10PX);
+    CBsourceDirsPreset->addItem (TRANS("11.x"), SOURCE_CONFIG_PRESET_11PX);
+    CBsourceDirsPreset->addItem (TRANS("11.x (7+4)"), SOURCE_CONFIG_PRESET_11PX_7_4);
+    CBsourceDirsPreset->addItem (TRANS("13.x"), SOURCE_CONFIG_PRESET_13PX);
+    CBsourceDirsPreset->addItem (TRANS("22.x"), SOURCE_CONFIG_PRESET_22PX);
+    CBsourceDirsPreset->addItem (TRANS("Aalto MCC"), SOURCE_CONFIG_PRESET_AALTO_MCC);
+    CBsourceDirsPreset->addItem (TRANS("Aalto Apaja"), SOURCE_CONFIG_PRESET_AALTO_APAJA);
+    CBsourceDirsPreset->addItem (TRANS("Aalto LR"), SOURCE_CONFIG_PRESET_AALTO_LR);
+    CBsourceDirsPreset->addItem (TRANS("DTU AVIL"), SOURCE_CONFIG_PRESET_DTU_AVIL);
+    CBsourceDirsPreset->addItem (TRANS("T-design (4)"), SOURCE_CONFIG_PRESET_T_DESIGN_4);
+    CBsourceDirsPreset->addItem (TRANS("T-design (12)"), SOURCE_CONFIG_PRESET_T_DESIGN_12);
+    CBsourceDirsPreset->addItem (TRANS("T-design (24)"), SOURCE_CONFIG_PRESET_T_DESIGN_24);
+    CBsourceDirsPreset->addItem (TRANS("T-design (36)"), SOURCE_CONFIG_PRESET_T_DESIGN_36);
+    CBsourceDirsPreset->addItem (TRANS("T-design (48)"), SOURCE_CONFIG_PRESET_T_DESIGN_48);
+    CBsourceDirsPreset->addItem (TRANS("T-design (60)"), SOURCE_CONFIG_PRESET_T_DESIGN_60);
     CBorder->addItem (TRANS("1st order"), OUTPUT_ORDER_FIRST);
     CBorder->addItem (TRANS("2nd order"), OUTPUT_ORDER_SECOND);
     CBorder->addItem (TRANS("3rd order"), OUTPUT_ORDER_THIRD);
