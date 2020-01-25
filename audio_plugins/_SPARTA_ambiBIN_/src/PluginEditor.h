@@ -23,6 +23,11 @@
 
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
+#include <time.h>
+#include <iostream>
+#include <thread>
+#include <string.h>
+#include <chrono>
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
@@ -33,6 +38,11 @@ typedef enum _SPARTA_WARNINGS{
     k_warning_NinputCH,
     k_warning_NoutputCH
 }SPARTA_WARNINGS;
+
+typedef enum _TIMERS{
+    TIMER_PROCESSING_RELATED = 1,
+    TIMER_GUI_RELATED
+}TIMERS;
 
 //[/Headers]
 
@@ -47,7 +57,7 @@ typedef enum _SPARTA_WARNINGS{
                                                                     //[/Comments]
 */
 class PluginEditor  : public AudioProcessorEditor,
-                      public Timer,
+                      public MultiTimer,
                       private FilenameComponentListener,
                       public Button::Listener,
                       public ComboBox::Listener,
@@ -75,9 +85,11 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
     void* hAmbi;
-    void timerCallback() override;
+    void timerCallback(int timerID) override;
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
+    double progress = 0.0;
+    ProgressBar progressbar;
 
     /* sofa loading */
     FilenameComponent fileChooser;
