@@ -29,7 +29,7 @@
 
 //==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter), fileChooser ("File", File(), true, false, false,
+    : AudioProcessorEditor(ownerFilter), progressbar(progress), fileChooser ("File", File(), true, false, false,
       "*.sofa;*.nc;", String(),
       "Load SOFA File")
 {
@@ -289,6 +289,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     fileChooser.addListener (this);
     fileChooser.setBounds (458, 86, 174, 20);
 
+    /* ProgressBar */
+    progress = 0.0;
+    progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
+    progressbar.ProgressBar::setAlwaysOnTop(true);
+    progressbar.setColour(ProgressBar::backgroundColourId, Colours::gold);
+    progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
+
     /* grab current parameter settings */
     CBdecoderMethod->setSelectedId(ambi_bin_getDecodingMethod(hAmbi), dontSendNotification);
     TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
@@ -336,7 +343,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_DAW_fs->setTooltip("Current sampling rate, as dictated by the DAW/Host.");
 
 	/* Specify screen refresh rate */
-    startTimer(40);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(TIMER_PROCESSING_RELATED, 40);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(TIMER_GUI_RELATED, 20);
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -1109,79 +1117,104 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void PluginEditor::timerCallback()
+void PluginEditor::timerCallback(int timerID)
 {
-    /* parameters whos values can change internally should be periodically refreshed */
-    TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
-    label_N_dirs->setText(String(ambi_bin_getNDirs(hAmbi)), dontSendNotification);
-    label_HRIR_len->setText(String(ambi_bin_getHRIRlength(hAmbi)), dontSendNotification);
-    label_HRIR_fs->setText(String(ambi_bin_getHRIRsamplerate(hAmbi)), dontSendNotification);
-    label_DAW_fs->setText(String(ambi_bin_getDAWsamplerate(hAmbi)), dontSendNotification);
-    s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
-    s_pitch->setValue(ambi_bin_getPitch(hAmbi), dontSendNotification);
-    s_roll->setValue(ambi_bin_getRoll(hAmbi), dontSendNotification);
-    CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), dontSendNotification);
-    CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), dontSendNotification);
-    CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
-    CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
+    switch(timerID){
+        case TIMER_PROCESSING_RELATED:
+            /* reinitialise codec if needed */
+            if(ambi_bin_getCodecStatus(hAmbi) == CODEC_STATUS_NOT_INITIALISED){
+                try{
+                    std::thread threadInit(ambi_bin_initCodec, hAmbi);
+                    threadInit.detach();
+                } catch (const std::exception& exception) {
+                    std::cout << "Could not create thread" << exception.what() << std::endl;
+                }
+            }
+            break;
+            
+        case TIMER_GUI_RELATED:
+            /* parameters whos values can change internally should be periodically refreshed */
+            TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
+            label_N_dirs->setText(String(ambi_bin_getNDirs(hAmbi)), dontSendNotification);
+            label_HRIR_len->setText(String(ambi_bin_getHRIRlength(hAmbi)), dontSendNotification);
+            label_HRIR_fs->setText(String(ambi_bin_getHRIRsamplerate(hAmbi)), dontSendNotification);
+            label_DAW_fs->setText(String(ambi_bin_getDAWsamplerate(hAmbi)), dontSendNotification);
+            s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
+            s_pitch->setValue(ambi_bin_getPitch(hAmbi), dontSendNotification);
+            s_roll->setValue(ambi_bin_getRoll(hAmbi), dontSendNotification);
+            CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), dontSendNotification);
+            CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), dontSendNotification);
+            CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
+            CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
 
-#ifndef __APPLE__
-	/* Some parameters shouldn't be enabled if playback is ongoing */
-	if (hVst->getIsPlaying()) {
-		CBorderPreset->setEnabled(false);
-		fileChooser.setEnabled(false);
-		TBuseDefaultHRIRs->setEnabled(false);
-		TBmaxRE->setEnabled(false);
-		TBdiffMatching->setEnabled(false);
-		///////////TBphaseWarping->setEnabled(false);
-		CBdecoderMethod->setEnabled(false);
-	}
-	else {
-		CBorderPreset->setWantsKeyboardFocus(false);
-		CBorderPreset->setEnabled(true);
-		fileChooser.setEnabled(true);
-		TBuseDefaultHRIRs->setEnabled(true);
-		TBmaxRE->setEnabled(true);
-		TBdiffMatching->setEnabled(true);
-		/////////TBphaseWarping->setEnabled(true);
-		CBdecoderMethod->setEnabled(true);
-		ambi_bin_checkReInit(hAmbi);
-	}
-#endif
+            /* Progress bar */
+            if(ambi_bin_getCodecStatus(hAmbi)==CODEC_STATUS_INITIALISING){
+                addAndMakeVisible(progressbar);
+                progress = (double)ambi_bin_getProgressBar0_1(hAmbi);
+                char text[AMBI_BIN_PROGRESSBARTEXT_CHAR_LENGTH];
+                ambi_bin_getProgressBarText(hAmbi, (char*)text);
+                progressbar.setTextToDisplay(String(text));
+            }
+            else
+                removeChildComponent(&progressbar);
+ 
+            /* Some parameters shouldn't be editable during initialisation*/
+            if(ambi_bin_getCodecStatus(hAmbi)==CODEC_STATUS_INITIALISING){
+                TBuseDefaultHRIRs->setEnabled(false);
+                CBorderPreset->setEnabled(false);
+                TBmaxRE->setEnabled(false);
+                TBcompEQ->setEnabled(false);
+                CBdecoderMethod->setEnabled(false);
+                TBdiffMatching->setEnabled(false);
+                TBphaseWarping->setEnabled(false);
+                fileChooser.setEnabled(false);
+            }
+            else {
+                TBuseDefaultHRIRs->setEnabled(true);
+                CBorderPreset->setEnabled(true);
+                TBmaxRE->setEnabled(true);
+                TBcompEQ->setEnabled(true);
+                CBdecoderMethod->setEnabled(true);
+                TBdiffMatching->setEnabled(true);
+                TBphaseWarping->setEnabled(true);
+                fileChooser.setEnabled(true);
+            }
 
-    /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ( !((ambi_bin_getDAWsamplerate(hAmbi) == 44.1e3) || (ambi_bin_getDAWsamplerate(hAmbi) == 48e3)) ){
-        currentWarning = k_warning_supported_fs;
-        repaint(0,0,getWidth(),32);
-    }
-    else if (ambi_bin_getDAWsamplerate(hAmbi) != ambi_bin_getHRIRsamplerate(hAmbi)){
-        currentWarning = k_warning_mismatch_fs;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((hVst->getCurrentNumInputs() < ambi_bin_getNSHrequired(hAmbi))){
-        currentWarning = k_warning_NinputCH;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((hVst->getCurrentNumOutputs() < ambi_bin_getNumEars())){
-        currentWarning = k_warning_NoutputCH;
-        repaint(0,0,getWidth(),32);
-    }
-    else if(!hVst->getOscPortConnected() && ambi_bin_getEnableRotation(hAmbi)){
-        currentWarning = k_warning_osc_connection_fail;
-        repaint(0,0,getWidth(),32);
-    }
-    else if(currentWarning){
-        currentWarning = k_warning_none;
-        repaint(0,0,getWidth(),32);
-    }
+            /* display warning message, if needed */
+            if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
+                currentWarning = k_warning_frameSize;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ( !((ambi_bin_getDAWsamplerate(hAmbi) == 44.1e3) || (ambi_bin_getDAWsamplerate(hAmbi) == 48e3)) ){
+                currentWarning = k_warning_supported_fs;
+                repaint(0,0,getWidth(),32);
+            }
+            else if (ambi_bin_getDAWsamplerate(hAmbi) != ambi_bin_getHRIRsamplerate(hAmbi)){
+                currentWarning = k_warning_mismatch_fs;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ((hVst->getCurrentNumInputs() < ambi_bin_getNSHrequired(hAmbi))){
+                currentWarning = k_warning_NinputCH;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ((hVst->getCurrentNumOutputs() < ambi_bin_getNumEars())){
+                currentWarning = k_warning_NoutputCH;
+                repaint(0,0,getWidth(),32);
+            }
+            else if(!hVst->getOscPortConnected() && ambi_bin_getEnableRotation(hAmbi)){
+                currentWarning = k_warning_osc_connection_fail;
+                repaint(0,0,getWidth(),32);
+            }
+            else if(currentWarning){
+                currentWarning = k_warning_none;
+                repaint(0,0,getWidth(),32);
+            }
 
-    /* check if OSC port has changed */
-    if(hVst->getOscPortID() != te_oscport->getText().getIntValue())
-        hVst->setOscPortID(te_oscport->getText().getIntValue());
+            /* check if OSC port has changed */
+            if(hVst->getOscPortID() != te_oscport->getText().getIntValue())
+                hVst->setOscPortID(te_oscport->getText().getIntValue());
+            break;
+    }
 }
 
 
@@ -1199,8 +1232,8 @@ void PluginEditor::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer, private FilenameComponentListener"
-                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), fileChooser (&quot;File&quot;, File(), true, false, false,&#10;                       &quot;*.sofa;*.nc;&quot;, String(),&#10;                       &quot;Load SOFA File&quot;)"
+                 parentClasses="public AudioProcessorEditor, public MultiTimer, private FilenameComponentListener"
+                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), progressbar(progress), fileChooser (&quot;File&quot;, File(), true, false, false,&#10;                       &quot;*.sofa;*.nc;&quot;, String(),&#10;                       &quot;Load SOFA File&quot;)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="656" initialHeight="262">
   <BACKGROUND backgroundColour="ffffffff">
