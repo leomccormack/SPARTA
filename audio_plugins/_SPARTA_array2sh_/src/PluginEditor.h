@@ -26,6 +26,7 @@
 #include "eqview.h"
 #include "anaview.h"
 #include "sensorCoordsView.h"
+#include <thread>
 
 typedef enum {
     SHOW_EQ = 1,
@@ -41,6 +42,11 @@ typedef enum _SPARTA_WARNINGS{
     k_warning_NoutputCH
 }SPARTA_WARNINGS;
 
+typedef enum _TIMERS{
+    TIMER_PROCESSING_RELATED = 1,
+    TIMER_GUI_RELATED
+}TIMERS;
+
 //[/Headers]
 
 
@@ -54,7 +60,7 @@ typedef enum _SPARTA_WARNINGS{
                                                                     //[/Comments]
 */
 class PluginEditor  : public AudioProcessorEditor,
-                      public Timer,
+                      public MultiTimer,
                       public ComboBox::Listener,
                       public Slider::Listener,
                       public Button::Listener
@@ -82,9 +88,11 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
     void* hA2sh;
-    void timerCallback() override;
+    void timerCallback(int timerID) override;
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
+    double progress = 0.0;
+    ProgressBar progressbar;
 
     std::unique_ptr<Viewport> sensorCoordsVP;
     sensorCoordsView* sensorCoordsView_handle;

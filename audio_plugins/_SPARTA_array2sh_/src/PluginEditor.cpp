@@ -30,7 +30,7 @@
 
 //==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter)
+    : AudioProcessorEditor(ownerFilter) , progressbar(progress)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -339,9 +339,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     weightTypeCB->setItemEnabled(WEIGHT_RIGID_DIPOLE, shouldBeEnabled);
     weightTypeCB->setItemEnabled(WEIGHT_OPEN_CARD, shouldBeEnabled);
     weightTypeCB->setItemEnabled(WEIGHT_OPEN_DIPOLE, shouldBeEnabled);
-//    if((array2sh_getWeightType(hA2sh) == 3) || (array2sh_getWeightType(hA2sh) == 4 ))
-//        weightTypeCB->setSelectedId(1, dontSendNotification);
-//    regAmountSlider->setEnabled(shouldBeEnabled);
 
     /* Presets */
     presetCB->setTextWhenNothingSelected (TRANS("Default"));
@@ -353,6 +350,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     presetCB->addItem (TRANS("Eigenmike32"), MICROPHONE_ARRAY_PRESET_EIGENMIKE32);
     presetCB->addItem (TRANS("DTU mic"), MICROPHONE_ARRAY_PRESET_DTU_MIC );
     presetCB->addItem (TRANS("Aalto Hydro"), MICROPHONE_ARRAY_PRESET_AALTO_HYDROPHONE);
+    
+    /* ProgressBar */
+    progress = 0.0;
+    progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
+    progressbar.ProgressBar::setAlwaysOnTop(true);
+    progressbar.setColour(ProgressBar::backgroundColourId, Colours::gold);
+    progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
 
     /* grab current parameter settings */
     CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);
@@ -396,7 +400,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     applyDiffEQ->setTooltip("Applies diffuse-field equalisation past the theoretical spatial aliasing frequency of the currently configured microphone array. This may help reduce any 'harshness' perceived at the high frequencies after decoding.");
 
 	/* Specify screen refresh rate */
-    startTimer(80);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(TIMER_PROCESSING_RELATED, 80);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(TIMER_GUI_RELATED, 40);
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -1268,7 +1273,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == textButton.get())
     {
         //[UserButtonCode_textButton] -- add your button handler code here..
-        array2sh_evaluateFilters(hA2sh);
+        array2sh_setRequestEncoderEvalFLAG(hA2sh, 1);
         //[/UserButtonCode_textButton]
     }
     else if (buttonThatWasClicked == tb_loadJSON.get())
@@ -1311,98 +1316,180 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void PluginEditor::timerCallback()
+void PluginEditor::timerCallback(int timerID)
 {
-    /* parameters whos values can change internally should be periodically refreshed */
-    RSlider->setValue(array2sh_getR(hA2sh)*1e3f, dontSendNotification);
-    CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);
-    int curOrder = CBencodingOrder->getSelectedId();
-    QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
-    QSlider->setValue(array2sh_getNumSensors(hA2sh), dontSendNotification);
-    sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));
-    CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), dontSendNotification);
-    normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), dontSendNotification);
-    CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
-    normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
-
-#ifndef __APPLE__
-	/* Some parameters shouldn't be enabled if playback is ongoing */
-    if (hVst->getIsPlaying()){
-		textButton->setEnabled(false);
-        applyDiffEQ->setEnabled(false);
-    }
-	else {
-		textButton->setEnabled(true);
-        applyDiffEQ->setEnabled(true);
-		array2sh_checkReInit(hA2sh);
-	}
-#endif
-//    if (hVst->getIsPlaying())
-//        CBencodingOrder->setEnabled(false);
-//    else
-//        CBencodingOrder->setEnabled(true);
-
-    /* draw magnitude/spatial-correlation/level-difference curves */
-    if (needScreenRefreshFLAG || array2sh_getEvalReady(hA2sh)){
-        switch(dispID){
-            default:
-            case SHOW_EQ:
-                eqviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
-                eqviewIncluded->setVisible(true);
-                cohviewIncluded->setVisible(false);
-                ldiffviewIncluded->setVisible(false);
-                eqviewIncluded->repaint();
-                break;
-            case SHOW_SPATIAL_COH:
-                eqviewIncluded->setVisible(false);
-                ldiffviewIncluded->setVisible(false);
-                if(array2sh_getIsEvalValid(hA2sh)){
-                    cohviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
-                    cohviewIncluded->setVisible(true);
-                    cohviewIncluded->repaint();
+    switch(timerID){
+        case TIMER_PROCESSING_RELATED:
+            /* reinitialise codec if needed */
+            if(array2sh_getRequestEncoderEvalFLAG(hA2sh)){
+                try{
+                    std::thread threadInit(array2sh_evalEncoder, hA2sh);
+                    needScreenRefreshFLAG = 1;
+                    array2sh_setRequestEncoderEvalFLAG(hA2sh, 0);
+                    threadInit.detach();
+                } catch (const std::exception& exception) {
+                    std::cout << "Could not create thread" << exception.what() << std::endl;
                 }
-                else
-                    cohviewIncluded->setVisible(false);
-                break;
-            case SHOW_LEVEL_DIFF:
-                eqviewIncluded->setVisible(false);
-                cohviewIncluded->setVisible(false);
-                if(array2sh_getIsEvalValid(hA2sh)){
-                    ldiffviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
-                    ldiffviewIncluded->setVisible(true);
-                    ldiffviewIncluded->repaint();
+            }
+            break;
+            
+        case TIMER_GUI_RELATED:
+            
+            /* parameters whos values can change internally should be periodically refreshed */
+            int curOrder = CBencodingOrder->getSelectedId();
+            QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
+            if(RSlider->getValue()!=array2sh_getR(hA2sh)*1e3f)
+                RSlider->setValue(array2sh_getR(hA2sh)*1e3f, dontSendNotification);
+            if(CBencodingOrder->getSelectedId()!=array2sh_getEncodingOrder(hA2sh))
+                CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);
+            if(QSlider->getValue()!=array2sh_getNumSensors(hA2sh))
+                QSlider->setValue(array2sh_getNumSensors(hA2sh), dontSendNotification);
+            sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));
+            if(CHOrderingCB->getSelectedId()!=array2sh_getChOrder(hA2sh))
+                CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), dontSendNotification);
+            if(normalisationCB->getSelectedId()!=array2sh_getNormType(hA2sh))
+                normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), dontSendNotification);
+            CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
+            normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
+          
+            /* check if eval curves have recently been computed */
+            if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_RECENTLY_EVALUATED){
+                needScreenRefreshFLAG = true;
+                array2sh_setEvalStatus(hA2sh, EVAL_STATUS_EVALUATED);
+            }
+            
+            /* disable certain sliders if evaluation is ongoing */
+            if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_EVALUATING){
+                if(presetCB->isEnabled())
+                    presetCB->setEnabled(false);
+                if(arrayTypeCB->isEnabled())
+                    arrayTypeCB->setEnabled(false);
+                if(QSlider->isEnabled())
+                    QSlider->setEnabled(false);
+                if(rSlider->isEnabled())
+                    rSlider->setEnabled(false);
+                if(RSlider->isEnabled())
+                   RSlider->setEnabled(false);
+                if(cSlider->isEnabled())
+                    cSlider->setEnabled(false);
+                if(weightTypeCB->isEnabled())
+                    weightTypeCB->setEnabled(false);
+                if(filterTypeCB->isEnabled())
+                    filterTypeCB->setEnabled(false);
+                if(regAmountSlider->isEnabled())
+                    regAmountSlider->setEnabled(false);
+                if(tb_loadJSON->isEnabled())
+                    tb_loadJSON->setEnabled(false);
+                if(CBencodingOrder->isEnabled())
+                    CBencodingOrder->setEnabled(false);
+                if(applyDiffEQ->isEnabled())
+                    applyDiffEQ->setEnabled(false);
+                if(sensorCoordsVP->isEnabled())
+                    sensorCoordsVP->setEnabled(false);
+            }
+            else{
+                if(!presetCB->isEnabled())
+                    presetCB->setEnabled(true);
+                if(!arrayTypeCB->isEnabled())
+                    arrayTypeCB->setEnabled(true);
+                if(!QSlider->isEnabled())
+                    QSlider->setEnabled(true);
+                if(!rSlider->isEnabled())
+                    rSlider->setEnabled(true);
+                if(!RSlider->isEnabled())
+                    RSlider->setEnabled(true);
+                if(!cSlider->isEnabled())
+                    cSlider->setEnabled(true);
+                if(!weightTypeCB->isEnabled())
+                    weightTypeCB->setEnabled(true);
+                if(!filterTypeCB->isEnabled())
+                    filterTypeCB->setEnabled(true);
+                if(!regAmountSlider->isEnabled())
+                    regAmountSlider->setEnabled(true);
+                if(!tb_loadJSON->isEnabled())
+                    tb_loadJSON->setEnabled(true);
+                if(!CBencodingOrder->isEnabled())
+                    CBencodingOrder->setEnabled(true);
+                if(!applyDiffEQ->isEnabled())
+                    applyDiffEQ->setEnabled(true);
+                if(!sensorCoordsVP->isEnabled())
+                    sensorCoordsVP->setEnabled(true);
+            }
+            
+            /* draw magnitude/spatial-correlation/level-difference curves */
+            if (needScreenRefreshFLAG){
+                switch(dispID){
+                    default:
+                    case SHOW_EQ:
+                        eqviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
+                        eqviewIncluded->setVisible(true);
+                        cohviewIncluded->setVisible(false);
+                        ldiffviewIncluded->setVisible(false);
+                        eqviewIncluded->repaint();
+                        break;
+                    case SHOW_SPATIAL_COH:
+                        eqviewIncluded->setVisible(false);
+                        ldiffviewIncluded->setVisible(false);
+                        if((array2sh_getEvalStatus(hA2sh) == EVAL_STATUS_EVALUATED)){
+                            cohviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
+                            cohviewIncluded->setVisible(true);
+                            cohviewIncluded->repaint();
+                        }
+                        else
+                            cohviewIncluded->setVisible(false);
+                        break;
+                    case SHOW_LEVEL_DIFF:
+                        eqviewIncluded->setVisible(false);
+                        cohviewIncluded->setVisible(false);
+                        if((array2sh_getEvalStatus(hA2sh) == EVAL_STATUS_EVALUATED)){
+                            ldiffviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
+                            ldiffviewIncluded->setVisible(true);
+                            ldiffviewIncluded->repaint();
+                        }
+                        else
+                            ldiffviewIncluded->setVisible(false);
+                        break;
                 }
-                else
-                    ldiffviewIncluded->setVisible(false);
-                break;
-        }
-        needScreenRefreshFLAG = false;
-    }
+                needScreenRefreshFLAG = false;
+            }
+            
+            /* Progress bar */
+            if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_EVALUATING){
+                addAndMakeVisible(progressbar);
+                progress = (double)array2sh_getProgressBar0_1(hA2sh);
+                char text[ARRAY2SH_PROGRESSBARTEXT_CHAR_LENGTH];
+                array2sh_getProgressBarText(hA2sh, (char*)text);
+                progressbar.setTextToDisplay(String(text));
+            }
+            else
+                removeChildComponent(&progressbar);
 
-    /* Hide decoding orders that are unsuitable for the current number of sensors */
-    for(int i=1; i<=7; i++)
-        CBencodingOrder->setItemEnabled(i, (i+1)*(i+1) <= array2sh_getNumSensors(hA2sh) ? true : false);
+            /* Hide decoding orders that are unsuitable for the current number of sensors */
+            for(int i=1; i<=7; i++)
+                CBencodingOrder->setItemEnabled(i, (i+1)*(i+1) <= array2sh_getNumSensors(hA2sh) ? true : false);
 
-    /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ( !((array2sh_getSamplingRate(hA2sh) == 44.1e3) || (array2sh_getSamplingRate(hA2sh) == 48e3)) ){
-        currentWarning = k_warning_supported_fs;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((hVst->getCurrentNumInputs() < array2sh_getNumSensors(hA2sh))){
-        currentWarning = k_warning_NinputCH;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((hVst->getCurrentNumOutputs() < array2sh_getNSHrequired(hA2sh))){
-        currentWarning = k_warning_NoutputCH;
-        repaint(0,0,getWidth(),32);
-    }
-    else if(currentWarning){
-        currentWarning = k_warning_none;
-        repaint(0,0,getWidth(),32);
+            /* display warning message, if needed */
+            if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
+                currentWarning = k_warning_frameSize;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ( !((array2sh_getSamplingRate(hA2sh) == 44.1e3) || (array2sh_getSamplingRate(hA2sh) == 48e3)) ){
+                currentWarning = k_warning_supported_fs;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ((hVst->getCurrentNumInputs() < array2sh_getNumSensors(hA2sh))){
+                currentWarning = k_warning_NinputCH;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ((hVst->getCurrentNumOutputs() < array2sh_getNSHrequired(hA2sh))){
+                currentWarning = k_warning_NoutputCH;
+                repaint(0,0,getWidth(),32);
+            }
+            else if(currentWarning){
+                currentWarning = k_warning_none;
+                repaint(0,0,getWidth(),32);
+            }
+            break;
     }
 }
 
@@ -1421,10 +1508,10 @@ void PluginEditor::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer" constructorParams="PluginProcessor* ownerFilter"
-                 variableInitialisers="AudioProcessorEditor(ownerFilter)" snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
-                 initialWidth="800" initialHeight="450">
+                 parentClasses="public AudioProcessorEditor, public MultiTimer"
+                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter) , progressbar(progress)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="1" initialWidth="800" initialHeight="450">
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 240 800 210" fill="linear: 8 448, 8 352, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>
