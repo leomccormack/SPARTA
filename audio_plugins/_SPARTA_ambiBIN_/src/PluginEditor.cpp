@@ -1131,19 +1131,25 @@ void PluginEditor::timerCallback(int timerID)
                 }
             }
             break;
-            
+
         case TIMER_GUI_RELATED:
             /* parameters whos values can change internally should be periodically refreshed */
-            TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
+            if(TBuseDefaultHRIRs->getToggleState() != ambi_bin_getUseDefaultHRIRsflag(hAmbi))
+                TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
+            if(s_yaw->getValue() != ambi_bin_getYaw(hAmbi))
+                s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
+            if(s_pitch->getValue() != ambi_bin_getPitch(hAmbi))
+                s_pitch->setValue(ambi_bin_getPitch(hAmbi), dontSendNotification);
+            if(s_roll->getValue() != ambi_bin_getRoll(hAmbi))
+                s_roll->setValue(ambi_bin_getRoll(hAmbi), dontSendNotification);
+            if(CBchFormat->getSelectedId() != ambi_bin_getChOrder(hAmbi))
+                CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), dontSendNotification);
+            if(CBnormScheme->getSelectedId() != ambi_bin_getNormType(hAmbi))
+                CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), dontSendNotification);
             label_N_dirs->setText(String(ambi_bin_getNDirs(hAmbi)), dontSendNotification);
             label_HRIR_len->setText(String(ambi_bin_getHRIRlength(hAmbi)), dontSendNotification);
             label_HRIR_fs->setText(String(ambi_bin_getHRIRsamplerate(hAmbi)), dontSendNotification);
             label_DAW_fs->setText(String(ambi_bin_getDAWsamplerate(hAmbi)), dontSendNotification);
-            s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
-            s_pitch->setValue(ambi_bin_getPitch(hAmbi), dontSendNotification);
-            s_roll->setValue(ambi_bin_getRoll(hAmbi), dontSendNotification);
-            CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), dontSendNotification);
-            CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), dontSendNotification);
             CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
             CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
 
@@ -1157,27 +1163,43 @@ void PluginEditor::timerCallback(int timerID)
             }
             else
                 removeChildComponent(&progressbar);
- 
+
             /* Some parameters shouldn't be editable during initialisation*/
             if(ambi_bin_getCodecStatus(hAmbi)==CODEC_STATUS_INITIALISING){
-                TBuseDefaultHRIRs->setEnabled(false);
-                CBorderPreset->setEnabled(false);
-                TBmaxRE->setEnabled(false);
-                TBcompEQ->setEnabled(false);
-                CBdecoderMethod->setEnabled(false);
-                TBdiffMatching->setEnabled(false);
-                TBphaseWarping->setEnabled(false);
-                fileChooser.setEnabled(false);
+                if(TBuseDefaultHRIRs->isEnabled())
+                    TBuseDefaultHRIRs->setEnabled(false);
+                if(CBorderPreset->isEnabled())
+                    CBorderPreset->setEnabled(false);
+                if(TBmaxRE->isEnabled())
+                    TBmaxRE->setEnabled(false);
+                if(TBcompEQ->isEnabled())
+                    TBcompEQ->setEnabled(false);
+                if(CBdecoderMethod->isEnabled())
+                    CBdecoderMethod->setEnabled(false);
+                if(TBdiffMatching->isEnabled())
+                    TBdiffMatching->setEnabled(false);
+                if(TBphaseWarping->isEnabled())
+                    TBphaseWarping->setEnabled(false);
+                if(fileChooser.isEnabled())
+                    fileChooser.setEnabled(false);
             }
             else {
-                TBuseDefaultHRIRs->setEnabled(true);
-                CBorderPreset->setEnabled(true);
-                TBmaxRE->setEnabled(true);
-                TBcompEQ->setEnabled(true);
-                CBdecoderMethod->setEnabled(true);
-                TBdiffMatching->setEnabled(true);
-                TBphaseWarping->setEnabled(true);
-                fileChooser.setEnabled(true);
+                if(!TBuseDefaultHRIRs->isEnabled())
+                    TBuseDefaultHRIRs->setEnabled(true);
+                if(!CBorderPreset->isEnabled())
+                    CBorderPreset->setEnabled(true);
+                if(!TBmaxRE->isEnabled())
+                    TBmaxRE->setEnabled(true);
+                if(!TBcompEQ->isEnabled())
+                    TBcompEQ->setEnabled(true);
+                if(!CBdecoderMethod->isEnabled())
+                    CBdecoderMethod->setEnabled(true);
+                if(!TBdiffMatching->isEnabled())
+                    TBdiffMatching->setEnabled(true);
+                if(!TBphaseWarping->isEnabled())
+                    TBphaseWarping->setEnabled(true);
+                if(!fileChooser.isEnabled())
+                    fileChooser.setEnabled(true);
             }
 
             /* display warning message, if needed */
