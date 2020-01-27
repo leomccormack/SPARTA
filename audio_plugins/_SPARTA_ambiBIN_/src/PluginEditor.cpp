@@ -343,7 +343,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_DAW_fs->setTooltip("Current sampling rate, as dictated by the DAW/Host.");
 
 	/* Specify screen refresh rate */
-    //startTimer(TIMER_PROCESSING_RELATED, 40);//80); /*ms (40ms = 25 frames per second) */
     startTimer(TIMER_GUI_RELATED, 20);
 
     /* warnings */

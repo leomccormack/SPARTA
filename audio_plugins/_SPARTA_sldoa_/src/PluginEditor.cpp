@@ -223,7 +223,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 #ifdef ENABLE_DTU_MIC_MIC_PRESET
     CBinputTypePreset->addItem(TRANS("DTU mic"), MIC_PRESET_DTU_MIC);
 #endif
-    
+
     /* ProgressBar */
     progress = 0.0;
     progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
@@ -877,7 +877,7 @@ void PluginEditor::timerCallback(int timerID)
         case TIMER_PROCESSING_RELATED:
             /* handled in PluginProcessor */
             break;
-            
+
         case TIMER_GUI_RELATED:
             /* parameters whos values can change internally should be periodically refreshed */
             CB_CHorder->setSelectedId(sldoa_getChOrder(hSld), dontSendNotification);
@@ -891,7 +891,7 @@ void PluginEditor::timerCallback(int timerID)
                 if (incomingImage.isValid())
                     lastSnapshot.setImage(incomingImage);
             }
-            
+
             /* Progress bar */
             if(sldoa_getCodecStatus(hSld)==CODEC_STATUS_INITIALISING){
                 addAndMakeVisible(progressbar);
@@ -903,7 +903,7 @@ void PluginEditor::timerCallback(int timerID)
             }
             else
                 removeChildComponent(&progressbar);
-            
+
             /* Some parameters shouldn't be editable during initialisation*/
             if(sldoa_getCodecStatus(hSld)==CODEC_STATUS_INITIALISING){
                 if(CBmasterOrder->isEnabled())

@@ -82,7 +82,7 @@ private:
     void timerCallback(int timerID) override;
     double progress = 0.0;
     ProgressBar progressbar;
-    
+
     /* for openGL speed-ups */
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
 	OpenGLContext openGLContext;
