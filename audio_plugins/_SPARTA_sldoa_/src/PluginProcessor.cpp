@@ -31,11 +31,12 @@ PluginProcessor::PluginProcessor() :
 	nHostBlockSize = FRAME_SIZE;
 	nSampleRate = 48000;
 	sldoa_create(&hSld);
+    startTimer(TIMER_PROCESSING_RELATED, 40);
     
     /* camera default settings */
     cameraID = 1;
     flipLR = flipUD = false;
-    greyScale = true;
+    greyScale = true; 
 }
 
 PluginProcessor::~PluginProcessor()

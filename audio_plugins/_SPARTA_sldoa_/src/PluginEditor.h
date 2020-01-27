@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ typedef enum _SPARTA_WARNINGS{
                                                                     //[/Comments]
 */
 class PluginEditor  : public AudioProcessorEditor,
-                      public Timer,
+                      public MultiTimer,
                       private CameraDevice::Listener,
                       public AsyncUpdater,
                       public Slider::Listener,
@@ -79,7 +79,11 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
     void* hSld;
-    void timerCallback() override;
+    void timerCallback(int timerID) override;
+    double progress = 0.0;
+    ProgressBar progressbar;
+    
+    /* for openGL speed-ups */
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
 	OpenGLContext openGLContext;
     std::unique_ptr<log2dSlider> anaOrder2dSlider;
@@ -100,10 +104,10 @@ private:
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
-    
+
     /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
-    
+
     //[/UserVariables]
 
     //==============================================================================

@@ -19,6 +19,7 @@
  
  ==============================================================================
 */
+
 #include "PluginProcessor.h"
 #include "PluginEditor.h" 
 
@@ -35,6 +36,7 @@ PluginProcessor::PluginProcessor() :
     /* tell the component to listen for OSC messages */
     osc.addListener(this);
     refreshWindow = true;
+    startTimer(TIMER_PROCESSING_RELATED, 80);
 }
 
 PluginProcessor::~PluginProcessor()

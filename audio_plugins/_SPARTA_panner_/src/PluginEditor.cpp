@@ -30,7 +30,7 @@
 
 //==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter)
+    : AudioProcessorEditor(ownerFilter), progressbar(progress)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -276,6 +276,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (48)"), PRESET_T_DESIGN_48);
     CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (60)"), PRESET_T_DESIGN_60);
 
+    /* ProgressBar */
+    progress = 0.0;
+    progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
+    progressbar.ProgressBar::setAlwaysOnTop(true);
+    progressbar.setColour(ProgressBar::backgroundColourId, Colours::gold);
+    progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
+    
     /* source coordinates viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (sourceCoordsVP.get());
@@ -336,7 +343,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
 
 	/* Specify screen refresh rate */
-    startTimer(35);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(TIMER_GUI_RELATED, 40);
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -964,9 +971,6 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     {
         //[UserSliderCode_SL_spread] -- add your slider handling code here..
         panner_setSpread(hPan, (float)SL_spread->getValue());
-#ifdef __APPLE__
-        repaint(203, 303, 167, 30);
-#endif
         //[/UserSliderCode_SL_spread]
     }
     else if (sliderThatWasMoved == s_yaw.get())
@@ -1089,66 +1093,115 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void PluginEditor::timerCallback()
+void PluginEditor::timerCallback(int timerID)
 {
-    /* refresh parameters that can change internally */
-    sourceCoordsView_handle->setNCH(panner_getNumSources(hPan));
-    loudspeakerCoordsView_handle->setNCH(panner_getNumLoudspeakers(hPan));
-    SL_num_sources->setValue(panner_getNumSources(hPan),dontSendNotification);
-    SL_num_loudspeakers->setValue(panner_getNumLoudspeakers(hPan),dontSendNotification);
-    s_yaw->setValue(panner_getYaw(hPan), dontSendNotification);
-    s_pitch->setValue(panner_getPitch(hPan), dontSendNotification);
-    s_roll->setValue(panner_getRoll(hPan), dontSendNotification);
-
-#ifndef __APPLE__
-	/* Some parameters shouldn't be enabled if playback is ongoing */
-	if (hVst->getIsPlaying()) {
-		SL_num_loudspeakers->setEnabled(false);
-		loudspeakerCoordsView_handle->setEnabled(false);
-		CBsLoudspeakerDirsPreset->setEnabled(false);
-	}
-	else {
-		SL_num_loudspeakers->setEnabled(true);
-		loudspeakerCoordsView_handle->setEnabled(true);
-		CBsLoudspeakerDirsPreset->setEnabled(true);
-		panner_checkReInit(hPan);
-	}
+    switch(timerID){
+        case TIMER_PROCESSING_RELATED:
+            /* handled in PluginProcessor */
+            break;
+            
+        case TIMER_GUI_RELATED:
+            /* refresh parameters that can change internally */
+            sourceCoordsView_handle->setNCH(panner_getNumSources(hPan));
+            loudspeakerCoordsView_handle->setNCH(panner_getNumLoudspeakers(hPan));
+            SL_num_sources->setValue(panner_getNumSources(hPan),dontSendNotification);
+            SL_num_loudspeakers->setValue(panner_getNumLoudspeakers(hPan),dontSendNotification);
+            s_yaw->setValue(panner_getYaw(hPan), dontSendNotification);
+            s_pitch->setValue(panner_getPitch(hPan), dontSendNotification);
+            s_roll->setValue(panner_getRoll(hPan), dontSendNotification);
+ 
+            
+            /* Progress bar */
+#if 0
+            if(panner_getCodecStatus(hPan)==CODEC_STATUS_INITIALISING){
+                addAndMakeVisible(progressbar);
+                progress = (double)panner_getProgressBar0_1(hPan);
+                char text[PANNER_PROGRESSBARTEXT_CHAR_LENGTH];
+                panner_getProgressBarText(hPan, (char*)text);
+                progressbar.setTextToDisplay(String(text));
+            }
+            else
+                removeChildComponent(&progressbar);
 #endif
-    if (hVst->getIsPlaying())
-        SL_spread->setEnabled(false);
-    else
-        SL_spread->setEnabled(true);
+            
+            /* Some parameters shouldn't be editable during initialisation*/
+            if (panner_getCodecStatus(hPan)==CODEC_STATUS_INITIALISING){
+                if(SL_spread->isEnabled())
+                    SL_spread->setEnabled(false);
+                if(CBsourceDirsPreset->isEnabled())
+                    CBsourceDirsPreset->setEnabled(false);
+                if(SL_num_sources->isEnabled())
+                    SL_num_sources->setEnabled(false);
+                if(SL_pValue->isEnabled())
+                    SL_pValue->setEnabled(false);
+                if(CBsLoudspeakerDirsPreset->isEnabled())
+                    CBsLoudspeakerDirsPreset->setEnabled(false);
+                if(SL_num_loudspeakers->isEnabled())
+                    SL_num_loudspeakers->setEnabled(false);
+                if(tb_loadJSON_src->isEnabled())
+                    tb_loadJSON_src->setEnabled(false);
+                if(tb_loadJSON_ls->isEnabled())
+                    tb_loadJSON_ls->setEnabled(false);
+                if(loudspeakerCoordsVP->isEnabled())
+                    loudspeakerCoordsVP->setEnabled(false);
+            }
+            else{
+                if(hVst->getIsPlaying())
+                    SL_spread->setEnabled(false);
+                else if(!SL_spread->isEnabled())
+                    SL_spread->setEnabled(true);
+                if(!CBsourceDirsPreset->isEnabled())
+                    CBsourceDirsPreset->setEnabled(true);
+                if(!SL_num_sources->isEnabled())
+                    SL_num_sources->setEnabled(true);
+                if(!SL_pValue->isEnabled())
+                    SL_pValue->setEnabled(true);
+                if(!CBsLoudspeakerDirsPreset->isEnabled())
+                    CBsLoudspeakerDirsPreset->setEnabled(true);
+                if(hVst->getIsPlaying())
+                    SL_num_loudspeakers->setEnabled(false);
+                else if(!SL_num_loudspeakers->isEnabled())
+                    SL_num_loudspeakers->setEnabled(true);
+                if(!tb_loadJSON_src->isEnabled())
+                    tb_loadJSON_src->setEnabled(true);
+                if(!tb_loadJSON_ls->isEnabled())
+                    tb_loadJSON_ls->setEnabled(true);
+                if(!loudspeakerCoordsVP->isEnabled())
+                    loudspeakerCoordsVP->setEnabled(true);
+            }
 
-    /* refresh pan view */
-    if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) ||
-       sourceCoordsView_handle->getHasASliderChanged() || loudspeakerCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
-        panWindow->refreshPanView();
-        refreshPanViewWindow = false;
-        sourceCoordsView_handle->setHasASliderChange(false);
-        loudspeakerCoordsView_handle->setHasASliderChange(false);
-        hVst->setRefreshWindow(false);
-    }
+            /* refresh pan view */
+            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) ||
+               sourceCoordsView_handle->getHasASliderChanged() || loudspeakerCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
+                panWindow->refreshPanView();
+                refreshPanViewWindow = false;
+                sourceCoordsView_handle->setHasASliderChange(false);
+                loudspeakerCoordsView_handle->setHasASliderChange(false);
+                hVst->setRefreshWindow(false);
+            }
 
-    /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ( !((panner_getDAWsamplerate(hPan) == 44.1e3) || (panner_getDAWsamplerate(hPan) == 48e3)) ){
-        currentWarning = k_warning_supported_fs;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((hVst->getCurrentNumInputs() < panner_getNumSources(hPan))){
-        currentWarning = k_warning_NinputCH;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((hVst->getCurrentNumOutputs() < panner_getNumLoudspeakers(hPan))){
-        currentWarning = k_warning_NoutputCH;
-        repaint(0,0,getWidth(),32);
-    }
-    else if(currentWarning){
-        currentWarning = k_warning_none;
-        repaint(0,0,getWidth(),32);
+            /* display warning message, if needed */
+            if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
+                currentWarning = k_warning_frameSize;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ( !((panner_getDAWsamplerate(hPan) == 44.1e3) || (panner_getDAWsamplerate(hPan) == 48e3)) ){
+                currentWarning = k_warning_supported_fs;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ((hVst->getCurrentNumInputs() < panner_getNumSources(hPan))){
+                currentWarning = k_warning_NinputCH;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ((hVst->getCurrentNumOutputs() < panner_getNumLoudspeakers(hPan))){
+                currentWarning = k_warning_NoutputCH;
+                repaint(0,0,getWidth(),32);
+            }
+            else if(currentWarning){
+                currentWarning = k_warning_none;
+                repaint(0,0,getWidth(),32);
+            }
+            break;
     }
 }
 
@@ -1167,10 +1220,10 @@ void PluginEditor::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer" constructorParams="PluginProcessor* ownerFilter"
-                 variableInitialisers="AudioProcessorEditor(ownerFilter)," snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
-                 initialWidth="920" initialHeight="386">
+                 parentClasses="public AudioProcessorEditor, public MultiTimer"
+                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), progressbar(progress)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="1" initialWidth="920" initialHeight="386">
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 208 920 178" fill="linear: 8 384, 8 304, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>

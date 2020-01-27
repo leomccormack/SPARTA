@@ -28,6 +28,7 @@ PluginProcessor::PluginProcessor() :
 	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
 	ambi_dec_create(&hAmbi);
+    startTimer(TIMER_PROCESSING_RELATED, 80); 
 }
 
 PluginProcessor::~PluginProcessor()

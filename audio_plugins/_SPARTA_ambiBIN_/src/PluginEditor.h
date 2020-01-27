@@ -39,11 +39,6 @@ typedef enum _SPARTA_WARNINGS{
     k_warning_NoutputCH
 }SPARTA_WARNINGS;
 
-typedef enum _TIMERS{
-    TIMER_PROCESSING_RELATED = 1,
-    TIMER_GUI_RELATED
-}TIMERS;
-
 //[/Headers]
 
 

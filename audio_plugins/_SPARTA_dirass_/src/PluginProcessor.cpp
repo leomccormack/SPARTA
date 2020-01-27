@@ -19,6 +19,7 @@
  
  ==============================================================================
 */
+
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
@@ -33,6 +34,7 @@ PluginProcessor::PluginProcessor() :
     cameraID = 1;
     flipLR = flipUD = false;
     greyScale = true;
+    startTimer(TIMER_PROCESSING_RELATED, 40);
 }
 
 PluginProcessor::~PluginProcessor()

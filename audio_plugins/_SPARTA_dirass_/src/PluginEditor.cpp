@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -30,7 +30,7 @@
 
 //==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter)
+    : AudioProcessorEditor(ownerFilter), progressbar(progress)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -309,6 +309,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_flipLR->setToggleState(hVst->getFlipLR(), dontSendNotification);
     TB_flipUD->setToggleState(hVst->getFlipUD(), dontSendNotification);
 
+    /* ProgressBar */
+    progress = 0.0;
+    progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
+    progressbar.ProgressBar::setAlwaysOnTop(true);
+    progressbar.setColour(ProgressBar::backgroundColourId, Colours::gold);
+    progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
+
     /* fetch current configuration */
     CBinputOrder->setSelectedId(dirass_getInputOrder(hDir), dontSendNotification);
     CBbeamType->setSelectedId(dirass_getBeamType(hDir), dontSendNotification);
@@ -343,9 +350,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_greyScale->setTooltip("Sets the plug-in to display the webcam image in 'grey-scale'.");
     TB_flipUD->setTooltip("Flips the webcam image up-down, as it may be preferable to mount the camera upside-down on top of the microphone array; in order to bring the origin of the camera closer to that of the array.");
     TB_flipLR->setTooltip("Flips the webcam image left-right, as some webcams mirror the images taken.");
-    
+
 	/* Specify screen refresh rate */
-    startTimer(140);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(TIMER_GUI_RELATED, 140);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -953,72 +960,114 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void PluginEditor::timerCallback()
+void PluginEditor::timerCallback(int timerID)
 {
-    /* parameters whos values can change internally should be periodically refreshed */
-    CBchFormat->setSelectedId(dirass_getChOrder(hDir), dontSendNotification);
-    CBnormScheme->setSelectedId(dirass_getNormType(hDir), dontSendNotification);
-    CBchFormat->setItemEnabled(CH_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
-    CBnormScheme->setItemEnabled(NORM_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
+    switch(timerID){
+        case TIMER_PROCESSING_RELATED:
+            /* handled in PluginProcessor */
+            break;
 
-#ifndef __APPLE__
-	/* Some parameters shouldn't be enabled if playback is ongoing */
-	if (hVst->getIsPlaying()) {
-		CBinputOrder->setEnabled(false);
-		CBbeamType->setEnabled(false);
-		CBgridOption->setEnabled(false);
-		s_interpWidth->setEnabled(false);
-	}
-	else {
-		CBinputOrder->setEnabled(true);
-		CBbeamType->setEnabled(true);
-		CBgridOption->setEnabled(true);
-		s_interpWidth->setEnabled(true);
+        case TIMER_GUI_RELATED:
+            /* parameters whos values can change internally should be periodically refreshed */
+            if(CBchFormat->getSelectedId()!=dirass_getChOrder(hDir))
+                CBchFormat->setSelectedId(dirass_getChOrder(hDir), dontSendNotification);
+            if(CBnormScheme->getSelectedId()!=dirass_getNormType(hDir))
+                CBnormScheme->setSelectedId(dirass_getNormType(hDir), dontSendNotification);
+            CBchFormat->setItemEnabled(CH_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
+            CBnormScheme->setItemEnabled(NORM_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
+            CBgridOption->setEnabled(hVst->getIsPlaying() ? false : true);
+            s_interpWidth->setEnabled(hVst->getIsPlaying() ? false : true);
 
-		dirass_checkReInit(hDir);
-	}
-#endif
-    CBgridOption->setEnabled(hVst->getIsPlaying() ? false : true);
-    s_interpWidth->setEnabled(hVst->getIsPlaying() ? false : true);
+            /* take webcam picture */
+            if(CB_webcam->getSelectedId()>1){
+                handleAsyncUpdate();
+                if (incomingImage.isValid())
+                    lastSnapshot.setImage(incomingImage);
+            }
 
-    /* take webcam picture */
-    if(CB_webcam->getSelectedId()>1){
-        handleAsyncUpdate();
-        if (incomingImage.isValid())
-            lastSnapshot.setImage(incomingImage);
-    }
+            /* Progress bar */
+            if(dirass_getCodecStatus(hDir)==CODEC_STATUS_INITIALISING){
+                addAndMakeVisible(progressbar);
+                progressbar.setAlwaysOnTop(true);
+                progress = (double)dirass_getProgressBar0_1(hDir);
+                char text[DIRASS_PROGRESSBARTEXT_CHAR_LENGTH];
+                dirass_getProgressBarText(hDir, (char*)text);
+                progressbar.setTextToDisplay(String(text));
+            }
+            else
+                removeChildComponent(&progressbar);
 
-    /* refresh the powermap display */
-    if ((overlayIncluded != nullptr) && (hVst->getIsPlaying())) {
-        float* dirs_deg, *pmap;
-        int nDirs, pmapReady, pmapWidth, hfov;
-        float aspectRatio;
-        pmapReady = dirass_getPmap(hDir, &dirs_deg, &pmap, &nDirs, &pmapWidth, &hfov, &aspectRatio);
-        overlayIncluded->setEnableTransparency(CB_webcam->getSelectedId() > 1 ? true : false);
-        if(pmapReady){
-            overlayIncluded->refreshPowerMap(dirs_deg, pmap, nDirs, pmapWidth, hfov, aspectRatio);
-        }
-        if(overlayIncluded->getFinishedRefresh()){
-            dirass_requestPmapUpdate(hDir);
-        }
-    }
+            /* Some parameters shouldn't be editable during initialisation*/
+            if(dirass_getCodecStatus(hDir)==CODEC_STATUS_INITIALISING){
+                if(CBbeamType->isEnabled())
+                    CBbeamType->setEnabled(false);
+                if(CBbeamType->isEnabled())
+                    CBbeamType->setEnabled(false);
+                if(CB_hfov->isEnabled())
+                    CB_hfov->setEnabled(false);
+                if(CB_aspectRatio->isEnabled())
+                    CB_aspectRatio->setEnabled(false);
+                if(CBinputOrder->isEnabled())
+                    CBinputOrder->setEnabled(false);
+                if(CBgridOption->isEnabled())
+                    CBgridOption->setEnabled(false);
+                if(CBupscaleOrder->isEnabled())
+                    CBupscaleOrder->setEnabled(false);
+                if(s_interpWidth->isEnabled())
+                    s_interpWidth->setEnabled(false);
+            }
+            else{
+                if(!CBbeamType->isEnabled())
+                    CBbeamType->setEnabled(true);
+                if(!CBbeamType->isEnabled())
+                    CBbeamType->setEnabled(true);
+                if(!CB_hfov->isEnabled())
+                    CB_hfov->setEnabled(true);
+                if(!CB_aspectRatio->isEnabled())
+                    CB_aspectRatio->setEnabled(true);
+                if(!CBinputOrder->isEnabled())
+                    CBinputOrder->setEnabled(true);
+                if(!CBgridOption->isEnabled())
+                    CBgridOption->setEnabled(true);
+                if(!CBupscaleOrder->isEnabled())
+                    CBupscaleOrder->setEnabled(true);
+                if(!s_interpWidth->isEnabled())
+                    s_interpWidth->setEnabled(true);
+            }
 
-    /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ( !((dirass_getSamplingRate(hDir) == 44.1e3) || (dirass_getSamplingRate(hDir) == 48e3)) ){
-        currentWarning = k_warning_supported_fs;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((hVst->getCurrentNumInputs() < dirass_getNSHrequired(hDir))){
-        currentWarning = k_warning_NinputCH;
-        repaint(0,0,getWidth(),32);
-    }
-    else if(currentWarning){
-        currentWarning = k_warning_none;
-        repaint(0,0,getWidth(),32);
+            /* refresh the powermap display */
+            if ((overlayIncluded != nullptr) && (hVst->getIsPlaying())) {
+                float* dirs_deg, *pmap;
+                int nDirs, pmapReady, pmapWidth, hfov;
+                float aspectRatio;
+                pmapReady = dirass_getPmap(hDir, &dirs_deg, &pmap, &nDirs, &pmapWidth, &hfov, &aspectRatio);
+                overlayIncluded->setEnableTransparency(CB_webcam->getSelectedId() > 1 ? true : false);
+                if(pmapReady){
+                    overlayIncluded->refreshPowerMap(dirs_deg, pmap, nDirs, pmapWidth, hfov, aspectRatio);
+                }
+                if(overlayIncluded->getFinishedRefresh()){
+                    dirass_requestPmapUpdate(hDir);
+                }
+            }
+
+            /* display warning message, if needed */
+            if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
+                currentWarning = k_warning_frameSize;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ( !((dirass_getSamplingRate(hDir) == 44.1e3) || (dirass_getSamplingRate(hDir) == 48e3)) ){
+                currentWarning = k_warning_supported_fs;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ((hVst->getCurrentNumInputs() < dirass_getNSHrequired(hDir))){
+                currentWarning = k_warning_NinputCH;
+                repaint(0,0,getWidth(),32);
+            }
+            else if(currentWarning){
+                currentWarning = k_warning_none;
+                repaint(0,0,getWidth(),32);
+            }
+            break;
     }
 }
 
@@ -1105,8 +1154,8 @@ void PluginEditor::handleAsyncUpdate()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer, private CameraDevice::Listener, public AsyncUpdater"
-                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter)"
+                 parentClasses="public AudioProcessorEditor, public MultiTimer, private CameraDevice::Listener, public AsyncUpdater"
+                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), progressbar(progress)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="672" initialHeight="542">
   <BACKGROUND backgroundColour="ffffffff">
@@ -1114,7 +1163,7 @@ BEGIN_JUCER_METADATA
           hasStroke="0"/>
     <RECT pos="0 30 672 256" fill="linear: 8 32, 8 104, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 2 670 31" cornerSize="5" fill="linear: 0 32, 656 24, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 2 670 31" cornerSize="5.0" fill="linear: 0 32, 656 24, 0=ff061c20, 1=ff1c3949"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="13 394 450 138" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1125,60 +1174,60 @@ BEGIN_JUCER_METADATA
     <RECT pos="12 58 648 325" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="22 397 132 30" fill="solid: ffffffff" hasStroke="0" text="Input Order:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="22 497 132 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="250 465 132 30" fill="solid: ffffffff" hasStroke="0" text="Average Coeff:"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="22 433 132 30" fill="solid: ffffffff" hasStroke="0" text="Beam Type:"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="22 465 132 30" fill="solid: ffffffff" hasStroke="0" text="Scanning Grid:"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="472 394 186 138" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="481 399 132 30" fill="solid: ffffffff" hasStroke="0" text="Horiz. FOV:"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="481 432 132 30" fill="solid: ffffffff" hasStroke="0" text="Aspect Ratio:"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 1 112 32" fill="solid: ffb0a6e7" hasStroke="0" text="DirASS"
-          fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="481 465 152 30" fill="solid: ffffffff" hasStroke="0" text="Min Freq (Hz):"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="481 497 104 30" fill="solid: ffffffff" hasStroke="0" text="Max Freq (Hz):"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="250 433 132 30" fill="solid: ffffffff" hasStroke="0" text="Upscale Order:"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="250 397 181 30" fill="solid: ffffffff" hasStroke="0" text="DirASS Mode:"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="250 497 132 30" fill="solid: ffffffff" hasStroke="0" text="Width (pixels):"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="624 32 29 30" fill="solid: ffffffff" hasStroke="0" text="GS:"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="576 32 37 30" fill="solid: ffffffff" hasStroke="0" text="U|D:"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="530 32 37 30" fill="solid: ffffffff" hasStroke="0" text="L|R:"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="283 33 125 30" fill="solid: ffffffff" hasStroke="0" text="Display Window"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 674 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
@@ -1207,21 +1256,21 @@ BEGIN_JUCER_METADATA
   <SLIDER name="new slider" id="d9acd6687ea4c8b5" memberName="SLmapAvg"
           virtualName="" explicitFocusOrder="0" pos="349 468 104 24" bkgcol="ff5c5d5e"
           trackcol="ff315b6d" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="0" max="1" int="1e-2" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1"
+          min="0.0" max="1.0" int="0.01" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="a465903000494955" memberName="CBinputOrder"
             virtualName="" explicitFocusOrder="0" pos="121 403 112 18" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="905f4ab0adab1f4f" memberName="s_minFreq"
-          virtualName="" explicitFocusOrder="0" pos="592 469 58 24" min="0"
-          max="2.4e4" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="592 469 58 24" min="0.0"
+          max="24000.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="3aad5000f228ef1b" memberName="s_maxFreq"
-          virtualName="" explicitFocusOrder="0" pos="592 500 58 24" min="0"
-          max="2.4e4" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="592 500 58 24" min="0.0"
+          max="24000.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <COMBOBOX name="" id="6daf8adec965e9f2" memberName="CBgridOption" virtualName=""
             explicitFocusOrder="0" pos="121 472 112 18" editable="0" layout="33"
@@ -1233,9 +1282,9 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="354 403 99 18" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="79f6fe93d6735ce3" memberName="s_interpWidth"
-          virtualName="" explicitFocusOrder="0" pos="368 500 85 24" min="6.4e1"
-          max="2.56e2" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="368 500 85 24" min="64.0"
+          max="256.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <COMBOBOX name="" id="974f5da4ceed6bb6" memberName="CB_webcam" virtualName=""
             explicitFocusOrder="0" pos="434 38 92 17" editable="0" layout="33"

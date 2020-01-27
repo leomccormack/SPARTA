@@ -29,6 +29,7 @@ PluginProcessor::PluginProcessor() :
 {
 	panner_create(&hPan);
     refreshWindow = true;
+    startTimer(TIMER_PROCESSING_RELATED, 80); 
 }
 
 PluginProcessor::~PluginProcessor()
