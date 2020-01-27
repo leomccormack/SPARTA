@@ -26,13 +26,19 @@
 #include "panner.h"
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
 #include "../../resources/ConfigurationHelper.h"
-#define BUILD_VER_SUFFIX "beta"  /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
+#include <thread>
+#define BUILD_VER_SUFFIX ""  /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #ifndef MIN
-  #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
+# define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
 #endif
 #ifndef MAX
-  #define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
+# define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
 #endif
+
+typedef enum _TIMERS{
+    TIMER_PROCESSING_RELATED = 1,
+    TIMER_GUI_RELATED
+}TIMERS;
 
 /* Parameter tags: for the default VST GUI */
 enum { 
@@ -51,6 +57,7 @@ enum {
 };
 
 class PluginProcessor  : public AudioProcessor,
+                         public MultiTimer,
                          public VSTCallbackHandler
 {
 public:
@@ -93,6 +100,26 @@ private:
     ValueTree elements {"SourcesOrLoudspeakers"};
     AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
+    
+    void timerCallback(int timerID) override
+    {
+        switch(timerID){
+            case TIMER_PROCESSING_RELATED:
+                /* reinitialise codec if needed */
+                if(panner_getCodecStatus(hPan) == CODEC_STATUS_NOT_INITIALISED){
+                    try{
+                        std::thread threadInit(panner_initCodec, hPan);
+                        threadInit.detach();
+                    } catch (const std::exception& exception) {
+                        std::cout << "Could not create thread" << exception.what() << std::endl;
+                    }
+                }
+                break;
+            case TIMER_GUI_RELATED:
+                /* handled in PluginEditor */
+                break;
+        }
+    }
     
     /***************************************************************************\
                                     JUCE Functions

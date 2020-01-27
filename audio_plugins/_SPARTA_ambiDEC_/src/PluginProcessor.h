@@ -24,11 +24,17 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ambi_dec.h"
+#include <thread>
 #define CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS 1
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
 #include "../../resources/ConfigurationHelper.h"
 #define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
+
+typedef enum _TIMERS{
+    TIMER_PROCESSING_RELATED = 1,
+    TIMER_GUI_RELATED
+}TIMERS;
 
 /* Parameter tags: for the default VST GUI */
 enum {	 
@@ -48,8 +54,8 @@ enum {
 	k_NumOfParameters
 };
 
-
 class PluginProcessor  : public AudioProcessor,
+                         public MultiTimer,
                          public VSTCallbackHandler
 {
 public:
@@ -87,6 +93,26 @@ private:
     ValueTree loudspeakers {"Loudspeakers"};
     AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
+    
+    void timerCallback(int timerID) override
+    {
+        switch(timerID){
+            case TIMER_PROCESSING_RELATED:
+                /* reinitialise codec if needed */
+                if(ambi_dec_getCodecStatus(hAmbi) == CODEC_STATUS_NOT_INITIALISED){
+                    try{
+                        std::thread threadInit(ambi_dec_initCodec, hAmbi);
+                        threadInit.detach();
+                    } catch (const std::exception& exception) {
+                        std::cout << "Could not create thread" << exception.what() << std::endl;
+                    }
+                }
+                break;
+            case TIMER_GUI_RELATED:
+                /* handled in PluginEditor */
+                break;
+        }
+    }
     
     /***************************************************************************\
                                     JUCE Functions

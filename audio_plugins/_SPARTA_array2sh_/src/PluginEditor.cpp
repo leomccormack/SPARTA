@@ -399,8 +399,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     dispWindow->setTooltip("Switches between the different display options. \n\nFilters: order-dependent equalisation curves, which are applied to eliminate the effect of the sphere. \n\nCorr: The spatial correlation is derived by comparing the patterns of the array responses with the patterns of ideal spherical harmonics, where '1' means they are perfect, and '0' completely uncorrelated; the spatial aliasing frequency can therefore be observed for each order, as the point where the spatial correlation tends towards 0. \n\nLdiff: The level difference is the mean level difference over all directions (diffuse level difference) between the ideal and simulated components. One can observe that higher permitted amplification limits [Max Gain (dB)] will result in noisier signals; however, this will also result in a wider frequency range of useful spherical harmonic components at each order.");
     applyDiffEQ->setTooltip("Applies diffuse-field equalisation past the theoretical spatial aliasing frequency of the currently configured microphone array. This may help reduce any 'harshness' perceived at the high frequencies after decoding.");
 
-	/* Specify screen refresh rate */
-    startTimer(TIMER_PROCESSING_RELATED, 80);//80); /*ms (40ms = 25 frames per second) */
+	/* Specify screen refresh rate */ 
     startTimer(TIMER_GUI_RELATED, 40);
 
     /* warnings */
@@ -1320,21 +1319,10 @@ void PluginEditor::timerCallback(int timerID)
 {
     switch(timerID){
         case TIMER_PROCESSING_RELATED:
-            /* reinitialise codec if needed */
-            if(array2sh_getRequestEncoderEvalFLAG(hA2sh)){
-                try{
-                    std::thread threadInit(array2sh_evalEncoder, hA2sh);
-                    needScreenRefreshFLAG = 1;
-                    array2sh_setRequestEncoderEvalFLAG(hA2sh, 0);
-                    threadInit.detach();
-                } catch (const std::exception& exception) {
-                    std::cout << "Could not create thread" << exception.what() << std::endl;
-                }
-            }
+            /* handled in PluginProcessor */
             break;
             
-        case TIMER_GUI_RELATED:
-            
+        case TIMER_GUI_RELATED: 
             /* parameters whos values can change internally should be periodically refreshed */
             int curOrder = CBencodingOrder->getSelectedId();
             QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);

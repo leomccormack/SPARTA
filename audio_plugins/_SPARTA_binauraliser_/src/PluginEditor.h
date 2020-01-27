@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -24,6 +24,7 @@
 #include "PluginProcessor.h"
 #include "inputCoordsView.h"
 #include "pannerView.h"
+#include <thread>
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
@@ -34,6 +35,8 @@ typedef enum _SPARTA_WARNINGS{
     k_warning_NoutputCH,
     k_warning_osc_connection_fail
 }SPARTA_WARNINGS;
+
+
 //[/Headers]
 
 
@@ -47,7 +50,7 @@ typedef enum _SPARTA_WARNINGS{
                                                                     //[/Comments]
 */
 class PluginEditor  : public AudioProcessorEditor,
-                      public Timer,
+                      public MultiTimer,
                       private FilenameComponentListener,
                       public ComboBox::Listener,
                       public Slider::Listener,
@@ -76,9 +79,11 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
     void* hBin;
-    void timerCallback() override;
+    void timerCallback(int timerID) override;
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
+    double progress = 0.0;
+    ProgressBar progressbar;
 
     /* source coordinates viewport */
     std::unique_ptr<Viewport> sourceCoordsVP;
@@ -99,11 +104,11 @@ private:
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
-    
+
     /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
-    
-    
+
+
     //[/UserVariables]
 
     //==============================================================================

@@ -25,14 +25,19 @@
 
 #include "JuceHeader.h"
 #include "sldoa.h"
-
+#include <thread>
 #define BUILD_VER_SUFFIX ""
 #ifndef MIN
-  #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
+# define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
 #endif
 #ifndef MAX
-  #define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
+# define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
 #endif
+
+typedef enum _TIMERS{
+    TIMER_PROCESSING_RELATED = 1,
+    TIMER_GUI_RELATED
+}TIMERS;
 
 enum {	
     /* For the default VST GUI */
@@ -40,6 +45,7 @@ enum {
 };
 
 class PluginProcessor  : public AudioProcessor,
+                         public MultiTimer,
                          public VSTCallbackHandler
 {
 public:
@@ -79,6 +85,26 @@ private:
     bool flipLR, flipUD, greyScale;
     AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
+    
+    void timerCallback(int timerID) override
+    {
+        switch(timerID){
+            case TIMER_PROCESSING_RELATED:
+                /* reinitialise codec if needed */
+                if(sldoa_getCodecStatus(hSld) == CODEC_STATUS_NOT_INITIALISED){
+                    try{
+                        std::thread threadInit(sldoa_initCodec, hSld);
+                        threadInit.detach();
+                    } catch (const std::exception& exception) {
+                        std::cout << "Could not create thread" << exception.what() << std::endl;
+                    }
+                }
+                break;
+            case TIMER_GUI_RELATED:
+                /* handled in PluginEditor */
+                break;
+        }
+    }
     
     /***************************************************************************\
                                     JUCE Functions

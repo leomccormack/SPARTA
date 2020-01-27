@@ -49,7 +49,7 @@ typedef enum _SPARTA_WARNINGS{
                                                                     //[/Comments]
 */
 class PluginEditor  : public AudioProcessorEditor,
-                      public Timer,
+                      public MultiTimer,
                       private CameraDevice::Listener,
                       public AsyncUpdater,
                       public ComboBox::Listener,
@@ -78,8 +78,10 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
     void* hPm;
-    void timerCallback() override;
-
+    void timerCallback(int timerID) override;
+    double progress = 0.0;
+    ProgressBar progressbar;
+    
     /* for openGL speed-ups */
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;

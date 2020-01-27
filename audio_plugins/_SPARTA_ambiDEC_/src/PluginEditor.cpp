@@ -363,8 +363,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     tb_loadJSON->setTooltip("Loads loudspeaker directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     tb_saveJSON->setTooltip("Saves the current loudspeaker directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
 
-	/* Specify screen refresh rate */
-    startTimer(TIMER_PROCESSING_RELATED, 80);//80); /*ms (40ms = 25 frames per second) */
+	/* Specify screen refresh rate */ 
     startTimer(TIMER_GUI_RELATED, 40);
 
     /* warnings */
@@ -1137,19 +1136,10 @@ void PluginEditor::timerCallback(int timerID)
 {
     switch(timerID){
         case TIMER_PROCESSING_RELATED:
-            /* reinitialise codec if needed */
-            if(ambi_dec_getCodecStatus(hAmbi) == CODEC_STATUS_NOT_INITIALISED){
-                try{
-                    std::thread threadInit(ambi_dec_initCodec, hAmbi);
-                    threadInit.detach();
-                } catch (const std::exception& exception) {
-                    std::cout << "Could not create thread" << exception.what() << std::endl;
-                }
-            }
+            /* handled in PluginProcessor */ 
             break;
             
-        case TIMER_GUI_RELATED:
-            
+        case TIMER_GUI_RELATED: 
             /* parameters whos values can change internally should be periodically refreshed */
             if(TBuseDefaultHRIRs->getToggleState() != ambi_dec_getUseDefaultHRIRsflag(hAmbi) )
                 TBuseDefaultHRIRs->setToggleState(ambi_dec_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);

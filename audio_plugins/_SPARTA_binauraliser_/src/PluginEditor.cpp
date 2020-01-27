@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -30,7 +30,7 @@
 
 //==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter), fileChooser ("File", File(), true, false, false,
+    : AudioProcessorEditor(ownerFilter), progressbar(progress), fileChooser ("File", File(), true, false, false,
       "*.sofa;*.nc;", String(),
       "Load SOFA File")
 {
@@ -269,7 +269,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* interp modes */
     CBinterpMode->addItem(TRANS("Triangular"), INTERP_TRI);
 
-    /* add source preset options */ 
+    /* add source preset options */
     CBsourceDirsPreset->addItem (TRANS("Mono"), SOURCE_CONFIG_PRESET_MONO);
     CBsourceDirsPreset->addItem (TRANS("Stereo"), SOURCE_CONFIG_PRESET_STEREO);
     CBsourceDirsPreset->addItem (TRANS("5.x"), SOURCE_CONFIG_PRESET_5PX);
@@ -292,6 +292,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsourceDirsPreset->addItem (TRANS("T-design (36)"), SOURCE_CONFIG_PRESET_T_DESIGN_36);
     CBsourceDirsPreset->addItem (TRANS("T-design (48)"), SOURCE_CONFIG_PRESET_T_DESIGN_48);
     CBsourceDirsPreset->addItem (TRANS("T-design (60)"), SOURCE_CONFIG_PRESET_T_DESIGN_60);
+    
+    /* ProgressBar */
+    progress = 0.0;
+    progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
+    progressbar.ProgressBar::setAlwaysOnTop(true);
+    progressbar.setColour(ProgressBar::backgroundColourId, Colours::gold);
+    progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
 
     /* source coordinate viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
@@ -316,7 +323,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
     SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
     TB_showInputs->setToggleState(true, dontSendNotification);
-    TB_showOutputs->setToggleState(true, dontSendNotification);
+    TB_showOutputs->setToggleState(false, dontSendNotification);
     CBinterpMode->setSelectedId(binauraliser_getInterpMode(hBin), dontSendNotification);
     TBenableRotation->setToggleState((bool)binauraliser_getEnableRotation(hBin), dontSendNotification);
     s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
@@ -335,7 +342,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     panWindow->setShowInputs(TB_showInputs->getToggleState());
     panWindow->setShowOutputs(TB_showOutputs->getToggleState());
     refreshPanViewWindow = true;
-    
+
     /* tooltips */
     CBsourceDirsPreset->setTooltip("Presets for source directions to use for spatialisation.");
     TBuseDefaultHRIRs->setTooltip("If this is 'ticked', the plug-in is using the default HRIR set from the Spatial_Audio_Framework.");
@@ -359,8 +366,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     tb_loadJSON->setTooltip("Loads source directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     tb_saveJSON->setTooltip("Saves the current source directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
 
-	/* Specify screen refresh rate */
-    startTimer(40);//80); /*ms (40ms = 25 frames per second) */
+	/* Specify screen refresh rate */ 
+    startTimer(TIMER_GUI_RELATED, 40);
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -1135,71 +1142,118 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void PluginEditor::timerCallback()
+void PluginEditor::timerCallback(int timerID)
 {
-    /* labels for HRIR details */
-    label_N_dirs->setText(String(binauraliser_getNDirs(hBin)), dontSendNotification);
-    label_HRIR_fs->setText(String(binauraliser_getHRIRsamplerate(hBin)), dontSendNotification);
-    label_DAW_fs->setText(String(binauraliser_getDAWsamplerate(hBin)), dontSendNotification);
-    label_N_Tri->setText(String(binauraliser_getNTriangles(hBin)), dontSendNotification);
+    switch(timerID){
+        case TIMER_PROCESSING_RELATED:
+            /* handled in PluginProcessor */
+            break;
+            
+        case TIMER_GUI_RELATED:
+            
+            /* labels for HRIR details */
+            label_N_dirs->setText(String(binauraliser_getNDirs(hBin)), dontSendNotification);
+            label_HRIR_fs->setText(String(binauraliser_getHRIRsamplerate(hBin)), dontSendNotification);
+            label_DAW_fs->setText(String(binauraliser_getDAWsamplerate(hBin)), dontSendNotification);
+            label_N_Tri->setText(String(binauraliser_getNTriangles(hBin)), dontSendNotification);
 
-    /* parameters whos values can change internally should be periodically refreshed */
-    TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
-    sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
-    SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
-    s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
-    s_pitch->setValue(binauraliser_getPitch(hBin), dontSendNotification);
-    s_roll->setValue(binauraliser_getRoll(hBin), dontSendNotification);
+            /* parameters whos values can change internally should be periodically refreshed */
+            sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
+            if(binauraliser_getUseDefaultHRIRsflag(hBin)!=TBuseDefaultHRIRs->getToggleState())
+                TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
+            if(binauraliser_getNumSources(hBin)!=SL_num_sources->getValue())
+                SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
+            if(binauraliser_getYaw(hBin)!=s_yaw->getValue())
+                s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
+            if(binauraliser_getPitch(hBin)!=s_pitch->getValue())
+                s_pitch->setValue(binauraliser_getPitch(hBin), dontSendNotification);
+            if(binauraliser_getRoll(hBin)!=s_roll->getValue())
+                s_roll->setValue(binauraliser_getRoll(hBin), dontSendNotification);
+            
+            /* Progress bar */
+            if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
+                addAndMakeVisible(progressbar);
+                progress = (double)binauraliser_getProgressBar0_1(hBin);
+                char text[BINAURALISER_PROGRESSBARTEXT_CHAR_LENGTH];
+                binauraliser_getProgressBarText(hBin, (char*)text);
+                progressbar.setTextToDisplay(String(text));
+            }
+            else
+                removeChildComponent(&progressbar);
+            
+            /* disable certain parameters if currently initialising */
+            if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
+                if(CBsourceDirsPreset->isEnabled())
+                   CBsourceDirsPreset->setEnabled(false);
+                if(SL_num_sources->isEnabled())
+                    SL_num_sources->setEnabled(false);
+                if(TBuseDefaultHRIRs->isEnabled())
+                    TBuseDefaultHRIRs->setEnabled(false);
+                if(CBinterpMode->isEnabled())
+                    CBinterpMode->setEnabled(false);
+                if(tb_loadJSON->isEnabled())
+                    tb_loadJSON->setEnabled(false);
+                if(fileChooser.isEnabled())
+                   fileChooser.setEnabled(false);
+                if(sourceCoordsVP->isEnabled())
+                   sourceCoordsVP->setEnabled(false);
+            }
+            else{
+                if(!CBsourceDirsPreset->isEnabled())
+                    CBsourceDirsPreset->setEnabled(true);
+                if(!SL_num_sources->isEnabled())
+                    SL_num_sources->setEnabled(true);
+                if(!TBuseDefaultHRIRs->isEnabled())
+                    TBuseDefaultHRIRs->setEnabled(true);
+                if(!CBinterpMode->isEnabled())
+                    CBinterpMode->setEnabled(true);
+                if(!tb_loadJSON->isEnabled())
+                    tb_loadJSON->setEnabled(true);
+                if(!fileChooser.isEnabled())
+                    fileChooser.setEnabled(true);
+                if(!sourceCoordsVP->isEnabled())
+                    sourceCoordsVP->setEnabled(true);
+            }
+  
+            /* refresh pan view */
+            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
+                panWindow->refreshPanView();
+                sourceCoordsView_handle->setHasASliderChange(false);
+                refreshPanViewWindow = false;
+                hVst->setRefreshWindow(false);
+            }
 
-#ifndef __APPLE__
-	/* Some parameters shouldn't be enabled if playback is ongoing */
-	if (hVst->getIsPlaying()) {
-		fileChooser.setEnabled(false);
-		TBuseDefaultHRIRs->setEnabled(false);
-	}
-	else {
-		fileChooser.setEnabled(true);
-		TBuseDefaultHRIRs->setEnabled(true);
-		binauraliser_checkReInit(hBin);
-	}
-#endif
-
-    /* refresh pan view */
-    if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
-		panWindow->refreshPanView();
-		sourceCoordsView_handle->setHasASliderChange(false);
-		refreshPanViewWindow = false;
-        hVst->setRefreshWindow(false);
-    }
-
-    /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ( !((binauraliser_getDAWsamplerate(hBin) == 44.1e3) || (binauraliser_getDAWsamplerate(hBin) == 48e3)) ){
-        currentWarning = k_warning_supported_fs;
-        repaint(0,0,getWidth(),32);
-    }
-    else if (binauraliser_getDAWsamplerate(hBin) != binauraliser_getHRIRsamplerate(hBin)){
-        currentWarning = k_warning_mismatch_fs;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((hVst->getCurrentNumInputs() < binauraliser_getNumSources(hBin))){
-        currentWarning = k_warning_NinputCH;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((hVst->getCurrentNumOutputs() < binauraliser_getNumEars())){
-        currentWarning = k_warning_NoutputCH;
-        repaint(0,0,getWidth(),32);
-    }
-    else if(!hVst->getOscPortConnected() && binauraliser_getEnableRotation(hBin)){
-        currentWarning = k_warning_osc_connection_fail;
-        repaint(0,0,getWidth(),32);
-    }
-    else if(currentWarning){
-        currentWarning = k_warning_none;
-        repaint(0,0,getWidth(),32);
+            /* display warning message, if needed */
+            if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
+                currentWarning = k_warning_frameSize;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ( !((binauraliser_getDAWsamplerate(hBin) == 44.1e3) || (binauraliser_getDAWsamplerate(hBin) == 48e3)) ){
+                currentWarning = k_warning_supported_fs;
+                repaint(0,0,getWidth(),32);
+            }
+            else if (binauraliser_getDAWsamplerate(hBin) != binauraliser_getHRIRsamplerate(hBin)){
+                currentWarning = k_warning_mismatch_fs;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ((hVst->getCurrentNumInputs() < binauraliser_getNumSources(hBin))){
+                currentWarning = k_warning_NinputCH;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ((hVst->getCurrentNumOutputs() < binauraliser_getNumEars())){
+                currentWarning = k_warning_NoutputCH;
+                repaint(0,0,getWidth(),32);
+            }
+            else if(!hVst->getOscPortConnected() && binauraliser_getEnableRotation(hBin)){
+                currentWarning = k_warning_osc_connection_fail;
+                repaint(0,0,getWidth(),32);
+            }
+            else if(currentWarning){
+                currentWarning = k_warning_none;
+                repaint(0,0,getWidth(),32);
+            }
+            
+            break;
     }
 }
 
@@ -1217,8 +1271,8 @@ void PluginEditor::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer, private FilenameComponentListener"
-                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), fileChooser (&quot;File&quot;, File(), true, false, false,&#10;                       &quot;*.sofa;*.nc;&quot;, String(),&#10;                       &quot;Load SOFA File&quot;)"
+                 parentClasses="public AudioProcessorEditor, public MultiTimer, private FilenameComponentListener"
+                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), progressbar(progress), fileChooser (&quot;File&quot;, File(), true, false, false,&#10;                       &quot;*.sofa;*.nc;&quot;, String(),&#10;                       &quot;Load SOFA File&quot;)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="920" initialHeight="356">
   <BACKGROUND backgroundColour="ffffffff">
@@ -1226,14 +1280,14 @@ BEGIN_JUCER_METADATA
           hasStroke="0"/>
     <RECT pos="0 30 920 163" fill="linear: 8 32, 8 120, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 2 918 31" cornerSize="5" fill="linear: 0 32, 920 32, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 2 918 31" cornerSize="5.0" fill="linear: 0 32, 920 32, 0=ff061c20, 1=ff1c3949"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="712 121 196 170" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 58 196 64" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="23 58 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 58 480 240" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1246,83 +1300,83 @@ BEGIN_JUCER_METADATA
     <RECT pos="712 290 196 56" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="23 88 153 30" fill="solid: ffffffff" hasStroke="0" text="Number of Inputs:"
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="84 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="788 32 113 30" fill="solid: ffffffff" hasStroke="0" text="HRIRs"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="392 32 136 30" fill="solid: ffffffff" hasStroke="0" text="Panning Window"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="720 58 160 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="457 312 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="582 312 122 30" fill="solid: ffffffff" hasStroke="0" text="Show HRIRs:"
-          fontname="Default font" fontsize="1.45e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 308 229 38" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="229 312 132 30" fill="solid: ffffffff" hasStroke="0" text="Interp. Mode:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="719 316 89 30" fill="solid: ffffffff" hasStroke="0" text="HRIR/DAW Fs:"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="719 294 132 30" fill="solid: ffffffff" hasStroke="0" text="N Dirs/Tri:"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="712 176 196 115" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="735 174 49 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[0]"
-          fontname="Default font" fontsize="1e1" kerning="0" bold="0" italic="0"
-          justification="36"/>
+          fontname="Default font" fontsize="10.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
     <TEXT pos="775 174 46 30" fill="solid: ffffffff" hasStroke="0" text="Pitch"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="831 174 54 30" fill="solid: ffffffff" hasStroke="0" text="Roll"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="831 262 63 30" fill="solid: ffffffff" hasStroke="0" text="+/-"
-          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="703 262 63 30" fill="solid: ffffffff" hasStroke="0" text="+/-"
-          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="767 262 63 30" fill="solid: ffffffff" hasStroke="0" text="+/-"
-          fontname="Default font" fontsize="1.3e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="799 142 91 35" fill="solid: ffffffff" hasStroke="0" text="OSC port:"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="698 174 65 30" fill="solid: ffffffff" hasStroke="0" text="Yaw"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="808 174 40 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[1]"
-          fontname="Default font" fontsize="1e1" kerning="0" bold="0" italic="0"
-          justification="36"/>
+          fontname="Default font" fontsize="10.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
     <TEXT pos="864 174 40 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[2]"
-          fontname="Default font" fontsize="1e1" kerning="0" bold="0" italic="0"
-          justification="36"/>
+          fontname="Default font" fontsize="10.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
     <TEXT pos="711 142 54 35" fill="solid: ffffffff" hasStroke="0" text="R-P-Y:"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="719 120 160 30" fill="solid: ffffffff" hasStroke="0" text="Enable Rotation:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 1 112 32" fill="solid: ffff73f9" hasStroke="0" text="Binauraliser"
-          fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="66 122 108 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 922 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
@@ -1337,20 +1391,20 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="88 66 112 20" editable="0"
             layout="33" items="Default" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_sources"
-          virtualName="" explicitFocusOrder="0" pos="152 94 48 20" min="1"
-          max="6.4e1" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="152 94 48 20" min="1.0"
+          max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_N_dirs"
          virtualName="" explicitFocusOrder="0" pos="797 297 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="1.5e1" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="f8b5274e0c8768f4" memberName="label_HRIR_fs"
          virtualName="" explicitFocusOrder="0" pos="797 321 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="1.5e1" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
                 virtualName="" explicitFocusOrder="0" pos="876 61 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
@@ -1358,7 +1412,7 @@ BEGIN_JUCER_METADATA
          virtualName="" explicitFocusOrder="0" pos="851 321 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="1.5e1" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="74817bb8a57611dc" memberName="TB_showInputs"
                 virtualName="" explicitFocusOrder="0" pos="550 316 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
@@ -1369,7 +1423,7 @@ BEGIN_JUCER_METADATA
          virtualName="" explicitFocusOrder="0" pos="851 297 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="1.5e1" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <COMBOBOX name="new combo box" id="aeb0b2f644784061" memberName="CBinterpMode"
             virtualName="" explicitFocusOrder="0" pos="328 318 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
@@ -1383,21 +1437,21 @@ BEGIN_JUCER_METADATA
   <SLIDER name="new slider" id="ace036a85eec9703" memberName="s_yaw" virtualName=""
           explicitFocusOrder="0" pos="717 196 60 68" rotarysliderfill="ff315b6e"
           rotaryslideroutline="ff5c5d5e" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="-1.8e2" max="1.8e2" int="1e-2" style="RotaryHorizontalVerticalDrag"
+          min="-180.0" max="180.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="58"
-          textBoxHeight="15" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="15" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="9af7dd86cd139d85" memberName="s_pitch"
           virtualName="" explicitFocusOrder="0" pos="780 196 60 68" rotarysliderfill="ff315b6d"
           rotaryslideroutline="ff5c5d5e" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="-1.8e2" max="1.8e2" int="1e-2" style="RotaryHorizontalVerticalDrag"
+          min="-180.0" max="180.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="58"
-          textBoxHeight="15" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="15" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="b5d39bb257b3289a" memberName="s_roll" virtualName=""
           explicitFocusOrder="0" pos="843 196 60 68" rotarysliderfill="ff315b6d"
           rotaryslideroutline="ff5c5d5e" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="-1.8e2" max="1.8e2" int="1e-2" style="RotaryHorizontalVerticalDrag"
+          min="-180.0" max="180.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="58"
-          textBoxHeight="15" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="15" skewFactor="1.0" needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="ac47b63592b1d4cf" memberName="t_flipYaw"
                 virtualName="" explicitFocusOrder="0" pos="749 265 23 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>

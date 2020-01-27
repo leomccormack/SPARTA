@@ -343,7 +343,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_DAW_fs->setTooltip("Current sampling rate, as dictated by the DAW/Host.");
 
 	/* Specify screen refresh rate */
-    startTimer(TIMER_PROCESSING_RELATED, 40);//80); /*ms (40ms = 25 frames per second) */
+    //startTimer(TIMER_PROCESSING_RELATED, 40);//80); /*ms (40ms = 25 frames per second) */
     startTimer(TIMER_GUI_RELATED, 20);
 
     /* warnings */
@@ -1120,16 +1120,8 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 void PluginEditor::timerCallback(int timerID)
 {
     switch(timerID){
-        case TIMER_PROCESSING_RELATED:
-            /* reinitialise codec if needed */
-            if(ambi_bin_getCodecStatus(hAmbi) == CODEC_STATUS_NOT_INITIALISED){
-                try{
-                    std::thread threadInit(ambi_bin_initCodec, hAmbi);
-                    threadInit.detach();
-                } catch (const std::exception& exception) {
-                    std::cout << "Could not create thread" << exception.what() << std::endl;
-                }
-            }
+        case TIMER_PROCESSING_RELATED: 
+            /* Handled in PluginProcessor */
             break;
 
         case TIMER_GUI_RELATED:

@@ -24,8 +24,13 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "powermap.h"
-
+#include <thread>
 #define BUILD_VER_SUFFIX ""                 /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
+
+typedef enum _TIMERS{
+    TIMER_PROCESSING_RELATED = 1,
+    TIMER_GUI_RELATED
+}TIMERS;
 
 enum {	
     /* For the default VST GUI */
@@ -33,6 +38,7 @@ enum {
 };
 
 class PluginProcessor  : public AudioProcessor,
+                         public MultiTimer,
                          public VSTCallbackHandler
 {
 public:
@@ -72,6 +78,26 @@ private:
     bool flipLR, flipUD, greyScale;
     AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
+    
+    void timerCallback(int timerID) override
+    {
+        switch(timerID){
+            case TIMER_PROCESSING_RELATED:
+                /* reinitialise codec if needed */
+                if(powermap_getCodecStatus(hPm) == CODEC_STATUS_NOT_INITIALISED){
+                    try{
+                        std::thread threadInit(powermap_initCodec, hPm);
+                        threadInit.detach();
+                    } catch (const std::exception& exception) {
+                        std::cout << "Could not create thread" << exception.what() << std::endl;
+                    }
+                }
+                break;
+            case TIMER_GUI_RELATED:
+                /* handled in PluginEditor */
+                break;
+        }
+    }
  
 public:
     PluginProcessor();

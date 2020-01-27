@@ -34,6 +34,9 @@ PluginProcessor::PluginProcessor() :
     osc.connect(osc_port_ID);
     /* tell the component to listen for OSC messages */
     osc.addListener(this);
+    
+    startTimer(TIMER_PROCESSING_RELATED, 40);//80); /*ms (40ms = 25 frames per second) */
+    //startTimer(TIMER_GUI_RELATED, 20);
 }
 
 PluginProcessor::~PluginProcessor()

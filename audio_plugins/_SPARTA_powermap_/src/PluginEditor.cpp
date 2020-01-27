@@ -30,7 +30,7 @@
 
 //==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter)
+    : AudioProcessorEditor(ownerFilter), progressbar(progress)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -231,7 +231,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     anaOrder2dSlider->setTopLeftPosition(248, 558);
     powermap_getAnaOrderHandle(hPm, &pX_vector, &pY_values_int, &nPoints);
     anaOrder2dSlider->setDataHandlesInt(pX_vector, pY_values_int, nPoints);
- 
+
     pmapEQ2dSlider.reset (new log2dSlider(360, 63, 100, 20e3, 0.0, 2.0, 3));
     addAndMakeVisible (pmapEQ2dSlider.get());
     pmapEQ2dSlider->setAlwaysOnTop(true);
@@ -284,6 +284,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (overlayIncluded.get());
     overlayIncluded->setAlwaysOnTop(true);
     overlayIncluded->setBounds(previewArea);
+    
+    /* ProgressBar */
+    progress = 0.0;
+    progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
+    progressbar.ProgressBar::setAlwaysOnTop(true);
+    progressbar.setColour(ProgressBar::backgroundColourId, Colours::gold);
+    progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
 
     /* Camera support */
     updateCameraList();
@@ -332,8 +339,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CB_aspectRatio->setTooltip("Aspect ratio options.");
 
 	/* Specify screen refresh rate */
-    startTimer(120);//80); /*ms (40ms = 25 frames per second) */
-
+    startTimer(TIMER_GUI_RELATED, 140);//80); /*ms (40ms = 25 frames per second) */
+    
     /* warnings */
     currentWarning = k_warning_none;
 
@@ -1156,74 +1163,102 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void PluginEditor::timerCallback()
+void PluginEditor::timerCallback(int timerID)
 {
-    /* parameters whos values can change internally should be periodically refreshed */
-    CBchFormat->setSelectedId(powermap_getChOrder(hPm), dontSendNotification);
-    CBnormScheme->setSelectedId(powermap_getNormType(hPm), dontSendNotification);
-    CBchFormat->setItemEnabled(CH_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
-    CBnormScheme->setItemEnabled(NORM_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
+    switch(timerID){
+        case TIMER_PROCESSING_RELATED:
+            /* handled in PluginProcessor */
+            break;
+            
+        case TIMER_GUI_RELATED:
+            /* parameters whos values can change internally should be periodically refreshed */
+            CBchFormat->setSelectedId(powermap_getChOrder(hPm), dontSendNotification);
+            CBnormScheme->setSelectedId(powermap_getNormType(hPm), dontSendNotification);
+            CBchFormat->setItemEnabled(CH_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
+            CBnormScheme->setItemEnabled(NORM_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
 
-    /* Nsource slider range */
-    s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired(hPm)/2.0f), 1);
+            /* Nsource slider range */
+            s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired(hPm)/2.0f), 1);
 
-#ifndef __APPLE__
-	/* Some parameters shouldn't be enabled if playback is ongoing */
-	if (hVst->getIsPlaying())
-		CBmasterOrder->setEnabled(false);
-	else {
-		CBmasterOrder->setEnabled(true);
-		powermap_checkReInit(hPm);
-	}
-#endif
+            /* take webcam picture */
+            if(CB_webcam->getSelectedId()>1){
+                handleAsyncUpdate();
+                if (incomingImage.isValid())
+                    lastSnapshot.setImage(incomingImage);
+            }
+            
+            /* Progress bar */
+            if(powermap_getCodecStatus(hPm)==CODEC_STATUS_INITIALISING){
+                addAndMakeVisible(progressbar);
+                progressbar.setAlwaysOnTop(true);
+                progress = (double)powermap_getProgressBar0_1(hPm);
+                char text[POWERMAP_PROGRESSBARTEXT_CHAR_LENGTH];
+                powermap_getProgressBarText(hPm, (char*)text);
+                progressbar.setTextToDisplay(String(text));
+            }
+            else
+                removeChildComponent(&progressbar);
+            
+            /* Some parameters shouldn't be editable during initialisation*/
+            if(powermap_getCodecStatus(hPm)==CODEC_STATUS_INITIALISING){
+                if(CB_hfov->isEnabled())
+                    CB_hfov->setEnabled(false);
+                if(CB_aspectRatio->isEnabled())
+                    CB_aspectRatio->setEnabled(false);
+                if(CBmasterOrder->isEnabled())
+                    CBmasterOrder->setEnabled(false);
+            }
+            else{
+                if(!CB_hfov->isEnabled())
+                    CB_hfov->setEnabled(true);
+                if(!CB_aspectRatio->isEnabled())
+                    CB_aspectRatio->setEnabled(true);
+                if(!CBmasterOrder->isEnabled())
+                    CBmasterOrder->setEnabled(true);
+            }
 
-    /* take webcam picture */
-    if(CB_webcam->getSelectedId()>1){
-        handleAsyncUpdate();
-        if (incomingImage.isValid())
-            lastSnapshot.setImage(incomingImage);
-    }
+            /* refresh the powermap display */
+            if ((overlayIncluded != nullptr) && (hVst->getIsPlaying())) {
+                float* dirs_deg, *pmap;
+                int nDirs, pmapReady, pmapWidth, hfov, aspectRatio;
+                pmapReady = powermap_getPmap(hPm, &dirs_deg, &pmap, &nDirs, &pmapWidth, &hfov, &aspectRatio);
+                overlayIncluded->setEnableTransparency(CB_webcam->getSelectedId() > 1 ? true : false);
+                if(pmapReady){
+                    overlayIncluded->refreshPowerMap(dirs_deg, pmap, nDirs, pmapWidth, hfov, aspectRatio);
+                }
+                if(overlayIncluded->getFinishedRefresh()){
+                    powermap_requestPmapUpdate(hPm);
+                }
+            }
 
-    /* refresh the powermap display */
-    if ((overlayIncluded != nullptr) && (hVst->getIsPlaying())) {
-        float* dirs_deg, *pmap;
-        int nDirs, pmapReady, pmapWidth, hfov, aspectRatio;
-        pmapReady = powermap_getPmap(hPm, &dirs_deg, &pmap, &nDirs, &pmapWidth, &hfov, &aspectRatio);
-        overlayIncluded->setEnableTransparency(CB_webcam->getSelectedId() > 1 ? true : false);
-        if(pmapReady){
-            overlayIncluded->refreshPowerMap(dirs_deg, pmap, nDirs, pmapWidth, hfov, aspectRatio);
-        }
-        if(overlayIncluded->getFinishedRefresh()){
-            powermap_requestPmapUpdate(hPm);
-        }
-    }
+            /* refresh the 2d sliders */
+            if (anaOrder2dSlider->getRefreshValuesFLAG()) {
+                anaOrder2dSlider->repaint();
+                anaOrder2dSlider->setRefreshValuesFLAG(false);
+            }
+            if (pmapEQ2dSlider->getRefreshValuesFLAG()) {
+                pmapEQ2dSlider->repaint();
+                pmapEQ2dSlider->setRefreshValuesFLAG(false);
+            }
 
-    /* refresh the 2d sliders */
-	if (anaOrder2dSlider->getRefreshValuesFLAG()) {
-		anaOrder2dSlider->repaint();
-		anaOrder2dSlider->setRefreshValuesFLAG(false);
-	}
-	if (pmapEQ2dSlider->getRefreshValuesFLAG()) {
-		pmapEQ2dSlider->repaint();
-		pmapEQ2dSlider->setRefreshValuesFLAG(false);
-	}
-
-    /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ( !((powermap_getSamplingRate(hPm) == 44.1e3) || (powermap_getSamplingRate(hPm) == 48e3)) ){
-        currentWarning = k_warning_supported_fs;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((hVst->getCurrentNumInputs() < powermap_getNSHrequired(hPm))){
-        currentWarning = k_warning_NinputCH;
-        repaint(0,0,getWidth(),32);
-    }
-    else if(currentWarning){
-        currentWarning = k_warning_none;
-        repaint(0,0,getWidth(),32);
+            /* display warning message, if needed */
+            if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
+                currentWarning = k_warning_frameSize;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ( !((powermap_getSamplingRate(hPm) == 44.1e3) || (powermap_getSamplingRate(hPm) == 48e3)) ){
+                currentWarning = k_warning_supported_fs;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ((hVst->getCurrentNumInputs() < powermap_getNSHrequired(hPm))){
+                currentWarning = k_warning_NinputCH;
+                repaint(0,0,getWidth(),32);
+            }
+            else if(currentWarning){
+                currentWarning = k_warning_none;
+                repaint(0,0,getWidth(),32);
+            }
+            break;
     }
 }
 
@@ -1312,8 +1347,8 @@ void PluginEditor::handleAsyncUpdate()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer, private CameraDevice::Listener, public AsyncUpdater"
-                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter)"
+                 parentClasses="public AudioProcessorEditor, public MultiTimer, private CameraDevice::Listener, public AsyncUpdater"
+                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), progressbar(progress)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="672" initialHeight="652">
   <BACKGROUND backgroundColour="ffffffff">

@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -30,7 +30,7 @@
 
 //==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter)
+    : AudioProcessorEditor(ownerFilter), progressbar(progress)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -189,7 +189,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* create 2d Slider for the decoding order parameter */
     int nPoints;
     float* pX_vector;
-    int* pY_values_int; 
+    int* pY_values_int;
     anaOrder2dSlider.reset (new log2dSlider(360, 54, 100, 20e3, 1, sldoa_getMasterOrder(hSld), 0));
     addAndMakeVisible (anaOrder2dSlider.get());
     anaOrder2dSlider->setAlwaysOnTop(true);
@@ -223,6 +223,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 #ifdef ENABLE_DTU_MIC_MIC_PRESET
     CBinputTypePreset->addItem(TRANS("DTU mic"), MIC_PRESET_DTU_MIC);
 #endif
+    
+    /* ProgressBar */
+    progress = 0.0;
+    progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
+    progressbar.ProgressBar::setAlwaysOnTop(true);
+    progressbar.setColour(ProgressBar::backgroundColourId, Colours::gold);
+    progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
 
 	/* fetch current configuration */
     CBmasterOrder->setSelectedId(sldoa_getMasterOrder(hSld), dontSendNotification);
@@ -239,7 +246,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_maxFreq->setValue(sldoa_getMaxFreq(hSld));
     CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
     CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
- 
+
     /* tooltips */
     CBmasterOrder->setTooltip("Maximum analysis order (can be lower at different frequencies). Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input");
     avgSlider->setTooltip("Temporal averaging (in miliseconds)");
@@ -251,9 +258,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_greyScale->setTooltip("Sets the plug-in to display the webcam image in 'grey-scale'.");
     TB_flipUD->setTooltip("Flips the webcam image up-down, as it may be preferable to mount the camera upside-down on top of the microphone array; in order to bring the origin of the camera closer to that of the array.");
     TB_flipLR->setTooltip("Flips the webcam image left-right, as some webcams mirror the images taken.");
-    
+
 	/* Specify screen refresh rate */
-    startTimer(100);//80); /*ms (40ms = 25 frames per second) */
+   startTimer(TIMER_GUI_RELATED, 120);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -864,46 +871,76 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void PluginEditor::timerCallback()
+void PluginEditor::timerCallback(int timerID)
 {
-    /* parameters whos values can change internally should be periodically refreshed */
-    CB_CHorder->setSelectedId(sldoa_getChOrder(hSld), dontSendNotification);
-    CB_Norm->setSelectedId(sldoa_getNormType(hSld), dontSendNotification);
-    CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
-    CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
+    switch(timerID){
+        case TIMER_PROCESSING_RELATED:
+            /* handled in PluginProcessor */
+            break;
+            
+        case TIMER_GUI_RELATED:
+            /* parameters whos values can change internally should be periodically refreshed */
+            CB_CHorder->setSelectedId(sldoa_getChOrder(hSld), dontSendNotification);
+            CB_Norm->setSelectedId(sldoa_getNormType(hSld), dontSendNotification);
+            CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
+            CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
 
-    /* take webcam picture */
-    if(CB_webcam->getSelectedId()>1){
-        handleAsyncUpdate();
-        if (incomingImage.isValid())
-            lastSnapshot.setImage(incomingImage);
-    }
+            /* take webcam picture */
+            if(CB_webcam->getSelectedId()>1){
+                handleAsyncUpdate();
+                if (incomingImage.isValid())
+                    lastSnapshot.setImage(incomingImage);
+            }
+            
+            /* Progress bar */
+            if(sldoa_getCodecStatus(hSld)==CODEC_STATUS_INITIALISING){
+                addAndMakeVisible(progressbar);
+                progressbar.setAlwaysOnTop(true);
+                progress = (double)sldoa_getProgressBar0_1(hSld);
+                char text[SLDOA_PROGRESSBARTEXT_CHAR_LENGTH];
+                sldoa_getProgressBarText(hSld, (char*)text);
+                progressbar.setTextToDisplay(String(text));
+            }
+            else
+                removeChildComponent(&progressbar);
+            
+            /* Some parameters shouldn't be editable during initialisation*/
+            if(sldoa_getCodecStatus(hSld)==CODEC_STATUS_INITIALISING){
+                if(CBmasterOrder->isEnabled())
+                    CBmasterOrder->setEnabled(false);
+            }
+            else{
+                if(!CBmasterOrder->isEnabled())
+                    CBmasterOrder->setEnabled(true);
+            }
 
-    /* refresh overlay */
-	if ((overlayIncluded != nullptr) && (hVst->getIsPlaying()))
-		overlayIncluded->repaint();
-    if (anaOrder2dSlider->getRefreshValuesFLAG())
-        anaOrder2dSlider->repaint();
+            /* refresh overlay */
+            if ((overlayIncluded != nullptr) && (hVst->getIsPlaying()))
+                overlayIncluded->repaint();
+            if (anaOrder2dSlider->getRefreshValuesFLAG())
+                anaOrder2dSlider->repaint();
 
-    s_minFreq->setValue(sldoa_getMinFreq(hSld));
-    s_maxFreq->setValue(sldoa_getMaxFreq(hSld));
+            s_minFreq->setValue(sldoa_getMinFreq(hSld));
+            s_maxFreq->setValue(sldoa_getMaxFreq(hSld));
 
-    /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ( !((sldoa_getSamplingRate(hSld) == 44.1e3) || (sldoa_getSamplingRate(hSld) == 48e3)) ){
-        currentWarning = k_warning_supported_fs;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((hVst->getCurrentNumInputs() < sldoa_getNSHrequired(hSld))){
-        currentWarning = k_warning_NinputCH;
-        repaint(0,0,getWidth(),32);
-    }
-    else if(currentWarning){
-        currentWarning = k_warning_none;
-        repaint(0,0,getWidth(),32);
+            /* display warning message, if needed */
+            if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
+                currentWarning = k_warning_frameSize;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ( !((sldoa_getSamplingRate(hSld) == 44.1e3) || (sldoa_getSamplingRate(hSld) == 48e3)) ){
+                currentWarning = k_warning_supported_fs;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ((hVst->getCurrentNumInputs() < sldoa_getNSHrequired(hSld))){
+                currentWarning = k_warning_NinputCH;
+                repaint(0,0,getWidth(),32);
+            }
+            else if(currentWarning){
+                currentWarning = k_warning_none;
+                repaint(0,0,getWidth(),32);
+            }
+            break;
     }
 }
 
@@ -991,8 +1028,8 @@ void PluginEditor::handleAsyncUpdate()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer, private CameraDevice::Listener, public AsyncUpdater"
-                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter)"
+                 parentClasses="public AudioProcessorEditor, public MultiTimer, private CameraDevice::Listener, public AsyncUpdater"
+                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), progressbar(progress)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="634" initialHeight="514">
   <BACKGROUND backgroundColour="ffffffff">
@@ -1000,7 +1037,7 @@ BEGIN_JUCER_METADATA
           hasStroke="0"/>
     <RECT pos="0 30 634 242" fill="linear: 8 32, 8 144, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 2 632 31" cornerSize="5" fill="linear: 0 32, 632 24, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 2 632 31" cornerSize="5.0" fill="linear: 0 32, 632 24, 0=ff061c20, 1=ff1c3949"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="8 374 197 128" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1009,61 +1046,61 @@ BEGIN_JUCER_METADATA
     <RECT pos="204 407 422 95" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="14 410 96 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="14 468 112 30" fill="solid: ffffffff" hasStroke="0" text="Avg (ms):"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="14 440 127 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="216 405 312 30" fill="solid: ffffffff" hasStroke="0" text="Analysis Order Per Frequency Band"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="611 466 13 30" fill="solid: ffffffff" hasStroke="0" text="1"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="211 478 37 30" fill="solid: ffffffff" hasStroke="0" text="100"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="366 478 37 30" fill="solid: ffffffff" hasStroke="0" text="1k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="520 478 37 30" fill="solid: ffffffff" hasStroke="0" text="10k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="402 478 93 30" fill="solid: ffffffff" hasStroke="0" text="Frequency (Hz)"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="563 478 37 30" fill="solid: ffffffff" hasStroke="0" text="20k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="216 376 160 30" fill="solid: ffffffff" hasStroke="0" text="Minimum Freq (Hz):"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="422 376 162 30" fill="solid: ffffffff" hasStroke="0" text="Maximum Freq (Hz):"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="14 376 104 30" fill="solid: ffffffff" hasStroke="0" text="Max Order:"
-          fontname="Default font" fontsize="1.4e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 1 112 32" fill="solid: ffff4848" hasStroke="0" text="SLDoA"
-          fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="584 32 29 30" fill="solid: ffffffff" hasStroke="0" text="GS:"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="536 32 37 30" fill="solid: ffffffff" hasStroke="0" text="U|D:"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="490 32 37 30" fill="solid: ffffffff" hasStroke="0" text="L|R:"
-          fontname="Default font" fontsize="1.1e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="267 33 125 30" fill="solid: ffffffff" hasStroke="0" text="Display Window"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 636 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
@@ -1080,9 +1117,9 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <SLIDER name="new slider" id="86d1295f97e935ba" memberName="avgSlider"
           virtualName="" explicitFocusOrder="0" pos="80 473 118 24" bkgcol="ff5c5d5e"
-          trackcol="ff315b6e" min="0" max="2e3" int="1e-1" style="LinearHorizontal"
+          trackcol="ff315b6e" min="0.0" max="2000.0" int="0.1" style="LinearHorizontal"
           textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="45"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <COMBOBOX name="new combo box" id="3d1c447f9542fa94" memberName="CB_CHorder"
             virtualName="" explicitFocusOrder="0" pos="66 447 64 18" editable="0"
             layout="33" items="" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
@@ -1092,21 +1129,21 @@ BEGIN_JUCER_METADATA
   <SLIDER name="new slider" id="50ea77f60aadeeca" memberName="slider_anaOrder"
           virtualName="" explicitFocusOrder="0" pos="576 424 40 66" bkgcol="ff5c5d5e"
           trackcol="ff315b6d" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="0" max="1" int="1" style="LinearVertical" textBoxPos="NoTextBox"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
+          min="0.0" max="1.0" int="1.0" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="932ca035edce041d" memberName="CBinputTypePreset"
             virtualName="" explicitFocusOrder="0" pos="96 417 103 18" editable="0"
             layout="33" items="Ideal SH" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="905f4ab0adab1f4f" memberName="s_minFreq"
-          virtualName="" explicitFocusOrder="0" pos="352 382 56 20" min="0"
-          max="2.4e4" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="352 382 56 20" min="0.0"
+          max="24000.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="3aad5000f228ef1b" memberName="s_maxFreq"
-          virtualName="" explicitFocusOrder="0" pos="560 382 56 20" min="0"
-          max="2.4e4" int="1" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1"
+          virtualName="" explicitFocusOrder="0" pos="560 382 56 20" min="0.0"
+          max="24000.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="346a30a1bf8969e9" memberName="CBmasterOrder"
             virtualName="" explicitFocusOrder="0" pos="96 382 103 18" editable="0"
