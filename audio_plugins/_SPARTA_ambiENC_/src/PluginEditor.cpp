@@ -660,8 +660,8 @@ void PluginEditor::timerCallback()
         SL_num_sources->setValue(ambi_enc_getNumSources(hAmbi),dontSendNotification);
     if(CBoutputFormat->getSelectedId()!=ambi_enc_getChOrder(hAmbi))
         CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hAmbi), dontSendNotification);
-    if(CBoutputFormat->getSelectedId()!=ambi_enc_getNormType(hAmbi))
-        CBoutputFormat->setSelectedId(ambi_enc_getNormType(hAmbi), dontSendNotification);
+    if(CBnormalisation->getSelectedId()!=ambi_enc_getNormType(hAmbi))
+        CBnormalisation->setSelectedId(ambi_enc_getNormType(hAmbi), dontSendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, ambi_enc_getOutputOrder(hAmbi)==OUTPUT_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, ambi_enc_getOutputOrder(hAmbi)==OUTPUT_ORDER_FIRST ? true : false);
 
