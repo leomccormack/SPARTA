@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_panner" projectType="audioplug" version="1.5.2"
+<JUCERPROJECT id="lfkRjX" name="sparta_panner" projectType="audioplug" version="1.5.3"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_panner" pluginDesc="sparta_panner"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="PANN"
@@ -108,6 +108,8 @@
                   file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_matrixConv.c"/>
             <FILE id="ShwEvM" name="saf_matrixConv.h" compile="0" resource="0"
                   file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_matrixConv.h"/>
+            <FILE id="J9NcV7" name="saf_misc.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_misc.c"/>
+            <FILE id="XUdpwD" name="saf_misc.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_misc.h"/>
             <FILE id="AeVwSk" name="saf_sensorarray_presets.c" compile="1" resource="0"
                   file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_sensorarray_presets.c"/>
             <FILE id="YCb1bc" name="saf_sensorarray_presets.h" compile="0" resource="0"

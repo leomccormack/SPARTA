@@ -104,6 +104,8 @@
                   file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_matrixConv.c"/>
             <FILE id="OMjZ56" name="saf_matrixConv.h" compile="0" resource="0"
                   file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_matrixConv.h"/>
+            <FILE id="IDJFL9" name="saf_misc.c" compile="1" resource="0" file="../../../../../CroPaC_Binaural/SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_misc.c"/>
+            <FILE id="Tc9PYb" name="saf_misc.h" compile="0" resource="0" file="../../../../../CroPaC_Binaural/SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_misc.h"/>
             <FILE id="sxCcFs" name="saf_sensorarray_presets.c" compile="1" resource="0"
                   file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_sensorarray_presets.c"/>
             <FILE id="r2ufD0" name="saf_sensorarray_presets.h" compile="0" resource="0"
