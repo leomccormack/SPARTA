@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_ambiBIN" projectType="audioplug" version="1.4.0"
+<JUCERPROJECT id="lfkRjX" name="sparta_ambiBIN" projectType="audioplug" version="1.4.1"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiBIN" pluginDesc="sparta_ambiBIN"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ABOA"
@@ -96,6 +96,8 @@
                   file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_matrixConv.c"/>
             <FILE id="yhmTQ2" name="saf_matrixConv.h" compile="0" resource="0"
                   file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_matrixConv.h"/>
+            <FILE id="uco0C3" name="saf_misc.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_misc.c"/>
+            <FILE id="BYhYfg" name="saf_misc.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_misc.h"/>
             <FILE id="XOxQB4" name="saf_sensorarray_presets.c" compile="1" resource="0"
                   file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_sensorarray_presets.c"/>
             <FILE id="bgynqw" name="saf_sensorarray_presets.h" compile="0" resource="0"

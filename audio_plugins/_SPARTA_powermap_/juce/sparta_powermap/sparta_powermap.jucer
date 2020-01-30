@@ -100,6 +100,8 @@
                   file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_matrixConv.c"/>
             <FILE id="wmGg4b" name="saf_matrixConv.h" compile="0" resource="0"
                   file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_matrixConv.h"/>
+            <FILE id="CTRget" name="saf_misc.c" compile="1" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_misc.c"/>
+            <FILE id="hN4ACN" name="saf_misc.h" compile="0" resource="0" file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_misc.h"/>
             <FILE id="GUktmo" name="saf_sensorarray_presets.c" compile="1" resource="0"
                   file="../../../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_sensorarray_presets.c"/>
             <FILE id="C3eN5i" name="saf_sensorarray_presets.h" compile="0" resource="0"
