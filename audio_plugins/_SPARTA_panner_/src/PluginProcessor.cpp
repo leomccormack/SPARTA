@@ -332,7 +332,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
             }
             
             /* perform processing */
-            panner_process(hPan, pFrameData, pFrameData, nNumInputs, nNumOutputs, FRAME_SIZE, isPlaying);
+            panner_process(hPan, pFrameData, pFrameData, nNumInputs, nNumOutputs, FRAME_SIZE);
         } 
     }
     else

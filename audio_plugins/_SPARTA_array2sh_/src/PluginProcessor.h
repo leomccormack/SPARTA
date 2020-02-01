@@ -30,7 +30,7 @@
 #define BUILD_VER_SUFFIX ""   /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64
 #ifndef M_PI
-  #define M_PI ( 3.14159265358979323846264338327950288f )
+# define M_PI ( 3.14159265358979323846264338327950288f )
 #endif
 
 typedef enum _TIMERS{
@@ -63,7 +63,6 @@ class PluginProcessor  : public AudioProcessor,
 public:
     /* Get functions */
     void* getFXHandle() { return hA2sh; }
-	bool getIsPlaying() { return isPlaying; }
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
     int getCurrentNumOutputs(){ return nNumOutputs; }
@@ -90,11 +89,8 @@ private:
     int nNumOutputs;       /* current number of output channels */
     int nSampleRate;       /* current host sample rate */
     int nHostBlockSize;    /* typical host block size to expect, in samples */
-    bool isPlaying;
     File lastDir;
     ValueTree sensors {"Sensors"};
-    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead::CurrentPositionInfo currentPosition;
     
     void timerCallback(int timerID) override
     {

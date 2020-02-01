@@ -27,10 +27,10 @@
 #define BUILD_VER_SUFFIX ""  /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define MAX_NUM_CHANNELS 64 
 #ifndef MIN
-  #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
+# define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
 #endif
 #ifndef MAX
-  #define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
+# define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
 #endif
 
 /* Parameter tags: for the default VST GUI */
@@ -74,10 +74,7 @@ private:
     int nNumOutputs;      /* current number of output channels */
     int nSampleRate;      /* current host sample rate */
     int nHostBlockSize;   /* typical host block size to expect, in samples */
-    bool isPlaying;
     bool refreshWindow;
-    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead::CurrentPositionInfo currentPosition;
     
     /***************************************************************************\
                                     JUCE Functions

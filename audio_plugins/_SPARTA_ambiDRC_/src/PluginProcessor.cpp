@@ -230,7 +230,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
             }
             
             /* perform processing */
-            ambi_drc_process(hAmbi, pFrameData, pFrameData, nNumInputs < nNumOutputs ? nNumInputs : nNumOutputs, FRAME_SIZE, isPlaying);
+            ambi_drc_process(hAmbi, pFrameData, pFrameData, nNumInputs < nNumOutputs ? nNumInputs : nNumOutputs, FRAME_SIZE);
         }
     }
     else
