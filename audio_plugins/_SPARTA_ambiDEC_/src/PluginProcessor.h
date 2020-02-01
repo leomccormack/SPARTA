@@ -61,7 +61,6 @@ class PluginProcessor  : public AudioProcessor,
 public:
     /* Get functions */
     void* getFXHandle() { return hAmbi; }
-    bool getIsPlaying() { return isPlaying; }
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
     int getCurrentNumOutputs(){ return nNumOutputs; }
@@ -88,11 +87,8 @@ private:
     int nNumOutputs;      /* current number of output channels */
     int nSampleRate;      /* current host sample rate */
     int nHostBlockSize;   /* typical host block size to expect, in samples */
-    bool isPlaying;
     File lastDir;
     ValueTree loudspeakers {"Loudspeakers"};
-    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead::CurrentPositionInfo currentPosition;
     
     void timerCallback(int timerID) override
     {

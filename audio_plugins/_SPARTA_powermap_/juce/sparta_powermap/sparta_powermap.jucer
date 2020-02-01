@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_powermap" projectType="audioplug" version="1.4.0"
+<JUCERPROJECT id="lfkRjX" name="sparta_powermap" projectType="audioplug" version="1.4.1"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_powermap" pluginDesc="sparta_powermap"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="PMOA"
@@ -149,7 +149,7 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2017 targetFolder="../../make/win64/VisualStudio2017/" externalLibraries="saf_mkl_custom.lib&#10;libiomp5md.lib"
+    <VS2017 targetFolder="../../make/win64/VisualStudio2017/" externalLibraries="saf_mkl_custom.lib"
             extraDefs="FRAME_SIZE = 1024&#10;SAF_USE_INTEL_MKL">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_powermapd" binaryPath="../../../../lib/Win64_Debug"
@@ -179,9 +179,9 @@
       </MODULEPATHS>
     </VS2017>
     <VS2015 targetFolder="../../make/win64/VisualStudio2015/" vstFolder="C://SDKs/VST3 SDK"
-            externalLibraries="saf_mkl_custom.lib&#10;libiomp5md.lib" extraLinkerFlags=""
-            extraCompilerFlags="" IPPLibrary="" vst3Folder="../../../../SDKs/VST3_SDK/"
-            windowsTargetPlatformVersion="8.1" extraDefs="FRAME_SIZE = 1024&#10;SAF_USE_INTEL_MKL">
+            externalLibraries="saf_mkl_custom.lib" extraLinkerFlags="" extraCompilerFlags=""
+            IPPLibrary="" vst3Folder="../../../../SDKs/VST3_SDK/" windowsTargetPlatformVersion="8.1"
+            extraDefs="FRAME_SIZE = 1024&#10;SAF_USE_INTEL_MKL">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="sparta_powermapd" binaryPath="../../../../lib/Win64_Debug"

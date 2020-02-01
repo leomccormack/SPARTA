@@ -286,7 +286,6 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nNumInputs =  getTotalNumInputChannels();
     nNumOutputs = getTotalNumOutputChannels();
     nSampleRate = (int)(sampleRate + 0.5);
-    isPlaying = false;
 
     array2sh_init(hA2sh, sampleRate);
     AudioProcessor::setLatencySamples(array2sh_getProcessingDelay());
@@ -294,7 +293,6 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
 void PluginProcessor::releaseResources()
 {
-    isPlaying = false;
 }
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
@@ -310,24 +308,8 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiM
             for(int ch = 0; ch < buffer.getNumChannels(); ch++)
                 pFrameData[ch] = &bufferData[ch][frame*FRAME_SIZE];
             
-            /* check whether the playhead is moving */
-            playHead = getPlayHead();
-            if(playHead!=NULL)
-                isPlaying = playHead->getCurrentPosition(currentPosition) == true ? currentPosition.isPlaying : false;
-            else
-                isPlaying = false;
-            
-            /* If there is no playhead, or it is not moving, see if there is audio in the buffer */
-            if(!isPlaying){
-                for(int j=0; j<nNumInputs; j++){
-                    isPlaying = buffer.getMagnitude(j, 0, 8 /* should be enough */)>1e-5f ? true : false;
-                    if(isPlaying)
-                        break;
-                }
-            }
-            
             /* perform processing */
-            array2sh_process(hA2sh, pFrameData, pFrameData, nNumInputs, nNumOutputs, FRAME_SIZE, (int)isPlaying);
+            array2sh_process(hA2sh, pFrameData, pFrameData, nNumInputs, nNumOutputs, FRAME_SIZE);
         }
     }
     else

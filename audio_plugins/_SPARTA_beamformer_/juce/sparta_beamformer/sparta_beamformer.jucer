@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="lfkRjX" name="sparta_beamformer" projectType="audioplug"
-              version="1.1.0" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
+              version="1.1.2" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_beamformer" pluginDesc="sparta_beamformer"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="BFOA"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
@@ -153,7 +153,7 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2017 targetFolder="../../make/win64/VisualStudio2017/" externalLibraries="saf_mkl_custom.lib&#10;libiomp5md.lib"
+    <VS2017 targetFolder="../../make/win64/VisualStudio2017/" externalLibraries="saf_mkl_custom.lib"
             userNotes="mkl_intel_lp64.lib&#10;mkl_sequential.lib &#10;mkl_core.lib&#10;"
             extraDefs="FRAME_SIZE = 128&#10;SAF_USE_INTEL_MKL&#10;">
       <CONFIGURATIONS>
@@ -186,9 +186,9 @@
       </MODULEPATHS>
     </VS2017>
     <VS2015 targetFolder="../../make/win64/VisualStudio2015/" vstFolder="C://SDKs/VST3 SDK"
-            externalLibraries="saf_mkl_custom.lib&#10;libiomp5md.lib" extraLinkerFlags=""
-            extraCompilerFlags="" IPPLibrary="" vst3Folder="../../../../SDKs/VST3_SDK/"
-            windowsTargetPlatformVersion="8.1" extraDefs="FRAME_SIZE = 128&#10;SAF_USE_INTEL_MKL&#10;">
+            externalLibraries="saf_mkl_custom.lib" extraLinkerFlags="" extraCompilerFlags=""
+            IPPLibrary="" vst3Folder="../../../../SDKs/VST3_SDK/" windowsTargetPlatformVersion="8.1"
+            extraDefs="FRAME_SIZE = 128&#10;SAF_USE_INTEL_MKL&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="sparta_beamformer_debug"

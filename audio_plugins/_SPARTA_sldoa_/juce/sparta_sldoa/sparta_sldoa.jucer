@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_sldoa" projectType="audioplug" version="1.4.2"
+<JUCERPROJECT id="lfkRjX" name="sparta_sldoa" projectType="audioplug" version="1.4.3"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_sldoa" pluginDesc="sparta_sldoa"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="SLOA"
@@ -153,7 +153,7 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2017 targetFolder="../../make/win64/VisualStudio2017/" externalLibraries="saf_mkl_custom.lib&#10;libiomp5md.lib"
+    <VS2017 targetFolder="../../make/win64/VisualStudio2017/" externalLibraries="saf_mkl_custom.lib"
             extraDefs="FRAME_SIZE = 512&#10;SAF_USE_INTEL_MKL&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" binaryPath="../../../../lib/Win64_Debug"
@@ -182,7 +182,7 @@
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/modules/"/>
       </MODULEPATHS>
     </VS2017>
-    <VS2015 targetFolder="../../make/win64/VisualStudio2015/" externalLibraries="saf_mkl_custom.lib&#10;libiomp5md.lib"
+    <VS2015 targetFolder="../../make/win64/VisualStudio2015/" externalLibraries="saf_mkl_custom.lib"
             extraDefs="FRAME_SIZE = 512&#10;SAF_USE_INTEL_MKL&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" binaryPath="../../../../lib/Win64_Debug"

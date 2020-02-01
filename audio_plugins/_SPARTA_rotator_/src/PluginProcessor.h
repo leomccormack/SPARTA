@@ -82,12 +82,9 @@ private:
     int nNumOutputs;        /* current number of output channels */
     int nSampleRate;        /* current host sample rate */
     int nHostBlockSize;     /* typical host block size to expect, in samples */
-    bool isPlaying;
     OSCReceiver osc;
     bool osc_connected;
     int osc_port_ID;
-    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead::CurrentPositionInfo currentPosition;
 
     /***************************************************************************\
                                     JUCE Functions
