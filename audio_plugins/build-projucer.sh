@@ -1,6 +1,7 @@
 #!/bin/bash
 
-if [[ "${OSTYPE}" != "linux-gnu" && "${OSTYPE}" != "darwin"* ]]; then
+#~ if [[ "${OSTYPE}" != "linux-gnu" && "${OSTYPE}" != "darwin"* ]]; then
+if [[ "${OSTYPE}" != "linux-gnu" ]]; then
     echo "${OSTYPE} is unsupported"
     exit
 fi
@@ -112,8 +113,10 @@ build () {
     cd "${SDKs}"
 
     # fetch JUCE
-    archive_url="${git_url_base}/archive/${version}.tar.gz"
-    curl -L "${archive_url}" --output - | tar -xzf -
+    if [ ! -d "${SDKs}/JUCE-${version}" ]; then
+        archive_url="${git_url_base}/archive/${version}.tar.gz"
+        curl -L "${archive_url}" --output - | tar -xzf -
+    fi
 
     # configure Projucer
     cd "$(get_projucer_folder ${version})"
