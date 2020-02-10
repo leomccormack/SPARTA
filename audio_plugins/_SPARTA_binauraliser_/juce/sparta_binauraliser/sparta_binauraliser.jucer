@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="lfkRjX" name="sparta_binauraliser" projectType="audioplug"
-              version="1.5.1" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
+              version="1.5.3" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_binauraliser" pluginDesc="sparta_binauraliser"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="BINA"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
@@ -223,8 +223,8 @@
     </VS2015>
     <XCODE_MAC targetFolder="../../make/MacOSX/Xcode/" vstFolder="../../../SDKs/VST3 SDK"
                externalLibraries="netcdf&#10;hdf5&#10;hdf5_hl&#10;z" vst3Folder="../../../../SDKs/VST3_SDK/"
-               userNotes="-L/usr/local/lib -lsaf_mkl_custom" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom&#10;-L/usr/local/lib -liomp5"
-               extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra"
+               userNotes="-L/usr/local/lib -lsaf_mkl_custom" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom&#10;-L/usr/local/lib -liomp5&#10;-Wl,-rpath,/usr/local/lib&#10;"
+               extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra "
                extraDefs="FRAME_SIZE = 128&#10;SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_binauraliser_debug"
@@ -253,7 +253,7 @@
         <MODULEPATH id="juce_osc" path="../../../../SDKs/modules/"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <LINUX_MAKE targetFolder="../../make/LinuxMakefile" extraLinkerFlags="-L/usr/lib -lsaf_mkl_custom&#10;-L/lib/x86_64-linux-gnu -lnetcdf"
+    <LINUX_MAKE targetFolder="../../make/LinuxMakefile" extraLinkerFlags="-L/usr/lib -lsaf_mkl_custom&#10;-L/lib/x86_64-linux-gnu -lnetcdf&#10;-Wl,-rpath,/usr/lib&#10;"
                 extraCompilerFlags="-pedantic" extraDefs="FRAME_SIZE = 128&#10;SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_binauraliser_debug"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_powermap" projectType="audioplug" version="1.4.1"
+<JUCERPROJECT id="lfkRjX" name="sparta_powermap" projectType="audioplug" version="1.4.2"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_powermap" pluginDesc="sparta_powermap"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="PMOA"
@@ -213,7 +213,7 @@
       </MODULEPATHS>
     </VS2015>
     <XCODE_MAC targetFolder="../../make/MacOSX/Xcode/" vstFolder="../../../SDKs/VST3 SDK"
-               extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom&#10;-L/usr/local/lib -liomp5"
+               extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom&#10;-L/usr/local/lib -liomp5&#10;-Wl,-rpath,/usr/local/lib"
                vst3Folder="../../../../SDKs/VST3_SDK/" extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra"
                extraDefs="FRAME_SIZE = 1024&#10;SAF_USE_INTEL_MKL">
       <CONFIGURATIONS>
