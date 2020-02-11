@@ -29,8 +29,8 @@ usage() {
 }
 
 # find the SDKs directory
-HERE=$(cd $(dirname $(which $0));pwd)
-SDKs=$(cd ${HERE}/../SDKs;pwd)
+HERE=$(cd $(dirname $0) && pwd)
+SDKs=$(cd ${HERE}/../SDKs && pwd)
 
 list_git_tags() {
     git ls-remote -t ${git_url_base}.git | sed 's|.*/\(.*\)$|\1|' \
@@ -47,7 +47,6 @@ check_tag () {
     done <<< """master
     $(list_git_tags)"""
 }
-
 
 get_projucer_folder () {
     version=$1
@@ -101,7 +100,6 @@ activate_version () {
     fi
     validate_link modules
 }
-
 
 build () {
     version=$(check_tag ${1})

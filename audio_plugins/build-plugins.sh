@@ -29,12 +29,11 @@ all=0
 projucer=0
 projuce=0
 
-HERE=$(cd $(dirname $(which $0));pwd)
-cd "${HERE}"
+HERE=$(cd $(dirname $0) && pwd)
 
 # check SDKs
 ok=0
-SDKs=$(cd ${HERE}/../SDKs;pwd)
+SDKs=$(cd ${HERE}/../SDKs && pwd)
 [ -e "${SDKs}/modules" ] \
 && [ -e "${SDKs}/Spatial_Audio_Framework" ] \
 && [ -e "${SDKs}/VST2_SDK" ] && ok=1
@@ -44,11 +43,9 @@ if [ $ok == 0 ]; then
 fi
 
 # location of plugin binaries
-binaries=$(cd ${HERE}/../lib;pwd)
+binaries=$(cd ${HERE}/../lib && pwd)
 # create if missing
 mkdir -p "${binaries}"
-
-from="${HERE}"
 
 i=$#
 while [ $i -gt 0 ]; do
@@ -110,6 +107,8 @@ if [ ${info} -gt 0 ]; then
         get_info ${jucer}
     done <<< "$(find ${from} -type f -name "*.jucer")"
 fi
+
+[ -z ${from+x} ] && from="${HERE}"
 
 # opening Projucer editor
 [ ${projucer} -gt 0 ] && find "${from}" -type f -name "*.jucer" \
