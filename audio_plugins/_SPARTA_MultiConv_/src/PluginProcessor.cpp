@@ -38,14 +38,14 @@ PluginProcessor::~PluginProcessor()
 	multiconv_destroy(&hMCnv);
 }
 
-void PluginProcessor::setParameter (int index, float newValue)
+void PluginProcessor::setParameter (int index, float /*newValue*/)
 {
 	switch (index) {
 		default: break;
 	}
 }
 
-void PluginProcessor::setCurrentProgram (int index)
+void PluginProcessor::setCurrentProgram (int /*index*/)
 {
 }
 
@@ -105,18 +105,18 @@ int PluginProcessor::getCurrentProgram()
     return 0;
 }
 
-const String PluginProcessor::getProgramName (int index)
+const String PluginProcessor::getProgramName (int /*index*/)
 {
     return String();
 }
 
 
-bool PluginProcessor::isInputChannelStereoPair (int index) const
+bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
 {
     return true;
 }
 
-bool PluginProcessor::isOutputChannelStereoPair (int index) const
+bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
 {
     return true;
 }
@@ -145,7 +145,7 @@ bool PluginProcessor::silenceInProducesSilenceOut() const
     return false;
 }
 
-void PluginProcessor::changeProgramName (int index, const String& newName)
+void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
 {
 }
 
@@ -164,7 +164,7 @@ void PluginProcessor::releaseResources()
 {
 }
 
-void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
+void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());

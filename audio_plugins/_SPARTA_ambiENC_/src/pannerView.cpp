@@ -199,7 +199,7 @@ void pannerView::mouseDrag (const MouseEvent& e)
     //[/UserCode_mouseDrag]
 }
 
-void pannerView::mouseUp (const MouseEvent& e)
+void pannerView::mouseUp (const MouseEvent& /*e*/)
 {
     //[UserCode_mouseUp] -- Add your code here...
     sourceIconIsClicked = false;
