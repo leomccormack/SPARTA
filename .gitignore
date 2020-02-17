@@ -3,7 +3,6 @@ obj/
 SDKs/modules
 SDKs/VST3_SDK
 SDKs/VST2_SDK
-SDKs/Spatial_Audio_Framework 
 lib/
 
 # User-specific files
