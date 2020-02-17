@@ -27,6 +27,12 @@
 #include "matrixconv.h"
 #include <string.h>
 #define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (beta, alpha etc..) */
+#ifndef MIN
+# define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
+#endif
+#ifndef MAX
+# define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
+#endif
 
 enum {	
     /* For the default VST GUI */

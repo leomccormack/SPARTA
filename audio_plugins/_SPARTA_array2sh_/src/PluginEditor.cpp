@@ -69,7 +69,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     rSlider.reset (new Slider ("new slider"));
     addAndMakeVisible (rSlider.get());
-    rSlider->setRange (1, 200, 0.01);
+    rSlider->setRange (1, 400, 0.01);
     rSlider->setSliderStyle (Slider::LinearHorizontal);
     rSlider->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
     rSlider->addListener (this);
@@ -78,7 +78,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     RSlider.reset (new Slider ("new slider"));
     addAndMakeVisible (RSlider.get());
-    RSlider->setRange (1, 200, 0.01);
+    RSlider->setRange (1, 400, 0.01);
     RSlider->setSliderStyle (Slider::LinearHorizontal);
     RSlider->setTextBoxStyle (Slider::TextBoxRight, false, 45, 20);
     RSlider->setColour (Slider::trackColourId, Colour (0xff181f22));
@@ -350,7 +350,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     presetCB->addItem (TRANS("Eigenmike32"), MICROPHONE_ARRAY_PRESET_EIGENMIKE32);
     presetCB->addItem (TRANS("DTU mic"), MICROPHONE_ARRAY_PRESET_DTU_MIC );
     presetCB->addItem (TRANS("Aalto Hydro"), MICROPHONE_ARRAY_PRESET_AALTO_HYDROPHONE);
-    
+
     /* ProgressBar */
     progress = 0.0;
     progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
@@ -399,7 +399,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     dispWindow->setTooltip("Switches between the different display options. \n\nFilters: order-dependent equalisation curves, which are applied to eliminate the effect of the sphere. \n\nCorr: The spatial correlation is derived by comparing the patterns of the array responses with the patterns of ideal spherical harmonics, where '1' means they are perfect, and '0' completely uncorrelated; the spatial aliasing frequency can therefore be observed for each order, as the point where the spatial correlation tends towards 0. \n\nLdiff: The level difference is the mean level difference over all directions (diffuse level difference) between the ideal and simulated components. One can observe that higher permitted amplification limits [Max Gain (dB)] will result in noisier signals; however, this will also result in a wider frequency range of useful spherical harmonic components at each order.");
     applyDiffEQ->setTooltip("Applies diffuse-field equalisation past the theoretical spatial aliasing frequency of the currently configured microphone array. This may help reduce any 'harshness' perceived at the high frequencies after decoding.");
 
-	/* Specify screen refresh rate */ 
+	/* Specify screen refresh rate */
     startTimer(TIMER_GUI_RELATED, 40);
 
     /* warnings */
@@ -1321,8 +1321,8 @@ void PluginEditor::timerCallback(int timerID)
         case TIMER_PROCESSING_RELATED:
             /* handled in PluginProcessor */
             break;
-            
-        case TIMER_GUI_RELATED: 
+
+        case TIMER_GUI_RELATED:
             /* parameters whos values can change internally should be periodically refreshed */
             int curOrder = CBencodingOrder->getSelectedId();
             QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
@@ -1339,13 +1339,13 @@ void PluginEditor::timerCallback(int timerID)
                 normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), dontSendNotification);
             CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
             normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
-          
+
             /* check if eval curves have recently been computed */
             if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_RECENTLY_EVALUATED){
                 needScreenRefreshFLAG = true;
                 array2sh_setEvalStatus(hA2sh, EVAL_STATUS_EVALUATED);
             }
-            
+
             /* disable certain sliders if evaluation is ongoing */
             if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_EVALUATING){
                 if(presetCB->isEnabled())
@@ -1403,7 +1403,7 @@ void PluginEditor::timerCallback(int timerID)
                 if(!sensorCoordsVP->isEnabled())
                     sensorCoordsVP->setEnabled(true);
             }
-            
+
             /* draw magnitude/spatial-correlation/level-difference curves */
             if (needScreenRefreshFLAG){
                 switch(dispID){
@@ -1440,7 +1440,7 @@ void PluginEditor::timerCallback(int timerID)
                 }
                 needScreenRefreshFLAG = false;
             }
-            
+
             /* Progress bar */
             if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_EVALUATING){
                 addAndMakeVisible(progressbar);
@@ -1644,12 +1644,12 @@ BEGIN_JUCER_METADATA
           needsCallback="1"/>
   <SLIDER name="new slider" id="f6fe97a46cc051e2" memberName="rSlider"
           virtualName="" explicitFocusOrder="0" pos="156 129 52 20" min="1.0"
-          max="200.0" int="0.01" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          max="400.0" int="0.01" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="41d575604e9dcd3a" memberName="RSlider"
           virtualName="" explicitFocusOrder="0" pos="156 161 52 20" trackcol="ff181f22"
-          rotaryslideroutline="ff263238" min="1.0" max="200.0" int="0.01"
+          rotaryslideroutline="ff263238" min="1.0" max="400.0" int="0.01"
           style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
           textBoxWidth="45" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="c3b6d9fc71650ee4" memberName="cSlider"

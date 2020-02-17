@@ -40,7 +40,7 @@ namespace ProjectInfo
 {
     const char* const  projectName    = "sparta_array2sh";
     const char* const  companyName    = "Aalto";
-    const char* const  versionString  = "1.6.3";
-    const int          versionNumber  = 0x10603;
+    const char* const  versionString  = "1.6.4";
+    const int          versionNumber  = 0x10604;
 }
 #endif
