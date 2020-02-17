@@ -603,7 +603,7 @@ void PluginEditor::timerCallback()
     /* parameters whos values can change internally should be periodically refreshed */
     label_hostBlockSize->setText(String(matrixconv_getHostBlockSize(hMC)), dontSendNotification);
     label_NFilters->setText(String(matrixconv_getNfilters(hMC)), dontSendNotification);
-    label_filterLength->setText(String((float)matrixconv_getFilterLength(hMC)/(float)matrixconv_getFilterFs(hMC)), dontSendNotification);
+    label_filterLength->setText(String((float)matrixconv_getFilterLength(hMC)/MAX((float)matrixconv_getFilterFs(hMC),1/*avoid nan*/)), dontSendNotification);
     //label_filterLength->setText(String(durationInSeconds), dontSendNotification);
     label_hostfs->setText(String(matrixconv_getHostFs(hMC)), dontSendNotification);
     label_filterfs->setText(String(matrixconv_getFilterFs(hMC)), dontSendNotification);
