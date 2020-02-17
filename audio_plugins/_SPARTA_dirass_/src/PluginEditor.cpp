@@ -1079,7 +1079,7 @@ void PluginEditor::cameraChanged()
         cameraDevice.reset ();
 }
 
-void PluginEditor::cameraDeviceOpenResult (CameraDevice* device, const String& error)
+void PluginEditor::cameraDeviceOpenResult (CameraDevice* device, const String& /*error*/)
 {
     cameraDevice.reset (device);
     resized();
