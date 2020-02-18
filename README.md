@@ -4,7 +4,7 @@ SPatial Audio Real-Time Applications (SPARTA). A collection of VST audio plug-in
 
 ![](sparta_screenshot.png)
 
-## The Plug-ins
+## Plug-in descriptions
 
 This repository contains the following VST plug-ins:
 * **AmbiBIN** - A binaural ambisonic decoder (up to 7th order) with a built-in SOFA loader and head-tracking support via OSC messages. Includes: Least-Squares (LS), spatial re-sampling (SPR), time-alignment (TA), and magnitude least-squares (Mag-LS) decoding options.
@@ -22,25 +22,31 @@ This repository contains the following VST plug-ins:
 * **Rotator** - A flexible ambisonic rotator (up to 7th order) with head-tracking support via OSC messages. 
 * **SLDoA** - A frequency-dependent sound-field visualiser (up to 7th order), based on depicting the direction-of-arrival (DoA) estimates derived from spatially localised active-intensity vectors. The low frequency estimates are shown with blue icons, mid-frequencies with green, and high-frequencies with red. 
 
-## Getting Started
+## Pre-built plug-ins
 
-These instructions will help you compile the individual VST audio plug-ins. Alternatively, they can be downloaded from here:
-* [Pre-built](http://research.spa.aalto.fi/projects/sparta_vsts/) - for Windows (64-bit), Mac OSX (10.10 or higher), and Linux (x86_64)
+The plug-in suite may be downloaded from [here](http://research.spa.aalto.fi/projects/sparta_vsts/) [Mac OSX (10.10 or higher), Linux (x86_64), and Windows (64-bit)].
 
-### Prerequisites
+## Building the plug-ins yourself
 
-To compile the plugins yourself, the following SDKs and frameworks must be placed in the 'SDKs' folder like so
+First clone the repository (including submodules) with:
 
 ```
-SDKs/modules
-SDKs/Spatial_Audio_Framework
+git clone --recursive https://github.com/leomccormack/SPARTA
+# or if you have already cloned the repository, update with:
+git submodule update --init --recursive
+git pull --recurse-submodules
+```
+
+The following SDKs must then be placed in the 'SDKs' folder like so
+
+```
+SDKs/modules 
 SDKs/VST2_SDK
 ```
 And may be obtained from:
 
-* [modules (JUCE)](https://github.com/WeAreROLI/JUCE/releases) - For audio plug-in wrappers and the GUIs (currently tested with: **JUCE v5.4.4**)
-* [Spatial_Audio_Framework (SAF)](https://github.com/leomccormack/Spatial_Audio_Framework) - For the internal code used by the plug-ins
-* [VST2_SDK](https://github.com/steinbergmedia/vst3sdk/releases) - The VST2 SDK (found in [vstsdk3610_11_06_2018_build_37](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip) or older)
+* [modules (JUCE)](https://github.com/WeAreROLI/JUCE/releases) - For audio plug-in wrappers and the GUIs (currently tested with: **JUCE v5.4.4**) 
+* [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip) - The VST2 SDK
 
 **MacOSX, Windows and Linux (x86_64/amd64) versions**: also require a custom Intel MKL library. Details on how to acquire this library may be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md). 
 
@@ -51,7 +57,7 @@ sudo apt-get update
 sudo apt install liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
 ```
 
-**Linux (amd64/ARM) users** must also install the following libraries (the former line for JUCE, the latter line for SAF):
+**Linux (amd64/ARM) users** must also install the following libraries (the former line for JUCE, the latter line for the Spatial_Audio_Framework):
 
 ```
 sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x11proto-xext-dev libcurl4-openssl-dev libasound2-dev
