@@ -35,6 +35,8 @@ git clone --recursive https://github.com/leomccormack/SPARTA
 # or if you have already cloned the repository, update with:
 git submodule update --init --recursive
 git pull --recurse-submodules
+# then call this once:
+git submodule foreach --recursive git checkout master
 ```
 
 The following SDKs must then be placed in the 'SDKs' folder like so
