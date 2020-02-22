@@ -1,8 +1,10 @@
 # SPARTA
 
-SPatial Audio Real-Time Applications (SPARTA). A collection of VST audio plug-ins for spatial audio production, reproduction and visualisation.
+SPatial Audio Real-Time Applications (SPARTA) [1]. A collection of VST audio plug-ins for spatial audio production, reproduction and visualisation.
 
 ![](sparta_screenshot.png)
+
+* [1] McCormack, L. and Politis, A., 2019. **SPARTA & COMPASS: Real-time implementations of linear and parametric spatial audio reproduction and processing methods**. In Audio Engineering Society Conference: 2019 AES International Conference on Immersive and Interactive Audio.
 
 ## Plug-in descriptions
 
@@ -35,20 +37,16 @@ git clone --recursive https://github.com/leomccormack/SPARTA
 # or if you have already cloned the repository, update with:
 git submodule update --init --recursive
 git pull --recurse-submodules
-# then call this once:
-git submodule foreach --recursive git checkout master
 ```
 
-The following SDKs must then be placed in the 'SDKs' folder like so
+## Prerequisites 
+
+The JUCE [modules](https://github.com/WeAreROLI/JUCE/releases) and [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip), must be placed in the 'SDKs' folder like so:
 
 ```
 SDKs/modules 
 SDKs/VST2_SDK
 ```
-And may be obtained from:
-
-* [modules (JUCE)](https://github.com/WeAreROLI/JUCE/releases) - For audio plug-in wrappers and the GUIs (currently tested with: **JUCE v5.4.4**) 
-* [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip) - The VST2 SDK
 
 **MacOSX, Windows and Linux (x86_64/amd64) versions**: also require a custom Intel MKL library. Details on how to acquire this library may be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md). 
 
@@ -56,7 +54,7 @@ And may be obtained from:
 
 ```
 sudo apt-get update
-sudo apt install liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
+sudo apt-get install liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
 ```
 
 **Linux (amd64/ARM) users** must also install the following libraries (the former line for JUCE, the latter line for the Spatial_Audio_Framework):
@@ -66,15 +64,29 @@ sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x1
 sudo apt-get install libhdf5-dev libnetcdf-dev libnetcdff-dev
 ```
 
-### Building the plug-ins
+## Building the plug-ins
 
-Visual Studio (2015/2017) solutions, Xcode project files, Linux Makefiles (amd64), and Raspberry Pi Linux Makefiles (ARM) are included in:
+When saving the .jucer files with the Projucer App, Visual Studio (2015/2017) solutions, Xcode project files, Linux Makefiles (amd64), and Raspberry Pi Linux Makefiles (ARM) are placed in:
 
 ```
 audio_plugins/_SPARTA_X_/make/
 ```
 
-To generate project files for other IDEs, you may open and configure the included .jucer files with JUCE's Projucer App accordingly.
+To generate project files for other IDEs, you may open and configure the included .jucer files accordingly.
+
+## Batch building 
+
+**Linux/MacOSX users** may run the included "audio_plugins/build-plugins.sh" script via the Terminal, to build all plug-ins:
+
+```
+bash build-plugins.sh all
+```
+
+**Windows users** may run the included "audio_plugins/build-plugins.bat" script (with "x64 Developer Command Prompt for VS.exe"), to build all plug-ins:
+
+```
+build-plugins.bat <path/to/Projucer.exe>
+```
 
 ## Known issues
 
@@ -91,9 +103,6 @@ Please let us know if you encounter any other issues (contact via email: leo.mcc
 * **Archontis Politis** -  DSP design
 * **Ville Pulkki** - DSP design
 
-
 ## License
 
 This project is licensed under the GPLv3 License - see the [LICENSE](LICENSE) file for details
-
-
