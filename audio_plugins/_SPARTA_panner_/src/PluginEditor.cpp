@@ -244,6 +244,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsourceDirsPreset->addItem (TRANS("13.x"), PRESET_13PX);
     CBsourceDirsPreset->addItem (TRANS("22.x"), PRESET_22PX);
     CBsourceDirsPreset->addItem (TRANS("Aalto MCC"), PRESET_AALTO_MCC);
+    CBsourceDirsPreset->addItem (TRANS("Aalto MCC-subset"), PRESET_AALTO_MCC_SUBSET);
     CBsourceDirsPreset->addItem (TRANS("Aalto Apaja"), PRESET_AALTO_APAJA);
     CBsourceDirsPreset->addItem (TRANS("Aalto LR"), PRESET_AALTO_LR);
     CBsourceDirsPreset->addItem (TRANS("DTU AVIL"), PRESET_DTU_AVIL);
@@ -266,6 +267,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsLoudspeakerDirsPreset->addItem (TRANS("13.x"), PRESET_13PX);
     CBsLoudspeakerDirsPreset->addItem (TRANS("22.x"), PRESET_22PX);
     CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto MCC"), PRESET_AALTO_MCC);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto MCC-subset"), PRESET_AALTO_MCC_SUBSET);
     CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto Apaja"), PRESET_AALTO_APAJA);
     CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto LR"), PRESET_AALTO_LR);
     CBsLoudspeakerDirsPreset->addItem (TRANS("DTU AVIL"), PRESET_DTU_AVIL);

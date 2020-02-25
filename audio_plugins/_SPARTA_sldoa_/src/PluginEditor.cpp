@@ -971,7 +971,6 @@ void PluginEditor::updateCameraList()
     CB_webcam->setSelectedId(1);
 }
 
-
 void PluginEditor::imageReceived(const Image& image)
 {
     if (! image.isValid())
