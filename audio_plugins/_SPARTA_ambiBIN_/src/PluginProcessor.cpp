@@ -28,7 +28,7 @@ PluginProcessor::PluginProcessor() :
         .withOutput("Output", AudioChannelSet::discreteChannels(2), true))
 {
 	ambi_bin_create(&hAmbi);
-    
+  
     /* specify here on which UDP port number to receive incoming OSC messages */
     osc_port_ID = DEFAULT_OSC_PORT;
     osc.connect(osc_port_ID);
