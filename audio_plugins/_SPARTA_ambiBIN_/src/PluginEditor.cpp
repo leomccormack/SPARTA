@@ -1059,7 +1059,7 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBorderPreset.get())
     {
         //[UserComboBoxCode_CBorderPreset] -- add your combo box handling code here..
-        ambi_bin_setInputOrderPreset(hAmbi, (INPUT_ORDERS)CBorderPreset->getSelectedId());
+        ambi_bin_setInputOrderPreset(hAmbi, (AMBI_BIN_INPUT_ORDERS)CBorderPreset->getSelectedId());
         //[/UserComboBoxCode_CBorderPreset]
     }
     else if (comboBoxThatHasChanged == CBchFormat.get())
@@ -1077,7 +1077,7 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == CBdecoderMethod.get())
     {
         //[UserComboBoxCode_CBdecoderMethod] -- add your combo box handling code here..
-        ambi_bin_setDecodingMethod(hAmbi, (DECODING_METHODS)CBdecoderMethod->getSelectedId());
+        ambi_bin_setDecodingMethod(hAmbi, (AMBI_BIN_DECODING_METHODS)CBdecoderMethod->getSelectedId());
         //[/UserComboBoxCode_CBdecoderMethod]
     }
 

@@ -41,10 +41,10 @@ void PluginProcessor::setParameter (int index, float newValue)
     /* standard parameters */
     if(index < k_NumOfParameters){
         switch (index) {
-            case k_inputOrder:   beamformer_setBeamOrder(hBeam, (BEAM_ORDERS)(int)(newValue*(float)(BEAMFORMER_MAX_SH_ORDER-1) + 1.5f)); break;
+            case k_inputOrder:   beamformer_setBeamOrder(hBeam, (BEAMFORMER_BEAM_ORDERS)(int)(newValue*(float)(BEAMFORMER_MAX_SH_ORDER-1) + 1.5f)); break;
             case k_channelOrder: beamformer_setChOrder(hBeam, (int)(newValue*(float)(BEAMFORMER_NUM_CH_ORDERINGS-1) + 1.5f)); break;
             case k_normType:     beamformer_setNormType(hBeam, (int)(newValue*(float)(BEAMFORMER_NUM_NORM_TYPES-1) + 1.5f)); break;
-            case k_beamType:     beamformer_setBeamType(hBeam, (BEAM_TYPES)(int)(newValue*(float)(BEAMFORMER_NUM_BEAM_TYPES-1) + 1.5f)); break;
+            case k_beamType:     beamformer_setBeamType(hBeam, (BEAMFORMER_BEAM_TYPES)(int)(newValue*(float)(BEAMFORMER_NUM_BEAM_TYPES-1) + 1.5f)); break;
             case k_numBeams:     beamformer_setNumBeams(hBeam, (int)(newValue*(float)(BEAMFORMER_MAX_NUM_BEAMS)+0.5)); break;
         }
     }
