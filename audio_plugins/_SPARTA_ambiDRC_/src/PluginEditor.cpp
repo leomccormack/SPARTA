@@ -1020,7 +1020,7 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == presetCB.get())
     {
         //[UserComboBoxCode_presetCB] -- add your combo box handling code here..
-        ambi_drc_setInputPreset(hAmbi, (INPUT_ORDER)presetCB->getSelectedId());
+        ambi_drc_setInputPreset(hAmbi, (AMBI_DRC_INPUT_ORDER)presetCB->getSelectedId());
         //[/UserComboBoxCode_presetCB]
     }
     else if (comboBoxThatHasChanged == CHOrderingCB.get())
