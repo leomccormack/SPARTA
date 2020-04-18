@@ -1,0 +1,14 @@
+Please place the VST2 SDK in this folder like so:
+
+SDKs/VST2_SDK 
+
+Which can be downloaded from here: https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip
+
+
+The following dependencies are then included as git submodules:
+SDKs/JUCE
+SDKs/Spatial_Audio_Framework
+
+If they are not there, then enter the following command:
+git submodule update --init --recursive
+

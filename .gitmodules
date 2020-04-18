@@ -1,3 +1,6 @@
 [submodule "SDKs/Spatial_Audio_Framework"]
 	path = SDKs/Spatial_Audio_Framework
 	url = https://github.com/leomccormack/Spatial_Audio_Framework.git
+[submodule "SDKs/JUCE"]
+	path = SDKs/JUCE
+	url = https://github.com/juce-framework/JUCE.git
