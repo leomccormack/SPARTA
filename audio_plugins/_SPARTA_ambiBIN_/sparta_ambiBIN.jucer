@@ -148,11 +148,11 @@
     <VS2017 targetFolder="make/win64/VisualStudio2017/" externalLibraries="saf_mkl_custom.lib&#10;libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib"
             extraDefs="FRAME_SIZE = 128&#10;SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER&#10;&#10;">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_ambiBIN_debug" binaryPath="../../../../lib/Win64_Debug"
+        <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_ambiBIN_debug" binaryPath="../../lib/Win64_Debug"
                        headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../obj/Win64_Debug" linkTimeOptimisation="1"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="sparta_ambiBIN" binaryPath="../../../../lib/Win64_Release"
+        <CONFIGURATION isDebug="0" name="Release" targetName="sparta_ambiBIN" binaryPath="../../lib/Win64_Release"
                        headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../obj/Win64_Release" optimisation="3"/>
@@ -182,13 +182,13 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="sparta_ambiBIN_debug"
-                       binaryPath="../../../../lib/Win64_Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
+                       binaryPath="../../lib/Win64_Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../obj/Win64_Debug" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="3" targetName="sparta_ambiBIN" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
-                       binaryPath="../../../../lib/Win64_Release" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
+                       binaryPath="../../lib/Win64_Release" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
                        intermediatesPath="../../../obj/Win64_Release" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
@@ -247,9 +247,9 @@
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_ambiBIN_debug" linkTimeOptimisation="1"
                        headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/include&#10;../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include"
-                       binaryPath="../../../../lib/"/>
+                       binaryPath="../../lib/"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="sparta_ambiBIN" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/include&#10;../../../../SDKs/Spatial_Audio_Framework/dependencies/Linux/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include"
-                       linkTimeOptimisation="1" binaryPath="../../../../lib/"/>
+                       linkTimeOptimisation="1" binaryPath="../../lib/"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_osc" path="../../SDKs/JUCE/modules/"/>
@@ -272,9 +272,9 @@
     <LINUX_MAKE targetFolder="make/LinuxMakefileRaspberryPI" extraDefs="FRAME_SIZE = 128&#10;SAF_USE_OPEN_BLAS_AND_LAPACKE&#10;SAF_ENABLE_SOFA_READER&#10;"
                 extraLinkerFlags="-L/usr/lib/arm-linux-gnueabihf -lopenblas -llapacke -lnetcdf">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_ambiBIN_debug" binaryPath="../../../../lib/"
+        <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_ambiBIN_debug" binaryPath="../../lib/"
                        headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf&#10;"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="sparta_ambiBIN" binaryPath="../../../../lib/"
+        <CONFIGURATION isDebug="0" name="Release" targetName="sparta_ambiBIN" binaryPath="../../lib/"
                        headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_bin/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf&#10;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
