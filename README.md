@@ -1,6 +1,6 @@
 # SPARTA
 
-SPatial Audio Real-Time Applications (SPARTA) [1]. A collection of VST audio plug-ins for spatial audio production, reproduction and visualisation.
+SPatial Audio Real-Time Applications (SPARTA) [1]. A collection of VST audio plug-ins for spatial audio production, reproduction and visualisation. Developed using [JUCE](https://github.com/WeAreROLI/JUCE/) and the [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework).
 
 ![](sparta_screenshot.png)
 
@@ -34,17 +34,15 @@ First clone the repository (including submodules) with:
 
 ```
 git clone --recursive https://github.com/leomccormack/SPARTA
-# or if you have already cloned the repository, update with:
+# or if you have already cloned the repository, update with
 git submodule update --init --recursive
-git pull --recurse-submodules
 ```
 
 ## Prerequisites 
 
-The JUCE [modules](https://github.com/WeAreROLI/JUCE/releases) and [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip), must be placed in the 'SDKs' folder like so:
+The [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip) must first be placed in the 'SDKs' folder like so:
 
 ```
-SDKs/modules 
 SDKs/VST2_SDK
 ```
 
@@ -96,9 +94,13 @@ build-plugins.bat <path/to/Projucer.exe>
 
 Please let us know if you encounter any other issues (contact via email: leo.mccormack@aalto.fi, or raise a github "issue").
 
+## Contributing
+
+Suggestions and contributions to the code are both welcomed and encouraged. Feel free to branch off the 'develop' branch and submit pull requests. Note, however, that if the changes/additions are major, then consider first discussing it via a github "issue" or by contacting the developers directly via email. We may also be able to help in the implementation.
+
 ## Authors
 
-* **Leo McCormack** - C/C++ programmer and DSP design
+* **Leo McCormack** - C/C++ programmer and DSP design (contact: leo.mccormack(at)aalto.fi)
 * **Symeon Delikaris-Manias** - DSP design
 * **Archontis Politis** -  DSP design
 * **Ville Pulkki** - DSP design
