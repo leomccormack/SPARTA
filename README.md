@@ -96,14 +96,14 @@ Please let us know if you encounter any other issues (contact via email: leo.mcc
 
 ## Contributing
 
-Suggestions and contributions to the code are both welcomed and encouraged. Feel free to branch off the 'develop' branch and submit pull requests. Note, however, that if the changes/additions are major, then consider first discussing it via a github "issue" or by contacting the developers directly via email. We may also be able to help in the implementation.
+Suggestions and contributions to the code are both welcomed and encouraged. Feel free to branch off the 'develop' branch and submit pull requests. Note, however, that if the changes/additions are major, then consider first discussing it via a github "issue" or by contacting the developers directly via email. We may also be able to help in the implementation if needed.
 
-## Authors
+## Developers
 
-* **Leo McCormack** - C/C++ programmer and DSP design (contact: leo.mccormack(at)aalto.fi)
-* **Symeon Delikaris-Manias** - DSP design
-* **Archontis Politis** -  DSP design
-* **Ville Pulkki** - DSP design
+* **Leo McCormack** - C/C++ programmer and algorithm design (contact: leo.mccormack(at)aalto.fi)
+* **Symeon Delikaris-Manias** - algorithm design
+* **Archontis Politis** -  algorithm design
+* **Ville Pulkki** - algorithm design
 
 ## License
 
