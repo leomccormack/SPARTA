@@ -72,6 +72,8 @@ activate_version () {
     version=$1
     if [ ! -d "${SDKs}/JUCE-${version}" ]; then
         echo "version ${version} is not installed"
+        echo "building version ${version}"
+        build "${version}"
         exit
     fi
 
@@ -138,5 +140,7 @@ while getopts "tv:a:j:" opt; do
   esac
 done
 
-if [ $OPTIND -eq 1 ]; then usage; fi
+if [ $OPTIND -eq 1 ]; then
+    activate_version master
+fi
 
