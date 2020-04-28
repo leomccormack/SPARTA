@@ -6,6 +6,10 @@ if [[ "${OSTYPE}" != "linux-gnu" ]]; then
     exit
 fi
 
+if [ ! $(which unzip) ]; then
+    echo "The \"unzip\" command is required. Please install and retry."
+fi
+
 github_user="WeAreROLI"
 github_repo="JUCE"
 git_url_base=https://github.com/${github_user}/${github_repo}
@@ -13,12 +17,13 @@ git_url_base=https://github.com/${github_user}/${github_repo}
 NPROC=3
 
 help_message="
-script to fetch JUCE from github, and build Projucer in GPL mode
+Script to build Projucer in GPL mode
+
+By default it tries to compile the JUCE git sub-module
 
 options:
 - \"-t\": list available git tags
-- \"-v <tag>\": compile and set git version (either \"master\" or a tag)
-- \"-a <tag>\": activate git version (previously compiled)
+- \"-v <tag>\": activate git version (either \"master\" or a tag)
 - \"-j <nproc>\": compile using <nproc> CPU cores (default: ${NPROC})
 - \"-h\": show this message
 "
@@ -39,6 +44,10 @@ list_git_tags() {
 
 check_tag () {
     version=$1
+    if [ -z "${version}" ]; then
+        return
+    fi
+
     while read tag; do
         if [ "${version}" = "${tag}" ]; then
             echo "${version}"
@@ -50,7 +59,7 @@ check_tag () {
 
 get_projucer_folder () {
     version=$1
-    base_folder="JUCE-${version}/extras/Projucer"
+    base_folder="JUCE${version}/extras/Projucer"
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         echo ${base_folder}/Builds/LinuxMakefile
     elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -61,7 +70,6 @@ get_projucer_folder () {
 validate_link () {
     if [ -L ${1} ] && [ -e ${1} ]; then
         echo "symlink \"${1}\" is valid"
-        return
     else
         echo "invalid symlink: \"$1\""
         exit
@@ -70,14 +78,29 @@ validate_link () {
 
 activate_version () {
     version=$1
-    if [ ! -d "${SDKs}/JUCE-${version}" ]; then
-        echo "version ${version} is not installed"
-        echo "building version ${version}"
-        build "${version}"
-        exit
+    if [ -z "${version}" ]; then
+        git submodule update --init
+        if [ -d "${SDKs}/JUCE" ]; then
+            echo "building git submodule version"
+            build
+        else
+            activate_version master
+            exit
+        fi
+    else
+        if [ ! -d "${SDKs}/JUCE${version}" ]; then
+            echo "version ${version} is not installed"
+            echo "building version ${version}"
+            build "${version}"
+        fi
     fi
 
     cd "${SDKs}"
+
+    # create symlink for JUCE modules
+    projucer="$(get_projucer_folder "${version}")/build/Projucer"
+    ln -sf "${SDKs}/JUCE${version}/modules" modules
+    validate_link modules
 
     # create symlink for Projucer
     projucer="$(get_projucer_folder "${version}")/build/Projucer"
@@ -89,31 +112,22 @@ activate_version () {
         exit
     fi
     validate_link Projucer
-
-
-    # create symlink for the JUCE modules
-    modules="JUCE-${version}/modules"
-    if [ -d "${SDKs}/${modules}" ]; then
-        rm -rf modules
-        ln -sf "JUCE-${version}/modules" .
-    else
-        echo "${SDKs}/${modules} does not exists..."
-        exit
-    fi
-    validate_link modules
 }
 
 build () {
-    version=$(check_tag ${1})
-    if [ "${version}" = "" ]; then
-        echo "tag ${1} does not exist"
-        exit
+    if [ ! -z "${1}" ]; then
+        version=$(check_tag ${1})
+        if [ "${version}" = "" ]; then
+            echo "tag ${1} does not exist"
+            exit
+        fi
+        version=""
     fi
 
     cd "${SDKs}"
 
     # fetch JUCE
-    if [ ! -d "${SDKs}/JUCE-${version}" ]; then
+    if [ ! -d "${SDKs}/JUCE${version}" ]; then
         archive_url="${git_url_base}/archive/${version}.tar.gz"
         curl -L "${archive_url}" --output - | tar -xzf -
     fi
@@ -126,21 +140,20 @@ build () {
     # build Projucer
     make -j${NPROC}
 
-    activate_version "${version}"
+    #~ activate_version "${version}"
 }
 
 
 while getopts "tv:a:j:" opt; do
   case ${opt} in
     t) echo "available tags:" && list_git_tags && usage;;
-    v) build "$OPTARG" ;;
-    a) activate_version "$OPTARG" ;;
+    v) activate_version "$OPTARG" ;;
     j) NPROC="$OPTARG" ;;
     *) usage ;;
   esac
 done
 
 if [ $OPTIND -eq 1 ]; then
-    activate_version master
+    activate_version
 fi
 
