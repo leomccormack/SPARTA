@@ -20,6 +20,7 @@ This repository contains the following VST plug-ins:
 * **MatrixConv** - A basic matrix convolver with an optional partitioned convolution mode. The user need only specify the number of inputs and load the filters via a wav file.
 * **MultiConv** - A basic multi-channel convolver with an optional partitioned convolution mode. Unlike "MatrixConv", this plug-in does not perform any matrixing. Instead, each input channel is convolved with the respective filter; i.e. numInputs = numFilters = numOutputs.
 * **Panner** - A frequency-dependent 3-D panner using the VBAP method (up to 64 inputs and outputs).
+* **PitchShifter** - A very basic multi-channel pitch shifter, based on the phase-vocoder approach.
 * **PowerMap** - A sound-field visualisation plug-in based on ambisonic signals as input (up to 7th order), with PWD/MVDR/MUSIC/Min-Norm options.
 * **Rotator** - A flexible ambisonic rotator (up to 7th order) with head-tracking support via OSC messages. 
 * **SLDoA** - A frequency-dependent sound-field visualiser (up to 7th order), based on depicting the direction-of-arrival (DoA) estimates derived from spatially localised active-intensity vectors. The low frequency estimates are shown with blue icons, mid-frequencies with green, and high-frequencies with red. 
