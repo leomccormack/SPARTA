@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 5.4.7
 
   ------------------------------------------------------------------------------
 
@@ -293,7 +293,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsourceDirsPreset->addItem (TRANS("T-design (36)"), SOURCE_CONFIG_PRESET_T_DESIGN_36);
     CBsourceDirsPreset->addItem (TRANS("T-design (48)"), SOURCE_CONFIG_PRESET_T_DESIGN_48);
     CBsourceDirsPreset->addItem (TRANS("T-design (60)"), SOURCE_CONFIG_PRESET_T_DESIGN_60);
-    
+
     /* ProgressBar */
     progress = 0.0;
     progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
@@ -367,7 +367,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     tb_loadJSON->setTooltip("Loads source directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     tb_saveJSON->setTooltip("Saves the current source directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
 
-	/* Specify screen refresh rate */ 
+	/* Specify screen refresh rate */
     startTimer(TIMER_GUI_RELATED, 40);
 
     /* warnings */
@@ -1149,9 +1149,9 @@ void PluginEditor::timerCallback(int timerID)
         case TIMER_PROCESSING_RELATED:
             /* handled in PluginProcessor */
             break;
-            
+
         case TIMER_GUI_RELATED:
-            
+
             /* labels for HRIR details */
             label_N_dirs->setText(String(binauraliser_getNDirs(hBin)), dontSendNotification);
             label_HRIR_fs->setText(String(binauraliser_getHRIRsamplerate(hBin)), dontSendNotification);
@@ -1170,7 +1170,7 @@ void PluginEditor::timerCallback(int timerID)
                 s_pitch->setValue(binauraliser_getPitch(hBin), dontSendNotification);
             if(binauraliser_getRoll(hBin)!=s_roll->getValue())
                 s_roll->setValue(binauraliser_getRoll(hBin), dontSendNotification);
-            
+
             /* Progress bar */
             if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
                 addAndMakeVisible(progressbar);
@@ -1181,7 +1181,7 @@ void PluginEditor::timerCallback(int timerID)
             }
             else
                 removeChildComponent(&progressbar);
-            
+
             /* disable certain parameters if currently initialising */
             if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
                 if(CBsourceDirsPreset->isEnabled())
@@ -1215,7 +1215,7 @@ void PluginEditor::timerCallback(int timerID)
                 if(!sourceCoordsVP->isEnabled())
                     sourceCoordsVP->setEnabled(true);
             }
-  
+
             /* refresh pan view */
             if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
                 panWindow->refreshPanView();
@@ -1253,7 +1253,7 @@ void PluginEditor::timerCallback(int timerID)
                 currentWarning = k_warning_none;
                 repaint(0,0,getWidth(),32);
             }
-            
+
             break;
     }
 }
