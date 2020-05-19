@@ -90,7 +90,7 @@ private:
     int nSampleRate;       /* current host sample rate */
     int nHostBlockSize;    /* typical host block size to expect, in samples */
     File lastDir;
-    ValueTree sensors {"Sensors"};
+    ValueTree sensors {"Sensors"}; 
     
     void timerCallback(int timerID) override
     {
