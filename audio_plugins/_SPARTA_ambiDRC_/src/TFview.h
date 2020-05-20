@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.7
 
   ------------------------------------------------------------------------------
 
@@ -42,11 +42,11 @@ class TFview  : public Component
 public:
     //==============================================================================
     TFview (PluginProcessor* ownerFilter, int _width, int _height, float _min_freq, float _max_freq, float _min_dB, float _max_dB);
-    ~TFview();
+    ~TFview() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-	 
+
     void setFreqVector(float* _freqVector, int _numFreqPoints)
     {
         freqVector = _freqVector;
@@ -80,3 +80,4 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

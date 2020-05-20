@@ -363,12 +363,7 @@ void PluginEditor::paint (Graphics& g)
     g.setFont(Font(11.00f, Font::plain));
     switch (currentWarning){
         case k_warning_none:
-            break;
-        case k_warning_frameSize:
-            g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                       getBounds().getWidth()-225, 6, 530, 11,
-                       Justification::centredLeft, true);
-            break;
+            break; 
         case k_warning_NCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
                        TRANS("/") + String(pitch_shifter_getNCHrequired(hPS)) + TRANS(")"),
@@ -462,11 +457,7 @@ void PluginEditor::timerCallback(int timerID)
                 removeChildComponent(&progressbar);
 
             /* display warning message, if needed */
-            if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-                currentWarning = k_warning_frameSize;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ((hVst->getCurrentNumInputs() < pitch_shifter_getNCHrequired(hPS))){
+            if ((hVst->getCurrentNumInputs() < pitch_shifter_getNCHrequired(hPS))){
                 currentWarning = k_warning_NCH;
                 repaint(0,0,getWidth(),32);
             }

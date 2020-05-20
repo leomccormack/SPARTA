@@ -28,7 +28,6 @@ PluginProcessor::PluginProcessor() :
 		.withInput("Input", AudioChannelSet::discreteChannels(64), true)
 	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
-	nHostBlockSize = FRAME_SIZE;
 	nSampleRate = 48000;
 	sldoa_create(&hSld);
     startTimer(TIMER_PROCESSING_RELATED, 40);
@@ -161,6 +160,8 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false; 
 	sldoa_init(hSld, sampleRate);
+
+    AudioProcessor::setLatencySamples(sldoa_getProcessingDelay());
 }
 
 void PluginProcessor::releaseResources()
@@ -173,33 +174,25 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
 	int nCurrentBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
-    float* pFrameData[SLDOA_MAX_NUM_INPUT_CHANNELS];
  
-    if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
-        for(int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
-            for(int ch = 0; ch < buffer.getNumChannels(); ch++)
-                pFrameData[ch] = &bufferData[ch][frame*FRAME_SIZE];
-            
-            /* check whether the playhead is moving */
-            playHead = getPlayHead();
-            if(playHead!=NULL)
-                isPlaying = playHead->getCurrentPosition(currentPosition) == true ? currentPosition.isPlaying : false;
-            else
-                isPlaying = false;
-            
-            /* If there is no playhead, or it is not moving, see if there is audio in the buffer */
-            if(!isPlaying){
-                for(int j=0; j<nNumInputs; j++){
-                    isPlaying = buffer.getMagnitude(j, 0, 8 /* should be enough */)>1e-5f ? true : false;
-                    if(isPlaying)
-                        break;
-                }
-            }
-            
-            /* perform processing */
-            sldoa_analysis(hSld, pFrameData, nNumInputs, FRAME_SIZE, isPlaying);
+    /* check whether the playhead is moving */
+    playHead = getPlayHead();
+    if(playHead!=NULL)
+        isPlaying = playHead->getCurrentPosition(currentPosition) == true ? currentPosition.isPlaying : false;
+    else
+        isPlaying = false;
+
+    /* If there is no playhead, or it is not moving, see if there is audio in the buffer */
+    if(!isPlaying){
+        for(int j=0; j<nNumInputs; j++){
+            isPlaying = buffer.getMagnitude(j, 0, MIN(8,nCurrentBlockSize) /* should be enough */)>1e-5f ? true : false;
+            if(isPlaying)
+                break;
         }
     }
+
+    /* perform processing */
+    sldoa_analysis(hSld, bufferData, nNumInputs, nCurrentBlockSize, isPlaying);
 }
 
 //==============================================================================

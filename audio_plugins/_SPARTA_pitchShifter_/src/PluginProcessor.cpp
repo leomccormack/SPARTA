@@ -27,8 +27,7 @@ PluginProcessor::PluginProcessor() :
 		.withInput("Input", AudioChannelSet::discreteChannels(64), true)
 	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
-	nSampleRate = 48000;
-    nHostBlockSize = FRAME_SIZE;
+	nSampleRate = 48000; 
 	pitch_shifter_create(&hPS);
     startTimer(TIMER_PROCESSING_RELATED, 80);
 }
@@ -190,6 +189,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nSampleRate = (int)(sampleRate + 0.5);
 
 	pitch_shifter_init(hPS, (float)sampleRate);
+    AudioProcessor::setLatencySamples(pitch_shifter_getProcessingDelay(hPS));
 }
 
 void PluginProcessor::releaseResources()
@@ -202,19 +202,8 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
-    float* pFrameData[PITCH_SHIFTER_MAX_NUM_CHANNELS];
 
-	if(nCurrentBlockSize % FRAME_SIZE == 0) { /* divisible by frame size */
-        for(int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
-            for(int ch = 0; ch < buffer.getNumChannels(); ch++)
-                pFrameData[ch] = &bufferData[ch][frame*FRAME_SIZE];
-            
-			/* perform processing */
-			pitch_shifter_process(hPS, pFrameData, pFrameData, nNumInputs, nNumOutputs, FRAME_SIZE);
-		}
-	}
-	else
-		buffer.clear();
+    pitch_shifter_process(hPS, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);
 }
 
 //==============================================================================

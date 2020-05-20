@@ -35,7 +35,6 @@ typedef enum _TIMERS{
     TIMER_GUI_RELATED
 }TIMERS;
 
-
 enum {	
     /* For the default VST GUI */
     k_numChannels,

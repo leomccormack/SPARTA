@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.7
 
   ------------------------------------------------------------------------------
 
@@ -26,8 +26,7 @@
 #include "colourGradient.h"
 
 typedef enum _SPARTA_WARNINGS{
-    k_warning_none,
-    k_warning_frameSize,
+    k_warning_none, 
     k_warning_supported_fs,
     k_warning_NinputCH,
     k_warning_NoutputCH
@@ -52,7 +51,7 @@ class PluginEditor  : public AudioProcessorEditor,
 public:
     //==============================================================================
     PluginEditor (PluginProcessor* ownerFilter);
-    ~PluginEditor();
+    ~PluginEditor() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
@@ -77,10 +76,10 @@ private:
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
-    
+
     /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
-    
+
     //[/UserVariables]
 
     //==============================================================================

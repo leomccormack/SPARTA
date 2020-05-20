@@ -306,19 +306,8 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
-    float* pFrameData[MAX_NUM_CHANNELS];
-    
-    if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
-        for (int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
-            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
-                pFrameData[ch] = &bufferData[ch][frame*FRAME_SIZE];
-            
-            /* perform processing */
-            ambi_dec_process(hAmbi, pFrameData, pFrameData, nNumInputs, nNumOutputs, FRAME_SIZE);
-        }
-    }
-    else
-        buffer.clear();
+
+    ambi_dec_process(hAmbi, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);
 }
 
 //==============================================================================

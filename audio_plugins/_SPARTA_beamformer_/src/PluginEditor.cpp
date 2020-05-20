@@ -488,11 +488,6 @@ void PluginEditor::paint (Graphics& g)
     switch (currentWarning){
         case k_warning_none:
             break;
-        case k_warning_frameSize:
-            g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                       getBounds().getWidth()-225, 16, 530, 11,
-                       Justification::centredLeft, true);
-            break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
                        TRANS("/") + String(beamformer_getNumBeams(hBeam)) + TRANS(")"),
@@ -594,11 +589,7 @@ void PluginEditor::timerCallback()
     }
 
     /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((hVst->getCurrentNumInputs() < beamformer_getNumBeams(hBeam))){
+    if ((hVst->getCurrentNumInputs() < beamformer_getNumBeams(hBeam))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }

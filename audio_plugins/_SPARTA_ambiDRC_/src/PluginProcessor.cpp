@@ -206,35 +206,15 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
-    float* pFrameData[MAX_NUM_CHANNELS];
-	
-    if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
-        for(int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
-            for(int ch = 0; ch < buffer.getNumChannels(); ch++)
-                pFrameData[ch] = &bufferData[ch][frame*FRAME_SIZE];
-            
-            /* check whether the playhead is moving */
-            playHead = getPlayHead();
-            if(playHead!=NULL)
-                isPlaying = playHead->getCurrentPosition(currentPosition) == true ? currentPosition.isPlaying : false;
-            else
-                isPlaying = false;
-            
-            /* If there is no playhead, or it is not moving, see if there is audio in the buffer */
-            if(!isPlaying){
-                for(int j=0; j<nNumInputs; j++){
-                    isPlaying = buffer.getMagnitude(j, 0, 8 /* should be enough */)>1e-5f ? true : false;
-                    if(isPlaying)
-                        break;
-                }
-            }
-            
-            /* perform processing */
-            ambi_drc_process(hAmbi, pFrameData, pFrameData, nNumInputs < nNumOutputs ? nNumInputs : nNumOutputs, FRAME_SIZE);
-        }
-    }
+ 
+    /* check whether the playhead is moving */
+    playHead = getPlayHead();
+    if(playHead!=NULL)
+        isPlaying = playHead->getCurrentPosition(currentPosition) == true ? currentPosition.isPlaying : false;
     else
-        buffer.clear(); 
+        isPlaying = false;
+
+    ambi_drc_process(hAmbi, bufferData, bufferData, nNumInputs < nNumOutputs ? nNumInputs : nNumOutputs, nCurrentBlockSize);
 }
 
 //==============================================================================

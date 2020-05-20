@@ -291,19 +291,8 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
-    float* pFrameData[BINAURALISER_MAX_NUM_INPUTS];
 
-    if(nCurrentBlockSize % FRAME_SIZE == 0){ /* divisible by frame size */
-        for (int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
-            for(int ch = 0; ch < buffer.getNumChannels(); ch++)
-                pFrameData[ch] = &bufferData[ch][frame*FRAME_SIZE];
-            
-			/* perform processing */
-            binauraliser_process(hBin, pFrameData, pFrameData, nNumInputs, nNumOutputs, FRAME_SIZE);
-        }
-    }
-    else
-        buffer.clear();
+    binauraliser_process(hBin, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize); 
 }
 
 //==============================================================================
