@@ -780,11 +780,6 @@ void PluginEditor::paint (Graphics& g)
     switch (currentWarning){
         case k_warning_none:
             break;
-        case k_warning_frameSize:
-            g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                       getBounds().getWidth()-225, 16, 530, 11,
-                       Justification::centredLeft, true);
-            break;
         case k_warning_supported_fs:
             g.drawText(TRANS("Sample rate (") + String(dirass_getSamplingRate(hDir)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
@@ -1051,11 +1046,7 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* display warning message, if needed */
-            if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-                currentWarning = k_warning_frameSize;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ( !((dirass_getSamplingRate(hDir) == 44.1e3) || (dirass_getSamplingRate(hDir) == 48e3)) ){
+            if ( !((dirass_getSamplingRate(hDir) == 44.1e3) || (dirass_getSamplingRate(hDir) == 48e3)) ){
                 currentWarning = k_warning_supported_fs;
                 repaint(0,0,getWidth(),32);
             }

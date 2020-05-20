@@ -97,9 +97,7 @@ private:
     int nHostBlockSize;   /* typical host block size to expect, in samples */
     bool isPlaying;
     File lastDir;
-    ValueTree elements {"SourcesOrLoudspeakers"};
-    AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
-    AudioPlayHead::CurrentPositionInfo currentPosition;
+    ValueTree elements {"SourcesOrLoudspeakers"}; 
     
     void timerCallback(int timerID) override
     {

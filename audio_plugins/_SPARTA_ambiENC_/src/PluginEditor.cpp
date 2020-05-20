@@ -529,11 +529,6 @@ void PluginEditor::paint (Graphics& g)
     switch (currentWarning){
         case k_warning_none:
             break;
-        case k_warning_frameSize:
-            g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                       getBounds().getWidth()-225, 16, 530, 11,
-                       Justification::centredLeft, true);
-            break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
                        TRANS("/") + String(ambi_enc_getNumSources(hAmbi)) + TRANS(")"),
@@ -676,11 +671,7 @@ void PluginEditor::timerCallback()
     }
 
     /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((hVst->getCurrentNumInputs() < ambi_enc_getNumSources(hAmbi))){
+    if ((hVst->getCurrentNumInputs() < ambi_enc_getNumSources(hAmbi))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }

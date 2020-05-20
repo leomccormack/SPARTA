@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.7
 
   ------------------------------------------------------------------------------
 
@@ -237,7 +237,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_outgain->setTooltip("Output/Make-up gain (in dB).");
     s_attack->setTooltip("Envelope attack time (in miliseconds).");
     s_release->setTooltip("Envelope release time (in miliseconds).");
-    
+
     /* Specify screen refresh rate */
     startTimer(80); /*ms (40ms = 25 frames per second) */
 
@@ -890,11 +890,6 @@ void PluginEditor::paint (Graphics& g)
     switch (currentWarning){
         case k_warning_none:
             break;
-        case k_warning_frameSize:
-            g.drawText(TRANS("Set frame size to multiple of ") + String(FRAME_SIZE),
-                       getBounds().getWidth()-225, 5, 530, 11,
-                       Justification::centredLeft, true);
-            break;
         case k_warning_supported_fs:
             g.drawText(TRANS("Sample rate (") + String(ambi_drc_getSamplerate(hAmbi)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 5, 530, 11,
@@ -1058,11 +1053,7 @@ void PluginEditor::timerCallback()
     }
 
     /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % FRAME_SIZE) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint();
-    }
-    else if ( !((ambi_drc_getSamplerate(hAmbi) == 44.1e3) || (ambi_drc_getSamplerate(hAmbi) == 48e3)) ){
+    if ( !((ambi_drc_getSamplerate(hAmbi) == 44.1e3) || (ambi_drc_getSamplerate(hAmbi) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
@@ -1104,126 +1095,126 @@ BEGIN_JUCER_METADATA
           hasStroke="0"/>
     <RECT pos="0 30 550 205" fill="linear: 8 32, 8 104, 0=ff1c3949, 1=ff071e22"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 2 548 31" cornerSize="5" fill="linear: 0 32, 656 24, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 2 548 31" cornerSize="5.0" fill="linear: 0 32, 656 24, 0=ff061c20, 1=ff1c3949"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="10 38 530 244" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
     <RECT pos="88 320 224 112" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
     <TEXT pos="96 325 60 30" fill="solid: ffffffff" hasStroke="0" text="Thresh."
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="169 326 60 30" fill="solid: ffffffff" hasStroke="0" text="Ratio"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="241 326 60 30" fill="solid: ffffffff" hasStroke="0" text="Knee"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <RECT pos="311 320 151 112" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
     <RECT pos="461 320 79 112" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
     <TEXT pos="321 326 60 30" fill="solid: ffffffff" hasStroke="0" text="Attack"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="393 326 60 30" fill="solid: ffffffff" hasStroke="0" text="Release"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="470 326 60 30" fill="solid: ffffffff" hasStroke="0" text="Out Gain"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="96 341 60 30" fill="solid: ffffffff" hasStroke="0" text="(dB)"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="240 341 60 30" fill="solid: ffffffff" hasStroke="0" text="(dB)"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="470 341 60 30" fill="solid: ffffffff" hasStroke="0" text="(dB)"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="320 341 60 30" fill="solid: ffffffff" hasStroke="0" text="(ms)"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="392 341 60 30" fill="solid: ffffffff" hasStroke="0" text="(ms)"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="168 341 60 30" fill="solid: ffffffff" hasStroke="0" text="(X:1)"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <RECT pos="10 320 79 112" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
     <TEXT pos="19 326 60 30" fill="solid: ffffffff" hasStroke="0" text="In Gain"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="18 341 60 30" fill="solid: ffffffff" hasStroke="0" text="(dB)"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <RECT pos="10 288 530 33" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
     <TEXT pos="214 289 172 30" fill="solid: ffffffff" hasStroke="0" text="CH Order:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="390 289 58 30" fill="solid: ffffffff" hasStroke="0" text="Norm:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="22 289 50 30" fill="solid: ffffffff" hasStroke="0" text="Input:"
-          fontname="Default font" fontsize="1.5e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="246 257 58 30" fill="solid: ffffffff" hasStroke="0" text="Time (s)"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="22 246 26 30" fill="solid: ffffffff" hasStroke="0" text="100"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="28 153 26 30" fill="solid: ffffffff" hasStroke="0" text="1k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="28 86 26 30" fill="solid: ffffffff" hasStroke="0" text="5k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="22 57 26 30" fill="solid: ffffffff" hasStroke="0" text="10k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="22 31 26 30" fill="solid: ffffffff" hasStroke="0" text="20k"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="508 31 26 30" fill="solid: ffffffff" hasStroke="0" text="0"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="500 247 26 30" fill="solid: ffffffff" hasStroke="0" text="-16"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="502 85 26 30" fill="solid: ffffffff" hasStroke="0" text="-4"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="502 193 26 30" fill="solid: ffffffff" hasStroke="0" text="-12"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="22 219 26 30" fill="solid: ffffffff" hasStroke="0" text="200"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="502 139 26 30" fill="solid: ffffffff" hasStroke="0" text="-8"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="502 58 26 30" fill="solid: ffffffff" hasStroke="0" text="-2"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="502 112 26 30" fill="solid: ffffffff" hasStroke="0" text="-6"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="502 166 26 30" fill="solid: ffffffff" hasStroke="0" text="-10"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="502 220 26 30" fill="solid: ffffffff" hasStroke="0" text="-14"
-          fontname="Default font" fontsize="1.2e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="10 288 193 33" fill="solid: 8c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
     <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="1.88e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="92 1 112 32" fill="solid: fff77bf5" hasStroke="0" text="AmbiDRC"
-          fontname="Default font" fontsize="1.8e1" kerning="0" bold="1"
+          fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 550 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
@@ -1238,46 +1229,47 @@ BEGIN_JUCER_METADATA
           virtualName="" explicitFocusOrder="0" pos="96 364 64 64" bkgcol="ff5c5d5e"
           trackcol="ff315b6d" rotarysliderfill="7fffffff" rotaryslideroutline="66ffffff"
           textboxtext="ffffffff" textboxbkgd="ffffff" textboxhighlight="1111ee"
-          min="-6e1" max="0" int="1e-2" style="RotaryHorizontalVerticalDrag"
+          min="-60.0" max="0.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="fed2163dcc7c5f5b" memberName="s_ratio"
           virtualName="" explicitFocusOrder="0" pos="168 364 64 64" rotarysliderfill="7fffffff"
           rotaryslideroutline="66ffffff" textboxtext="ffffffff" textboxbkgd="ffffff"
-          textboxhighlight="1111ee" min="1" max="3e1" int="1e-2" style="RotaryHorizontalVerticalDrag"
+          textboxhighlight="1111ee" min="1.0" max="30.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="e407bc6da965376a" memberName="s_knee" virtualName=""
           explicitFocusOrder="0" pos="240 364 64 64" rotarysliderfill="7fffffff"
           rotaryslideroutline="66ffffff" textboxtext="ffffffff" textboxbkgd="ffffff"
-          textboxhighlight="1111ee" min="0" max="1e1" int="1e-2" style="RotaryHorizontalVerticalDrag"
+          textboxhighlight="1111ee" min="0.0" max="10.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="81df0065d1121d11" memberName="s_attack"
           virtualName="" explicitFocusOrder="0" pos="319 364 64 64" rotarysliderfill="7fffffff"
           rotaryslideroutline="66ffffff" textboxtext="ffffffff" textboxbkgd="ffffff"
-          textboxhighlight="1111ee" min="1e1" max="2e2" int="1e-2" style="RotaryHorizontalVerticalDrag"
+          textboxhighlight="1111ee" min="10.0" max="200.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="b27162f80677dd01" memberName="s_release"
           virtualName="" explicitFocusOrder="0" pos="391 364 64 64" rotarysliderfill="7fffffff"
           rotaryslideroutline="66ffffff" textboxtext="ffffffff" textboxbkgd="ffffff"
-          textboxhighlight="1111ee" min="5e1" max="1e3" int="1e-2" style="RotaryHorizontalVerticalDrag"
-          textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textboxhighlight="1111ee" min="50.0" max="1000.0" int="0.01"
+          style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
   <SLIDER name="new slider" id="a28183cd37cba9a8" memberName="s_outgain"
           virtualName="" explicitFocusOrder="0" pos="468 364 64 64" rotarysliderfill="7fffffff"
           rotaryslideroutline="66ffffff" textboxtext="ffffffff" textboxbkgd="ffffff"
-          textboxhighlight="1111ee" min="-2e1" max="4e1" int="1e-2" style="RotaryHorizontalVerticalDrag"
+          textboxhighlight="1111ee" min="-20.0" max="40.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="d8d8f3ebe9b6f67e" memberName="s_ingain"
           virtualName="" explicitFocusOrder="0" pos="17 364 64 64" bkgcol="ff5c5d5e"
           trackcol="ff315b6d" rotarysliderfill="7fffffff" rotaryslideroutline="66ffffff"
           textboxtext="ffffffff" textboxbkgd="ffffff" textboxhighlight="1111ee"
-          min="-4e1" max="2e1" int="1e-2" style="RotaryHorizontalVerticalDrag"
+          min="-40.0" max="20.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <COMBOBOX name="new combo box" id="abcd469891fabf2d" memberName="presetCB"
             virtualName="" explicitFocusOrder="0" pos="72 296 120 16" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>

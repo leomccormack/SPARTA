@@ -28,7 +28,6 @@ PluginProcessor::PluginProcessor() :
 	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
 	nSampleRate = 48000;
-    nHostBlockSize = FRAME_SIZE;
 	rotator_create(&hRot);
 
     /* specify here on which UDP port number to receive incoming OSC messages */
@@ -250,19 +249,8 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
-    float* pFrameData[ROTATOR_MAX_NUM_CHANNELS];
 
-	if(nCurrentBlockSize % FRAME_SIZE == 0) { /* divisible by frame size */
-        for(int frame = 0; frame < nCurrentBlockSize/FRAME_SIZE; frame++) {
-            for(int ch = 0; ch < buffer.getNumChannels(); ch++)
-                pFrameData[ch] = &bufferData[ch][frame*FRAME_SIZE];
-            
-			/* perform processing */
-			rotator_process(hRot, pFrameData, pFrameData, nNumInputs, nNumOutputs, FRAME_SIZE);
-		}
-	}
-	else
-		buffer.clear();
+    rotator_process(hRot, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);
 }
 
 //==============================================================================
