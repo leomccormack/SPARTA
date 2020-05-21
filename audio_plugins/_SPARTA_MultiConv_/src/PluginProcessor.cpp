@@ -158,6 +158,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     isPlaying = false;
 
 	multiconv_init(hMCnv, (float)sampleRate, nHostBlockSize);
+    AudioProcessor::setLatencySamples(multiconv_getProcessingDelay(hMCnv));
 }
 
 void PluginProcessor::releaseResources()
@@ -171,10 +172,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
 
-    if(nCurrentBlockSize == nHostBlockSize)
-        multiconv_process(hMCnv, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize); 
-    else
-        buffer.clear();
+    multiconv_process(hMCnv, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize); 
 }
 
 //==============================================================================
