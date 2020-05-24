@@ -282,7 +282,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
-    float** bufferData = buffer.getArrayOfWritePointers(); 
+    float** bufferData = buffer.getArrayOfWritePointers();
 
     ambi_bin_process(hAmbi, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);
 }
