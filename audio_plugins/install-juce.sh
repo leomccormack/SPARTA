@@ -1,7 +1,6 @@
 #!/bin/bash
 
-#~ if [[ "${OSTYPE}" != "linux-gnu" && "${OSTYPE}" != "darwin"* ]]; then
-if [[ "${OSTYPE}" != "linux-gnu" ]]; then
+if [[ "${OSTYPE}" != "linux-gnu" && "${OSTYPE}" != "darwin"* ]]; then
     echo "${OSTYPE} is unsupported"
     exit
 fi
@@ -98,20 +97,45 @@ activate_version () {
     cd "${SDKs}"
 
     # create symlink for JUCE modules
-    projucer="$(get_projucer_folder "${version}")/build/Projucer"
     ln -sf "${SDKs}/JUCE${version}/modules" modules
     validate_link modules
 
     # create symlink for Projucer
-    projucer="$(get_projucer_folder "${version}")/build/Projucer"
-    if [ -f "${SDKs}/${projucer}" ]; then
-        rm -f Projucer
-        ln -sf "${projucer}" .
-    else
-        echo "${SDKs}/${projucer} does not exists..."
-        exit
+    projucer_folder="$(get_projucer_folder "${version}")"
+    if [[ "${OSTYPE}" == "linux-gnu" ]]; then
+        projucer="${projucer_folder}/build/Projucer"
+        if [ -f "${SDKs}/${projucer}" ]; then
+            rm -f Projucer
+            ln -sf "${projucer}" .
+        else
+            echo "${SDKs}/${projucer} does not exists..."
+            exit
+        fi
+        validate_link "Projucer"
     fi
-    validate_link Projucer
+
+    if [[ "${OSTYPE}" == "darwin"* ]]; then
+        projucer_app="${projucer_folder}/build/Release/Projucer.app"
+        if [ -f "${SDKs}/${projucer_app}" ]; then
+            rm -f "Projucer.app"
+            ln -sf "${projucer_app}" "Projucer.app"
+        else
+            echo "${SDKs}/${projucer} does not exists..."
+            exit
+        fi
+        validate_link "Projucer.app"
+
+        projucer="${projucer_app}/Contents/MacOS/Projucer"
+        if [ -f "${SDKs}/${projucer}" ]; then
+            rm -f "Projucer"
+            ln -sf "${projucer}" "Projucer"
+        else
+            echo "${SDKs}/${projucer} does not exists..."
+            exit
+        fi
+        validate_link "Projucer"
+    fi
+
 }
 
 build () {
@@ -134,13 +158,16 @@ build () {
 
     # configure Projucer
     cd "$(get_projucer_folder ${version})"
-    sed -i 's/JUCER_ENABLE_GPL_MODE 0/JUCER_ENABLE_GPL_MODE 1/g' \
+    sed -i'' -e 's/JUCER_ENABLE_GPL_MODE 0/JUCER_ENABLE_GPL_MODE 1/g' \
     ../../JuceLibraryCode/AppConfig.h
 
     # build Projucer
-    make -j${NPROC}
+    if [[ "${OSTYPE}" == "linux-gnu" ]]; then
+        make -j${NPROC}
+    elif [[ "${OSTYPE}" == "darwin"* ]]; then
+        xcodebuild -configuration Release
+    fi
 
-    #~ activate_version "${version}"
 }
 
 
