@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ "${OSTYPE}" != "linux-gnu" && "${OSTYPE}" != "darwin"* ]]; then
+    echo "${OSTYPE} is unsupported"
+    exit
+fi
+
 help_message="
 script to \"projuce\" and build the SPARTA plugins on Linux
 
@@ -34,18 +39,60 @@ HERE=$(cd $(dirname $0) && pwd)
 # check SDKs
 ok=0
 SDKs=$(cd ${HERE}/../SDKs && pwd)
-[ -e "${SDKs}/modules" ] \
-&& [ -e "${SDKs}/Spatial_Audio_Framework" ] \
-&& [ -e "${SDKs}/VST2_SDK" ] && ok=1
-if [ $ok == 0 ]; then
-  echo "Install missing dependencies in \"${SDKs}\""
-  exit
+
+
+# check Spatial audio Framework:
+if [ ! -e "${SDKs}/Spatial_Audio_Framework" ]; then
+  echo "
+    Spatial_Audio_Framework was not found...
+    Do you wish to install it ?"
+    select yn in "Yes" "No"; do
+      case $yn in
+        Yes ) git submodule update --init; $0 $@; break;;
+        No ) echo "Exiting now..."; exit;;
+      esac
+    done
+    exit
 fi
 
+# check JUCE
+projucer_app="${SDKs}/Projucer"
+modules="${SDKs}/modules"
+if [ ! ${projucer_app} ] || [ ! -e ${projucer_app} ] \
+    || [ ! ${modules} ] || [ ! -e ${modules} ] ; then
+    echo "
+    Projucer is not installed (or configured)...
+    Do you wish to run install-juce.sh?"
+    select yn in "Yes" "No"; do
+      case $yn in
+          Yes ) ./install-juce.sh; $0 $@; break;;
+          No ) echo "Exiting now..."; exit;;
+      esac
+    done
+    exit
+fi
+
+VST2_SDK="${SDKs}/VST2_SDK"
+if [ ! ${VST2_SDK} ] || [ ! -e ${VST2_SDK} ]; then
+    echo "
+    VST2_SDK is not installed (or configured)...
+    Do you wish to run install-vst2_sdk.sh?"
+    select yn in "Yes" "No"; do
+      case $yn in
+        Yes ) ./install-vst2_sdk.sh; $0 $@; break;;
+        No ) echo "Exiting now..."; exit;;
+      esac
+    done
+    exit
+fi
+
+
+
+PATH="${SDKs}/JUCE/modules:$PATH"
+
 # location of plugin binaries
+mkdir -p "${HERE}/../lib"
 binaries=$(cd ${HERE}/../lib && pwd)
-# create if missing
-mkdir -p "${binaries}"
 
 i=$#
 while [ $i -gt 0 ]; do
@@ -81,18 +128,6 @@ if [ ${help} -gt 0 ]; then
   exit
 fi
 
-# location of Projucer app: priority to the one found in SDKs
-projucer_app="${SDKs}/Projucer"
-[ ! -e ${projucer_app} ] && projucer_app=$(which Projucer)
-if [ ! ${projucer_app} ] || [ ! -e ${projucer_app} ]; then
-  echo "Projucer is not installed"
-  echo "On Debian (and Ubuntu), install the \"juce-tools\" package"
-  echo "or compile a GPL enabled version using this script:"
-  echo "${HERE}/linux-build-projucer.sh"
-  echo "or install Projucer as you like, set the \"projucer_app\" variable"
-  echo "or create a \"${SDKs}/Projucer\" symbolic link"
-  exit
-fi
 
 if [ ${info} -gt 0 ]; then
     get_info () {
@@ -118,10 +153,26 @@ fi
 [ ${projuce} -gt 0 ] && find "${from}" -type f -name "*.jucer" \
   -exec ${projucer_app} --resave "{}" \;
 
-# cleaning)
-[ ${clean} -gt 0 ] && find "${from}" -type d -name "LinuxMakefile" \
-  -exec bash -c "cd \"{}\" && make CONFIG=Release clean" \;
+if [[ "${OSTYPE}" == "linux-gnu" ]]; then
 
-# building
-[ ${build} -gt 0 ] && find "${from}" -type d -name "LinuxMakefile" \
-  -exec bash -c "cd \"{}\" && make CONFIG=Release $@" \;
+    # cleaning)
+    [ ${clean} -gt 0 ] && find "${from}" -type d -name "LinuxMakefile" \
+      -exec bash -c "cd \"{}\" && make CONFIG=Release clean" \;
+
+    # building
+    [ ${build} -gt 0 ] && find "${from}" -type d -name "LinuxMakefile" \
+      -exec bash -c "cd \"{}\" && make CONFIG=Release $@" \;
+
+elif [[ "${OSTYPE}" == "darwin"* ]]; then
+
+    # cleaning)
+    [ ${clean} -gt 0 ] && find "${from}" -type d -name "Xcode" \
+      -exec bash -c "cd \"{}\" && xcodebuild -configuration Release clean" \;
+
+    # building
+    [ ${build} -gt 0 ] && find "${from}" -type d -name "Xcode" \
+      -exec bash -c "cd \"{}\" && xcodebuild -configuration Release" \;
+
+fi
+
+
