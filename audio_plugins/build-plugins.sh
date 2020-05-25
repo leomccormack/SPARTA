@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ "${OSTYPE}" != "linux-gnu" && "${OSTYPE}" != "darwin"* ]]; then
+    echo "${OSTYPE} is unsupported"
+    exit
+fi
+
 help_message="
 script to \"projuce\" and build the SPARTA plugins on Linux
 
@@ -148,10 +153,26 @@ fi
 [ ${projuce} -gt 0 ] && find "${from}" -type f -name "*.jucer" \
   -exec ${projucer_app} --resave "{}" \;
 
-# cleaning)
-[ ${clean} -gt 0 ] && find "${from}" -type d -name "LinuxMakefile" \
-  -exec bash -c "cd \"{}\" && make CONFIG=Release clean" \;
+if [[ "${OSTYPE}" == "linux-gnu" ]]; then
 
-# building
-[ ${build} -gt 0 ] && find "${from}" -type d -name "LinuxMakefile" \
-  -exec bash -c "cd \"{}\" && make CONFIG=Release $@" \;
+    # cleaning)
+    [ ${clean} -gt 0 ] && find "${from}" -type d -name "LinuxMakefile" \
+      -exec bash -c "cd \"{}\" && make CONFIG=Release clean" \;
+
+    # building
+    [ ${build} -gt 0 ] && find "${from}" -type d -name "LinuxMakefile" \
+      -exec bash -c "cd \"{}\" && make CONFIG=Release $@" \;
+
+elif [[ "${OSTYPE}" == "darwin"* ]]; then
+
+    # cleaning)
+    [ ${clean} -gt 0 ] && find "${from}" -type d -name "Xcode" \
+      -exec bash -c "cd \"{}\" && xcodebuild -configuration Release clean" \;
+
+    # building
+    [ ${build} -gt 0 ] && find "${from}" -type d -name "Xcode" \
+      -exec bash -c "cd \"{}\" && xcodebuild -configuration Release" \;
+
+fi
+
+
