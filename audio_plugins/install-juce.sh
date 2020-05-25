@@ -116,11 +116,11 @@ activate_version () {
 
     if [[ "${OSTYPE}" == "darwin"* ]]; then
         projucer_app="${projucer_folder}/build/Release/Projucer.app"
-        if [ -f "${SDKs}/${projucer_app}" ]; then
+        if [ -d "${SDKs}/${projucer_app}" ]; then
             rm -f "Projucer.app"
             ln -sf "${projucer_app}" "Projucer.app"
         else
-            echo "${SDKs}/${projucer} does not exists..."
+            echo "${SDKs}/${projucer_app} does not exists..."
             exit
         fi
         validate_link "Projucer.app"
