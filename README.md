@@ -75,10 +75,20 @@ To generate project files for other IDEs, you may open and configure the include
 
 ## Batch building 
 
-**Linux/MacOSX users** may run the included "audio_plugins/build-plugins.sh" script via the Terminal, to build all plug-ins:
+**Linux users** may run the included "audio_plugins/build-plugins.sh" script via the Terminal, to build all plug-ins:
 
 ```
-bash build-plugins.sh all
+./build-plugins.sh all
+```
+
+**MacOSX users** may run the included "audio_plugins/build-plugins.sh" script via the Terminal, to build all plug-ins:
+
+```
+# First install and enable Xcode Command Line Tools if you haven't already done so:
+xcode-select --install 
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer 
+# Then  build:
+./build-plugins.sh all
 ```
 
 **Windows users** may run the included "audio_plugins/build-plugins.bat" script (with "x64 Developer Command Prompt for VS.exe"), to build all plug-ins:
