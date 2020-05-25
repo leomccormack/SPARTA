@@ -4,6 +4,8 @@ JuceLibraryCode/
 SDKs/JUCE/
 SDKs/VST3_SDK
 SDKs/VST2_SDK
+SDKs/Projucer
+SDKs/modules
 lib/
 *.DS_Store
 
