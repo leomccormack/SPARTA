@@ -3,10 +3,12 @@ obj/
 JuceLibraryCode/
 SDKs/JUCE/
 SDKs/VST3_SDK
+SDKs/VST_SDK
 SDKs/VST2_SDK
 SDKs/Projucer
 SDKs/modules
 lib/
+*.zip
 *.DS_Store
 
 # User-specific files
