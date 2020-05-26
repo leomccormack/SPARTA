@@ -48,7 +48,7 @@ if [ ! -e "${SDKs}/Spatial_Audio_Framework" ]; then
     Do you wish to install it ?"
     select yn in "Yes" "No"; do
       case $yn in
-        Yes ) git submodule update --init; $0 $@; break;;
+        Yes ) git submodule update --init "${SDKs}/Spatial_Audio_Framework"; $0 $@; break;;
         No ) echo "Exiting now..."; exit;;
       esac
     done
@@ -56,16 +56,20 @@ if [ ! -e "${SDKs}/Spatial_Audio_Framework" ]; then
 fi
 
 # check JUCE
-projucer_app="${SDKs}/Projucer"
-modules="${SDKs}/modules"
-if [ ! ${projucer_app} ] || [ ! -e ${projucer_app} ] \
-    || [ ! ${modules} ] || [ ! -e ${modules} ] ; then
+if [[ "${OSTYPE}" == "linux-gnu" ]]; then
+    projucer_app="${SDKs}/Projucer"
+elif [[ "${OSTYPE}" == "darwin"*  ]]; then
+    projucer_app="${SDKs}/Projucer.app/Contents/MacOS/Projucer"
+fi
+
+if [ ! ${projucer_app} ] || [ ! -e ${projucer_app} ] ; then
     echo "
-    Projucer is not installed (or configured)...
+    Projucer is not installed (or configured)
+    in the \"${SDKs}\" folder.
     Do you wish to run install-juce.sh?"
     select yn in "Yes" "No"; do
       case $yn in
-          Yes ) ./install-juce.sh; $0 $@; break;;
+          Yes ) "${HERE}/install-juce.sh"; $0 $@; break;;
           No ) echo "Exiting now..."; exit;;
       esac
     done
@@ -75,17 +79,17 @@ fi
 VST2_SDK="${SDKs}/VST2_SDK"
 if [ ! ${VST2_SDK} ] || [ ! -e ${VST2_SDK} ]; then
     echo "
-    VST2_SDK is not installed (or configured)...
+    VST2_SDK is not installed (or configured)
+    in the \"${SDKs}\" folder.
     Do you wish to run install-vst2_sdk.sh?"
     select yn in "Yes" "No"; do
       case $yn in
-        Yes ) ./install-vst2_sdk.sh; $0 $@; break;;
+        Yes ) "${HERE}/install-vst2_sdk.sh"; $0 $@; break;;
         No ) echo "Exiting now..."; exit;;
       esac
     done
     exit
 fi
-
 
 
 PATH="${SDKs}/JUCE/modules:$PATH"
@@ -156,22 +160,26 @@ fi
 if [[ "${OSTYPE}" == "linux-gnu" ]]; then
 
     # cleaning)
+    echo "cleaning \"${from}\" ..."
     [ ${clean} -gt 0 ] && find "${from}" -type d -name "LinuxMakefile" \
       -exec bash -c "cd \"{}\" && make CONFIG=Release clean" \;
 
     # building
+    echo "building \"${from}\" ..."
     [ ${build} -gt 0 ] && find "${from}" -type d -name "LinuxMakefile" \
       -exec bash -c "cd \"{}\" && make CONFIG=Release $@" \;
 
 elif [[ "${OSTYPE}" == "darwin"* ]]; then
 
     # cleaning)
+    echo "cleaning \"${from}\" ..."
     [ ${clean} -gt 0 ] && find "${from}" -type d -name "Xcode" \
-      -exec bash -c "cd \"{}\" && xcodebuild -configuration Release clean" \;
+      -exec bash -c "cd \"{}\" && xcodebuild -quiet -configuration Release clean" \;
 
     # building
+    echo "building \"${from}\" ..."
     [ ${build} -gt 0 ] && find "${from}" -type d -name "Xcode" \
-      -exec bash -c "cd \"{}\" && xcodebuild -configuration Release" \;
+      -exec bash -c "cd \"{}\" && xcodebuild -quiet -configuration Release" \;
 
 fi
 

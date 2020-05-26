@@ -78,9 +78,9 @@ validate_link () {
 activate_version () {
     version=$1
     if [ -z "${version}" ]; then
-        git submodule update --init
+        git submodule update --init "${SDKs}/JUCE"
         if [ -d "${SDKs}/JUCE" ]; then
-            echo "building git submodule version"
+            echo "building git submodule version ..."
             build
         else
             activate_version master
@@ -88,17 +88,13 @@ activate_version () {
         fi
     else
         if [ ! -d "${SDKs}/JUCE${version}" ]; then
-            echo "version ${version} is not installed"
-            echo "building version ${version}"
+            echo "version ${version} is not installed in the \"${SDKs}\" folder."
+            echo "building version ${version} ..."
             build "${version}"
         fi
     fi
 
     cd "${SDKs}"
-
-    # create symlink for JUCE modules
-    ln -sf "${SDKs}/JUCE${version}/modules" modules
-    validate_link modules
 
     # create symlink for Projucer
     projucer_folder="$(get_projucer_folder "${version}")"
@@ -112,28 +108,16 @@ activate_version () {
             exit
         fi
         validate_link "Projucer"
-    fi
-
-    if [[ "${OSTYPE}" == "darwin"* ]]; then
-        projucer_app="${projucer_folder}/build/Release/Projucer.app"
-        if [ -d "${SDKs}/${projucer_app}" ]; then
+    elif [[ "${OSTYPE}" == "darwin"* ]]; then
+        projucer="${projucer_folder}/build/Release/Projucer.app"
+        if [ -d "${SDKs}/${projucer}" ]; then
             rm -f "Projucer.app"
-            ln -sf "${projucer_app}" "Projucer.app"
-        else
-            echo "${SDKs}/${projucer_app} does not exists..."
-            exit
-        fi
-        validate_link "Projucer.app"
-
-        projucer="${projucer_app}/Contents/MacOS/Projucer"
-        if [ -f "${SDKs}/${projucer}" ]; then
-            rm -f "Projucer"
-            ln -sf "${projucer}" "Projucer"
+            ln -sf "${projucer}" "Projucer.app"
         else
             echo "${SDKs}/${projucer} does not exists..."
             exit
         fi
-        validate_link "Projucer"
+        validate_link "Projucer.app"
     fi
 
 }
@@ -165,7 +149,7 @@ build () {
     if [[ "${OSTYPE}" == "linux-gnu" ]]; then
         make -j${NPROC}
     elif [[ "${OSTYPE}" == "darwin"* ]]; then
-        xcodebuild -configuration Release
+        xcodebuild -quiet -configuration Release
     fi
 
 }
