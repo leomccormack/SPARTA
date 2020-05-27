@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Author: Marc Lavallée 2020
+
 if [[ "${OSTYPE}" != "linux-gnu" && "${OSTYPE}" != "darwin"* ]]; then
     echo "${OSTYPE} is unsupported"
     exit
@@ -42,7 +44,7 @@ SDKs=$(cd ${HERE}/../SDKs && pwd)
 
 
 # check Spatial audio Framework:
-if [ ! -e "${SDKs}/Spatial_Audio_Framework" ]; then
+if [ ! -e "${SDKs}/Spatial_Audio_Framework/.git" ]; then
   echo "
     Spatial_Audio_Framework was not found...
     Do you wish to install it ?"
@@ -55,14 +57,15 @@ if [ ! -e "${SDKs}/Spatial_Audio_Framework" ]; then
     exit
 fi
 
-# check JUCE
+# set Projucer
 if [[ "${OSTYPE}" == "linux-gnu" ]]; then
-    projucer_app="${SDKs}/Projucer"
+    projucer_bin="${SDKs}/Projucer"
 elif [[ "${OSTYPE}" == "darwin"*  ]]; then
-    projucer_app="${SDKs}/Projucer.app/Contents/MacOS/Projucer"
+    projucer_app="${SDKs}/Projucer.app"
+    projucer_bin="${projucer_app}/Contents/MacOS/Projucer"
 fi
 
-if [ ! ${projucer_app} ] || [ ! -e ${projucer_app} ] ; then
+if [ ! ${projucer_bin} ] || [ ! -e ${projucer_bin} ] ; then
     echo "
     Projucer is not installed (or configured)
     in the \"${SDKs}\" folder.
@@ -101,8 +104,8 @@ binaries=$(cd ${HERE}/../lib && pwd)
 i=$#
 while [ $i -gt 0 ]; do
   var=$1
-  if [ -d ${var} ]; then
-    from="${var}"
+  if [ -d "${HERE}/${var}" ]; then
+    from="${HERE}/${var}"
   elif [ ${var} == "help" ]; then
     help=1
   elif [ ${var} == "projucer" ]; then
@@ -136,7 +139,7 @@ fi
 if [ ${info} -gt 0 ]; then
     get_info () {
         jucer=$@
-        status="$(${projucer_app} --status ${jucer} 2>&1)"
+        status="$(${projucer_bin} --status ${jucer} 2>&1)"
         name=$(echo "${status}" | grep Name | cut -c 7-)
         echo "${status}"
         name=$(echo "${status}" | grep Name | cut -c 7-)
@@ -150,36 +153,41 @@ fi
 [ -z ${from+x} ] && from="${HERE}"
 
 # opening Projucer editor
+if [[ "${OSTYPE}" == "linux-gnu" ]]; then
+    [ ${projucer} -gt 0 ] && find "${from}" -type f -name "*.jucer" \
+        -exec ${projucer_bin} "{}" \;
+elif [[ "${OSTYPE}" == "darwin"*  ]]; then
+    [ ${projucer} -gt 0 ] && find "${from}" -type f -name "*.jucer" \
+        -exec open ${projucer_app} "{}" \;
+fi
+
+
 [ ${projucer} -gt 0 ] && find "${from}" -type f -name "*.jucer" \
-  -exec ${projucer_app} "{}" \;
+  -exec ${projucer_bin} "{}" \;
 
 # projucing (resaving Projucer files)
 [ ${projuce} -gt 0 ] && find "${from}" -type f -name "*.jucer" \
-  -exec ${projucer_app} --resave "{}" \;
+  -exec ${projucer_bin} --resave "{}" \;
 
 if [[ "${OSTYPE}" == "linux-gnu" ]]; then
 
     # cleaning)
-    echo "cleaning \"${from}\" ..."
     [ ${clean} -gt 0 ] && find "${from}" -type d -name "LinuxMakefile" \
-      -exec bash -c "cd \"{}\" && make CONFIG=Release clean" \;
+      -exec bash -c "echo cleaning \"{}\" && cd \"{}\" && make CONFIG=Release clean" \;
 
     # building
-    echo "building \"${from}\" ..."
     [ ${build} -gt 0 ] && find "${from}" -type d -name "LinuxMakefile" \
-      -exec bash -c "cd \"{}\" && make CONFIG=Release $@" \;
+      -exec bash -c "echo building \"{}\" && cd \"{}\" && make CONFIG=Release $@" \;
 
 elif [[ "${OSTYPE}" == "darwin"* ]]; then
 
     # cleaning)
-    echo "cleaning \"${from}\" ..."
     [ ${clean} -gt 0 ] && find "${from}" -type d -name "Xcode" \
-      -exec bash -c "cd \"{}\" && xcodebuild -quiet -configuration Release clean" \;
+      -exec bash -c "echo cleaning \"{}\" && cd \"{}\" && xcodebuild -quiet -configuration Release clean" \;
 
     # building
-    echo "building \"${from}\" ..."
     [ ${build} -gt 0 ] && find "${from}" -type d -name "Xcode" \
-      -exec bash -c "cd \"{}\" && xcodebuild -quiet -configuration Release" \;
+      -exec bash -c "echo building \"{}\" && cd \"{}\" && xcodebuild -quiet -configuration Release" \;
 
 fi
 
