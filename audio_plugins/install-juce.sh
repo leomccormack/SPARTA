@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Author: Marc Lavallée 2020
+
 if [[ "${OSTYPE}" != "linux-gnu" && "${OSTYPE}" != "darwin"* ]]; then
     echo "${OSTYPE} is unsupported"
     exit
