@@ -1,6 +1,6 @@
 # SPARTA
 
-SPatial Audio Real-Time Applications (SPARTA) [1]. A collection of VST audio plug-ins for spatial audio production, reproduction and visualisation. Developed using [JUCE](https://github.com/WeAreROLI/JUCE/) and the [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework).
+Spatial Audio Real-Time Applications (SPARTA) [1]. A collection of VST audio plug-ins for spatial audio production, reproduction and visualisation. Developed using [JUCE](https://github.com/WeAreROLI/JUCE/) and the [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework).
 
 ![](sparta_screenshot.png)
 
@@ -35,37 +35,70 @@ First clone the repository (including submodules) with:
 
 ```
 git clone --recursive https://github.com/leomccormack/SPARTA
-# or if you have already cloned the repository, update with
+# or if you have already cloned the repository, update with:
 git submodule update --init --recursive
 ```
 
 ## Prerequisites 
 
-The [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip) must first be placed in the 'SDKs' folder like so:
-
+The [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip) should be placed in the 'SDKs' folder like so:
 ```
 SDKs/VST2_SDK
 ```
 
-**MacOSX, Windows and Linux (x86_64/amd64) versions**: also require a custom Intel MKL library. Details on how to acquire this library may be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md). 
+**x86_64/amd64: MacOSX, Linux and Windows** users must install a custom Intel MKL library. Detailed instructions on how to do this can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md). 
 
-**Raspberry Pi (ARM) versions** instead require OpenBLAS and LAPACKE libraries:
-
-```
-sudo apt-get update
+**ARM: Linux (Raspberry Pi)** users instead require OpenBLAS and LAPACKE libraries:
+``` 
 sudo apt-get install liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
 ```
 
-**Linux (amd64/ARM) users** must also install the following libraries (the former line for JUCE, the latter line for the Spatial_Audio_Framework):
+**All: Linux** users must also install the following libraries (the former line for JUCE, and the latter line for the Spatial_Audio_Framework):
 
 ```
 sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x11proto-xext-dev libcurl4-openssl-dev libasound2-dev
 sudo apt-get install libhdf5-dev libnetcdf-dev libnetcdff-dev
 ```
 
-## Building the plug-ins
+## Building all plug-ins via scripts
 
-When saving the .jucer files with the Projucer App, Visual Studio (2015/2017) solutions, Xcode project files, Linux Makefiles (amd64), and Raspberry Pi Linux Makefiles (ARM) are placed in:
+**MacOSX/Linux users** may run the following bash script via the Terminal to build all of the plugins:
+
+```
+./build-plugins.sh all
+# Note: MacOSX users may need to first install and enable Xcode Command Line Tools:
+xcode-select --install 
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer 
+```
+
+**Windows users** may instead run the following batch script via the "x64 Developer Command Prompt for VS.exe":
+
+```
+build-plugins.bat <path/to/Projucer.exe>
+```
+
+### Additional scripts and options for MacOSX/Linux users
+
+The repository also includes the following install scripts:
+```
+./install-juce.sh  # builds a GPLv3 version of the Projucer App and places it in the "SDKs" folder
+./install-vst2_sdk.sh  # downloads, unzips, and places the VST2_SDK in the "SDKs" folder
+```
+
+The build.plugins.sh script also supports many additional options:
+```
+./build-plugins.sh projuce  # generates Linux makefiles and Xcode/VisualStudio project files for all plugins
+./build-plugins.sh clean  # cleans all plugins 
+./build-plugins.sh build  # builds all plugins
+./build-plugins.sh all  # projuces, cleans, and then builds all plugins
+./build-plugins.sh _SPARTA_ambiBIN_ all  # projuces, cleans, and builds only "sparta_ambiBIN.vst"
+./build-plugins.sh _SPARTA_ambiBIN_ build  # builds only "sparta_ambiBIN.vst"
+./build-plugins.sh _SPARTA_ambiBIN_ projucer  # opens the "sparta_ambiBIN.jucer" file with the Projucer App
+```
+ 
+## Building the plug-ins without scripts
+
+First manually open each .jucer file with the Projucer App and click "Save Project". This will generate Visual Studio (2015/2017) solution files, Xcode project files, Linux Makefiles (amd64), and Raspberry Pi Linux Makefiles (ARM), which are placed in:
 
 ```
 audio_plugins/_SPARTA_X_/make/
@@ -73,29 +106,6 @@ audio_plugins/_SPARTA_X_/make/
 
 To generate project files for other IDEs, you may open and configure the included .jucer files accordingly.
 
-## Batch building 
-
-**Linux users** may run the included "audio_plugins/build-plugins.sh" script via the Terminal, to build all plug-ins:
-
-```
-./build-plugins.sh all
-```
-
-**MacOSX users** may run the included "audio_plugins/build-plugins.sh" script via the Terminal, to build all plug-ins:
-
-```
-# First install and enable Xcode Command Line Tools if you haven't already done so:
-xcode-select --install 
-sudo xcode-select -s /Applications/Xcode.app/Contents/Developer 
-# Then  build:
-./build-plugins.sh all
-```
-
-**Windows users** may run the included "audio_plugins/build-plugins.bat" script (with "x64 Developer Command Prompt for VS.exe"), to build all plug-ins:
-
-```
-build-plugins.bat <path/to/Projucer.exe>
-```
 
 ## Known issues
 
@@ -115,6 +125,7 @@ Suggestions and contributions to the code are both welcomed and encouraged. Feel
 * **Symeon Delikaris-Manias** - algorithm design
 * **Archontis Politis** -  algorithm design
 * **Ville Pulkki** - algorithm design
+* **Marc Lavallée** - bash scripter
 
 ## License
 
