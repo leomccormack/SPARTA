@@ -46,14 +46,14 @@ The [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.stein
 SDKs/VST2_SDK
 ```
 
-**x86_64/amd64: MacOSX, Linux and Windows** users must install a custom Intel MKL library. Detailed instructions on how to do this can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md). 
+**MacOSX, Linux and Windows (x86_64/amd64)** users must install a custom Intel MKL library. Detailed instructions on how to do this can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md). 
 
-**ARM: Linux (Raspberry Pi)** users instead require OpenBLAS and LAPACKE libraries:
+**Raspberry Pi (ARM)** users instead require OpenBLAS and LAPACKE libraries:
 ``` 
 sudo apt-get install liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
 ```
 
-**All: Linux** users must also install the following libraries (the former line for JUCE, and the latter line for the Spatial_Audio_Framework):
+**Linux (x86_64/amd64 and ARM)** users must also install the following libraries (the former line for JUCE, and the latter line for the Spatial_Audio_Framework):
 
 ```
 sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x11proto-xext-dev libcurl4-openssl-dev libasound2-dev
@@ -77,7 +77,7 @@ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 build-plugins.bat <path/to/Projucer.exe>
 ```
 
-### Additional scripts and options for MacOSX/Linux users
+## Additional scripts and options for MacOSX/Linux users
 
 The repository also includes the following install scripts:
 ```
