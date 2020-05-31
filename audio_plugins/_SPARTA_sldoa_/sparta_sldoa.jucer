@@ -294,5 +294,6 @@
   <LIVE_SETTINGS>
     <WINDOWS/>
     <OSX/>
+    <LINUX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>

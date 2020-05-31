@@ -276,9 +276,9 @@
                 extraCompilerFlags="-pedantic" extraDefs="SAF_USE_INTEL_MKL&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_rotator_debug" linkTimeOptimisation="1"
-                       binaryPath="../../lib/" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../SDKs/VST2_SDK"/>
+                       binaryPath="../../lib/" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="sparta_rotator" linkTimeOptimisation="1"
-                       binaryPath="../../lib/" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;../../../../SDKs/VST2_SDK"/>
+                       binaryPath="../../lib/" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/rotator/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_osc" path="../../SDKs/JUCE/modules/"/>
@@ -343,5 +343,6 @@
   <LIVE_SETTINGS>
     <WINDOWS/>
     <OSX/>
+    <LINUX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>

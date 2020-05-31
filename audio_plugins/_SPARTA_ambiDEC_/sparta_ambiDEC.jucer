@@ -283,8 +283,8 @@
                 extraCompilerFlags="-pedantic" extraDefs="SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_ambiDEC_debug" linkTimeOptimisation="1"
-                       binaryPath="../../lib/" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include"
+                       binaryPath="../../lib/" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include&#10;../../../../SDKs/VST2_SDK&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;/usr/include"/>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/ambi_dec/include&#10;../../../../SDKs/VST2_SDK&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;/usr/include"
                        binaryPath="../../lib/" linkTimeOptimisation="1" targetName="sparta_ambiDEC"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -347,5 +347,6 @@
   <LIVE_SETTINGS>
     <WINDOWS/>
     <OSX/>
+    <LINUX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>

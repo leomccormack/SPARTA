@@ -287,10 +287,10 @@
                 extraCompilerFlags="-pedantic" extraDefs="SAF_USE_INTEL_MKL&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_panner_debug" binaryPath="../../lib/"
-                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/panner/include&#10;../../../../SDKs/VST2_SDK"
+                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/panner/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK"
                        linkTimeOptimisation="1"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="sparta_panner" binaryPath="../../lib/"
-                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/panner/include&#10;../../../../SDKs/VST2_SDK"
+                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/panner/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK"
                        linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -353,5 +353,6 @@
   <LIVE_SETTINGS>
     <WINDOWS/>
     <OSX/>
+    <LINUX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>
