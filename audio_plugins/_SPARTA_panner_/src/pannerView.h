@@ -69,8 +69,8 @@ private:
     int height;
     bool showInputs;
     bool showOutputs;
-    Rectangle<float> SourceIcons[PANNER_MAX_NUM_INPUTS];
-    Rectangle<float> LoudspeakerIcons[PANNER_MAX_NUM_OUTPUTS];
+    Rectangle<float> SourceIcons[MAX_NUM_INPUTS];
+    Rectangle<float> LoudspeakerIcons[MAX_NUM_OUTPUTS];
     int NSources;
     int NLoudspeakers;
     bool sourceIconIsClicked;

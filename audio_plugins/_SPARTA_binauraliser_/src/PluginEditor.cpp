@@ -304,7 +304,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* source coordinate viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (sourceCoordsVP.get());
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, BINAURALISER_MAX_NUM_INPUTS, binauraliser_getNumSources(hBin));
+    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_INPUTS, binauraliser_getNumSources(hBin));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
@@ -1170,7 +1170,7 @@ void PluginEditor::timerCallback(int timerID)
             if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
                 addAndMakeVisible(progressbar);
                 progress = (double)binauraliser_getProgressBar0_1(hBin);
-                char text[BINAURALISER_PROGRESSBARTEXT_CHAR_LENGTH];
+                char text[PROGRESSBARTEXT_CHAR_LENGTH];
                 binauraliser_getProgressBarText(hBin, (char*)text);
                 progressbar.setTextToDisplay(String(text));
             }

@@ -23,10 +23,9 @@
 #ifndef PLUGINPROCESSOR_H_INCLUDED
 #define PLUGINPROCESSOR_H_INCLUDED
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
 #include "ambi_drc.h"
 
-#define MAX_NUM_CHANNELS 64
 #define BUILD_VER_SUFFIX ""
 
 enum {	

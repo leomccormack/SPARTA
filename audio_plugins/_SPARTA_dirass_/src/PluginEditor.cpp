@@ -225,13 +225,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //s_interpWidth->setSliderSnapsToMousePosition(false);
 
     /* add input order options */
-    CBinputOrder->addItem (TRANS("1st order"), INPUT_ORDER_FIRST);
-    CBinputOrder->addItem (TRANS("2nd order"), INPUT_ORDER_SECOND);
-    CBinputOrder->addItem (TRANS("3rd order"), INPUT_ORDER_THIRD);
-    CBinputOrder->addItem (TRANS("4th order"), INPUT_ORDER_FOURTH);
-    CBinputOrder->addItem (TRANS("5th order"), INPUT_ORDER_FIFTH);
-    CBinputOrder->addItem (TRANS("6th order"), INPUT_ORDER_SIXTH);
-    CBinputOrder->addItem (TRANS("7th order"), INPUT_ORDER_SEVENTH);
+    CBinputOrder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
+    CBinputOrder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
+    CBinputOrder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
+    CBinputOrder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
+    CBinputOrder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
+    CBinputOrder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
+    CBinputOrder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
 
     /* add upscale order options */
     CBupscaleOrder->addItem (TRANS("1st order"), UPSCALE_ORDER_FIRST);
@@ -256,9 +256,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBupscaleOrder->addItem (TRANS("20th order"), UPSCALE_ORDER_TWENTIETH);
 
     /* Add beam options */
-    CBbeamType->addItem (TRANS("Cardioid"), BEAM_TYPE_CARD);
-    CBbeamType->addItem (TRANS("Hyper-Cardioid"), BEAM_TYPE_HYPERCARD);
-    CBbeamType->addItem (TRANS("Max-EV"), BEAM_TYPE_MAX_EV);
+    CBbeamType->addItem (TRANS("Cardioid"), STATIC_BEAM_TYPE_CARDIOID);
+    CBbeamType->addItem (TRANS("Hyper-Cardioid"), STATIC_BEAM_TYPE_HYPERCARDIOID);
+    CBbeamType->addItem (TRANS("Max-EV"), STATIC_BEAM_TYPE_MAX_EV);
 
     /* Add processing options */
     CBdirassMode->addItem (TRANS("Off"), REASS_MODE_OFF);
@@ -332,8 +332,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_interpWidth->setValue(dirass_getDispWidth(hDir), dontSendNotification);
     CBupscaleOrder->setEnabled(dirass_getDiRAssMode(hDir) == REASS_UPSCALE ? true : false);
     resolutionHasChanged = false;
-    CBchFormat->setItemEnabled(CH_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
-    CBnormScheme->setItemEnabled(NORM_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
+    CBchFormat->setItemEnabled(CH_FUMA, dirass_getInputOrder(hDir)==SH_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, dirass_getInputOrder(hDir)==SH_ORDER_FIRST ? true : false);
 
     /* tooltips */
     CBinputOrder->setTooltip("Analysis order. Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
@@ -968,8 +968,8 @@ void PluginEditor::timerCallback(int timerID)
                 CBchFormat->setSelectedId(dirass_getChOrder(hDir), dontSendNotification);
             if(CBnormScheme->getSelectedId()!=dirass_getNormType(hDir))
                 CBnormScheme->setSelectedId(dirass_getNormType(hDir), dontSendNotification);
-            CBchFormat->setItemEnabled(CH_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
-            CBnormScheme->setItemEnabled(NORM_FUMA, dirass_getInputOrder(hDir)==INPUT_ORDER_FIRST ? true : false);
+            CBchFormat->setItemEnabled(CH_FUMA, dirass_getInputOrder(hDir)==SH_ORDER_FIRST ? true : false);
+            CBnormScheme->setItemEnabled(NORM_FUMA, dirass_getInputOrder(hDir)==SH_ORDER_FIRST ? true : false);
             CBgridOption->setEnabled(hVst->getIsPlaying() ? false : true);
             s_interpWidth->setEnabled(hVst->getIsPlaying() ? false : true);
 
@@ -985,7 +985,7 @@ void PluginEditor::timerCallback(int timerID)
                 addAndMakeVisible(progressbar);
                 progressbar.setAlwaysOnTop(true);
                 progress = (double)dirass_getProgressBar0_1(hDir);
-                char text[DIRASS_PROGRESSBARTEXT_CHAR_LENGTH];
+                char text[PROGRESSBARTEXT_CHAR_LENGTH];
                 dirass_getProgressBarText(hDir, (char*)text);
                 progressbar.setTextToDisplay(String(text));
             }

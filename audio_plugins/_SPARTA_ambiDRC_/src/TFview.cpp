@@ -104,14 +104,14 @@ void TFview::paint (Graphics& g)
 
     if(freqVector!=NULL) {
         /* define TF tile bounds */
-        float tileWidth = (float)(width) / (float)(NUM_DISPLAY_TIME_SLOTS);
+        float tileWidth = (float)(width) / (float)(AMBI_DRC_NUM_DISPLAY_TIME_SLOTS);
         float c = log10f(min_freq);
         float m = (log10f(max_freq) - c)/(float)height;
-        for (int band = 0; band < HYBRID_BANDS; band++) {
+        for (int band = 0; band < AMBI_DRC_NUM_BANDS; band++) {
             float prev_Ypixel = band == 0 || band == 1 ? 0.0f : (log10f(freqVector[band-1]) - c)/m;
             float Ypixel = band == 0 ? 0.0f : (log10f(freqVector[band]) - c)/m;
             float tileHeight = Ypixel -prev_Ypixel;//SWAPPED!!!!
-            for (int t = 0; t < NUM_DISPLAY_TIME_SLOTS; t++) {
+            for (int t = 0; t < AMBI_DRC_NUM_DISPLAY_TIME_SLOTS; t++) {
                 TFtiles[band][t].setBounds((float)t*tileWidth,
                                            (float)height- Ypixel, //SWAPPED!!! prev_Ypixel,
                                            tileWidth,
@@ -123,12 +123,12 @@ void TFview::paint (Graphics& g)
         float**gainTF = ambi_drc_getGainTF(hAmbi);
         int wIdx = ambi_drc_getGainTFwIdx(hAmbi);
         int rIdx;
-        float logScale = (log10f(1.0f) - log10f(SPECTRAL_FLOOR));
+        float logScale = (log10f(1.0f) - log10f(AMBI_DRC_SPECTRAL_FLOOR));
         g.setOpacity(1.0f);
-        for (int band = 0; band < HYBRID_BANDS; band++) {
-            for (int t = 0; t < READ_OFFSET; t++) {
-                rIdx = 0>wIdx - READ_OFFSET + t ? 0 : wIdx - READ_OFFSET + t;
-                float col_val = 1.0f - (log10f(gainTF[band][rIdx]) - log10f(SPECTRAL_FLOOR))/logScale;
+        for (int band = 0; band < AMBI_DRC_NUM_BANDS; band++) {
+            for (int t = 0; t < AMBI_DRC_READ_OFFSET; t++) {
+                rIdx = 0>wIdx - AMBI_DRC_READ_OFFSET + t ? 0 : wIdx - AMBI_DRC_READ_OFFSET + t;
+                float col_val = 1.0f - (log10f(gainTF[band][rIdx]) - log10f(AMBI_DRC_SPECTRAL_FLOOR))/logScale;
                 int col_idx = MAX(MIN((int)(col_val*(float)(mapColourTable_N)), mapColourTable_N-1), 0);
                 g.setColour(mapColourTable[col_idx]);
                 g.fillRect(TFtiles[band][(int)(rIdx)]);
@@ -163,14 +163,14 @@ void TFview::paint (Graphics& g)
     /* draw time guide lines on top */
     g.setColour(Colours::white);
     g.setOpacity(0.17f);
-    for(int i=0; i<NUM_DISPLAY_SECONDS; i++){
-        g.drawLine((float)i*(float)width/(float)NUM_DISPLAY_SECONDS, 0.0f,
-                   (float)i*(float)width/(float)NUM_DISPLAY_SECONDS, (float)height, 1.0f);
+    for(int i=0; i<AMBI_DRC_NUM_DISPLAY_SECONDS; i++){
+        g.drawLine((float)i*(float)width/(float)AMBI_DRC_NUM_DISPLAY_SECONDS, 0.0f,
+                   (float)i*(float)width/(float)AMBI_DRC_NUM_DISPLAY_SECONDS, (float)height, 1.0f);
     }
 
 	/* Draw scroll line */
     int wIdx = ambi_drc_getGainTFwIdx(hAmbi);
-	float linePos = (float)wIdx*(width / (float)NUM_DISPLAY_TIME_SLOTS);
+	float linePos = (float)wIdx*(width / (float)AMBI_DRC_NUM_DISPLAY_TIME_SLOTS);
 	g.setColour(Colours::white);
 	g.setOpacity(1.0f);
 	g.drawLine(linePos, 0, linePos, height, 1);

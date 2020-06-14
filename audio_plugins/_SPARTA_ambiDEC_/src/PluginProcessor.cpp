@@ -41,11 +41,11 @@ void PluginProcessor::setParameter (int index, float newValue)
     /* standard parameters */
     if(index < k_NumOfParameters){
         switch (index) {
-            case k_inputOrder:      ambi_dec_setMasterDecOrder(hAmbi, (AMBI_DEC_MASTER_ORDERS)(int)(newValue*(float)(AMBI_DEC_MAX_SH_ORDER-1) + 1.5f));
-                                    ambi_dec_setDecOrderAllBands(hAmbi, (newValue*(float)(AMBI_DEC_MAX_SH_ORDER-1) + 1.5f)); break;
-            case k_channelOrder:    ambi_dec_setChOrder(hAmbi, (int)(newValue*(float)(AMBI_DEC_NUM_CH_ORDERINGS-1) + 1.5f)); break;
-            case k_normType:        ambi_dec_setNormType(hAmbi, (int)(newValue*(float)(AMBI_DEC_NUM_NORM_TYPES-1) + 1.5f)); break;
-            case k_numLoudspeakers: ambi_dec_setNumLoudspeakers(hAmbi, (int)(newValue*(float)(AMBI_DEC_MAX_NUM_OUTPUTS)+0.5)); break;
+            case k_inputOrder:      ambi_dec_setMasterDecOrder(hAmbi, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f));
+                                    ambi_dec_setDecOrderAllBands(hAmbi, (newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
+            case k_channelOrder:    ambi_dec_setChOrder(hAmbi, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
+            case k_normType:        ambi_dec_setNormType(hAmbi, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
+            case k_numLoudspeakers: ambi_dec_setNumLoudspeakers(hAmbi, (int)(newValue*(float)(MAX_NUM_OUTPUTS)+0.5)); break;
             case k_decMethod1:      ambi_dec_setDecMethod(hAmbi, 0, (AMBI_DEC_DECODING_METHODS)(int)(newValue*(float)(AMBI_DEC_NUM_DECODING_METHODS-1) + 1.5f)); break;
             case k_decMethod2:      ambi_dec_setDecMethod(hAmbi, 1, (AMBI_DEC_DECODING_METHODS)(int)(newValue*(float)(AMBI_DEC_NUM_DECODING_METHODS-1) + 1.5f)); break;
             case k_maxREweight1:    ambi_dec_setDecEnableMaxrE(hAmbi, 0, (int)(newValue+0.5f)); break;
@@ -84,10 +84,10 @@ float PluginProcessor::getParameter (int index)
     /* standard parameters */
     if(index < k_NumOfParameters){
         switch (index) {
-            case k_inputOrder:      return (float)(ambi_dec_getMasterDecOrder(hAmbi)-1)/(float)(AMBI_DEC_MAX_SH_ORDER-1);
-            case k_channelOrder:    return (float)(ambi_dec_getChOrder(hAmbi)-1)/(float)(AMBI_DEC_NUM_CH_ORDERINGS-1);
-            case k_normType:        return (float)(ambi_dec_getNormType(hAmbi)-1)/(float)(AMBI_DEC_NUM_NORM_TYPES-1);
-            case k_numLoudspeakers: return (float)(ambi_dec_getNumLoudspeakers(hAmbi))/(float)(AMBI_DEC_MAX_NUM_OUTPUTS);
+            case k_inputOrder:      return (float)(ambi_dec_getMasterDecOrder(hAmbi)-1)/(float)(MAX_SH_ORDER-1);
+            case k_channelOrder:    return (float)(ambi_dec_getChOrder(hAmbi)-1)/(float)(NUM_CH_ORDERINGS-1);
+            case k_normType:        return (float)(ambi_dec_getNormType(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
+            case k_numLoudspeakers: return (float)(ambi_dec_getNumLoudspeakers(hAmbi))/(float)(MAX_NUM_OUTPUTS);
             case k_decMethod1:      return (float)(ambi_dec_getDecMethod(hAmbi,0)-1)/(float)(AMBI_DEC_NUM_DECODING_METHODS-1);
             case k_decMethod2:      return (float)(ambi_dec_getDecMethod(hAmbi,1)-1)/(float)(AMBI_DEC_NUM_DECODING_METHODS-1);
             case k_maxREweight1:    return (float)(ambi_dec_getDecEnableMaxrE(hAmbi, 0));
@@ -111,7 +111,7 @@ float PluginProcessor::getParameter (int index)
 
 int PluginProcessor::getNumParameters()
 {
-	return k_NumOfParameters + 2*AMBI_DEC_MAX_NUM_OUTPUTS;
+	return k_NumOfParameters + 2*MAX_NUM_OUTPUTS;
 }
 
 const String PluginProcessor::getName() const

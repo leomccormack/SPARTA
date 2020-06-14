@@ -159,13 +159,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     hRot = hVst->getFXHandle();
 
     /* add combo box options */
-    CBorder->addItem (TRANS("1st order"), INPUT_ORDER_FIRST);
-    CBorder->addItem (TRANS("2nd order"), INPUT_ORDER_SECOND);
-    CBorder->addItem (TRANS("3rd order"), INPUT_ORDER_THIRD);
-    CBorder->addItem (TRANS("4th order"), INPUT_ORDER_FOURTH);
-    CBorder->addItem (TRANS("5th order"), INPUT_ORDER_FIFTH);
-    CBorder->addItem (TRANS("6th order"), INPUT_ORDER_SIXTH);
-    CBorder->addItem (TRANS("7th order"), INPUT_ORDER_SEVENTH);
+    CBorder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
+    CBorder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
+    CBorder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
+    CBorder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
+    CBorder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
+    CBorder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
+    CBorder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
     CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
     CBoutputFormat->addItem (TRANS("FuMa"), CH_FUMA);
     CBnorm->addItem (TRANS("N3D"), NORM_N3D);
@@ -184,8 +184,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorder->setSelectedId(rotator_getOrder(hRot), dontSendNotification);
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
     TBrpyFlag->setToggleState((bool)rotator_getRPYflag(hRot), dontSendNotification);
-    CBoutputFormat->setItemEnabled(CH_FUMA, rotator_getOrder(hRot)==INPUT_ORDER_FIRST ? true : false);
-    CBnorm->setItemEnabled(NORM_FUMA, rotator_getOrder(hRot)==INPUT_ORDER_FIRST ? true : false);
+    CBoutputFormat->setItemEnabled(CH_FUMA, rotator_getOrder(hRot)==SH_ORDER_FIRST ? true : false);
+    CBnorm->setItemEnabled(NORM_FUMA, rotator_getOrder(hRot)==SH_ORDER_FIRST ? true : false);
 
     /* tooltips */
     CBorder->setTooltip("Input/output order. Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
@@ -721,8 +721,8 @@ void PluginEditor::timerCallback()
     s_roll->setValue(rotator_getRoll(hRot), dontSendNotification);
     CBoutputFormat->setSelectedId(rotator_getChOrder(hRot), dontSendNotification);
     CBnorm->setSelectedId(rotator_getNormType(hRot), dontSendNotification);
-    CBoutputFormat->setItemEnabled(CH_FUMA, rotator_getOrder(hRot)==INPUT_ORDER_FIRST ? true : false);
-    CBnorm->setItemEnabled(NORM_FUMA, rotator_getOrder(hRot)==INPUT_ORDER_FIRST ? true : false);
+    CBoutputFormat->setItemEnabled(CH_FUMA, rotator_getOrder(hRot)==SH_ORDER_FIRST ? true : false);
+    CBnorm->setItemEnabled(NORM_FUMA, rotator_getOrder(hRot)==SH_ORDER_FIRST ? true : false);
 
     /* display warning message, if needed */
     if ((hVst->getCurrentNumInputs() < rotator_getNSHrequired(hRot))){
