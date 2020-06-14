@@ -22,7 +22,7 @@
 #ifndef PLUGINPROCESSOR_H_INCLUDED
 #define PLUGINPROCESSOR_H_INCLUDED
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 #include "dirass.h"
 #include <thread>
 #define BUILD_VER_SUFFIX ""                 /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */

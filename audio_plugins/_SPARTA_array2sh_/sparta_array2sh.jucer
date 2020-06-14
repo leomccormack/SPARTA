@@ -43,157 +43,155 @@
           file="src/sensorCoordsView.h"/>
     <GROUP id="{852092EF-4330-B24D-C525-31695232772D}" name="array2sh">
       <GROUP id="{EAFA9357-2682-46F4-42C3-6AA0BA2964B1}" name="Header Files">
-        <FILE id="T36Dlb" name="array2sh.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/array2sh/include/array2sh.h"/>
-        <FILE id="vJ1XXF" name="array2sh_internal.h" compile="0" resource="0"
-              file="../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.h"/>
+        <FILE id="YChFgw" name="_common.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/include/_common.h"/>
+        <FILE id="TuwR8P" name="array2sh.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/include/array2sh.h"/>
+        <FILE id="HqDtbD" name="array2sh_internal.h" compile="0" resource="0"
+              file="../../SDKs/Spatial_Audio_Framework/examples/src/array2sh/array2sh_internal.h"/>
       </GROUP>
       <GROUP id="{94FB4157-79AF-9C3A-10D6-93A882AA9A61}" name="Source Files">
-        <FILE id="xR0VvG" name="array2sh.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh.c"/>
-        <FILE id="SFmUY6" name="array2sh_internal.c" compile="1" resource="0"
-              file="../../SDKs/Spatial_Audio_Framework/examples/array2sh/src/array2sh_internal.c"/>
+        <FILE id="mcu4U8" name="array2sh.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/src/array2sh/array2sh.c"/>
+        <FILE id="sEhRC9" name="array2sh_internal.c" compile="1" resource="0"
+              file="../../SDKs/Spatial_Audio_Framework/examples/src/array2sh/array2sh_internal.c"/>
       </GROUP>
     </GROUP>
     <GROUP id="{F0127264-82A7-51E9-A342-BABDD0E8F7D3}" name="Spatial_Audio_Framework">
       <GROUP id="{169DC757-A267-AFB9-77A1-1A07B38D7AAD}" name="framework">
+        <GROUP id="{264E23D8-6238-4491-8C78-D415D5A0024D}" name="include">
+          <GROUP id="{5D7D2C75-36F5-9FBA-5822-833D12C24148}" name="extern">
+            <FILE id="qNN0Rx" name="afSTFTlib.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/extern/afSTFTlib.h"/>
+            <FILE id="JndAri" name="convhull_3d.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/extern/convhull_3d.h"/>
+            <FILE id="njtbAz" name="kiss_fft.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/extern/kiss_fft.h"/>
+            <FILE id="RCkATi" name="kiss_fftr.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/extern/kiss_fftr.h"/>
+            <FILE id="YuPc46" name="md_malloc.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/extern/md_malloc.h"/>
+          </GROUP>
+          <FILE id="kFCyxg" name="saf.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/saf.h"/>
+          <FILE id="uYNj86" name="saf_cdf4sap.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_cdf4sap.h"/>
+          <FILE id="AMqq1C" name="saf_hoa.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_hoa.h"/>
+          <FILE id="GEzynv" name="saf_hrir.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_hrir.h"/>
+          <FILE id="HvXaLL" name="saf_reverb.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_reverb.h"/>
+          <FILE id="nVNvhO" name="saf_sh.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_sh.h"/>
+          <FILE id="IeSa7F" name="saf_sofa_reader.h" compile="0" resource="0"
+                file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_sofa_reader.h"/>
+          <FILE id="aY5UVo" name="saf_utilities.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utilities.h"/>
+          <FILE id="UXHJzt" name="saf_utility_bessel.h" compile="0" resource="0"
+                file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_bessel.h"/>
+          <FILE id="ZLTOHP" name="saf_utility_complex.h" compile="0" resource="0"
+                file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_complex.h"/>
+          <FILE id="LgrUHt" name="saf_utility_decor.h" compile="0" resource="0"
+                file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_decor.h"/>
+          <FILE id="qh8ZLc" name="saf_utility_erb.h" compile="0" resource="0"
+                file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_erb.h"/>
+          <FILE id="aAOFnc" name="saf_utility_error.h" compile="0" resource="0"
+                file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_error.h"/>
+          <FILE id="Ifdd4d" name="saf_utility_fft.h" compile="0" resource="0"
+                file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_fft.h"/>
+          <FILE id="BbD2bJ" name="saf_utility_filters.h" compile="0" resource="0"
+                file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_filters.h"/>
+          <FILE id="xmskgg" name="saf_utility_loudspeaker_presets.h" compile="0"
+                resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_loudspeaker_presets.h"/>
+          <FILE id="wK2QNm" name="saf_utility_matrixConv.h" compile="0" resource="0"
+                file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_matrixConv.h"/>
+          <FILE id="GKsMjs" name="saf_utility_misc.h" compile="0" resource="0"
+                file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_misc.h"/>
+          <FILE id="SGm41F" name="saf_utility_pitch.h" compile="0" resource="0"
+                file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_pitch.h"/>
+          <FILE id="Zkphpx" name="saf_utility_sensorarray_presets.h" compile="0"
+                resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_sensorarray_presets.h"/>
+          <FILE id="fKNeuU" name="saf_utility_sort.h" compile="0" resource="0"
+                file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_sort.h"/>
+          <FILE id="q8gPXF" name="saf_utility_veclib.h" compile="0" resource="0"
+                file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_utility_veclib.h"/>
+          <FILE id="iiV13D" name="saf_vbap.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/include/saf_vbap.h"/>
+        </GROUP>
         <GROUP id="{71E5B670-C1AC-609E-989D-1D21FD0973A0}" name="modules">
-          <GROUP id="{225803E5-C532-39E0-D721-2712E4CA770D}" name="include">
-            <FILE id="lTn0MQ" name="saf.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf.h"/>
-            <FILE id="yQX0aI" name="saf_cdf4sap.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_cdf4sap.h"/>
-            <FILE id="c13aCK" name="saf_hoa.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_hoa.h"/>
-            <FILE id="mXqnio" name="saf_hrir.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_hrir.h"/>
-            <FILE id="OBY3Y1" name="saf_reverb.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_reverb.h"/>
-            <FILE id="o4FBAf" name="saf_sh.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_sh.h"/>
-            <FILE id="tAeWKh" name="saf_sofa_reader.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_sofa_reader.h"/>
-            <FILE id="e9hzU9" name="saf_utilities.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utilities.h"/>
-            <FILE id="GjPLgA" name="saf_utility_bessel.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_bessel.h"/>
-            <FILE id="Aj5iun" name="saf_utility_complex.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_complex.h"/>
-            <FILE id="U1AsMk" name="saf_utility_decor.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_decor.h"/>
-            <FILE id="Ro2XiQ" name="saf_utility_erb.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_erb.h"/>
-            <FILE id="JIU6Gw" name="saf_utility_error.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_error.h"/>
-            <FILE id="DnXkFC" name="saf_utility_fft.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_fft.h"/>
-            <FILE id="BcFiGv" name="saf_utility_filters.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_filters.h"/>
-            <FILE id="awaMFJ" name="saf_utility_loudspeaker_presets.h" compile="0"
-                  resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_loudspeaker_presets.h"/>
-            <FILE id="jUw0Tw" name="saf_utility_matrixConv.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_matrixConv.h"/>
-            <FILE id="JvNeJn" name="saf_utility_misc.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_misc.h"/>
-            <FILE id="hXo4aR" name="saf_utility_pitch.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_pitch.h"/>
-            <FILE id="QwZYti" name="saf_utility_sensorarray_presets.h" compile="0"
-                  resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_sensorarray_presets.h"/>
-            <FILE id="n2X01R" name="saf_utility_sort.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_sort.h"/>
-            <FILE id="aYa0mS" name="saf_utility_veclib.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_utility_veclib.h"/>
-            <FILE id="dPwMSK" name="saf_vbap.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/include/saf_vbap.h"/>
+          <GROUP id="{D64B66F6-9590-8CB8-0C65-0C3A6571BC8E}" name="extern">
+            <FILE id="D81SDP" name="_kiss_fft_guts.h" compile="0" resource="0"
+                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/extern/_kiss_fft_guts.h"/>
+            <FILE id="xzu3H6" name="afSTFT_protoFilter.h" compile="0" resource="0"
+                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/extern/afSTFT_protoFilter.h"/>
+            <FILE id="Xh9DOL" name="afSTFTlib.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/extern/afSTFTlib.c"/>
+            <FILE id="qalUD5" name="convhull_3d.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/extern/convhull_3d.c"/>
+            <FILE id="N4c5ok" name="kiss_fft.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/extern/kiss_fft.c"/>
+            <FILE id="HBis3S" name="kiss_fftr.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/extern/kiss_fftr.c"/>
+            <FILE id="CY2lWJ" name="md_malloc.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/extern/md_malloc.c"/>
           </GROUP>
           <GROUP id="{EF5A1A64-215A-1782-CF69-9D683F5529EE}" name="saf_cdf4sap">
-            <FILE id="BU2XOp" name="saf_cdf4sap.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_cdf4sap/saf_cdf4sap.c"/>
+            <FILE id="H511z6" name="saf_cdf4sap.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_cdf4sap/saf_cdf4sap.c"/>
           </GROUP>
           <GROUP id="{FDBE3130-7059-312B-1576-F3598FE8237D}" name="saf_hoa">
-            <FILE id="Kgo6oI" name="saf_hoa.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_hoa/saf_hoa.c"/>
-            <FILE id="yJOd4x" name="saf_hoa_internal.c" compile="1" resource="0"
+            <FILE id="fQSrKh" name="saf_hoa.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_hoa/saf_hoa.c"/>
+            <FILE id="e5szLL" name="saf_hoa_internal.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_hoa/saf_hoa_internal.c"/>
-            <FILE id="ywyeKN" name="saf_hoa_internal.h" compile="0" resource="0"
+            <FILE id="X01Wwv" name="saf_hoa_internal.h" compile="0" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_hoa/saf_hoa_internal.h"/>
           </GROUP>
-          <GROUP id="{90A80FE3-6DDF-A166-A5E5-A95F30067463}" name="saf_hrir">
-            <FILE id="KbWOBN" name="saf_default_hrirs.c" compile="1" resource="0"
+          <GROUP id="{89152CBA-3FC6-6834-59AA-C40986CCDAA2}" name="saf_hrir">
+            <FILE id="ZR9w7w" name="saf_default_hrirs.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_hrir/saf_default_hrirs.c"/>
-            <FILE id="EEteLq" name="saf_hrir.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_hrir/saf_hrir.c"/>
-            <FILE id="tU94gM" name="saf_hrir_internal.c" compile="1" resource="0"
+            <FILE id="vj9W8m" name="saf_hrir.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_hrir/saf_hrir.c"/>
+            <FILE id="HcA4Pj" name="saf_hrir_internal.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_hrir/saf_hrir_internal.c"/>
-            <FILE id="GvUUb1" name="saf_hrir_internal.h" compile="0" resource="0"
+            <FILE id="d3zZqC" name="saf_hrir_internal.h" compile="0" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_hrir/saf_hrir_internal.h"/>
           </GROUP>
-          <GROUP id="{550E7977-2F56-29F6-91E1-24D1582CE583}" name="saf_reverb">
-            <FILE id="iCZQ1A" name="saf_reverb.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_reverb/saf_reverb.c"/>
-            <FILE id="pa7iv4" name="saf_reverb_internal.c" compile="1" resource="0"
+          <GROUP id="{FF7ED1E5-65FF-D4AC-4E6D-A8D2AFA81C72}" name="saf_reverb">
+            <FILE id="owlNRj" name="saf_reverb.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_reverb/saf_reverb.c"/>
+            <FILE id="w9wTIb" name="saf_reverb_internal.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_reverb/saf_reverb_internal.c"/>
-            <FILE id="MEucff" name="saf_reverb_internal.h" compile="0" resource="0"
+            <FILE id="u6seu7" name="saf_reverb_internal.h" compile="0" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_reverb/saf_reverb_internal.h"/>
           </GROUP>
-          <GROUP id="{D0EEF0CA-19F9-98D2-5FAD-A90CA59048B6}" name="saf_sh">
-            <FILE id="FAKcBE" name="saf_sh.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sh/saf_sh.c"/>
-            <FILE id="ov7Bnu" name="saf_sh_internal.c" compile="1" resource="0"
+          <GROUP id="{6CD3C740-B5DD-0564-C932-69B550F85BFC}" name="saf_sh">
+            <FILE id="TYQqrV" name="saf_sh.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sh/saf_sh.c"/>
+            <FILE id="wo8HZR" name="saf_sh_internal.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sh/saf_sh_internal.c"/>
-            <FILE id="jBtuFt" name="saf_sh_internal.h" compile="0" resource="0"
+            <FILE id="ja854r" name="saf_sh_internal.h" compile="0" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sh/saf_sh_internal.h"/>
           </GROUP>
-          <GROUP id="{4B22849F-8E9F-4C0F-E9AA-0AD782B0C9D5}" name="saf_sofa_reader">
-            <FILE id="K7kfqM" name="saf_sofa_reader.c" compile="1" resource="0"
+          <GROUP id="{BF44ADFB-17EF-D3F7-D260-4C3DCC7F7761}" name="saf_sofa_reader">
+            <FILE id="jakNPa" name="saf_sofa_reader.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/saf_sofa_reader.c"/>
           </GROUP>
-          <GROUP id="{91ECDE0D-5CD5-D59E-76D8-B2F883DD56D3}" name="saf_utilities">
-            <FILE id="MD1Tka" name="saf_utility_bessel.c" compile="1" resource="0"
+          <GROUP id="{EA8A313E-C698-418D-76CD-EC281459059F}" name="saf_utilities">
+            <FILE id="zuhzl7" name="saf_utility_bessel.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_bessel.c"/>
-            <FILE id="X2mhop" name="saf_utility_complex.c" compile="1" resource="0"
+            <FILE id="MqexZY" name="saf_utility_complex.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_complex.c"/>
-            <FILE id="J17Ygr" name="saf_utility_decor.c" compile="1" resource="0"
+            <FILE id="UqeyHk" name="saf_utility_decor.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_decor.c"/>
-            <FILE id="CpO5Ec" name="saf_utility_erb.c" compile="1" resource="0"
+            <FILE id="BYlVHg" name="saf_utility_erb.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_erb.c"/>
-            <FILE id="BKBiVA" name="saf_utility_error.c" compile="1" resource="0"
+            <FILE id="U6Ysb8" name="saf_utility_error.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_error.c"/>
-            <FILE id="B1eWEH" name="saf_utility_fft.c" compile="1" resource="0"
+            <FILE id="M4X4gF" name="saf_utility_fft.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_fft.c"/>
-            <FILE id="Q4KNLP" name="saf_utility_filters.c" compile="1" resource="0"
+            <FILE id="cHU30h" name="saf_utility_filters.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_filters.c"/>
-            <FILE id="FCZ3CT" name="saf_utility_loudspeaker_presets.c" compile="1"
+            <FILE id="H7PSbd" name="saf_utility_loudspeaker_presets.c" compile="1"
                   resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_loudspeaker_presets.c"/>
-            <FILE id="PG8ZID" name="saf_utility_matrixConv.c" compile="1" resource="0"
+            <FILE id="OmC48b" name="saf_utility_matrixConv.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_matrixConv.c"/>
-            <FILE id="ZEGB3F" name="saf_utility_misc.c" compile="1" resource="0"
+            <FILE id="nAbhO7" name="saf_utility_misc.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_misc.c"/>
-            <FILE id="CiUIqW" name="saf_utility_pitch.c" compile="1" resource="0"
+            <FILE id="Z6wltT" name="saf_utility_pitch.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_pitch.c"/>
-            <FILE id="K4owJ5" name="saf_utility_sensorarray_presets.c" compile="1"
+            <FILE id="rMDfNO" name="saf_utility_sensorarray_presets.c" compile="1"
                   resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_sensorarray_presets.c"/>
-            <FILE id="xp5cVJ" name="saf_utility_sort.c" compile="1" resource="0"
+            <FILE id="Hf8xe0" name="saf_utility_sort.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_sort.c"/>
-            <FILE id="XsQMuC" name="saf_utility_veclib.c" compile="1" resource="0"
+            <FILE id="nN5Zgd" name="saf_utility_veclib.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_veclib.c"/>
           </GROUP>
-          <GROUP id="{F3E08524-D938-8105-8AC7-99FEB7BD1786}" name="saf_vbap">
-            <FILE id="A1Yl7u" name="saf_vbap.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_vbap/saf_vbap.c"/>
-            <FILE id="yBMkL2" name="saf_vbap_internal.c" compile="1" resource="0"
+          <GROUP id="{706CE025-2B05-1467-49CA-2374A2AC78B0}" name="saf_vbap">
+            <FILE id="UZe9jd" name="saf_vbap.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_vbap/saf_vbap.c"/>
+            <FILE id="izYZQu" name="saf_vbap_internal.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_vbap/saf_vbap_internal.c"/>
-            <FILE id="oi5HLy" name="saf_vbap_internal.h" compile="0" resource="0"
+            <FILE id="haW5m7" name="saf_vbap_internal.h" compile="0" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_vbap/saf_vbap_internal.h"/>
           </GROUP>
-          <FILE id="q3TpMv" name="CMakeLists.txt" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/modules/CMakeLists.txt"/>
+          <FILE id="YjunFV" name="CMakeLists.txt" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/modules/CMakeLists.txt"/>
         </GROUP>
-        <GROUP id="{F4BBF141-0589-9C64-3589-51450FD74296}" name="resources">
-          <GROUP id="{447B6097-D73D-B0A6-7F48-9400502C825E}" name="include">
-            <FILE id="nnnVwM" name="afSTFTlib.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/include/afSTFTlib.h"/>
-            <FILE id="AaKj8v" name="convhull_3d.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/include/convhull_3d.h"/>
-            <FILE id="akaRtW" name="kiss_fft.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/include/kiss_fft.h"/>
-            <FILE id="iGp2eX" name="kiss_fftr.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/include/kiss_fftr.h"/>
-            <FILE id="EFLNCO" name="md_malloc.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/include/md_malloc.h"/>
-          </GROUP>
-          <GROUP id="{BA8F5A20-88E6-0AA2-187A-F6008349E4A5}" name="src">
-            <FILE id="cG8mx5" name="_kiss_fft_guts.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/resources/src/_kiss_fft_guts.h"/>
-            <FILE id="AnvU96" name="afSTFT_protoFilter.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/resources/src/afSTFT_protoFilter.h"/>
-            <FILE id="PN9WYf" name="afSTFTlib.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/src/afSTFTlib.c"/>
-            <FILE id="fh0usn" name="convhull_3d.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/src/convhull_3d.c"/>
-            <FILE id="Tvv8jD" name="kiss_fft.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/src/kiss_fft.c"/>
-            <FILE id="g9AV6c" name="kiss_fftr.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/src/kiss_fftr.c"/>
-            <FILE id="Lx0KE8" name="md_malloc.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/src/md_malloc.c"/>
-          </GROUP>
-          <FILE id="bqT7Lb" name="CMakeLists.txt" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/resources/CMakeLists.txt"/>
-        </GROUP>
-        <FILE id="WDQ1ml" name="CMakeLists.txt" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/CMakeLists.txt"/>
+        <FILE id="FCZTec" name="CMakeLists.txt" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/CMakeLists.txt"/>
       </GROUP>
     </GROUP>
   </MAINGROUP>
@@ -202,12 +200,10 @@
             extraDefs="SAF_USE_INTEL_MKL&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_array2shd" binaryPath="../../lib/Win64_Debug"
-                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
+                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;"
                        intermediatesPath="../../../obj/Win64_Debug"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="sparta_array2sh" binaryPath="../../lib/Win64_Release"
-                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
+                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
                        intermediatesPath="../../../obj/Win64_Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -233,15 +229,14 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="sparta_array2shd" binaryPath="../../lib/Win64_Debug"
-                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
+                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
                        intermediatesPath="../../../obj/Win64_Debug" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="sparta_array2sh" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
-                       binaryPath="../../lib/Win64_Release" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
-                       intermediatesPath="../../../obj/Win64_Release" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1"/>
+                       isDebug="0" optimisation="3" targetName="sparta_array2sh" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
+                       binaryPath="../../lib/Win64_Release" intermediatesPath="../../../obj/Win64_Release"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
+                       linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules/"/>
@@ -265,10 +260,10 @@
                extraDefs="SAF_USE_INTEL_MKL&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_array2shd"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries/mac/mkl/include"
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries/mac/mkl/include"
                        osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="sparta_array2sh"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include &#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries/mac/mkl/include"
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries/mac/mkl/include"
                        osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"
                        linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
@@ -292,9 +287,9 @@
                 extraCompilerFlags="-pedantic" extraDefs="SAF_USE_INTEL_MKL&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_array2sh_debug" binaryPath="../../lib/"
-                       linkTimeOptimisation="1" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK"/>
+                       linkTimeOptimisation="1" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK"/>
         <CONFIGURATION isDebug="0" name="Release" linkTimeOptimisation="1" binaryPath="../../lib/"
-                       targetName="sparta_array2sh" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK"/>
+                       targetName="sparta_array2sh" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules/"/>
@@ -316,9 +311,9 @@
                 extraLinkerFlags="-L/usr/lib/arm-linux-gnueabihf -lopenblas -llapacke">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_array2sh_debug" binaryPath="../../lib/"
-                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf&#10;"/>
+                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf&#10;"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="sparta_array2sh" binaryPath="../../lib/"
-                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/modules/include&#10;../../../../SDKs/Spatial_Audio_Framework/framework/resources/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/array2sh/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf"/>
+                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules/"/>

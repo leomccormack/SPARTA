@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-project(sparta_ambiBIN VERSION 1.5.0)
+project(sparta_powermap VERSION 1.4.2)
 message(STATUS "Configuring ${PROJECT_NAME}")
 
 # juce helper function to create a library, which is configured as a JUCE plugin
@@ -15,7 +15,7 @@ juce_add_plugin(${PROJECT_NAME}
     EDITOR_WANTS_KEYBOARD_FOCUS FALSE           
     COPY_PLUGIN_AFTER_BUILD     TRUE     # Where does this go in Windows + Linux?
     PLUGIN_MANUFACTURER_CODE    LEOM                
-    PLUGIN_CODE                 ABOA                     
+    PLUGIN_CODE                 PMOA                     
     FORMATS                     VST      # ( VST AAX Unity VST3 AU AUv3 Standalone )
     PRODUCT_NAME                "${PROJECT_NAME}"
 )   
@@ -30,11 +30,16 @@ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginProcessor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginEditor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginProcessor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/overlay.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/overlay.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/log2dSlider.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/log2dSlider.cpp
 )
 
 # Add any extra JUCE-specific pre-processor definitions
 target_compile_definitions(${PROJECT_NAME}
 PUBLIC 
+    JUCE_USE_CAMERA=1
     JUCE_DISPLAY_SPLASH_SCREEN=0
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
@@ -44,12 +49,12 @@ PUBLIC
 # Link with saf, and the required juce modules
 target_link_libraries(${PROJECT_NAME} 
 PRIVATE 
-    saf saf_example_ambi_bin
+    saf saf_example_powermap
     juce::juce_recommended_config_flags
     juce::juce_recommended_lto_flags
     juce::juce_recommended_warning_flags
     juce::juce_audio_plugin_client
     juce::juce_audio_utils
     juce::juce_opengl
-    juce::juce_osc
+    juce::juce_video
 )

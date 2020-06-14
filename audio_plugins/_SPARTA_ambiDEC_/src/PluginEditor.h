@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 5.4.7
 
   ------------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@
 #include <thread>
 
 typedef enum _SPARTA_WARNINGS{
-    k_warning_none, 
+    k_warning_none,
     k_warning_supported_fs,
     k_warning_mismatch_fs,
     k_warning_NinputCH,
@@ -58,7 +58,7 @@ class PluginEditor  : public AudioProcessorEditor,
 public:
     //==============================================================================
     PluginEditor (PluginProcessor* ownerFilter);
-    ~PluginEditor();
+    ~PluginEditor() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.

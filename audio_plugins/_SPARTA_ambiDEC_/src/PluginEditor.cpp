@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 5.4.7
 
   ------------------------------------------------------------------------------
 
@@ -242,13 +242,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     decOrder2dSlider->setDataHandlesInt(pX_vector, pY_values_int, nPoints);
 
     /* add master decoding order options */
-    CBmasterOrder->addItem (TRANS("1st order"), MASTER_ORDER_FIRST);
-    CBmasterOrder->addItem (TRANS("2nd order"), MASTER_ORDER_SECOND);
-    CBmasterOrder->addItem (TRANS("3rd order"), MASTER_ORDER_THIRD);
-    CBmasterOrder->addItem (TRANS("4th order"), MASTER_ORDER_FOURTH);
-    CBmasterOrder->addItem (TRANS("5th order"), MASTER_ORDER_FIFTH);
-    CBmasterOrder->addItem (TRANS("6th order"), MASTER_ORDER_SIXTH);
-    CBmasterOrder->addItem (TRANS("7th order"), MASTER_ORDER_SEVENTH);
+    CBmasterOrder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
+    CBmasterOrder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
+    CBmasterOrder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
+    CBmasterOrder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
+    CBmasterOrder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
+    CBmasterOrder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
+    CBmasterOrder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
 
     /* add decoder options */
     CBdec1method->addItem(TRANS("SAD"), DECODING_METHOD_SAD);
@@ -276,7 +276,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* add microphone preset options */
     CBsourcePreset->addItem(TRANS("Zylia"), MIC_PRESET_ZYLIA);
     CBsourcePreset->addItem(TRANS("Eigenmike"), MIC_PRESET_EIGENMIKE32);
-    CBsourcePreset->addItem(TRANS("DTU mic"), MIC_PRESET_DTU_MIC); 
+    CBsourcePreset->addItem(TRANS("DTU mic"), MIC_PRESET_DTU_MIC);
 
     /* add loudspeaker preset options */
     CBoutputDirsPreset->addItem (TRANS("5.x"), LOUDSPEAKER_ARRAY_PRESET_5PX);
@@ -340,8 +340,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBdec2normtype->setSelectedId(ambi_dec_getDecNormType(hAmbi, 1), dontSendNotification);
     SL_transitionFreq->setRange(AMBI_DEC_TRANSITION_MIN_VALUE, AMBI_DEC_TRANSITION_MAX_VALUE, 0.1f);
     SL_transitionFreq->setValue(ambi_dec_getTransitionFreq(hAmbi), dontSendNotification);
-    CBchFormat->setItemEnabled(CH_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==MASTER_ORDER_FIRST ? true : false);
-    CBnormScheme->setItemEnabled(NORM_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==MASTER_ORDER_FIRST ? true : false);
+    CBchFormat->setItemEnabled(CH_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
 
     /* tooltips */
     CBmasterOrder->setTooltip("Maximum decoding order (can be lower at different frequencies). Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
@@ -364,7 +364,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     tb_loadJSON->setTooltip("Loads loudspeaker directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     tb_saveJSON->setTooltip("Saves the current loudspeaker directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
 
-	/* Specify screen refresh rate */ 
+	/* Specify screen refresh rate */
     startTimer(TIMER_GUI_RELATED, 40);
 
     /* warnings */
@@ -1132,10 +1132,10 @@ void PluginEditor::timerCallback(int timerID)
 {
     switch(timerID){
         case TIMER_PROCESSING_RELATED:
-            /* handled in PluginProcessor */ 
+            /* handled in PluginProcessor */
             break;
-            
-        case TIMER_GUI_RELATED: 
+
+        case TIMER_GUI_RELATED:
             /* parameters whos values can change internally should be periodically refreshed */
             if(TBuseDefaultHRIRs->getToggleState() != ambi_dec_getUseDefaultHRIRsflag(hAmbi) )
                 TBuseDefaultHRIRs->setToggleState(ambi_dec_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
@@ -1151,8 +1151,8 @@ void PluginEditor::timerCallback(int timerID)
                 CBchFormat->setSelectedId(ambi_dec_getChOrder(hAmbi), dontSendNotification);
             if(CBnormScheme->getSelectedId() != ambi_dec_getNormType(hAmbi) )
                 CBnormScheme->setSelectedId(ambi_dec_getNormType(hAmbi), dontSendNotification);
-            CBchFormat->setItemEnabled(CH_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==MASTER_ORDER_FIRST ? true : false);
-            CBnormScheme->setItemEnabled(NORM_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==MASTER_ORDER_FIRST ? true : false);
+            CBchFormat->setItemEnabled(CH_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
+            CBnormScheme->setItemEnabled(NORM_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
             outputCoordsView_handle->setNCH(ambi_dec_getNumLoudspeakers(hAmbi));
 
             /* refresh */
@@ -1160,18 +1160,18 @@ void PluginEditor::timerCallback(int timerID)
                 decOrder2dSlider->repaint();
                 decOrder2dSlider->setRefreshValuesFLAG(false);
             }
-            
+
             /* Progress bar */
             if(ambi_dec_getCodecStatus(hAmbi)==CODEC_STATUS_INITIALISING){
                 addAndMakeVisible(progressbar);
                 progress = (double)ambi_dec_getProgressBar0_1(hAmbi);
-                char text[AMBI_DEC_PROGRESSBARTEXT_CHAR_LENGTH];
+                char text[PROGRESSBARTEXT_CHAR_LENGTH];
                 ambi_dec_getProgressBarText(hAmbi, (char*)text);
                 progressbar.setTextToDisplay(String(text));
             }
             else
                 removeChildComponent(&progressbar);
-            
+
             /* Some parameters shouldn't be editable during initialisation*/
             if(ambi_dec_getCodecStatus(hAmbi)==CODEC_STATUS_INITIALISING){
                 if(TBuseDefaultHRIRs->isEnabled())

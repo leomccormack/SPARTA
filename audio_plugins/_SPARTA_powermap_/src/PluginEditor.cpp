@@ -240,13 +240,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pmapEQ2dSlider->setDataHandles(pX_vector, pY_values, nPoints);
 
     /* add master analysis order options */
-    CBmasterOrder->addItem (TRANS("1st order"), MASTER_ORDER_FIRST);
-    CBmasterOrder->addItem (TRANS("2nd order"), MASTER_ORDER_SECOND);
-    CBmasterOrder->addItem (TRANS("3rd order"), MASTER_ORDER_THIRD);
-    CBmasterOrder->addItem (TRANS("4th order"), MASTER_ORDER_FOURTH);
-    CBmasterOrder->addItem (TRANS("5th order"), MASTER_ORDER_FIFTH);
-    CBmasterOrder->addItem (TRANS("6th order"), MASTER_ORDER_SIXTH);
-    CBmasterOrder->addItem (TRANS("7th order"), MASTER_ORDER_SEVENTH);
+    CBmasterOrder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
+    CBmasterOrder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
+    CBmasterOrder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
+    CBmasterOrder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
+    CBmasterOrder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
+    CBmasterOrder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
+    CBmasterOrder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
 
     /* Add powermap options */
     CBpmap_method->addItem (TRANS("PWD"), PM_MODE_PWD);
@@ -259,15 +259,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* Add microphone preset options */
     CBsourcePreset->addItem(TRANS("Ideal SH"), MIC_PRESET_IDEAL);
-#ifdef ENABLE_ZYLIA_MIC_PRESET
     CBsourcePreset->addItem(TRANS("Zylia"), MIC_PRESET_ZYLIA);
-#endif
-#ifdef ENABLE_EIGENMIKE32_MIC_PRESET
     CBsourcePreset->addItem(TRANS("Eigenmike"), MIC_PRESET_EIGENMIKE32);
-#endif
-#ifdef ENABLE_DTU_MIC_MIC_PRESET
     CBsourcePreset->addItem(TRANS("DTU mic"), MIC_PRESET_DTU_MIC);
-#endif
 
     /* Add the remaining options */
     CBchFormat->addItem(TRANS("ACN"), CH_ACN);
@@ -318,8 +312,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CB_aspectRatio->setSelectedId(powermap_getAspectRatio(hPm), dontSendNotification);
     s_pmapAvg->setValue(powermap_getPowermapAvgCoeff(hPm), dontSendNotification);
     resolutionHasChanged = false;
-    CBchFormat->setItemEnabled(CH_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
-    CBnormScheme->setItemEnabled(NORM_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
+    CBchFormat->setItemEnabled(CH_FUMA, powermap_getMasterOrder(hPm)==SH_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, powermap_getMasterOrder(hPm)==SH_ORDER_FIRST ? true : false);
 
     /* tooltips */
     CBmasterOrder->setTooltip("Maximum analysis order (can be lower at different frequencies). Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
@@ -1169,8 +1163,8 @@ void PluginEditor::timerCallback(int timerID)
             /* parameters whos values can change internally should be periodically refreshed */
             CBchFormat->setSelectedId(powermap_getChOrder(hPm), dontSendNotification);
             CBnormScheme->setSelectedId(powermap_getNormType(hPm), dontSendNotification);
-            CBchFormat->setItemEnabled(CH_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
-            CBnormScheme->setItemEnabled(NORM_FUMA, powermap_getMasterOrder(hPm)==MASTER_ORDER_FIRST ? true : false);
+            CBchFormat->setItemEnabled(CH_FUMA, powermap_getMasterOrder(hPm)==SH_ORDER_FIRST ? true : false);
+            CBnormScheme->setItemEnabled(NORM_FUMA, powermap_getMasterOrder(hPm)==SH_ORDER_FIRST ? true : false);
 
             /* Nsource slider range */
             s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired(hPm)/2.0f), 1);
@@ -1187,7 +1181,7 @@ void PluginEditor::timerCallback(int timerID)
                 addAndMakeVisible(progressbar);
                 progressbar.setAlwaysOnTop(true);
                 progress = (double)powermap_getProgressBar0_1(hPm);
-                char text[POWERMAP_PROGRESSBARTEXT_CHAR_LENGTH];
+                char text[PROGRESSBARTEXT_CHAR_LENGTH];
                 powermap_getProgressBarText(hPm, (char*)text);
                 progressbar.setTextToDisplay(String(text));
             }

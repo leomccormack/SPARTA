@@ -70,9 +70,9 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 void PluginProcessor::setParameter (int index, float newValue)
 {
 	switch (index) {
-        case k_inputOrder:      rotator_setOrder(hRot, (ROTATOR_INPUT_ORDERS)(int)(newValue*(float)(ROTATOR_MAX_SH_ORDER-1) + 1.5f)); break;
-        case k_channelOrder:    rotator_setChOrder(hRot, (int)(newValue*(float)(ROTATOR_NUM_CH_ORDERINGS-1) + 1.5f)); break;
-        case k_normType:        rotator_setNormType(hRot, (int)(newValue*(float)(ROTATOR_NUM_NORM_TYPES-1) + 1.5f)); break;
+        case k_inputOrder:      rotator_setOrder(hRot, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
+        case k_channelOrder:    rotator_setChOrder(hRot, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
+        case k_normType:        rotator_setNormType(hRot, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
         case k_useRollPitchYaw: rotator_setRPYflag(hRot, (int)(newValue + 0.5f)); break;
         case k_yaw:             rotator_setYaw(hRot, (newValue-0.5f)*360.0f ); break;
         case k_pitch:           rotator_setPitch(hRot, (newValue - 0.5f)*180.0f); break;
@@ -91,9 +91,9 @@ void PluginProcessor::setCurrentProgram (int /*index*/)
 float PluginProcessor::getParameter (int index)
 {
     switch (index) {
-        case k_inputOrder:      return (float)(rotator_getOrder(hRot)-1)/(float)(ROTATOR_MAX_SH_ORDER-1);
-        case k_channelOrder:    return (float)(rotator_getChOrder(hRot)-1)/(float)(ROTATOR_NUM_NORM_TYPES-1);
-        case k_normType:        return (float)(rotator_getNormType(hRot)-1)/(float)(ROTATOR_NUM_NORM_TYPES-1);
+        case k_inputOrder:      return (float)(rotator_getOrder(hRot)-1)/(float)(MAX_SH_ORDER-1);
+        case k_channelOrder:    return (float)(rotator_getChOrder(hRot)-1)/(float)(NUM_CH_ORDERINGS-1);
+        case k_normType:        return (float)(rotator_getNormType(hRot)-1)/(float)(NUM_NORM_TYPES-1);
         case k_useRollPitchYaw: return (float)rotator_getRPYflag(hRot);
         case k_yaw:             return (rotator_getYaw(hRot)/360.0f) + 0.5f;
         case k_pitch:           return (rotator_getPitch(hRot)/180.0f) + 0.5f;

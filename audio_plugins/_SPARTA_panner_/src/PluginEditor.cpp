@@ -232,51 +232,51 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_loudspeakers->setSliderSnapsToMousePosition(false);
 
     /* add source preset options */
-    CBsourceDirsPreset->addItem (TRANS("Mono"), PRESET_MONO);
-    CBsourceDirsPreset->addItem (TRANS("Stereo"), PRESET_STEREO);
-    CBsourceDirsPreset->addItem (TRANS("5.x"), PRESET_5PX);
-    CBsourceDirsPreset->addItem (TRANS("7.x"), PRESET_7PX);
-    CBsourceDirsPreset->addItem (TRANS("8.x"), PRESET_8PX);
-    CBsourceDirsPreset->addItem (TRANS("9.x"), PRESET_9PX);
-    CBsourceDirsPreset->addItem (TRANS("10.x"), PRESET_10PX);
-    CBsourceDirsPreset->addItem (TRANS("11.x"), PRESET_11PX);
-    CBsourceDirsPreset->addItem (TRANS("11.x (7+4)"), PRESET_11PX_7_4);
-    CBsourceDirsPreset->addItem (TRANS("13.x"), PRESET_13PX);
-    CBsourceDirsPreset->addItem (TRANS("22.x"), PRESET_22PX);
-    CBsourceDirsPreset->addItem (TRANS("Aalto MCC"), PRESET_AALTO_MCC);
-    CBsourceDirsPreset->addItem (TRANS("Aalto MCC-subset"), PRESET_AALTO_MCC_SUBSET);
-    CBsourceDirsPreset->addItem (TRANS("Aalto Apaja"), PRESET_AALTO_APAJA);
-    CBsourceDirsPreset->addItem (TRANS("Aalto LR"), PRESET_AALTO_LR);
-    CBsourceDirsPreset->addItem (TRANS("DTU AVIL"), PRESET_DTU_AVIL);
-    CBsourceDirsPreset->addItem (TRANS("T-design (4)"), PRESET_T_DESIGN_4);
-    CBsourceDirsPreset->addItem (TRANS("T-design (12)"), PRESET_T_DESIGN_12);
-    CBsourceDirsPreset->addItem (TRANS("T-design (24)"), PRESET_T_DESIGN_24);
-    CBsourceDirsPreset->addItem (TRANS("T-design (36)"), PRESET_T_DESIGN_36);
-    CBsourceDirsPreset->addItem (TRANS("T-design (48)"), PRESET_T_DESIGN_48);
-    CBsourceDirsPreset->addItem (TRANS("T-design (60)"), PRESET_T_DESIGN_60);
+    CBsourceDirsPreset->addItem (TRANS("Mono"), SOURCE_CONFIG_PRESET_MONO);
+    CBsourceDirsPreset->addItem (TRANS("Stereo"), SOURCE_CONFIG_PRESET_STEREO);
+    CBsourceDirsPreset->addItem (TRANS("5.x"), SOURCE_CONFIG_PRESET_5PX);
+    CBsourceDirsPreset->addItem (TRANS("7.x"), SOURCE_CONFIG_PRESET_7PX);
+    CBsourceDirsPreset->addItem (TRANS("8.x"), SOURCE_CONFIG_PRESET_8PX);
+    CBsourceDirsPreset->addItem (TRANS("9.x"), SOURCE_CONFIG_PRESET_9PX);
+    CBsourceDirsPreset->addItem (TRANS("10.x"), SOURCE_CONFIG_PRESET_10PX);
+    CBsourceDirsPreset->addItem (TRANS("11.x"), SOURCE_CONFIG_PRESET_11PX);
+    CBsourceDirsPreset->addItem (TRANS("11.x (7+4)"), SOURCE_CONFIG_PRESET_11PX_7_4);
+    CBsourceDirsPreset->addItem (TRANS("13.x"), SOURCE_CONFIG_PRESET_13PX);
+    CBsourceDirsPreset->addItem (TRANS("22.x"), SOURCE_CONFIG_PRESET_22PX);
+    CBsourceDirsPreset->addItem (TRANS("Aalto MCC"), SOURCE_CONFIG_PRESET_AALTO_MCC);
+    CBsourceDirsPreset->addItem (TRANS("Aalto MCC-subset"), SOURCE_CONFIG_PRESET_AALTO_MCC_SUBSET);
+    CBsourceDirsPreset->addItem (TRANS("Aalto Apaja"), SOURCE_CONFIG_PRESET_AALTO_APAJA);
+    CBsourceDirsPreset->addItem (TRANS("Aalto LR"), SOURCE_CONFIG_PRESET_AALTO_LR);
+    CBsourceDirsPreset->addItem (TRANS("DTU AVIL"), SOURCE_CONFIG_PRESET_DTU_AVIL);
+    CBsourceDirsPreset->addItem (TRANS("T-design (4)"), SOURCE_CONFIG_PRESET_T_DESIGN_4);
+    CBsourceDirsPreset->addItem (TRANS("T-design (12)"), SOURCE_CONFIG_PRESET_T_DESIGN_12);
+    CBsourceDirsPreset->addItem (TRANS("T-design (24)"), SOURCE_CONFIG_PRESET_T_DESIGN_24);
+    CBsourceDirsPreset->addItem (TRANS("T-design (36)"), SOURCE_CONFIG_PRESET_T_DESIGN_36);
+    CBsourceDirsPreset->addItem (TRANS("T-design (48)"), SOURCE_CONFIG_PRESET_T_DESIGN_48);
+    CBsourceDirsPreset->addItem (TRANS("T-design (60)"), SOURCE_CONFIG_PRESET_T_DESIGN_60);
 
     /* add Loudspeaker preset options */
-    CBsLoudspeakerDirsPreset->addItem (TRANS("Stereo"), PRESET_STEREO);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("5.x"), PRESET_5PX);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("7.x"), PRESET_7PX);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("8.x"), PRESET_8PX);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("9.x"), PRESET_9PX);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("10.x"), PRESET_10PX);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("11.x"), PRESET_11PX);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("11.x (7+4)"), PRESET_11PX_7_4);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("13.x"), PRESET_13PX);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("22.x"), PRESET_22PX);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto MCC"), PRESET_AALTO_MCC);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto MCC-subset"), PRESET_AALTO_MCC_SUBSET);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto Apaja"), PRESET_AALTO_APAJA);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto LR"), PRESET_AALTO_LR);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("DTU AVIL"), PRESET_DTU_AVIL);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (4)"), PRESET_T_DESIGN_4);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (12)"), PRESET_T_DESIGN_12);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (24)"), PRESET_T_DESIGN_24);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (36)"), PRESET_T_DESIGN_36);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (48)"), PRESET_T_DESIGN_48);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (60)"), PRESET_T_DESIGN_60);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("Stereo"), LOUDSPEAKER_ARRAY_PRESET_STEREO);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("5.x"), LOUDSPEAKER_ARRAY_PRESET_5PX);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("7.x"), LOUDSPEAKER_ARRAY_PRESET_7PX);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("8.x"), LOUDSPEAKER_ARRAY_PRESET_8PX);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("9.x"), LOUDSPEAKER_ARRAY_PRESET_9PX);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("10.x"), LOUDSPEAKER_ARRAY_PRESET_10PX);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("11.x"), LOUDSPEAKER_ARRAY_PRESET_11PX);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("11.x (7+4)"), LOUDSPEAKER_ARRAY_PRESET_11PX_7_4);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("13.x"), LOUDSPEAKER_ARRAY_PRESET_13PX);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("22.x"), LOUDSPEAKER_ARRAY_PRESET_22PX);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto MCC"), LOUDSPEAKER_ARRAY_PRESET_AALTO_MCC);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto MCC-subset"), LOUDSPEAKER_ARRAY_PRESET_AALTO_MCC_SUBSET);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto Apaja"), LOUDSPEAKER_ARRAY_PRESET_AALTO_APAJA);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto LR"), LOUDSPEAKER_ARRAY_PRESET_AALTO_LR);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("DTU AVIL"), LOUDSPEAKER_ARRAY_PRESET_DTU_AVIL);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (4)"), LOUDSPEAKER_ARRAY_PRESET_T_DESIGN_4);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (12)"), LOUDSPEAKER_ARRAY_PRESET_T_DESIGN_12);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (24)"), LOUDSPEAKER_ARRAY_PRESET_T_DESIGN_24);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (36)"), LOUDSPEAKER_ARRAY_PRESET_T_DESIGN_36);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (48)"), LOUDSPEAKER_ARRAY_PRESET_T_DESIGN_48);
+    CBsLoudspeakerDirsPreset->addItem (TRANS("T-design (60)"), LOUDSPEAKER_ARRAY_PRESET_T_DESIGN_60);
 
     /* ProgressBar */
     progress = 0.0;
@@ -288,7 +288,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* source coordinates viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (sourceCoordsVP.get());
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, PANNER_MAX_NUM_INPUTS, panner_getNumSources(hPan));
+    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_INPUTS, panner_getNumSources(hPan));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
@@ -298,7 +298,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* loudspeaker coordinates viewport */
     loudspeakerCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (loudspeakerCoordsVP.get());
-    loudspeakerCoordsView_handle = new outputCoordsView(ownerFilter, PANNER_MAX_NUM_OUTPUTS, panner_getNumLoudspeakers(hPan));
+    loudspeakerCoordsView_handle = new outputCoordsView(ownerFilter, MAX_NUM_OUTPUTS, panner_getNumLoudspeakers(hPan));
     loudspeakerCoordsVP->setViewedComponent (loudspeakerCoordsView_handle);
     loudspeakerCoordsVP->setScrollBarsShown (true, false);
     loudspeakerCoordsVP->setAlwaysOnTop(true);

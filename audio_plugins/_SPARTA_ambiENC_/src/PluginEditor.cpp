@@ -148,13 +148,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsourceDirsPreset->addItem (TRANS("T-design (36)"), SOURCE_CONFIG_PRESET_T_DESIGN_36);
     CBsourceDirsPreset->addItem (TRANS("T-design (48)"), SOURCE_CONFIG_PRESET_T_DESIGN_48);
     CBsourceDirsPreset->addItem (TRANS("T-design (60)"), SOURCE_CONFIG_PRESET_T_DESIGN_60);
-    CBorder->addItem (TRANS("1st order"), OUTPUT_ORDER_FIRST);
-    CBorder->addItem (TRANS("2nd order"), OUTPUT_ORDER_SECOND);
-    CBorder->addItem (TRANS("3rd order"), OUTPUT_ORDER_THIRD);
-    CBorder->addItem (TRANS("4th order"), OUTPUT_ORDER_FOURTH);
-    CBorder->addItem (TRANS("5th order"), OUTPUT_ORDER_FIFTH);
-    CBorder->addItem (TRANS("6th order"), OUTPUT_ORDER_SIXTH);
-    CBorder->addItem (TRANS("7th order"), OUTPUT_ORDER_SEVENTH);
+    CBorder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
+    CBorder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
+    CBorder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
+    CBorder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
+    CBorder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
+    CBorder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
+    CBorder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
     CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
     CBoutputFormat->addItem (TRANS("FuMa"), CH_FUMA);
     CBnormalisation->addItem (TRANS("N3D"), NORM_N3D);
@@ -176,8 +176,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hAmbi), dontSendNotification);
     CBorder->setSelectedId(ambi_enc_getOutputOrder(hAmbi), dontSendNotification);
     CBnormalisation->setSelectedId(ambi_enc_getNormType(hAmbi), dontSendNotification);
-    CBoutputFormat->setItemEnabled(CH_FUMA, ambi_enc_getOutputOrder(hAmbi)==OUTPUT_ORDER_FIRST ? true : false);
-    CBnormalisation->setItemEnabled(NORM_FUMA, ambi_enc_getOutputOrder(hAmbi)==OUTPUT_ORDER_FIRST ? true : false);
+    CBoutputFormat->setItemEnabled(CH_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
+    CBnormalisation->setItemEnabled(NORM_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
 
     /* create panning window */
     panWindow.reset (new pannerView(ownerFilter, 480, 240));
@@ -658,8 +658,8 @@ void PluginEditor::timerCallback()
         CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hAmbi), dontSendNotification);
     if(CBnormalisation->getSelectedId()!=ambi_enc_getNormType(hAmbi))
         CBnormalisation->setSelectedId(ambi_enc_getNormType(hAmbi), dontSendNotification);
-    CBoutputFormat->setItemEnabled(CH_FUMA, ambi_enc_getOutputOrder(hAmbi)==OUTPUT_ORDER_FIRST ? true : false);
-    CBnormalisation->setItemEnabled(NORM_FUMA, ambi_enc_getOutputOrder(hAmbi)==OUTPUT_ORDER_FIRST ? true : false);
+    CBoutputFormat->setItemEnabled(CH_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
+    CBnormalisation->setItemEnabled(NORM_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
 
     /* refresh pan view */
     if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) ||

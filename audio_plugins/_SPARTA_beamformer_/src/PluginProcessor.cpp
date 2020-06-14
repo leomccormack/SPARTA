@@ -41,11 +41,11 @@ void PluginProcessor::setParameter (int index, float newValue)
     /* standard parameters */
     if(index < k_NumOfParameters){
         switch (index) {
-            case k_inputOrder:   beamformer_setBeamOrder(hBeam, (BEAMFORMER_BEAM_ORDERS)(int)(newValue*(float)(BEAMFORMER_MAX_SH_ORDER-1) + 1.5f)); break;
-            case k_channelOrder: beamformer_setChOrder(hBeam, (int)(newValue*(float)(BEAMFORMER_NUM_CH_ORDERINGS-1) + 1.5f)); break;
-            case k_normType:     beamformer_setNormType(hBeam, (int)(newValue*(float)(BEAMFORMER_NUM_NORM_TYPES-1) + 1.5f)); break;
-            case k_beamType:     beamformer_setBeamType(hBeam, (BEAMFORMER_BEAM_TYPES)(int)(newValue*(float)(BEAMFORMER_NUM_BEAM_TYPES-1) + 1.5f)); break;
-            case k_numBeams:     beamformer_setNumBeams(hBeam, (int)(newValue*(float)(BEAMFORMER_MAX_NUM_BEAMS)+0.5)); break;
+            case k_inputOrder:   beamformer_setBeamOrder(hBeam, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
+            case k_channelOrder: beamformer_setChOrder(hBeam, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
+            case k_normType:     beamformer_setNormType(hBeam, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
+            case k_beamType:     beamformer_setBeamType(hBeam, (STATIC_BEAM_TYPES)(int)(newValue*(float)(NUM_STATIC_BEAM_TYPES-1) + 1.5f)); break;
+            case k_numBeams:     beamformer_setNumBeams(hBeam, (int)(newValue*(float)(MAX_NUM_OUTPUTS)+0.5)); break;
         }
     }
     /* source direction parameters */
@@ -78,11 +78,11 @@ float PluginProcessor::getParameter (int index)
     /* standard parameters */
     if(index < k_NumOfParameters){
         switch (index) {
-            case k_inputOrder:   return (float)(beamformer_getBeamOrder(hBeam)-1)/(float)(BEAMFORMER_MAX_SH_ORDER-1);
-            case k_channelOrder: return (float)(beamformer_getChOrder(hBeam)-1)/(float)(BEAMFORMER_NUM_CH_ORDERINGS-1);
-            case k_normType:     return (float)(beamformer_getNormType(hBeam)-1)/(float)(BEAMFORMER_NUM_NORM_TYPES-1);
-            case k_beamType:     return (float)(beamformer_getBeamType(hBeam)-1)/(float)(BEAMFORMER_NUM_BEAM_TYPES-1);
-            case k_numBeams:     return (float)(beamformer_getNumBeams(hBeam))/(float)(BEAMFORMER_MAX_NUM_BEAMS);
+            case k_inputOrder:   return (float)(beamformer_getBeamOrder(hBeam)-1)/(float)(MAX_SH_ORDER-1);
+            case k_channelOrder: return (float)(beamformer_getChOrder(hBeam)-1)/(float)(NUM_CH_ORDERINGS-1);
+            case k_normType:     return (float)(beamformer_getNormType(hBeam)-1)/(float)(NUM_NORM_TYPES-1);
+            case k_beamType:     return (float)(beamformer_getBeamType(hBeam)-1)/(float)(NUM_STATIC_BEAM_TYPES-1);
+            case k_numBeams:     return (float)(beamformer_getNumBeams(hBeam))/(float)(MAX_NUM_OUTPUTS);
             default: return 0.0f;
         }
     }
@@ -98,7 +98,7 @@ float PluginProcessor::getParameter (int index)
 
 int PluginProcessor::getNumParameters()
 {
-	return k_NumOfParameters + 2*BEAMFORMER_MAX_NUM_BEAMS;
+	return k_NumOfParameters + 2*MAX_NUM_OUTPUTS;
 }
 
 const String PluginProcessor::getName() const
@@ -150,9 +150,9 @@ const String PluginProcessor::getParameterText(int index)
                 }
             case k_beamType:
                 switch(beamformer_getBeamType(hBeam)){
-                    case BEAM_TYPE_HYPERCARDIOID: return "Hyper-Card";
-                    case BEAM_TYPE_CARDIOID:      return "Cardioid";
-                    case BEAM_TYPE_MAX_EV:        return "Max-EV";
+                    case STATIC_BEAM_TYPE_HYPERCARDIOID: return "Hyper-Card";
+                    case STATIC_BEAM_TYPE_CARDIOID:      return "Cardioid";
+                    case STATIC_BEAM_TYPE_MAX_EV:        return "Max-EV";
                     default: return "NULL";
                 }
             case k_numBeams: return String(beamformer_getNumBeams(hBeam));

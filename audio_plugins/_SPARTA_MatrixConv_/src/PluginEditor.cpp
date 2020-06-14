@@ -616,11 +616,11 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_sampleRate_missmatch;
         repaint(0,0,getWidth(),32);
     }
-    else if(matrixconv_getNumInputChannels(hMC)>MATRIXCONV_MAX_NUM_CHANNELS){
+    else if(matrixconv_getNumInputChannels(hMC)>MAX_NUM_CHANNELS){
         currentWarning = k_warning_nInputs_more_than_64;
         repaint(0,0,getWidth(),32);
     }
-    else if(matrixconv_getNumOutputChannels(hMC)>MATRIXCONV_MAX_NUM_CHANNELS){
+    else if(matrixconv_getNumOutputChannels(hMC)>MAX_NUM_CHANNELS){
         currentWarning = k_warning_nOutputs_more_than_64;
         repaint(0,0,getWidth(),32);
     }

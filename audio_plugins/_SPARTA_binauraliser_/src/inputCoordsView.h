@@ -47,7 +47,7 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     void setNCH(int newNCH){
-		newNCH = newNCH > BINAURALISER_MAX_NUM_INPUTS ? BINAURALISER_MAX_NUM_INPUTS : newNCH;
+		newNCH = newNCH > MAX_NUM_INPUTS ? MAX_NUM_INPUTS : newNCH;
 		refreshCoords();
 		if (newNCH != currentNCH) {
 			currentNCH = newNCH;
