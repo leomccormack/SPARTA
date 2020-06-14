@@ -96,9 +96,9 @@ The build.plugins.sh script also supports many additional options:
 ./build-plugins.sh _SPARTA_ambiBIN_ projucer  # opens the "sparta_ambiBIN.jucer" file with the Projucer App
 ```
  
- ## Building the plug-ins with CMake 
+ ## Building the plug-ins via CMake 
 
-Those who would prefer to build the plug-ins using CMake, may do:
+The plug-ins may also be built with CMake (version 3.15 or higher):
  ```
  mkdir build
  cmake -S . -B build -DSAF_ENABLE_SOFA_READER=1 -DSAF_BUILD_TESTS=1
