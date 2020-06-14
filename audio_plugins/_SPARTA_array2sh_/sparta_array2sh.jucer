@@ -30,13 +30,13 @@
     <FILE id="KgKse6" name="eqview_window.h" compile="0" resource="0" file="src/eqview_window.h"/>
     <FILE id="gBHyxI" name="eqview.cpp" compile="1" resource="0" file="src/eqview.cpp"/>
     <FILE id="DjtWxT" name="eqview.h" compile="0" resource="0" file="src/eqview.h"/>
-    <FILE id="QDxRCF" name="PluginEditor.cpp" compile="1" resource="0"
-          file="src/PluginEditor.cpp"/>
-    <FILE id="r2kdS7" name="PluginEditor.h" compile="0" resource="0" file="src/PluginEditor.h"/>
     <FILE id="mD7CFg" name="PluginProcessor.cpp" compile="1" resource="0"
           file="src/PluginProcessor.cpp"/>
     <FILE id="nZlbNR" name="PluginProcessor.h" compile="0" resource="0"
           file="src/PluginProcessor.h"/>
+    <FILE id="GuUnUY" name="PluginEditor.cpp" compile="1" resource="0"
+          file="src/PluginEditor.cpp"/>
+    <FILE id="CVgsDa" name="PluginEditor.h" compile="0" resource="0" file="src/PluginEditor.h"/>
     <FILE id="HdVqV2" name="sensorCoordsView.cpp" compile="1" resource="0"
           file="src/sensorCoordsView.cpp"/>
     <FILE id="K085am" name="sensorCoordsView.h" compile="0" resource="0"
