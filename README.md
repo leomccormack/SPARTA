@@ -77,7 +77,7 @@ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 build-plugins.bat <path/to/Projucer.exe>
 ```
 
-## Additional scripts and options for MacOSX/Linux users
+### Additional scripts and options for MacOSX/Linux users
 
 The repository also includes the following install scripts:
 ```
@@ -95,6 +95,23 @@ The build.plugins.sh script also supports many additional options:
 ./build-plugins.sh _SPARTA_ambiBIN_ build  # builds only "sparta_ambiBIN.vst"
 ./build-plugins.sh _SPARTA_ambiBIN_ projucer  # opens the "sparta_ambiBIN.jucer" file with the Projucer App
 ```
+ 
+ ## Building the plug-ins with CMake 
+
+Those who would prefer to build the plug-ins using CMake, may do:
+ ```
+ mkdir build
+ cmake -S . -B build -DSAF_ENABLE_SOFA_READER=1 -DSAF_BUILD_TESTS=1
+ # Linux users must link with an installed shared netcdf library:
+ -DNETCDF_LIBRARY="/usr/lib/x86_64-linux-gnu/libnetcdf.so"
+ # Same for MSYS2 users
+ -DNETCDF_LIBRARY="/c/msys64/mingw64/lib/libnetcdf.dll.a"
+ cd build
+ make
+ ```
+ 
+ Note, however, that this is relatively new feature which has not been fully implemented and tested. Therefore, please let us know if you encounter any problems or are willing to contribute :- )
+ 
  
 ## Building the plug-ins without scripts
 
