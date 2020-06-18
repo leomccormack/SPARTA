@@ -82,7 +82,7 @@ build-plugins.bat <path/to/Projucer.exe>
 The repository also includes the following install scripts:
 ```
 ./install-juce.sh      # builds a GPLv3 version of the Projucer App and copies it into "SDKs"
-./install-vst2_sdk.sh  # downloads, unzips, and places the VST2_SDK in the "SDKs" folder
+./install-vst2_sdk.sh  # downloads, unzips, and places the VST2_SDK into "SDKs"
 ```
 
 The build.plugins.sh script also supports many additional options:
