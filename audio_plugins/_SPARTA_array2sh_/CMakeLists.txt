@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 project(sparta_array2sh VERSION 1.6.4)
-message(STATUS "Configuring ${PROJECT_NAME}")
+message(STATUS "  ${PROJECT_NAME}")
 
 # juce helper function to create a library, which is configured as a JUCE plugin
 juce_add_plugin(${PROJECT_NAME}

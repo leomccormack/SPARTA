@@ -9,52 +9,52 @@ cd /d "%~dp0"
 :: Check VST2 SDK is where it should be
 IF NOT EXIST "../SDKs/VST2_SDK" (
     echo The VST2 SDK was not found in the following folder: ../SDKs/VST2_SDK
-	echo You can download the VST2 SDK from here: 
-	echo "https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip"
-	EXIT /B
+    echo You can download the VST2 SDK from here: 
+    echo "https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip"
+    EXIT /B
 )
 :: Check that the Spatial_Audio_Framework dependencies are where they should be
 IF NOT EXIST "../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib/saf_mkl_custom.lib" (
     echo The "saf_mkl_custom.lib" file was not found in the following folder: Spatial_Audio_Framework/dependencies/Win64/lib/saf_mkl_custom.lib
-	echo you can find instruction on how to acquire it from here:
-	echo "https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md"
-	EXIT /B
+    echo you can find instruction on how to acquire it from here:
+    echo "https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md"
+    EXIT /B
 )
 IF NOT EXIST "C:/Windows/System32/saf_mkl_custom.dll" (
     echo The "saf_mkl_custom.dll" file was not found in the following folder: "C:/Windows/System32/saf_mkl_custom.dll" 
-	echo you can find instruction on how to acquire it from here:
-	echo "https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md"
-	EXIT /B
+    echo you can find instruction on how to acquire it from here:
+    echo "https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md"
+    EXIT /B
 )
 :: Check that the path to Projucer.exe is valid
 IF NOT EXIST %1 (
     echo Please use the following syntax: build-plugins.bat "Path/To/Projucer.exe"
-	echo "Projucer.exe" can be found here: "https://shop.juce.com/get-juce/download"
-	EXIT /B
+    echo "Projucer.exe" can be found here: "https://shop.juce.com/get-juce/download"
+    EXIT /B
 )
 :: Check output directory exists
-IF NOT EXIST "../lib" (
-    echo Creating ../lib directory for output binaries
-    mkdir "../lib"
-)
+::IF NOT EXIST "../lib" (
+::    echo Creating ../lib directory for output binaries
+::    mkdir "../lib"
+::)
 
 :: ========================================================================= ::
 echo "Generating Visual Studio solution files"
 for /r %%i in (*.jucer) do (
     ::echo %%~ti  %%~zi  %%i
-	start "" /wait %1 --resave %%i
+    start "" /wait %1 --resave %%i
 )
-	
+
 :: ========================================================================= ::
 echo "Compiling Visual Studio 2017 solution files"
 for /d /r . %%d in (VisualStudio2017) do (
     @if exist "%%d"  (
-		cd %%d
-		for /r %%i in (*.sln) do ( 
-			echo Now compiling %%i
-			msbuild %%i /p:Configuration="Release",Platform=x64 /t:Clean,Build
-		)  
-		cd /d "%~dp0"
-	)
+        cd %%d
+        for /r %%i in (*.sln) do ( 
+            echo Now compiling %%i
+            msbuild %%i /p:Configuration="Release",Platform=x64 /t:Clean,Build
+        )  
+        cd /d "%~dp0"
+    )
 )
 
