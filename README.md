@@ -35,7 +35,7 @@ First clone the repository (including submodules) with:
 
 ```
 git clone --recursive https://github.com/leomccormack/SPARTA
-# or if you have already cloned the repository, update with:
+# or if you have already cloned the repository, update/init with:
 git submodule update --init --recursive
 ```
 
@@ -46,7 +46,7 @@ The [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.stein
 SDKs/VST2_SDK
 ```
 
-**MacOSX, Linux and Windows (x86_64/amd64)** users must install a custom Intel MKL library. Detailed instructions on how to do this can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md). 
+**MacOSX, Linux and Windows (x86_64/amd64)** users must install a custom Intel MKL library. Detailed instructions on how to do this can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/dependencies/PERFORMANCE_LIBRARY_INSTRUCTIONS.md). 
 
 **Raspberry Pi (ARM)** users instead require OpenBLAS and LAPACKE libraries:
 ``` 
@@ -60,7 +60,7 @@ sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x1
 sudo apt-get install libhdf5-dev libnetcdf-dev libnetcdff-dev
 ```
 
-## Building all plug-ins via scripts
+## Building the plug-ins via scripts
 
 **MacOSX/Linux users** may run the following bash script via the Terminal to build all of the plugins:
 
@@ -87,21 +87,22 @@ The repository also includes the following install scripts:
 
 The build.plugins.sh script also supports many additional options:
 ```
-./build-plugins.sh projuce  # generates Linux makefiles and Xcode/VisualStudio project files for all plugins
-./build-plugins.sh clean  # cleans all plugins 
-./build-plugins.sh build  # builds all plugins
-./build-plugins.sh all  # projuces, cleans, and then builds all plugins
-./build-plugins.sh _SPARTA_ambiBIN_ all  # projuces, cleans, and builds only "sparta_ambiBIN.vst"
-./build-plugins.sh _SPARTA_ambiBIN_ build  # builds only "sparta_ambiBIN.vst"
-./build-plugins.sh _SPARTA_ambiBIN_ projucer  # opens the "sparta_ambiBIN.jucer" file with the Projucer App
+./build-plugins.sh --help    # help information
+./build-plugins.sh projuce   # generates Linux makefiles and Xcode/VisualStudio project files for all plugins
+./build-plugins.sh clean     # cleans all plugins 
+./build-plugins.sh build     # builds all plugins
+./build-plugins.sh all       # projuces, cleans, and then builds all plugins
+./build-plugins.sh _SPARTA_ambiBIN_ all        # projuces, cleans, and builds only "sparta_ambiBIN.vst"
+./build-plugins.sh _SPARTA_ambiENC_ build      # builds only "sparta_ambiENC.vst"
+./build-plugins.sh _SPARTA_array2sh_ projucer  # opens the "sparta_array2sh.jucer" file with the Projucer App
 ```
  
- ## Building the plug-ins via CMake 
+## Building the plug-ins via CMake 
 
 The plug-ins may also be built with CMake (version 3.15 or higher):
  ```
  mkdir build
- cmake -S . -B build -DSAF_ENABLE_SOFA_READER=1 -DSAF_BUILD_TESTS=1
+ cmake -S . -B build -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_BUILD_TESTS=1
  # Linux users must link with an installed shared netcdf library:
  -DNETCDF_LIBRARY="/usr/lib/x86_64-linux-gnu/libnetcdf.so"
  # Same for MSYS2 users
@@ -109,13 +110,10 @@ The plug-ins may also be built with CMake (version 3.15 or higher):
  cd build
  make
  ```
- 
- Note, however, that this is relatively new feature which has not been fully implemented and tested. Therefore, please let us know if you encounter any problems or are willing to contribute :- )
- 
- 
-## Building the plug-ins without scripts
 
-First manually open each .jucer file with the Projucer App and click "Save Project". This will generate Visual Studio (2015/2017) solution files, Xcode project files, Linux Makefiles (amd64), and Raspberry Pi Linux Makefiles (ARM), which are placed in:
+## Building the plug-ins without scripts or CMake
+
+You may also manually open each .jucer file with the Projucer App and click "Save Project". This will generate Visual Studio (2015/2017) solution files, Xcode project files, Linux Makefiles (amd64), and Raspberry Pi Linux Makefiles (ARM), which are placed in:
 
 ```
 audio_plugins/_SPARTA_X_/make/
@@ -123,20 +121,11 @@ audio_plugins/_SPARTA_X_/make/
 
 To generate project files for other IDEs, you may open and configure the included .jucer files accordingly.
 
-
-## Known issues
-
-* Linux versions are quite experimental, but have been tested and largely work for us (we have experienced some graphical glitches, but these are consistent with other JUCE-made plugins).  However, please report any weird behaviour. 
-* Raspberry PI versions are also quite experimental, and experience some graphical glitches, but are mostly working. 
-* Due to missing code in the JUCE framework: on MacOSX, the camera ID cannot be changed for the visualisation plugins. And on Linux, the camera cannot be used at all.
-
-Please let us know if you encounter any other issues (contact via email: leo.mccormack@aalto.fi, or raise a github "issue").
-
 ## Contributing
 
-Suggestions and contributions to the code are both welcomed and encouraged. Feel free to branch off the 'develop' branch and submit pull requests. Note, however, that if the changes/additions are major, then consider first discussing it via a github "issue" or by contacting the developers directly via email. We may also be able to help in the implementation if needed.
+Suggestions and contributions to the code are both welcomed and encouraged. Feel free to branch off and submit pull requests. Note, however, that if the changes/additions are major, then maybe consider first discussing it via a github "issue" or by contacting the developers directly via email. We may also be able to help in the implementation if needed :-)
 
-## Developers
+## Contributors 
 
 * **Leo McCormack** - C/C++ programmer and algorithm design (contact: leo.mccormack(at)aalto.fi)
 * **Symeon Delikaris-Manias** - algorithm design
@@ -146,4 +135,4 @@ Suggestions and contributions to the code are both welcomed and encouraged. Feel
 
 ## License
 
-This project is licensed under the GPLv3 License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the GPLv3 License - see the [LICENSE](LICENSE) file for details. 
