@@ -81,20 +81,20 @@ build-plugins.bat <path/to/Projucer.exe>
 
 The repository also includes the following install scripts:
 ```
-./install-juce.sh  # builds a GPLv3 version of the Projucer App and places it in the "SDKs" folder
+./install-juce.sh      # builds a GPLv3 version of the Projucer App and copies it into "SDKs"
 ./install-vst2_sdk.sh  # downloads, unzips, and places the VST2_SDK in the "SDKs" folder
 ```
 
 The build.plugins.sh script also supports many additional options:
 ```
 ./build-plugins.sh --help    # help information
-./build-plugins.sh projuce   # generates Linux makefiles and Xcode/VisualStudio project files for all plugins
+./build-plugins.sh projuce   # generates Linux makefiles and IDE project files for all plugins
 ./build-plugins.sh clean     # cleans all plugins 
 ./build-plugins.sh build     # builds all plugins
 ./build-plugins.sh all       # projuces, cleans, and then builds all plugins
-./build-plugins.sh _SPARTA_ambiBIN_ all        # projuces, cleans, and builds only "sparta_ambiBIN.vst"
-./build-plugins.sh _SPARTA_ambiENC_ build      # builds only "sparta_ambiENC.vst"
-./build-plugins.sh _SPARTA_array2sh_ projucer  # opens the "sparta_array2sh.jucer" file with the Projucer App
+./build-plugins.sh _SPARTA_ambiBIN_ all       # projuces+cleans+builds sparta_ambiBIN.vst
+./build-plugins.sh _SPARTA_ambiENC_ build     # builds "sparta_ambiENC.vst"
+./build-plugins.sh _SPARTA_array2sh_ projucer # opens "sparta_array2sh.jucer" with Projucer
 ```
  
 ## Building the plug-ins via CMake 
