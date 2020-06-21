@@ -52,7 +52,8 @@ for /d /r . %%d in (VisualStudio2017) do (
         cd %%d
         for /r %%i in (*.sln) do ( 
             echo Now compiling %%i
-            msbuild %%i /p:Configuration="Release",Platform=x64 /t:Clean,Build
+            msbuild %%i /p:Configuration="Release",Platform=x64 /t:Build
+			::msbuild %%i /p:Configuration="Release",Platform=x64 /t:Clean,Build
         )  
         cd /d "%~dp0"
     )
