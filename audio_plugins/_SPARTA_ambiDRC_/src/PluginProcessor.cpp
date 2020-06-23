@@ -205,7 +205,9 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
- 
+    float* pFrameData[MAX_NUM_CHANNELS];
+    int frameSize = ambi_drc_getFrameSize();
+
     /* check whether the playhead is moving */
     playHead = getPlayHead();
     if(playHead!=NULL)
@@ -213,7 +215,18 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     else
         isPlaying = false;
 
-    ambi_drc_process(hAmbi, bufferData, bufferData, nNumInputs < nNumOutputs ? nNumInputs : nNumOutputs, nCurrentBlockSize);
+    /* process one frame at a time: */
+    if((nCurrentBlockSize % frameSize == 0)){ /* divisible by frame size */
+        for (int frame = 0; frame < nCurrentBlockSize/frameSize; frame++) {
+            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+                pFrameData[ch] = &bufferData[ch][frame*frameSize];
+
+            /* perform processing */
+            ambi_drc_process(hAmbi, pFrameData, pFrameData, nNumInputs < nNumOutputs ? nNumInputs : nNumOutputs, frameSize);
+        }
+    }
+    else
+        buffer.clear(); 
 }
 
 //==============================================================================
