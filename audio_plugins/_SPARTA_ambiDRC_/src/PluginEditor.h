@@ -26,7 +26,8 @@
 #include "colourGradient.h"
 
 typedef enum _SPARTA_WARNINGS{
-    k_warning_none, 
+    k_warning_none,
+    k_warning_frameSize,
     k_warning_supported_fs,
     k_warning_NinputCH,
     k_warning_NoutputCH

@@ -933,7 +933,12 @@ void PluginEditor::paint (Graphics& g)
     g.setFont(Font(11.00f, Font::plain));
     switch (currentWarning){
         case k_warning_none:
-            break; 
+            break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(ambi_bin_getFrameSize()),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
         case k_warning_supported_fs:
             g.drawText(TRANS("Sample rate (") + String(ambi_bin_getDAWsamplerate(hAmbi)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
@@ -1189,7 +1194,11 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* display warning message, if needed */
-            if ( !((ambi_bin_getDAWsamplerate(hAmbi) == 44.1e3) || (ambi_bin_getDAWsamplerate(hAmbi) == 48e3)) ){
+            if ((hVst->getCurrentBlockSize() % ambi_bin_getFrameSize()) != 0){
+                currentWarning = k_warning_frameSize;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ( !((ambi_bin_getDAWsamplerate(hAmbi) == 44.1e3) || (ambi_bin_getDAWsamplerate(hAmbi) == 48e3)) ){
                 currentWarning = k_warning_supported_fs;
                 repaint(0,0,getWidth(),32);
             }
