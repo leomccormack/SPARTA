@@ -17,13 +17,13 @@ IF NOT EXIST "../SDKs/VST2_SDK" (
 IF NOT EXIST "../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib/saf_mkl_custom.lib" (
     echo The "saf_mkl_custom.lib" file was not found in the following folder: Spatial_Audio_Framework/dependencies/Win64/lib/saf_mkl_custom.lib
     echo you can find instruction on how to acquire it from here:
-    echo "https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md"
+    echo "https://github.com/leomccormack/Spatial_Audio_Framework"
     EXIT /B
 )
 IF NOT EXIST "C:/Windows/System32/saf_mkl_custom.dll" (
     echo The "saf_mkl_custom.dll" file was not found in the following folder: "C:/Windows/System32/saf_mkl_custom.dll" 
     echo you can find instruction on how to acquire it from here:
-    echo "https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/CUSTOM_INTEL_MKL_INTRUCTIONS.md"
+    echo "https://github.com/leomccormack/Spatial_Audio_Framework"
     EXIT /B
 )
 :: Check that the path to Projucer.exe is valid
