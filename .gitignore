@@ -1,5 +1,6 @@
 make/
 obj/
+build/
 JuceLibraryCode/
 SDKs/JUCE/
 SDKs/VST3_SDK
@@ -10,6 +11,9 @@ SDKs/modules
 lib/
 *.zip
 *.DS_Store
+.idea/
+cmake-build-debug/
+Cmake-build-release/
 
 # User-specific files
 *.suo

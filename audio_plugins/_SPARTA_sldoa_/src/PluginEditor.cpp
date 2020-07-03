@@ -198,13 +198,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     anaOrder2dSlider->setDataHandlesInt(pX_vector, pY_values_int, nPoints);
 
     /* add master analysis order options */
-    CBmasterOrder->addItem (TRANS("1st order"), MASTER_ORDER_FIRST);
-    CBmasterOrder->addItem (TRANS("2nd order"), MASTER_ORDER_SECOND);
-    CBmasterOrder->addItem (TRANS("3rd order"), MASTER_ORDER_THIRD);
-    CBmasterOrder->addItem (TRANS("4th order"), MASTER_ORDER_FOURTH);
-    CBmasterOrder->addItem (TRANS("5th order"), MASTER_ORDER_FIFTH);
-    CBmasterOrder->addItem (TRANS("6th order"), MASTER_ORDER_SIXTH);
-    CBmasterOrder->addItem (TRANS("7th order"), MASTER_ORDER_SEVENTH);
+    CBmasterOrder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
+    CBmasterOrder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
+    CBmasterOrder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
+    CBmasterOrder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
+    CBmasterOrder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
+    CBmasterOrder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
+    CBmasterOrder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
 
     /* add ambisonic convention options */
     CB_CHorder->addItem(TRANS("ACN"), CH_ACN);
@@ -244,8 +244,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_maxFreq->setSkewFactor(0.5f);
     s_minFreq->setValue(sldoa_getMinFreq(hSld));
     s_maxFreq->setValue(sldoa_getMaxFreq(hSld));
-    CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
-    CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
+    CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
+    CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
 
     /* tooltips */
     CBmasterOrder->setTooltip("Maximum analysis order (can be lower at different frequencies). Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input");
@@ -877,8 +877,8 @@ void PluginEditor::timerCallback(int timerID)
             /* parameters whos values can change internally should be periodically refreshed */
             CB_CHorder->setSelectedId(sldoa_getChOrder(hSld), dontSendNotification);
             CB_Norm->setSelectedId(sldoa_getNormType(hSld), dontSendNotification);
-            CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
-            CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==MASTER_ORDER_FIRST ? true : false);
+            CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
+            CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
 
             /* take webcam picture */
             if(CB_webcam->getSelectedId()>1){
@@ -892,7 +892,7 @@ void PluginEditor::timerCallback(int timerID)
                 addAndMakeVisible(progressbar);
                 progressbar.setAlwaysOnTop(true);
                 progress = (double)sldoa_getProgressBar0_1(hSld);
-                char text[SLDOA_PROGRESSBARTEXT_CHAR_LENGTH];
+                char text[PROGRESSBARTEXT_CHAR_LENGTH];
                 sldoa_getProgressBarText(hSld, (char*)text);
                 progressbar.setTextToDisplay(String(text));
             }

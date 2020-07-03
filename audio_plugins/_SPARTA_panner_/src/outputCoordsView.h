@@ -47,7 +47,7 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     void setNCH(int newNCH){
-		newNCH = newNCH > PANNER_MAX_NUM_OUTPUTS ? PANNER_MAX_NUM_OUTPUTS : newNCH;
+		newNCH = newNCH > MAX_NUM_OUTPUTS ? MAX_NUM_OUTPUTS : newNCH;
         refreshCoords();
 		if (newNCH != currentNCH) {
 			currentNCH = newNCH;

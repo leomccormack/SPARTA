@@ -71,9 +71,9 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 void PluginProcessor::setParameter (int index, float newValue)
 {
     switch (index) {
-        case k_inputOrder:            ambi_bin_setInputOrderPreset(hAmbi, (AMBI_BIN_INPUT_ORDERS)(int)(newValue*(float)(AMBI_BIN_MAX_SH_ORDER-1) + 1.5f)); break;
-        case k_channelOrder:          ambi_bin_setChOrder(hAmbi, (int)(newValue*(float)(AMBI_BIN_NUM_CH_ORDERINGS-1) + 1.5f)); break;
-        case k_normType:              ambi_bin_setNormType(hAmbi, (int)(newValue*(float)(AMBI_BIN_NUM_NORM_TYPES-1) + 1.5f)); break;
+        case k_inputOrder:            ambi_bin_setInputOrderPreset(hAmbi, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
+        case k_channelOrder:          ambi_bin_setChOrder(hAmbi, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
+        case k_normType:              ambi_bin_setNormType(hAmbi, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
         case k_decMethod:             ambi_bin_setDecodingMethod(hAmbi, (AMBI_BIN_DECODING_METHODS)(int)(newValue*(float)(AMBI_BIN_NUM_DECODING_METHODS-1) + 1.5f)); break;
         case k_enableDiffuseMatching: ambi_bin_setEnableDiffuseMatching(hAmbi, (int)(newValue + 0.5f)); break;
         case k_enableMaxRE:           ambi_bin_setEnableMaxRE(hAmbi, (int)(newValue + 0.5f)); break;
@@ -97,9 +97,9 @@ void PluginProcessor::setCurrentProgram (int /*index*/)
 float PluginProcessor::getParameter (int index)
 {
     switch (index) {
-        case k_inputOrder:            return (float)(ambi_bin_getInputOrderPreset(hAmbi)-1)/(float)(AMBI_BIN_MAX_SH_ORDER-1);
-        case k_channelOrder:          return (float)(ambi_bin_getChOrder(hAmbi)-1)/(float)(AMBI_BIN_NUM_NORM_TYPES-1);
-        case k_normType:              return (float)(ambi_bin_getNormType(hAmbi)-1)/(float)(AMBI_BIN_NUM_NORM_TYPES-1);
+        case k_inputOrder:            return (float)(ambi_bin_getInputOrderPreset(hAmbi)-1)/(float)(MAX_SH_ORDER-1);
+        case k_channelOrder:          return (float)(ambi_bin_getChOrder(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
+        case k_normType:              return (float)(ambi_bin_getNormType(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
         case k_decMethod:             return (float)(ambi_bin_getDecodingMethod(hAmbi)-1)/(float)(AMBI_BIN_NUM_DECODING_METHODS-1);
         case k_enableDiffuseMatching: return (float)ambi_bin_getEnableDiffuseMatching(hAmbi);
         case k_enableMaxRE:           return (float)ambi_bin_getEnableMaxRE(hAmbi);
@@ -283,8 +283,20 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
+    float* pFrameData[MAX_NUM_CHANNELS];
+    int frameSize = ambi_bin_getFrameSize();
 
-    ambi_bin_process(hAmbi, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);
+    if((nCurrentBlockSize % frameSize == 0)){ /* divisible by frame size */
+        for (int frame = 0; frame < nCurrentBlockSize/frameSize; frame++) {
+            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+                pFrameData[ch] = &bufferData[ch][frame*frameSize];
+
+            /* perform processing */
+            ambi_bin_process(hAmbi, pFrameData, pFrameData, nNumInputs, nNumOutputs, frameSize);
+        }
+    }
+    else
+        buffer.clear();
 }
 
 //==============================================================================
@@ -338,7 +350,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
         if (xmlState->hasTagName("AMBIBINPLUGINSETTINGS")) {
             
             if(xmlState->hasAttribute("order"))
-                ambi_bin_setInputOrderPreset(hAmbi, (AMBI_BIN_INPUT_ORDERS)xmlState->getIntAttribute("order", 2));
+                ambi_bin_setInputOrderPreset(hAmbi, (SH_ORDERS)xmlState->getIntAttribute("order", 2));
             if(xmlState->hasAttribute("UseDefaultHRIRset"))
                 ambi_bin_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
             if(xmlState->hasAttribute("Norm"))

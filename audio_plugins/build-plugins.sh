@@ -8,7 +8,7 @@ if [[ "${OSTYPE}" != "linux-gnu" && "${OSTYPE}" != "darwin"* ]]; then
 fi
 
 help_message="
-script to \"projuce\" and build the SPARTA plugins on Linux
+Script to \"projuce\" and build the SPARTA plugins on Linux/MacOSX
 
 parameters:
 without parameters the script will show info about the plugin(s)
@@ -46,8 +46,9 @@ SDKs=$(cd ${HERE}/../SDKs && pwd)
 # check Spatial audio Framework:
 if [ ! -e "${SDKs}/Spatial_Audio_Framework/.git" ]; then
   echo "
-    Spatial_Audio_Framework was not found...
-    Do you wish to install it ?"
+    The Spatial_Audio_Framework git submodule was not found in the 
+    \"${SDKs}\" folder.
+    Do you wish to pull it from github?"
     select yn in "Yes" "No"; do
       case $yn in
         Yes ) git submodule update --init "${SDKs}/Spatial_Audio_Framework"; $0 $@; break;;
@@ -67,8 +68,8 @@ fi
 
 if [ ! ${projucer_bin} ] || [ ! -e ${projucer_bin} ] ; then
     echo "
-    Projucer is not installed (or configured)
-    in the \"${SDKs}\" folder.
+    Projucer is not installed (or configured) in the 
+    \"${SDKs}\" folder.
     Do you wish to run install-juce.sh?"
     select yn in "Yes" "No"; do
       case $yn in
@@ -82,8 +83,8 @@ fi
 VST2_SDK="${SDKs}/VST2_SDK"
 if [ ! ${VST2_SDK} ] || [ ! -e ${VST2_SDK} ]; then
     echo "
-    VST2_SDK is not installed (or configured)
-    in the \"${SDKs}\" folder.
+    VST2_SDK is not installed in the 
+    \"${SDKs}\" folder.
     Do you wish to run install-vst2_sdk.sh?"
     select yn in "Yes" "No"; do
       case $yn in
@@ -98,8 +99,15 @@ fi
 PATH="${SDKs}/JUCE/modules:$PATH"
 
 # location of plugin binaries
-mkdir -p "${HERE}/../lib"
-binaries=$(cd ${HERE}/../lib && pwd)
+#mkdir -p "${HERE}/../lib"
+#binaries=$(cd ${HERE}/../lib && pwd)
+
+# default location of plugin binaries
+if [[ "${OSTYPE}" == "linux-gnu" ]]; then
+    binaries=$(cd ~/.vst && pwd)
+elif [[ "${OSTYPE}" == "darwin"*  ]]; then
+    binaries=$(cd ~/Library/Audio/Plug-ins/VST && pwd)
+fi
 
 i=$#
 while [ $i -gt 0 ]; do
@@ -162,8 +170,8 @@ elif [[ "${OSTYPE}" == "darwin"*  ]]; then
 fi
 
 
-[ ${projucer} -gt 0 ] && find "${from}" -type f -name "*.jucer" \
-  -exec ${projucer_bin} "{}" \;
+#[ ${projucer} -gt 0 ] && find "${from}" -type f -name "*.jucer" \
+#  -exec ${projucer_bin} "{}" \;
 
 # projucing (resaving Projucer files)
 [ ${projuce} -gt 0 ] && find "${from}" -type f -name "*.jucer" \

@@ -48,14 +48,14 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     hPan = hVst->getFXHandle();
     width = _width;
     height = _height;
-    for(int src=0; src<PANNER_MAX_NUM_INPUTS; src++){
+    for(int src=0; src<MAX_NUM_INPUTS; src++){
         SourceIcons[src].setBounds(width - width*(panner_getSourceAzi_deg(hPan, src) + 180.0f)/360.f - icon_size/2.0f,
                                    height - height*(panner_getSourceElev_deg(hPan, src) + 90.0f)/180.0f - icon_size/2.0f,
                                    icon_size,
                                    icon_size);
     }
     NSources = panner_getNumSources(hPan);
-    NLoudspeakers = panner_getNumLoudspeakers(hPan)>PANNER_MAX_NUM_OUTPUTS? PANNER_MAX_NUM_OUTPUTS : panner_getNumLoudspeakers(hPan);
+    NLoudspeakers = panner_getNumLoudspeakers(hPan)>MAX_NUM_OUTPUTS ? MAX_NUM_OUTPUTS : panner_getNumLoudspeakers(hPan);
     for(int ls=0; ls<NLoudspeakers; ls++){
         LoudspeakerIcons[ls].setBounds(width - width*(panner_getLoudspeakerAzi_deg(hPan, ls) + 180.0f)/360.f - icon_size/2.0f,
                                        height - height*(panner_getLoudspeakerElev_deg(hPan, ls)+90.0f)/180.0f - icon_size/2.0f,
@@ -231,14 +231,14 @@ void pannerView::mouseUp (const MouseEvent& e)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void pannerView::refreshPanView()
 {
-    for(int src=0; src<PANNER_MAX_NUM_INPUTS; src++){
+    for(int src=0; src<MAX_NUM_INPUTS; src++){
         SourceIcons[src].setBounds(width - width*(panner_getSourceAzi_deg(hPan, src) + 180.0f)/360.f - icon_size/2.0f,
                                    height - height*(panner_getSourceElev_deg(hPan, src) + 90.0f)/180.0f - icon_size/2.0f,
                                    icon_size,
                                    icon_size);
     }
     NSources = panner_getNumSources(hPan);
-    NLoudspeakers = panner_getNumLoudspeakers(hPan)>PANNER_MAX_NUM_OUTPUTS ? PANNER_MAX_NUM_OUTPUTS : panner_getNumLoudspeakers(hPan);
+    NLoudspeakers = panner_getNumLoudspeakers(hPan)>MAX_NUM_OUTPUTS ? MAX_NUM_OUTPUTS : panner_getNumLoudspeakers(hPan);
     for(int ls=0; ls<NLoudspeakers; ls++){
         LoudspeakerIcons[ls].setBounds(width - width*(panner_getLoudspeakerAzi_deg(hPan, ls) + 180.0f)/360.f - icon_size/2.0f,
                                        height - height*(panner_getLoudspeakerElev_deg(hPan, ls)+90.0f)/180.0f - icon_size/2.0f,

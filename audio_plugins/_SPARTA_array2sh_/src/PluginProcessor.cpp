@@ -41,9 +41,9 @@ void PluginProcessor::setParameter (int index, float newValue)
     /* standard parameters */
     if(index < k_NumOfParameters){
         switch (index) {
-            case k_outputOrder:   array2sh_setEncodingOrder(hA2sh, (ARRAY2SH_ENCODING_ORDERS)(int)(newValue*(float)(ARRAY2SH_MAX_SH_ORDER-1) + 1.5f)); break;
-            case k_channelOrder:  array2sh_setChOrder(hA2sh, (int)(newValue*(float)(ARRAY2SH_NUM_CH_ORDERINGS-1) + 1.5f)); break;
-            case k_normType:      array2sh_setNormType(hA2sh, (int)(newValue*(float)(ARRAY2SH_NUM_NORM_TYPES-1) + 1.5f)); break;
+            case k_outputOrder:   array2sh_setEncodingOrder(hA2sh, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
+            case k_channelOrder:  array2sh_setChOrder(hA2sh, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
+            case k_normType:      array2sh_setNormType(hA2sh, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
             case k_filterType:    array2sh_setFilterType(hA2sh, (ARRAY2SH_FILTER_TYPES)(int)(newValue*(float)(ARRAY2SH_NUM_FILTER_TYPES-1) + 1.5f)); break;
             case k_maxGain:       array2sh_setRegPar(hA2sh, newValue*(ARRAY2SH_MAX_GAIN_MAX_VALUE-ARRAY2SH_MAX_GAIN_MIN_VALUE)+ARRAY2SH_MAX_GAIN_MIN_VALUE); break;
             case k_postGain:      array2sh_setGain(hA2sh, newValue*(ARRAY2SH_POST_GAIN_MAX_VALUE-ARRAY2SH_POST_GAIN_MIN_VALUE)+ARRAY2SH_POST_GAIN_MIN_VALUE); break;
@@ -83,9 +83,9 @@ float PluginProcessor::getParameter (int index)
     /* standard parameters */
     if(index < k_NumOfParameters){
         switch (index) {
-            case k_outputOrder:   return (float)(array2sh_getEncodingOrder(hA2sh)-1)/(float)(ARRAY2SH_MAX_SH_ORDER-1);
-            case k_channelOrder:  return (float)(array2sh_getChOrder(hA2sh)-1)/(float)(ARRAY2SH_NUM_CH_ORDERINGS-1);
-            case k_normType:      return (float)(array2sh_getNormType(hA2sh)-1)/(float)(ARRAY2SH_NUM_NORM_TYPES-1);
+            case k_outputOrder:   return (float)(array2sh_getEncodingOrder(hA2sh)-1)/(float)(MAX_SH_ORDER-1);
+            case k_channelOrder:  return (float)(array2sh_getChOrder(hA2sh)-1)/(float)(NUM_CH_ORDERINGS-1);
+            case k_normType:      return (float)(array2sh_getNormType(hA2sh)-1)/(float)(NUM_NORM_TYPES-1);
             case k_filterType:    return (float)(array2sh_getFilterType(hA2sh)-1)/(float)(ARRAY2SH_NUM_FILTER_TYPES-1);
             case k_maxGain:       return (array2sh_getRegPar(hA2sh)-ARRAY2SH_MAX_GAIN_MIN_VALUE)/(ARRAY2SH_MAX_GAIN_MAX_VALUE-ARRAY2SH_MAX_GAIN_MIN_VALUE);
             case k_postGain:      return (array2sh_getGain(hA2sh)-ARRAY2SH_POST_GAIN_MIN_VALUE)/(ARRAY2SH_POST_GAIN_MAX_VALUE-ARRAY2SH_POST_GAIN_MIN_VALUE);
@@ -301,8 +301,20 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
+    float* pFrameData[MAX_NUM_CHANNELS];
+    int frameSize = array2sh_getFrameSize();
 
-    array2sh_process(hA2sh, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);
+    if((nCurrentBlockSize % frameSize == 0)){ /* divisible by frame size */
+        for (int frame = 0; frame < nCurrentBlockSize/frameSize; frame++) {
+            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+                pFrameData[ch] = &bufferData[ch][frame*frameSize];
+
+            /* perform processing */
+            array2sh_process(hA2sh, pFrameData, pFrameData, nNumInputs, nNumOutputs, frameSize);
+        }
+    }
+    else
+        buffer.clear();
 }
 
 //==============================================================================

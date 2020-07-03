@@ -107,16 +107,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_beams->setSliderSnapsToMousePosition(false);
 
     /* add combobox options */
-    CBorder->addItem (TRANS("1st order"), BEAM_ORDER_FIRST);
-    CBorder->addItem (TRANS("2nd order"), BEAM_ORDER_SECOND);
-    CBorder->addItem (TRANS("3rd order"), BEAM_ORDER_THIRD);
-    CBorder->addItem (TRANS("4th order"), BEAM_ORDER_FOURTH);
-    CBorder->addItem (TRANS("5th order"), BEAM_ORDER_FIFTH);
-    CBorder->addItem (TRANS("6th order"), BEAM_ORDER_SIXTH);
-    CBorder->addItem (TRANS("7th order"), BEAM_ORDER_SEVENTH);
-    CBbeamType->addItem(TRANS("Card"), BEAM_TYPE_CARDIOID);
-    CBbeamType->addItem(TRANS("HyperCard"), BEAM_TYPE_HYPERCARDIOID);
-    CBbeamType->addItem(TRANS("MaxEV"), BEAM_TYPE_MAX_EV);
+    CBorder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
+    CBorder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
+    CBorder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
+    CBorder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
+    CBorder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
+    CBorder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
+    CBorder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
+    CBbeamType->addItem(TRANS("Card"), STATIC_BEAM_TYPE_CARDIOID);
+    CBbeamType->addItem(TRANS("HyperCard"), STATIC_BEAM_TYPE_HYPERCARDIOID);
+    CBbeamType->addItem(TRANS("MaxEV"), STATIC_BEAM_TYPE_MAX_EV);
     CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
     CBoutputFormat->addItem (TRANS("FuMa"), CH_FUMA);
     CBnormalisation->addItem (TRANS("N3D"), NORM_N3D);
@@ -139,8 +139,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormalisation->setSelectedId(beamformer_getNormType(hBeam), dontSendNotification);
     CBorder->setSelectedId(beamformer_getBeamOrder(hBeam), dontSendNotification);
     CBbeamType->setSelectedId(beamformer_getBeamType(hBeam), dontSendNotification);
-    CBoutputFormat->setItemEnabled(CH_FUMA, beamformer_getBeamOrder(hBeam)==BEAM_ORDER_FIRST ? true : false);
-    CBnormalisation->setItemEnabled(NORM_FUMA, beamformer_getBeamOrder(hBeam)==BEAM_ORDER_FIRST ? true : false);
+    CBoutputFormat->setItemEnabled(CH_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
+    CBnormalisation->setItemEnabled(NORM_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
 
     /* create panning window */
     panWindow.reset (new pannerView(ownerFilter, 480, 240));
@@ -488,6 +488,11 @@ void PluginEditor::paint (Graphics& g)
     switch (currentWarning){
         case k_warning_none:
             break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(beamformer_getFrameSize()),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
                        TRANS("/") + String(beamformer_getNumBeams(hBeam)) + TRANS(")"),
@@ -576,8 +581,8 @@ void PluginEditor::timerCallback()
     SL_num_beams->setValue(beamformer_getNumBeams(hBeam),dontSendNotification);
     CBoutputFormat->setSelectedId(beamformer_getChOrder(hBeam), dontSendNotification);
     CBnormalisation->setSelectedId(beamformer_getNormType(hBeam), dontSendNotification);
-    CBoutputFormat->setItemEnabled(CH_FUMA, beamformer_getBeamOrder(hBeam)==BEAM_ORDER_FIRST ? true : false);
-    CBnormalisation->setItemEnabled(NORM_FUMA, beamformer_getBeamOrder(hBeam)==BEAM_ORDER_FIRST ? true : false);
+    CBoutputFormat->setItemEnabled(CH_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
+    CBnormalisation->setItemEnabled(NORM_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
 
     /* refresh pan view */
     if((refreshPanViewWindow == true) || (panWindow->getBeamIconIsClicked()) ||
@@ -589,7 +594,11 @@ void PluginEditor::timerCallback()
     }
 
     /* display warning message, if needed */
-    if ((hVst->getCurrentNumInputs() < beamformer_getNumBeams(hBeam))){
+    if ((hVst->getCurrentBlockSize() % beamformer_getFrameSize()) != 0){
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((hVst->getCurrentNumInputs() < beamformer_getNumBeams(hBeam))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }

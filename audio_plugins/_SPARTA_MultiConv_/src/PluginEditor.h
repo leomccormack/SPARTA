@@ -94,7 +94,7 @@ private:
         if (reader.get() != nullptr) { /* if file exists */
             durationInSeconds = (float)reader->lengthInSamples / (float)reader->sampleRate;
 
-            if (reader->numChannels <= MULTICONV_MAX_NUM_CHANNELS) {
+            if (reader->numChannels <= MAX_NUM_CHANNELS) {
                 fileBuffer.setSize (reader->numChannels, (int) reader->lengthInSamples);
                 reader->read (&fileBuffer, 0, (int) reader->lengthInSamples, 0, true, true);
             }

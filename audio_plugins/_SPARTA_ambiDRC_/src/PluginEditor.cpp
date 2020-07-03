@@ -197,13 +197,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     normalisationCB->addItem (TRANS("FuMa"), NORM_FUMA);
     CHOrderingCB->addItem (TRANS("ACN"), CH_ACN);
     CHOrderingCB->addItem (TRANS("FuMa"), CH_FUMA);
-    presetCB->addItem(TRANS("1st order"), INPUT_ORDER_1);
-    presetCB->addItem(TRANS("2nd order"), INPUT_ORDER_2);
-    presetCB->addItem(TRANS("3rd order"), INPUT_ORDER_3);
-    presetCB->addItem(TRANS("4th order"), INPUT_ORDER_4);
-    presetCB->addItem(TRANS("5th order"), INPUT_ORDER_5);
-    presetCB->addItem(TRANS("6th order"), INPUT_ORDER_6);
-    presetCB->addItem(TRANS("7th order"), INPUT_ORDER_7);
+    presetCB->addItem(TRANS("1st order"), SH_ORDER_FIRST);
+    presetCB->addItem(TRANS("2nd order"), SH_ORDER_SECOND);
+    presetCB->addItem(TRANS("3rd order"), SH_ORDER_THIRD);
+    presetCB->addItem(TRANS("4th order"), SH_ORDER_FOURTH);
+    presetCB->addItem(TRANS("5th order"), SH_ORDER_FIFTH);
+    presetCB->addItem(TRANS("6th order"), SH_ORDER_SIXTH);
+    presetCB->addItem(TRANS("7th order"), SH_ORDER_SEVENTH);
 
 	/* fetch current configuration */
     s_thresh->setRange(AMBI_DRC_THRESHOLD_MIN_VAL, AMBI_DRC_THRESHOLD_MAX_VAL, 0.01);
@@ -223,8 +223,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CHOrderingCB->setSelectedId(ambi_drc_getChOrder(hAmbi), dontSendNotification);
     normalisationCB->setSelectedId(ambi_drc_getNormType(hAmbi), dontSendNotification);
     presetCB->setSelectedId(ambi_drc_getInputPreset(hAmbi), dontSendNotification);
-    CHOrderingCB->setItemEnabled(CH_FUMA, ambi_drc_getInputPreset(hAmbi)==INPUT_ORDER_1 ? true : false);
-    normalisationCB->setItemEnabled(NORM_FUMA, ambi_drc_getInputPreset(hAmbi)==INPUT_ORDER_1 ? true : false);
+    CHOrderingCB->setItemEnabled(CH_FUMA, ambi_drc_getInputPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
+    normalisationCB->setItemEnabled(NORM_FUMA, ambi_drc_getInputPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
 
     /* tooltips */
     presetCB->setTooltip("The input/output order. Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals. The plug-in derives the frequency-dependent gain factors based on the omni-directional component, which are then applied to all input signals equally. Therefore, the spatial characteristics are preserved; however, your perception of them may change.");
@@ -890,6 +890,11 @@ void PluginEditor::paint (Graphics& g)
     switch (currentWarning){
         case k_warning_none:
             break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(ambi_drc_getFrameSize()),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
         case k_warning_supported_fs:
             g.drawText(TRANS("Sample rate (") + String(ambi_drc_getSamplerate(hAmbi)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 5, 530, 11,
@@ -1015,7 +1020,7 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == presetCB.get())
     {
         //[UserComboBoxCode_presetCB] -- add your combo box handling code here..
-        ambi_drc_setInputPreset(hAmbi, (AMBI_DRC_INPUT_ORDER)presetCB->getSelectedId());
+        ambi_drc_setInputPreset(hAmbi, (SH_ORDERS)presetCB->getSelectedId());
         //[/UserComboBoxCode_presetCB]
     }
     else if (comboBoxThatHasChanged == CHOrderingCB.get())
@@ -1043,17 +1048,21 @@ void PluginEditor::timerCallback()
     /* parameters whos values can change internally should be periodically refreshed */
     CHOrderingCB->setSelectedId(ambi_drc_getChOrder(hAmbi), dontSendNotification);
     normalisationCB->setSelectedId(ambi_drc_getNormType(hAmbi), dontSendNotification);
-    CHOrderingCB->setItemEnabled(CH_FUMA, ambi_drc_getInputPreset(hAmbi)==INPUT_ORDER_1 ? true : false);
-    normalisationCB->setItemEnabled(NORM_FUMA, ambi_drc_getInputPreset(hAmbi)==INPUT_ORDER_1 ? true : false);
+    CHOrderingCB->setItemEnabled(CH_FUMA, ambi_drc_getInputPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
+    normalisationCB->setItemEnabled(NORM_FUMA, ambi_drc_getInputPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
 
     if (hVst->getIsPlaying()) {
         int wIdx = ambi_drc_getGainTFwIdx(hAmbi);
-        float linePos = (float)wIdx*((float)TFviewIncluded->getWidth() / (float)NUM_DISPLAY_TIME_SLOTS);
+        float linePos = (float)wIdx*((float)TFviewIncluded->getWidth() / (float)AMBI_DRC_NUM_DISPLAY_TIME_SLOTS);
         TFviewIncluded->repaint(linePos-10, 0, TFviewIncluded->getWidth(), TFviewIncluded->getHeight());
     }
 
     /* display warning message, if needed */
-    if ( !((ambi_drc_getSamplerate(hAmbi) == 44.1e3) || (ambi_drc_getSamplerate(hAmbi) == 48e3)) ){
+    if ((hVst->getCurrentBlockSize() % ambi_drc_getFrameSize()) != 0){
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ( !((ambi_drc_getSamplerate(hAmbi) == 44.1e3) || (ambi_drc_getSamplerate(hAmbi) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }

@@ -449,7 +449,7 @@ void PluginEditor::timerCallback(int timerID)
             if(pitch_shifter_getCodecStatus(hPS)==CODEC_STATUS_INITIALISING){
                 addAndMakeVisible(progressbar);
                 progress = (double)pitch_shifter_getProgressBar0_1(hPS);
-                char text[PITCH_SHIFTER_PROGRESSBARTEXT_CHAR_LENGTH];
+                char text[PROGRESSBARTEXT_CHAR_LENGTH];
                 pitch_shifter_getProgressBarText(hPS, (char*)text);
                 progressbar.setTextToDisplay(String(text));
             }

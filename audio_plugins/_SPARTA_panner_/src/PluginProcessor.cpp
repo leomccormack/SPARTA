@@ -50,12 +50,12 @@ void PluginProcessor::setParameter (int index, float newValue)
             case k_flipRoll:   panner_setFlipRoll(hPan, (int)(newValue + 0.5f)); break;
             case k_spread:     panner_setSpread(hPan, newValue*(PANNER_SPREAD_MAX_VALUE-PANNER_SPREAD_MIN_VALUE)+PANNER_SPREAD_MIN_VALUE); break;
             case k_roomCoeff:  panner_setDTT(hPan, newValue); break;
-            case k_numInputs:  panner_setNumSources(hPan, (int)(newValue*(float)(PANNER_MAX_NUM_INPUTS)+0.5)); break;
-            case k_numOutputs: panner_setNumLoudspeakers(hPan, (int)(newValue*(float)(PANNER_MAX_NUM_OUTPUTS)+0.5)); break;
+            case k_numInputs:  panner_setNumSources(hPan, (int)(newValue*(float)(MAX_NUM_INPUTS)+0.5)); break;
+            case k_numOutputs: panner_setNumLoudspeakers(hPan, (int)(newValue*(float)(MAX_NUM_OUTPUTS)+0.5)); break;
         }
     }
     /* source direction parameters */
-    else if(index<2*PANNER_MAX_NUM_INPUTS+k_NumOfParameters){
+    else if(index<2*MAX_NUM_INPUTS+k_NumOfParameters){
         index-=k_NumOfParameters;
         float newValueScaled;
         if (!(index % 2)){
@@ -75,7 +75,7 @@ void PluginProcessor::setParameter (int index, float newValue)
     }
     /* loudspeaker direction parameters */
     else{
-        index -= (k_NumOfParameters+2*PANNER_MAX_NUM_INPUTS);
+        index -= (k_NumOfParameters+2*MAX_NUM_INPUTS);
         float newValueScaled;
         if (!(index % 2)){
             newValueScaled = (newValue - 0.5f)*360.0f;
@@ -111,13 +111,13 @@ float PluginProcessor::getParameter (int index)
             case k_flipRoll:   return (float)panner_getFlipRoll(hPan);
             case k_spread:     return (panner_getSpread(hPan)-PANNER_SPREAD_MIN_VALUE)/(PANNER_SPREAD_MAX_VALUE-PANNER_SPREAD_MIN_VALUE);
             case k_roomCoeff:  return (float)panner_getDTT(hPan);
-            case k_numInputs:  return (float)(panner_getNumSources(hPan))/(float)(PANNER_MAX_NUM_INPUTS);
-            case k_numOutputs: return (float)(panner_getNumLoudspeakers(hPan))/(float)(PANNER_MAX_NUM_OUTPUTS);
+            case k_numInputs:  return (float)(panner_getNumSources(hPan))/(float)(MAX_NUM_INPUTS);
+            case k_numOutputs: return (float)(panner_getNumLoudspeakers(hPan))/(float)(MAX_NUM_OUTPUTS);
             default: return 0.0f;
         }
     }
     /* source direction parameters */
-    else if(index<2*PANNER_MAX_NUM_INPUTS+k_NumOfParameters){
+    else if(index<2*MAX_NUM_INPUTS+k_NumOfParameters){
         index-=k_NumOfParameters;
         if (!(index % 2))
             return (panner_getSourceAzi_deg(hPan, index/2)/360.0f) + 0.5f;
@@ -126,7 +126,7 @@ float PluginProcessor::getParameter (int index)
     }
     /* loudspeaker direction parameters */
     else{
-        index -= (k_NumOfParameters+2*PANNER_MAX_NUM_INPUTS);
+        index -= (k_NumOfParameters+2*MAX_NUM_INPUTS);
         if (!(index % 2))
             return (panner_getLoudspeakerAzi_deg(hPan, index/2)/360.0f) + 0.5f;
         else
@@ -136,7 +136,7 @@ float PluginProcessor::getParameter (int index)
 
 int PluginProcessor::getNumParameters()
 {
-	return k_NumOfParameters + 2*PANNER_MAX_NUM_INPUTS + 2*PANNER_MAX_NUM_OUTPUTS;
+	return k_NumOfParameters + 2*MAX_NUM_INPUTS + 2*MAX_NUM_OUTPUTS;
 }
 
 const String PluginProcessor::getName() const
@@ -163,7 +163,7 @@ const String PluginProcessor::getParameterName (int index)
         }
     }
     /* source direction parameters */
-    else if(index<2*PANNER_MAX_NUM_INPUTS+k_NumOfParameters){
+    else if(index<2*MAX_NUM_INPUTS+k_NumOfParameters){
         index-=k_NumOfParameters;
         if (!(index % 2))
             return TRANS("SrcAzim_") + String(index/2);
@@ -172,7 +172,7 @@ const String PluginProcessor::getParameterName (int index)
     }
     /* loudspeaker direction parameters */
     else{
-        index -= (k_NumOfParameters+2*PANNER_MAX_NUM_INPUTS);
+        index -= (k_NumOfParameters+2*MAX_NUM_INPUTS);
         if (!(index % 2))
             return TRANS("LsAzim_") + String(index/2);
         else
@@ -199,7 +199,7 @@ const String PluginProcessor::getParameterText(int index)
         }
     }
     /* source direction parameters */
-    else if(index<2*PANNER_MAX_NUM_INPUTS+k_NumOfParameters){
+    else if(index<2*MAX_NUM_INPUTS+k_NumOfParameters){
         index -= k_NumOfParameters;
         if (!(index % 2))
             return String(panner_getSourceAzi_deg(hPan, index/2));
@@ -208,7 +208,7 @@ const String PluginProcessor::getParameterText(int index)
     }
     /* loudspeaker direction parameters */
     else{
-        index -= (k_NumOfParameters+2*PANNER_MAX_NUM_INPUTS);
+        index -= (k_NumOfParameters+2*MAX_NUM_INPUTS);
         if (!(index % 2))
             return String(panner_getLoudspeakerAzi_deg(hPan, index/2));
         else
@@ -308,8 +308,20 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
+    float* pFrameData[MAX_NUM_CHANNELS];
+    int frameSize = panner_getFrameSize();
 
-    panner_process(hPan, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);  
+    if((nCurrentBlockSize % frameSize == 0)){ /* divisible by frame size */
+       for (int frame = 0; frame < nCurrentBlockSize/frameSize; frame++) {
+           for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+               pFrameData[ch] = &bufferData[ch][frame*frameSize];
+
+           /* perform processing */
+           panner_process(hPan, pFrameData, pFrameData, nNumInputs, nNumOutputs, frameSize);
+       }
+    }
+    else
+       buffer.clear();
 }
 
 //==============================================================================
@@ -445,8 +457,8 @@ void PluginProcessor::saveConfigurationToFile (File destination, int srcOrLs)
 /* Adapted from the AllRADecoder by Daniel Rudrich, (c) 2017 (GPLv3 license) */
 void PluginProcessor::loadConfiguration (const File& configFile, int srcOrLs)
 {
-    int channelIDs[MAX(PANNER_MAX_NUM_INPUTS, PANNER_MAX_NUM_OUTPUTS)+1] = {0};
-    int virtual_channelIDs[MAX(PANNER_MAX_NUM_INPUTS, PANNER_MAX_NUM_OUTPUTS)+1] = {0};
+    int channelIDs[MAX(MAX_NUM_INPUTS, MAX_NUM_OUTPUTS)+1] = {0};
+    int virtual_channelIDs[MAX(MAX_NUM_INPUTS, MAX_NUM_OUTPUTS)+1] = {0};
     elements.removeAllChildren(nullptr);
     Result result = ConfigurationHelper::parseFileForGenericLayout(configFile, elements, nullptr);
     if(result.wasOk()){

@@ -22,7 +22,7 @@
 #ifndef PLUGINPROCESSOR_H_INCLUDED
 #define PLUGINPROCESSOR_H_INCLUDED
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 #include "binauraliser.h"
 #include <thread>
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1

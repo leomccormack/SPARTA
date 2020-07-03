@@ -41,10 +41,10 @@ void PluginProcessor::setParameter (int index, float newValue)
     /* standard parameters */
     if(index < k_NumOfParameters){
         switch (index) {
-            case k_outputOrder:   ambi_enc_setOutputOrder(hAmbi, (AMBI_ENC_OUTPUT_ORDERS)(int)(newValue*(float)(AMBI_ENC_MAX_SH_ORDER-1) + 1.5f)); break;
-            case k_channelOrder:  ambi_enc_setChOrder(hAmbi, (int)(newValue*(float)(AMBI_ENC_NUM_CH_ORDERINGS-1) + 1.5f)); break;
-            case k_normType:      ambi_enc_setNormType(hAmbi, (int)(newValue*(float)(AMBI_ENC_NUM_NORM_TYPES-1) + 1.5f)); break;
-            case k_numSources:    ambi_enc_setNumSources(hAmbi, (int)(newValue*(float)(AMBI_ENC_MAX_NUM_INPUTS)+0.5)); break;
+            case k_outputOrder:   ambi_enc_setOutputOrder(hAmbi, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
+            case k_channelOrder:  ambi_enc_setChOrder(hAmbi, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
+            case k_normType:      ambi_enc_setNormType(hAmbi, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
+            case k_numSources:    ambi_enc_setNumSources(hAmbi, (int)(newValue*(float)(MAX_NUM_INPUTS)+0.5)); break;
         }
     }
     /* source direction parameters */
@@ -77,10 +77,10 @@ float PluginProcessor::getParameter (int index)
     /* standard parameters */
     if(index < k_NumOfParameters){
         switch (index) {
-            case k_outputOrder:   return (float)(ambi_enc_getOutputOrder(hAmbi)-1)/(float)(AMBI_ENC_MAX_SH_ORDER-1);
-            case k_channelOrder:  return (float)(ambi_enc_getChOrder(hAmbi)-1)/(float)(AMBI_ENC_NUM_CH_ORDERINGS-1);
-            case k_normType:      return (float)(ambi_enc_getNormType(hAmbi)-1)/(float)(AMBI_ENC_NUM_NORM_TYPES-1);
-            case k_numSources:    return (float)(ambi_enc_getNumSources(hAmbi))/(float)(AMBI_ENC_MAX_NUM_INPUTS);
+            case k_outputOrder:   return (float)(ambi_enc_getOutputOrder(hAmbi)-1)/(float)(MAX_SH_ORDER-1);
+            case k_channelOrder:  return (float)(ambi_enc_getChOrder(hAmbi)-1)/(float)(NUM_CH_ORDERINGS-1);
+            case k_normType:      return (float)(ambi_enc_getNormType(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
+            case k_numSources:    return (float)(ambi_enc_getNumSources(hAmbi))/(float)(MAX_NUM_INPUTS);
             default: return 0.0f;
         }
     }
@@ -96,7 +96,7 @@ float PluginProcessor::getParameter (int index)
 
 int PluginProcessor::getNumParameters()
 {
-	return k_NumOfParameters + 2*AMBI_ENC_MAX_NUM_INPUTS;
+	return k_NumOfParameters + 2*MAX_NUM_INPUTS;
 }
 
 const String PluginProcessor::getName() const
@@ -249,8 +249,20 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
+    float* pFrameData[MAX_NUM_CHANNELS];
+    int frameSize = ambi_enc_getFrameSize();
 
-    ambi_enc_process(hAmbi, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize); 
+    if((nCurrentBlockSize % frameSize == 0)){ /* divisible by frame size */
+        for (int frame = 0; frame < nCurrentBlockSize/frameSize; frame++) {
+            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+                pFrameData[ch] = &bufferData[ch][frame*frameSize];
+
+            /* perform processing */
+            ambi_enc_process(hAmbi, pFrameData, pFrameData, nNumInputs, nNumOutputs, frameSize);
+        }
+    }
+    else
+        buffer.clear(); 
 }
 
 //==============================================================================

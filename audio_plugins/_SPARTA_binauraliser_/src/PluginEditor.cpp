@@ -304,7 +304,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* source coordinate viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (sourceCoordsVP.get());
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, BINAURALISER_MAX_NUM_INPUTS, binauraliser_getNumSources(hBin));
+    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_INPUTS, binauraliser_getNumSources(hBin));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
@@ -948,6 +948,11 @@ void PluginEditor::paint (Graphics& g)
     switch (currentWarning){
         case k_warning_none:
             break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(binauraliser_getFrameSize()),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
         case k_warning_supported_fs:
             g.drawText(TRANS("Sample rate (") + String(binauraliser_getDAWsamplerate(hBin)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
@@ -1170,7 +1175,7 @@ void PluginEditor::timerCallback(int timerID)
             if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
                 addAndMakeVisible(progressbar);
                 progress = (double)binauraliser_getProgressBar0_1(hBin);
-                char text[BINAURALISER_PROGRESSBARTEXT_CHAR_LENGTH];
+                char text[PROGRESSBARTEXT_CHAR_LENGTH];
                 binauraliser_getProgressBarText(hBin, (char*)text);
                 progressbar.setTextToDisplay(String(text));
             }
@@ -1220,7 +1225,11 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* display warning message, if needed */
-            if ( !((binauraliser_getDAWsamplerate(hBin) == 44.1e3) || (binauraliser_getDAWsamplerate(hBin) == 48e3)) ){
+            if ((hVst->getCurrentBlockSize() % binauraliser_getFrameSize()) != 0){
+                currentWarning = k_warning_frameSize;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ( !((binauraliser_getDAWsamplerate(hBin) == 44.1e3) || (binauraliser_getDAWsamplerate(hBin) == 48e3)) ){
                 currentWarning = k_warning_supported_fs;
                 repaint(0,0,getWidth(),32);
             }
