@@ -13,7 +13,7 @@ lib/
 *.DS_Store
 .idea/
 cmake-build-debug/
-Cmake-build-release/
+cmake-build-release/
 
 # User-specific files
 *.suo
