@@ -273,13 +273,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     needScreenRefreshFLAG = true;
 
     /* add master decoding order options */
-    CBencodingOrder->addItem (TRANS("1st order"), ENCODING_ORDER_FIRST);
-    CBencodingOrder->addItem (TRANS("2nd order"), ENCODING_ORDER_SECOND);
-    CBencodingOrder->addItem (TRANS("3rd order"), ENCODING_ORDER_THIRD);
-    CBencodingOrder->addItem (TRANS("4th order"), ENCODING_ORDER_FOURTH);
-    CBencodingOrder->addItem (TRANS("5th order"), ENCODING_ORDER_FIFTH);
-    CBencodingOrder->addItem (TRANS("6th order"), ENCODING_ORDER_SIXTH);
-    CBencodingOrder->addItem (TRANS("7th order"), ENCODING_ORDER_SEVENTH);
+    CBencodingOrder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
+    CBencodingOrder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
+    CBencodingOrder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
+    CBencodingOrder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
+    CBencodingOrder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
+    CBencodingOrder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
+    CBencodingOrder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
 
     /* pass handles to data required for eq and analysis displays */
     int numFreqPoints, numCurves;
@@ -377,8 +377,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     gainSlider->setValue(array2sh_getGain(hA2sh), dontSendNotification);
     showDegreesInstead = false;
     degRadTB->setToggleState(showDegreesInstead, dontSendNotification);
-    CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
-    normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
+    CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
+    normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
     applyDiffEQ->setToggleState((bool)array2sh_getDiffEQpastAliasing(hA2sh), dontSendNotification);
 
     /* tooltips */
@@ -1064,6 +1064,11 @@ void PluginEditor::paint (Graphics& g)
     switch (currentWarning){
         case k_warning_none:
             break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(array2sh_getFrameSize()),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
         case k_warning_supported_fs:
             g.drawText(TRANS("Sample rate (") + String(array2sh_getSamplingRate(hA2sh)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
@@ -1105,7 +1110,7 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == presetCB.get())
     {
         //[UserComboBoxCode_presetCB] -- add your combo box handling code here..
-        array2sh_setPreset(hA2sh, (int)presetCB->getSelectedId());
+        array2sh_setPreset(hA2sh, (ARRAY2SH_MICROPHONE_ARRAY_PRESETS)presetCB->getSelectedId());
 
         /* grab current parameter settings */
         arrayTypeCB->setSelectedId(array2sh_getArrayType(hA2sh), dontSendNotification);
@@ -1332,8 +1337,8 @@ void PluginEditor::timerCallback(int timerID)
                 CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), dontSendNotification);
             if(normalisationCB->getSelectedId()!=array2sh_getNormType(hA2sh))
                 normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), dontSendNotification);
-            CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
-            normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==ENCODING_ORDER_FIRST ? true : false);
+            CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
+            normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
 
             /* check if eval curves have recently been computed */
             if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_RECENTLY_EVALUATED){
@@ -1440,7 +1445,7 @@ void PluginEditor::timerCallback(int timerID)
             if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_EVALUATING){
                 addAndMakeVisible(progressbar);
                 progress = (double)array2sh_getProgressBar0_1(hA2sh);
-                char text[ARRAY2SH_PROGRESSBARTEXT_CHAR_LENGTH];
+                char text[PROGRESSBARTEXT_CHAR_LENGTH];
                 array2sh_getProgressBarText(hA2sh, (char*)text);
                 progressbar.setTextToDisplay(String(text));
             }
@@ -1452,7 +1457,11 @@ void PluginEditor::timerCallback(int timerID)
                 CBencodingOrder->setItemEnabled(i, (i+1)*(i+1) <= array2sh_getNumSensors(hA2sh) ? true : false);
 
             /* display warning message, if needed */
-            if ( !((array2sh_getSamplingRate(hA2sh) == 44.1e3) || (array2sh_getSamplingRate(hA2sh) == 48e3)) ){
+            if ((hVst->getCurrentBlockSize() % array2sh_getFrameSize()) != 0){
+                currentWarning = k_warning_frameSize;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ( !((array2sh_getSamplingRate(hA2sh) == 44.1e3) || (array2sh_getSamplingRate(hA2sh) == 48e3)) ){
                 currentWarning = k_warning_supported_fs;
                 repaint(0,0,getWidth(),32);
             }

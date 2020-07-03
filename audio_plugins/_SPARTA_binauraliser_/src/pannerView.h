@@ -70,7 +70,7 @@ private:
     int height;
     bool showInputs;
     bool showOutputs;
-    Rectangle<float> SourceIcons[BINAURALISER_MAX_NUM_INPUTS];
+    Rectangle<float> SourceIcons[MAX_NUM_INPUTS];
     Rectangle<float> LoudspeakerIcons[MAX_NUM_OUT_DIRS];
     int NSources;
     int NLoudspeakers;

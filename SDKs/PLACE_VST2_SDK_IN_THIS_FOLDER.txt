@@ -9,6 +9,6 @@ The following dependencies are then included as git submodules:
 SDKs/JUCE
 SDKs/Spatial_Audio_Framework
 
-If they are not there, then enter the following command:
+If they are empty, then use the following command:
 git submodule update --init --recursive
 

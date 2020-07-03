@@ -22,12 +22,12 @@
 #ifndef PLUGINPROCESSOR_H_INCLUDED
 #define PLUGINPROCESSOR_H_INCLUDED
 
-#include "../JuceLibraryCode/JuceHeader.h"
+//#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 #include "ambi_bin.h"
 #include <string.h>
 #include <thread>
 #define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
-#define MAX_NUM_CHANNELS 64
 #define DEFAULT_OSC_PORT 9000
 
 typedef enum _TIMERS{

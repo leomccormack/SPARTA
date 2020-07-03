@@ -82,7 +82,7 @@ void PluginProcessor::setParameter (int index, float newValue)
             case k_flipYaw:         binauraliser_setFlipYaw(hBin, (int)(newValue + 0.5f));  break;
             case k_flipPitch:       binauraliser_setFlipPitch(hBin, (int)(newValue + 0.5f)); break;
             case k_flipRoll:        binauraliser_setFlipRoll(hBin, (int)(newValue + 0.5f)); break;
-            case k_numInputs:       binauraliser_setNumSources(hBin, (int)(newValue*(float)(BINAURALISER_MAX_NUM_INPUTS)+0.5)); break;
+            case k_numInputs:       binauraliser_setNumSources(hBin, (int)(newValue*(float)(MAX_NUM_INPUTS)+0.5)); break;
         }
     }
     /* source direction parameters */
@@ -123,7 +123,7 @@ float PluginProcessor::getParameter (int index)
             case k_flipYaw:         return (float)binauraliser_getFlipYaw(hBin);
             case k_flipPitch:       return (float)binauraliser_getFlipPitch(hBin);
             case k_flipRoll:        return (float)binauraliser_getFlipRoll(hBin);
-            case k_numInputs:       return (float)(binauraliser_getNumSources(hBin))/(float)(BINAURALISER_MAX_NUM_INPUTS);
+            case k_numInputs:       return (float)(binauraliser_getNumSources(hBin))/(float)(MAX_NUM_INPUTS);
             default: return 0.0f;
         }
     }
@@ -139,7 +139,7 @@ float PluginProcessor::getParameter (int index)
 
 int PluginProcessor::getNumParameters()
 {
-	return k_NumOfParameters + 2*BINAURALISER_MAX_NUM_INPUTS;
+	return k_NumOfParameters + 2*MAX_NUM_INPUTS;
 }
 
 const String PluginProcessor::getName() const
@@ -291,8 +291,20 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
+    float* pFrameData[MAX_NUM_CHANNELS];
+    int frameSize = binauraliser_getFrameSize();
 
-    binauraliser_process(hBin, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize); 
+    if((nCurrentBlockSize % frameSize == 0)){ /* divisible by frame size */
+        for (int frame = 0; frame < nCurrentBlockSize/frameSize; frame++) {
+            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+                pFrameData[ch] = &bufferData[ch][frame*frameSize];
+
+            /* perform processing */
+            binauraliser_process(hBin, pFrameData, pFrameData, nNumInputs, nNumOutputs, frameSize);
+        }
+    }
+    else
+        buffer.clear();
 }
 
 //==============================================================================
@@ -421,8 +433,8 @@ void PluginProcessor::saveConfigurationToFile (File destination)
 /* Adapted from the AllRADecoder by Daniel Rudrich, (c) 2017 (GPLv3 license) */
 void PluginProcessor::loadConfiguration (const File& configFile)
 {
-    int channelIDs[BINAURALISER_MAX_NUM_INPUTS+1] = {0};
-    int virtual_channelIDs[BINAURALISER_MAX_NUM_INPUTS+1] = {0};
+    int channelIDs[MAX_NUM_INPUTS+1] = {0};
+    int virtual_channelIDs[MAX_NUM_INPUTS+1] = {0};
     sources.removeAllChildren(nullptr);
     Result result = ConfigurationHelper::parseFileForGenericLayout (configFile, sources, nullptr);
     //Result result = ConfigurationHelper::parseFileForLoudspeakerLayout (configFile, sources, nullptr);

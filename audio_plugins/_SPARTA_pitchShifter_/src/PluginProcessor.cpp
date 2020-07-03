@@ -40,7 +40,7 @@ PluginProcessor::~PluginProcessor()
 void PluginProcessor::setParameter (int index, float newValue)
 {
 	switch (index) {
-        case k_numChannels:      pitch_shifter_setNumChannels(hPS, (int)(newValue*(float)(PITCH_SHIFTER_MAX_NUM_CHANNELS-1) + 1.5f)); break;
+        case k_numChannels:      pitch_shifter_setNumChannels(hPS, (int)(newValue*(float)(MAX_NUM_CHANNELS-1) + 1.5f)); break;
         case k_pitchShiftFactor: pitch_shifter_setPitchShiftFactor(hPS, newValue * (PITCH_SHIFTER_MAX_SHIFT_FACTOR - PITCH_SHIFTER_MIN_SHIFT_FACTOR) + PITCH_SHIFTER_MIN_SHIFT_FACTOR); break;
         case k_OSampOption:      pitch_shifter_setOSampOption(hPS, (PITCH_SHIFTER_OSAMP_OPTIONS)(int)(newValue*(float)(PITCH_SHIFTER_NUM_OSAMP_OPTIONS-1) + 1.5f)); break;
         case k_fftOption:        pitch_shifter_setFFTSizeOption(hPS, (PITCH_SHIFTER_FFTSIZE_OPTIONS)(int)(newValue*(float)(PITCH_SHIFTER_NUM_FFTSIZE_OPTIONS-1) + 1.5f)); break;
@@ -55,7 +55,7 @@ void PluginProcessor::setCurrentProgram (int /*index*/)
 float PluginProcessor::getParameter (int index)
 {
     switch (index) {
-        case k_numChannels:      return (float)(pitch_shifter_getNCHrequired(hPS)-1)/(float)(PITCH_SHIFTER_MAX_NUM_CHANNELS-1);
+        case k_numChannels:      return (float)(pitch_shifter_getNCHrequired(hPS)-1)/(float)(MAX_NUM_CHANNELS-1);
         case k_OSampOption:      return (float)(pitch_shifter_getOSampOption(hPS)-1)/(float)(PITCH_SHIFTER_NUM_OSAMP_OPTIONS-1);
         case k_fftOption:        return (float)(pitch_shifter_getFFTSizeOption(hPS)-1)/(float)(PITCH_SHIFTER_NUM_FFTSIZE_OPTIONS-1);
         case k_pitchShiftFactor: return (float)(pitch_shifter_getPitchShiftFactor(hPS) - PITCH_SHIFTER_MIN_SHIFT_FACTOR)/(PITCH_SHIFTER_MAX_SHIFT_FACTOR - PITCH_SHIFTER_MIN_SHIFT_FACTOR);

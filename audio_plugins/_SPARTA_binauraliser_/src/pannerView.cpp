@@ -48,7 +48,7 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     width = _width;
     height = _height;
 
-    for(int src=0; src<BINAURALISER_MAX_NUM_INPUTS; src++){
+    for(int src=0; src<MAX_NUM_INPUTS; src++){
         SourceIcons[src].setBounds(width - width*(binauraliser_getSourceAzi_deg(hBin, src) + 180.0f)/360.f - icon_size/2.0f,
                                    height - height*(binauraliser_getSourceElev_deg(hBin, src) + 90.0f)/180.0f - icon_size/2.0f,
                                    icon_size,
@@ -234,7 +234,7 @@ void pannerView::mouseUp (const MouseEvent& e)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void pannerView::refreshPanView()
 {
-    for(int src=0; src<BINAURALISER_MAX_NUM_INPUTS; src++){
+    for(int src=0; src<MAX_NUM_INPUTS; src++){
         SourceIcons[src].setBounds(width - width*(binauraliser_getSourceAzi_deg(hBin, src) + 180.0f)/360.f - icon_size/2.0f,
                                    height - height*(binauraliser_getSourceElev_deg(hBin, src) + 90.0f)/180.0f - icon_size/2.0f,
                                    icon_size,

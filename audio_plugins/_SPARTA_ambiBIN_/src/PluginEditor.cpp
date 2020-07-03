@@ -266,13 +266,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     openGLContext.attachTo(*this);
 
     /* add options to combo boxes */
-    CBorderPreset->addItem (TRANS("1st order"), INPUT_ORDER_FIRST);
-    CBorderPreset->addItem (TRANS("2nd order"), INPUT_ORDER_SECOND);
-    CBorderPreset->addItem (TRANS("3rd order"), INPUT_ORDER_THIRD);
-    CBorderPreset->addItem (TRANS("4th order"), INPUT_ORDER_FOURTH);
-    CBorderPreset->addItem (TRANS("5th order"), INPUT_ORDER_FIFTH);
-    CBorderPreset->addItem (TRANS("6th order"), INPUT_ORDER_SIXTH);
-    CBorderPreset->addItem (TRANS("7th order"), INPUT_ORDER_SEVENTH);
+    CBorderPreset->addItem (TRANS("1st order"), SH_ORDER_FIRST);
+    CBorderPreset->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
+    CBorderPreset->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
+    CBorderPreset->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
+    CBorderPreset->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
+    CBorderPreset->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
+    CBorderPreset->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
     CBdecoderMethod->addItem(TRANS("Least-Squares (LS)"), DECODING_METHOD_LS);
     CBdecoderMethod->addItem(TRANS("LS with Diffuse-EQ"), DECODING_METHOD_LSDIFFEQ);
     CBdecoderMethod->addItem(TRANS("Spatial Resampling (SPR)"), DECODING_METHOD_SPR);
@@ -314,8 +314,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     t_flipRoll->setToggleState((bool)ambi_bin_getFlipRoll(hAmbi), dontSendNotification);
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
     TBrpyFlag->setToggleState((bool)ambi_bin_getRPYflag(hAmbi), dontSendNotification);
-    CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
-    CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
+    CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
     TBphaseWarping->setEnabled(false); // coming soon
 
     /* tooltips */
@@ -933,7 +933,12 @@ void PluginEditor::paint (Graphics& g)
     g.setFont(Font(11.00f, Font::plain));
     switch (currentWarning){
         case k_warning_none:
-            break; 
+            break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(ambi_bin_getFrameSize()),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
         case k_warning_supported_fs:
             g.drawText(TRANS("Sample rate (") + String(ambi_bin_getDAWsamplerate(hAmbi)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
@@ -1054,7 +1059,7 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBorderPreset.get())
     {
         //[UserComboBoxCode_CBorderPreset] -- add your combo box handling code here..
-        ambi_bin_setInputOrderPreset(hAmbi, (AMBI_BIN_INPUT_ORDERS)CBorderPreset->getSelectedId());
+        ambi_bin_setInputOrderPreset(hAmbi, (SH_ORDERS)CBorderPreset->getSelectedId());
         //[/UserComboBoxCode_CBorderPreset]
     }
     else if (comboBoxThatHasChanged == CBchFormat.get())
@@ -1136,14 +1141,14 @@ void PluginEditor::timerCallback(int timerID)
             label_HRIR_len->setText(String(ambi_bin_getHRIRlength(hAmbi)), dontSendNotification);
             label_HRIR_fs->setText(String(ambi_bin_getHRIRsamplerate(hAmbi)), dontSendNotification);
             label_DAW_fs->setText(String(ambi_bin_getDAWsamplerate(hAmbi)), dontSendNotification);
-            CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
-            CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==INPUT_ORDER_FIRST ? true : false);
+            CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
+            CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
 
             /* Progress bar */
             if(ambi_bin_getCodecStatus(hAmbi)==CODEC_STATUS_INITIALISING){
                 addAndMakeVisible(progressbar);
                 progress = (double)ambi_bin_getProgressBar0_1(hAmbi);
-                char text[AMBI_BIN_PROGRESSBARTEXT_CHAR_LENGTH];
+                char text[PROGRESSBARTEXT_CHAR_LENGTH];
                 ambi_bin_getProgressBarText(hAmbi, (char*)text);
                 progressbar.setTextToDisplay(String(text));
             }
@@ -1189,7 +1194,11 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* display warning message, if needed */
-            if ( !((ambi_bin_getDAWsamplerate(hAmbi) == 44.1e3) || (ambi_bin_getDAWsamplerate(hAmbi) == 48e3)) ){
+            if ((hVst->getCurrentBlockSize() % ambi_bin_getFrameSize()) != 0){
+                currentWarning = k_warning_frameSize;
+                repaint(0,0,getWidth(),32);
+            }
+            else if ( !((ambi_bin_getDAWsamplerate(hAmbi) == 44.1e3) || (ambi_bin_getDAWsamplerate(hAmbi) == 48e3)) ){
                 currentWarning = k_warning_supported_fs;
                 repaint(0,0,getWidth(),32);
             }

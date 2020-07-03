@@ -8,7 +8,6 @@ PluginProcessor::PluginProcessor() :
 	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
 	nSampleRate = 48000;
-    nHostBlockSize = FRAME_SIZE;
 	ambi_drc_create(&hAmbi);
 }
 
@@ -21,9 +20,9 @@ void PluginProcessor::setParameter (int index, float newValue)
 {
 	switch (index)
 	{
-        case k_inputOrder:   ambi_drc_setInputPreset(hAmbi, (AMBI_DRC_INPUT_ORDER)(int)(newValue*(float)(AMBI_DRC_MAX_SH_ORDER-1) + 1.5f)); break;
-        case k_channelOrder: ambi_drc_setChOrder(hAmbi, (int)(newValue*(float)(AMBI_DRC_NUM_CH_ORDERINGS-1) + 1.5f)); break;
-        case k_normType:     ambi_drc_setNormType(hAmbi, (int)(newValue*(float)(AMBI_DRC_NUM_NORM_TYPES-1) + 1.5f)); break;
+        case k_inputOrder:   ambi_drc_setInputPreset(hAmbi, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
+        case k_channelOrder: ambi_drc_setChOrder(hAmbi, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
+        case k_normType:     ambi_drc_setNormType(hAmbi, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
         case k_theshold:     ambi_drc_setThreshold(hAmbi, newValue*(AMBI_DRC_THRESHOLD_MAX_VAL-AMBI_DRC_THRESHOLD_MIN_VAL)+AMBI_DRC_THRESHOLD_MIN_VAL); break;
         case k_ratio:        ambi_drc_setRatio(hAmbi, newValue*(AMBI_DRC_RATIO_MAX_VAL-AMBI_DRC_RATIO_MIN_VAL)+AMBI_DRC_RATIO_MIN_VAL); break;
         case k_knee:         ambi_drc_setKnee(hAmbi, newValue*(AMBI_DRC_KNEE_MAX_VAL-AMBI_DRC_KNEE_MIN_VAL)+AMBI_DRC_KNEE_MIN_VAL); break;
@@ -43,9 +42,9 @@ float PluginProcessor::getParameter (int index)
 {
     switch (index)
 	{
-        case k_inputOrder:   return (float)(ambi_drc_getInputPreset(hAmbi)-1)/(float)(AMBI_DRC_MAX_SH_ORDER-1);
-        case k_channelOrder: return (float)(ambi_drc_getChOrder(hAmbi)-1)/(float)(AMBI_DRC_NUM_NORM_TYPES-1);
-        case k_normType:     return (float)(ambi_drc_getNormType(hAmbi)-1)/(float)(AMBI_DRC_NUM_NORM_TYPES-1);
+        case k_inputOrder:   return (float)(ambi_drc_getInputPreset(hAmbi)-1)/(float)(MAX_SH_ORDER-1);
+        case k_channelOrder: return (float)(ambi_drc_getChOrder(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
+        case k_normType:     return (float)(ambi_drc_getNormType(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
         case k_theshold:     return (ambi_drc_getThreshold(hAmbi)-AMBI_DRC_THRESHOLD_MIN_VAL)/(AMBI_DRC_THRESHOLD_MAX_VAL-AMBI_DRC_THRESHOLD_MIN_VAL);
         case k_ratio:        return (ambi_drc_getThreshold(hAmbi)-AMBI_DRC_RATIO_MIN_VAL)/(AMBI_DRC_RATIO_MAX_VAL-AMBI_DRC_RATIO_MIN_VAL);
         case k_knee:         return (ambi_drc_getKnee(hAmbi)-AMBI_DRC_KNEE_MIN_VAL)/(AMBI_DRC_KNEE_MAX_VAL-AMBI_DRC_KNEE_MIN_VAL);
@@ -206,7 +205,9 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float** bufferData = buffer.getArrayOfWritePointers();
- 
+    float* pFrameData[MAX_NUM_CHANNELS];
+    int frameSize = ambi_drc_getFrameSize();
+
     /* check whether the playhead is moving */
     playHead = getPlayHead();
     if(playHead!=NULL)
@@ -214,7 +215,18 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     else
         isPlaying = false;
 
-    ambi_drc_process(hAmbi, bufferData, bufferData, nNumInputs < nNumOutputs ? nNumInputs : nNumOutputs, nCurrentBlockSize);
+    /* process one frame at a time: */
+    if((nCurrentBlockSize % frameSize == 0)){ /* divisible by frame size */
+        for (int frame = 0; frame < nCurrentBlockSize/frameSize; frame++) {
+            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+                pFrameData[ch] = &bufferData[ch][frame*frameSize];
+
+            /* perform processing */
+            ambi_drc_process(hAmbi, pFrameData, pFrameData, nNumInputs < nNumOutputs ? nNumInputs : nNumOutputs, frameSize);
+        }
+    }
+    else
+        buffer.clear(); 
 }
 
 //==============================================================================
@@ -278,7 +290,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if(xmlState->hasAttribute("CHORDER"))
                 ambi_drc_setChOrder(hAmbi, xmlState->getIntAttribute("CHORDER", 1));
             if(xmlState->hasAttribute("PRESET"))
-                ambi_drc_setInputPreset(hAmbi, (AMBI_DRC_INPUT_ORDER)xmlState->getIntAttribute("PRESET", 1));
+                ambi_drc_setInputPreset(hAmbi, (SH_ORDERS)xmlState->getIntAttribute("PRESET", 1));
             
             ambi_drc_refreshSettings(hAmbi);
         } 
