@@ -46,10 +46,10 @@ PUBLIC
     JUCE_VST3_CAN_REPLACE_VST2=0
 )
  
-# Link with saf, and the required juce modules
+# Link with saf example, and the required juce modules
 target_link_libraries(${PROJECT_NAME} 
 PRIVATE 
-    saf saf_example_powermap
+    saf_example_powermap
     juce::juce_recommended_config_flags
     juce::juce_recommended_lto_flags
     juce::juce_recommended_warning_flags
