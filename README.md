@@ -4,7 +4,7 @@ Spatial Audio Real-Time Applications (SPARTA) [1]. A collection of VST audio plu
 
 ![](sparta_screenshot.png)
 
-* [1] McCormack, L. and Politis, A., 2019. **SPARTA & COMPASS: Real-time implementations of linear and parametric spatial audio reproduction and processing methods**. In Audio Engineering Society Conference: 2019 AES International Conference on Immersive and Interactive Audio.
+* [1] McCormack, L. and Politis, A. 2019. [**SPARTA & COMPASS: Real-time implementations of linear and parametric spatial audio reproduction and processing methods**](docs/McCormackPolitis2019SpartaCompass.pdf). In Audio Engineering Society Conference: 2019 AES International Conference on Immersive and Interactive Audio.
 
 ## Plug-in descriptions
 
