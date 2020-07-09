@@ -44,7 +44,7 @@ PUBLIC
 # Link with saf example, and the required juce modules
 target_link_libraries(${PROJECT_NAME} 
 PRIVATE 
-    saf_example_ambi_bin
+    saf_example_decorrelator
     juce::juce_recommended_config_flags
     juce::juce_recommended_lto_flags
     juce::juce_recommended_warning_flags
