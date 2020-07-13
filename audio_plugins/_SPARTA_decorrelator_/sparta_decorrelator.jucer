@@ -8,13 +8,13 @@
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="sparta_ambiBINAU" pluginRTASCategory=""
               aaxIdentifier="com.yourcompany.panner" pluginAAXCategory="2"
-              jucerVersion="5.4.7" buildVST3="0" buildRTAS="0" buildAAX="0"
-              pluginManufacturerEmail="support@yourcompany.com" companyName="Aalto"
-              companyEmail="leo.t.mccormack@gmail.com" userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS&#10;&#10;"
+              buildVST3="0" buildRTAS="0" buildAAX="0" pluginManufacturerEmail="support@yourcompany.com"
+              companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
+              userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS&#10;&#10;"
               buildAUv3="0" pluginIsMidiEffectPlugin="0" displaySplashScreen="0"
               reportAppUsage="0" splashScreenColour="Dark" buildStandalone="0"
               enableIAA="0" cppLanguageStandard="14" companyCopyright="Aalto"
-              pluginFormats="buildVST">
+              pluginFormats="buildVST" jucerFormatVersion="1">
   <MAINGROUP id="imnfnp" name="sparta_decorrelator">
     <FILE id="MXgSFV" name="PluginEditor.cpp" compile="1" resource="0"
           file="src/PluginEditor.cpp"/>
@@ -100,10 +100,6 @@
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_decor.c"/>
             <FILE id="rCBiAb" name="saf_utility_decor.h" compile="0" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_decor.h"/>
-            <FILE id="R0YLiH" name="saf_utility_erb.c" compile="1" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_erb.c"/>
-            <FILE id="YCNEok" name="saf_utility_erb.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_erb.h"/>
             <FILE id="oDAzXy" name="saf_utility_error.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_error.c"/>
             <FILE id="s7p0iR" name="saf_utility_error.h" compile="0" resource="0"
