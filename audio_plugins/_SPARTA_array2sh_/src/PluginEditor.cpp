@@ -303,10 +303,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* add weight options */
     weightTypeCB->addItem (TRANS("Rigid-omni"), WEIGHT_RIGID_OMNI);
     weightTypeCB->addItem (TRANS("Rigid-cardioid"), WEIGHT_RIGID_CARD);
-    /*weightTypeCB->addItem (TRANS("Rigid-dipole"), WEIGHT_RIGID_DIPOLE);*/
+    //weightTypeCB->addItem (TRANS("Rigid-dipole"), WEIGHT_RIGID_DIPOLE);
     weightTypeCB->addItem (TRANS("Open-omni"), WEIGHT_OPEN_OMNI);
     weightTypeCB->addItem (TRANS("Open-cardioid"), WEIGHT_OPEN_CARD);
-    /*weightTypeCB->addItem (TRANS("Open-dipole"), WEIGHT_OPEN_DIPOLE);*/
+    //weightTypeCB->addItem (TRANS("Open-dipole"), WEIGHT_OPEN_DIPOLE);
     weightTypeCB->setSelectedId(array2sh_getWeightType(hA2sh), dontSendNotification);
 
     /* add channel format and norm scheme options */
