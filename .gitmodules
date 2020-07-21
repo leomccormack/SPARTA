@@ -2,3 +2,6 @@
 	path = SDKs/Spatial_Audio_Framework
 	url = https://github.com/leomccormack/Spatial_Audio_Framework
 	branch = master
+[submodule "SDKs/JUCE"]
+	path = SDKs/JUCE
+	url = https://github.com/juce-framework/JUCE.git
