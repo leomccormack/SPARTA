@@ -214,15 +214,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CB_Norm->addItem(TRANS("FuMa"), NORM_FUMA);
 
     /* add microphone preset options */
-#ifdef ENABLE_ZYLIA_MIC_PRESET
     CBinputTypePreset->addItem(TRANS("Zylia"), MIC_PRESET_ZYLIA);
-#endif
-#ifdef ENABLE_EIGENMIKE32_MIC_PRESET
     CBinputTypePreset->addItem(TRANS("Eigenmike"), MIC_PRESET_EIGENMIKE32);
-#endif
-#ifdef ENABLE_DTU_MIC_MIC_PRESET
     CBinputTypePreset->addItem(TRANS("DTU mic"), MIC_PRESET_DTU_MIC);
-#endif
 
     /* ProgressBar */
     progress = 0.0;
