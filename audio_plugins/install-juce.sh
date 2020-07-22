@@ -3,6 +3,8 @@
 # Author: Marc Lavallée 2020
 
 if [[ "${OSTYPE}" != "linux-gnu" || "${OSTYPE}" != "darwin"* ]]; then
+    echo "${OSTYPE} detected"
+else
     echo "${OSTYPE} is unsupported"
     exit
 fi
@@ -144,8 +146,13 @@ build () {
 
     # configure Projucer
     cd "$(get_projucer_folder ${version})"
-    sed -i'' -e 's/JUCER_ENABLE_GPL_MODE 0/JUCER_ENABLE_GPL_MODE 1/g' \
-    ../../JuceLibraryCode/AppConfig.h
+    if [ -f ../../JuceLibraryCode/AppConfig.h ]; then
+        sed -i 's/JUCER_ENABLE_GPL_MODE 0/JUCER_ENABLE_GPL_MODE 1/g' \
+        ../../JuceLibraryCode/AppConfig.h
+    elif [ -f Source/Application/UserAccount/jucer_LicenseState.h ]; then
+        sed -i 's/Type type = Type::none;/Type type = Type::gpl;/g' \
+        Source/Application/UserAccount/jucer_LicenseState.h
+    fi
 
     # build Projucer
     if [[ "${OSTYPE}" == "linux-gnu" ]]; then
