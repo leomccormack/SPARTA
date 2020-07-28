@@ -31,6 +31,7 @@ PluginProcessor::PluginProcessor() :
 	nSampleRate = 48000;
 	sldoa_create(&hSld);
     startTimer(TIMER_PROCESSING_RELATED, 40);
+    isPlaying = false;
     
     /* camera default settings */
     cameraID = 1;
@@ -161,7 +162,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     isPlaying = false; 
 	sldoa_init(hSld, sampleRate);
 
-    AudioProcessor::setLatencySamples(sldoa_getProcessingDelay());
+    //AudioProcessor::setLatencySamples(sldoa_getProcessingDelay());
 }
 
 void PluginProcessor::releaseResources()

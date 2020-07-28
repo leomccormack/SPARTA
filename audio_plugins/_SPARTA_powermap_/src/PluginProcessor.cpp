@@ -28,6 +28,7 @@ PluginProcessor::PluginProcessor() :
 	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
     powermap_create(&hPm);
+    isPlaying = false;
     
     /* camera default settings */
     cameraID = 1;
