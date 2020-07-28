@@ -29,6 +29,8 @@ PluginProcessor::PluginProcessor() :
 	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
     dirass_create(&hDir);
+
+    isPlaying = false;
     
     /* camera default settings */
     cameraID = 1;
@@ -162,7 +164,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     isPlaying = false;
     dirass_init(hDir, sampleRate);
 
-    AudioProcessor::setLatencySamples(dirass_getProcessingDelay());
+    //AudioProcessor::setLatencySamples(dirass_getProcessingDelay());
 }
 
 void PluginProcessor::releaseResources()
@@ -193,7 +195,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     }
 
     /* perform analysis */
-    dirass_analysis(hDir, bufferData, nNumInputs, nCurrentBlockSize, isPlaying); 
+    dirass_analysis(hDir, bufferData, nNumInputs, nCurrentBlockSize, isPlaying);
 }
 
 //==============================================================================
