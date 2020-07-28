@@ -22,7 +22,8 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP")
 elseif(APPLE)
-    SET(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++") 
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.10" CACHE STRING "Minimum OS X deployment version" FORCE)
+    set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++") 
 elseif(UNIX AND NOT APPLE AND NOT ANDROID)
     add_definitions(
         #-std=c++11
