@@ -47,7 +47,6 @@ PRIVATE
     saf_example_decorrelator
     juce::juce_recommended_config_flags
     juce::juce_recommended_lto_flags
-    juce::juce_recommended_warning_flags
     juce::juce_audio_plugin_client
     juce::juce_audio_utils
     juce::juce_opengl

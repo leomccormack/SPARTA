@@ -477,14 +477,14 @@ void PluginProcessor::loadConfiguration (const File& configFile, int srcOrLs)
         }
         /* remove virtual channels and shift the channel indices down */
         for(int i=0; i<num_virtual_el; i++)
-            for(j=0; j<num_el+num_virtual_el; j++)
+            for(int j=0; j<num_el+num_virtual_el; j++)
                 if(channelIDs[j] == -1)
                     for(int k=j; k<num_el+num_virtual_el; k++)
                         channelIDs[k] = channelIDs[k+1];
         
         /* then decriment the channel IDs to remove the gaps */
         for(int i=0; i<num_virtual_el; i++)
-            for(j=0; j<num_el+num_virtual_el; j++)
+            for(int j=0; j<num_el+num_virtual_el; j++)
                 if( channelIDs[j] > virtual_channelIDs[i]-i )
                     channelIDs[j]--;
         
