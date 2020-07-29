@@ -157,7 +157,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
 
-	matrixconv_init(hMCnv, (float)sampleRate, nHostBlockSize);
+	matrixconv_init(hMCnv, nSampleRate, nHostBlockSize);
     AudioProcessor::setLatencySamples(matrixconv_getProcessingDelay(hMCnv));
 }
 
