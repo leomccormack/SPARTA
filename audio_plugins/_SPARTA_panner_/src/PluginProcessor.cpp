@@ -293,7 +293,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
 
-	panner_init(hPan, sampleRate);
+	panner_init(hPan, nSampleRate);
     AudioProcessor::setLatencySamples(panner_getProcessingDelay());
 }
 
@@ -462,18 +462,18 @@ void PluginProcessor::loadConfiguration (const File& configFile, int srcOrLs)
     elements.removeAllChildren(nullptr);
     Result result = ConfigurationHelper::parseFileForGenericLayout(configFile, elements, nullptr);
     if(result.wasOk()){
-        int num_el, num_virtual_el, el_idx, j;
-        num_el = num_virtual_el = el_idx = j = 0;
+        int num_el, num_virtual_el, el_idx, jj;
+        num_el = num_virtual_el = el_idx = jj = 0;
         /* get Channel IDs and find number of directions and virtual directions */
         for (ValueTree::Iterator it = elements.begin(); it != elements.end(); ++it){
             if ( !((*it).getProperty("Imaginary"))){
-                num_el++; channelIDs[j] = (*it).getProperty("Channel");
+                num_el++; channelIDs[jj] = (*it).getProperty("Channel");
             }
             else{
                 virtual_channelIDs[num_virtual_el] = (*it).getProperty("Channel");
-                num_virtual_el++; channelIDs[j] = -1;
+                num_virtual_el++; channelIDs[jj] = -1;
             }
-            j++;
+            jj++;
         }
         /* remove virtual channels and shift the channel indices down */
         for(int i=0; i<num_virtual_el; i++)

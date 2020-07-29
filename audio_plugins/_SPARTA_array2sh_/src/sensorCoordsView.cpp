@@ -58,8 +58,8 @@ sensorCoordsView::sensorCoordsView (PluginProcessor* ownerFilter, int _maxQ, int
     maxQ = _maxQ;
     currentQ =_currentQ;
     useDegreesInstead =  _useDegreesInstead;
-    aziSliders =  new std::unique_ptr<Slider>[maxQ];
-    elevSliders =  new std::unique_ptr<Slider>[maxQ];
+    aziSliders =  new std::unique_ptr<Slider>[(unsigned long)maxQ];
+    elevSliders =  new std::unique_ptr<Slider>[(unsigned long)maxQ];
 
     for( int i=0; i<maxQ; i++){
         /* create and initialise azimuth sliders */

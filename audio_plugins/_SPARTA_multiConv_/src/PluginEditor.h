@@ -95,11 +95,11 @@ private:
             durationInSeconds = (float)reader->lengthInSamples / (float)reader->sampleRate;
 
             if (reader->numChannels <= MAX_NUM_CHANNELS) {
-                fileBuffer.setSize (reader->numChannels, (int) reader->lengthInSamples);
+                fileBuffer.setSize ((int)reader->numChannels, (int) reader->lengthInSamples);
                 reader->read (&fileBuffer, 0, (int) reader->lengthInSamples, 0, true, true);
             }
             const float** H = fileBuffer.getArrayOfReadPointers();
-            multiconv_setFilters(hMC, H, fileBuffer.getNumChannels(), fileBuffer.getNumSamples(), reader->sampleRate);
+            multiconv_setFilters(hMC, H, fileBuffer.getNumChannels(), fileBuffer.getNumSamples(), (int)reader->sampleRate);
         }
     }
 

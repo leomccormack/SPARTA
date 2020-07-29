@@ -245,7 +245,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nNumOutputs = getTotalNumOutputChannels();
     nSampleRate = (int)(sampleRate + 0.5);
 
-	beamformer_init(hBeam, sampleRate);
+	beamformer_init(hBeam, nSampleRate);
     AudioProcessor::setLatencySamples(beamformer_getProcessingDelay());
 }
 

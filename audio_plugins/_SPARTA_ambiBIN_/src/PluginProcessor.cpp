@@ -269,7 +269,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nNumOutputs = getTotalNumOutputChannels();
     nSampleRate = (int)(sampleRate + 0.5);
 
-	ambi_bin_init(hAmbi, sampleRate);
+	ambi_bin_init(hAmbi, nSampleRate);
     AudioProcessor::setLatencySamples(ambi_bin_getProcessingDelay());
 }
 

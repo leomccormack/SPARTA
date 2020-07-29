@@ -162,7 +162,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nSampleRate = (int)(sampleRate + 0.5);
     nNumInputs = getTotalNumInputChannels(); 
     isPlaying = false;
-    dirass_init(hDir, sampleRate);
+    dirass_init(hDir, nSampleRate);
 
     //AudioProcessor::setLatencySamples(dirass_getProcessingDelay());
 }

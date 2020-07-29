@@ -931,7 +931,7 @@ void PluginEditor::paint (Graphics& g)
     /* axis labels */
     g.setColour(Colours::white);
     int textWidth = 105;
-    g.addTransform(AffineTransform::rotation(-M_PI/2).followedBy(AffineTransform::translation(-(TFviewIncluded->getHeight()/2 - (int)((float)textWidth/2.5f)),
+    g.addTransform(AffineTransform::rotation(-M_PI/2.0f).followedBy(AffineTransform::translation(-(TFviewIncluded->getHeight()/2 - (int)((float)textWidth/2.5f)),
                                                                                               TFviewIncluded->getHeight() - textWidth/2)));
     g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Bold"));
     g.drawText(TRANS("Frequency (Hz)"), -36,
@@ -968,43 +968,43 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == s_thresh.get())
     {
         //[UserSliderCode_s_thresh] -- add your slider handling code here..
-		ambi_drc_setThreshold(hAmbi, s_thresh->getValue());
+		ambi_drc_setThreshold(hAmbi, (float)s_thresh->getValue());
         //[/UserSliderCode_s_thresh]
     }
     else if (sliderThatWasMoved == s_ratio.get())
     {
         //[UserSliderCode_s_ratio] -- add your slider handling code here..
-		ambi_drc_setRatio(hAmbi, s_ratio->getValue());
+		ambi_drc_setRatio(hAmbi, (float)s_ratio->getValue());
         //[/UserSliderCode_s_ratio]
     }
     else if (sliderThatWasMoved == s_knee.get())
     {
         //[UserSliderCode_s_knee] -- add your slider handling code here..
-		ambi_drc_setKnee(hAmbi, s_knee->getValue());
+		ambi_drc_setKnee(hAmbi, (float)s_knee->getValue());
         //[/UserSliderCode_s_knee]
     }
     else if (sliderThatWasMoved == s_attack.get())
     {
         //[UserSliderCode_s_attack] -- add your slider handling code here..
-		ambi_drc_setAttack(hAmbi, s_attack->getValue());
+		ambi_drc_setAttack(hAmbi, (float)s_attack->getValue());
         //[/UserSliderCode_s_attack]
     }
     else if (sliderThatWasMoved == s_release.get())
     {
         //[UserSliderCode_s_release] -- add your slider handling code here..
-		ambi_drc_setRelease(hAmbi, s_release->getValue());
+		ambi_drc_setRelease(hAmbi, (float)s_release->getValue());
         //[/UserSliderCode_s_release]
     }
     else if (sliderThatWasMoved == s_outgain.get())
     {
         //[UserSliderCode_s_outgain] -- add your slider handling code here..
-        ambi_drc_setOutGain(hAmbi, s_outgain->getValue());
+        ambi_drc_setOutGain(hAmbi, (float)s_outgain->getValue());
         //[/UserSliderCode_s_outgain]
     }
     else if (sliderThatWasMoved == s_ingain.get())
     {
         //[UserSliderCode_s_ingain] -- add your slider handling code here..
-        ambi_drc_setInGain(hAmbi, s_ingain->getValue());
+        ambi_drc_setInGain(hAmbi, (float)s_ingain->getValue());
         //[/UserSliderCode_s_ingain]
     }
 
@@ -1054,7 +1054,7 @@ void PluginEditor::timerCallback()
     if (hVst->getIsPlaying()) {
         int wIdx = ambi_drc_getGainTFwIdx(hAmbi);
         float linePos = (float)wIdx*((float)TFviewIncluded->getWidth() / (float)AMBI_DRC_NUM_DISPLAY_TIME_SLOTS);
-        TFviewIncluded->repaint(linePos-10, 0, TFviewIncluded->getWidth(), TFviewIncluded->getHeight());
+        TFviewIncluded->repaint((int)linePos-10, 0, TFviewIncluded->getWidth(), TFviewIncluded->getHeight());
     }
 
     /* display warning message, if needed */

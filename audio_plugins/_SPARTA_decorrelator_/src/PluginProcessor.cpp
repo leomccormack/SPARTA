@@ -164,7 +164,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nNumOutputs = getTotalNumOutputChannels();
     nSampleRate = (int)(sampleRate + 0.5);
 
-	decorrelator_init(hDecor, sampleRate);
+	decorrelator_init(hDecor, nSampleRate);
     AudioProcessor::setLatencySamples(decorrelator_getProcessingDelay());
 }
 
