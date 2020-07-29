@@ -99,6 +99,7 @@ private:
     void imageReceived(const Image& image) override;
     void handleAsyncUpdate() override;
     std::unique_ptr<CameraDevice> cameraDevice;
+    std::unique_ptr<Component> cameraPreviewComp;
     ImageComponent lastSnapshot;
     Image incomingImage;
     void cameraChanged();
