@@ -529,7 +529,7 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == SL_num_beams.get())
     {
         //[UserSliderCode_SL_num_beams] -- add your slider handling code here..
-        beamformer_setNumBeams(hBeam, (float)SL_num_beams->getValue());
+        beamformer_setNumBeams(hBeam, (int)SL_num_beams->getValue());
         //[/UserSliderCode_SL_num_beams]
     }
 
