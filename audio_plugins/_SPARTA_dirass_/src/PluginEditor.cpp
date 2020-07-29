@@ -1064,15 +1064,24 @@ void PluginEditor::timerCallback(int timerID)
 
 void PluginEditor::cameraChanged()
 {
-    if (CB_webcam->getSelectedId() > 1)
-        cameraDeviceOpenResult (CameraDevice::openDevice (CB_webcam->getSelectedId() - 2), {});
-    else
-        cameraDevice.reset ();
+     cameraDevice.reset();
+     cameraPreviewComp.reset();
+
+     if (CB_webcam->getSelectedId() > 1)
+         cameraDeviceOpenResult (CameraDevice::openDevice (CB_webcam->getSelectedId() - 2), {});
+     else
+         resized();
 }
 
 void PluginEditor::cameraDeviceOpenResult (CameraDevice* device, const String& /*error*/)
 {
     cameraDevice.reset (device);
+
+    if (cameraDevice.get() != nullptr) {
+        cameraPreviewComp.reset (cameraDevice->createViewerComponent());
+        addAndMakeVisible (cameraPreviewComp.get());
+    }
+
     resized();
 }
 
@@ -1100,7 +1109,7 @@ void PluginEditor::imageReceived(const Image& image)
         Graphics g(mirrorImage);
         AffineTransform m_LR;
         m_LR = AffineTransform(-1, 0, mirrorImage.getWidth(),
-                               0, 1, 0);
+                               0, 1, 0); 
         g.drawImageTransformed(mirrorImage, m_LR);
         newImage = mirrorImage;
     }
@@ -1112,7 +1121,7 @@ void PluginEditor::imageReceived(const Image& image)
         AffineTransform m_UD;
         m_UD = AffineTransform(1, 0, 0,
                                0, -1, mirrorImage.getHeight());
-
+        //m_UD = AffineTransform().verticalFlip(mirrorImage.getHeight()); // same result
         g.drawImageTransformed(mirrorImage, m_UD);
         newImage = mirrorImage;
     }
@@ -1130,7 +1139,6 @@ void PluginEditor::handleAsyncUpdate()
         cameraDevice->takeStillPicture ([safeThis] (const Image& image) mutable { safeThis->imageReceived (image); });
     }
 }
-
 
 //[/MiscUserCode]
 
