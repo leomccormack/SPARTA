@@ -931,15 +931,24 @@ void PluginEditor::timerCallback(int timerID)
 
 void PluginEditor::cameraChanged()
 {
-    if (CB_webcam->getSelectedId() > 1)
-        cameraDeviceOpenResult (CameraDevice::openDevice (CB_webcam->getSelectedId() - 2), {});
-    else
-        cameraDevice.reset ();
+     cameraDevice.reset();
+     cameraPreviewComp.reset();
+
+     if (CB_webcam->getSelectedId() > 1)
+         cameraDeviceOpenResult (CameraDevice::openDevice (CB_webcam->getSelectedId() - 2), {});
+     else
+         resized();
 }
 
 void PluginEditor::cameraDeviceOpenResult (CameraDevice* device, const String& /*error*/)
 {
     cameraDevice.reset (device);
+
+    if (cameraDevice.get() != nullptr) {
+        cameraPreviewComp.reset (cameraDevice->createViewerComponent());
+        addAndMakeVisible (cameraPreviewComp.get());
+    }
+
     resized();
 }
 
