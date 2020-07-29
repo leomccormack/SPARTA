@@ -160,7 +160,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nNumInputs =  getTotalNumInputChannels();
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false; 
-	sldoa_init(hSld, sampleRate);
+	sldoa_init(hSld, nSampleRate);
 
     //AudioProcessor::setLatencySamples(sldoa_getProcessingDelay());
 }

@@ -287,7 +287,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nNumOutputs = getTotalNumOutputChannels();
     nSampleRate = (int)(sampleRate + 0.5);
 
-    array2sh_init(hA2sh, sampleRate);
+    array2sh_init(hA2sh, nSampleRate);
     AudioProcessor::setLatencySamples(array2sh_getProcessingDelay());
 }
 
@@ -443,18 +443,18 @@ void PluginProcessor::loadConfiguration (const File& configFile)
     sensors.removeAllChildren(nullptr);
     Result result = ConfigurationHelper::parseFileForGenericLayout (configFile, sensors, nullptr);
     if(result.wasOk()){
-        int num_sensors, num_virtual_sensors, sensor_idx, j;
-        num_sensors = num_virtual_sensors = sensor_idx = j = 0;
+        int num_sensors, num_virtual_sensors, sensor_idx, jj;
+        num_sensors = num_virtual_sensors = sensor_idx = jj = 0;
         /* get Channel IDs and find number of directions and virtual directions */
         for (ValueTree::Iterator it = sensors.begin(); it != sensors.end(); ++it){
             if ( !((*it).getProperty("Imaginary"))){
-                num_sensors++; channelIDs[j] = (*it).getProperty("Channel");
+                num_sensors++; channelIDs[jj] = (*it).getProperty("Channel");
             }
             else{
                 virtual_channelIDs[num_virtual_sensors] = (*it).getProperty("Channel");
-                num_virtual_sensors++; channelIDs[j] = -1;
+                num_virtual_sensors++; channelIDs[jj] = -1;
             }
-            j++;
+            jj++;
         }
         /* remove virtual channels and shift the channel indices down */
         for(int i=0; i<num_virtual_sensors; i++)

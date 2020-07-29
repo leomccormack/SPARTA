@@ -161,7 +161,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nNumInputs = getTotalNumInputChannels(); 
     isPlaying = false;
 
-    powermap_init(hPm, sampleRate);
+    powermap_init(hPm, nSampleRate);
 }
 
 void PluginProcessor::releaseResources()

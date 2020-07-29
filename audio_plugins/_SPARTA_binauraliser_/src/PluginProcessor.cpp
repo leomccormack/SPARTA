@@ -277,7 +277,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nNumOutputs = getTotalNumOutputChannels();
 	nSampleRate = (int)(sampleRate + 0.5);
     
-	binauraliser_init(hBin, sampleRate);
+	binauraliser_init(hBin, nSampleRate);
     AudioProcessor::setLatencySamples(binauraliser_getProcessingDelay());
 }
 
@@ -439,18 +439,18 @@ void PluginProcessor::loadConfiguration (const File& configFile)
     Result result = ConfigurationHelper::parseFileForGenericLayout (configFile, sources, nullptr);
     //Result result = ConfigurationHelper::parseFileForLoudspeakerLayout (configFile, sources, nullptr);
     if(result.wasOk()){
-        int num_srcs, num_virtual_srcs, src_idx, j;
-        num_srcs = num_virtual_srcs = src_idx = j = 0;
+        int num_srcs, num_virtual_srcs, src_idx, jj;
+        num_srcs = num_virtual_srcs = src_idx = jj = 0;
         /* get Channel IDs and find number of directions and virtual directions */
         for (ValueTree::Iterator it = sources.begin(); it != sources.end(); ++it){
             if ( !((*it).getProperty("Imaginary"))){
-                num_srcs++; channelIDs[j] = (*it).getProperty("Channel");
+                num_srcs++; channelIDs[jj] = (*it).getProperty("Channel");
             }
             else{
                 virtual_channelIDs[num_virtual_srcs] = (*it).getProperty("Channel");
-                num_virtual_srcs++; channelIDs[j] = -1;
+                num_virtual_srcs++; channelIDs[jj] = -1;
             }
-            j++;
+            jj++;
         }
         /* remove virtual channels and shift the channel indices down */
         for(int i=0; i<num_virtual_srcs; i++)

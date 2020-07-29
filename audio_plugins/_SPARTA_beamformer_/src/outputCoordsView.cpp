@@ -57,8 +57,8 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
     hBeam = hVst->getFXHandle();
     maxNCH = _maxNCH ;
     currentNCH =_currentNCH;
-    aziSliders =  new std::unique_ptr<Slider>[maxNCH];
-    elevSliders =  new std::unique_ptr<Slider>[maxNCH];
+    aziSliders =  new std::unique_ptr<Slider>[(unsigned long)maxNCH];
+    elevSliders =  new std::unique_ptr<Slider>[(unsigned long)maxNCH];
 
     for( int i=0; i<maxNCH; i++){
         /* create and initialise azimuth sliders */
