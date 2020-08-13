@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 6.0.1
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -48,14 +48,14 @@ typedef enum _SPARTA_WARNINGS{
 */
 class PluginEditor  : public AudioProcessorEditor,
                       public MultiTimer,
-                      public ComboBox::Listener,
-                      public Slider::Listener,
-                      public Button::Listener
+                      public juce::ComboBox::Listener,
+                      public juce::Slider::Listener,
+                      public juce::Button::Listener
 {
 public:
     //==============================================================================
     PluginEditor (PluginProcessor* ownerFilter);
-    ~PluginEditor();
+    ~PluginEditor() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
@@ -63,11 +63,11 @@ public:
 
     //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
+    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
+    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
@@ -102,24 +102,24 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<ComboBox> CBsourceDirsPreset;
-    std::unique_ptr<Slider> SL_num_sources;
-    std::unique_ptr<ToggleButton> TB_showInputs;
-    std::unique_ptr<ToggleButton> TB_showOutputs;
-    std::unique_ptr<Slider> SL_pValue;
-    std::unique_ptr<ComboBox> CBsLoudspeakerDirsPreset;
-    std::unique_ptr<Slider> SL_num_loudspeakers;
-    std::unique_ptr<TextButton> tb_loadJSON_src;
-    std::unique_ptr<TextButton> tb_saveJSON_src;
-    std::unique_ptr<TextButton> tb_loadJSON_ls;
-    std::unique_ptr<TextButton> tb_saveJSON_ls;
-    std::unique_ptr<Slider> SL_spread;
-    std::unique_ptr<Slider> s_yaw;
-    std::unique_ptr<ToggleButton> t_flipYaw;
-    std::unique_ptr<ToggleButton> t_flipPitch;
-    std::unique_ptr<ToggleButton> t_flipRoll;
-    std::unique_ptr<Slider> s_pitch;
-    std::unique_ptr<Slider> s_roll;
+    std::unique_ptr<juce::ComboBox> CBsourceDirsPreset;
+    std::unique_ptr<juce::Slider> SL_num_sources;
+    std::unique_ptr<juce::ToggleButton> TB_showInputs;
+    std::unique_ptr<juce::ToggleButton> TB_showOutputs;
+    std::unique_ptr<juce::Slider> SL_pValue;
+    std::unique_ptr<juce::ComboBox> CBsLoudspeakerDirsPreset;
+    std::unique_ptr<juce::Slider> SL_num_loudspeakers;
+    std::unique_ptr<juce::TextButton> tb_loadJSON_src;
+    std::unique_ptr<juce::TextButton> tb_saveJSON_src;
+    std::unique_ptr<juce::TextButton> tb_loadJSON_ls;
+    std::unique_ptr<juce::TextButton> tb_saveJSON_ls;
+    std::unique_ptr<juce::Slider> SL_spread;
+    std::unique_ptr<juce::Slider> s_yaw;
+    std::unique_ptr<juce::ToggleButton> t_flipYaw;
+    std::unique_ptr<juce::ToggleButton> t_flipPitch;
+    std::unique_ptr<juce::ToggleButton> t_flipRoll;
+    std::unique_ptr<juce::Slider> s_pitch;
+    std::unique_ptr<juce::Slider> s_roll;
 
 
     //==============================================================================
