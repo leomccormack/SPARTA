@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.7
+  Created with Projucer version: 6.0.1
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -46,8 +46,8 @@ typedef enum _SPARTA_WARNINGS{
 */
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
-                      public Slider::Listener,
-                      public ComboBox::Listener
+                      public juce::Slider::Listener,
+                      public juce::ComboBox::Listener
 {
 public:
     //==============================================================================
@@ -59,10 +59,10 @@ public:
 
     //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
+    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
 
 
 
@@ -84,16 +84,16 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<Slider> s_thresh;
-    std::unique_ptr<Slider> s_ratio;
-    std::unique_ptr<Slider> s_knee;
-    std::unique_ptr<Slider> s_attack;
-    std::unique_ptr<Slider> s_release;
-    std::unique_ptr<Slider> s_outgain;
-    std::unique_ptr<Slider> s_ingain;
-    std::unique_ptr<ComboBox> presetCB;
-    std::unique_ptr<ComboBox> CHOrderingCB;
-    std::unique_ptr<ComboBox> normalisationCB;
+    std::unique_ptr<juce::Slider> s_thresh;
+    std::unique_ptr<juce::Slider> s_ratio;
+    std::unique_ptr<juce::Slider> s_knee;
+    std::unique_ptr<juce::Slider> s_attack;
+    std::unique_ptr<juce::Slider> s_release;
+    std::unique_ptr<juce::Slider> s_outgain;
+    std::unique_ptr<juce::Slider> s_ingain;
+    std::unique_ptr<juce::ComboBox> presetCB;
+    std::unique_ptr<juce::ComboBox> CHOrderingCB;
+    std::unique_ptr<juce::ComboBox> normalisationCB;
 
 
     //==============================================================================
