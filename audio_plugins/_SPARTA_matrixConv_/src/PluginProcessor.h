@@ -35,8 +35,7 @@
 #endif
 
 enum {	
-    /* For the default VST GUI */
-    
+    /* For the default VST GUI */ 
 	k_NumOfParameters
 };
 
@@ -48,7 +47,7 @@ public:
     void* getFXHandle() { return hMCnv; }
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
-    int getCurrentNumOutputs(){ return nNumOutputs; }
+    int getCurrentNumOutputs(){ return nNumOutputs; } 
     void setWavDirectory(String newDirectory){
         lastWavDirectory = newDirectory;
     }
@@ -63,6 +62,23 @@ public:
             return 1;
         return 0;
     }
+
+    /* wav file loading */ 
+    void loadWavFile() {
+        String directory = lastWavDirectory;
+        std::unique_ptr<AudioFormatReader> reader (formatManager.createReaderFor (directory));
+
+        if (reader.get() != nullptr) { /* if file exists */
+            durationInSeconds = (float)reader->lengthInSamples / (float)reader->sampleRate;
+
+            if (reader->numChannels <= 1024 /* maximum number of channels for WAV files */) {
+                fileBuffer.setSize ((int)reader->numChannels, (int) reader->lengthInSamples);
+                reader->read (&fileBuffer, 0, (int) reader->lengthInSamples, 0, true, true);
+            }
+            const float** H = fileBuffer.getArrayOfReadPointers();
+            matrixconv_setFilters(hMCnv, H, fileBuffer.getNumChannels(), fileBuffer.getNumSamples(), (int)reader->sampleRate);
+        }
+    }
     
 private:
     void* hMCnv;            /* matrixconv handle */
@@ -70,8 +86,11 @@ private:
     int nNumOutputs;        /* current number of output channels */
     int nSampleRate;        /* current host sample rate */
     int nHostBlockSize;     /* typical host block size to expect, in samples */
-    bool isPlaying; 
+    bool isPlaying;
     String lastWavDirectory;
+    AudioFormatManager formatManager;
+    AudioSampleBuffer fileBuffer;
+    float durationInSeconds;
 
     /***************************************************************************\
                                     JUCE Functions

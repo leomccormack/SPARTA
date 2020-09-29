@@ -19,6 +19,7 @@
  
  ==============================================================================
 */
+
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
@@ -29,6 +30,8 @@ PluginProcessor::PluginProcessor() :
 {
 	nSampleRate = 48000;
     nHostBlockSize = -1;
+    formatManager.registerBasicFormats();
+    durationInSeconds = 0.0f; 
     lastWavDirectory = TRANS("no_file");
 	matrixconv_create(&hMCnv);
 }
@@ -207,11 +210,14 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 		if (xmlState->hasTagName("MATRIXCONVAUDIOPLUGINSETTINGS")) {
  
             if(xmlState->hasAttribute("LastWavFilePath"))
-                lastWavDirectory = xmlState->getStringAttribute("LastWavFilePath", "no_file");
+                lastWavDirectory = xmlState->getStringAttribute("LastWavFilePath", "no_file"); 
             if(xmlState->hasAttribute("usePartitionedConv"))
                 matrixconv_setEnablePart(hMCnv, xmlState->getIntAttribute("usePartitionedConv", 1));
             if(xmlState->hasAttribute("numInputChannels"))
                 matrixconv_setNumInputChannels(hMCnv, xmlState->getIntAttribute("numInputChannels", 1));
+
+            if(lastWavDirectory!="no_file")
+                loadWavFile();
         }
 	}
 }

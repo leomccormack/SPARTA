@@ -79,29 +79,10 @@ private:
     SPARTA_WARNINGS currentWarning;
 
     /* wav file loading */
-    AudioFormatManager formatManager;
-    AudioSampleBuffer fileBuffer;
-    float durationInSeconds;
     void filenameComponentChanged (FilenameComponent*) override  {
-        String directory = fileChooser.getCurrentFile().getFullPathName();
-        hVst->setWavDirectory(directory);
-        loadWavFile();
-    }
-    void loadWavFile()
-    {
-        String directory = hVst->getWavDirectory();
-        std::unique_ptr<AudioFormatReader> reader (formatManager.createReaderFor (directory));
-
-        if (reader.get() != nullptr) { /* if file exists */
-            durationInSeconds = (float)reader->lengthInSamples / (float)reader->sampleRate;
-
-            if (reader->numChannels <= 1024 /* maximum number of channels for WAV files */) {
-                fileBuffer.setSize ((int)reader->numChannels, (int) reader->lengthInSamples);
-                reader->read (&fileBuffer, 0, (int) reader->lengthInSamples, 0, true, true);
-            }
-            const float** H = fileBuffer.getArrayOfReadPointers();
-            matrixconv_setFilters(hMC, H, fileBuffer.getNumChannels(), fileBuffer.getNumSamples(), (int)reader->sampleRate);
-        }
+        String wavFilePath = fileChooser.getCurrentFile().getFullPathName();
+        hVst->setWavDirectory(wavFilePath);
+        hVst->loadWavFile();
     }
 
     /* tooltips */
