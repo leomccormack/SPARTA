@@ -132,13 +132,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* file loader */
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
-    fileChooser.setBounds (70, 72, 214, 20);
-    formatManager.registerBasicFormats();
-    durationInSeconds = 0.0f;
-    if(hVst->getWavDirectory() != TRANS("no_file")){
+    fileChooser.setBounds (16, 72, 268, 20);
+    if(hVst->getWavDirectory() != TRANS("no_file"))
         fileChooser.setCurrentFile(hVst->getWavDirectory(), true);
-        loadWavFile();
-    }
 
 	/* fetch current configuration */
     TBenablePartConv->setToggleState((bool)multiconv_getEnablePart(hMC), dontSendNotification);
@@ -506,8 +502,9 @@ void PluginEditor::timerCallback()
     /* parameters whos values can change internally should be periodically refreshed */
     label_hostBlockSize->setText(String(multiconv_getHostBlockSize(hMC)), dontSendNotification);
     label_NFilters->setText(String(multiconv_getNfilters(hMC)), dontSendNotification);
+    label_filterLength->setText(String((float)multiconv_getFilterLength(hMC)/MAX((float)multiconv_getFilterFs(hMC),1/*avoid nan*/)), dontSendNotification);
     //label_filterLength->setText(String(multiconv_getFilterLength(hMC)), dontSendNotification);
-    label_filterLength->setText(String(durationInSeconds), dontSendNotification);
+    //label_filterLength->setText(String(durationInSeconds), dontSendNotification);
     label_hostfs->setText(String(multiconv_getHostFs(hMC)), dontSendNotification);
     label_filterfs->setText(String(multiconv_getFilterFs(hMC)), dontSendNotification);
 

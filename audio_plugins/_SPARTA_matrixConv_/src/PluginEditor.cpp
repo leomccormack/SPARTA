@@ -169,13 +169,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
     fileChooser.setBounds (16, 72, 268, 20);
-    formatManager.registerBasicFormats();
-    durationInSeconds = 0.0f;
-    if(hVst->getWavDirectory() != TRANS("no_file")){
+    if(hVst->getWavDirectory() != TRANS("no_file"))
         fileChooser.setCurrentFile(hVst->getWavDirectory(), true);
-        loadWavFile();
-    }
-
+    
 	/* fetch current configuration */
     TBenablePartConv->setToggleState((bool)matrixconv_getEnablePart(hMC), dontSendNotification);
     SL_num_inputs->setValue(matrixconv_getNumInputChannels(hMC), dontSendNotification);

@@ -29,6 +29,8 @@ PluginProcessor::PluginProcessor() :
 {
 	nSampleRate = 48000;
     nHostBlockSize = -1;
+    formatManager.registerBasicFormats();
+    durationInSeconds = 0.0f;
     lastWavDirectory = TRANS("no_file");
 	multiconv_create(&hMCnv);
 }
@@ -212,6 +214,9 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 multiconv_setEnablePart(hMCnv, xmlState->getIntAttribute("usePartitionedConv", 1));
             if(xmlState->hasAttribute("numChannels"))
                 multiconv_setNumChannels(hMCnv, xmlState->getIntAttribute("numChannels", 1));
+
+            if(lastWavDirectory!="no_file")
+                loadWavFile();
         }
 	}
 }

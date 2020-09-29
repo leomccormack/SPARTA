@@ -27,10 +27,15 @@
 #include "multiconv.h"
 #include <string.h>
 #define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (beta, alpha etc..) */
+#ifndef MIN
+# define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
+#endif
+#ifndef MAX
+# define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
+#endif
 
 enum {	
-    /* For the default VST GUI */
-    
+    /* For the default VST GUI */ 
 	k_NumOfParameters
 };
 
@@ -57,6 +62,23 @@ public:
             return 1;
         return 0;
     }
+
+    /* wav file loading */
+    void loadWavFile() {
+        String directory = lastWavDirectory;
+        std::unique_ptr<AudioFormatReader> reader (formatManager.createReaderFor (directory));
+
+        if (reader.get() != nullptr) { /* if file exists */
+            durationInSeconds = (float)reader->lengthInSamples / (float)reader->sampleRate;
+
+            if (reader->numChannels <= 1024 /* maximum number of channels for WAV files */) {
+                fileBuffer.setSize ((int)reader->numChannels, (int) reader->lengthInSamples);
+                reader->read (&fileBuffer, 0, (int) reader->lengthInSamples, 0, true, true);
+            }
+            const float** H = fileBuffer.getArrayOfReadPointers();
+            multiconv_setFilters(hMCnv, H, fileBuffer.getNumChannels(), fileBuffer.getNumSamples(), (int)reader->sampleRate);
+        }
+    }
     
 private:
     void* hMCnv;            /* multiconv handle */
@@ -66,6 +88,9 @@ private:
     int nHostBlockSize;     /* typical host block size to expect, in samples */
     bool isPlaying; 
     String lastWavDirectory;
+    AudioFormatManager formatManager;
+    AudioSampleBuffer fileBuffer;
+    float durationInSeconds;
 
     /***************************************************************************\
                                     JUCE Functions
