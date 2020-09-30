@@ -60,7 +60,26 @@ sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x1
 sudo apt-get install libhdf5-dev libnetcdf-dev libnetcdff-dev
 ```
 
-## Building the plug-ins via scripts
+## Building the plug-in via CMake 
+
+The plug-ins may be built with CMake (version 3.15 or higher):
+ ```
+ mkdir build
+ cmake -S . -B build -DSAF_ENABLE_SOFA_READER_MODULE=1
+ cd build
+ make
+ ```
+ 
+Or for Visual Studio users (using x64 Native Tools Command Prompt as **administrator**):
+```
+cmake -S . -B build -G "Visual Studio 15 Win64" -DSAF_ENABLE_SOFA_READER_MODULE=1 
+cd build
+msbuild ALL_BUILD.vcxproj /p:Configuration=Release /m
+```
+Note: when installing CMake on Windows, make sure to allow the intaller to add CMake to the system PATH list or it won't be found.
+
+
+## Building the plug-ins via the included scripts
 
 **MacOSX/Linux users** may run the following bash script via the Terminal to build all of the plugins:
 
@@ -96,25 +115,6 @@ The build.plugins.sh script also supports many additional options:
 ./build-plugins.sh _SPARTA_ambiENC_ build     # builds "sparta_ambiENC.vst"
 ./build-plugins.sh _SPARTA_array2sh_ projucer # opens "sparta_array2sh.jucer" with Projucer
 ```
- 
-## Building the plug-in via CMake 
-
-The plug-ins may be built with CMake (version 3.15 or higher):
- ```
- mkdir build
- cmake -S . -B build -DSAF_ENABLE_SOFA_READER_MODULE=1
- cd build
- make
- ```
- 
-Or for Visual Studio users (using x64 Native Tools Command Prompt as **administrator**):
-```
-cmake -S . -B build -G "Visual Studio 15 Win64" -DSAF_ENABLE_SOFA_READER_MODULE=1 
-cd build
-msbuild ALL_BUILD.vcxproj /p:Configuration=Release /m
-```
-Note: when installing CMake on Windows, make sure to allow the intaller to add CMake to the system PATH list or it won't be found.
-
 
 ## Building the plug-ins without scripts or CMake
 
