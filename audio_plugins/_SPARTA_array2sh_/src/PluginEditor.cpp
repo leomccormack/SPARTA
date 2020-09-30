@@ -1405,7 +1405,7 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* draw magnitude/spatial-correlation/level-difference curves */
-            if (needScreenRefreshFLAG){
+            if (needScreenRefreshFLAG && !array2sh_getReinitSHTmatrixFLAG(hA2sh)){
                 switch(dispID){
                     default:
                     case SHOW_EQ:
