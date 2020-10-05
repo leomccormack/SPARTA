@@ -203,16 +203,12 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2017 targetFolder="make/win64/VisualStudio2017/" externalLibraries="saf_mkl_custom.lib"
-            extraDefs="SAF_USE_INTEL_MKL&#10;">
+            extraDefs="SAF_USE_INTEL_MKL&#10;" extraCompilerFlags="/bigobj">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
-                       targetName="sparta_sldoad" intermediatesPath="../../../obj/Win64_Debug"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
-                       binaryPath="../../lib"/>
+                       targetName="sparta_sldoad" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"/>
         <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
-                       intermediatesPath="../../../obj/Win64_Release" targetName="sparta_sldoa"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
-                       binaryPath="../../lib"/>
+                       targetName="sparta_sldoa" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_video" path="../../SDKs/JUCE/modules/"/>
@@ -232,16 +228,12 @@
       </MODULEPATHS>
     </VS2017>
     <VS2015 targetFolder="make/win64/VisualStudio2015/" externalLibraries="saf_mkl_custom.lib"
-            extraDefs="SAF_USE_INTEL_MKL&#10;">
+            extraDefs="SAF_USE_INTEL_MKL&#10;" extraCompilerFlags="/bigobj">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
-                       targetName="sparta_sldoad" intermediatesPath="../../../obj/Win64_Debug"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
-                       binaryPath="../../lib"/>
+                       targetName="sparta_sldoad" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"/>
         <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
-                       intermediatesPath="../../../obj/Win64_Release" targetName="sparta_sldoa"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
-                       binaryPath="../../lib"/>
+                       targetName="sparta_sldoa" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_video" path="../../SDKs/JUCE/modules/"/>
