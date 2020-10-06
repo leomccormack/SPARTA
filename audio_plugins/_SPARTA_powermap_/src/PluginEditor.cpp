@@ -274,6 +274,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* Overlay */
     previewArea.setBounds(13, 60, 646, 323);
+	lastSnapshot.setBounds(previewArea);
     overlayIncluded.reset (new overlay(ownerFilter));
     addAndMakeVisible (overlayIncluded.get());
     overlayIncluded->setAlwaysOnTop(true);
@@ -995,13 +996,16 @@ void PluginEditor::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    //[UserResized] Add your own custom resize handling here..
-    lastSnapshot.setBounds(previewArea);
-//    if (cameraPreviewComp.get() != nullptr){
-//		cameraPreviewComp->setBounds(previewArea);
-//    }
+    //[UserResized] Add your own custom resize handling here.. 
+    
+    
 
     if (overlayIncluded != nullptr){
+		if (cameraPreviewComp.get() != nullptr) {
+			cameraPreviewComp->setBounds(overlayIncluded->getBounds());
+			cameraPreviewComp->setVisible(false);
+		} 
+		lastSnapshot.setBounds(overlayIncluded->getBounds());
         overlayIncluded->setAlwaysOnTop(true);
         overlayIncluded->setBounds(previewArea);
         overlayIncluded->resized();
@@ -1149,19 +1153,19 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
 
     //[UserbuttonClicked_Post]
-	cameraPreviewComp->setTransform(AffineTransform()); /*identity*/
+	//cameraPreviewComp->setTransform(AffineTransform()); /*identity*/
 
-	AffineTransform m_LR, m_UD, m_LR_UD;
-    m_LR = AffineTransform(-1, 0, previewArea.getWidth(), 0, 1, 0).followedBy(AffineTransform::translation(2 * previewArea.getX(),0));    /* flip left/right */
-    m_UD = AffineTransform(1, 0, 0, 0, -1, previewArea.getHeight()).followedBy(AffineTransform::translation(0, 2 * previewArea.getY()));  /* flip up/down */
-	m_LR_UD = m_LR.followedBy(m_UD);  /* flip left/right and up/down */
+	//AffineTransform m_LR, m_UD, m_LR_UD;
+ //   m_LR = AffineTransform(-1, 0, previewArea.getWidth(), 0, 1, 0).followedBy(AffineTransform::translation(2 * previewArea.getX(),0));    /* flip left/right */
+ //   m_UD = AffineTransform(1, 0, 0, 0, -1, previewArea.getHeight()).followedBy(AffineTransform::translation(0, 2 * previewArea.getY()));  /* flip up/down */
+	//m_LR_UD = m_LR.followedBy(m_UD);  /* flip left/right and up/down */
 
-	if (TB_flipLR->getToggleState() && TB_flipUD->getToggleState())
-		cameraPreviewComp->setTransform(m_LR_UD);
-	else if (TB_flipLR->getToggleState())
-		cameraPreviewComp->setTransform(m_LR);
-	else if (TB_flipUD->getToggleState())
-		cameraPreviewComp->setTransform(m_UD);
+	//if (TB_flipLR->getToggleState() && TB_flipUD->getToggleState())
+	//	cameraPreviewComp->setTransform(m_LR_UD);
+	//else if (TB_flipLR->getToggleState())
+	//	cameraPreviewComp->setTransform(m_LR);
+	//else if (TB_flipUD->getToggleState())
+	//	cameraPreviewComp->setTransform(m_UD);
 
     //[/UserbuttonClicked_Post]
 }
@@ -1189,6 +1193,19 @@ void PluginEditor::timerCallback(int timerID)
             /* take webcam picture */
             if(CB_webcam->getSelectedId()>1){
                 handleAsyncUpdate();
+				lastSnapshot.setTransform(AffineTransform()); /*identity*/
+				AffineTransform m_LR, m_UD, m_LR_UD;
+				m_LR = AffineTransform(-1, 0, previewArea.getWidth(), 0, 1, 0).followedBy(AffineTransform::translation(2 * previewArea.getX(),0));    /* flip left/right */
+				m_UD = AffineTransform(1, 0, 0, 0, -1, previewArea.getHeight()).followedBy(AffineTransform::translation(0, 2 * previewArea.getY()));  /* flip up/down */
+				m_LR_UD = m_LR.followedBy(m_UD);  /* flip left/right and up/down */
+				 
+				if (TB_flipLR->getToggleState() && TB_flipUD->getToggleState())
+					lastSnapshot.setTransform(m_LR_UD);
+				else if (TB_flipLR->getToggleState())
+					lastSnapshot.setTransform(m_LR);
+				else if (TB_flipUD->getToggleState())
+					lastSnapshot.setTransform(m_UD);
+
                 if (incomingImage.isValid())
                     lastSnapshot.setImage(incomingImage);
             }
@@ -1266,8 +1283,8 @@ void PluginEditor::timerCallback(int timerID)
 
 void PluginEditor::cameraChanged()
 {
-//     cameraDevice.reset();
-//     cameraPreviewComp.reset();
+    cameraDevice.reset();
+    cameraPreviewComp.reset();
 
     if (CB_webcam->getSelectedId() > 1)
         cameraDeviceOpenResult (CameraDevice::openDevice (CB_webcam->getSelectedId() - 2), {});
@@ -1305,29 +1322,6 @@ void PluginEditor::imageReceived(const Image& image)
     if (! image.isValid())
         return;
     Image newImage = image;
-
-//    /* L/R */
-//    if(TB_flipLR->getToggleState()){
-//        Image mirrorImage = newImage;
-//        Graphics g(mirrorImage);
-//        AffineTransform m_LR;
-//        m_LR = AffineTransform(-1, 0, mirrorImage.getWidth(),
-//                               0, 1, 0);
-//        g.drawImageTransformed(mirrorImage, m_LR);
-//        newImage = mirrorImage;
-//    }
-//
-//    /* U/D */
-//    if(TB_flipUD->getToggleState()){
-//        Image mirrorImage = newImage;
-//        Graphics g(mirrorImage);
-//        AffineTransform m_UD;
-//        m_UD = AffineTransform(1, 0, 0,
-//                               0, -1, mirrorImage.getHeight());
-//
-//        g.drawImageTransformed(mirrorImage, m_UD);
-//        newImage = mirrorImage;
-//    }
 
     if(TB_greyScale->getToggleState())
         newImage.desaturate();
