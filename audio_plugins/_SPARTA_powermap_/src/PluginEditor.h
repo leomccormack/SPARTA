@@ -49,6 +49,7 @@ typedef enum _SPARTA_WARNINGS{
 */
 class PluginEditor  : public AudioProcessorEditor,
                       public MultiTimer,
+                      public AsyncUpdater,
                       private CameraDevice::Listener,
                       public juce::ComboBox::Listener,
                       public juce::Slider::Listener,
@@ -95,7 +96,8 @@ private:
 
     /* for webcam support */
     void updateCameraList();
-	void imageReceived(const Image& image) override {};
+    void imageReceived(const Image& image) override;
+    void handleAsyncUpdate() override;
     std::unique_ptr<CameraDevice> cameraDevice;
     std::unique_ptr<Component> cameraPreviewComp;
     ImageComponent lastSnapshot;
