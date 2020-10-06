@@ -729,13 +729,17 @@ void PluginEditor::resized()
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
-    lastSnapshot.setBounds(previewArea);
     if (overlayIncluded != nullptr){
+        if (cameraPreviewComp.get() != nullptr) {
+            cameraPreviewComp->setBounds(overlayIncluded->getBounds());
+            cameraPreviewComp->setVisible(false);
+        }
+        lastSnapshot.setBounds(overlayIncluded->getBounds());
         overlayIncluded->setAlwaysOnTop(true);
         overlayIncluded->setBounds(previewArea);
         overlayIncluded->resized();
     }
-	repaint();
+    repaint();
     //[/UserResized]
 }
 
@@ -877,6 +881,19 @@ void PluginEditor::timerCallback(int timerID)
             /* take webcam picture */
             if(CB_webcam->getSelectedId()>1){
                 handleAsyncUpdate();
+                lastSnapshot.setTransform(AffineTransform()); /*identity*/
+                AffineTransform m_LR, m_UD, m_LR_UD;
+                m_LR = AffineTransform(-1, 0, previewArea.getWidth(), 0, 1, 0).followedBy(AffineTransform::translation(2 * previewArea.getX(),0));    /* flip left/right */
+                m_UD = AffineTransform(1, 0, 0, 0, -1, previewArea.getHeight()).followedBy(AffineTransform::translation(0, 2 * previewArea.getY()));  /* flip up/down */
+                m_LR_UD = m_LR.followedBy(m_UD);  /* flip left/right and up/down */
+
+                if (TB_flipLR->getToggleState() && TB_flipUD->getToggleState())
+                    lastSnapshot.setTransform(m_LR_UD);
+                else if (TB_flipLR->getToggleState())
+                    lastSnapshot.setTransform(m_LR);
+                else if (TB_flipUD->getToggleState())
+                    lastSnapshot.setTransform(m_UD);
+
                 if (incomingImage.isValid())
                     lastSnapshot.setImage(incomingImage);
             }
@@ -931,13 +948,13 @@ void PluginEditor::timerCallback(int timerID)
 
 void PluginEditor::cameraChanged()
 {
-     cameraDevice.reset();
-     cameraPreviewComp.reset();
+    cameraDevice.reset();
+    cameraPreviewComp.reset();
 
-     if (CB_webcam->getSelectedId() > 1)
-         cameraDeviceOpenResult (CameraDevice::openDevice (CB_webcam->getSelectedId() - 2), {});
-     else
-         resized();
+    if (CB_webcam->getSelectedId() > 1)
+        cameraDeviceOpenResult (CameraDevice::openDevice (CB_webcam->getSelectedId() - 2), {});
+    else
+        resized();
 }
 
 void PluginEditor::cameraDeviceOpenResult (CameraDevice* device, const String& /*error*/)
@@ -947,20 +964,21 @@ void PluginEditor::cameraDeviceOpenResult (CameraDevice* device, const String& /
     if (cameraDevice.get() != nullptr) {
         cameraPreviewComp.reset (cameraDevice->createViewerComponent());
         addAndMakeVisible (cameraPreviewComp.get());
+        cameraPreviewComp->setAlwaysOnTop(false);
     }
-
     resized();
 }
 
 void PluginEditor::updateCameraList()
 {
     CB_webcam->clear();
-    CB_webcam->addItem ("No camera", 1);
+    CB_webcam->addItem("No camera", 1);
     CB_webcam->addSeparator();
 
     auto cameras = CameraDevice::getAvailableDevices();
+
     for (int i = 0; i < cameras.size(); ++i)
-        CB_webcam->addItem (cameras[i], i + 2);
+        CB_webcam->addItem(cameras[i], i + 2);
     CB_webcam->setSelectedId(1);
 }
 
@@ -969,29 +987,6 @@ void PluginEditor::imageReceived(const Image& image)
     if (! image.isValid())
         return;
     Image newImage = image;
-
-    /* L/R */
-    if(TB_flipLR->getToggleState()){
-        Image mirrorImage = newImage;
-        Graphics g(mirrorImage);
-        AffineTransform m_LR;
-        m_LR = AffineTransform(-1, 0, mirrorImage.getWidth(),
-                               0, 1, 0);
-        g.drawImageTransformed(mirrorImage, m_LR);
-        newImage = mirrorImage;
-    }
-
-    /* U/D */
-    if(TB_flipUD->getToggleState()){
-        Image mirrorImage = newImage;
-        Graphics g(mirrorImage);
-        AffineTransform m_UD;
-        m_UD = AffineTransform(1, 0, 0,
-                               0, -1, mirrorImage.getHeight());
-
-        g.drawImageTransformed(mirrorImage, m_UD);
-        newImage = mirrorImage;
-    }
 
     if(TB_greyScale->getToggleState())
         newImage.desaturate();

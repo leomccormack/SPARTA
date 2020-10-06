@@ -996,15 +996,13 @@ void PluginEditor::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    //[UserResized] Add your own custom resize handling here.. 
-    
-    
+    //[UserResized] Add your own custom resize handling here..
 
     if (overlayIncluded != nullptr){
 		if (cameraPreviewComp.get() != nullptr) {
 			cameraPreviewComp->setBounds(overlayIncluded->getBounds());
 			cameraPreviewComp->setVisible(false);
-		} 
+		}
 		lastSnapshot.setBounds(overlayIncluded->getBounds());
         overlayIncluded->setAlwaysOnTop(true);
         overlayIncluded->setBounds(previewArea);
@@ -1153,20 +1151,6 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
 
     //[UserbuttonClicked_Post]
-	//cameraPreviewComp->setTransform(AffineTransform()); /*identity*/
-
-	//AffineTransform m_LR, m_UD, m_LR_UD;
- //   m_LR = AffineTransform(-1, 0, previewArea.getWidth(), 0, 1, 0).followedBy(AffineTransform::translation(2 * previewArea.getX(),0));    /* flip left/right */
- //   m_UD = AffineTransform(1, 0, 0, 0, -1, previewArea.getHeight()).followedBy(AffineTransform::translation(0, 2 * previewArea.getY()));  /* flip up/down */
-	//m_LR_UD = m_LR.followedBy(m_UD);  /* flip left/right and up/down */
-
-	//if (TB_flipLR->getToggleState() && TB_flipUD->getToggleState())
-	//	cameraPreviewComp->setTransform(m_LR_UD);
-	//else if (TB_flipLR->getToggleState())
-	//	cameraPreviewComp->setTransform(m_LR);
-	//else if (TB_flipUD->getToggleState())
-	//	cameraPreviewComp->setTransform(m_UD);
-
     //[/UserbuttonClicked_Post]
 }
 
@@ -1198,7 +1182,7 @@ void PluginEditor::timerCallback(int timerID)
 				m_LR = AffineTransform(-1, 0, previewArea.getWidth(), 0, 1, 0).followedBy(AffineTransform::translation(2 * previewArea.getX(),0));    /* flip left/right */
 				m_UD = AffineTransform(1, 0, 0, 0, -1, previewArea.getHeight()).followedBy(AffineTransform::translation(0, 2 * previewArea.getY()));  /* flip up/down */
 				m_LR_UD = m_LR.followedBy(m_UD);  /* flip left/right and up/down */
-				 
+
 				if (TB_flipLR->getToggleState() && TB_flipUD->getToggleState())
 					lastSnapshot.setTransform(m_LR_UD);
 				else if (TB_flipLR->getToggleState())
