@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.1
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
@@ -181,6 +181,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
 
+    /* Look and Feel */
+    LAF.setDefaultColours();
+    setLookAndFeel(&LAF);
+
     /* Init TF view */
     TFviewIncluded.reset (new TFview(ownerFilter, 430, 220, 100.0f, 20e3f, -60.0f, 0.0f));
     addAndMakeVisible (TFviewIncluded.get());
@@ -264,6 +268,7 @@ PluginEditor::~PluginEditor()
 
 
     //[Destructor]. You can add your own custom destruction code here..
+    setLookAndFeel(nullptr);
     //[/Destructor]
 }
 
@@ -277,7 +282,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 0, y = 235, width = 550, height = 205;
-        juce::Colour fillColour1 = juce::Colour (0xff1c3949), fillColour2 = juce::Colour (0xff071e22);
+        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
@@ -292,7 +297,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 0, y = 30, width = 550, height = 205;
-        juce::Colour fillColour1 = juce::Colour (0xff1c3949), fillColour2 = juce::Colour (0xff071e22);
+        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
@@ -307,7 +312,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         float x = 1.0f, y = 2.0f, width = 548.0f, height = 31.0f;
-        juce::Colour fillColour1 = juce::Colour (0xff061c20), fillColour2 = juce::Colour (0xff1c3949);
+        juce::Colour fillColour1 = juce::Colour (0xff041518), fillColour2 = juce::Colour (0xff19313f);
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -315,7 +320,7 @@ void PluginEditor::paint (juce::Graphics& g)
                                              0.0f - 1.0f + x,
                                              32.0f - 2.0f + y,
                                              fillColour2,
-                                             656.0f - 1.0f + x,
+                                             616.0f - 1.0f + x,
                                              24.0f - 2.0f + y,
                                              false));
         g.fillRoundedRectangle (x, y, width, height, 5.000f);
@@ -1100,11 +1105,11 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="550" initialHeight="440">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 235 550 205" fill="linear: 8 440, 8 360, 0=ff1c3949, 1=ff071e22"
+    <RECT pos="0 235 550 205" fill="linear: 8 440, 8 360, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <RECT pos="0 30 550 205" fill="linear: 8 32, 8 104, 0=ff1c3949, 1=ff071e22"
+    <RECT pos="0 30 550 205" fill="linear: 8 32, 8 104, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 2 548 31" cornerSize="5.0" fill="linear: 0 32, 656 24, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 2 548 31" cornerSize="5.0" fill="linear: 0 32, 616 24, 0=ff041518, 1=ff19313f"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="10 38 530 244" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>

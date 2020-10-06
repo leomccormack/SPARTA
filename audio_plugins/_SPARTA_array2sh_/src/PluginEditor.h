@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -26,7 +26,7 @@
 #include "eqview.h"
 #include "anaview.h"
 #include "sensorCoordsView.h"
-#include <thread>
+#include "../../resources/SPARTALookAndFeel.h"
 
 typedef enum {
     SHOW_EQ = 1,
@@ -57,14 +57,14 @@ typedef enum _SPARTA_WARNINGS{
 */
 class PluginEditor  : public AudioProcessorEditor,
                       public MultiTimer,
-                      public ComboBox::Listener,
-                      public Slider::Listener,
-                      public Button::Listener
+                      public juce::ComboBox::Listener,
+                      public juce::Slider::Listener,
+                      public juce::Button::Listener
 {
 public:
     //==============================================================================
     PluginEditor (PluginProcessor* ownerFilter);
-    ~PluginEditor();
+    ~PluginEditor() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
@@ -72,11 +72,11 @@ public:
 
     //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
+    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
+    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
@@ -90,6 +90,10 @@ private:
     double progress = 0.0;
     ProgressBar progressbar;
 
+    /* Look and Feel */
+    SPARTALookAndFeel LAF;
+
+    /* Custom components */
     std::unique_ptr<Viewport> sensorCoordsVP;
     sensorCoordsView* sensorCoordsView_handle;
     std::unique_ptr<eqview> eqviewIncluded;
@@ -109,25 +113,25 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<ComboBox> presetCB;
-    std::unique_ptr<ComboBox> arrayTypeCB;
-    std::unique_ptr<Slider> QSlider;
-    std::unique_ptr<Slider> rSlider;
-    std::unique_ptr<Slider> RSlider;
-    std::unique_ptr<Slider> cSlider;
-    std::unique_ptr<ComboBox> weightTypeCB;
-    std::unique_ptr<ComboBox> filterTypeCB;
-    std::unique_ptr<Slider> regAmountSlider;
-    std::unique_ptr<ComboBox> CHOrderingCB;
-    std::unique_ptr<ComboBox> normalisationCB;
-    std::unique_ptr<Slider> gainSlider;
-    std::unique_ptr<ToggleButton> degRadTB;
-    std::unique_ptr<TextButton> textButton;
-    std::unique_ptr<ComboBox> dispWindow;
-    std::unique_ptr<TextButton> tb_loadJSON;
-    std::unique_ptr<TextButton> tb_saveJSON;
-    std::unique_ptr<ComboBox> CBencodingOrder;
-    std::unique_ptr<ToggleButton> applyDiffEQ;
+    std::unique_ptr<juce::ComboBox> presetCB;
+    std::unique_ptr<juce::ComboBox> arrayTypeCB;
+    std::unique_ptr<juce::Slider> QSlider;
+    std::unique_ptr<juce::Slider> rSlider;
+    std::unique_ptr<juce::Slider> RSlider;
+    std::unique_ptr<juce::Slider> cSlider;
+    std::unique_ptr<juce::ComboBox> weightTypeCB;
+    std::unique_ptr<juce::ComboBox> filterTypeCB;
+    std::unique_ptr<juce::Slider> regAmountSlider;
+    std::unique_ptr<juce::ComboBox> CHOrderingCB;
+    std::unique_ptr<juce::ComboBox> normalisationCB;
+    std::unique_ptr<juce::Slider> gainSlider;
+    std::unique_ptr<juce::ToggleButton> degRadTB;
+    std::unique_ptr<juce::TextButton> textButton;
+    std::unique_ptr<juce::ComboBox> dispWindow;
+    std::unique_ptr<juce::TextButton> tb_loadJSON;
+    std::unique_ptr<juce::TextButton> tb_saveJSON;
+    std::unique_ptr<juce::ComboBox> CBencodingOrder;
+    std::unique_ptr<juce::ToggleButton> applyDiffEQ;
 
 
     //==============================================================================

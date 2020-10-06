@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.1
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
@@ -24,6 +24,7 @@
 #include "PluginProcessor.h"
 #include "TFview.h"
 #include "colourGradient.h"
+#include "../../resources/SPARTALookAndFeel.h"
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
@@ -74,6 +75,9 @@ private:
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
     std::unique_ptr<TFview> TFviewIncluded;
+
+    /* Look and Feel */
+    SPARTALookAndFeel LAF;
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;

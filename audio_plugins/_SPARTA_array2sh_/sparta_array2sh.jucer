@@ -18,6 +18,8 @@
   <MAINGROUP id="imnfnp" name="sparta_array2sh">
     <FILE id="xRdyht" name="ConfigurationHelper.h" compile="0" resource="0"
           file="../resources/ConfigurationHelper.h"/>
+    <FILE id="GqUTO4" name="SPARTALookAndFeel.h" compile="0" resource="0"
+          file="../resources/SPARTALookAndFeel.h"/>
     <FILE id="XPbZBb" name="anaview_window.cpp" compile="1" resource="0"
           file="src/anaview_window.cpp"/>
     <FILE id="GUDNOm" name="anaview_window.h" compile="0" resource="0"

@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.0
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_nChannels->setTextBoxStyle (juce::Slider::TextBoxLeft, false, 80, 20);
     SL_nChannels->addListener (this);
 
-    SL_nChannels->setBounds (168, 56, 55, 32);
+    SL_nChannels->setBounds (176, 65, 65, 16);
 
 
     //[UserPreSize]
@@ -64,6 +64,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* init OpenGL */
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
+
+    /* Look and Feel */
+    LAF.setDefaultColours();
+    setLookAndFeel(&LAF);
 
     /* ProgressBar */
     progress = 0.0;
@@ -95,7 +99,7 @@ PluginEditor::~PluginEditor()
 
 
     //[Destructor]. You can add your own custom destruction code here..
-
+    setLookAndFeel(nullptr);
     //[/Destructor]
 }
 
@@ -109,7 +113,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 0, y = 80, width = 600, height = 40;
-        juce::Colour fillColour1 = juce::Colour (0xff1c3949), fillColour2 = juce::Colour (0xff071e22);
+        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
@@ -124,7 +128,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 0, y = 30, width = 656, height = 50;
-        juce::Colour fillColour1 = juce::Colour (0xff1c3949), fillColour2 = juce::Colour (0xff071e22);
+        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
@@ -139,7 +143,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         float x = 1.0f, y = 2.0f, width = 597.0f, height = 31.0f;
-        juce::Colour fillColour1 = juce::Colour (0xff061c20), fillColour2 = juce::Colour (0xff1c3949);
+        juce::Colour fillColour1 = juce::Colour (0xff041518), fillColour2 = juce::Colour (0xff19313f);
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -390,11 +394,11 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="600" initialHeight="120">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 80 600 40" fill="linear: 16 120, 16 88, 0=ff1c3949, 1=ff071e22"
+    <RECT pos="0 80 600 40" fill="linear: 16 120, 16 88, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <RECT pos="0 30 656 50" fill="linear: 8 32, 8 64, 0=ff1c3949, 1=ff071e22"
+    <RECT pos="0 30 656 50" fill="linear: 8 32, 8 64, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 2 597 31" cornerSize="5.0" fill="linear: 0 32, 592 32, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 2 597 31" cornerSize="5.0" fill="linear: 0 32, 592 32, 0=ff041518, 1=ff19313f"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="12 58 237 29" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 35a0a0a0"/>
@@ -419,11 +423,11 @@ BEGIN_JUCER_METADATA
     <RECT pos="0 118 600 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
   </BACKGROUND>
-  <JUCE::SLIDER name="new slider" id="4b95e834bd2b3239" memberName="SL_nChannels"
-                virtualName="" explicitFocusOrder="0" pos="168 56 55 32" min="1.0"
-                max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
-                textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-                needsCallback="1"/>
+  <SLIDER name="new slider" id="21d3cac663b3ac08" memberName="SL_nChannels"
+          virtualName="" explicitFocusOrder="0" pos="176 65 65 16" min="1.0"
+          max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
