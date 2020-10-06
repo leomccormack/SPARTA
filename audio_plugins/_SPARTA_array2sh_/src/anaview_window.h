@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -43,12 +43,12 @@ class anaview_window  : public Component
 public:
     //==============================================================================
     anaview_window (int _width, int _height, float _min_freq, float _max_freq, float _min_Y, float _max_Y, float _yaxislineStepSize, float _fs);
-    ~anaview_window();
+    ~anaview_window() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     Rectangle<int> localBounds;
- 
+
     void setSolidCurves_Handle(float* _freqVector, float* _solidCurves, int _numFreqPoints, int _numCurves)
     {
         freqVector = _freqVector;
@@ -62,7 +62,7 @@ public:
 
     //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
 
 

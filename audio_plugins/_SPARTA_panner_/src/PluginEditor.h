@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.1
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
@@ -26,6 +26,7 @@
 #include "inputCoordsView.h"
 #include "outputCoordsView.h"
 #include "pannerView.h"
+#include "../../resources/SPARTALookAndFeel.h"
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
@@ -80,6 +81,9 @@ private:
     OpenGLContext openGLContext;
     double progress = 0.0;
     ProgressBar progressbar;
+
+    /* Look and Feel */
+    SPARTALookAndFeel LAF;
 
     /* source coordinates viewport */
     std::unique_ptr<Viewport> sourceCoordsVP;

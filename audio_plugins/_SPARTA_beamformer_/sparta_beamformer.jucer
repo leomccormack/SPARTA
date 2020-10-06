@@ -16,6 +16,8 @@
               enableIAA="0" cppLanguageStandard="14" companyCopyright="Aalto"
               pluginFormats="buildVST" jucerFormatVersion="1">
   <MAINGROUP id="imnfnp" name="sparta_beamformer">
+    <FILE id="JaF29Q" name="SPARTALookAndFeel.h" compile="0" resource="0"
+          file="../resources/SPARTALookAndFeel.h"/>
     <FILE id="eW3HdL" name="outputCoordsView.cpp" compile="1" resource="0"
           file="src/outputCoordsView.cpp"/>
     <FILE id="bsv0NB" name="outputCoordsView.h" compile="0" resource="0"

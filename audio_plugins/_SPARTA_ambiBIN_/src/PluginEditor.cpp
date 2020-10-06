@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -36,90 +36,90 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    TBuseDefaultHRIRs.reset (new ToggleButton ("new toggle button"));
+    TBuseDefaultHRIRs.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBuseDefaultHRIRs.get());
-    TBuseDefaultHRIRs->setButtonText (String());
+    TBuseDefaultHRIRs->setButtonText (juce::String());
     TBuseDefaultHRIRs->addListener (this);
 
     TBuseDefaultHRIRs->setBounds (614, 60, 21, 24);
 
-    CBorderPreset.reset (new ComboBox ("new combo box"));
+    CBorderPreset.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBorderPreset.get());
     CBorderPreset->setEditableText (false);
-    CBorderPreset->setJustificationType (Justification::centredLeft);
+    CBorderPreset->setJustificationType (juce::Justification::centredLeft);
     CBorderPreset->setTextWhenNothingSelected (TRANS("Default"));
     CBorderPreset->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBorderPreset->addListener (this);
 
     CBorderPreset->setBounds (136, 63, 104, 18);
 
-    CBchFormat.reset (new ComboBox ("new combo box"));
+    CBchFormat.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBchFormat.get());
     CBchFormat->setEditableText (false);
-    CBchFormat->setJustificationType (Justification::centredLeft);
+    CBchFormat->setJustificationType (juce::Justification::centredLeft);
     CBchFormat->setTextWhenNothingSelected (TRANS("ACN"));
     CBchFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBchFormat->addListener (this);
 
     CBchFormat->setBounds (88, 116, 72, 18);
 
-    CBnormScheme.reset (new ComboBox ("new combo box"));
+    CBnormScheme.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBnormScheme.get());
     CBnormScheme->setEditableText (false);
-    CBnormScheme->setJustificationType (Justification::centredLeft);
+    CBnormScheme->setJustificationType (juce::Justification::centredLeft);
     CBnormScheme->setTextWhenNothingSelected (TRANS("N3D"));
     CBnormScheme->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBnormScheme->addListener (this);
 
     CBnormScheme->setBounds (164, 116, 76, 18);
 
-    TBmaxRE.reset (new ToggleButton ("new toggle button"));
+    TBmaxRE.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBmaxRE.get());
-    TBmaxRE->setButtonText (String());
+    TBmaxRE->setButtonText (juce::String());
     TBmaxRE->addListener (this);
 
     TBmaxRE->setBounds (409, 60, 22, 24);
 
-    s_yaw.reset (new Slider ("new slider"));
+    s_yaw.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_yaw.get());
     s_yaw->setRange (-180, 180, 0.01);
-    s_yaw->setSliderStyle (Slider::LinearHorizontal);
-    s_yaw->setTextBoxStyle (Slider::TextBoxAbove, false, 80, 20);
-    s_yaw->setColour (Slider::backgroundColourId, Colour (0xff5c5d5e));
-    s_yaw->setColour (Slider::trackColourId, Colour (0xff315b6d));
-    s_yaw->setColour (Slider::textBoxTextColourId, Colours::white);
-    s_yaw->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
+    s_yaw->setSliderStyle (juce::Slider::LinearHorizontal);
+    s_yaw->setTextBoxStyle (juce::Slider::TextBoxAbove, false, 80, 20);
+    s_yaw->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
+    s_yaw->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
+    s_yaw->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
+    s_yaw->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
     s_yaw->addListener (this);
 
     s_yaw->setBounds (80, 171, 120, 38);
 
-    s_pitch.reset (new Slider ("new slider"));
+    s_pitch.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_pitch.get());
     s_pitch->setRange (-180, 180, 0.01);
-    s_pitch->setSliderStyle (Slider::LinearVertical);
-    s_pitch->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
-    s_pitch->setColour (Slider::backgroundColourId, Colour (0xff5c5d5e));
-    s_pitch->setColour (Slider::trackColourId, Colour (0xff315b6d));
-    s_pitch->setColour (Slider::textBoxTextColourId, Colours::white);
-    s_pitch->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
+    s_pitch->setSliderStyle (juce::Slider::LinearVertical);
+    s_pitch->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
+    s_pitch->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
+    s_pitch->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
+    s_pitch->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
+    s_pitch->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
     s_pitch->addListener (this);
 
     s_pitch->setBounds (208, 137, 96, 112);
 
-    s_roll.reset (new Slider ("new slider"));
+    s_roll.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_roll.get());
     s_roll->setRange (-180, 180, 0.01);
-    s_roll->setSliderStyle (Slider::LinearVertical);
-    s_roll->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
-    s_roll->setColour (Slider::backgroundColourId, Colour (0xff5c5d5e));
-    s_roll->setColour (Slider::trackColourId, Colour (0xff315b6d));
-    s_roll->setColour (Slider::textBoxTextColourId, Colours::white);
-    s_roll->setColour (Slider::textBoxBackgroundColourId, Colour (0x00ffffff));
+    s_roll->setSliderStyle (juce::Slider::LinearVertical);
+    s_roll->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
+    s_roll->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
+    s_roll->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
+    s_roll->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
+    s_roll->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
     s_roll->addListener (this);
 
     s_roll->setBounds (328, 137, 96, 112);
 
-    te_oscport.reset (new TextEditor ("new text editor"));
+    te_oscport.reset (new juce::TextEditor ("new text editor"));
     addAndMakeVisible (te_oscport.get());
     te_oscport->setMultiLine (false);
     te_oscport->setReturnKeyStartsNewLine (false);
@@ -127,123 +127,123 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_oscport->setScrollbarsShown (true);
     te_oscport->setCaretVisible (false);
     te_oscport->setPopupMenuEnabled (true);
-    te_oscport->setColour (TextEditor::textColourId, Colours::white);
-    te_oscport->setColour (TextEditor::backgroundColourId, Colour (0x00ffffff));
-    te_oscport->setColour (TextEditor::outlineColourId, Colour (0x68a3a2a2));
-    te_oscport->setText (String());
+    te_oscport->setColour (juce::TextEditor::textColourId, juce::Colours::white);
+    te_oscport->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
+    te_oscport->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x68a3a2a2));
+    te_oscport->setText (juce::String());
 
     te_oscport->setBounds (16, 227, 56, 18);
 
-    label_N_dirs.reset (new Label ("new label",
-                                   String()));
+    label_N_dirs.reset (new juce::Label ("new label",
+                                         juce::String()));
     addAndMakeVisible (label_N_dirs.get());
-    label_N_dirs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
-    label_N_dirs->setJustificationType (Justification::centredLeft);
+    label_N_dirs->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    label_N_dirs->setJustificationType (juce::Justification::centredLeft);
     label_N_dirs->setEditable (false, false, false);
-    label_N_dirs->setColour (Label::outlineColourId, Colour (0x68a3a2a2));
-    label_N_dirs->setColour (TextEditor::textColourId, Colours::black);
-    label_N_dirs->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    label_N_dirs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
+    label_N_dirs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    label_N_dirs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
     label_N_dirs->setBounds (536, 123, 96, 24);
 
-    label_HRIR_len.reset (new Label ("new label",
-                                     String()));
+    label_HRIR_len.reset (new juce::Label ("new label",
+                                           juce::String()));
     addAndMakeVisible (label_HRIR_len.get());
-    label_HRIR_len->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
-    label_HRIR_len->setJustificationType (Justification::centredLeft);
+    label_HRIR_len->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    label_HRIR_len->setJustificationType (juce::Justification::centredLeft);
     label_HRIR_len->setEditable (false, false, false);
-    label_HRIR_len->setColour (Label::outlineColourId, Colour (0x68a3a2a2));
-    label_HRIR_len->setColour (TextEditor::textColourId, Colours::black);
-    label_HRIR_len->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    label_HRIR_len->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
+    label_HRIR_len->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    label_HRIR_len->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
     label_HRIR_len->setBounds (536, 154, 96, 24);
 
-    label_HRIR_fs.reset (new Label ("new label",
-                                    String()));
+    label_HRIR_fs.reset (new juce::Label ("new label",
+                                          juce::String()));
     addAndMakeVisible (label_HRIR_fs.get());
-    label_HRIR_fs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
-    label_HRIR_fs->setJustificationType (Justification::centredLeft);
+    label_HRIR_fs->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    label_HRIR_fs->setJustificationType (juce::Justification::centredLeft);
     label_HRIR_fs->setEditable (false, false, false);
-    label_HRIR_fs->setColour (Label::outlineColourId, Colour (0x68a3a2a2));
-    label_HRIR_fs->setColour (TextEditor::textColourId, Colours::black);
-    label_HRIR_fs->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    label_HRIR_fs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
+    label_HRIR_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    label_HRIR_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
     label_HRIR_fs->setBounds (536, 185, 96, 24);
 
-    label_DAW_fs.reset (new Label ("new label",
-                                   String()));
+    label_DAW_fs.reset (new juce::Label ("new label",
+                                         juce::String()));
     addAndMakeVisible (label_DAW_fs.get());
-    label_DAW_fs->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
-    label_DAW_fs->setJustificationType (Justification::centredLeft);
+    label_DAW_fs->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    label_DAW_fs->setJustificationType (juce::Justification::centredLeft);
     label_DAW_fs->setEditable (false, false, false);
-    label_DAW_fs->setColour (Label::outlineColourId, Colour (0x68a3a2a2));
-    label_DAW_fs->setColour (TextEditor::textColourId, Colours::black);
-    label_DAW_fs->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    label_DAW_fs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
+    label_DAW_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    label_DAW_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
     label_DAW_fs->setBounds (536, 216, 96, 24);
 
-    t_flipPitch.reset (new ToggleButton ("new toggle button"));
+    t_flipPitch.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (t_flipPitch.get());
-    t_flipPitch->setButtonText (String());
+    t_flipPitch->setButtonText (juce::String());
     t_flipPitch->addListener (this);
 
     t_flipPitch->setBounds (260, 209, 23, 24);
 
-    t_flipRoll.reset (new ToggleButton ("new toggle button"));
+    t_flipRoll.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (t_flipRoll.get());
-    t_flipRoll->setButtonText (String());
+    t_flipRoll->setButtonText (juce::String());
     t_flipRoll->addListener (this);
 
     t_flipRoll->setBounds (376, 209, 23, 24);
 
-    t_flipYaw.reset (new ToggleButton ("new toggle button"));
+    t_flipYaw.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (t_flipYaw.get());
-    t_flipYaw->setButtonText (String());
+    t_flipYaw->setButtonText (juce::String());
     t_flipYaw->addListener (this);
 
     t_flipYaw->setBounds (128, 209, 23, 24);
 
-    TBcompEQ.reset (new ToggleButton ("new toggle button"));
+    TBcompEQ.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBcompEQ.get());
-    TBcompEQ->setButtonText (String());
+    TBcompEQ->setButtonText (juce::String());
     TBcompEQ->addListener (this);
 
     TBcompEQ->setBounds (656, -16, 32, 24);
 
-    TBrpyFlag.reset (new ToggleButton ("new toggle button"));
+    TBrpyFlag.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBrpyFlag.get());
-    TBrpyFlag->setButtonText (String());
+    TBrpyFlag->setButtonText (juce::String());
     TBrpyFlag->addListener (this);
 
     TBrpyFlag->setBounds (59, 187, 24, 24);
 
-    TBenableRot.reset (new ToggleButton ("new toggle button"));
+    TBenableRot.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBenableRot.get());
-    TBenableRot->setButtonText (String());
+    TBenableRot->setButtonText (juce::String());
     TBenableRot->addListener (this);
 
     TBenableRot->setBounds (59, 165, 24, 24);
 
-    CBdecoderMethod.reset (new ComboBox ("new combo box"));
+    CBdecoderMethod.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBdecoderMethod.get());
     CBdecoderMethod->setEditableText (false);
-    CBdecoderMethod->setJustificationType (Justification::centredLeft);
+    CBdecoderMethod->setJustificationType (juce::Justification::centredLeft);
     CBdecoderMethod->setTextWhenNothingSelected (TRANS("Default"));
     CBdecoderMethod->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBdecoderMethod->addListener (this);
 
     CBdecoderMethod->setBounds (88, 90, 152, 18);
 
-    TBdiffMatching.reset (new ToggleButton ("new toggle button"));
+    TBdiffMatching.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBdiffMatching.get());
-    TBdiffMatching->setButtonText (String());
+    TBdiffMatching->setButtonText (juce::String());
     TBdiffMatching->addListener (this);
 
     TBdiffMatching->setBounds (409, 87, 22, 24);
 
-    TBphaseWarping.reset (new ToggleButton ("new toggle button"));
+    TBphaseWarping.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBphaseWarping.get());
-    TBphaseWarping->setButtonText (String());
+    TBphaseWarping->setButtonText (juce::String());
     TBphaseWarping->addListener (this);
 
     TBphaseWarping->setBounds (409, 113, 22, 24);
@@ -264,6 +264,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* init OpenGL */
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
+
+    /* Look and Feel */
+    LAF.setDefaultColours();
+    setLookAndFeel(&LAF);
 
     /* add options to combo boxes */
     CBorderPreset->addItem (TRANS("1st order"), SH_ORDER_FIRST);
@@ -293,8 +297,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     progress = 0.0;
     progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
     progressbar.ProgressBar::setAlwaysOnTop(true);
-    progressbar.setColour(ProgressBar::backgroundColourId, Colours::gold);
-    progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
 
     /* grab current parameter settings */
     CBdecoderMethod->setSelectedId(ambi_bin_getDecodingMethod(hAmbi), dontSendNotification);
@@ -381,61 +383,61 @@ PluginEditor::~PluginEditor()
 
 
     //[Destructor]. You can add your own custom destruction code here..
-
+    setLookAndFeel(nullptr);
     //[/Destructor]
 }
 
 //==============================================================================
-void PluginEditor::paint (Graphics& g)
+void PluginEditor::paint (juce::Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (Colours::white);
+    g.fillAll (juce::Colours::white);
 
     {
         int x = 0, y = 146, width = 656, height = 116;
-        Colour fillColour1 = Colour (0xff1c3949), fillColour2 = Colour (0xff071e22);
+        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       8.0f - 0.0f + x,
-                                       264.0f - 146.0f + y,
-                                       fillColour2,
-                                       8.0f - 0.0f + x,
-                                       192.0f - 146.0f + y,
-                                       false));
+        g.setGradientFill (juce::ColourGradient (fillColour1,
+                                             8.0f - 0.0f + x,
+                                             264.0f - 146.0f + y,
+                                             fillColour2,
+                                             8.0f - 0.0f + x,
+                                             192.0f - 146.0f + y,
+                                             false));
         g.fillRect (x, y, width, height);
     }
 
     {
         int x = 0, y = 30, width = 656, height = 116;
-        Colour fillColour1 = Colour (0xff1c3949), fillColour2 = Colour (0xff071e22);
+        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       8.0f - 0.0f + x,
-                                       32.0f - 30.0f + y,
-                                       fillColour2,
-                                       8.0f - 0.0f + x,
-                                       104.0f - 30.0f + y,
-                                       false));
+        g.setGradientFill (juce::ColourGradient (fillColour1,
+                                             8.0f - 0.0f + x,
+                                             32.0f - 30.0f + y,
+                                             fillColour2,
+                                             8.0f - 0.0f + x,
+                                             104.0f - 30.0f + y,
+                                             false));
         g.fillRect (x, y, width, height);
     }
 
     {
         float x = 1.0f, y = 2.0f, width = 654.0f, height = 31.0f;
-        Colour fillColour1 = Colour (0xff061c20), fillColour2 = Colour (0xff1c3949);
-        Colour strokeColour = Colour (0xffb9b9b9);
+        juce::Colour fillColour1 = juce::Colour (0xff041518), fillColour2 = juce::Colour (0xff19313f);
+        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       0.0f - 1.0f + x,
-                                       32.0f - 2.0f + y,
-                                       fillColour2,
-                                       656.0f - 1.0f + x,
-                                       24.0f - 2.0f + y,
-                                       false));
+        g.setGradientFill (juce::ColourGradient (fillColour1,
+                                             0.0f - 1.0f + x,
+                                             32.0f - 2.0f + y,
+                                             fillColour2,
+                                             656.0f - 1.0f + x,
+                                             24.0f - 2.0f + y,
+                                             false));
         g.fillRoundedRectangle (x, y, width, height, 5.000f);
         g.setColour (strokeColour);
         g.drawRoundedRectangle (x, y, width, height, 5.000f, 2.000f);
@@ -443,8 +445,8 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 12, y = 58, width = 237, height = 82;
-        Colour fillColour = Colour (0x10f4f4f4);
-        Colour strokeColour = Colour (0x67a0a0a0);
+        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
+        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
@@ -456,8 +458,8 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 12, y = 58, width = 237, height = 29;
-        Colour fillColour = Colour (0x08f4f4f4);
-        Colour strokeColour = Colour (0x35a0a0a0);
+        juce::Colour fillColour = juce::Colour (0x08f4f4f4);
+        juce::Colour strokeColour = juce::Colour (0x35a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
@@ -469,8 +471,8 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 12, y = 139, width = 424, height = 112;
-        Colour fillColour = Colour (0x10f4f4f4);
-        Colour strokeColour = Colour (0x67a0a0a0);
+        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
+        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
@@ -482,8 +484,8 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 12, y = 164, width = 73, height = 87;
-        Colour fillColour = Colour (0x08f4f4f4);
-        Colour strokeColour = Colour (0x3aa0a0a0);
+        juce::Colour fillColour = juce::Colour (0x08f4f4f4);
+        juce::Colour strokeColour = juce::Colour (0x3aa0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
@@ -495,8 +497,8 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 248, y = 58, width = 188, height = 82;
-        Colour fillColour = Colour (0x10f4f4f4);
-        Colour strokeColour = Colour (0x67a0a0a0);
+        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
+        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
@@ -508,8 +510,8 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 446, y = 58, width = 196, height = 54;
-        Colour fillColour = Colour (0x10f4f4f4);
-        Colour strokeColour = Colour (0x67a0a0a0);
+        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
+        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
@@ -521,200 +523,200 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 164, y = 32, width = 149, height = 30;
-        String text (TRANS("Decoding Settings"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Decoding Settings"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 520, y = 32, width = 113, height = 30;
-        String text (TRANS("Output"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Output"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 459, y = 56, width = 165, height = 30;
-        String text (TRANS("Use Default HRIR set:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Use Default HRIR set:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 19, y = 57, width = 141, height = 30;
-        String text (TRANS("Decoding Order:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Decoding Order:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 19, y = 109, width = 132, height = 30;
-        String text (TRANS("Format:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Format:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 19, y = 136, width = 133, height = 30;
-        String text (TRANS("Rotation"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Rotation"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 19, y = 84, width = 125, height = 30;
-        String text (TRANS("Method:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Method:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 125, y = 145, width = 63, height = 30;
-        String text (TRANS("\\ypr[0]"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("\\ypr[0]"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
+                    juce::Justification::centred, true);
     }
 
     {
         int x = 223, y = 145, width = 63, height = 30;
-        String text (TRANS("Pitch"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Pitch"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
+                    juce::Justification::centred, true);
     }
 
     {
         int x = 341, y = 145, width = 63, height = 30;
-        String text (TRANS("Roll"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Roll"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
+                    juce::Justification::centred, true);
     }
 
     {
         int x = 355, y = 225, width = 63, height = 24;
-        String text (TRANS("+/-"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("+/-"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
+                    juce::Justification::centred, true);
     }
 
     {
         int x = 240, y = 225, width = 63, height = 27;
-        String text (TRANS("+/-"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("+/-"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
+                    juce::Justification::centred, true);
     }
 
     {
         int x = 109, y = 225, width = 63, height = 27;
-        String text (TRANS("+/-"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("+/-"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
+                    juce::Justification::centred, true);
     }
 
     {
         int x = 93, y = 145, width = 60, height = 30;
-        String text (TRANS("Yaw"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Yaw"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
+                    juce::Justification::centred, true);
     }
 
     {
         int x = 261, y = 145, width = 63, height = 30;
-        String text (TRANS("\\ypr[1]"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("\\ypr[1]"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
+                    juce::Justification::centred, true);
     }
 
     {
         int x = 373, y = 145, width = 63, height = 30;
-        String text (TRANS("\\ypr[2]"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("\\ypr[2]"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
+                    juce::Justification::centred, true);
     }
 
     {
         int x = 446, y = 111, width = 196, height = 140;
-        Colour fillColour = Colour (0x10f4f4f4);
-        Colour strokeColour = Colour (0x67a0a0a0);
+        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
+        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
@@ -726,163 +728,163 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 457, y = 119, width = 132, height = 30;
-        String text (TRANS("N dirs:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("N dirs:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 457, y = 151, width = 132, height = 30;
-        String text (TRANS("HRIR len:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("HRIR len:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 457, y = 182, width = 132, height = 30;
-        String text (TRANS("HRIR fs:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("HRIR fs:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 457, y = 213, width = 132, height = 30;
-        String text (TRANS("DAW fs:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("DAW fs:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 19, y = 208, width = 63, height = 23;
-        String text (TRANS("OSC port:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("OSC port:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 659, y = -15, width = 80, height = 30;
-        String text (TRANS("Comp. EQ:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Comp. EQ:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 19, y = 188, width = 63, height = 23;
-        String text (TRANS("R-P-Y:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("R-P-Y:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 19, y = 166, width = 61, height = 23;
-        String text (TRANS("Enable:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Enable:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (11.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 16, y = 1, width = 196, height = 32;
-        String text (TRANS("SPARTA|"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("SPARTA|"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (18.80f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (18.80f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 92, y = 1, width = 184, height = 32;
-        String text (TRANS("AmbiBIN"));
-        Colour fillColour = Colour (0xffdf8400);
+        juce::String text (TRANS("AmbiBIN"));
+        juce::Colour fillColour = juce::Colour (0xffdf8400);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (18.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 255, y = 57, width = 185, height = 30;
-        String text (TRANS("Apply MaxRE Weights:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Apply MaxRE Weights:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 255, y = 84, width = 185, height = 30;
-        String text (TRANS("Diffuse Correction:"));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Diffuse Correction:"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 255, y = 109, width = 185, height = 30;
-        String text (TRANS("Apply Phase Warping: "));
-        Colour fillColour = Colours::white;
+        juce::String text (TRANS("Apply Phase Warping: "));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (14.50f, Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 0, y = 0, width = 656, height = 2;
-        Colour strokeColour = Colour (0xffb9b9b9);
+        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (strokeColour);
@@ -892,7 +894,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 654, y = 0, width = 2, height = 262;
-        Colour strokeColour = Colour (0xffb9b9b9);
+        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (strokeColour);
@@ -902,7 +904,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 0, width = 2, height = 262;
-        Colour strokeColour = Colour (0xffb9b9b9);
+        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (strokeColour);
@@ -912,7 +914,7 @@ void PluginEditor::paint (Graphics& g)
 
     {
         int x = 0, y = 260, width = 656, height = 2;
-        Colour strokeColour = Colour (0xffb9b9b9);
+        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (strokeColour);
@@ -981,7 +983,7 @@ void PluginEditor::resized()
     //[/UserResized]
 }
 
-void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
+void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
@@ -1051,7 +1053,7 @@ void PluginEditor::buttonClicked (Button* buttonThatWasClicked)
     //[/UserbuttonClicked_Post]
 }
 
-void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
+void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
@@ -1085,7 +1087,7 @@ void PluginEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[/UsercomboBoxChanged_Post]
 }
 
-void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
+void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
@@ -1119,7 +1121,7 @@ void PluginEditor::sliderValueChanged (Slider* sliderThatWasMoved)
 void PluginEditor::timerCallback(int timerID)
 {
     switch(timerID){
-        case TIMER_PROCESSING_RELATED: 
+        case TIMER_PROCESSING_RELATED:
             /* Handled in PluginProcessor */
             break;
 
@@ -1250,11 +1252,11 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="656" initialHeight="262">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 146 656 116" fill="linear: 8 264, 8 192, 0=ff1c3949, 1=ff071e22"
+    <RECT pos="0 146 656 116" fill="linear: 8 264, 8 192, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <RECT pos="0 30 656 116" fill="linear: 8 32, 8 104, 0=ff1c3949, 1=ff071e22"
+    <RECT pos="0 30 656 116" fill="linear: 8 32, 8 104, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 2 654 31" cornerSize="5.0" fill="linear: 0 32, 656 24, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 2 654 31" cornerSize="5.0" fill="linear: 0 32, 656 24, 0=ff041518, 1=ff19313f"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="12 58 237 82" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>

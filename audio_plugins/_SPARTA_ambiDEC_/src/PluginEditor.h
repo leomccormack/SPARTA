@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.7
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -25,6 +25,7 @@
 #include "PluginProcessor.h"
 #include "outputCoordsView.h"
 #include "log2dSlider.h"
+#include "../../resources/SPARTALookAndFeel.h"
 #include <thread>
 
 typedef enum _SPARTA_WARNINGS{
@@ -34,7 +35,6 @@ typedef enum _SPARTA_WARNINGS{
     k_warning_NinputCH,
     k_warning_NoutputCH
 }SPARTA_WARNINGS;
-
 
 //[/Headers]
 
@@ -51,9 +51,9 @@ typedef enum _SPARTA_WARNINGS{
 class PluginEditor  : public AudioProcessorEditor,
                       public MultiTimer,
                       private FilenameComponentListener,
-                      public ComboBox::Listener,
-                      public Slider::Listener,
-                      public Button::Listener
+                      public juce::ComboBox::Listener,
+                      public juce::Slider::Listener,
+                      public juce::Button::Listener
 {
 public:
     //==============================================================================
@@ -66,11 +66,11 @@ public:
 
     //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
+    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
+    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
@@ -83,6 +83,9 @@ private:
     OpenGLContext openGLContext;
     double progress = 0.0;
     ProgressBar progressbar;
+
+    /* Look and Feel */
+    SPARTALookAndFeel LAF;
 
     /* freq-dependent decoding order */
     std::unique_ptr<log2dSlider> decOrder2dSlider;
@@ -108,24 +111,24 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<ComboBox> CBoutputDirsPreset;
-    std::unique_ptr<Slider> SL_num_loudspeakers;
-    std::unique_ptr<ToggleButton> TBuseDefaultHRIRs;
-    std::unique_ptr<ComboBox> CBsourcePreset;
-    std::unique_ptr<ComboBox> CBchFormat;
-    std::unique_ptr<ComboBox> CBnormScheme;
-    std::unique_ptr<Slider> SL_transitionFreq;
-    std::unique_ptr<ComboBox> CBdec1method;
-    std::unique_ptr<ComboBox> CBdec2method;
-    std::unique_ptr<ToggleButton> TBdec1EnableMaxrE;
-    std::unique_ptr<ToggleButton> TBdec2EnableMaxrE;
-    std::unique_ptr<ComboBox> CBdec1normtype;
-    std::unique_ptr<ToggleButton> TBBinauraliseLS;
-    std::unique_ptr<ComboBox> CBdec2normtype;
-    std::unique_ptr<Slider> s_decOrder;
-    std::unique_ptr<TextButton> tb_loadJSON;
-    std::unique_ptr<TextButton> tb_saveJSON;
-    std::unique_ptr<ComboBox> CBmasterOrder;
+    std::unique_ptr<juce::ComboBox> CBoutputDirsPreset;
+    std::unique_ptr<juce::Slider> SL_num_loudspeakers;
+    std::unique_ptr<juce::ToggleButton> TBuseDefaultHRIRs;
+    std::unique_ptr<juce::ComboBox> CBsourcePreset;
+    std::unique_ptr<juce::ComboBox> CBchFormat;
+    std::unique_ptr<juce::ComboBox> CBnormScheme;
+    std::unique_ptr<juce::Slider> SL_transitionFreq;
+    std::unique_ptr<juce::ComboBox> CBdec1method;
+    std::unique_ptr<juce::ComboBox> CBdec2method;
+    std::unique_ptr<juce::ToggleButton> TBdec1EnableMaxrE;
+    std::unique_ptr<juce::ToggleButton> TBdec2EnableMaxrE;
+    std::unique_ptr<juce::ComboBox> CBdec1normtype;
+    std::unique_ptr<juce::ToggleButton> TBBinauraliseLS;
+    std::unique_ptr<juce::ComboBox> CBdec2normtype;
+    std::unique_ptr<juce::Slider> s_decOrder;
+    std::unique_ptr<juce::TextButton> tb_loadJSON;
+    std::unique_ptr<juce::TextButton> tb_saveJSON;
+    std::unique_ptr<juce::ComboBox> CBmasterOrder;
 
 
     //==============================================================================

@@ -18,6 +18,8 @@
   <MAINGROUP id="imnfnp" name="sparta_ambiENC">
     <FILE id="e5t7u4" name="ConfigurationHelper.h" compile="0" resource="0"
           file="../resources/ConfigurationHelper.h"/>
+    <FILE id="czPKYL" name="SPARTALookAndFeel.h" compile="0" resource="0"
+          file="../resources/SPARTALookAndFeel.h"/>
     <FILE id="Yub58R" name="inputCoordsView.cpp" compile="1" resource="0"
           file="src/inputCoordsView.cpp"/>
     <FILE id="sHTZCw" name="inputCoordsView.h" compile="0" resource="0"

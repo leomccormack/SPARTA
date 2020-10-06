@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.1
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
@@ -343,7 +343,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 0, y = 33, width = 816, height = 575;
-        juce::Colour fillColour1 = juce::Colour (0xff1c3949), fillColour2 = juce::Colour (0xff071e22);
+        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
@@ -383,23 +383,8 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 391, y = 553, width = 712, height = 163;
-        juce::Colour fillColour1 = juce::Colour (0xff1c3949), fillColour2 = juce::Colour (0xff071e22);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (juce::ColourGradient (fillColour1,
-                                             8.0f - 391.0f + x,
-                                             360.0f - 553.0f + y,
-                                             fillColour2,
-                                             8.0f - 391.0f + x,
-                                             280.0f - 553.0f + y,
-                                             false));
-        g.fillRect (x, y, width, height);
-    }
-
-    {
         float x = 1.0f, y = 2.0f, width = 813.0f, height = 31.0f;
-        juce::Colour fillColour1 = juce::Colour (0xff061c20), fillColour2 = juce::Colour (0xff1c3949);
+        juce::Colour fillColour1 = juce::Colour (0xff041518), fillColour2 = juce::Colour (0xff19313f);
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -985,15 +970,13 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="820" initialHeight="600">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 33 816 575" fill="linear: 8 32, 8 232, 0=ff1c3949, 1=ff071e22"
+    <RECT pos="0 33 816 575" fill="linear: 8 32, 8 232, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
     <RECT pos="15 241 233 119" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 58 452 158" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="391 553 712 163" fill="linear: 8 360, 8 280, 0=ff1c3949, 1=ff071e22"
-          hasStroke="0"/>
-    <ROUNDRECT pos="1 2 813 31" cornerSize="5.0" fill="linear: 0 32, 656 24, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 2 813 31" cornerSize="5.0" fill="linear: 0 32, 656 24, 0=ff041518, 1=ff19313f"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="183 497 196 64" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>

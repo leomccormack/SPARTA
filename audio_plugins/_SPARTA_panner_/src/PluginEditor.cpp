@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.1
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
@@ -217,6 +217,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
 
+    /* Look and Feel */
+    LAF.setDefaultColours();
+    setLookAndFeel(&LAF);
+
     /* remove slider bit from these sliders */
     SL_pValue->setColour(Slider::trackColourId, Colours::transparentBlack);
     SL_pValue->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
@@ -243,7 +247,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsourceDirsPreset->addItem (TRANS("11.x (7+4)"), SOURCE_CONFIG_PRESET_11PX_7_4);
     CBsourceDirsPreset->addItem (TRANS("13.x"), SOURCE_CONFIG_PRESET_13PX);
     CBsourceDirsPreset->addItem (TRANS("22.x"), SOURCE_CONFIG_PRESET_22PX);
-    CBsourceDirsPreset->addItem (TRANS("9+10+3.2"), LOUDSPEAKER_ARRAY_PRESET_22P2_9_10_3);
+    //CBsourceDirsPreset->addItem (TRANS("9+10+3.2"), SOURCE_CONFIG_ARRAY_PRESET_22P2_9_10_3);
     CBsourceDirsPreset->addItem (TRANS("Aalto MCC"), SOURCE_CONFIG_PRESET_AALTO_MCC);
     CBsourceDirsPreset->addItem (TRANS("Aalto MCC-subset"), SOURCE_CONFIG_PRESET_AALTO_MCC_SUBSET);
     CBsourceDirsPreset->addItem (TRANS("Aalto Apaja"), SOURCE_CONFIG_PRESET_AALTO_APAJA);
@@ -255,11 +259,11 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsourceDirsPreset->addItem (TRANS("T-design (36)"), SOURCE_CONFIG_PRESET_T_DESIGN_36);
     CBsourceDirsPreset->addItem (TRANS("T-design (48)"), SOURCE_CONFIG_PRESET_T_DESIGN_48);
     CBsourceDirsPreset->addItem (TRANS("T-design (60)"), SOURCE_CONFIG_PRESET_T_DESIGN_60);
-    CBsourceDirsPreset->addItem (TRANS("SphCov (9)"), LOUDSPEAKER_ARRAY_PRESET_SPH_COV_9);
-    CBsourceDirsPreset->addItem (TRANS("SphCov (16)"), LOUDSPEAKER_ARRAY_PRESET_SPH_COV_16);
-    CBsourceDirsPreset->addItem (TRANS("SphCov (25)"), LOUDSPEAKER_ARRAY_PRESET_SPH_COV_25);
-    CBsourceDirsPreset->addItem (TRANS("SphCov (49)"), LOUDSPEAKER_ARRAY_PRESET_SPH_COV_49);
-    CBsourceDirsPreset->addItem (TRANS("SphCov (64)"), LOUDSPEAKER_ARRAY_PRESET_SPH_COV_64);
+    CBsourceDirsPreset->addItem (TRANS("SphCov (9)"), SOURCE_CONFIG_PRESET_SPH_COV_9);
+    CBsourceDirsPreset->addItem (TRANS("SphCov (16)"), SOURCE_CONFIG_PRESET_SPH_COV_16);
+    CBsourceDirsPreset->addItem (TRANS("SphCov (25)"), SOURCE_CONFIG_PRESET_SPH_COV_25);
+    CBsourceDirsPreset->addItem (TRANS("SphCov (49)"), SOURCE_CONFIG_PRESET_SPH_COV_49);
+    CBsourceDirsPreset->addItem (TRANS("SphCov (64)"), SOURCE_CONFIG_PRESET_SPH_COV_64);
 
     /* add Loudspeaker preset options */
     CBsLoudspeakerDirsPreset->addItem (TRANS("Stereo"), LOUDSPEAKER_ARRAY_PRESET_STEREO);
@@ -391,7 +395,10 @@ PluginEditor::~PluginEditor()
 
 
     //[Destructor]. You can add your own custom destruction code here..
-
+    setLookAndFeel(nullptr);
+    sourceCoordsVP = nullptr;
+    loudspeakerCoordsVP = nullptr;
+    panWindow = nullptr;
     //[/Destructor]
 }
 
@@ -405,7 +412,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 0, y = 208, width = 920, height = 178;
-        juce::Colour fillColour1 = juce::Colour (0xff1c3949), fillColour2 = juce::Colour (0xff071e22);
+        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
@@ -420,7 +427,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 0, y = 30, width = 920, height = 178;
-        juce::Colour fillColour1 = juce::Colour (0xff1c3949), fillColour2 = juce::Colour (0xff071e22);
+        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
@@ -435,7 +442,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         float x = 1.0f, y = 2.0f, width = 918.0f, height = 31.0f;
-        juce::Colour fillColour1 = juce::Colour (0xff061c20), fillColour2 = juce::Colour (0xff1c3949);
+        juce::Colour fillColour1 = juce::Colour (0xff041518), fillColour2 = juce::Colour (0xff19313f);
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1239,11 +1246,11 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="920" initialHeight="386">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 208 920 178" fill="linear: 8 384, 8 304, 0=ff1c3949, 1=ff071e22"
+    <RECT pos="0 208 920 178" fill="linear: 8 384, 8 304, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <RECT pos="0 30 920 178" fill="linear: 8 32, 8 104, 0=ff1c3949, 1=ff071e22"
+    <RECT pos="0 30 920 178" fill="linear: 8 32, 8 104, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 2 918 31" cornerSize="5.0" fill="linear: 0 32, 912 24, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 2 918 31" cornerSize="5.0" fill="linear: 0 32, 912 24, 0=ff041518, 1=ff19313f"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="366 308 211 68" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>

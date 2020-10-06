@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -72,24 +72,24 @@ pannerView::~pannerView()
 }
 
 //==============================================================================
-void pannerView::paint (Graphics& g)
+void pannerView::paint (juce::Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
     {
         int x = 0, y = 0, width = 480, height = 240;
-        Colour fillColour1 = Colour (0xff4e4e4e), fillColour2 = Colour (0xff202020);
-        Colour strokeColour = Colour (0xff9e9e9e);
+        juce::Colour fillColour1 = juce::Colour (0xff4e4e4e), fillColour2 = juce::Colour (0xff202020);
+        juce::Colour strokeColour = juce::Colour (0xff9e9e9e);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       248.0f - 0.0f + x,
-                                       0.0f - 0.0f + y,
-                                       fillColour2,
-                                       248.0f - 0.0f + x,
-                                       240.0f - 0.0f + y,
-                                       false));
+        g.setGradientFill (juce::ColourGradient (fillColour1,
+                                             248.0f - 0.0f + x,
+                                             0.0f - 0.0f + y,
+                                             fillColour2,
+                                             248.0f - 0.0f + x,
+                                             240.0f - 0.0f + y,
+                                             false));
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 1);
@@ -166,7 +166,7 @@ void pannerView::resized()
     //[/UserResized]
 }
 
-void pannerView::mouseDown (const MouseEvent& e)
+void pannerView::mouseDown (const juce::MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
     for(int i=0; i<NBeams; i++){
@@ -184,7 +184,7 @@ void pannerView::mouseDown (const MouseEvent& e)
     //[/UserCode_mouseDown]
 }
 
-void pannerView::mouseDrag (const MouseEvent& e)
+void pannerView::mouseDrag (const juce::MouseEvent& e)
 {
     //[UserCode_mouseDrag] -- Add your code here...
     if(beamIconIsClicked){
@@ -199,7 +199,7 @@ void pannerView::mouseDrag (const MouseEvent& e)
     //[/UserCode_mouseDrag]
 }
 
-void pannerView::mouseUp (const MouseEvent& e)
+void pannerView::mouseUp (const juce::MouseEvent& e)
 {
     //[UserCode_mouseUp] -- Add your code here...
     beamIconIsClicked = false;

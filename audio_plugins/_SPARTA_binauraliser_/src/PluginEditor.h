@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.7
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -24,7 +24,7 @@
 #include "PluginProcessor.h"
 #include "inputCoordsView.h"
 #include "pannerView.h"
-#include <thread>
+#include "../../resources/SPARTALookAndFeel.h"
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
@@ -52,9 +52,9 @@ typedef enum _SPARTA_WARNINGS{
 class PluginEditor  : public AudioProcessorEditor,
                       public MultiTimer,
                       private FilenameComponentListener,
-                      public ComboBox::Listener,
-                      public Slider::Listener,
-                      public Button::Listener
+                      public juce::ComboBox::Listener,
+                      public juce::Slider::Listener,
+                      public juce::Button::Listener
 {
 public:
     //==============================================================================
@@ -67,11 +67,11 @@ public:
 
     //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
+    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
+    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
@@ -84,6 +84,9 @@ private:
     OpenGLContext openGLContext;
     double progress = 0.0;
     ProgressBar progressbar;
+
+    /* Look and Feel */
+    SPARTALookAndFeel LAF;
 
     /* source coordinates viewport */
     std::unique_ptr<Viewport> sourceCoordsVP;
@@ -112,27 +115,27 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<ComboBox> CBsourceDirsPreset;
-    std::unique_ptr<Slider> SL_num_sources;
-    std::unique_ptr<Label> label_N_dirs;
-    std::unique_ptr<Label> label_HRIR_fs;
-    std::unique_ptr<ToggleButton> TBuseDefaultHRIRs;
-    std::unique_ptr<Label> label_DAW_fs;
-    std::unique_ptr<ToggleButton> TB_showInputs;
-    std::unique_ptr<ToggleButton> TB_showOutputs;
-    std::unique_ptr<Label> label_N_Tri;
-    std::unique_ptr<ComboBox> CBinterpMode;
-    std::unique_ptr<TextButton> tb_loadJSON;
-    std::unique_ptr<TextButton> tb_saveJSON;
-    std::unique_ptr<Slider> s_yaw;
-    std::unique_ptr<Slider> s_pitch;
-    std::unique_ptr<Slider> s_roll;
-    std::unique_ptr<ToggleButton> t_flipYaw;
-    std::unique_ptr<ToggleButton> t_flipPitch;
-    std::unique_ptr<ToggleButton> t_flipRoll;
-    std::unique_ptr<TextEditor> te_oscport;
-    std::unique_ptr<ToggleButton> TBrpyFlag;
-    std::unique_ptr<ToggleButton> TBenableRotation;
+    std::unique_ptr<juce::ComboBox> CBsourceDirsPreset;
+    std::unique_ptr<juce::Slider> SL_num_sources;
+    std::unique_ptr<juce::Label> label_N_dirs;
+    std::unique_ptr<juce::Label> label_HRIR_fs;
+    std::unique_ptr<juce::ToggleButton> TBuseDefaultHRIRs;
+    std::unique_ptr<juce::Label> label_DAW_fs;
+    std::unique_ptr<juce::ToggleButton> TB_showInputs;
+    std::unique_ptr<juce::ToggleButton> TB_showOutputs;
+    std::unique_ptr<juce::Label> label_N_Tri;
+    std::unique_ptr<juce::ComboBox> CBinterpMode;
+    std::unique_ptr<juce::TextButton> tb_loadJSON;
+    std::unique_ptr<juce::TextButton> tb_saveJSON;
+    std::unique_ptr<juce::Slider> s_yaw;
+    std::unique_ptr<juce::Slider> s_pitch;
+    std::unique_ptr<juce::Slider> s_roll;
+    std::unique_ptr<juce::ToggleButton> t_flipYaw;
+    std::unique_ptr<juce::ToggleButton> t_flipPitch;
+    std::unique_ptr<juce::ToggleButton> t_flipRoll;
+    std::unique_ptr<juce::TextEditor> te_oscport;
+    std::unique_ptr<juce::ToggleButton> TBrpyFlag;
+    std::unique_ptr<juce::ToggleButton> TBenableRotation;
 
 
     //==============================================================================

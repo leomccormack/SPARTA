@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -36,12 +36,12 @@
                                                                     //[/Comments]
 */
 class sensorCoordsView  : public Component,
-                          public Slider::Listener
+                          public juce::Slider::Listener
 {
 public:
     //==============================================================================
     sensorCoordsView (PluginProcessor* ownerFilter, int _maxQ, int _currentQ, bool _useDegreesInstead);
-    ~sensorCoordsView();
+    ~sensorCoordsView() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
@@ -56,9 +56,9 @@ public:
     }
     //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
+    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
 
 
 
@@ -77,7 +77,7 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<Slider> dummySlider;
+    std::unique_ptr<juce::Slider> dummySlider;
 
 
     //==============================================================================

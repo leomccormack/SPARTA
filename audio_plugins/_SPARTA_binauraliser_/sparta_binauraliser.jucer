@@ -18,6 +18,8 @@
   <MAINGROUP id="imnfnp" name="sparta_binauraliser">
     <FILE id="UwaAVc" name="ConfigurationHelper.h" compile="0" resource="0"
           file="../resources/ConfigurationHelper.h"/>
+    <FILE id="oGTRTG" name="SPARTALookAndFeel.h" compile="0" resource="0"
+          file="../resources/SPARTALookAndFeel.h"/>
     <FILE id="qHRXmF" name="inputCoordsView.cpp" compile="1" resource="0"
           file="src/inputCoordsView.cpp"/>
     <FILE id="n5dRc6" name="inputCoordsView.h" compile="0" resource="0"
