@@ -16,6 +16,8 @@
               enableIAA="0" cppLanguageStandard="14" companyCopyright="Aalto"
               pluginFormats="buildVST" jucerFormatVersion="1">
   <MAINGROUP id="imnfnp" name="sparta_multiconv">
+    <FILE id="o8LSMX" name="SPARTALookAndFeel.h" compile="0" resource="0"
+          file="../resources/SPARTALookAndFeel.h"/>
     <FILE id="wIjYl5" name="PluginEditor.cpp" compile="1" resource="0"
           file="src/PluginEditor.cpp"/>
     <FILE id="uiI66q" name="PluginEditor.h" compile="0" resource="0" file="src/PluginEditor.h"/>

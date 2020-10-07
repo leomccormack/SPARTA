@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -82,7 +82,7 @@ log2dSlider::~log2dSlider()
 }
 
 //==============================================================================
-void log2dSlider::paint (Graphics& g)
+void log2dSlider::paint (juce::Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -172,7 +172,7 @@ void log2dSlider::resized()
     //[/UserResized]
 }
 
-void log2dSlider::mouseDown (const MouseEvent& e)
+void log2dSlider::mouseDown (const juce::MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
     float c = log10f(min_X_value);
@@ -200,7 +200,7 @@ void log2dSlider::mouseDown (const MouseEvent& e)
     //[/UserCode_mouseDown]
 }
 
-void log2dSlider::mouseDrag (const MouseEvent& e)
+void log2dSlider::mouseDrag (const juce::MouseEvent& e)
 {
     //[UserCode_mouseDrag] -- Add your code here...
     float c = log10f(min_X_value);
