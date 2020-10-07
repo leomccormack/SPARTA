@@ -85,7 +85,7 @@ private:
 
     /* Look and Feel */
     SPARTALookAndFeel LAF;
-    
+
     /* for openGL speed-ups */
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
 	OpenGLContext openGLContext;
