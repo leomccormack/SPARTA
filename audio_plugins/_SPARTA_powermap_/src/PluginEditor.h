@@ -25,6 +25,7 @@
 #include "PluginProcessor.h"
 #include "overlay.h"
 #include "log2dSlider.h"
+#include "../../resources/SPARTALookAndFeel.h"
 
 #ifndef M_PI
   #define M_PI (3.14159265359f)
@@ -80,6 +81,9 @@ private:
     void timerCallback(int timerID) override;
     double progress = 0.0;
     ProgressBar progressbar;
+
+    /* Look and Feel */
+    SPARTALookAndFeel LAF;
 
     /* for openGL speed-ups */
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;

@@ -216,6 +216,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
 
+    /* Look and Feel */
+    LAF.setDefaultColours();
+    setLookAndFeel(&LAF);
+
     /* remove slider bit of these sliders */
     s_Nsources->setColour(Slider::trackColourId, Colours::transparentBlack);
     s_Nsources->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
@@ -366,7 +370,10 @@ PluginEditor::~PluginEditor()
 
 
     //[Destructor]. You can add your own custom destruction code here..
+    setLookAndFeel(nullptr);
     overlayIncluded = nullptr;
+    anaOrder2dSlider = nullptr;
+    pmapEQ2dSlider = nullptr;
     //[/Destructor]
 }
 
@@ -380,7 +387,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 0, y = 30, width = 672, height = 311;
-        juce::Colour fillColour1 = juce::Colour (0xff1c3949), fillColour2 = juce::Colour (0xff071e22);
+        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
@@ -395,7 +402,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         float x = 1.0f, y = 1.0f, width = 670.0f, height = 32.0f;
-        juce::Colour fillColour1 = juce::Colour (0xff061c20), fillColour2 = juce::Colour (0xff1c3949);
+        juce::Colour fillColour1 = juce::Colour (0xff041518), fillColour2 = juce::Colour (0xff19313f);
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -413,7 +420,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 0, y = 341, width = 672, height = 311;
-        juce::Colour fillColour1 = juce::Colour (0xff1c3949), fillColour2 = juce::Colour (0xff071e22);
+        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
@@ -1339,11 +1346,11 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="672" initialHeight="652">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 672 311" fill="linear: 344 32, 344 120, 0=ff1c3949, 1=ff071e22"
+    <RECT pos="0 30 672 311" fill="linear: 344 32, 344 120, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 1 670 32" cornerSize="5.0" fill="linear: 0 32, 672 32, 0=ff061c20, 1=ff1c3949"
+    <ROUNDRECT pos="1 1 670 32" cornerSize="5.0" fill="linear: 0 32, 672 32, 0=ff041518, 1=ff19313f"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="0 341 672 311" fill="linear: 336 656, 336 568, 0=ff1c3949, 1=ff071e22"
+    <RECT pos="0 341 672 311" fill="linear: 336 656, 336 568, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
     <RECT pos="13 398 214 107" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>

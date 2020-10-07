@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -23,6 +23,7 @@
 
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
+#include "../../resources/SPARTALookAndFeel.h"
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
@@ -45,23 +46,23 @@ typedef enum _SPARTA_WARNINGS{
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
                       private FilenameComponentListener,
-                      public Button::Listener,
-                      public Slider::Listener
+                      public juce::Button::Listener,
+                      public juce::Slider::Listener
 {
 public:
     //==============================================================================
     PluginEditor (PluginProcessor* ownerFilter);
-    ~PluginEditor();
+    ~PluginEditor() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
 
     //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
+    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
 
 
 
@@ -70,6 +71,9 @@ private:
     PluginProcessor* hVst;
     void* hMC;
     void timerCallback() override;
+
+    /* Look and Feel */
+    SPARTALookAndFeel LAF;
 
     /* sofa loading */
     FilenameComponent fileChooser;
@@ -83,20 +87,20 @@ private:
         hVst->setWavDirectory(directory);
         hVst->loadWavFile();
     }
-    
+
     /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
 
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<ToggleButton> TBenablePartConv;
-    std::unique_ptr<Label> label_hostBlockSize;
-    std::unique_ptr<Label> label_NFilters;
-    std::unique_ptr<Label> label_filterLength;
-    std::unique_ptr<Label> label_hostfs;
-    std::unique_ptr<Label> label_filterfs;
-    std::unique_ptr<Slider> SL_num_inputs;
+    std::unique_ptr<juce::ToggleButton> TBenablePartConv;
+    std::unique_ptr<juce::Label> label_hostBlockSize;
+    std::unique_ptr<juce::Label> label_NFilters;
+    std::unique_ptr<juce::Label> label_filterLength;
+    std::unique_ptr<juce::Label> label_hostfs;
+    std::unique_ptr<juce::Label> label_filterfs;
+    std::unique_ptr<juce::Slider> SL_num_inputs;
 
 
     //==============================================================================

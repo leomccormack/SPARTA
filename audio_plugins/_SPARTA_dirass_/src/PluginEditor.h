@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 6.0.3
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -24,14 +24,14 @@
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
 #include "overlay.h"
-#include <thread>
+#include "../../resources/SPARTALookAndFeel.h"
 
 #ifndef M_PI
 # define M_PI (3.14159265359f)
 #endif
 
 typedef enum _SPARTA_WARNINGS{
-    k_warning_none, 
+    k_warning_none,
     k_warning_supported_fs,
     k_warning_NinputCH
 }SPARTA_WARNINGS;
@@ -52,14 +52,14 @@ class PluginEditor  : public AudioProcessorEditor,
                       public MultiTimer,
                       private CameraDevice::Listener,
                       public AsyncUpdater,
-                      public ComboBox::Listener,
-                      public Slider::Listener,
-                      public Button::Listener
+                      public juce::ComboBox::Listener,
+                      public juce::Slider::Listener,
+                      public juce::Button::Listener
 {
 public:
     //==============================================================================
     PluginEditor (PluginProcessor* ownerFilter);
-    ~PluginEditor();
+    ~PluginEditor() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
@@ -68,11 +68,11 @@ public:
 
     //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
+    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
+    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
@@ -83,6 +83,9 @@ private:
     void timerCallback(int timerID) override;
     double progress = 0.0;
     ProgressBar progressbar;
+
+    /* Look and Feel */
+    SPARTALookAndFeel LAF;
 
     /* for openGL speed-ups */
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
@@ -113,23 +116,23 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<ComboBox> CBbeamType;
-    std::unique_ptr<ComboBox> CBchFormat;
-    std::unique_ptr<ComboBox> CBnormScheme;
-    std::unique_ptr<ComboBox> CB_hfov;
-    std::unique_ptr<ComboBox> CB_aspectRatio;
-    std::unique_ptr<Slider> SLmapAvg;
-    std::unique_ptr<ComboBox> CBinputOrder;
-    std::unique_ptr<Slider> s_minFreq;
-    std::unique_ptr<Slider> s_maxFreq;
-    std::unique_ptr<ComboBox> CBgridOption;
-    std::unique_ptr<ComboBox> CBupscaleOrder;
-    std::unique_ptr<ComboBox> CBdirassMode;
-    std::unique_ptr<Slider> s_interpWidth;
-    std::unique_ptr<ComboBox> CB_webcam;
-    std::unique_ptr<ToggleButton> TB_greyScale;
-    std::unique_ptr<ToggleButton> TB_flipUD;
-    std::unique_ptr<ToggleButton> TB_flipLR;
+    std::unique_ptr<juce::ComboBox> CBbeamType;
+    std::unique_ptr<juce::ComboBox> CBchFormat;
+    std::unique_ptr<juce::ComboBox> CBnormScheme;
+    std::unique_ptr<juce::ComboBox> CB_hfov;
+    std::unique_ptr<juce::ComboBox> CB_aspectRatio;
+    std::unique_ptr<juce::Slider> SLmapAvg;
+    std::unique_ptr<juce::ComboBox> CBinputOrder;
+    std::unique_ptr<juce::Slider> s_minFreq;
+    std::unique_ptr<juce::Slider> s_maxFreq;
+    std::unique_ptr<juce::ComboBox> CBgridOption;
+    std::unique_ptr<juce::ComboBox> CBupscaleOrder;
+    std::unique_ptr<juce::ComboBox> CBdirassMode;
+    std::unique_ptr<juce::Slider> s_interpWidth;
+    std::unique_ptr<juce::ComboBox> CB_webcam;
+    std::unique_ptr<juce::ToggleButton> TB_greyScale;
+    std::unique_ptr<juce::ToggleButton> TB_flipUD;
+    std::unique_ptr<juce::ToggleButton> TB_flipLR;
 
 
     //==============================================================================
