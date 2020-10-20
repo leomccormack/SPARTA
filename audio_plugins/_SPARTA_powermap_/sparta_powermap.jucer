@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_powermap" projectType="audioplug" version="1.4.2"
+<JUCERPROJECT id="lfkRjX" name="sparta_powermap" projectType="audioplug" version="1.4.3"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_powermap" pluginDesc="sparta_powermap"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="PMOA"
@@ -304,7 +304,7 @@
     <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_video" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_USE_CAMERA="1"/>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_USE_CAMERA="1" JUCE_WEB_BROWSER="0"/>
   <LIVE_SETTINGS>
     <WINDOWS/>
     <OSX/>

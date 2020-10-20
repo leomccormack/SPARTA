@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_multiconv" projectType="audioplug" version="1.0.2"
+<JUCERPROJECT id="lfkRjX" name="sparta_multiconv" projectType="audioplug" version="1.0.3"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_multiconv" pluginDesc="sparta_multiconv"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="MULC"
@@ -206,7 +206,6 @@
                        targetName="sparta_multiconv" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_osc" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_gui_extra" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_gui_basics" path="../../SDKs/JUCE/modules/"/>
@@ -251,7 +250,6 @@
         <MODULEPATH id="juce_audio_formats" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_audio_devices" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_osc" path="../../SDKs/JUCE/modules/"/>
       </MODULEPATHS>
     </VS2015>
     <XCODE_MAC targetFolder="make/MacOSX/Xcode/" vstFolder="../../../../SDKs/VST3 SDK"
@@ -281,7 +279,6 @@
         <MODULEPATH id="juce_audio_formats" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_audio_devices" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_osc" path="../../SDKs/JUCE/modules/"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <LINUX_MAKE targetFolder="make/LinuxMakefile" extraLinkerFlags="-L/usr/lib -lsaf_mkl_custom&#10;-Wl,-rpath,/usr/lib"
@@ -293,7 +290,6 @@
                        headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_osc" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_gui_extra" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_gui_basics" path="../../SDKs/JUCE/modules/"/>
@@ -317,7 +313,6 @@
         <CONFIGURATION isDebug="0" name="Release" targetName="sparta_multiconv" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf&#10;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_osc" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_gui_extra" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_gui_basics" path="../../SDKs/JUCE/modules/"/>
@@ -348,9 +343,8 @@
     <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_USE_CAMERA="disabled"/>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_USE_CAMERA="disabled" JUCE_WEB_BROWSER="0"/>
   <LIVE_SETTINGS>
     <WINDOWS/>
     <OSX/>
