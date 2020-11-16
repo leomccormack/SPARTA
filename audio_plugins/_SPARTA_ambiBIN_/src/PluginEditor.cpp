@@ -241,12 +241,12 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     TBdiffMatching->setBounds (409, 87, 22, 24);
 
-    TBphaseWarping.reset (new juce::ToggleButton ("new toggle button"));
-    addAndMakeVisible (TBphaseWarping.get());
-    TBphaseWarping->setButtonText (juce::String());
-    TBphaseWarping->addListener (this);
+    TBtruncationEQ.reset (new juce::ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBtruncationEQ.get());
+    TBtruncationEQ->setButtonText (juce::String());
+    TBtruncationEQ->addListener (this);
 
-    TBphaseWarping->setBounds (409, 113, 22, 24);
+    TBtruncationEQ->setBounds (409, 113, 22, 24);
 
 
     //[UserPreSize]
@@ -306,7 +306,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorderPreset->setSelectedId(ambi_bin_getInputOrderPreset(hAmbi), dontSendNotification);
     TBmaxRE->setToggleState(ambi_bin_getEnableMaxRE(hAmbi), dontSendNotification);
     TBdiffMatching->setToggleState(ambi_bin_getEnableDiffuseMatching(hAmbi), dontSendNotification);
-    TBphaseWarping->setToggleState(ambi_bin_getEnablePhaseWarping(hAmbi), dontSendNotification);
+    TBtruncationEQ->setToggleState(ambi_bin_getEnableTruncationEQ(hAmbi), dontSendNotification);
     TBenableRot->setToggleState(ambi_bin_getEnableRotation(hAmbi), dontSendNotification);
     s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
     s_pitch->setValue(ambi_bin_getPitch(hAmbi), dontSendNotification);
@@ -318,7 +318,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBrpyFlag->setToggleState((bool)ambi_bin_getRPYflag(hAmbi), dontSendNotification);
     CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
-    TBphaseWarping->setEnabled(false); // coming soon
+    //TBphaseWarping->setEnabled(false); // coming soon
 
     /* tooltips */
     CBdecoderMethod->setTooltip("Decoding method. 'Least-squares' is the simplest option, but it can give strong colourations at lower-orders. Diffuse-EQ helps with this, as does spatial resampling (SPR). However, the best options, (which also improve spatial performance at lower orders), are Time-alignment (TA) or Magnitude-LS.");
@@ -329,7 +329,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorderPreset->setTooltip("Decoding order. Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
     TBmaxRE->setTooltip("Enables/Disables the max_rE weights applied to the decoding matrix.");
     TBdiffMatching->setTooltip("Enables/Disables the diffuse correction applied to the decoding matrix. This is the 'C' part of the 'TAC' decoder. However, in this plug-in, it is given as a separate option so it can be applied to any of the available decoding methods.");
-    TBphaseWarping->setTooltip("Not implemented yet.");
+    TBtruncationEQ->setTooltip("Applies an EQ that counteracts the high frequency loss induced by order truncation. Interacts with 'Apply MaxRE Weights'.");
     TBenableRot->setTooltip("Enables/Disables sound-field rotation prior to decoding.");
     s_yaw->setTooltip("Sets the 'Yaw' rotation angle (in degrees).");
     s_pitch->setTooltip("Sets the 'Pitch' rotation angle (in degrees).");
@@ -379,7 +379,7 @@ PluginEditor::~PluginEditor()
     TBenableRot = nullptr;
     CBdecoderMethod = nullptr;
     TBdiffMatching = nullptr;
-    TBphaseWarping = nullptr;
+    TBtruncationEQ = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -872,7 +872,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 255, y = 109, width = 185, height = 30;
-        juce::String text (TRANS("Apply Phase Warping: "));
+        juce::String text (TRANS("Apply Truncation EQ: "));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1042,11 +1042,11 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         ambi_bin_setEnableDiffuseMatching(hAmbi, (int)TBdiffMatching->getToggleState());
         //[/UserButtonCode_TBdiffMatching]
     }
-    else if (buttonThatWasClicked == TBphaseWarping.get())
+    else if (buttonThatWasClicked == TBtruncationEQ.get())
     {
-        //[UserButtonCode_TBphaseWarping] -- add your button handler code here..
-        ambi_bin_setEnablePhaseWarping(hAmbi, (int)TBphaseWarping->getToggleState());
-        //[/UserButtonCode_TBphaseWarping]
+        //[UserButtonCode_TBtruncationEQ] -- add your button handler code here..
+        ambi_bin_setEnableTruncationEQ(hAmbi, (int)TBtruncationEQ->getToggleState());
+        //[/UserButtonCode_TBtruncationEQ]
     }
 
     //[UserbuttonClicked_Post]
@@ -1171,8 +1171,8 @@ void PluginEditor::timerCallback(int timerID)
                     CBdecoderMethod->setEnabled(false);
                 if(TBdiffMatching->isEnabled())
                     TBdiffMatching->setEnabled(false);
-                if(TBphaseWarping->isEnabled())
-                    TBphaseWarping->setEnabled(false);
+                if(TBtruncationEQ->isEnabled())
+                    TBtruncationEQ->setEnabled(false);
                 if(fileChooser.isEnabled())
                     fileChooser.setEnabled(false);
             }
@@ -1189,8 +1189,8 @@ void PluginEditor::timerCallback(int timerID)
                     CBdecoderMethod->setEnabled(true);
                 if(!TBdiffMatching->isEnabled())
                     TBdiffMatching->setEnabled(true);
-                if(!TBphaseWarping->isEnabled())
-                    TBphaseWarping->setEnabled(true);
+                if(!TBtruncationEQ->isEnabled())
+                    TBtruncationEQ->setEnabled(true);
                 if(!fileChooser.isEnabled())
                     fileChooser.setEnabled(true);
             }
@@ -1449,7 +1449,7 @@ BEGIN_JUCER_METADATA
   <TOGGLEBUTTON name="new toggle button" id="8039737efa3e209e" memberName="TBdiffMatching"
                 virtualName="" explicitFocusOrder="0" pos="409 87 22 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
-  <TOGGLEBUTTON name="new toggle button" id="f65a4553b49a563a" memberName="TBphaseWarping"
+  <TOGGLEBUTTON name="new toggle button" id="f65a4553b49a563a" memberName="TBtruncationEQ"
                 virtualName="" explicitFocusOrder="0" pos="409 113 22 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
