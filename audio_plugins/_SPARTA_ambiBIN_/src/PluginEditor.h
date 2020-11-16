@@ -125,8 +125,8 @@ private:
     std::unique_ptr<juce::ToggleButton> TBenableRot;
     std::unique_ptr<juce::ComboBox> CBdecoderMethod;
     std::unique_ptr<juce::ToggleButton> TBdiffMatching;
-    std::unique_ptr<juce::ToggleButton> TBphaseWarping;
-
+    //std::unique_ptr<juce::ToggleButton> TBphaseWarping;
+    std::unique_ptr<juce::ToggleButton> TBtruncationEQ;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
