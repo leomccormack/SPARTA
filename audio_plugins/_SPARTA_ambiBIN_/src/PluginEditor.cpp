@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.4
 
   ------------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBuseDefaultHRIRs->setButtonText (juce::String());
     TBuseDefaultHRIRs->addListener (this);
 
-    TBuseDefaultHRIRs->setBounds (614, 60, 21, 24);
+    TBuseDefaultHRIRs->setBounds (608, 60, 27, 24);
 
     CBorderPreset.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBorderPreset.get());
@@ -144,7 +144,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_N_dirs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_N_dirs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_N_dirs->setBounds (536, 123, 96, 24);
+    label_N_dirs->setBounds (536, 160, 96, 24);
 
     label_HRIR_len.reset (new juce::Label ("new label",
                                            juce::String()));
@@ -156,7 +156,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_HRIR_len->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_HRIR_len->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_HRIR_len->setBounds (536, 154, 96, 24);
+    label_HRIR_len->setBounds (536, 191, 96, 24);
 
     label_HRIR_fs.reset (new juce::Label ("new label",
                                           juce::String()));
@@ -168,7 +168,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_HRIR_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_HRIR_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_HRIR_fs->setBounds (536, 185, 96, 24);
+    label_HRIR_fs->setBounds (536, 222, 48, 24);
 
     label_DAW_fs.reset (new juce::Label ("new label",
                                          juce::String()));
@@ -180,7 +180,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_DAW_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_DAW_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_DAW_fs->setBounds (536, 216, 96, 24);
+    label_DAW_fs->setBounds (584, 222, 48, 24);
 
     t_flipPitch.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (t_flipPitch.get());
@@ -248,6 +248,12 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     TBtruncationEQ->setBounds (409, 113, 22, 24);
 
+    TBenableDiffEQ.reset (new juce::ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBenableDiffEQ.get());
+    TBenableDiffEQ->addListener (this);
+
+    TBenableDiffEQ->setBounds (464, 112, 150, 24);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -307,6 +313,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBmaxRE->setToggleState(ambi_bin_getEnableMaxRE(hAmbi), dontSendNotification);
     TBdiffMatching->setToggleState(ambi_bin_getEnableDiffuseMatching(hAmbi), dontSendNotification);
     TBtruncationEQ->setToggleState(ambi_bin_getEnableTruncationEQ(hAmbi), dontSendNotification);
+    TBenableDiffEQ->setToggleState(ambi_bin_getEnableDiffEQ(hAmbi), dontSendNotification);
     TBenableRot->setToggleState(ambi_bin_getEnableRotation(hAmbi), dontSendNotification);
     s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
     s_pitch->setValue(ambi_bin_getPitch(hAmbi), dontSendNotification);
@@ -330,6 +337,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBmaxRE->setTooltip("Enables/Disables the max_rE weights applied to the decoding matrix.");
     TBdiffMatching->setTooltip("Enables/Disables the diffuse correction applied to the decoding matrix. This is the 'C' part of the 'TAC' decoder. However, in this plug-in, it is given as a separate option so it can be applied to any of the available decoding methods.");
     TBtruncationEQ->setTooltip("Applies an EQ that counteracts the high frequency loss induced by order truncation. Interacts with 'Apply MaxRE Weights'.");
+    TBenableDiffEQ->setTooltip("TODO!!");
     TBenableRot->setTooltip("Enables/Disables sound-field rotation prior to decoding.");
     s_yaw->setTooltip("Sets the 'Yaw' rotation angle (in degrees).");
     s_pitch->setTooltip("Sets the 'Pitch' rotation angle (in degrees).");
@@ -380,6 +388,7 @@ PluginEditor::~PluginEditor()
     CBdecoderMethod = nullptr;
     TBdiffMatching = nullptr;
     TBtruncationEQ = nullptr;
+    TBenableDiffEQ = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -509,7 +518,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 446, y = 58, width = 196, height = 54;
+        int x = 445, y = 58, width = 196, height = 82;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -546,8 +555,8 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 459, y = 56, width = 165, height = 30;
-        juce::String text (TRANS("Use Default HRIR set:"));
+        int x = 459, y = 56, width = 101, height = 30;
+        juce::String text (TRANS("Default HRIRs:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -714,7 +723,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 446, y = 111, width = 196, height = 140;
+        int x = 445, y = 139, width = 196, height = 112;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -727,49 +736,37 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 457, y = 119, width = 132, height = 30;
-        juce::String text (TRANS("N dirs:"));
+        int x = 449, y = 159, width = 132, height = 30;
+        juce::String text (TRANS("Num dirs:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
 
     {
-        int x = 457, y = 151, width = 132, height = 30;
-        juce::String text (TRANS("HRIR len:"));
+        int x = 449, y = 191, width = 132, height = 30;
+        juce::String text (TRANS("HRIR length:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
 
     {
-        int x = 457, y = 182, width = 132, height = 30;
-        juce::String text (TRANS("HRIR fs:"));
+        int x = 449, y = 222, width = 132, height = 30;
+        juce::String text (TRANS("HRIR / DAW fs:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 457, y = 213, width = 132, height = 30;
-        juce::String text (TRANS("DAW fs:"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -1048,6 +1045,12 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         ambi_bin_setEnableTruncationEQ(hAmbi, (int)TBtruncationEQ->getToggleState());
         //[/UserButtonCode_TBtruncationEQ]
     }
+    else if (buttonThatWasClicked == TBenableDiffEQ.get())
+    {
+        //[UserButtonCode_TBenableDiffEQ] -- add your button handler code here..
+        ambi_bin_setEnableDiffEQ(hAmbi, (int)TBenableDiffEQ->getToggleState());
+        //[/UserButtonCode_TBenableDiffEQ]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -1173,6 +1176,8 @@ void PluginEditor::timerCallback(int timerID)
                     TBdiffMatching->setEnabled(false);
                 if(TBtruncationEQ->isEnabled())
                     TBtruncationEQ->setEnabled(false);
+                if(TBenableDiffEQ->isEnabled())
+                    TBenableDiffEQ->setEnabled(false);
                 if(fileChooser.isEnabled())
                     fileChooser.setEnabled(false);
             }
@@ -1191,6 +1196,8 @@ void PluginEditor::timerCallback(int timerID)
                     TBdiffMatching->setEnabled(true);
                 if(!TBtruncationEQ->isEnabled())
                     TBtruncationEQ->setEnabled(true);
+                if(!TBenableDiffEQ->isEnabled())
+                    TBenableDiffEQ->setEnabled(true);
                 if(!fileChooser.isEnabled())
                     fileChooser.setEnabled(true);
             }
@@ -1268,7 +1275,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 3aa0a0a0"/>
     <RECT pos="248 58 188 82" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="446 58 196 54" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="445 58 196 82" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="164 32 149 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Settings"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
@@ -1276,7 +1283,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="520 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Output"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="459 56 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
+    <TEXT pos="459 56 101 30" fill="solid: ffffffff" hasStroke="0" text="Default HRIRs:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 57 141 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Order:"
@@ -1318,19 +1325,16 @@ BEGIN_JUCER_METADATA
     <TEXT pos="373 145 63 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[2]"
           fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <RECT pos="446 111 196 140" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="445 139 196 112" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="457 119 132 30" fill="solid: ffffffff" hasStroke="0" text="N dirs:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+    <TEXT pos="449 159 132 30" fill="solid: ffffffff" hasStroke="0" text="Num dirs:"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="457 151 132 30" fill="solid: ffffffff" hasStroke="0" text="HRIR len:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+    <TEXT pos="449 191 132 30" fill="solid: ffffffff" hasStroke="0" text="HRIR length:"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="457 182 132 30" fill="solid: ffffffff" hasStroke="0" text="HRIR fs:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="457 213 132 30" fill="solid: ffffffff" hasStroke="0" text="DAW fs:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+    <TEXT pos="449 222 132 30" fill="solid: ffffffff" hasStroke="0" text="HRIR / DAW fs:"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 208 63 23" fill="solid: ffffffff" hasStroke="0" text="OSC port:"
           fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
@@ -1356,7 +1360,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="255 84 185 30" fill="solid: ffffffff" hasStroke="0" text="Diffuse Correction:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="255 109 185 30" fill="solid: ffffffff" hasStroke="0" text="Apply Phase Warping: "
+    <TEXT pos="255 109 185 30" fill="solid: ffffffff" hasStroke="0" text="Apply Truncation EQ: "
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 656 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
@@ -1369,7 +1373,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: ffb9b9b9"/>
   </BACKGROUND>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
-                virtualName="" explicitFocusOrder="0" pos="614 60 21 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="608 60 27 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <COMBOBOX name="new combo box" id="d83602bab6f1a999" memberName="CBorderPreset"
             virtualName="" explicitFocusOrder="0" pos="136 63 104 18" editable="0"
@@ -1406,22 +1410,22 @@ BEGIN_JUCER_METADATA
               bkgcol="ffffff" outlinecol="68a3a2a2" initialText="" multiline="0"
               retKeyStartsLine="0" readonly="0" scrollbars="1" caret="0" popupmenu="1"/>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_N_dirs"
-         virtualName="" explicitFocusOrder="0" pos="536 123 96 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="536 160 96 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="e14d1c2e00d7849b" memberName="label_HRIR_len"
-         virtualName="" explicitFocusOrder="0" pos="536 154 96 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="536 191 96 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="f8b5274e0c8768f4" memberName="label_HRIR_fs"
-         virtualName="" explicitFocusOrder="0" pos="536 185 96 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="536 222 48 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="c59fb2aab2496c4e" memberName="label_DAW_fs"
-         virtualName="" explicitFocusOrder="0" pos="536 216 96 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="584 222 48 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
@@ -1451,6 +1455,9 @@ BEGIN_JUCER_METADATA
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="f65a4553b49a563a" memberName="TBtruncationEQ"
                 virtualName="" explicitFocusOrder="0" pos="409 113 22 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TOGGLEBUTTON name="new toggle button" id="65e86505753f2235" memberName="TBenableDiffEQ"
+                virtualName="" explicitFocusOrder="0" pos="464 112 150 24" buttonText="new toggle button"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 

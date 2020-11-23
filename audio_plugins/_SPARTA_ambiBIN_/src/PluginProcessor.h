@@ -43,6 +43,7 @@ enum {
     k_decMethod,
     k_enableDiffuseMatching,
     k_enableMaxRE,
+    k_enableDiffEQ,
     k_enableRotation,
     k_useRollPitchYaw,
     k_yaw,
