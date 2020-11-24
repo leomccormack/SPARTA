@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.4
 
   ------------------------------------------------------------------------------
 
@@ -129,6 +129,7 @@ private:
     std::unique_ptr<juce::TextButton> tb_loadJSON;
     std::unique_ptr<juce::TextButton> tb_saveJSON;
     std::unique_ptr<juce::ComboBox> CBmasterOrder;
+    std::unique_ptr<juce::ToggleButton> TBenablePreProc;
 
 
     //==============================================================================

@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.4
 
   ------------------------------------------------------------------------------
 
@@ -208,6 +208,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBmasterOrder->setBounds (98, 65, 118, 20);
 
+    TBenablePreProc.reset (new juce::ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBenablePreProc.get());
+    TBenablePreProc->setButtonText (TRANS("Pre-Processing"));
+    TBenablePreProc->addListener (this);
+
+    TBenablePreProc->setBounds (256, 136, 150, 24);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -405,6 +412,7 @@ PluginEditor::~PluginEditor()
     tb_loadJSON = nullptr;
     tb_saveJSON = nullptr;
     CBmasterOrder = nullptr;
+    TBenablePreProc = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -1131,6 +1139,12 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_tb_saveJSON]
     }
+    else if (buttonThatWasClicked == TBenablePreProc.get())
+    {
+        //[UserButtonCode_TBenablePreProc] -- add your button handler code here..
+        ambi_dec_setEnableHRIRsPreProc(hAmbi, TBenablePreProc->getToggleState());
+        //[/UserButtonCode_TBenablePreProc]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -1152,6 +1166,8 @@ void PluginEditor::timerCallback(int timerID)
                 TBuseDefaultHRIRs->setToggleState(ambi_dec_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
             if(TBBinauraliseLS->getToggleState() != ambi_dec_getBinauraliseLSflag(hAmbi) )
                 TBBinauraliseLS->setToggleState(ambi_dec_getBinauraliseLSflag(hAmbi), dontSendNotification);
+            if(TBenablePreProc->getToggleState() != ambi_dec_getEnableHRIRsPreProc(hAmbi) )
+                TBenablePreProc->setToggleState(ambi_dec_getEnableHRIRsPreProc(hAmbi), dontSendNotification);
             if(SL_num_loudspeakers->getValue() != ambi_dec_getNumLoudspeakers(hAmbi) )
                 SL_num_loudspeakers->setValue(ambi_dec_getNumLoudspeakers(hAmbi),dontSendNotification);
             if(CBdec1method->getSelectedId() != ambi_dec_getDecMethod(hAmbi, 0) )
@@ -1458,6 +1474,9 @@ BEGIN_JUCER_METADATA
   <COMBOBOX name="new combo box" id="a465903000494955" memberName="CBmasterOrder"
             virtualName="" explicitFocusOrder="0" pos="98 65 118 20" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
+  <TOGGLEBUTTON name="new toggle button" id="6518b0bb9c223228" memberName="TBenablePreProc"
+                virtualName="" explicitFocusOrder="0" pos="256 136 150 24" buttonText="Pre-Processing"
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
