@@ -248,12 +248,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     TBtruncationEQ->setBounds (409, 113, 22, 24);
 
-    TBenableDiffEQ.reset (new juce::ToggleButton ("new toggle button"));
-    addAndMakeVisible (TBenableDiffEQ.get());
-    TBenableDiffEQ->addListener (this);
-
-    TBenableDiffEQ->setBounds (472, 8, 150, 24);
-
     CBhrirPreProc.reset (new juce::ComboBox ("Hrir Pre-Processing"));
     addAndMakeVisible (CBhrirPreProc.get());
     CBhrirPreProc->setTooltip (TRANS("Pre-processing method for Hrir set"));
@@ -267,7 +261,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBhrirPreProc->addItem (TRANS("EQ + Phase"), 4);
     CBhrirPreProc->addListener (this);
 
-    CBhrirPreProc->setBounds (472, 116, 150, 18);
+    CBhrirPreProc->setBounds (520, 112, 112, 18);
 
 
     //[UserPreSize]
@@ -328,7 +322,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBmaxRE->setToggleState(ambi_bin_getEnableMaxRE(hAmbi), dontSendNotification);
     TBdiffMatching->setToggleState(ambi_bin_getEnableDiffuseMatching(hAmbi), dontSendNotification);
     TBtruncationEQ->setToggleState(ambi_bin_getEnableTruncationEQ(hAmbi), dontSendNotification);
-    TBenableDiffEQ->setToggleState(ambi_bin_getEnableDiffEQ(hAmbi), dontSendNotification);
     TBenableRot->setToggleState(ambi_bin_getEnableRotation(hAmbi), dontSendNotification);
     s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
     s_pitch->setValue(ambi_bin_getPitch(hAmbi), dontSendNotification);
@@ -340,7 +333,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBrpyFlag->setToggleState((bool)ambi_bin_getRPYflag(hAmbi), dontSendNotification);
     CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
-    //TBphaseWarping->setEnabled(false); // coming soon
 
     /* tooltips */
     CBdecoderMethod->setTooltip("Decoding method. 'Least-squares' is the simplest option, but it can give strong colourations at lower-orders. Diffuse-EQ helps with this, as does spatial resampling (SPR). However, the best options, (which also improve spatial performance at lower orders), are Time-alignment (TA) or Magnitude-LS.");
@@ -352,7 +344,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBmaxRE->setTooltip("Enables/Disables the max_rE weights applied to the decoding matrix.");
     TBdiffMatching->setTooltip("Enables/Disables the diffuse correction applied to the decoding matrix. This is the 'C' part of the 'TAC' decoder. However, in this plug-in, it is given as a separate option so it can be applied to any of the available decoding methods.");
     TBtruncationEQ->setTooltip("Applies an EQ that counteracts the high frequency loss induced by order truncation. Interacts with 'Apply MaxRE Weights'.");
-    TBenableDiffEQ->setTooltip("TODO!!");
     TBenableRot->setTooltip("Enables/Disables sound-field rotation prior to decoding.");
     s_yaw->setTooltip("Sets the 'Yaw' rotation angle (in degrees).");
     s_pitch->setTooltip("Sets the 'Pitch' rotation angle (in degrees).");
@@ -403,7 +394,6 @@ PluginEditor::~PluginEditor()
     CBdecoderMethod = nullptr;
     TBdiffMatching = nullptr;
     TBtruncationEQ = nullptr;
-    TBenableDiffEQ = nullptr;
     CBhrirPreProc = nullptr;
 
 
@@ -935,6 +925,18 @@ void PluginEditor::paint (juce::Graphics& g)
 
     }
 
+    {
+        int x = 453, y = 106, width = 185, height = 30;
+        juce::String text (TRANS("Pre-Proc:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
@@ -1061,12 +1063,6 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         ambi_bin_setEnableTruncationEQ(hAmbi, (int)TBtruncationEQ->getToggleState());
         //[/UserButtonCode_TBtruncationEQ]
     }
-    else if (buttonThatWasClicked == TBenableDiffEQ.get())
-    {
-        //[UserButtonCode_TBenableDiffEQ] -- add your button handler code here..
-        ambi_bin_setEnableDiffEQ(hAmbi, (int)TBenableDiffEQ->getToggleState());
-        //[/UserButtonCode_TBenableDiffEQ]
-    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -1104,7 +1100,7 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == CBhrirPreProc.get())
     {
         //[UserComboBoxCode_CBhrirPreProc] -- add your combo box handling code here..
-        ambi_bin_setHrirPreProc(hAmbi, (AMBI_BIN_PREPROC)CBhrirPreProc->getSelectedId());
+        ambi_bin_setHRIRsPreProc(hAmbi, (AMBI_BIN_PREPROC)CBhrirPreProc->getSelectedId());
         //[/UserComboBoxCode_CBhrirPreProc]
     }
 
@@ -1154,8 +1150,8 @@ void PluginEditor::timerCallback(int timerID)
             /* parameters whos values can change internally should be periodically refreshed */
             if(TBuseDefaultHRIRs->getToggleState() != ambi_bin_getUseDefaultHRIRsflag(hAmbi))
                 TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
-            if(CBhrirPreProc->getSelectedId() != ambi_bin_getHrirPreProc(hAmbi))
-                CBhrirPreProc->setSelectedId(ambi_bin_getHrirPreProc(hAmbi), dontSendNotification);
+            if(CBhrirPreProc->getSelectedId() != ambi_bin_getHRIRsPreProc(hAmbi))
+                CBhrirPreProc->setSelectedId(ambi_bin_getHRIRsPreProc(hAmbi), dontSendNotification);
             if(s_yaw->getValue() != ambi_bin_getYaw(hAmbi))
                 s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
             if(s_pitch->getValue() != ambi_bin_getPitch(hAmbi))
@@ -1200,8 +1196,8 @@ void PluginEditor::timerCallback(int timerID)
                     TBdiffMatching->setEnabled(false);
                 if(TBtruncationEQ->isEnabled())
                     TBtruncationEQ->setEnabled(false);
-                if(TBenableDiffEQ->isEnabled())
-                    TBenableDiffEQ->setEnabled(false);
+                if(CBhrirPreProc->isEnabled())
+                    CBhrirPreProc->setEnabled(false);
                 if(fileChooser.isEnabled())
                     fileChooser.setEnabled(false);
             }
@@ -1220,8 +1216,8 @@ void PluginEditor::timerCallback(int timerID)
                     TBdiffMatching->setEnabled(true);
                 if(!TBtruncationEQ->isEnabled())
                     TBtruncationEQ->setEnabled(true);
-                if(!TBenableDiffEQ->isEnabled())
-                    TBenableDiffEQ->setEnabled(true);
+                if(!CBhrirPreProc->isEnabled())
+                    CBhrirPreProc->setEnabled(true);
                 if(!fileChooser.isEnabled())
                     fileChooser.setEnabled(true);
             }
@@ -1395,6 +1391,9 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: ffb9b9b9"/>
     <RECT pos="0 260 656 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
+    <TEXT pos="453 106 185 30" fill="solid: ffffffff" hasStroke="0" text="Pre-Proc:"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
                 virtualName="" explicitFocusOrder="0" pos="608 60 27 24" buttonText=""
@@ -1480,11 +1479,8 @@ BEGIN_JUCER_METADATA
   <TOGGLEBUTTON name="new toggle button" id="f65a4553b49a563a" memberName="TBtruncationEQ"
                 virtualName="" explicitFocusOrder="0" pos="409 113 22 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
-  <TOGGLEBUTTON name="new toggle button" id="65e86505753f2235" memberName="TBenableDiffEQ"
-                virtualName="" explicitFocusOrder="0" pos="472 8 150 24" buttonText="new toggle button"
-                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <COMBOBOX name="Hrir Pre-Processing" id="4708d72b820edbe6" memberName="CBhrirPreProc"
-            virtualName="" explicitFocusOrder="0" pos="472 116 150 18" tooltip="Pre-processing method for Hrir set"
+            virtualName="" explicitFocusOrder="0" pos="520 112 112 18" tooltip="Pre-processing method for Hrir set"
             editable="0" layout="33" items="Off&#10;Diffuse EQ&#10;Phase Simplification&#10;EQ + Phase"
             textWhenNonSelected="Please Select" textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
