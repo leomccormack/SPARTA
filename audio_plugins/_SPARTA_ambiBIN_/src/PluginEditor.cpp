@@ -168,7 +168,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_HRIR_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_HRIR_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_HRIR_fs->setBounds (536, 222, 48, 24);
+    label_HRIR_fs->setBounds (536, 222, 47, 24);
 
     label_DAW_fs.reset (new juce::Label ("new label",
                                          juce::String()));
@@ -180,7 +180,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_DAW_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_DAW_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_DAW_fs->setBounds (584, 222, 48, 24);
+    label_DAW_fs->setBounds (585, 222, 47, 24);
 
     t_flipPitch.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (t_flipPitch.get());
@@ -252,7 +252,22 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (TBenableDiffEQ.get());
     TBenableDiffEQ->addListener (this);
 
-    TBenableDiffEQ->setBounds (464, 112, 150, 24);
+    TBenableDiffEQ->setBounds (472, 8, 150, 24);
+
+    CBhrirPreProc.reset (new juce::ComboBox ("Hrir Pre-Processing"));
+    addAndMakeVisible (CBhrirPreProc.get());
+    CBhrirPreProc->setTooltip (TRANS("Pre-processing method for Hrir set"));
+    CBhrirPreProc->setEditableText (false);
+    CBhrirPreProc->setJustificationType (juce::Justification::centredLeft);
+    CBhrirPreProc->setTextWhenNothingSelected (TRANS("Please Select"));
+    CBhrirPreProc->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBhrirPreProc->addItem (TRANS("Off"), 1);
+    CBhrirPreProc->addItem (TRANS("Diffuse EQ"), 2);
+    CBhrirPreProc->addItem (TRANS("Phase Simplification"), 3);
+    CBhrirPreProc->addItem (TRANS("EQ + Phase"), 4);
+    CBhrirPreProc->addListener (this);
+
+    CBhrirPreProc->setBounds (472, 116, 150, 18);
 
 
     //[UserPreSize]
@@ -389,6 +404,7 @@ PluginEditor::~PluginEditor()
     TBdiffMatching = nullptr;
     TBtruncationEQ = nullptr;
     TBenableDiffEQ = nullptr;
+    CBhrirPreProc = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -1085,6 +1101,12 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
         ambi_bin_setDecodingMethod(hAmbi, (AMBI_BIN_DECODING_METHODS)CBdecoderMethod->getSelectedId());
         //[/UserComboBoxCode_CBdecoderMethod]
     }
+    else if (comboBoxThatHasChanged == CBhrirPreProc.get())
+    {
+        //[UserComboBoxCode_CBhrirPreProc] -- add your combo box handling code here..
+        ambi_bin_setHrirPreProc(hAmbi, (AMBI_BIN_PREPROC)CBhrirPreProc->getSelectedId());
+        //[/UserComboBoxCode_CBhrirPreProc]
+    }
 
     //[UsercomboBoxChanged_Post]
     //[/UsercomboBoxChanged_Post]
@@ -1132,6 +1154,8 @@ void PluginEditor::timerCallback(int timerID)
             /* parameters whos values can change internally should be periodically refreshed */
             if(TBuseDefaultHRIRs->getToggleState() != ambi_bin_getUseDefaultHRIRsflag(hAmbi))
                 TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
+            if(CBhrirPreProc->getSelectedId() != ambi_bin_getHrirPreProc(hAmbi))
+                CBhrirPreProc->setSelectedId(ambi_bin_getHrirPreProc(hAmbi), dontSendNotification);
             if(s_yaw->getValue() != ambi_bin_getYaw(hAmbi))
                 s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
             if(s_pitch->getValue() != ambi_bin_getPitch(hAmbi))
@@ -1420,12 +1444,12 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="f8b5274e0c8768f4" memberName="label_HRIR_fs"
-         virtualName="" explicitFocusOrder="0" pos="536 222 48 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="536 222 47 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="c59fb2aab2496c4e" memberName="label_DAW_fs"
-         virtualName="" explicitFocusOrder="0" pos="584 222 48 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="585 222 47 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
@@ -1457,8 +1481,12 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="409 113 22 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="65e86505753f2235" memberName="TBenableDiffEQ"
-                virtualName="" explicitFocusOrder="0" pos="464 112 150 24" buttonText="new toggle button"
+                virtualName="" explicitFocusOrder="0" pos="472 8 150 24" buttonText="new toggle button"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <COMBOBOX name="Hrir Pre-Processing" id="4708d72b820edbe6" memberName="CBhrirPreProc"
+            virtualName="" explicitFocusOrder="0" pos="472 116 150 18" tooltip="Pre-processing method for Hrir set"
+            editable="0" layout="33" items="Off&#10;Diffuse EQ&#10;Phase Simplification&#10;EQ + Phase"
+            textWhenNonSelected="Please Select" textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
