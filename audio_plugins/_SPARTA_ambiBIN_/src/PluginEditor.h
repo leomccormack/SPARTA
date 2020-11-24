@@ -126,7 +126,6 @@ private:
     std::unique_ptr<juce::ComboBox> CBdecoderMethod;
     std::unique_ptr<juce::ToggleButton> TBdiffMatching;
     std::unique_ptr<juce::ToggleButton> TBtruncationEQ;
-    std::unique_ptr<juce::ToggleButton> TBenableDiffEQ;
     std::unique_ptr<juce::ComboBox> CBhrirPreProc;
 
 

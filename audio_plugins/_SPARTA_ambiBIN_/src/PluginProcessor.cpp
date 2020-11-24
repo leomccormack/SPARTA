@@ -77,7 +77,6 @@ void PluginProcessor::setParameter (int index, float newValue)
         case k_decMethod:             ambi_bin_setDecodingMethod(hAmbi, (AMBI_BIN_DECODING_METHODS)(int)(newValue*(float)(AMBI_BIN_NUM_DECODING_METHODS-1) + 1.5f)); break;
         case k_enableDiffuseMatching: ambi_bin_setEnableDiffuseMatching(hAmbi, (int)(newValue + 0.5f)); break;
         case k_enableMaxRE:           ambi_bin_setEnableMaxRE(hAmbi, (int)(newValue + 0.5f)); break;
-        case k_enableDiffEQ:          ambi_bin_setEnableDiffEQ(hAmbi, (int)(newValue + 0.5f)); break;
         case k_enableRotation:        ambi_bin_setEnableRotation(hAmbi, (int)(newValue + 0.5f)); break;
         case k_useRollPitchYaw:       ambi_bin_setRPYflag(hAmbi, (int)(newValue + 0.5f)); break;
         case k_yaw:                   ambi_bin_setYaw(hAmbi, (newValue-0.5f)*360.0f ); break;
@@ -104,7 +103,6 @@ float PluginProcessor::getParameter (int index)
         case k_decMethod:             return (float)(ambi_bin_getDecodingMethod(hAmbi)-1)/(float)(AMBI_BIN_NUM_DECODING_METHODS-1);
         case k_enableDiffuseMatching: return (float)ambi_bin_getEnableDiffuseMatching(hAmbi);
         case k_enableMaxRE:           return (float)ambi_bin_getEnableMaxRE(hAmbi);
-        case k_enableDiffEQ:          return (float)ambi_bin_getEnableDiffEQ(hAmbi);
         case k_enableRotation:        return (float)ambi_bin_getEnableRotation(hAmbi);
         case k_useRollPitchYaw:       return (float)ambi_bin_getRPYflag(hAmbi);
         case k_yaw:                   return (ambi_bin_getYaw(hAmbi)/360.0f) + 0.5f;
@@ -137,7 +135,6 @@ const String PluginProcessor::getParameterName (int index)
         case k_decMethod:             return "decode_method";
         case k_enableDiffuseMatching: return "apply_diff_match";
         case k_enableMaxRE:           return "apply_maxre_weights";
-        case k_enableDiffEQ:          return "enable_diff_eq";
         case k_enableRotation:        return "enable_rotation";
         case k_useRollPitchYaw:       return "use_rpy";
         case k_yaw:                   return "yaw";
@@ -179,7 +176,6 @@ const String PluginProcessor::getParameterText(int index)
             }
         case k_enableDiffuseMatching: return !ambi_bin_getEnableDiffuseMatching(hAmbi) ? "Off" : "On";
         case k_enableMaxRE:           return !ambi_bin_getEnableMaxRE(hAmbi) ? "Off" : "On";
-        case k_enableDiffEQ:          return !ambi_bin_getEnableDiffEQ(hAmbi) ? "Off" : "On";
         case k_enableRotation:        return !ambi_bin_getEnableRotation(hAmbi) ? "Off" : "On";
         case k_useRollPitchYaw:       return !ambi_bin_getRPYflag(hAmbi) ? "YPR" : "RPY";
         case k_yaw:                   return String(ambi_bin_getYaw(hAmbi));
@@ -327,7 +323,6 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("maxrE", ambi_bin_getEnableMaxRE(hAmbi));
     xml.setAttribute("diffMatch", ambi_bin_getEnableDiffuseMatching(hAmbi));
     xml.setAttribute("truncationEQ", ambi_bin_getEnableTruncationEQ(hAmbi));
-    xml.setAttribute("diffEQ", ambi_bin_getEnableDiffEQ(hAmbi));
     xml.setAttribute("method", ambi_bin_getDecodingMethod(hAmbi));
     
     xml.setAttribute("ENABLEROT", ambi_bin_getEnableRotation(hAmbi));
@@ -368,8 +363,6 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 ambi_bin_setEnableDiffuseMatching(hAmbi,xmlState->getIntAttribute("diffMatch", 1));
             if(xmlState->hasAttribute("truncationEQ"))
                 ambi_bin_setEnableTruncationEQ(hAmbi,xmlState->getIntAttribute("truncationEQ", 1));
-            if(xmlState->hasAttribute("diffEQ"))
-                ambi_bin_setEnableDiffEQ(hAmbi,xmlState->getIntAttribute("diffEQ", 1));
             if(xmlState->hasAttribute("method"))
                 ambi_bin_setDecodingMethod(hAmbi, (AMBI_BIN_DECODING_METHODS)xmlState->getIntAttribute("method", 1));
             
