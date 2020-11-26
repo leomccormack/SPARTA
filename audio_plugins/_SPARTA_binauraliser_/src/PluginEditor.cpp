@@ -67,7 +67,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_N_dirs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_N_dirs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_N_dirs->setBounds (797, 137, 51, 20);
+    label_N_dirs->setBounds (800, 138, 51, 20);
 
     label_HRIR_fs.reset (new juce::Label ("new label",
                                           juce::String()));
@@ -79,7 +79,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_HRIR_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_HRIR_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_HRIR_fs->setBounds (797, 161, 51, 20);
+    label_HRIR_fs->setBounds (800, 162, 51, 20);
 
     TBuseDefaultHRIRs.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBuseDefaultHRIRs.get());
@@ -98,21 +98,21 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_DAW_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_DAW_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_DAW_fs->setBounds (851, 161, 51, 20);
+    label_DAW_fs->setBounds (854, 162, 51, 20);
 
     TB_showInputs.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_showInputs.get());
     TB_showInputs->setButtonText (juce::String());
     TB_showInputs->addListener (this);
 
-    TB_showInputs->setBounds (550, 316, 24, 24);
+    TB_showInputs->setBounds (550, 322, 24, 24);
 
     TB_showOutputs.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_showOutputs.get());
     TB_showOutputs->setButtonText (juce::String());
     TB_showOutputs->addListener (this);
 
-    TB_showOutputs->setBounds (672, 316, 24, 24);
+    TB_showOutputs->setBounds (672, 322, 24, 24);
 
     label_N_Tri.reset (new juce::Label ("new label",
                                         juce::String()));
@@ -124,7 +124,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_N_Tri->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_N_Tri->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_N_Tri->setBounds (851, 137, 51, 20);
+    label_N_Tri->setBounds (854, 138, 51, 20);
 
     CBinterpMode.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBinterpMode.get());
@@ -134,7 +134,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBinterpMode->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBinterpMode->addListener (this);
 
-    CBinterpMode->setBounds (328, 318, 112, 20);
+    CBinterpMode->setBounds (328, 324, 112, 20);
 
     tb_loadJSON.reset (new juce::TextButton ("new button"));
     addAndMakeVisible (tb_loadJSON.get());
@@ -250,13 +250,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBenablePreProc->setButtonText (TRANS("Pre-Processing"));
     TBenablePreProc->addListener (this);
 
-    TBenablePreProc->setBounds (736, 112, 150, 24);
+    TBenablePreProc->setBounds (720, 112, 150, 24);
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (920, 380);
+    setSize (920, 362);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -439,21 +439,6 @@ void PluginEditor::paint (juce::Graphics& g)
     g.fillAll (juce::Colours::white);
 
     {
-        int x = 0, y = 193, width = 920, height = 183;
-        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (juce::ColourGradient (fillColour1,
-                                             8.0f - 0.0f + x,
-                                             360.0f - 193.0f + y,
-                                             fillColour2,
-                                             8.0f - 0.0f + x,
-                                             264.0f - 193.0f + y,
-                                             false));
-        g.fillRect (x, y, width, height);
-    }
-
-    {
         int x = 0, y = 30, width = 920, height = 163;
         juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -464,6 +449,21 @@ void PluginEditor::paint (juce::Graphics& g)
                                              fillColour2,
                                              8.0f - 0.0f + x,
                                              112.0f - 30.0f + y,
+                                             false));
+        g.fillRect (x, y, width, height);
+    }
+
+    {
+        int x = 0, y = 193, width = 920, height = 167;
+        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (juce::ColourGradient (fillColour1,
+                                             8.0f - 0.0f + x,
+                                             360.0f - 193.0f + y,
+                                             fillColour2,
+                                             8.0f - 0.0f + x,
+                                             264.0f - 193.0f + y,
                                              false));
         g.fillRect (x, y, width, height);
     }
@@ -487,7 +487,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 713, y = 195, width = 196, height = 170;
+        int x = 712, y = 188, width = 196, height = 165;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -538,7 +538,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 12, y = 121, width = 196, height = 225;
+        int x = 12, y = 121, width = 196, height = 232;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -551,7 +551,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 448, y = 308, width = 252, height = 38;
+        int x = 448, y = 315, width = 252, height = 38;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -577,7 +577,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 713, y = 135, width = 196, height = 57;
+        int x = 712, y = 135, width = 196, height = 50;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -650,7 +650,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 457, y = 312, width = 132, height = 30;
+        int x = 457, y = 319, width = 132, height = 30;
         juce::String text (TRANS("Show Inputs:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -662,7 +662,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 582, y = 312, width = 122, height = 30;
+        int x = 582, y = 319, width = 122, height = 30;
         juce::String text (TRANS("Show HRIRs:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -674,7 +674,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 220, y = 308, width = 229, height = 38;
+        int x = 220, y = 315, width = 229, height = 38;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -687,7 +687,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 229, y = 312, width = 132, height = 30;
+        int x = 229, y = 319, width = 132, height = 30;
         juce::String text (TRANS("Interp. Mode:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -723,7 +723,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 713, y = 251, width = 196, height = 115;
+        int x = 712, y = 243, width = 196, height = 110;
         juce::Colour fillColour = juce::Colour (0x08f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -808,7 +808,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 799, y = 206, width = 91, height = 35;
+        int x = 795, y = 210, width = 91, height = 35;
         juce::String text (TRANS("OSC port:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -856,7 +856,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 711, y = 206, width = 54, height = 35;
+        int x = 710, y = 210, width = 54, height = 35;
         juce::String text (TRANS("R-P-Y:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -926,7 +926,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 0, y = 0, width = 2, height = 356;
+        int x = 0, y = 0, width = 2, height = 360;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -936,7 +936,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 918, y = 0, width = 2, height = 356;
+        int x = 918, y = 0, width = 2, height = 360;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -946,7 +946,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 1, y = 375, width = 922, height = 2;
+        int x = 0, y = 360, width = 920, height = 2;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1304,15 +1304,15 @@ BEGIN_JUCER_METADATA
                  parentClasses="public AudioProcessorEditor, public MultiTimer, private FilenameComponentListener"
                  constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), progressbar(progress), fileChooser (&quot;File&quot;, File(), true, false, false,&#10;                       &quot;*.sofa;*.nc;&quot;, String(),&#10;                       &quot;Load SOFA File&quot;)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="920" initialHeight="380">
+                 fixedSize="1" initialWidth="920" initialHeight="362">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 193 920 183" fill="linear: 8 360, 8 264, 0=ff19313f, 1=ff041518"
-          hasStroke="0"/>
     <RECT pos="0 30 920 163" fill="linear: 8 32, 8 112, 0=ff19313f, 1=ff041518"
+          hasStroke="0"/>
+    <RECT pos="0 193 920 167" fill="linear: 8 360, 8 264, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
     <ROUNDRECT pos="1 2 918 31" cornerSize="5.0" fill="linear: 0 32, 920 32, 0=ff041518, 1=ff19313f"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="713 195 196 170" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="712 188 196 165" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 58 196 64" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1321,13 +1321,13 @@ BEGIN_JUCER_METADATA
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="220 58 480 240" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 121 196 225" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 121 196 232" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="448 308 252 38" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="448 315 252 38" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="712 58 196 78" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="713 135 196 57" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="712 135 196 50" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="23 88 153 30" fill="solid: ffffffff" hasStroke="0" text="Number of Inputs:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
@@ -1344,15 +1344,15 @@ BEGIN_JUCER_METADATA
     <TEXT pos="720 58 160 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="457 312 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
+    <TEXT pos="457 319 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Inputs:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="582 312 122 30" fill="solid: ffffffff" hasStroke="0" text="Show HRIRs:"
+    <TEXT pos="582 319 122 30" fill="solid: ffffffff" hasStroke="0" text="Show HRIRs:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="220 308 229 38" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="220 315 229 38" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="229 312 132 30" fill="solid: ffffffff" hasStroke="0" text="Interp. Mode:"
+    <TEXT pos="229 319 132 30" fill="solid: ffffffff" hasStroke="0" text="Interp. Mode:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="719 156 89 30" fill="solid: ffffffff" hasStroke="0" text="HRIR/DAW Fs:"
@@ -1361,7 +1361,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="719 134 132 30" fill="solid: ffffffff" hasStroke="0" text="N Dirs/Tri:"
           fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="713 251 196 115" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="712 243 196 110" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="735 238 49 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[0]"
           fontname="Default font" fontsize="10.0" kerning="0.0" bold="0"
@@ -1381,7 +1381,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="767 326 63 30" fill="solid: ffffffff" hasStroke="0" text="+/-"
           fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
-    <TEXT pos="799 206 91 35" fill="solid: ffffffff" hasStroke="0" text="OSC port:"
+    <TEXT pos="795 210 91 35" fill="solid: ffffffff" hasStroke="0" text="OSC port:"
           fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="698 238 62 30" fill="solid: ffffffff" hasStroke="0" text="Yaw"
@@ -1393,7 +1393,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="864 238 40 30" fill="solid: ffffffff" hasStroke="0" text="\ypr[2]"
           fontname="Default font" fontsize="10.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <TEXT pos="711 206 54 35" fill="solid: ffffffff" hasStroke="0" text="R-P-Y:"
+    <TEXT pos="710 210 54 35" fill="solid: ffffffff" hasStroke="0" text="R-P-Y:"
           fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="721 187 160 30" fill="solid: ffffffff" hasStroke="0" text="Enable Rotation:"
@@ -1410,11 +1410,11 @@ BEGIN_JUCER_METADATA
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 922 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="0 0 2 356" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="0 0 2 360" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="918 0 2 356" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="918 0 2 360" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="1 375 922 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="0 360 920 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="5a2f99f88aa51390" memberName="CBsourceDirsPreset"
@@ -1426,12 +1426,12 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_N_dirs"
-         virtualName="" explicitFocusOrder="0" pos="797 137 51 20" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="800 138 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="f8b5274e0c8768f4" memberName="label_HRIR_fs"
-         virtualName="" explicitFocusOrder="0" pos="797 161 51 20" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="800 162 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
@@ -1439,23 +1439,23 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="876 61 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <LABEL name="new label" id="c59fb2aab2496c4e" memberName="label_DAW_fs"
-         virtualName="" explicitFocusOrder="0" pos="851 161 51 20" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="854 162 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="74817bb8a57611dc" memberName="TB_showInputs"
-                virtualName="" explicitFocusOrder="0" pos="550 316 24 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="550 322 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="1a1dfbb1d4296140" memberName="TB_showOutputs"
-                virtualName="" explicitFocusOrder="0" pos="672 316 24 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="672 322 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <LABEL name="new label" id="2c30657926641642" memberName="label_N_Tri"
-         virtualName="" explicitFocusOrder="0" pos="851 137 51 20" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="854 138 51 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <COMBOBOX name="new combo box" id="aeb0b2f644784061" memberName="CBinterpMode"
-            virtualName="" explicitFocusOrder="0" pos="328 318 112 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="328 324 112 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON"
               virtualName="" explicitFocusOrder="0" pos="140 40 34 14" bgColOff="ff14889e"
@@ -1502,7 +1502,7 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="832 192 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="c24694aa5b64c28" memberName="TBenablePreProc"
-                virtualName="" explicitFocusOrder="0" pos="736 112 150 24" tooltip="Enable HRIR Pre-Processing"
+                virtualName="" explicitFocusOrder="0" pos="720 112 150 24" tooltip="Enable HRIR Pre-Processing"
                 buttonText="Pre-Processing" connectedEdges="0" needsCallback="1"
                 radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
