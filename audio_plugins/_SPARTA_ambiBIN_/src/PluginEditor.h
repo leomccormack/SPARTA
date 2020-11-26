@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.4
 
   ------------------------------------------------------------------------------
 
@@ -125,8 +125,9 @@ private:
     std::unique_ptr<juce::ToggleButton> TBenableRot;
     std::unique_ptr<juce::ComboBox> CBdecoderMethod;
     std::unique_ptr<juce::ToggleButton> TBdiffMatching;
-    //std::unique_ptr<juce::ToggleButton> TBphaseWarping;
     std::unique_ptr<juce::ToggleButton> TBtruncationEQ;
+    std::unique_ptr<juce::ComboBox> CBhrirPreProc;
+
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
