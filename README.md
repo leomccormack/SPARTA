@@ -46,7 +46,7 @@ The [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.stein
 SDKs/VST2_SDK
 ```
 
-**MacOSX, Linux and Windows (x86_64/amd64)** users must install a custom Intel MKL library. Detailed instructions on how to do this can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/dependencies/PERFORMANCE_LIBRARY_INSTRUCTIONS.md). 
+**MacOSX, Linux and Windows (x86_64/amd64)** users must install a custom Intel MKL library. Detailed instructions on how to do this can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/docs/PERFORMANCE_LIBRARY_INSTRUCTIONS.md). 
 
 **Raspberry Pi (ARM)** users instead require OpenBLAS and LAPACKE libraries:
 ``` 
