@@ -357,6 +357,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("Dec1maxrE", ambi_dec_getDecEnableMaxrE(hAmbi, 0));
     xml.setAttribute("Dec2maxrE", ambi_dec_getDecEnableMaxrE(hAmbi, 1));
     xml.setAttribute("TransitionFreq", ambi_dec_getTransitionFreq(hAmbi));
+    xml.setAttribute("preProcHRIRs", ambi_dec_getEnableHRIRsPreProc(hAmbi));
     
     xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
     
@@ -408,6 +409,8 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 ambi_dec_setDecEnableMaxrE(hAmbi, 1, xmlState->getIntAttribute("Dec2maxrE", 1));
             if(xmlState->hasAttribute("TransitionFreq"))
                 ambi_dec_setTransitionFreq(hAmbi, (float)xmlState->getDoubleAttribute("TransitionFreq", 1e3f));
+            if(xmlState->hasAttribute("preProcHRIRs"))
+                ambi_dec_setEnableHRIRsPreProc(hAmbi, xmlState->getIntAttribute("preProcHRIRs", 1));
             
             if(xmlState->hasAttribute("JSONFilePath"))
                 lastDir = xmlState->getStringAttribute("JSONFilePath", "");
