@@ -61,7 +61,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBuseDefaultHRIRs->setButtonText (juce::String());
     TBuseDefaultHRIRs->addListener (this);
 
-    TBuseDefaultHRIRs->setBounds (409, 94, 24, 24);
+    TBuseDefaultHRIRs->setBounds (409, 91, 24, 24);
 
     CBsourcePreset.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBsourcePreset.get());
@@ -72,7 +72,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsourcePreset->addItem (TRANS("Ideal SH"), 1);
     CBsourcePreset->addListener (this);
 
-    CBsourcePreset->setBounds (98, 98, 118, 20);
+    CBsourcePreset->setBounds (99, 96, 118, 20);
 
     CBchFormat.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBchFormat.get());
@@ -82,7 +82,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBchFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBchFormat->addListener (this);
 
-    CBchFormat->setBounds (74, 130, 68, 20);
+    CBchFormat->setBounds (129, 120, 88, 20);
 
     CBnormScheme.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBnormScheme.get());
@@ -92,7 +92,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormScheme->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBnormScheme->addListener (this);
 
-    CBnormScheme->setBounds (144, 130, 72, 20);
+    CBnormScheme->setBounds (129, 144, 88, 20);
 
     SL_transitionFreq.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_transitionFreq.get());
@@ -206,15 +206,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBmasterOrder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBmasterOrder->addListener (this);
 
-    CBmasterOrder->setBounds (98, 65, 118, 20);
+    CBmasterOrder->setBounds (99, 65, 118, 20);
 
     TBenablePreProc.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBenablePreProc.get());
     TBenablePreProc->setTooltip (TRANS("Enable HRIR Pre-Processing"));
-    TBenablePreProc->setButtonText (TRANS("Pre-Processing"));
+    TBenablePreProc->setButtonText (juce::String());
     TBenablePreProc->addListener (this);
 
-    TBenablePreProc->setBounds (232, 144, 150, 24);
+    TBenablePreProc->setBounds (409, 143, 24, 24);
 
 
     //[UserPreSize]
@@ -332,13 +332,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     outputCoordsVP->setViewedComponent (outputCoordsView_handle);
     outputCoordsVP->setScrollBarsShown (true, false);
     outputCoordsVP->setAlwaysOnTop(true);
-    outputCoordsVP->setBounds(455, 153, 184, 180);
+    outputCoordsVP->setBounds(455, 153, 184, 188);
     outputCoordsView_handle->setNCH(ambi_dec_getNumLoudspeakers(hAmbi));
 
     /* file loader */
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
-    fileChooser.setBounds (232, 128, 195, 20);
+    fileChooser.setBounds (232, 118, 196, 20);
 
     /* grab current parameter settings */
     CBmasterOrder->setSelectedId(ambi_dec_getMasterDecOrder(hAmbi), dontSendNotification);
@@ -368,7 +368,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBchFormat->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
     CBnormScheme->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
     s_decOrder->setTooltip("This sets the decoding order for all frequencies. Use the 2-D slider to change the decoding order for specific frequencies.");
-    TBBinauraliseLS->setTooltip("If enabled, the loudspeaker signals are binauralised and sent to the first 2 output channels.");
+    TBBinauraliseLS->setTooltip("If enabled, the loudspeaker signals are binauralised and sent to the first 2 output channels. Note that this plug-in also performs phase-simplification of the HRIRs, which involves estimating the ITDs for all the HRIRs, removing the phase from the HRTFs, but then re-introducing the phase as IPDs per frequency-bin. This greatly simplifies the HRIR interpolation process, but note that it will not be the same as direct convolution; although it should be perceptually very close in the majority of cases. However, this also means that BRIRs are not supported.");
     CBdec1method->setTooltip("Decoding method for the low-frequencies. The methods are equivalent if the loudspeakers are uniformly distributed (e.g. a t-design). Sampling Ambisonic Decoder (SAD) is the simplest, as it simply steers a hyper-cardioid beamformer to each loudspeaker direction. Mode-Matching Decoder (MMD), lends more energy to parts of the sphere which are more sparsely populated with loudspeakers (therefore, be careful! as a lot of energy can go to VOG, for example). AllRAD first decodes to a t-design and pans the t-design signals to the loudspeaker set-up using VBAP (most recommended for irregular loudspeaker arrangements).");
     CBdec2method->setTooltip("Decoding method for the high-frequencies. The methods are equivalent if the loudspeakers are uniformly distributed (e.g. a t-design). Sampling Ambisonic Decoder (SAD) is the simplest, as it simply steers a hyper-cardioid beamformer to each loudspeaker direction. Mode-Matching Decoder (MMD), lends more energy to parts of the sphere which are more sparsely populated with loudspeakers (therefore, be careful! as a lot of energy can go to VOG, for example). AllRAD first decodes to a t-design and pans the t-design signals to the loudspeaker set-up using VBAP (most recommended for irregular loudspeaker arrangements).");
     TBdec1EnableMaxrE->setTooltip("Enables/Disables the max_rE weights applied to the low-frequency decoding matrix.");
@@ -380,6 +380,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBoutputDirsPreset->setTooltip("Presets for loudspeaker arrangements to decode to.");
     tb_loadJSON->setTooltip("Loads loudspeaker directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     tb_saveJSON->setTooltip("Saves the current loudspeaker directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
+    TBenablePreProc->setTooltip("Enables/Disables Diffuse-field EQ of the HRIRs, which is based on a weighted summation of all the HRTF magnitudes in the currently loaded set.");
 
 	/* Specify screen refresh rate */
     startTimer(TIMER_GUI_RELATED, 40);
@@ -441,7 +442,7 @@ void PluginEditor::paint (juce::Graphics& g)
                                              32.0f - 30.0f + y,
                                              fillColour2,
                                              8.0f - 0.0f + x,
-                                             104.0f - 30.0f + y,
+                                             96.0f - 30.0f + y,
                                              false));
         g.fillRect (x, y, width, height);
     }
@@ -471,10 +472,10 @@ void PluginEditor::paint (juce::Graphics& g)
         //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
                                              8.0f - 0.0f + x,
-                                             352.0f - 193.0f + y,
+                                             360.0f - 193.0f + y,
                                              fillColour2,
                                              8.0f - 0.0f + x,
-                                             280.0f - 193.0f + y,
+                                             304.0f - 193.0f + y,
                                              false));
         g.fillRect (x, y, width, height);
     }
@@ -654,7 +655,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 232, y = 90, width = 165, height = 30;
+        int x = 232, y = 87, width = 165, height = 30;
         juce::String text (TRANS("Use Default HRIR set:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -666,7 +667,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 19, y = 92, width = 132, height = 30;
+        int x = 19, y = 90, width = 132, height = 30;
         juce::String text (TRANS("Mic Preset:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -678,8 +679,8 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 19, y = 124, width = 132, height = 30;
-        juce::String text (TRANS("Format:"));
+        int x = 19, y = 140, width = 132, height = 30;
+        juce::String text (TRANS("Normalisation:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -922,6 +923,30 @@ void PluginEditor::paint (juce::Graphics& g)
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 2);
 
+    }
+
+    {
+        int x = 232, y = 139, width = 194, height = 30;
+        juce::String text (TRANS("Apply Pre-Processing:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 19, y = 115, width = 132, height = 30;
+        juce::String text (TRANS("Channel Order:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
     }
 
     //[UserPaint] Add your own custom painting code here..
@@ -1308,11 +1333,11 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="656" initialHeight="365">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 30 656 163" fill="linear: 8 32, 8 104, 0=ff19313f, 1=ff041518"
+    <RECT pos="0 30 656 163" fill="linear: 8 32, 8 96, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
     <ROUNDRECT pos="1 1 654 32" cornerSize="5.0" fill="linear: 0 32, 656 24, 0=ff041518, 1=ff19313f"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="0 193 656 172" fill="linear: 8 352, 8 280, 0=ff19313f, 1=ff041518"
+    <RECT pos="0 193 656 172" fill="linear: 8 360, 8 304, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
     <RECT pos="0 0 656 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
@@ -1347,13 +1372,13 @@ BEGIN_JUCER_METADATA
     <TEXT pos="524 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Outputs"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="232 90 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
+    <TEXT pos="232 87 165 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="19 92 132 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
+    <TEXT pos="19 90 132 30" fill="solid: ffffffff" hasStroke="0" text="Mic Preset:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="19 124 132 30" fill="solid: ffffffff" hasStroke="0" text="Format:"
+    <TEXT pos="19 140 132 30" fill="solid: ffffffff" hasStroke="0" text="Normalisation:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="232 58 189 30" fill="solid: ffffffff" hasStroke="0" text="Binauralise Loudspeakers:"
@@ -1412,6 +1437,12 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: ffb9b9b9"/>
     <RECT pos="0 363 656 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
+    <TEXT pos="232 139 194 30" fill="solid: ffffffff" hasStroke="0" text="Apply Pre-Processing:"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="19 115 132 30" fill="solid: ffffffff" hasStroke="0" text="Channel Order:"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="5a2f99f88aa51390" memberName="CBoutputDirsPreset"
             virtualName="" explicitFocusOrder="0" pos="520 64 112 20" editable="0"
@@ -1422,16 +1453,16 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
-                virtualName="" explicitFocusOrder="0" pos="409 94 24 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="409 91 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <COMBOBOX name="new combo box" id="d83602bab6f1a999" memberName="CBsourcePreset"
-            virtualName="" explicitFocusOrder="0" pos="98 98 118 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="99 96 118 20" editable="0"
             layout="33" items="Ideal SH" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="a36915795f16ceb6" memberName="CBchFormat"
-            virtualName="" explicitFocusOrder="0" pos="74 130 68 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="129 120 88 20" editable="0"
             layout="33" items="" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
   <COMBOBOX name="new combo box" id="e10be54628a6df43" memberName="CBnormScheme"
-            virtualName="" explicitFocusOrder="0" pos="144 130 72 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="129 144 88 20" editable="0"
             layout="33" items="" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="27b7eb906eb4d4f" memberName="SL_transitionFreq"
           virtualName="" explicitFocusOrder="0" pos="168 305 112 40" bkgcol="ff5c5d5e"
@@ -1473,12 +1504,12 @@ BEGIN_JUCER_METADATA
               bgColOn="ff181f9a" buttonText="Export" connectedEdges="1" needsCallback="1"
               radioGroupId="0"/>
   <COMBOBOX name="new combo box" id="a465903000494955" memberName="CBmasterOrder"
-            virtualName="" explicitFocusOrder="0" pos="98 65 118 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="99 65 118 20" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <TOGGLEBUTTON name="new toggle button" id="6518b0bb9c223228" memberName="TBenablePreProc"
-                virtualName="" explicitFocusOrder="0" pos="232 144 150 24" tooltip="Enable HRIR Pre-Processing"
-                buttonText="Pre-Processing" connectedEdges="0" needsCallback="1"
-                radioGroupId="0" state="0"/>
+                virtualName="" explicitFocusOrder="0" pos="409 143 24 24" tooltip="Enable HRIR Pre-Processing"
+                buttonText="" connectedEdges="0" needsCallback="1" radioGroupId="0"
+                state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
