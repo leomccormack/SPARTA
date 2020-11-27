@@ -342,6 +342,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("FLIP_PITCH", binauraliser_getFlipPitch(hBin));
     xml.setAttribute("FLIP_ROLL", binauraliser_getFlipRoll(hBin));
     xml.setAttribute("RPY_FLAG", binauraliser_getRPYflag(hBin));
+    xml.setAttribute("preProcHRIRs", binauraliser_getEnableHRIRsPreProc(hBin));
     
     xml.setAttribute("OSC_PORT", osc_port_ID);
     
@@ -390,7 +391,9 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 binauraliser_setFlipRoll(hBin, xmlState->getIntAttribute("FLIP_ROLL", 0));
             if(xmlState->hasAttribute("RPY_FLAG"))
                 binauraliser_setRPYflag(hBin, xmlState->getIntAttribute("RPY_FLAG", 0));
-            
+            if(xmlState->hasAttribute("preProcHRIRs"))
+                binauraliser_setEnableHRIRsPreProc(hBin, xmlState->getIntAttribute("preProcHRIRs", 1));
+
             if(xmlState->hasAttribute("OSC_PORT")){
                 osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
                 osc.connect(osc_port_ID);
