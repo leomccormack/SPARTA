@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.4
 
   ------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (480, 240);
+    setSize (492, 246);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -86,7 +86,7 @@ void pannerView::paint (juce::Graphics& g)
     //[/UserPrePaint]
 
     {
-        int x = 0, y = 0, width = 480, height = 240;
+        int x = 0, y = 0, width = 492, height = 246;
         juce::Colour fillColour1 = juce::Colour (0xff4e4e4e), fillColour2 = juce::Colour (0xff202020);
         juce::Colour strokeColour = juce::Colour (0xff9e9e9e);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -96,7 +96,7 @@ void pannerView::paint (juce::Graphics& g)
                                              0.0f - 0.0f + y,
                                              fillColour2,
                                              248.0f - 0.0f + x,
-                                             240.0f - 0.0f + y,
+                                             248.0f - 0.0f + y,
                                              false));
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -266,14 +266,14 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="pannerView" componentName=""
                  parentClasses="public Component" constructorParams="PluginProcessor* ownerFilter, int _width, int _height"
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="480" initialHeight="240">
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="492" initialHeight="246">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
     <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="323e44">
-    <RECT pos="0 0 480 240" fill="linear: 248 0, 248 240, 0=ff4e4e4e, 1=ff202020"
+    <RECT pos="0 0 492 246" fill="linear: 248 0, 248 248, 0=ff4e4e4e, 1=ff202020"
           hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: ff9e9e9e"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
