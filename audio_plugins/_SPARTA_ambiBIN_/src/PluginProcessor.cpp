@@ -324,6 +324,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute("diffMatch", ambi_bin_getEnableDiffuseMatching(hAmbi));
     xml.setAttribute("truncationEQ", ambi_bin_getEnableTruncationEQ(hAmbi));
     xml.setAttribute("method", ambi_bin_getDecodingMethod(hAmbi));
+    xml.setAttribute("preproc", ambi_bin_getHRIRsPreProc(hAmbi));
     
     xml.setAttribute("ENABLEROT", ambi_bin_getEnableRotation(hAmbi));
     xml.setAttribute("YAW", ambi_bin_getYaw(hAmbi));
@@ -365,6 +366,8 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 ambi_bin_setEnableTruncationEQ(hAmbi,xmlState->getIntAttribute("truncationEQ", 1));
             if(xmlState->hasAttribute("method"))
                 ambi_bin_setDecodingMethod(hAmbi, (AMBI_BIN_DECODING_METHODS)xmlState->getIntAttribute("method", 1));
+            if(xmlState->hasAttribute("preproc"))
+                ambi_bin_setHRIRsPreProc(hAmbi, (AMBI_BIN_PREPROC)xmlState->getIntAttribute("preproc", 1));
             
             if(xmlState->hasAttribute("ENABLEROT"))
                 ambi_bin_setEnableRotation(hAmbi, xmlState->getIntAttribute("ENABLEROT", 0));

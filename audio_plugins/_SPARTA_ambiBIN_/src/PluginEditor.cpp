@@ -41,7 +41,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBuseDefaultHRIRs->setButtonText (juce::String());
     TBuseDefaultHRIRs->addListener (this);
 
-    TBuseDefaultHRIRs->setBounds (608, 60, 27, 24);
+    TBuseDefaultHRIRs->setBounds (613, 60, 27, 24);
 
     CBorderPreset.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBorderPreset.get());
@@ -78,7 +78,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBmaxRE->setButtonText (juce::String());
     TBmaxRE->addListener (this);
 
-    TBmaxRE->setBounds (409, 60, 22, 24);
+    TBmaxRE->setBounds (411, 60, 22, 24);
 
     s_yaw.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_yaw.get());
@@ -144,7 +144,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_N_dirs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_N_dirs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_N_dirs->setBounds (536, 160, 96, 24);
+    label_N_dirs->setBounds (536, 148, 96, 24);
 
     label_HRIR_len.reset (new juce::Label ("new label",
                                            juce::String()));
@@ -156,7 +156,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_HRIR_len->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_HRIR_len->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_HRIR_len->setBounds (536, 191, 96, 24);
+    label_HRIR_len->setBounds (536, 171, 96, 24);
 
     label_HRIR_fs.reset (new juce::Label ("new label",
                                           juce::String()));
@@ -168,7 +168,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_HRIR_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_HRIR_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_HRIR_fs->setBounds (536, 222, 47, 24);
+    label_HRIR_fs->setBounds (536, 194, 96, 24);
 
     label_DAW_fs.reset (new juce::Label ("new label",
                                          juce::String()));
@@ -180,7 +180,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_DAW_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_DAW_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_DAW_fs->setBounds (585, 222, 47, 24);
+    label_DAW_fs->setBounds (536, 217, 96, 24);
 
     t_flipPitch.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (t_flipPitch.get());
@@ -239,29 +239,24 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBdiffMatching->setButtonText (juce::String());
     TBdiffMatching->addListener (this);
 
-    TBdiffMatching->setBounds (409, 87, 22, 24);
+    TBdiffMatching->setBounds (411, 87, 22, 24);
 
     TBtruncationEQ.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBtruncationEQ.get());
     TBtruncationEQ->setButtonText (juce::String());
     TBtruncationEQ->addListener (this);
 
-    TBtruncationEQ->setBounds (409, 113, 22, 24);
+    TBtruncationEQ->setBounds (411, 113, 22, 24);
 
     CBhrirPreProc.reset (new juce::ComboBox ("Hrir Pre-Processing"));
     addAndMakeVisible (CBhrirPreProc.get());
-    CBhrirPreProc->setTooltip (TRANS("Pre-processing method for Hrir set"));
     CBhrirPreProc->setEditableText (false);
     CBhrirPreProc->setJustificationType (juce::Justification::centredLeft);
     CBhrirPreProc->setTextWhenNothingSelected (TRANS("Please Select"));
     CBhrirPreProc->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBhrirPreProc->addItem (TRANS("Off"), 1);
-    CBhrirPreProc->addItem (TRANS("Diffuse EQ"), 2);
-    CBhrirPreProc->addItem (TRANS("Phase Simplification"), 3);
-    CBhrirPreProc->addItem (TRANS("EQ + Phase"), 4);
     CBhrirPreProc->addListener (this);
 
-    CBhrirPreProc->setBounds (520, 112, 112, 18);
+    CBhrirPreProc->setBounds (520, 113, 113, 18);
 
 
     //[UserPreSize]
@@ -293,7 +288,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorderPreset->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
     CBorderPreset->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
     CBdecoderMethod->addItem(TRANS("Least-Squares (LS)"), DECODING_METHOD_LS);
-    CBdecoderMethod->addItem(TRANS("LS with Diffuse-EQ"), DECODING_METHOD_LSDIFFEQ);
+    CBdecoderMethod->addItem(TRANS("LS with Ambi-Diff-EQ"), DECODING_METHOD_LSDIFFEQ);
     CBdecoderMethod->addItem(TRANS("Spatial Resampling (SPR)"), DECODING_METHOD_SPR);
     CBdecoderMethod->addItem(TRANS("Time-alignment (TA)"), DECODING_METHOD_TA);
     CBdecoderMethod->addItem(TRANS("Magnitude-LS"), DECODING_METHOD_MAGLS);
@@ -302,11 +297,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormScheme->addItem (TRANS("N3D"), NORM_N3D);
     CBnormScheme->addItem (TRANS("SN3D"), NORM_SN3D);
     CBnormScheme->addItem (TRANS("FuMa"), NORM_FUMA);
+    CBhrirPreProc->addItem (TRANS("Off"), HRIR_PREPROC_OFF);
+    CBhrirPreProc->addItem (TRANS("Diffuse-field EQ"), HRIR_PREPROC_EQ);
+    CBhrirPreProc->addItem (TRANS("Phase Simplification"), HRIR_PREPROC_PHASE);
+    CBhrirPreProc->addItem (TRANS("EQ & Phase"), HRIR_PREPROC_ALL);
 
     /* file loader */
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
-    fileChooser.setBounds (458, 86, 174, 20);
+    fileChooser.setBounds (452, 86, 181, 20);
 
     /* ProgressBar */
     progress = 0.0;
@@ -335,15 +334,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
 
     /* tooltips */
-    CBdecoderMethod->setTooltip("Decoding method. 'Least-squares' is the simplest option, but it can give strong colourations at lower-orders. Diffuse-EQ helps with this, as does spatial resampling (SPR). However, the best options, (which also improve spatial performance at lower orders), are Time-alignment (TA) or Magnitude-LS.");
+    CBdecoderMethod->setTooltip("Decoding method. 'Least-squares' is the simplest option, but it can give strong colourations at lower-orders. \"Diffuse-field EQ\" in the spherical harmonic domain helps with this, as does spatial resampling (SPR) which aliases the energy of higher-order components into the lower-order components. However, the more perceptually-motivated options, which also improve the spatial performance, are the Time-alignment (TA) or Magnitude-LS decoding options. Note that the Time-alignment (TA) decoder is without the diffuse-covariance constriant (TAC) that was also proposed in the same decoder; instead this constraint is provided as it's own toggle button.");
     TBuseDefaultHRIRs->setTooltip("If this is 'ticked', the plug-in is using the default HRIR set from the Spatial_Audio_Framework.");
     fileChooser.setTooltip("Optionally, a custom HRIR set may be loaded via the SOFA standard. Note that if the plug-in fails to load the specified .sofa file, it will revert to the default HRIR data.");
     CBchFormat->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
     CBnormScheme->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
     CBorderPreset->setTooltip("Decoding order. Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
-    TBmaxRE->setTooltip("Enables/Disables the max_rE weights applied to the decoding matrix.");
-    TBdiffMatching->setTooltip("Enables/Disables the diffuse correction applied to the decoding matrix. This is the 'C' part of the 'TAC' decoder. However, in this plug-in, it is given as a separate option so it can be applied to any of the available decoding methods.");
-    TBtruncationEQ->setTooltip("Applies an EQ that counteracts the high frequency loss induced by order truncation. Interacts with 'Apply MaxRE Weights'.");
+    TBmaxRE->setTooltip("Enables/Disables the max_rE weights applied to the decoding matrix. Much like with loudspeaker decoding, the spatial \"tapering\" attained by applying these maxRE weights, means that sound sources are not routed to the opposite of the sphere as much (at the cost of wider beampatterns/more spread).");
+    TBdiffMatching->setTooltip("Enables/Disables the diffuse covariance constraint applied to the decoding matrix. This is the 'C' part of the 'TAC' decoder. However, in this plug-in, it is given as a separate option so it can be applied to any of the available decoding methods. Note, this is not the same as applying diffuse-field EQ on the HRIRs; this is mainly a \"spatial\" manipulation, not a timbral one. Also note that, while it may make recodings sound broader/wider at lower-orders, it does so at the cost of greatly damaging the spatial properties of the recording (pulling everything to the sides: almost stereo-widening); therefore, we would argue that it is not \"correct\" to enable this by default... although, it can sound pretty good in some cases.");
+    TBtruncationEQ->setTooltip("Applies an EQ that counteracts the high frequency loss induced by order truncation. This is an alternative to the \"Ambi-Diff-EQ\", but it is only suitable to apply this on the \"Least-Squares\" decoder and without the \"phase-simplification\" pre-processing applied to the HRIRs. ");
+    CBhrirPreProc->setTooltip("Pre-processing options for the HRIRs. Diffuse-field EQ is based on a weighted summation of all the HRTF magnitudes in the currently loaded set. The phase-simplification involves estimating the ITDs for all the HRIRs, removing the phase from the HRTFs, but then re-introducing the phase as IPDs per frequency-bin. Note that this phase-simplification significantly helps when computing the least-squares fitting of the spherical harmonics to the HRTFs; on the same lines as what the TA and MagLS decoding options aim to do more explicitly. Disabling the phase simplification will result in more drastic differences between the different decoding methods.");
     TBenableRot->setTooltip("Enables/Disables sound-field rotation prior to decoding.");
     s_yaw->setTooltip("Sets the 'Yaw' rotation angle (in degrees).");
     s_pitch->setTooltip("Sets the 'Pitch' rotation angle (in degrees).");
@@ -561,8 +561,8 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 459, y = 56, width = 101, height = 30;
-        juce::String text (TRANS("Default HRIRs:"));
+        int x = 451, y = 56, width = 157, height = 30;
+        juce::String text (TRANS("Use Default HRIR set:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -742,37 +742,37 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 449, y = 159, width = 132, height = 30;
+        int x = 452, y = 144, width = 132, height = 30;
         juce::String text (TRANS("Num dirs:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (13.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
 
     {
-        int x = 449, y = 191, width = 132, height = 30;
+        int x = 452, y = 168, width = 132, height = 30;
         juce::String text (TRANS("HRIR length:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (13.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
 
     {
-        int x = 449, y = 222, width = 132, height = 30;
-        juce::String text (TRANS("HRIR / DAW fs:"));
+        int x = 452, y = 192, width = 132, height = 30;
+        juce::String text (TRANS("HRIR fs:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::Font (13.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -850,7 +850,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 255, y = 57, width = 185, height = 30;
+        int x = 254, y = 57, width = 185, height = 30;
         juce::String text (TRANS("Apply MaxRE Weights:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -862,8 +862,8 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 255, y = 84, width = 185, height = 30;
-        juce::String text (TRANS("Diffuse Correction:"));
+        int x = 254, y = 84, width = 185, height = 30;
+        juce::String text (TRANS("Diffuse Cov. Constraint:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -874,7 +874,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 255, y = 109, width = 185, height = 30;
+        int x = 254, y = 109, width = 185, height = 30;
         juce::String text (TRANS("Apply Truncation EQ: "));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -926,13 +926,25 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 453, y = 106, width = 185, height = 30;
+        int x = 451, y = 106, width = 83, height = 30;
         juce::String text (TRANS("Pre-Proc:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 452, y = 216, width = 132, height = 30;
+        juce::String text (TRANS("DAW fs:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (13.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -1169,6 +1181,7 @@ void PluginEditor::timerCallback(int timerID)
             CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
             CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
 
+
             /* Progress bar */
             if(ambi_bin_getCodecStatus(hAmbi)==CODEC_STATUS_INITIALISING){
                 addAndMakeVisible(progressbar);
@@ -1221,6 +1234,14 @@ void PluginEditor::timerCallback(int timerID)
                 if(!fileChooser.isEnabled())
                     fileChooser.setEnabled(true);
             }
+
+            /* Truncation EQ is only suitable for LS-decoding, without the phase simplication on the HRIRs */
+            if(ambi_bin_getHRIRsPreProc(hAmbi) != HRIR_PREPROC_PHASE && ambi_bin_getHRIRsPreProc(hAmbi) != HRIR_PREPROC_ALL &&
+               ambi_bin_getDecodingMethod(hAmbi) == DECODING_METHOD_LS){
+                TBtruncationEQ->setEnabled(true);
+            }
+            else
+                TBtruncationEQ->setEnabled(false);
 
             /* display warning message, if needed */
             if ((hVst->getCurrentBlockSize() % ambi_bin_getFrameSize()) != 0){
@@ -1303,7 +1324,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="520 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Output"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="459 56 101 30" fill="solid: ffffffff" hasStroke="0" text="Default HRIRs:"
+    <TEXT pos="451 56 157 30" fill="solid: ffffffff" hasStroke="0" text="Use Default HRIR set:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 57 141 30" fill="solid: ffffffff" hasStroke="0" text="Decoding Order:"
@@ -1347,14 +1368,14 @@ BEGIN_JUCER_METADATA
           italic="0" justification="36"/>
     <RECT pos="445 139 196 112" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="449 159 132 30" fill="solid: ffffffff" hasStroke="0" text="Num dirs:"
-          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
+    <TEXT pos="452 144 132 30" fill="solid: ffffffff" hasStroke="0" text="Num dirs:"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="449 191 132 30" fill="solid: ffffffff" hasStroke="0" text="HRIR length:"
-          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
+    <TEXT pos="452 168 132 30" fill="solid: ffffffff" hasStroke="0" text="HRIR length:"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="449 222 132 30" fill="solid: ffffffff" hasStroke="0" text="HRIR / DAW fs:"
-          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
+    <TEXT pos="452 192 132 30" fill="solid: ffffffff" hasStroke="0" text="HRIR fs:"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="19 208 63 23" fill="solid: ffffffff" hasStroke="0" text="OSC port:"
           fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
@@ -1374,13 +1395,13 @@ BEGIN_JUCER_METADATA
     <TEXT pos="92 1 184 32" fill="solid: ffdf8400" hasStroke="0" text="AmbiBIN"
           fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="255 57 185 30" fill="solid: ffffffff" hasStroke="0" text="Apply MaxRE Weights:"
+    <TEXT pos="254 57 185 30" fill="solid: ffffffff" hasStroke="0" text="Apply MaxRE Weights:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="255 84 185 30" fill="solid: ffffffff" hasStroke="0" text="Diffuse Correction:"
+    <TEXT pos="254 84 185 30" fill="solid: ffffffff" hasStroke="0" text="Diffuse Cov. Constraint:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="255 109 185 30" fill="solid: ffffffff" hasStroke="0" text="Apply Truncation EQ: "
+    <TEXT pos="254 109 185 30" fill="solid: ffffffff" hasStroke="0" text="Apply Truncation EQ: "
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 656 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
@@ -1391,12 +1412,15 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: ffb9b9b9"/>
     <RECT pos="0 260 656 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <TEXT pos="453 106 185 30" fill="solid: ffffffff" hasStroke="0" text="Pre-Proc:"
+    <TEXT pos="451 106 83 30" fill="solid: ffffffff" hasStroke="0" text="Pre-Proc:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="452 216 132 30" fill="solid: ffffffff" hasStroke="0" text="DAW fs:"
+          fontname="Default font" fontsize="13.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
-                virtualName="" explicitFocusOrder="0" pos="608 60 27 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="613 60 27 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <COMBOBOX name="new combo box" id="d83602bab6f1a999" memberName="CBorderPreset"
             virtualName="" explicitFocusOrder="0" pos="136 63 104 18" editable="0"
@@ -1408,7 +1432,7 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="164 116 76 18" editable="0"
             layout="33" items="" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
   <TOGGLEBUTTON name="new toggle button" id="943aa789e193d13a" memberName="TBmaxRE"
-                virtualName="" explicitFocusOrder="0" pos="409 60 22 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="411 60 22 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <SLIDER name="new slider" id="ace036a85eec9703" memberName="s_yaw" virtualName=""
           explicitFocusOrder="0" pos="80 171 120 38" bkgcol="ff5c5d5e"
@@ -1433,22 +1457,22 @@ BEGIN_JUCER_METADATA
               bkgcol="ffffff" outlinecol="68a3a2a2" initialText="" multiline="0"
               retKeyStartsLine="0" readonly="0" scrollbars="1" caret="0" popupmenu="1"/>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_N_dirs"
-         virtualName="" explicitFocusOrder="0" pos="536 160 96 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="536 148 96 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="e14d1c2e00d7849b" memberName="label_HRIR_len"
-         virtualName="" explicitFocusOrder="0" pos="536 191 96 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="536 171 96 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="f8b5274e0c8768f4" memberName="label_HRIR_fs"
-         virtualName="" explicitFocusOrder="0" pos="536 222 47 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="536 194 96 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="c59fb2aab2496c4e" memberName="label_DAW_fs"
-         virtualName="" explicitFocusOrder="0" pos="585 222 47 24" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="536 217 96 24" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
@@ -1474,15 +1498,14 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="88 90 152 18" editable="0"
             layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
   <TOGGLEBUTTON name="new toggle button" id="8039737efa3e209e" memberName="TBdiffMatching"
-                virtualName="" explicitFocusOrder="0" pos="409 87 22 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="411 87 22 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="f65a4553b49a563a" memberName="TBtruncationEQ"
-                virtualName="" explicitFocusOrder="0" pos="409 113 22 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="411 113 22 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <COMBOBOX name="Hrir Pre-Processing" id="4708d72b820edbe6" memberName="CBhrirPreProc"
-            virtualName="" explicitFocusOrder="0" pos="520 112 112 18" tooltip="Pre-processing method for Hrir set"
-            editable="0" layout="33" items="Off&#10;Diffuse EQ&#10;Phase Simplification&#10;EQ + Phase"
-            textWhenNonSelected="Please Select" textWhenNoItems="(no choices)"/>
+            virtualName="" explicitFocusOrder="0" pos="520 113 113 18" editable="0"
+            layout="33" items="" textWhenNonSelected="Please Select" textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
