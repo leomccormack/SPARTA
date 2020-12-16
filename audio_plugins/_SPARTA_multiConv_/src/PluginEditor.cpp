@@ -155,6 +155,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_filterfs->setTooltip("The filter samplerate. This should match the host samplerate.");
     SL_num_inputs->setTooltip("The number of channels. The filters are applied to each respective input channel. i.e. filter 3 is applied to channel 3 etc.");
 
+    /* Plugin description */
+    pluginDescription.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (pluginDescription.get());
+    pluginDescription->setBounds (0, 0, 200, 32);
+    pluginDescription->setAlpha(0.0f);
+    pluginDescription->setEnabled(false);
+    pluginDescription->setTooltip(TRANS("A simple multi-channel convolver with an (optional) partitioned-convolution mode. The plugin will convolve each input channel with the respective filter up to the maximum of 64 channels/filters.\n\nNote that this is not to be confused with the sparta_matrixconv plug-in. For this plug-in, the number inputs = the number of filters = the number of outputs. i.e. no matrixing is applied."));
+
     /* Specify screen refresh rate */
     startTimer(30); /*ms (40ms = 25 frames per second) */
 

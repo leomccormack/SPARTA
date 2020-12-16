@@ -386,6 +386,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     tb_saveJSON->setTooltip("Saves the current source directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     TBenablePreProc->setTooltip("Enables/Disables Diffuse-field EQ of the HRIRs, which is based on a weighted summation of all the HRTF magnitudes in the currently loaded set.");
 
+    /* Plugin description */
+    pluginDescription.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (pluginDescription.get());
+    pluginDescription->setBounds (0, 0, 200, 32);
+    pluginDescription->setAlpha(0.0f);
+    pluginDescription->setEnabled(false);
+    pluginDescription->setTooltip(TRANS("A simple HRIR interpolator and convolver. Currently, the only interpolation option is \"Triangular\", which also relies on phase-simplification of the HRIRs. This simplification involves estimating the ITDs for all the HRIRs, removing the phase from the HRTFs, but then re-introducing the phase as IPDs per frequency-bin. This greatly simplifies the HRIR interpolation process and reduces the computational complexity considerably, but it should be known to the user that this is not the same as direct convolution; although, it should be perceptually very close to direct convolution in the majority of cases. However, this also means that binaural room impuslse responses (BRIRs) are not supported by the plug-in!\n"));
+
 	/* Specify screen refresh rate */
     startTimer(TIMER_GUI_RELATED, 40);
 

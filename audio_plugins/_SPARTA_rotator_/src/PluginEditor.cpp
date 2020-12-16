@@ -204,6 +204,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_oscport->setTooltip("The OSC port at which to receive the rotation angles. To facilitate head-tracking, send the rotation angles (in degrees) to this port ID as a 3-element vector 'ypr[3]', following the yaw-pitch-roll convention.");
     TBrpyFlag->setTooltip("If enabled, the plug-in will use the roll-pitch-yaw rotation order convention. If disabled, it will use the yaw-pitch-roll convention.");
 
+    /* Plugin description */
+    pluginDescription.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (pluginDescription.get());
+    pluginDescription->setBounds (0, 0, 200, 32);
+    pluginDescription->setAlpha(0.0f);
+    pluginDescription->setEnabled(false);
+    pluginDescription->setTooltip(TRANS("A simple plugin for rotating Ambisonic signals. The rotation angles can be controlled using a head tracker via OSC messages, by configuring the headtracker to send a vector: '\\ypr[3]' to OSC port 9000 (default); where \\ypr[0], \\ypr[1], \\ypr[2] are the yaw-pitch-roll angles, respectively. The angles can also be flipped +/- in order to support a wider range of devices. The rotation order (yaw-pitch-roll (default) or roll-pitch-yaw) can also be specified."));
+
     /* Specify screen refresh rate */
     startTimer(30); /*ms (40ms = 25 frames per second) */
 
