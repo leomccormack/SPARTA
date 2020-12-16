@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.5
 
   ------------------------------------------------------------------------------
 
@@ -35,22 +35,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
-
-    s_thresh.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (s_thresh.get());
-    s_thresh->setRange (-60, 0, 0.01);
-    s_thresh->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
-    s_thresh->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-    s_thresh->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_thresh->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    s_thresh->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
-    s_thresh->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0x66ffffff));
-    s_thresh->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_thresh->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_thresh->setColour (juce::Slider::textBoxHighlightColourId, juce::Colour (0x001111ee));
-    s_thresh->addListener (this);
-
-    s_thresh->setBounds (96, 364, 64, 64);
 
     s_ratio.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_ratio.get());
@@ -122,22 +106,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_outgain->setBounds (468, 364, 64, 64);
 
-    s_ingain.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (s_ingain.get());
-    s_ingain->setRange (-40, 20, 0.01);
-    s_ingain->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
-    s_ingain->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-    s_ingain->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_ingain->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    s_ingain->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
-    s_ingain->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0x66ffffff));
-    s_ingain->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_ingain->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_ingain->setColour (juce::Slider::textBoxHighlightColourId, juce::Colour (0x001111ee));
-    s_ingain->addListener (this);
-
-    s_ingain->setBounds (17, 364, 64, 64);
-
     presetCB.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (presetCB.get());
     presetCB->setEditableText (false);
@@ -167,6 +135,34 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     normalisationCB->addListener (this);
 
     normalisationCB->setBounds (440, 296, 88, 16);
+
+    s_ingain.reset (new juce::Slider ("new slider"));
+    addAndMakeVisible (s_ingain.get());
+    s_ingain->setRange (-20, 40, 0.01);
+    s_ingain->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    s_ingain->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
+    s_ingain->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
+    s_ingain->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0x66ffffff));
+    s_ingain->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
+    s_ingain->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
+    s_ingain->setColour (juce::Slider::textBoxHighlightColourId, juce::Colour (0x001111ee));
+    s_ingain->addListener (this);
+
+    s_ingain->setBounds (16, 364, 64, 64);
+
+    s_thresh.reset (new juce::Slider ("new slider"));
+    addAndMakeVisible (s_thresh.get());
+    s_thresh->setRange (-60, 0, 0.01);
+    s_thresh->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    s_thresh->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
+    s_thresh->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
+    s_thresh->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0x66ffffff));
+    s_thresh->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
+    s_thresh->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
+    s_thresh->setColour (juce::Slider::textBoxHighlightColourId, juce::Colour (0x001111ee));
+    s_thresh->addListener (this);
+
+    s_thresh->setBounds (96, 364, 64, 64);
 
 
     //[UserPreSize]
@@ -231,7 +227,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     normalisationCB->setItemEnabled(NORM_FUMA, ambi_drc_getInputPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
 
     /* tooltips */
-    presetCB->setTooltip("The input/output order. Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals. The plug-in derives the frequency-dependent gain factors based on the omni-directional component, which are then applied to all input signals equally. Therefore, the spatial characteristics are preserved; however, your perception of them may change.");
+    presetCB->setTooltip("The input/output order. Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals. The plug-in derives the frequency-dependent gain factors based on the omni-directional component, which are then applied to all input signals equally. The spatial properties of the original signals will remain unchanged, although your perception of them after decoding may change.");
     CHOrderingCB->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
     normalisationCB->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
     s_thresh->setTooltip("Compressor threshold (in dB).");
@@ -241,6 +237,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_outgain->setTooltip("Output/Make-up gain (in dB).");
     s_attack->setTooltip("Envelope attack time (in miliseconds).");
     s_release->setTooltip("Envelope release time (in miliseconds).");
+
+    /* Plugin description */
+    pluginDescription.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (pluginDescription.get());
+    pluginDescription->setBounds (0, 0, 200, 32);
+    pluginDescription->setAlpha(0.0f);
+    pluginDescription->setEnabled(false);
+    pluginDescription->setTooltip(TRANS("This plug-in is a frequency-dependent Ambisonic dynamic range compressor (DRC). The gain factors are derived by analysing the omnidirectional component for each frequency band, which are then applied to all of the input signals equally. The spatial properties of the original signals will remain unchanged, although your perception of them after decoding may change."));
 
     /* Specify screen refresh rate */
     startTimer(80); /*ms (40ms = 25 frames per second) */
@@ -255,16 +259,16 @@ PluginEditor::~PluginEditor()
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
 
-    s_thresh = nullptr;
     s_ratio = nullptr;
     s_knee = nullptr;
     s_attack = nullptr;
     s_release = nullptr;
     s_outgain = nullptr;
-    s_ingain = nullptr;
     presetCB = nullptr;
     CHOrderingCB = nullptr;
     normalisationCB = nullptr;
+    s_ingain = nullptr;
+    s_thresh = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -970,13 +974,7 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == s_thresh.get())
-    {
-        //[UserSliderCode_s_thresh] -- add your slider handling code here..
-		ambi_drc_setThreshold(hAmbi, (float)s_thresh->getValue());
-        //[/UserSliderCode_s_thresh]
-    }
-    else if (sliderThatWasMoved == s_ratio.get())
+    if (sliderThatWasMoved == s_ratio.get())
     {
         //[UserSliderCode_s_ratio] -- add your slider handling code here..
 		ambi_drc_setRatio(hAmbi, (float)s_ratio->getValue());
@@ -1011,6 +1009,12 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
         //[UserSliderCode_s_ingain] -- add your slider handling code here..
         ambi_drc_setInGain(hAmbi, (float)s_ingain->getValue());
         //[/UserSliderCode_s_ingain]
+    }
+    else if (sliderThatWasMoved == s_thresh.get())
+    {
+        //[UserSliderCode_s_thresh] -- add your slider handling code here..
+        ambi_drc_setThreshold(hAmbi, (float)s_thresh->getValue());
+        //[/UserSliderCode_s_thresh]
     }
 
     //[UsersliderValueChanged_Post]
@@ -1239,13 +1243,6 @@ BEGIN_JUCER_METADATA
     <RECT pos="0 438 550 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
   </BACKGROUND>
-  <SLIDER name="new slider" id="863726658f50da67" memberName="s_thresh"
-          virtualName="" explicitFocusOrder="0" pos="96 364 64 64" bkgcol="ff5c5d5e"
-          trackcol="ff315b6d" rotarysliderfill="7fffffff" rotaryslideroutline="66ffffff"
-          textboxtext="ffffffff" textboxbkgd="ffffff" textboxhighlight="1111ee"
-          min="-60.0" max="0.0" int="0.01" style="RotaryHorizontalVerticalDrag"
-          textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="fed2163dcc7c5f5b" memberName="s_ratio"
           virtualName="" explicitFocusOrder="0" pos="168 364 64 64" rotarysliderfill="7fffffff"
           rotaryslideroutline="66ffffff" textboxtext="ffffffff" textboxbkgd="ffffff"
@@ -1277,13 +1274,6 @@ BEGIN_JUCER_METADATA
           textboxhighlight="1111ee" min="-20.0" max="40.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
-  <SLIDER name="new slider" id="d8d8f3ebe9b6f67e" memberName="s_ingain"
-          virtualName="" explicitFocusOrder="0" pos="17 364 64 64" bkgcol="ff5c5d5e"
-          trackcol="ff315b6d" rotarysliderfill="7fffffff" rotaryslideroutline="66ffffff"
-          textboxtext="ffffffff" textboxbkgd="ffffff" textboxhighlight="1111ee"
-          min="-40.0" max="20.0" int="0.01" style="RotaryHorizontalVerticalDrag"
-          textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <COMBOBOX name="new combo box" id="abcd469891fabf2d" memberName="presetCB"
             virtualName="" explicitFocusOrder="0" pos="72 296 120 16" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
@@ -1293,6 +1283,18 @@ BEGIN_JUCER_METADATA
   <COMBOBOX name="new combo box" id="caeee0fc74db72a4" memberName="normalisationCB"
             virtualName="" explicitFocusOrder="0" pos="440 296 88 16" editable="0"
             layout="33" items="" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
+  <SLIDER name="new slider" id="aaacc03ec0b04595" memberName="s_ingain"
+          virtualName="" explicitFocusOrder="0" pos="16 364 64 64" rotarysliderfill="7fffffff"
+          rotaryslideroutline="66ffffff" textboxtext="ffffffff" textboxbkgd="ffffff"
+          textboxhighlight="1111ee" min="-20.0" max="40.0" int="0.01" style="RotaryHorizontalVerticalDrag"
+          textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+  <SLIDER name="new slider" id="5b7f5b1c551c43d1" memberName="s_thresh"
+          virtualName="" explicitFocusOrder="0" pos="96 364 64 64" rotarysliderfill="7fffffff"
+          rotaryslideroutline="66ffffff" textboxtext="ffffffff" textboxbkgd="ffffff"
+          textboxhighlight="1111ee" min="-60.0" max="0.0" int="0.01" style="RotaryHorizontalVerticalDrag"
+          textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

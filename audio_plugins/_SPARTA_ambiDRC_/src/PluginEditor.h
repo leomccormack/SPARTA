@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.5
 
   ------------------------------------------------------------------------------
 
@@ -84,20 +84,21 @@ private:
 
     /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
+    std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<juce::Slider> s_thresh;
     std::unique_ptr<juce::Slider> s_ratio;
     std::unique_ptr<juce::Slider> s_knee;
     std::unique_ptr<juce::Slider> s_attack;
     std::unique_ptr<juce::Slider> s_release;
     std::unique_ptr<juce::Slider> s_outgain;
-    std::unique_ptr<juce::Slider> s_ingain;
     std::unique_ptr<juce::ComboBox> presetCB;
     std::unique_ptr<juce::ComboBox> CHOrderingCB;
     std::unique_ptr<juce::ComboBox> normalisationCB;
+    std::unique_ptr<juce::Slider> s_ingain;
+    std::unique_ptr<juce::Slider> s_thresh;
 
 
     //==============================================================================
