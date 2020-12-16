@@ -157,7 +157,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBbeamType->setTooltip("Beamformer pattern.");
     CBoutputFormat->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
     CBnormalisation->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
-
+ 
+    /* Plugin description */
+    pluginDescription.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (pluginDescription.get());
+    pluginDescription->setBounds (0, 0, 200, 32);
+    pluginDescription->setAlpha(0.0f);
+    pluginDescription->setEnabled(false);
+    pluginDescription->setTooltip(TRANS("A simple beamforming plug-in using Ambisonic signals as input; offering a variety of different static beam-pattern options.\n"));
+    
 	/* Specify screen refresh rate */
     startTimer(40);//80); /*ms (40ms = 25 frames per second) */
 
