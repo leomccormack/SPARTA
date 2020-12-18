@@ -122,6 +122,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBfftsize->setTooltip("FFT size used by the algorithm. Higher values permit more drastic pitch shifts, but at the cost of increased CPU and latency");
     CBoversampling->setTooltip("Oversampling factor used by the algorithm. Higher values improve signal fidelity, but at the cost of increased CPU and latency");
 
+    /* Plugin description */
+    pluginDescription.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (pluginDescription.get());
+    pluginDescription->setBounds (0, 0, 200, 32);
+    pluginDescription->setAlpha(0.0f);
+    pluginDescription->setEnabled(false);
+    pluginDescription->setTooltip(TRANS("A simple multi-channel pitch shifter, based on the phase-vocoder approach."));
+
     /* Specify screen refresh rate */
     startTimer(TIMER_GUI_RELATED, 40);
 

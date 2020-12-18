@@ -382,6 +382,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     tb_saveJSON->setTooltip("Saves the current loudspeaker directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     TBenablePreProc->setTooltip("Enables/Disables Diffuse-field EQ of the HRIRs, which is based on a weighted summation of all the HRTF magnitudes in the currently loaded set.");
 
+    /* Plugin description */
+    pluginDescription.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (pluginDescription.get());
+    pluginDescription->setBounds (0, 0, 200, 32);
+    pluginDescription->setAlpha(0.0f);
+    pluginDescription->setEnabled(false);
+    pluginDescription->setTooltip(TRANS("This plug-in is a linear and time-invariant loudspeaker Ambisonic decoder, which implements a number of different decoder designs. The plug-in employs a dual-decoder approach, whereby different decoding methods may be selected for the low and high frequencies. Additionally, the decoding order may be specified for each individual frequency band, in order to account for imperfect input Ambisonic signals (such as those derived from microphone arrays) or for creative purposes.\n\nAs with most of the SPARTA plugins, the default settings generally represent the \"state-of-the-art\" approach; or at least a configuration that is suitable for the majority of applications. The vast number of configuration options and decoding methods offered by this plug-in are mainly intended for research and educational purposes, but may nevertheless be fun to play around with :-)"));
+
 	/* Specify screen refresh rate */
     startTimer(TIMER_GUI_RELATED, 40);
 
