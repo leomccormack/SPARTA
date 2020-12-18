@@ -359,6 +359,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     tb_loadJSON_ls->setTooltip("Loads loudspeaker directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     tb_saveJSON_ls->setTooltip("Saves the current loudspeaker directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
 
+    /* Plugin description */
+    pluginDescription.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (pluginDescription.get());
+    pluginDescription->setBounds (0, 0, 200, 32);
+    pluginDescription->setAlpha(0.0f);
+    pluginDescription->setEnabled(false);
+    pluginDescription->setTooltip(TRANS("A frequency-dependent 3D panner based on the Vector-base Amplitude Panning (VBAP) method, which can offer more consistent loudness when sources are panned in-between the loudspeaker directions when compared to frequency-independent VBAP."));
 
 	/* Specify screen refresh rate */
     startTimer(TIMER_GUI_RELATED, 40);

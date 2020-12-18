@@ -261,6 +261,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_flipUD->setTooltip("Flips the webcam image up-down, as it may be preferable to mount the camera upside-down on top of the microphone array; in order to bring the origin of the camera closer to that of the array.");
     TB_flipLR->setTooltip("Flips the webcam image left-right, as some webcams mirror the images taken.");
 
+    /* Plugin description */
+    pluginDescription.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (pluginDescription.get());
+    pluginDescription->setBounds (0, 0, 200, 32);
+    pluginDescription->setAlpha(0.0f);
+    pluginDescription->setEnabled(false);
+    pluginDescription->setTooltip(TRANS("A spatially localised direction-of-arrival (DoA) estimator. The plug-in first uses VBAP beam patterns (for directions that are uniformly distributed on the surface of a shere) to obtain spatially-biased zeroth and first-order signals, which are subsequently used for the active-intensity vector estimation. This allows for a DoA estimate to be made for each of these spatially-constrained sectors, and for each sub-band. The low frequency DoA estimates are then depicted with blue icons, mid-frequencies with green, and high-frequencies with red. The size of the icon and its opacity correspond to the energy of the sector, which are normalised and scaled in ascending order for each frequency band. The plug-in employs two times as many sectors as the analysis order, with the exception of the first-order analysis, which uses the traditional active-intensity approach. The analysis order per frequency band is user definable, as is the frequency range at which to analyse.\n\nThis approach to sound-field visualisation/DoA estimation represents a much more computationally efficient option, when compared to the algorithms that are integrated into the sparta_powermap plug-in, for instance. The plug-in also allows the user to place real-time video footage behind the activity-map, in order to create a make-shift acoustic camera."));
+
 	/* Specify screen refresh rate */
    startTimer(TIMER_GUI_RELATED, 120);//80); /*ms (40ms = 25 frames per second) */
 

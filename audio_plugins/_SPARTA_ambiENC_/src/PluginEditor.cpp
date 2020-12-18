@@ -202,6 +202,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     tb_loadJSON->setTooltip("Loads source encoding directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     tb_saveJSON->setTooltip("Saves the current source encoding directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
 
+    /* Plugin description */
+    pluginDescription.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (pluginDescription.get());
+    pluginDescription->setBounds (0, 0, 200, 32);
+    pluginDescription->setAlpha(0.0f);
+    pluginDescription->setEnabled(false);
+    pluginDescription->setTooltip(TRANS("A simple Ambisonic encoder which takes input signals (up to 64 channels) and encodes them into Ambisonic signals at specified directions. Essentially, these Ambisonic signals describe a synthetic sound scene, where the spatial resolution of this encoding is determined by the transform order. Unlike Ambisonic signals derived from microphone arrays, the output Ambisonic signals from this plugin are considered to be perfect/\"ideal\"; i.e. without spatial aliasing (an order-dependent phenomenon determined by the physical design of the array), which results in order-dependent frequency limits above which the Ambisonic signals do not exhibit the correct patterns."));
+
 	/* Specify screen refresh rate */
     startTimer(40);//80); /*ms (40ms = 25 frames per second) */
 

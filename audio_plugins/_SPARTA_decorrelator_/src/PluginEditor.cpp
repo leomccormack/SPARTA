@@ -82,6 +82,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* tooltips */
     SL_nChannels->setTooltip("Number of input/output channels to decorrelate");
 
+    /* Plugin description */
+    pluginDescription.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (pluginDescription.get());
+    pluginDescription->setBounds (0, 0, 200, 32);
+    pluginDescription->setAlpha(0.0f);
+    pluginDescription->setEnabled(false);
+    pluginDescription->setTooltip(TRANS("WIP"));
+
     startTimer(TIMER_GUI_RELATED, 20);
 
     /* warnings */
