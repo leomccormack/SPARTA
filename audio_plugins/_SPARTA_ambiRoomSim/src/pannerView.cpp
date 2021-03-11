@@ -50,10 +50,10 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     height = _height;
 
     for(int src=0; src<MAX_NUM_CHANNELS; src++){
-        SourceIcons[src].setBounds(width - width*(ambi_roomsim_getSourceAzi_deg(hAmbi, src) + 180.0f)/360.f - icon_size/2.0f,
-                                   height - height*(ambi_roomsim_getSourceElev_deg(hAmbi, src) + 90.0f)/180.0f - icon_size/2.0f,
-                                   icon_size,
-                                   icon_size);
+//        SourceIcons[src].setBounds(width - width*(ambi_roomsim_getSourceAzi_deg(hAmbi, src) + 180.0f)/360.f - icon_size/2.0f,
+//                                   height - height*(ambi_roomsim_getSourceElev_deg(hAmbi, src) + 90.0f)/180.0f - icon_size/2.0f,
+//                                   icon_size,
+//                                   icon_size);
     }
     NSources = ambi_roomsim_getNumSources(hAmbi);
 
@@ -212,10 +212,10 @@ void pannerView::mouseUp (const MouseEvent& /*e*/)
 void pannerView::refreshPanView()
 {
     for(int src=0; src<MAX_NUM_CHANNELS; src++){
-        SourceIcons[src].setBounds(width - width*(ambi_roomsim_getSourceAzi_deg(hAmbi, src) + 180.0f)/360.f - icon_size/2.0f,
-                                   height - height*(ambi_roomsim_getSourceElev_deg(hAmbi, src) + 90.0f)/180.0f - icon_size/2.0f,
-                                   icon_size,
-                                   icon_size);
+//        SourceIcons[src].setBounds(width - width*(ambi_roomsim_getSourceAzi_deg(hAmbi, src) + 180.0f)/360.f - icon_size/2.0f,
+//                                   height - height*(ambi_roomsim_getSourceElev_deg(hAmbi, src) + 90.0f)/180.0f - icon_size/2.0f,
+//                                   icon_size,
+//                                   icon_size);
     }
     NSources = ambi_roomsim_getNumSources(hAmbi);
 

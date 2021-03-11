@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.5
 
   ------------------------------------------------------------------------------
 
@@ -231,28 +231,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_sources->setSliderSnapsToMousePosition(false);
 
     /* add combo box options */
-    CBsourceDirsPreset->addItem (TRANS("Mono"), SOURCE_CONFIG_PRESET_MONO);
-    CBsourceDirsPreset->addItem (TRANS("Stereo"), SOURCE_CONFIG_PRESET_STEREO);
-    CBsourceDirsPreset->addItem (TRANS("5.x"), SOURCE_CONFIG_PRESET_5PX);
-    CBsourceDirsPreset->addItem (TRANS("7.x"), SOURCE_CONFIG_PRESET_7PX);
-    CBsourceDirsPreset->addItem (TRANS("8.x"), SOURCE_CONFIG_PRESET_8PX);
-    CBsourceDirsPreset->addItem (TRANS("9.x"), SOURCE_CONFIG_PRESET_9PX);
-    CBsourceDirsPreset->addItem (TRANS("10.x"), SOURCE_CONFIG_PRESET_10PX);
-    CBsourceDirsPreset->addItem (TRANS("11.x"), SOURCE_CONFIG_PRESET_11PX);
-    CBsourceDirsPreset->addItem (TRANS("11.x (7+4)"), SOURCE_CONFIG_PRESET_11PX_7_4);
-    CBsourceDirsPreset->addItem (TRANS("13.x"), SOURCE_CONFIG_PRESET_13PX);
-    CBsourceDirsPreset->addItem (TRANS("22.x"), SOURCE_CONFIG_PRESET_22PX);
-    CBsourceDirsPreset->addItem (TRANS("Aalto MCC"), SOURCE_CONFIG_PRESET_AALTO_MCC);
-    CBsourceDirsPreset->addItem (TRANS("Aalto MCC-subset"), SOURCE_CONFIG_PRESET_AALTO_MCC_SUBSET);
-    CBsourceDirsPreset->addItem (TRANS("Aalto Apaja"), SOURCE_CONFIG_PRESET_AALTO_APAJA);
-    CBsourceDirsPreset->addItem (TRANS("Aalto LR"), SOURCE_CONFIG_PRESET_AALTO_LR);
-    CBsourceDirsPreset->addItem (TRANS("DTU AVIL"), SOURCE_CONFIG_PRESET_DTU_AVIL);
-    CBsourceDirsPreset->addItem (TRANS("T-design (4)"), SOURCE_CONFIG_PRESET_T_DESIGN_4);
-    CBsourceDirsPreset->addItem (TRANS("T-design (12)"), SOURCE_CONFIG_PRESET_T_DESIGN_12);
-    CBsourceDirsPreset->addItem (TRANS("T-design (24)"), SOURCE_CONFIG_PRESET_T_DESIGN_24);
-    CBsourceDirsPreset->addItem (TRANS("T-design (36)"), SOURCE_CONFIG_PRESET_T_DESIGN_36);
-    CBsourceDirsPreset->addItem (TRANS("T-design (48)"), SOURCE_CONFIG_PRESET_T_DESIGN_48);
-    CBsourceDirsPreset->addItem (TRANS("T-design (60)"), SOURCE_CONFIG_PRESET_T_DESIGN_60);
     CBorder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
     CBorder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
     CBorder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
@@ -267,14 +245,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormalisation->addItem (TRANS("FuMa"), NORM_FUMA);
 
     /* source coordinates viewport */
-//    sourceCoordsVP.reset (new Viewport ("new viewport"));
-//    addAndMakeVisible (sourceCoordsVP.get());
-//    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_CHANNELS, ambi_roomsim_getNumSources(hAmbi));
-//    sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
-//    sourceCoordsVP->setScrollBarsShown (true, false);
-//    sourceCoordsVP->setAlwaysOnTop(true);
-//    sourceCoordsVP->setBounds(22, 183, 184, 155);
-//    sourceCoordsView_handle->setNCH(ambi_roomsim_getNumSources(hAmbi));
+    sourceCoordsVP.reset (new Viewport ("new viewport"));
+    addAndMakeVisible (sourceCoordsVP.get());
+    sourceCoordsView_handle = new inputCoordsView(ownerFilter, ROOM_SIM_MAX_NUM_SOURCES, ambi_roomsim_getNumSources(hAmbi));
+    sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
+    sourceCoordsVP->setScrollBarsShown (true, false);
+    sourceCoordsVP->setAlwaysOnTop(true);
+    sourceCoordsVP->setBounds(22, 403, 212, 155);
+    sourceCoordsView_handle->setNCH(ambi_roomsim_getNumSources(hAmbi));
 
     /* grab current parameter settings */
     SL_num_sources->setValue(ambi_roomsim_getNumSources(hAmbi),dontSendNotification);
@@ -283,8 +261,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormalisation->setSelectedId(ambi_roomsim_getNormType(hAmbi), dontSendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
-
-
 
     /* create panning window */
 //    panWindow.reset (new pannerView(ownerFilter, 480, 240));
@@ -460,18 +436,6 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 31, y = 401, width = 180, height = 30;
-        juce::String text (TRANS("Number of Inputs:"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
         int x = 175, y = 33, width = 96, height = 30;
         juce::String text (TRANS("Room Settings"));
         juce::Colour fillColour = juce::Colours::white;
@@ -582,18 +546,6 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 63, y = 377, width = 108, height = 28;
-        juce::String text (juce::CharPointer_UTF8 ("Azi\xc2\xb0   #   Elev\xc2\xb0"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
         int x = 0, y = 0, width = 714, height = 2;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -682,43 +634,6 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 231, y = 57, width = 161, height = 30;
-        juce::String text (TRANS("Number of Oct. Bands:"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 231, y = 81, width = 185, height = 30;
-        juce::String text (TRANS("Starting Oct. Band Freq:"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 231, y = 113, width = 225, height = 95;
-        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
-        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
         int x = 71, y = 217, width = 137, height = 30;
         juce::String text (TRANS("Receiver Settings"));
         juce::Colour fillColour = juce::Colours::white;
@@ -726,18 +641,6 @@ void PluginEditor::paint (juce::Graphics& g)
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 247, y = 113, width = 233, height = 30;
-        juce::String text (TRANS("#   Hz    1    2    3    4    5    6"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -822,7 +725,7 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
     {
         //[UserComboBoxCode_CBsourceDirsPreset] -- add your combo box handling code here..
-        ambi_roomsim_setInputConfigPreset(hAmbi, CBsourceDirsPreset->getSelectedId());
+        assert(0); // remove
         refreshPanViewWindow = true;
         //[/UserComboBoxCode_CBsourceDirsPreset]
     }
@@ -920,7 +823,7 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
-    //sourceCoordsView_handle->setNCH(ambi_roomsim_getNumSources(hAmbi));
+    sourceCoordsView_handle->setNCH(ambi_roomsim_getNumSources(hAmbi));
     if(SL_num_sources->getValue()!=ambi_roomsim_getNumSources(hAmbi))
         SL_num_sources->setValue(ambi_roomsim_getNumSources(hAmbi),dontSendNotification);
     if(CBoutputFormat->getSelectedId()!=ambi_roomsim_getChOrder(hAmbi))
@@ -995,9 +898,6 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="15 385 196 194" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="31 401 180 30" fill="solid: ffffffff" hasStroke="0" text="Number of Inputs:"
-          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="175 33 96 30" fill="solid: ffffffff" hasStroke="0" text="Room Settings"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
@@ -1023,9 +923,6 @@ BEGIN_JUCER_METADATA
     <TEXT pos="92 1 148 32" fill="solid: ffffda2b" hasStroke="0" text="AmbiRoomSim"
           fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="63 377 108 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 714 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
     <RECT pos="15 593 714 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
@@ -1046,19 +943,8 @@ BEGIN_JUCER_METADATA
     <TEXT pos="23 81 121 30" fill="solid: ffffffff" hasStroke="0" text="Max IR length:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="231 57 161 30" fill="solid: ffffffff" hasStroke="0" text="Number of Oct. Bands:"
-          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="231 81 185 30" fill="solid: ffffffff" hasStroke="0" text="Starting Oct. Band Freq:"
-          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="231 113 225 95" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="71 217 137 30" fill="solid: ffffffff" hasStroke="0" text="Receiver Settings"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="247 113 233 30" fill="solid: ffffffff" hasStroke="0" text="#   Hz    1    2    3    4    5    6"
-          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="247 241 233 119" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
