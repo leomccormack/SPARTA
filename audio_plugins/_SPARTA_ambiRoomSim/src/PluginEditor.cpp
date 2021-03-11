@@ -968,16 +968,19 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     else if (sliderThatWasMoved == s_roomLenZ.get())
     {
         //[UserSliderCode_s_roomLenZ] -- add your slider handling code here..
+        ambi_roomsim_setRoomDimZ(hAmbi, (float)s_roomLenZ->getValue());
         //[/UserSliderCode_s_roomLenZ]
     }
     else if (sliderThatWasMoved == s_roomLenY.get())
     {
         //[UserSliderCode_s_roomLenY] -- add your slider handling code here..
+        ambi_roomsim_setRoomDimY(hAmbi, (float)s_roomLenY->getValue());
         //[/UserSliderCode_s_roomLenY]
     }
     else if (sliderThatWasMoved == s_roomLenX.get())
     {
         //[UserSliderCode_s_roomLenX] -- add your slider handling code here..
+        ambi_roomsim_setRoomDimX(hAmbi, (float)s_roomLenX->getValue());
         //[/UserSliderCode_s_roomLenX]
     }
 
