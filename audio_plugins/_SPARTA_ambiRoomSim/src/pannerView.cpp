@@ -25,9 +25,10 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
-const float icon_size = 8.0f;
-
-
+const float iconWidth = 8.0f;
+const float iconRadius = iconWidth/2.0f;
+const float circleWidth = 168.0f;
+const float circleRadius = circleWidth / 2.0f;
 //[/MiscUserDefs]
 
 //==============================================================================
@@ -80,47 +81,108 @@ void pannerView::paint (juce::Graphics& g)
     g.fillAll (juce::Colour (0x58323e44));
 
     //[UserPaint] Add your own custom painting code here..
-//
-//    juce::Colour flareColour = juce::Colour (0x44f4f4f4), transparentColour = juce::Colour (0x00f4f4f4);
-//        juce::Colour purpleColour = juce::Colour (0xffdf00c6),  purpleFlareColour = juce::Colour (0x10df00c6);
 
-    /****** DRAW TOP VIEW ******/
-//    /* Background and border */
-//    float view_x = 22.0f , view_y = 72.0f;
-//    float centre_x = view_x+circleRadius;
-//    float centre_y = view_y+circleRadius;
-//    g.setGradientFill (juce::ColourGradient (flareColour, view_x+circleRadius, view_y + circleRadius,
-//                                             transparentColour, view_x+circleRadius, view_y + circleWidth, true));
-//    g.fillEllipse (view_x, view_y, circleWidth, circleWidth);
-//    g.setGradientFill (juce::ColourGradient (transparentColour, view_x+circleRadius, view_y + circleRadius,
-//                                             purpleFlareColour, view_x+circleRadius, view_y + circleWidth, true));
-//    g.fillEllipse (view_x, view_y, circleWidth, circleWidth);
-//    g.setColour (purpleColour);
-//    g.drawEllipse (view_x, view_y, circleWidth, circleWidth, 2.000f);
-//
-//    /* Receiver/origin marker and grid lines (one per metre) */
-//    g.setColour(Colours::lightgrey);
-//    g.setOpacity(0.5f);
-//    g.fillEllipse(centre_x-iconRadius, centre_y-iconRadius, iconWidth, iconWidth);
-//    g.setOpacity(0.25f);
-//    g.drawLine(view_x+circleRadius, view_y, view_x+circleRadius, view_y+circleWidth,1.0f);
-//    g.drawLine(view_x, view_y+circleRadius, view_x+circleWidth, view_y+circleRadius,1.0f);
-//    for(int i=0; i<(int)hcompass_getSourceDistance(hCmp); i++){
-//        float guideWidth = (float)i * circleWidth/hcompass_getSourceDistance(hCmp);
-//        g.drawEllipse (view_x+circleRadius-guideWidth/2.0f, view_y+circleRadius-guideWidth/2.0f, guideWidth, guideWidth, 1.000f);
-//    }
-//
-//    /* Listener and their head orientation */
-//    g.setColour(purpleColour); /* NOTE THE CHANGE IN ANGLE CONVENTION! X is forwards - RIGHT-HAND-RULE! */
-//    g.setOpacity(1.0f);
-//    float listener_x = -circleRadius * hcompass_getListenerY(hCmp, listID)/hcompass_getSourceDistance(hCmp);
-//    float listener_y = -circleRadius * hcompass_getListenerX(hCmp, listID)/hcompass_getSourceDistance(hCmp);
-//    Rectangle<float> listenerIcon(centre_x-iconRadius+listener_x, centre_y-iconRadius+listener_y, iconWidth, iconWidth);
-//    g.fillEllipse(listenerIcon);
-//    g.setColour(Colours::lightgrey);
-//    g.drawEllipse(listenerIcon.expanded(1.0f, 1.0f),1.0f);
+    Rectangle<float> srcIcon, recIcon;
+    const float room_pixels = 220;
+    float room_dims_pixels[3], room_dims_m[3];
+    room_dims_m[0] = ambi_roomsim_getRoomDimX(hAmbi);
+    room_dims_m[1] = ambi_roomsim_getRoomDimY(hAmbi);
+    room_dims_m[2] = ambi_roomsim_getRoomDimZ(hAmbi);
+
+    /* Scaling factor to convert metres to pixels */
+    float scale = room_pixels/MAX(MAX(room_dims_m[0], room_dims_m[1]), room_dims_m[2]);
+    room_dims_pixels[0] = room_dims_m[0]*scale;
+    room_dims_pixels[1] = room_dims_m[1]*scale;
+    room_dims_pixels[2] = room_dims_m[2]*scale;
+
+    /****** DRAW TOP VIEW *****/
+    /* Background and border */
+    float view_x = 22.0f , view_y = 22.0f;
+    float centre_x = view_x+room_dims_pixels[1]/2.0f;
+    float centre_y = view_y+room_dims_pixels[0]/2.0f;
+    g.setColour(Colours::lightgrey);
+    g.drawRect(view_x, view_y, room_dims_pixels[1], room_dims_pixels[0], 2.000f);
+
+    /* Origin marker and grid lines (one per metre) */
+    g.setColour(Colours::lightgrey);
+    g.setOpacity(0.35f);
+    g.fillEllipse(centre_x-iconRadius, centre_y-iconRadius, iconWidth, iconWidth);
+    g.setOpacity(0.25f);
+    for(int i=0; i<=(int)room_dims_m[1]; i++){
+        /* Verticle lines */
+        float line_x = view_x + room_dims_pixels[1] - (float)i*room_dims_pixels[1]/room_dims_m[1];
+        g.drawLine (line_x, view_y, line_x, view_y+room_dims_pixels[0], 1.000f);
+    }
+    for(int i=0; i<=(int)room_dims_m[0]; i++){
+        /* Horizontal lines*/
+        float line_y = view_y + (float)i*room_dims_pixels[0]/room_dims_m[0];
+        g.drawLine (view_x, line_y, view_x+room_dims_pixels[1], line_y, 1.000f);
+    }
+
+    /* Source icons */
+    g.setColour(Colours::orange);
+    g.setOpacity(0.5f);
+    for(int src=0; src<ambi_roomsim_getNumSources(hAmbi); src++){
+        float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
+        float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getSourceX(hAmbi, src));
+        srcIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        g.fillEllipse(srcIcon);
+    }
+
+    /* Receiver icons */
+    g.setColour(Colours::magenta);
+    g.setOpacity(0.5f);
+    for(int rec=0; rec<ambi_roomsim_getNumReceivers(hAmbi); rec++){
+        float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getReceiverY(hAmbi, rec));
+        float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getReceiverX(hAmbi, rec));
+        recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        g.fillEllipse(recIcon);
+    }
 
 
+    /****** DRAW SIDE VIEW *****/
+    /* Background and border */
+    view_x = 22.0f; view_y = 262.0f;
+    centre_x = view_x+room_dims_pixels[1]/2.0f;
+    centre_y = view_y+room_dims_pixels[2]/2.0f;
+    g.setColour(Colours::lightgrey);
+    g.drawRect(view_x, view_y, room_dims_pixels[1], room_dims_pixels[2], 2.000f);
+
+    /* Origin marker and grid lines (one per metre) */
+    g.setColour(Colours::lightgrey);
+    g.setOpacity(0.35f);
+    g.fillEllipse(centre_x-iconRadius, centre_y-iconRadius, iconWidth, iconWidth);
+    g.setOpacity(0.25f);
+    for(int i=0; i<=(int)room_dims_m[1]; i++){
+        /* Verticle lines */
+        float line_x = view_x + room_dims_pixels[1] - (float)i*room_dims_pixels[1]/room_dims_m[1];
+        g.drawLine (line_x, view_y, line_x, view_y+room_dims_pixels[2], 1.000f);
+    }
+    for(int i=0; i<=(int)room_dims_m[2]; i++){
+        /* Horizontal lines*/
+        float line_y = view_y + (float)i*room_dims_pixels[2]/room_dims_m[2];
+        g.drawLine (view_x, line_y, view_x+room_dims_pixels[1], line_y, 1.000f);
+    }
+
+    /* Source icons */
+    g.setColour(Colours::orange);
+    g.setOpacity(0.5f);
+    for(int src=0; src<ambi_roomsim_getNumSources(hAmbi); src++){
+        float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src)); /* subtract by half the room dimensions to align to centre */
+        float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getSourceZ(hAmbi, src));
+        srcIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        g.fillEllipse(srcIcon);
+    }
+
+    /* Receiver icons */
+    g.setColour(Colours::magenta);
+    g.setOpacity(0.5f);
+    for(int rec=0; rec<ambi_roomsim_getNumReceivers(hAmbi); rec++){
+        float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getReceiverY(hAmbi, rec)); /* subtract by half the room dimensions to align to centre */
+        float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getReceiverZ(hAmbi, rec));
+        recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        g.fillEllipse(recIcon);
+    }
     //[/UserPaint]
 }
 
@@ -137,7 +199,10 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
 
-//    /* TOP VIEW */
+    /* TOP VIEW */
+
+
+
 //    float view_x = 22.0f , view_y = 72.0f;
 //    float centre_x = view_x+circleRadius;
 //    float centre_y = view_y+circleRadius;
@@ -223,7 +288,7 @@ void pannerView::refreshPanView()
 //    }
 //    NSources = ambi_roomsim_getNumSources(hAmbi);
 //
-//    repaint();
+    repaint();
 }
 //[/MiscUserCode]
 

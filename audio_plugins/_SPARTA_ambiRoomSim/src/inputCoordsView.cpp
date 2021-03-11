@@ -62,11 +62,9 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
     zSliders =  new std::unique_ptr<Slider>[maxNCH];
 
     for( int i=0; i<maxNCH; i++){
-        /* create and initialise x sliders */
+        /* create x sliders */
         xSliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (xSliders[i].get());
-        xSliders[i]->setRange (0, ambi_roomsim_getRoomDimX(hAmbi), 0.001);
-        xSliders[i]->setValue(ambi_roomsim_getSourceX(hAmbi, i));
         xSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 58, 20);
         xSliders[i]->setBounds(24, 8 + i*sensorEdit_height, 58, 16);
         xSliders[i]->addListener (this);
@@ -74,11 +72,9 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         xSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
         xSliders[i]->setSliderSnapsToMousePosition(false);
 
-        /* create and initialise y sliders */
+        /* create y sliders */
         ySliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (ySliders[i].get());
-        ySliders[i]->setRange (0, ambi_roomsim_getRoomDimY(hAmbi), 0.001);
-        ySliders[i]->setValue(ambi_roomsim_getSourceX(hAmbi, i));
         ySliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 58, 20);
         ySliders[i]->setBounds(86, 8 + i*sensorEdit_height, 58, 16);
         ySliders[i]->addListener (this);
@@ -86,17 +82,23 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         ySliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
         ySliders[i]->setSliderSnapsToMousePosition(false);
 
-        /* create and initialise z sliders */
+        /* create z sliders */
         zSliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (zSliders[i].get());
-        zSliders[i]->setRange (0, ambi_roomsim_getRoomDimZ(hAmbi), 0.001);
-        zSliders[i]->setValue(ambi_roomsim_getSourceX(hAmbi, i));
         zSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 58, 20);
         zSliders[i]->setBounds(148, 8 + i*sensorEdit_height, 58, 16);
         zSliders[i]->addListener (this);
         zSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
         zSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
         zSliders[i]->setSliderSnapsToMousePosition(false);
+
+        /* Initialise sliders */
+        xSliders[i]->setRange (0.0f, ambi_roomsim_getRoomDimX(hAmbi), 0.001);
+        xSliders[i]->setValue(ambi_roomsim_getSourceX(hAmbi, i), dontSendNotification);
+        ySliders[i]->setRange (0.0f, ambi_roomsim_getRoomDimY(hAmbi), 0.001);
+        ySliders[i]->setValue(ambi_roomsim_getSourceY(hAmbi, i), dontSendNotification);
+        zSliders[i]->setRange (0.0f, ambi_roomsim_getRoomDimZ(hAmbi), 0.001);
+        zSliders[i]->setValue(ambi_roomsim_getSourceZ(hAmbi, i), dontSendNotification);
     }
 
     sliderHasChanged = true;
@@ -200,14 +202,18 @@ void inputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     //[UsersliderValueChanged_Pre]
     for(int i=0; i<maxNCH; i++){
-//        if (sliderThatWasMoved == aziSliders[i].get()) {
-//            ambi_roomsim_setSourceAzi_deg(hAmbi, i, (float)aziSliders[i]->getValue());
-//            break;
-//        }
-//        if (sliderThatWasMoved == elevSliders[i].get()) {
-//            ambi_roomsim_setSourceElev_deg(hAmbi, i, (float)elevSliders[i]->getValue());
-//            break;
-//        }
+        if (sliderThatWasMoved == xSliders[i].get()) {
+            ambi_roomsim_setSourceX(hAmbi, i, (float)xSliders[i]->getValue());
+            break;
+        }
+        if (sliderThatWasMoved == ySliders[i].get()) {
+            ambi_roomsim_setSourceY(hAmbi, i, (float)ySliders[i]->getValue());
+            break;
+        }
+        if (sliderThatWasMoved == zSliders[i].get()) {
+            ambi_roomsim_setSourceZ(hAmbi, i, (float)zSliders[i]->getValue());
+            break;
+        }
     }
 
     //[/UsersliderValueChanged_Pre]
@@ -230,11 +236,11 @@ void inputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 void inputCoordsView::refreshCoords(){
     /* update slider values and limits */
     for( int i=0; i<maxNCH; i++){
-        xSliders[i]->setRange (0, ambi_roomsim_getRoomDimX(hAmbi), 0.001);
+        xSliders[i]->setRange (0.0f, ambi_roomsim_getRoomDimX(hAmbi), 0.001);
         xSliders[i]->setValue(ambi_roomsim_getSourceX(hAmbi, i), dontSendNotification);
-        ySliders[i]->setRange (0, ambi_roomsim_getRoomDimY(hAmbi), 0.001);
+        ySliders[i]->setRange (0.0f, ambi_roomsim_getRoomDimY(hAmbi), 0.001);
         ySliders[i]->setValue(ambi_roomsim_getSourceY(hAmbi, i), dontSendNotification);
-        zSliders[i]->setRange (0, ambi_roomsim_getRoomDimZ(hAmbi), 0.001);
+        zSliders[i]->setRange (0.0f, ambi_roomsim_getRoomDimZ(hAmbi), 0.001);
         zSliders[i]->setValue(ambi_roomsim_getSourceZ(hAmbi, i), dontSendNotification);
     }
 }
