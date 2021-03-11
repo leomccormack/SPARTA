@@ -290,7 +290,9 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
         xml.setAttribute("ReceiverY" + String(i), ambi_roomsim_getReceiverY(hAmbi,i));
         xml.setAttribute("ReceiverZ" + String(i), ambi_roomsim_getReceiverZ(hAmbi,i));
     }
-    xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
+    xml.setAttribute("RoomX", ambi_roomsim_getRoomDimX(hAmbi));
+    xml.setAttribute("RoomY", ambi_roomsim_getRoomDimY(hAmbi));
+    xml.setAttribute("RoomZ", ambi_roomsim_getRoomDimZ(hAmbi)); 
     xml.setAttribute("NORM", ambi_roomsim_getNormType(hAmbi));
     xml.setAttribute("CHORDER", ambi_roomsim_getChOrder(hAmbi));
     xml.setAttribute("OUT_ORDER", ambi_roomsim_getOutputOrder(hAmbi));
@@ -322,13 +324,16 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 if(xmlState->hasAttribute("ReceiverZ" + String(i)))
                     ambi_roomsim_setReceiverZ(hAmbi, i, (float)xmlState->getDoubleAttribute("ReceiverZ" + String(i), 0.0f));
             }
+            if(xmlState->hasAttribute("RoomX"))
+                ambi_roomsim_setRoomDimX(hAmbi, (float)xmlState->getDoubleAttribute("RoomX", 0.0f));
+            if(xmlState->hasAttribute("RoomY"))
+                ambi_roomsim_setRoomDimY(hAmbi, (float)xmlState->getDoubleAttribute("RoomY", 0.0f));
+            if(xmlState->hasAttribute("RoomZ"))
+                ambi_roomsim_setRoomDimZ(hAmbi, (float)xmlState->getDoubleAttribute("RoomZ", 0.0f));
             if(xmlState->hasAttribute("nSources"))
                 ambi_roomsim_setNumSources(hAmbi, xmlState->getIntAttribute("nSources", 1));
             if(xmlState->hasAttribute("nReceivers"))
                 ambi_roomsim_setNumReceivers(hAmbi, xmlState->getIntAttribute("nReceivers", 1));
-            
-            if(xmlState->hasAttribute("JSONFilePath"))
-                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
 
             if(xmlState->hasAttribute("NORM"))
                 ambi_roomsim_setNormType(hAmbi, xmlState->getIntAttribute("NORM", 1));

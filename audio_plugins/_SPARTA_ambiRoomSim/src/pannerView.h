@@ -75,8 +75,6 @@ private:
     int height;
     Rectangle<float> SourceIcons[NUM_VIEW_POINTS][ROOM_SIM_MAX_NUM_SOURCES];
     Rectangle<float> ReceiverIcons[NUM_VIEW_POINTS][ROOM_SIM_MAX_NUM_RECEIVERS];
-    int NSources;
-    int NReceivers;
     bool sourceIconIsClicked;
     bool receiverIconIsClicked;
     int indexOfClickedIcon;

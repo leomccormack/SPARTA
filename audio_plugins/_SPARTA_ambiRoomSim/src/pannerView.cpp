@@ -27,6 +27,7 @@
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 const float iconWidth = 8.0f;
 const float iconRadius = iconWidth/2.0f;
+const float room_pixels = 200;
 //[/MiscUserDefs]
 
 //==============================================================================
@@ -43,20 +44,14 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
 
 
     //[Constructor] You can add your own custom stuff here..
+    setSize(_width, _height);
     hVst = ownerFilter;
     hAmbi = hVst->getFXHandle();
     width = _width;
     height = _height;
     topOrSideView = TOP_VIEW; /* default */
-
-    for(int src=0; src<MAX_NUM_CHANNELS; src++){
-//        SourceIcons[src].setBounds(width - width*(ambi_roomsim_getSourceAzi_deg(hAmbi, src) + 180.0f)/360.f - icon_size/2.0f,
-//                                   height - height*(ambi_roomsim_getSourceElev_deg(hAmbi, src) + 90.0f)/180.0f - icon_size/2.0f,
-//                                   icon_size,
-//                                   icon_size);
-    }
-    NSources = ambi_roomsim_getNumSources(hAmbi);
-
+    sourceIconIsClicked = false;
+    receiverIconIsClicked = false;
     //[/Constructor]
 }
 
@@ -77,12 +72,10 @@ void pannerView::paint (juce::Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (juce::Colour (0x58323e44));
-
     //[UserPaint] Add your own custom painting code here..
 
     Rectangle<float> srcIcon, recIcon;
-    const float room_pixels = 220;
+
     float room_dims_pixels[3], room_dims_m[3];
     room_dims_m[0] = ambi_roomsim_getRoomDimX(hAmbi);
     room_dims_m[1] = ambi_roomsim_getRoomDimY(hAmbi);
@@ -96,52 +89,65 @@ void pannerView::paint (juce::Graphics& g)
 
     /****** DRAW TOP VIEW *****/
     /* Background and border */
-    float view_x = 22.0f , view_y = 22.0f;
+    float view_x = 27.0f , view_y = 12.0f;
     float centre_x = view_x+room_dims_pixels[1]/2.0f;
     float centre_y = view_y+room_dims_pixels[0]/2.0f;
     g.setColour(Colours::lightgrey);
     g.drawRect(view_x, view_y, room_dims_pixels[1], room_dims_pixels[0], 2.000f);
 
-    /* Origin marker and grid lines (one per metre) */
+    /* Grid lines and text */
     g.setColour(Colours::lightgrey);
-//    g.setOpacity(0.35f);
-//    g.fillEllipse(centre_x-iconRadius, centre_y-iconRadius, iconWidth, iconWidth);
-    g.setOpacity(0.25f);
+    g.setFont(10.0f);
     for(int i=0; i<=(int)room_dims_m[1]; i++){
         /* Verticle lines */
         float line_x = view_x + room_dims_pixels[1] - (float)i*room_dims_pixels[1]/room_dims_m[1];
+        g.setOpacity(0.25f);
         g.drawLine (line_x, view_y, line_x, view_y+room_dims_pixels[0], 1.000f);
+        g.setOpacity(0.75f);
+        if( (i%2)==0 )
+            g.drawText(String(i), line_x-5, view_y+room_dims_pixels[0], 10, 10, Justification::centred, true);
     }
     for(int i=0; i<=(int)room_dims_m[0]; i++){
         /* Horizontal lines*/
         float line_y = view_y + room_dims_pixels[0] - (float)i*room_dims_pixels[0]/room_dims_m[0];
+        g.setOpacity(0.25f);
         g.drawLine (view_x, line_y, view_x+room_dims_pixels[1], line_y, 1.000f);
+        g.setOpacity(0.75f);
+        if( (i%2)==0 )
+            g.drawText(String(i), view_x+room_dims_pixels[1]+2, line_y-5, 10, 10, Justification::centred, true);
     }
+    g.setFont(12.0f);
+    g.drawText("y",  view_x + room_dims_pixels[1]/2.0f-5.0f, view_y+room_dims_pixels[0]+7.0f, 10, 10, Justification::centred, true);
+    g.drawText("x",  view_x + room_dims_pixels[1]+12.0f, view_y+room_dims_pixels[0]/2.0f-5.0f, 10, 10, Justification::centred, true);
 
     /* Source icons */
     g.setColour(Colours::orange);
-    g.setOpacity(0.5f);
     for(int src=0; src<ambi_roomsim_getNumSources(hAmbi); src++){
         float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
         float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getSourceX(hAmbi, src));
         srcIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        g.setOpacity(0.7f);
         g.fillEllipse(srcIcon);
+        g.setOpacity(0.8f);
+        g.drawText(String(src+1), srcIcon.translated(8.0f, -8.0f), Justification::centred);
     }
 
     /* Receiver icons */
     g.setColour(Colours::magenta);
-    g.setOpacity(0.5f);
     for(int rec=0; rec<ambi_roomsim_getNumReceivers(hAmbi); rec++){
         float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getReceiverY(hAmbi, rec));
         float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getReceiverX(hAmbi, rec));
         recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        g.setOpacity(0.7f);
         g.fillEllipse(recIcon);
+        g.setOpacity(0.8f);
+        g.drawText(String(rec+1), recIcon.translated(8.0f, -8.0f), Justification::centred);
     }
 
 
     /****** DRAW SIDE VIEW *****/
     /* Background and border */
-    view_x = 22.0f; view_y = 262.0f;
+    view_x = 27.0f; view_y = 240.0f;
     centre_x = view_x+room_dims_pixels[1]/2.0f;
     centre_y = view_y+room_dims_pixels[2]/2.0f;
     g.setColour(Colours::lightgrey);
@@ -149,38 +155,52 @@ void pannerView::paint (juce::Graphics& g)
 
     /* Origin marker and grid lines (one per metre) */
     g.setColour(Colours::lightgrey);
-//    g.setOpacity(0.35f);
-//    g.fillEllipse(centre_x-iconRadius, centre_y-iconRadius, iconWidth, iconWidth);
-    g.setOpacity(0.25f);
+    g.setFont(10.0f);
     for(int i=0; i<=(int)room_dims_m[1]; i++){
         /* Verticle lines */
         float line_x = view_x + room_dims_pixels[1] - (float)i*room_dims_pixels[1]/room_dims_m[1];
+        g.setOpacity(0.25f);
         g.drawLine (line_x, view_y, line_x, view_y+room_dims_pixels[2], 1.000f);
+        g.setOpacity(0.75f);
+        if( (i%2)==0 )
+            g.drawText(String(i), line_x-5, view_y+room_dims_pixels[2], 10, 10, Justification::centred, true);
     }
     for(int i=0; i<=(int)room_dims_m[2]; i++){
         /* Horizontal lines*/
         float line_y = view_y + room_dims_pixels[2] - (float)i*room_dims_pixels[2]/room_dims_m[2];
+        g.setOpacity(0.25f);
         g.drawLine (view_x, line_y, view_x+room_dims_pixels[1], line_y, 1.000f);
+        g.setOpacity(0.75f);
+        if( (i%2)==0 )
+            g.drawText(String(i), view_x+room_dims_pixels[1]+2, line_y-5, 10, 10, Justification::centred, true);
     }
+    g.setFont(12.0f);
+    g.drawText("y",  view_x + room_dims_pixels[1]/2.0f-5.0f, view_y+room_dims_pixels[2]+7.0f, 10, 10, Justification::centred, true);
+    g.drawText("z",  view_x + room_dims_pixels[1]+12.0f, view_y+room_dims_pixels[2]/2.0f-5.0f, 10, 10, Justification::centred, true);
 
     /* Source icons */
+    g.setFont(10.0f);
     g.setColour(Colours::orange);
-    g.setOpacity(0.5f);
     for(int src=0; src<ambi_roomsim_getNumSources(hAmbi); src++){
         float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
         float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getSourceZ(hAmbi, src));
         srcIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        g.setOpacity(0.7f);
         g.fillEllipse(srcIcon);
+        g.setOpacity(0.8f);
+        g.drawText(String(src+1), srcIcon.translated(8.0f, -8.0f), Justification::centred);
     }
 
     /* Receiver icons */
     g.setColour(Colours::magenta);
-    g.setOpacity(0.5f);
     for(int rec=0; rec<ambi_roomsim_getNumReceivers(hAmbi); rec++){
         float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getReceiverY(hAmbi, rec));
         float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getReceiverZ(hAmbi, rec));
         recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        g.setOpacity(0.7f);
         g.fillEllipse(recIcon);
+        g.setOpacity(0.8f);
+        g.drawText(String(rec+1), recIcon.translated(8.0f, -8.0f), Justification::centred);
     }
     //[/UserPaint]
 }
@@ -199,7 +219,6 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
     //[UserCode_mouseDown] -- Add your code here...
 
     Rectangle<int> srcIcon, recIcon;
-    const float room_pixels = 220;
     float room_dims_pixels[3], room_dims_m[3];
     room_dims_m[0] = ambi_roomsim_getRoomDimX(hAmbi);
     room_dims_m[1] = ambi_roomsim_getRoomDimY(hAmbi);
@@ -212,7 +231,7 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
     room_dims_pixels[2] = room_dims_m[2]*scale;
 
     /* TOP VIEW */
-    float view_x = 22.0f; float view_y = 22.0f;
+    float view_x = 27.0f; float view_y = 12.0f;
     for(int src=0; src<ambi_roomsim_getNumSources(hAmbi); src++){
         float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
         float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getSourceX(hAmbi, src));
@@ -237,7 +256,7 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
     }
 
     /* SIDE VIEW */
-    view_x = 22.0f; view_y = 262.0f;
+    view_x = 27.0f; view_y = 240.0f;
     for(int src=0; src<ambi_roomsim_getNumSources(hAmbi); src++){
         float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
         float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getSourceZ(hAmbi, src));
@@ -267,7 +286,6 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
 {
     //[UserCode_mouseDrag] -- Add your code here...
 
-    const float room_pixels = 220;
     float room_dims_pixels[3], room_dims_m[3];
     float scale;
     Point<float> point;
@@ -287,14 +305,14 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
     if(sourceIconIsClicked){
         switch(topOrSideView){
             case TOP_VIEW:
-                view_x = 22.0f; view_y = 22.0f;
+                view_x = 27.0f; view_y = 12.0f;
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
                 ambi_roomsim_setSourceY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
                 ambi_roomsim_setSourceX(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[0])/scale);
                 break;
 
             case SIDE_VIEW:
-                view_x = 22.0f; view_y = 262.0f;
+                view_x = 27.0f; view_y = 240.0f;
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
                 ambi_roomsim_setSourceY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
                 ambi_roomsim_setSourceZ(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[2])/scale);
@@ -305,14 +323,14 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
     else if(receiverIconIsClicked){
         switch(topOrSideView){
             case TOP_VIEW:
-                view_x = 22.0f; view_y = 22.0f;
+                view_x = 27.0f; view_y = 12.0f;
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
                 ambi_roomsim_setReceiverY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
                 ambi_roomsim_setReceiverX(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[0])/scale);
                 break;
 
             case SIDE_VIEW:
-                view_x = 22.0f; view_y = 262.0f;
+                view_x = 27.0f; view_y = 240.0f;
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
                 ambi_roomsim_setReceiverY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
                 ambi_roomsim_setReceiverZ(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[2])/scale);
@@ -336,14 +354,6 @@ void pannerView::mouseUp (const juce::MouseEvent& e)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void pannerView::refreshPanView()
 {
-//    for(int src=0; src<MAX_NUM_CHANNELS; src++){
-////        SourceIcons[src].setBounds(width - width*(ambi_roomsim_getSourceAzi_deg(hAmbi, src) + 180.0f)/360.f - icon_size/2.0f,
-////                                   height - height*(ambi_roomsim_getSourceElev_deg(hAmbi, src) + 90.0f)/180.0f - icon_size/2.0f,
-////                                   icon_size,
-////                                   icon_size);
-//    }
-//    NSources = ambi_roomsim_getNumSources(hAmbi);
-//
     repaint();
 }
 //[/MiscUserCode]
@@ -367,7 +377,7 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
     <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="58323e44"/>
+  <BACKGROUND backgroundColour="323e44"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
