@@ -75,8 +75,6 @@ private:
     int nSampleRate;      /* current host sample rate */
     int nHostBlockSize;   /* typical host block size to expect, in samples */
     bool refreshWindow;
-    File lastDir;
-    ValueTree sources {"Sources"};
     
     /***************************************************************************\
                                     JUCE Functions
