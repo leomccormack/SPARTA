@@ -85,7 +85,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_max_reflection_order.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_max_reflection_order.get());
-    SL_max_reflection_order->setRange (1, 8, 1);
+    SL_max_reflection_order->setRange (0, 7, 1);
     SL_max_reflection_order->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_max_reflection_order->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_max_reflection_order->addListener (this);
@@ -287,10 +287,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_max_reflection_order->setValue(ambi_roomsim_getMaxReflectionOrder(hAmbi), dontSendNotification);
 
     /* create panning window */
-//    panWindow.reset (new pannerView(ownerFilter, 480, 240));
-//    addAndMakeVisible (panWindow.get());
-//    panWindow->setBounds (220, 58, 480, 240);
-//    refreshPanViewWindow = true;
+    panWindow.reset (new pannerView(ownerFilter, 480, 240));
+    addAndMakeVisible (panWindow.get());
+    panWindow->setBounds (490, 58, 290, 370);
+    refreshPanViewWindow = true;
 
     /* tooltips */
     CBorder->setTooltip("The encoding order. Note that the plug-in will output (order+1)^2 Ambisonic (spherical harmonic) signals.");
@@ -306,7 +306,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pluginDescription->setTooltip(TRANS("WIP"));
 
 	/* Specify screen refresh rate */
-    startTimer(40);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(80);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -1021,6 +1021,7 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     if (buttonThatWasClicked == TB_enableIMS.get())
     {
         //[UserButtonCode_TB_enableIMS] -- add your button handler code here..
+        ambi_roomsim_setEnableIMSflag(hAmbi, (int)TB_enableIMS->getToggleState());
         //[/UserButtonCode_TB_enableIMS]
     }
 
@@ -1054,6 +1055,7 @@ void PluginEditor::timerCallback()
 //        sourceCoordsView_handle->setHasASliderChange(false);
 //        hVst->setRefreshWindow(false);
 //    }
+    panWindow->refreshPanView();
 
     /* display warning message, if needed */
     if ((hVst->getCurrentBlockSize() % ambi_roomsim_getFrameSize()) != 0){
@@ -1073,8 +1075,6 @@ void PluginEditor::timerCallback()
         repaint(0,0,getWidth(),32);
     }
 }
-
-
 
 //[/MiscUserCode]
 
@@ -1226,8 +1226,8 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="97b87b3a98bedb21" memberName="SL_max_reflection_order"
-          virtualName="" explicitFocusOrder="0" pos="181 102 48 20" min="1.0"
-          max="8.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          virtualName="" explicitFocusOrder="0" pos="181 102 48 20" min="0.0"
+          max="7.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="ace036a85eec9703" memberName="s_attenCoeff_pX"
