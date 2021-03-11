@@ -79,7 +79,8 @@ private:
     int NReceivers;
     bool sourceIconIsClicked;
     bool receiverIconIsClicked;
-    int indexOfClickedSource;
+    int indexOfClickedIcon;
+    int topOrSideView;
     //[/UserVariables]
 
     //==============================================================================
