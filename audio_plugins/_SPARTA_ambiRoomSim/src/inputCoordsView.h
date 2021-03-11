@@ -76,8 +76,9 @@ private:
     PluginProcessor* hVst;
     void* hAmbi;
     void refreshCoords();
-    std::unique_ptr<Slider>* aziSliders;
-    std::unique_ptr<Slider>* elevSliders;
+    std::unique_ptr<Slider>* xSliders;
+    std::unique_ptr<Slider>* ySliders;
+    std::unique_ptr<Slider>* zSliders;
     int maxNCH, currentNCH;
     bool sliderHasChanged;
 

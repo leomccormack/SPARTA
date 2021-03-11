@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.5
 
   ------------------------------------------------------------------------------
 
@@ -75,8 +75,8 @@ private:
     OpenGLContext openGLContext;
 
     /* source coordinates viewport */
-    //std::unique_ptr<Viewport> sourceCoordsVP;
-    //inputCoordsView* sourceCoordsView_handle;
+    std::unique_ptr<Viewport> sourceCoordsVP;
+    inputCoordsView* sourceCoordsView_handle;
 
     /* panning window */
     //std::unique_ptr<pannerView> panWindow;
