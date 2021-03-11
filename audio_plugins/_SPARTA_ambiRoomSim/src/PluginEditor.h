@@ -24,6 +24,7 @@
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
 #include "inputCoordsView.h"
+#include "outputCoordsView.h"
 #include "pannerView.h"
 #include "../../resources/SPARTALookAndFeel.h"
 
@@ -83,6 +84,10 @@ private:
     /* source coordinates viewport */
     std::unique_ptr<Viewport> sourceCoordsVP;
     inputCoordsView* sourceCoordsView_handle;
+
+    /* receiver coordinates viewport */
+    std::unique_ptr<Viewport> receiverCoordsVP;
+    outputCoordsView* receiverCoordsView_handle;
 
     /* panning window */
     std::unique_ptr<pannerView> panWindow;

@@ -18,12 +18,14 @@
   <MAINGROUP id="imnfnp" name="sparta_ambiRoomSim">
     <FILE id="R9TFPj" name="SPARTALookAndFeel.h" compile="0" resource="0"
           file="../resources/SPARTALookAndFeel.h"/>
-    <FILE id="e5t7u4" name="ConfigurationHelper.h" compile="0" resource="0"
-          file="../resources/ConfigurationHelper.h"/>
     <FILE id="Yub58R" name="inputCoordsView.cpp" compile="1" resource="0"
           file="src/inputCoordsView.cpp"/>
     <FILE id="sHTZCw" name="inputCoordsView.h" compile="0" resource="0"
           file="src/inputCoordsView.h"/>
+    <FILE id="JZmgKt" name="outputCoordsView.cpp" compile="1" resource="0"
+          file="src/outputCoordsView.cpp"/>
+    <FILE id="zb92vD" name="outputCoordsView.h" compile="0" resource="0"
+          file="src/outputCoordsView.h"/>
     <FILE id="ns3pHU" name="pannerView.cpp" compile="1" resource="0" file="src/pannerView.cpp"/>
     <FILE id="DSGgGv" name="pannerView.h" compile="0" resource="0" file="src/pannerView.h"/>
     <FILE id="FISKb5" name="PluginEditor.cpp" compile="1" resource="0"

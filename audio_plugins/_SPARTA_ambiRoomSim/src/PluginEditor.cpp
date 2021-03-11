@@ -272,6 +272,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     sourceCoordsVP->setBounds(16, 352, 212, 32*4+2);
     sourceCoordsView_handle->setNCH(ambi_roomsim_getNumSources(hAmbi));
 
+    /* source coordinates viewport */
+    receiverCoordsVP.reset (new Viewport ("new viewport"));
+    addAndMakeVisible (receiverCoordsVP.get());
+    receiverCoordsView_handle = new outputCoordsView(ownerFilter, ROOM_SIM_MAX_NUM_RECEIVERS, ambi_roomsim_getNumReceivers(hAmbi));
+    receiverCoordsVP->setViewedComponent (receiverCoordsView_handle);
+    receiverCoordsVP->setScrollBarsShown (true, false);
+    receiverCoordsVP->setAlwaysOnTop(true);
+    receiverCoordsVP->setBounds(256, 352, 212, 32*4+2);
+    receiverCoordsView_handle->setNCH(ambi_roomsim_getNumReceivers(hAmbi));
+
     /* grab current parameter settings */
     SL_num_sources->setValue(ambi_roomsim_getNumSources(hAmbi),dontSendNotification);
     SL_num_receivers->setValue(ambi_roomsim_getNumReceivers(hAmbi),dontSendNotification);
@@ -394,7 +404,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 12, y = 297, width = 220, height = 143;
+        int x = 12, y = 297, width = 220, height = 183;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -438,7 +448,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 488, y = 57, width = 312, height = 383;
+        int x = 488, y = 57, width = 312, height = 415;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -757,7 +767,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 24, y = 323, width = 200, height = 30;
-        juce::String text (TRANS("#           x            y            z"));
+        juce::String text (TRANS("#        x           y            z"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -802,7 +812,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 252, y = 297, width = 220, height = 143;
+        int x = 252, y = 297, width = 220, height = 183;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -841,7 +851,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 264, y = 323, width = 200, height = 30;
-        juce::String text (TRANS("#           x            y            z"));
+        juce::String text (TRANS("#        x           y            z"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1039,6 +1049,7 @@ void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
     sourceCoordsView_handle->setNCH(ambi_roomsim_getNumSources(hAmbi));
+    receiverCoordsView_handle->setNCH(ambi_roomsim_getNumReceivers(hAmbi));
     if(SL_num_sources->getValue()!=ambi_roomsim_getNumSources(hAmbi))
         SL_num_sources->setValue(ambi_roomsim_getNumSources(hAmbi),dontSendNotification);
     if(SL_num_receivers->getValue()!=ambi_roomsim_getNumReceivers(hAmbi))
@@ -1103,13 +1114,13 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 58 232 158" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 297 220 143" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 297 220 183" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 241 468 31" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <ROUNDRECT pos="1 2 818 31" cornerSize="5.0" fill="linear: 0 32, 656 24, 0=ff041518, 1=ff19313f"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="488 57 312 383" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="488 57 312 415" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 297 220 31" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1184,7 +1195,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="56 272 137 30" fill="solid: ffffffff" hasStroke="0" text="Source Coordinates"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="24 323 200 30" fill="solid: ffffffff" hasStroke="0" text="#           x            y            z"
+    <TEXT pos="24 323 200 30" fill="solid: ffffffff" hasStroke="0" text="#        x           y            z"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="21 297 153 30" fill="solid: ffffffff" hasStroke="0" text="Number of Sources: "
@@ -1195,14 +1206,14 @@ BEGIN_JUCER_METADATA
     <TEXT pos="20 63 169 30" fill="solid: ffffffff" hasStroke="0" text="Enable Image Sources:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="252 297 220 143" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="252 297 220 183" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="252 297 220 31" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="288 272 152 30" fill="solid: ffffffff" hasStroke="0" text="Receiver Coordinates"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="264 323 200 30" fill="solid: ffffffff" hasStroke="0" text="#           x            y            z"
+    <TEXT pos="264 323 200 30" fill="solid: ffffffff" hasStroke="0" text="#        x           y            z"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="261 297 155 30" fill="solid: ffffffff" hasStroke="0" text="Number of Receivers: "
