@@ -104,8 +104,8 @@ void pannerView::paint (juce::Graphics& g)
 
     /* Origin marker and grid lines (one per metre) */
     g.setColour(Colours::lightgrey);
-    g.setOpacity(0.35f);
-    g.fillEllipse(centre_x-iconRadius, centre_y-iconRadius, iconWidth, iconWidth);
+//    g.setOpacity(0.35f);
+//    g.fillEllipse(centre_x-iconRadius, centre_y-iconRadius, iconWidth, iconWidth);
     g.setOpacity(0.25f);
     for(int i=0; i<=(int)room_dims_m[1]; i++){
         /* Verticle lines */
@@ -114,7 +114,7 @@ void pannerView::paint (juce::Graphics& g)
     }
     for(int i=0; i<=(int)room_dims_m[0]; i++){
         /* Horizontal lines*/
-        float line_y = view_y + (float)i*room_dims_pixels[0]/room_dims_m[0];
+        float line_y = view_y + room_dims_pixels[0] - (float)i*room_dims_pixels[0]/room_dims_m[0];
         g.drawLine (view_x, line_y, view_x+room_dims_pixels[1], line_y, 1.000f);
     }
 
@@ -149,8 +149,8 @@ void pannerView::paint (juce::Graphics& g)
 
     /* Origin marker and grid lines (one per metre) */
     g.setColour(Colours::lightgrey);
-    g.setOpacity(0.35f);
-    g.fillEllipse(centre_x-iconRadius, centre_y-iconRadius, iconWidth, iconWidth);
+//    g.setOpacity(0.35f);
+//    g.fillEllipse(centre_x-iconRadius, centre_y-iconRadius, iconWidth, iconWidth);
     g.setOpacity(0.25f);
     for(int i=0; i<=(int)room_dims_m[1]; i++){
         /* Verticle lines */
@@ -159,7 +159,7 @@ void pannerView::paint (juce::Graphics& g)
     }
     for(int i=0; i<=(int)room_dims_m[2]; i++){
         /* Horizontal lines*/
-        float line_y = view_y + (float)i*room_dims_pixels[2]/room_dims_m[2];
+        float line_y = view_y + room_dims_pixels[2] - (float)i*room_dims_pixels[2]/room_dims_m[2];
         g.drawLine (view_x, line_y, view_x+room_dims_pixels[1], line_y, 1.000f);
     }
 
