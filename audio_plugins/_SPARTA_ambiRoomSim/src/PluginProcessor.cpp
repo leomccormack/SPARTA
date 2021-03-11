@@ -50,7 +50,7 @@ void PluginProcessor::setParameter (int index, float newValue)
     /* source direction parameters */
     else{
         index-=k_NumOfParameters;
-        float newValueScaled;
+//        float newValueScaled;
 //        if (!(index % 2)){
 //            newValueScaled = (newValue - 0.5f)*360.0f;
 //            if (newValueScaled != ambi_roomsim_getSourceAzi_deg(hAmbi, index/2)){

@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 6.0.5
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -72,87 +72,54 @@ pannerView::~pannerView()
 }
 
 //==============================================================================
-void pannerView::paint (Graphics& g)
+void pannerView::paint (juce::Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    {
-        int x = 0, y = 0, width = 480, height = 240;
-        Colour fillColour1 = Colour (0xff4e4e4e), fillColour2 = Colour (0xff202020);
-        Colour strokeColour = Colour (0xff9e9e9e);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       248.0f - 0.0f + x,
-                                       0.0f - 0.0f + y,
-                                       fillColour2,
-                                       248.0f - 0.0f + x,
-                                       240.0f - 0.0f + y,
-                                       false));
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
+    g.fillAll (juce::Colour (0x58323e44));
 
     //[UserPaint] Add your own custom painting code here..
+//
+//    juce::Colour flareColour = juce::Colour (0x44f4f4f4), transparentColour = juce::Colour (0x00f4f4f4);
+//        juce::Colour purpleColour = juce::Colour (0xffdf00c6),  purpleFlareColour = juce::Colour (0x10df00c6);
 
+    /****** DRAW TOP VIEW ******/
+//    /* Background and border */
+//    float view_x = 22.0f , view_y = 72.0f;
+//    float centre_x = view_x+circleRadius;
+//    float centre_y = view_y+circleRadius;
+//    g.setGradientFill (juce::ColourGradient (flareColour, view_x+circleRadius, view_y + circleRadius,
+//                                             transparentColour, view_x+circleRadius, view_y + circleWidth, true));
+//    g.fillEllipse (view_x, view_y, circleWidth, circleWidth);
+//    g.setGradientFill (juce::ColourGradient (transparentColour, view_x+circleRadius, view_y + circleRadius,
+//                                             purpleFlareColour, view_x+circleRadius, view_y + circleWidth, true));
+//    g.fillEllipse (view_x, view_y, circleWidth, circleWidth);
+//    g.setColour (purpleColour);
+//    g.drawEllipse (view_x, view_y, circleWidth, circleWidth, 2.000f);
+//
+//    /* Receiver/origin marker and grid lines (one per metre) */
+//    g.setColour(Colours::lightgrey);
+//    g.setOpacity(0.5f);
+//    g.fillEllipse(centre_x-iconRadius, centre_y-iconRadius, iconWidth, iconWidth);
+//    g.setOpacity(0.25f);
+//    g.drawLine(view_x+circleRadius, view_y, view_x+circleRadius, view_y+circleWidth,1.0f);
+//    g.drawLine(view_x, view_y+circleRadius, view_x+circleWidth, view_y+circleRadius,1.0f);
+//    for(int i=0; i<(int)hcompass_getSourceDistance(hCmp); i++){
+//        float guideWidth = (float)i * circleWidth/hcompass_getSourceDistance(hCmp);
+//        g.drawEllipse (view_x+circleRadius-guideWidth/2.0f, view_y+circleRadius-guideWidth/2.0f, guideWidth, guideWidth, 1.000f);
+//    }
+//
+//    /* Listener and their head orientation */
+//    g.setColour(purpleColour); /* NOTE THE CHANGE IN ANGLE CONVENTION! X is forwards - RIGHT-HAND-RULE! */
+//    g.setOpacity(1.0f);
+//    float listener_x = -circleRadius * hcompass_getListenerY(hCmp, listID)/hcompass_getSourceDistance(hCmp);
+//    float listener_y = -circleRadius * hcompass_getListenerX(hCmp, listID)/hcompass_getSourceDistance(hCmp);
+//    Rectangle<float> listenerIcon(centre_x-iconRadius+listener_x, centre_y-iconRadius+listener_y, iconWidth, iconWidth);
+//    g.fillEllipse(listenerIcon);
+//    g.setColour(Colours::lightgrey);
+//    g.drawEllipse(listenerIcon.expanded(1.0f, 1.0f),1.0f);
 
-    /* Draw Grid lines and labels */
-    int numGridLinesX = 8;
-    int numGridLinesY = numGridLinesX / 2;
-    g.setColour(Colours::white);
-    g.setOpacity(0.75f);
-
-    g.drawLine(0.0f, height / 2.0f, width, height / 2.0f, 1.0f);
-    g.drawLine(width / 2.0f, 0, width / 2.0f, height, 1.0f);
-
-    for (int i = 0; i <= numGridLinesX; i++) {
-        g.setOpacity(0.1f);
-        g.drawLine((float)i*width / (float)numGridLinesX, 0, (float)i*width / (float)numGridLinesX, height, 1.0f);
-        g.setOpacity(0.75f);
-        if (i <= numGridLinesX / 2) {
-            g.drawText(String((int)(360 / 2 - i * (int)360 / numGridLinesX)) + "\xc2\xb0",
-                       (float)i*width / (float)numGridLinesX, height / 2, 40, 20, Justification::centred, true);
-        }
-        else {
-            g.drawText(String((int)(360 / 2 - i * (int)360 / numGridLinesX)) + "\xc2\xb0",
-                       (float)i*width / (float)numGridLinesX - 40, height / 2, 40, 20, Justification::centred, true);
-        }
-    }
-
-    for (int i = 0; i <= numGridLinesY; i++) {
-        g.setOpacity(0.1f);
-        g.drawLine(0, (float)i*height / (float)numGridLinesY, width, (float)i*height / (float)numGridLinesY, 1.0f);
-        g.setOpacity(0.75f);
-        if (i <= numGridLinesY / 2) {
-            g.drawText(String((int)(180 / 2 - i * (int)180 / numGridLinesY)) + "\xc2\xb0",
-                       width / 2.0f, (float)i*height / (float)numGridLinesY, 40, 20, Justification::centred, true);
-        }
-        else {
-            g.drawText(String((int)(180 / 2 - i * (int)180 / numGridLinesY)) + "\xc2\xb0",
-                       width / 2.0f, (float)i*height / (float)numGridLinesY - 20, 40, 20, Justification::centred, true);
-        }
-    }
-
-    /* Draw Source icons */
-    for(int src=0; src<NSources; src++){
-        /* icon */
-        //g.setColour(Colour::fromFloatRGBA(1.0-((float)src/(float)NSources), 0.3f, ((float)src/(float)NSources), 1.0f));
-        g.setColour(Colour::fromFloatRGBA(1.0f, 0.0f, 1.0f, 0.85f));
-        //setColourGradient(g, (float)src/(float)NSources);
-        g.setOpacity(0.2f);
-        g.fillEllipse(SourceIcons[src].expanded(8.0f,8.0f));
-        g.setOpacity(0.4f);
-        g.fillEllipse(SourceIcons[src].expanded(4.0f, 4.0f));
-        g.setOpacity(0.85f);
-        g.fillEllipse(SourceIcons[src]);
-        /* icon ID */
-        g.setColour(Colours::white);
-        g.setOpacity(0.9f);
-        g.drawText(String(src+1), SourceIcons[src].expanded(10.0f, 0.0f), Justification::centred, true); // .translated(icon_size, -icon_size)
-    }
 
     //[/UserPaint]
 }
@@ -166,43 +133,80 @@ void pannerView::resized()
     //[/UserResized]
 }
 
-void pannerView::mouseDown (const MouseEvent& e)
+void pannerView::mouseDown (const juce::MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
-    for(int i=0; i<NSources; i++){
-        Rectangle<int> icon_int;
-        icon_int.setBounds(SourceIcons[i].getX(),
-                           SourceIcons[i].getY(),
-                           SourceIcons[i].getWidth(),
-                           SourceIcons[i].getHeight());
-        if(icon_int.expanded(4, 4).contains(e.getMouseDownPosition())){
-            sourceIconIsClicked = true;
-            indexOfClickedSource = i;
-            break;
-        }
-    }
+
+//    /* TOP VIEW */
+//    float view_x = 22.0f , view_y = 72.0f;
+//    float centre_x = view_x+circleRadius;
+//    float centre_y = view_y+circleRadius;
+//    float listener_x = -circleRadius * hcompass_getListenerY(hCmp, listID)/hcompass_getSourceDistance(hCmp);
+//    float listener_y = -circleRadius * hcompass_getListenerX(hCmp, listID)/hcompass_getSourceDistance(hCmp);
+//    Rectangle<int> icon_int;
+//    icon_int.setBounds(centre_x-iconRadius+listener_x,
+//                       centre_y-iconRadius+listener_y,
+//                       iconWidth, iconWidth);
+//    if(icon_int.expanded(4, 4).contains(e.getMouseDownPosition())){
+//        iconIsClicked = true;
+//        indexOfClickedIcon = 0; /* top */
+//        return;
+//    }
+//
+//    /* SIDE VIEW */
+//    view_x = 210.0f;
+//    view_y = 72.0f;
+//    centre_x = view_x+circleRadius;
+//    centre_y = view_y+circleRadius;
+//    listener_x = -circleRadius * hcompass_getListenerY(hCmp, listID)/hcompass_getSourceDistance(hCmp);
+//    listener_y = -circleRadius * hcompass_getListenerZ(hCmp, listID)/hcompass_getSourceDistance(hCmp);
+//    icon_int.setBounds(centre_x-iconRadius+listener_x,
+//                       centre_y-iconRadius+listener_y,
+//                       iconWidth, iconWidth);
+//    if(icon_int.expanded(4, 4).contains(e.getMouseDownPosition())){
+//        iconIsClicked = true;
+//        indexOfClickedIcon = 1; /* side */
+//        return;
+//    }
+
     //[/UserCode_mouseDown]
 }
 
-void pannerView::mouseDrag (const MouseEvent& e)
+void pannerView::mouseDrag (const juce::MouseEvent& e)
 {
     //[UserCode_mouseDrag] -- Add your code here...
-    if(sourceIconIsClicked){
-        Point<float> point;
-        point.setXY((float)e.getPosition().getX()-icon_size/2.0f, (float)e.getPosition().getY()-icon_size/2.0f);
-//        ambi_roomsim_setSourceAzi_deg(hAmbi, indexOfClickedSource,
-//                                   ((width - (point.getX() + icon_size/2.0f))*360.0f)/width-180.0f);
-//        ambi_roomsim_setSourceElev_deg(hAmbi, indexOfClickedSource,
-//                                   ((height - (point.getY() + icon_size/2.0f))*180.0f)/height - 90.0f);
-    }
-
+//    if(iconIsClicked){
+//        Point<float> point;
+//        float view_x, view_y, centre_x, centre_y;
+//        switch(indexOfClickedIcon){
+//            case 0: /* TOP VIEW */
+//                view_x = 22.0f; view_y = 72.0f;
+//                centre_x = view_x+circleRadius;
+//                centre_y = view_y+circleRadius;
+//                point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
+//                hcompass_setListenerY(hCmp, listID, ((centre_x-point.getX()) * hcompass_getSourceDistance(hCmp)/circleRadius));
+//                hcompass_setListenerX(hCmp, listID, ((centre_y-point.getY()) * hcompass_getSourceDistance(hCmp)/circleRadius));
+//                break;
+//
+//            case 1: /* SIDE VIEW */
+//                view_x = 210.0f; view_y = 72.0f;
+//                centre_x = view_x+circleRadius;
+//                centre_y = view_y+circleRadius;
+//                point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
+//                hcompass_setListenerY(hCmp, listID, ((centre_x-point.getX()) * hcompass_getSourceDistance(hCmp)/circleRadius));
+//                hcompass_setListenerZ(hCmp, listID, ((centre_y-point.getY()) * hcompass_getSourceDistance(hCmp)/circleRadius));
+//                break;
+//
+//        }
+//    }
     //[/UserCode_mouseDrag]
 }
 
-void pannerView::mouseUp (const MouseEvent& /*e*/)
+void pannerView::mouseUp (const juce::MouseEvent& e)
 {
     //[UserCode_mouseUp] -- Add your code here...
     sourceIconIsClicked = false;
+    receiverIconIsClicked = false;
     //[/UserCode_mouseUp]
 }
 
@@ -211,15 +215,15 @@ void pannerView::mouseUp (const MouseEvent& /*e*/)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void pannerView::refreshPanView()
 {
-    for(int src=0; src<MAX_NUM_CHANNELS; src++){
-//        SourceIcons[src].setBounds(width - width*(ambi_roomsim_getSourceAzi_deg(hAmbi, src) + 180.0f)/360.f - icon_size/2.0f,
-//                                   height - height*(ambi_roomsim_getSourceElev_deg(hAmbi, src) + 90.0f)/180.0f - icon_size/2.0f,
-//                                   icon_size,
-//                                   icon_size);
-    }
-    NSources = ambi_roomsim_getNumSources(hAmbi);
-
-    repaint();
+//    for(int src=0; src<MAX_NUM_CHANNELS; src++){
+////        SourceIcons[src].setBounds(width - width*(ambi_roomsim_getSourceAzi_deg(hAmbi, src) + 180.0f)/360.f - icon_size/2.0f,
+////                                   height - height*(ambi_roomsim_getSourceElev_deg(hAmbi, src) + 90.0f)/180.0f - icon_size/2.0f,
+////                                   icon_size,
+////                                   icon_size);
+//    }
+//    NSources = ambi_roomsim_getNumSources(hAmbi);
+//
+//    repaint();
 }
 //[/MiscUserCode]
 
@@ -242,10 +246,7 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
     <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="323e44">
-    <RECT pos="0 0 480 240" fill="linear: 248 0, 248 240, 0=ff4e4e4e, 1=ff202020"
-          hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: ff9e9e9e"/>
-  </BACKGROUND>
+  <BACKGROUND backgroundColour="58323e44"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

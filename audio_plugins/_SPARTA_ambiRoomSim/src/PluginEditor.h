@@ -85,7 +85,7 @@ private:
     inputCoordsView* sourceCoordsView_handle;
 
     /* panning window */
-    //std::unique_ptr<pannerView> panWindow;
+    std::unique_ptr<pannerView> panWindow;
     bool refreshPanViewWindow;
 
     /* warnings */
