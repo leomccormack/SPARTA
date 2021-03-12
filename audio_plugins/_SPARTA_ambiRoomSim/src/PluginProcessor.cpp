@@ -290,6 +290,9 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
         xml.setAttribute("ReceiverY" + String(i), ambi_roomsim_getReceiverY(hAmbi,i));
         xml.setAttribute("ReceiverZ" + String(i), ambi_roomsim_getReceiverZ(hAmbi,i));
     }
+    for(int i=0; i<3; i++)
+        for(int j=0; j<2; j++)
+            xml.setAttribute("wallAbsCoeff" + String(i) + "_" + String(j), ambi_roomsim_getWallAbsCoeff(hAmbi, i, j));
     xml.setAttribute("RoomX", ambi_roomsim_getRoomDimX(hAmbi));
     xml.setAttribute("RoomY", ambi_roomsim_getRoomDimY(hAmbi));
     xml.setAttribute("RoomZ", ambi_roomsim_getRoomDimZ(hAmbi)); 
@@ -324,6 +327,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 if(xmlState->hasAttribute("ReceiverZ" + String(i)))
                     ambi_roomsim_setReceiverZ(hAmbi, i, (float)xmlState->getDoubleAttribute("ReceiverZ" + String(i), 0.0f));
             }
+            for(int i=0; i<3; i++)
+                for(int j=0; j<2; j++)
+                    if(xmlState->hasAttribute("wallAbsCoeff" + String(i) + "_" + String(j)))
+                        ambi_roomsim_setWallAbsCoeff(hAmbi, i, j, (float)xmlState->getDoubleAttribute("wallAbsCoeff" + String(i) + "_" + String(j), 0.0f));
             if(xmlState->hasAttribute("RoomX"))
                 ambi_roomsim_setRoomDimX(hAmbi, (float)xmlState->getDoubleAttribute("RoomX", 0.0f));
             if(xmlState->hasAttribute("RoomY"))
