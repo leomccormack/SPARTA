@@ -172,7 +172,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_roomLenZ.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_roomLenZ.get());
-    s_roomLenZ->setRange (0, 6, 0.01);
+    s_roomLenZ->setRange (0.5, 6, 0.01);
     s_roomLenZ->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roomLenZ->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
     s_roomLenZ->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -185,7 +185,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_roomLenY.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_roomLenY.get());
-    s_roomLenY->setRange (0, 20, 0.01);
+    s_roomLenY->setRange (0.5, 20, 0.01);
     s_roomLenY->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roomLenY->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
     s_roomLenY->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -198,7 +198,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_roomLenX.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_roomLenX.get());
-    s_roomLenX->setRange (0, 20, 0.01);
+    s_roomLenX->setRange (0.5, 20, 0.01);
     s_roomLenX->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roomLenX->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
     s_roomLenX->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -1312,19 +1312,19 @@ BEGIN_JUCER_METADATA
   <SLIDER name="new slider" id="7d646117b60514d4" memberName="s_roomLenZ"
           virtualName="" explicitFocusOrder="0" pos="170 148 60 60" rotarysliderfill="ff315b6d"
           rotaryslideroutline="ff5c5d5e" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="0.0" max="6.0" int="0.01" style="RotaryHorizontalVerticalDrag"
+          min="0.5" max="6.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="16" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="91bcd46442e7ef1b" memberName="s_roomLenY"
           virtualName="" explicitFocusOrder="0" pos="96 148 60 60" rotarysliderfill="ff315b6d"
           rotaryslideroutline="ff5c5d5e" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="0.0" max="20.0" int="0.01" style="RotaryHorizontalVerticalDrag"
+          min="0.5" max="20.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="16" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="7a1edd460821ef6d" memberName="s_roomLenX"
           virtualName="" explicitFocusOrder="0" pos="21 148 60 60" rotarysliderfill="ff315b6d"
           rotaryslideroutline="ff5c5d5e" textboxtext="ffffffff" textboxbkgd="ffffff"
-          min="0.0" max="20.0" int="0.01" style="RotaryHorizontalVerticalDrag"
+          min="0.5" max="20.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="16" skewFactor="1.0" needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="3e2f1e0872c66d3b" memberName="TB_enableIMS"
