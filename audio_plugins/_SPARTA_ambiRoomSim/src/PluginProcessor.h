@@ -40,6 +40,7 @@ enum {
     k_channelOrder,
     k_normType,
     k_numSources,
+    k_numReceivers,
     
     k_NumOfParameters /* not including source directions */
 };

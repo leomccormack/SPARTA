@@ -44,14 +44,15 @@ void PluginProcessor::setParameter (int index, float newValue)
             case k_outputOrder:   ambi_roomsim_setOutputOrder(hAmbi, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
             case k_channelOrder:  ambi_roomsim_setChOrder(hAmbi, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
             case k_normType:      ambi_roomsim_setNormType(hAmbi, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
-            case k_numSources:    ambi_roomsim_setNumSources(hAmbi, (int)(newValue*(float)(MAX_NUM_INPUTS)+0.5)); break;
+            case k_numSources:    ambi_roomsim_setNumSources(hAmbi, (int)(newValue*(float)(ROOM_SIM_MAX_NUM_SOURCES)+0.5)); break;
+            case k_numReceivers:  ambi_roomsim_setNumReceivers(hAmbi, (int)(newValue*(float)(ROOM_SIM_MAX_NUM_RECEIVERS)+0.5)); break;
         }
     }
     /* source direction parameters */
     else{
-        index-=k_NumOfParameters;
+//        index-=k_NumOfParameters;
 //        float newValueScaled;
-//        if (!(index % 2)){
+//        if (!(index % 3)){
 //            newValueScaled = (newValue - 0.5f)*360.0f;
 //            if (newValueScaled != ambi_roomsim_getSourceAzi_deg(hAmbi, index/2)){
 //                ambi_roomsim_setSourceAzi_deg(hAmbi, index/2, newValueScaled);
@@ -80,7 +81,8 @@ float PluginProcessor::getParameter (int index)
             case k_outputOrder:   return (float)(ambi_roomsim_getOutputOrder(hAmbi)-1)/(float)(MAX_SH_ORDER-1);
             case k_channelOrder:  return (float)(ambi_roomsim_getChOrder(hAmbi)-1)/(float)(NUM_CH_ORDERINGS-1);
             case k_normType:      return (float)(ambi_roomsim_getNormType(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
-            case k_numSources:    return (float)(ambi_roomsim_getNumSources(hAmbi))/(float)(MAX_NUM_INPUTS);
+            case k_numSources:    return (float)(ambi_roomsim_getNumSources(hAmbi))/(float)(ROOM_SIM_MAX_NUM_SOURCES);
+            case k_numReceivers:  return (float)(ambi_roomsim_getNumReceivers(hAmbi))/(float)(ROOM_SIM_MAX_NUM_RECEIVERS);
             default: return 0.0f;
         }
     //}
@@ -113,6 +115,7 @@ const String PluginProcessor::getParameterName (int index)
             case k_channelOrder: return "channel_order";
             case k_normType:     return "norm_type";
             case k_numSources:   return "num_sources";
+            case k_numReceivers: return "num_receivers";
             default: return "NULL";
         }
     //}
@@ -146,6 +149,7 @@ const String PluginProcessor::getParameterText(int index)
                     default: return "NULL";
                 }
             case k_numSources: return String(ambi_roomsim_getNumSources(hAmbi));
+            case k_numReceivers: return String(ambi_roomsim_getNumReceivers(hAmbi));
             default: return "NULL";
         }
 //    }
