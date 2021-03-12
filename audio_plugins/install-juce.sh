@@ -147,11 +147,13 @@ build () {
     # configure Projucer
     cd "$(get_projucer_folder ${version})"
     if [ -f ../../JuceLibraryCode/AppConfig.h ]; then
+        echo "found JUCE version 5"
         sed -i 's/JUCER_ENABLE_GPL_MODE 0/JUCER_ENABLE_GPL_MODE 1/g' \
         ../../JuceLibraryCode/AppConfig.h
-    elif [ -f Source/Application/UserAccount/jucer_LicenseState.h ]; then
+    elif [ -f ../../Source/Application/UserAccount/jucer_LicenseState.h ]; then
+        echo "found JUCE version 6"
         sed -i 's/Type type = Type::none;/Type type = Type::gpl;/g' \
-        Source/Application/UserAccount/jucer_LicenseState.h
+        ../../Source/Application/UserAccount/jucer_LicenseState.h
     fi
 
     # build Projucer
