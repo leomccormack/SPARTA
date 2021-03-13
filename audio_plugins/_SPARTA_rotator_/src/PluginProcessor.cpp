@@ -47,7 +47,7 @@ PluginProcessor::~PluginProcessor()
 
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 {
-    /* if rotation angles are sent as an array \ypr[3] */
+    /* if Euler rotation angles are sent as an array \ypr[3] */
     if (message.size() == 3 && message.getAddressPattern().toString().compare("ypr")) {
         if (message[0].isFloat32())
             rotator_setYaw(hRot, message[0].getFloat32());
@@ -57,14 +57,33 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
             rotator_setRoll(hRot, message[2].getFloat32());
         return;
     }
-    
-    /* if rotation angles are sent individually: */
+    /* if Quaternion values are sent as an array \quaternion[4] */
+    if (message.size() == 4 && message.getAddressPattern().toString().compare("quaternion")) {
+        if (message[0].isFloat32())
+            rotator_setQuaternionW(hRot, message[0].getFloat32());
+        if (message[1].isFloat32())
+            rotator_setQuaternionX(hRot, message[1].getFloat32());
+        if (message[2].isFloat32())
+            rotator_setQuaternionY(hRot, message[2].getFloat32());
+        if (message[2].isFloat32())
+            rotator_setQuaternionZ(hRot, message[2].getFloat32());
+        return;
+    }
+    /* if values are sent individually: */
     if(message.getAddressPattern().toString().compare("yaw"))
         rotator_setYaw(hRot, message[0].getFloat32());
     else if(message.getAddressPattern().toString().compare("pitch"))
         rotator_setPitch(hRot, message[0].getFloat32());
     else if(message.getAddressPattern().toString().compare("roll"))
         rotator_setRoll(hRot, message[0].getFloat32());
+    else if(message.getAddressPattern().toString().compare("qw"))
+        rotator_setQuaternionW(hRot, message[0].getFloat32());
+    else if(message.getAddressPattern().toString().compare("qx"))
+        rotator_setQuaternionX(hRot, message[0].getFloat32());
+    else if(message.getAddressPattern().toString().compare("qy"))
+        rotator_setQuaternionY(hRot, message[0].getFloat32());
+    else if(message.getAddressPattern().toString().compare("qz"))
+        rotator_setQuaternionZ(hRot, message[0].getFloat32());
 }
 
 void PluginProcessor::setParameter (int index, float newValue)
@@ -77,9 +96,14 @@ void PluginProcessor::setParameter (int index, float newValue)
         case k_yaw:             rotator_setYaw(hRot, (newValue-0.5f)*360.0f ); break;
         case k_pitch:           rotator_setPitch(hRot, (newValue - 0.5f)*180.0f); break;
         case k_roll:            rotator_setRoll(hRot, (newValue - 0.5f)*180.0f); break;
+        case k_qw:              rotator_setQuaternionW(hRot, (newValue - 0.5f)*2.0f); break;
+        case k_qx:              rotator_setQuaternionX(hRot, (newValue - 0.5f)*2.0f); break;
+        case k_qy:              rotator_setQuaternionY(hRot, (newValue - 0.5f)*2.0f); break;
+        case k_qz:              rotator_setQuaternionZ(hRot, (newValue - 0.5f)*2.0f); break;
         case k_flipYaw:         rotator_setFlipYaw(hRot, (int)(newValue + 0.5f)); break;
         case k_flipPitch:       rotator_setFlipPitch(hRot, (int)(newValue + 0.5f)); break;
         case k_flipRoll:        rotator_setFlipRoll(hRot, (int)(newValue + 0.5f)); break;
+        case k_flipQuaternion:  rotator_setFlipQuaternion(hRot, (int)(newValue + 0.5f)); break;
 		default: break;
 	}
 }
@@ -98,9 +122,14 @@ float PluginProcessor::getParameter (int index)
         case k_yaw:             return (rotator_getYaw(hRot)/360.0f) + 0.5f;
         case k_pitch:           return (rotator_getPitch(hRot)/180.0f) + 0.5f;
         case k_roll:            return (rotator_getRoll(hRot)/180.0f) + 0.5f;
+        case k_qw:              return (rotator_getQuaternionW(hRot)/2.0f) + 0.5f;
+        case k_qx:              return (rotator_getQuaternionX(hRot)/2.0f) + 0.5f;
+        case k_qy:              return (rotator_getQuaternionY(hRot)/2.0f) + 0.5f;
+        case k_qz:              return (rotator_getQuaternionZ(hRot)/2.0f) + 0.5f;
         case k_flipYaw:         return (float)rotator_getFlipYaw(hRot);
         case k_flipPitch:       return (float)rotator_getFlipPitch(hRot);
         case k_flipRoll:        return (float)rotator_getFlipRoll(hRot);
+        case k_flipQuaternion:  return (float)rotator_getFlipQuaternion(hRot);
 		default: return 0.0f;
 	}
 }
@@ -125,9 +154,14 @@ const String PluginProcessor::getParameterName (int index)
         case k_yaw:             return "yaw";
         case k_pitch:           return "pitch";
         case k_roll:            return "roll";
+        case k_qw:              return "quaternion_w";
+        case k_qx:              return "quaternion_x";
+        case k_qy:              return "quaternion_y";
+        case k_qz:              return "quaternion_z";
         case k_flipYaw:         return "flip_yaw";
         case k_flipPitch:       return "flip_pitch";
         case k_flipRoll:        return "flip_roll";
+        case k_flipQuaternion:  return "flip_quaternion";
 		default: return "NULL";
 	}
 }
@@ -153,9 +187,14 @@ const String PluginProcessor::getParameterText(int index)
         case k_yaw:             return String(rotator_getYaw(hRot));
         case k_pitch:           return String(rotator_getPitch(hRot));
         case k_roll:            return String(rotator_getRoll(hRot));
+        case k_qw:              return String(rotator_getQuaternionW(hRot));
+        case k_qx:              return String(rotator_getQuaternionX(hRot));
+        case k_qy:              return String(rotator_getQuaternionY(hRot));
+        case k_qz:              return String(rotator_getQuaternionZ(hRot));
         case k_flipYaw:         return !rotator_getFlipYaw(hRot) ? "No-Flip" : "Flip";
         case k_flipPitch:       return !rotator_getFlipPitch(hRot) ? "No-Flip" : "Flip";
         case k_flipRoll:        return !rotator_getFlipRoll(hRot) ? "No-Flip" : "Flip";
+        case k_flipQuaternion:  return !rotator_getFlipQuaternion(hRot) ? "No-Flip" : "Flip";
         default: return "NULL";
     }
 }
