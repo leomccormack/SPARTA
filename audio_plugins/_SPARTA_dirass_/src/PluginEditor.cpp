@@ -362,6 +362,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pluginDescription->setAlpha(0.0f);
     pluginDescription->setEnabled(false);
     pluginDescription->setTooltip(TRANS("A sound-field visualiser, which is based on the directional re-assignment of beamformer energy. This energy re-assignment is based on local DoA estimates for each scanning direction, and may be quantised to the nearest direction or upscaled to a higher-order than the input; resulting in sharper activity-maps. For example, a second-order input may be displayed with (up to) 20th order output resolution. The plug-in also allows the user to place real-time video footage behind the activity-map, in order to create a make-shift acoustic camera.\n"));
+    addAndMakeVisible (publicationLink);
+    publicationLink.setColour (HyperlinkButton::textColourId, Colours::lightblue);
+    publicationLink.setBounds(getBounds().getWidth()-80, 4, 80, 12);
+    publicationLink.setJustificationType(Justification::centredLeft);
 
 	/* Specify screen refresh rate */
     startTimer(TIMER_GUI_RELATED, 140);//80); /*ms (40ms = 25 frames per second) */

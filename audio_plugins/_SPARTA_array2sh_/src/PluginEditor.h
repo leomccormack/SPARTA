@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.5
 
   ------------------------------------------------------------------------------
 
@@ -110,6 +110,7 @@ private:
     /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
+    HyperlinkButton publicationLink { "(Related Publication)", { "http://research.spa.aalto.fi/projects/sparta_vsts/publications/mccormack2018real.pdf" } };
 
     //[/UserVariables]
 
