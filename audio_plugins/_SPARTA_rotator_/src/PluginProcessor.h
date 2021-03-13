@@ -38,9 +38,14 @@ enum {
     k_yaw,
     k_pitch,
     k_roll,
+    k_qw,
+    k_qx,
+    k_qy,
+    k_qz,
     k_flipYaw,
     k_flipPitch,
     k_flipRoll,
+    k_flipQuaternion,
     
 	k_NumOfParameters
 };
