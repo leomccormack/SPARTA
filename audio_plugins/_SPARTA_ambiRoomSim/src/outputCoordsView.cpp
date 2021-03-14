@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.5
 
   ------------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@
 
 //[/Headers]
 
-#include "inputCoordsView.h"
+#include "outputCoordsView.h"
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
@@ -30,7 +30,7 @@ const int sensorEdit_height = 32;
 //[/MiscUserDefs]
 
 //==============================================================================
-inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH )
+outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH )
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -94,11 +94,11 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
 
         /* Initialise sliders */
         xSliders[i]->setRange (0.0f, ambi_roomsim_getRoomDimX(hAmbi), 0.001);
-        xSliders[i]->setValue(ambi_roomsim_getSourceX(hAmbi, i), dontSendNotification);
+        xSliders[i]->setValue(ambi_roomsim_getReceiverX(hAmbi, i), dontSendNotification);
         ySliders[i]->setRange (0.0f, ambi_roomsim_getRoomDimY(hAmbi), 0.001);
-        ySliders[i]->setValue(ambi_roomsim_getSourceY(hAmbi, i), dontSendNotification);
+        ySliders[i]->setValue(ambi_roomsim_getReceiverY(hAmbi, i), dontSendNotification);
         zSliders[i]->setRange (0.0f, ambi_roomsim_getRoomDimZ(hAmbi), 0.001);
-        zSliders[i]->setValue(ambi_roomsim_getSourceZ(hAmbi, i), dontSendNotification);
+        zSliders[i]->setValue(ambi_roomsim_getReceiverZ(hAmbi, i), dontSendNotification);
     }
 
     sliderHasChanged = true;
@@ -108,7 +108,7 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
     //[/Constructor]
 }
 
-inputCoordsView::~inputCoordsView()
+outputCoordsView::~outputCoordsView()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
@@ -129,7 +129,7 @@ inputCoordsView::~inputCoordsView()
 }
 
 //==============================================================================
-void inputCoordsView::paint (juce::Graphics& g)
+void outputCoordsView::paint (juce::Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -187,7 +187,7 @@ void inputCoordsView::paint (juce::Graphics& g)
     //[/UserPaint]
 }
 
-void inputCoordsView::resized()
+void outputCoordsView::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -198,20 +198,20 @@ void inputCoordsView::resized()
     //[/UserResized]
 }
 
-void inputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+void outputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     //[UsersliderValueChanged_Pre]
     for(int i=0; i<maxNCH; i++){
         if (sliderThatWasMoved == xSliders[i].get()) {
-            ambi_roomsim_setSourceX(hAmbi, i, (float)xSliders[i]->getValue());
+            ambi_roomsim_setReceiverX(hAmbi, i, (float)xSliders[i]->getValue());
             break;
         }
         if (sliderThatWasMoved == ySliders[i].get()) {
-            ambi_roomsim_setSourceY(hAmbi, i, (float)ySliders[i]->getValue());
+            ambi_roomsim_setReceiverY(hAmbi, i, (float)ySliders[i]->getValue());
             break;
         }
         if (sliderThatWasMoved == zSliders[i].get()) {
-            ambi_roomsim_setSourceZ(hAmbi, i, (float)zSliders[i]->getValue());
+            ambi_roomsim_setReceiverZ(hAmbi, i, (float)zSliders[i]->getValue());
             break;
         }
     }
@@ -233,15 +233,15 @@ void inputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 
-void inputCoordsView::refreshCoords(){
+void outputCoordsView::refreshCoords(){
     /* update slider values and limits */
     for( int i=0; i<maxNCH; i++){
         xSliders[i]->setRange (0.0f, ambi_roomsim_getRoomDimX(hAmbi), 0.001);
-        xSliders[i]->setValue(ambi_roomsim_getSourceX(hAmbi, i), dontSendNotification);
+        xSliders[i]->setValue(ambi_roomsim_getReceiverX(hAmbi, i), dontSendNotification);
         ySliders[i]->setRange (0.0f, ambi_roomsim_getRoomDimY(hAmbi), 0.001);
-        ySliders[i]->setValue(ambi_roomsim_getSourceY(hAmbi, i), dontSendNotification);
+        ySliders[i]->setValue(ambi_roomsim_getReceiverY(hAmbi, i), dontSendNotification);
         zSliders[i]->setRange (0.0f, ambi_roomsim_getRoomDimZ(hAmbi), 0.001);
-        zSliders[i]->setValue(ambi_roomsim_getSourceZ(hAmbi, i), dontSendNotification);
+        zSliders[i]->setValue(ambi_roomsim_getReceiverZ(hAmbi, i), dontSendNotification);
     }
 }
 
@@ -258,7 +258,7 @@ void inputCoordsView::refreshCoords(){
 
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="inputCoordsView" componentName=""
+<JUCER_COMPONENT documentType="Component" className="outputCoordsView" componentName=""
                  parentClasses="public Component" constructorParams="PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH "
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="1" initialWidth="176" initialHeight="400">

@@ -40,6 +40,7 @@ enum {
     k_channelOrder,
     k_normType,
     k_numSources,
+    k_numReceivers,
     
     k_NumOfParameters /* not including source directions */
 };
@@ -58,12 +59,6 @@ public:
     void setRefreshWindow(bool newState) { refreshWindow = newState; }
     bool getRefreshWindow() { return refreshWindow; }
     
-    /* JSON */
-    void saveConfigurationToFile (File destination);
-    void loadConfiguration (const File& presetFile);
-    void setLastDir(File newLastDir){ lastDir = newLastDir; }
-    File getLastDir() {return lastDir;}
-    
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 /*index*/, pointer_sized_int /*value*/, void* /*ptr*/, float /*opt*/) override { return 0; }
     pointer_sized_int handleVstPluginCanDo (int32 /*index*/, pointer_sized_int /*value*/, void* ptr, float /*opt*/) override{
@@ -81,8 +76,6 @@ private:
     int nSampleRate;      /* current host sample rate */
     int nHostBlockSize;   /* typical host block size to expect, in samples */
     bool refreshWindow;
-    File lastDir;
-    ValueTree sources {"Sources"};
     
     /***************************************************************************\
                                     JUCE Functions

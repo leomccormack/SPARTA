@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.5
 
   ------------------------------------------------------------------------------
 
@@ -24,7 +24,9 @@
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
 #include "inputCoordsView.h"
+#include "outputCoordsView.h"
 #include "pannerView.h"
+#include "../../resources/SPARTALookAndFeel.h"
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
@@ -46,8 +48,9 @@ typedef enum _SPARTA_WARNINGS{
 */
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
+                      public juce::Slider::Listener,
                       public juce::ComboBox::Listener,
-                      public juce::Slider::Listener
+                      public juce::Button::Listener
 {
 public:
     //==============================================================================
@@ -62,8 +65,9 @@ public:
 
     void paint (juce::Graphics& g) override;
     void resized() override;
-    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
@@ -74,12 +78,19 @@ private:
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
 
+    /* Look and Feel */
+    SPARTALookAndFeel LAF;
+
     /* source coordinates viewport */
-    //std::unique_ptr<Viewport> sourceCoordsVP;
-    //inputCoordsView* sourceCoordsView_handle;
+    std::unique_ptr<Viewport> sourceCoordsVP;
+    inputCoordsView* sourceCoordsView_handle;
+
+    /* receiver coordinates viewport */
+    std::unique_ptr<Viewport> receiverCoordsVP;
+    outputCoordsView* receiverCoordsView_handle;
 
     /* panning window */
-    //std::unique_ptr<pannerView> panWindow;
+    std::unique_ptr<pannerView> panWindow;
     bool refreshPanViewWindow;
 
     /* warnings */
@@ -92,20 +103,22 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<juce::ComboBox> CBsourceDirsPreset;
     std::unique_ptr<juce::Slider> SL_num_sources;
     std::unique_ptr<juce::ComboBox> CBoutputFormat;
     std::unique_ptr<juce::ComboBox> CBnormalisation;
     std::unique_ptr<juce::ComboBox> CBorder;
-    std::unique_ptr<juce::Slider> s_roomWidth;
-    std::unique_ptr<juce::Slider> s_roomDepth;
-    std::unique_ptr<juce::Slider> s_roomHeight;
-    std::unique_ptr<juce::Slider> SL_num_sources2;
-    std::unique_ptr<juce::Slider> SL_num_sources3;
-    std::unique_ptr<juce::ComboBox> CBsourceDirsPreset2;
-    std::unique_ptr<juce::Slider> test_x;
-    std::unique_ptr<juce::Slider> test_y;
-    std::unique_ptr<juce::Slider> test_z;
+    std::unique_ptr<juce::Slider> SL_num_receivers;
+    std::unique_ptr<juce::Slider> SL_max_reflection_order;
+    std::unique_ptr<juce::Slider> s_attenCoeff_pX;
+    std::unique_ptr<juce::Slider> s_attenCoeff_nX;
+    std::unique_ptr<juce::Slider> s_attenCoeff_nY;
+    std::unique_ptr<juce::Slider> s_attenCoeff_nZ;
+    std::unique_ptr<juce::Slider> s_attenCoeff_pZ;
+    std::unique_ptr<juce::Slider> s_attenCoeff_pY;
+    std::unique_ptr<juce::Slider> s_roomLenZ;
+    std::unique_ptr<juce::Slider> s_roomLenY;
+    std::unique_ptr<juce::Slider> s_roomLenX;
+    std::unique_ptr<juce::ToggleButton> TB_enableIMS;
 
 
     //==============================================================================

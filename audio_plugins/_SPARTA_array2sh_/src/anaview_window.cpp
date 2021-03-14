@@ -160,6 +160,32 @@ void anaview_window::paint (juce::Graphics& g)
             }
         }
     }
+
+    /* Plot legend */
+    float leg_x = 460;
+    float leg_y = 82;
+    g.setColour(Colours::grey);
+    g.setOpacity(1.0f);
+    g.drawRect(leg_x, leg_y, 38.0f, 10.0f*(float)numCurves, 1.0f);
+    g.setOpacity(0.25f);
+    g.fillRect(leg_x, leg_y, 38.0f, 10.0f*(float)numCurves);
+    g.setOpacity(1.0f);
+    g.setFont(9.0f);
+    String suffix;
+    for(int crv=0; crv<numCurves; crv++){
+        g.setColour(Colours::white);
+        if(crv==1)
+            suffix = "st";
+        else if(crv==2)
+            suffix = "nd";
+        else if(crv==3)
+            suffix = "rd";
+        else
+            suffix = "th";
+        g.drawText(String(crv)+suffix, leg_x+2.0f, leg_y+(float)crv*10.0f, 30.0f, 8.0f, Justification::centredLeft);
+        setCurveColour(g, crv);
+        g.drawLine(leg_x+18.0f, leg_y+(float)crv*10.0f+4.0f, leg_x+34.0f, leg_y+(float)crv*10.0f+4.0f, 2.0f);
+    }
     //[/UserPaint]
 }
 
