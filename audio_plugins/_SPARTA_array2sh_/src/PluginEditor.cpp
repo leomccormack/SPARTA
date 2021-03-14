@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.5
 
   ------------------------------------------------------------------------------
 
@@ -415,6 +415,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pluginDescription->setEnabled(false);
     pluginDescription->setTooltip(TRANS("This plug-in spatially encodes spherical/cylindrical array signals into spherical harmonic signals (aka: Ambisonic or B-Format signals). The plug-in utilises analytical descriptors, which ascertain the frequency and order-dependent influence that the physical properties of the array have on the plane-waves arriving at its surface. The plug-in then determines the order-dependent equalisation curves needed to be imposed onto the initial spherical harmonic signals estimate, in order to remove the influence of the array itself. However, especially for higher-orders, this generally results in a large amplification of the low frequencies (including the sensor noise at these frequencies that accompanies it); therefore, four different regularisation approaches have been integrated into the plug-in, which allow the user to make a compromise between noise amplification and transform accuracy. These target (faint lines) and regularised (solid lines) equalisation curves are depicted on the user interface.\n\n")+
                                   TRANS("Note that this ability to balance the noise amplification with the accuracy of the spatial encoding (to better suit a given application) is very important, for example: the perceived fidelity of Ambisonic decoded audio can be rather poor if the noise amplification is set too high: which is also sound-scene dependent: think orchestra vs pop-band, and which would be more permissive of increased noise. In general, a lower amplification regularisation limit is used for Ambisonics reproduction applications, when compared to sound-field visualisation algorithms, or beamformers that employ appropriate post-filtering etc."));
+    addAndMakeVisible (publicationLink);
+    publicationLink.setColour (HyperlinkButton::textColourId, Colours::lightblue);
+    publicationLink.setBounds(getBounds().getWidth()-80, 4, 80, 12);
+    publicationLink.setJustificationType(Justification::centredLeft);
 
 	/* Specify screen refresh rate */
     startTimer(TIMER_GUI_RELATED, 40);

@@ -344,6 +344,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pluginDescription->setAlpha(0.0f);
     pluginDescription->setEnabled(false);
     pluginDescription->setTooltip(TRANS("A plug-in that represents the relative sound energy, or the statistical likelihood of a source arriving at the receiving position from a particular direction using a colour gradient. Yellow indicates high sound energy/likelihood and blue indicates low sound energy/likelihood. The plug-in integrates a variety of different approaches, including: standard Plane-Wave Decomposition (PWD) beamformer-based, Minimum-Variance Distortionless Response (MVDR) beamformer-based, Multiple Signal Classification (MUSIC) pseudo-spectrum-based, and the Cross-Pattern Coherence (CroPaC) algorithm; all of which are written to operate on Ambisonic signals up to 7th order.\n\nNote that the analysis order per frequency band is also user definable, and presets for higher order microphone arrays have been included for convience (which provide some rough appropriate starting values). The plug-in utilises a 812 point uniformly-distributed spherical grid, which is then interpolated into a 2D powermap using amplitude-normalised VBAP gains (i.e. triangular interpolation). The plug-in also allows the user to place real-time video footage behind the activity-map, in order to create a make-shift acoustic camera."));
+    addAndMakeVisible (publicationLink);
+    publicationLink.setColour (HyperlinkButton::textColourId, Colours::lightblue);
+    publicationLink.setBounds(getBounds().getWidth()-80, 4, 80, 12);
+    publicationLink.setJustificationType(Justification::centredLeft);
 
 	/* Specify screen refresh rate */
     startTimer(TIMER_GUI_RELATED, 140);//80); /*ms (40ms = 25 frames per second) */

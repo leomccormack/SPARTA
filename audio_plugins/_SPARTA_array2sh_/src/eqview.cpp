@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 6.0.5
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -64,7 +64,7 @@ eqview::eqview (int _width, int _height, float _min_freq, float _max_freq, float
                                                    _height-(border_pixels_top+border_pixels_bottom),
                                                    _min_freq, _max_freq,
                                                    _min_dB, _max_dB, _fs)); /* TODO: switch to the more general "anaview"  */
-    addAndMakeVisible (eqview_windowIncluded.get()); 
+    addAndMakeVisible (eqview_windowIncluded.get());
     eqview_windowIncluded->setAlwaysOnTop(true);
     eqview_windowIncluded->setTopLeftPosition(border_pixels_left, border_pixels_top );
 
@@ -91,7 +91,7 @@ eqview::~eqview()
 }
 
 //==============================================================================
-void eqview::paint (Graphics& g)
+void eqview::paint (juce::Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]

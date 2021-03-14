@@ -44,14 +44,15 @@ void PluginProcessor::setParameter (int index, float newValue)
             case k_outputOrder:   ambi_roomsim_setOutputOrder(hAmbi, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
             case k_channelOrder:  ambi_roomsim_setChOrder(hAmbi, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
             case k_normType:      ambi_roomsim_setNormType(hAmbi, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
-            case k_numSources:    ambi_roomsim_setNumSources(hAmbi, (int)(newValue*(float)(MAX_NUM_INPUTS)+0.5)); break;
+            case k_numSources:    ambi_roomsim_setNumSources(hAmbi, (int)(newValue*(float)(ROOM_SIM_MAX_NUM_SOURCES)+0.5)); break;
+            case k_numReceivers:  ambi_roomsim_setNumReceivers(hAmbi, (int)(newValue*(float)(ROOM_SIM_MAX_NUM_RECEIVERS)+0.5)); break;
         }
     }
     /* source direction parameters */
     else{
-        index-=k_NumOfParameters;
-        float newValueScaled;
-//        if (!(index % 2)){
+//        index-=k_NumOfParameters;
+//        float newValueScaled;
+//        if (!(index % 3)){
 //            newValueScaled = (newValue - 0.5f)*360.0f;
 //            if (newValueScaled != ambi_roomsim_getSourceAzi_deg(hAmbi, index/2)){
 //                ambi_roomsim_setSourceAzi_deg(hAmbi, index/2, newValueScaled);
@@ -75,28 +76,29 @@ void PluginProcessor::setCurrentProgram (int /*index*/)
 float PluginProcessor::getParameter (int index)
 {
     /* standard parameters */
-    if(index < k_NumOfParameters){
+    //if(index < k_NumOfParameters){
         switch (index) {
             case k_outputOrder:   return (float)(ambi_roomsim_getOutputOrder(hAmbi)-1)/(float)(MAX_SH_ORDER-1);
             case k_channelOrder:  return (float)(ambi_roomsim_getChOrder(hAmbi)-1)/(float)(NUM_CH_ORDERINGS-1);
             case k_normType:      return (float)(ambi_roomsim_getNormType(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
-            case k_numSources:    return (float)(ambi_roomsim_getNumSources(hAmbi))/(float)(MAX_NUM_INPUTS);
+            case k_numSources:    return (float)(ambi_roomsim_getNumSources(hAmbi))/(float)(ROOM_SIM_MAX_NUM_SOURCES);
+            case k_numReceivers:  return (float)(ambi_roomsim_getNumReceivers(hAmbi))/(float)(ROOM_SIM_MAX_NUM_RECEIVERS);
             default: return 0.0f;
         }
-    }
-    /* source direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        if (!(index % 2))
-            return (ambi_roomsim_getSourceAzi_deg(hAmbi, index/2)/360.0f) + 0.5f;
-        else
-            return (ambi_roomsim_getSourceElev_deg(hAmbi, (index-1)/2)/180.0f) + 0.5f;
-    }
+    //}
+    /* source + receiver position parameters */
+//    else{
+//        index-=k_NumOfParameters;
+//        if ((index % 3)==0)
+//            return (ambi_roomsim_getSourceX(hAmbi, index/3)/360.0f) + 0.5f;
+//        else
+//            return (ambi_roomsim_getSourceElev_deg(hAmbi, (index-1)/3)/180.0f) + 0.5f;
+//    }
 }
 
 int PluginProcessor::getNumParameters()
 {
-	return k_NumOfParameters + 2*MAX_NUM_INPUTS;
+    return k_NumOfParameters;// + 3*ROOM_SIM_MAX_NUM_SOURCES + 3*ROOM_SIM_MAX_NUM_RECEIVERS;
 }
 
 const String PluginProcessor::getName() const
@@ -107,29 +109,30 @@ const String PluginProcessor::getName() const
 const String PluginProcessor::getParameterName (int index)
 {
     /* standard parameters */
-    if(index < k_NumOfParameters){
+    //if(index < k_NumOfParameters){
         switch (index) {
             case k_outputOrder:  return "order";
             case k_channelOrder: return "channel_order";
             case k_normType:     return "norm_type";
             case k_numSources:   return "num_sources";
+            case k_numReceivers: return "num_receivers";
             default: return "NULL";
         }
-    }
+    //}
     /* source direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        if (!(index % 2))
-            return TRANS("Azim_") + String(index/2);
-        else
-            return TRANS("Elev_") + String((index-1)/2);
-    }
+//    else{
+//        index-=k_NumOfParameters;
+//        if (!(index % 2))
+//            return TRANS("Azim_") + String(index/2);
+//        else
+//            return TRANS("Elev_") + String((index-1)/2);
+//    }
 }
 
 const String PluginProcessor::getParameterText(int index)
 {
     /* standard parameters */
-    if(index < k_NumOfParameters){
+//    if(index < k_NumOfParameters){
         switch (index) {
             case k_outputOrder: return String(ambi_roomsim_getOutputOrder(hAmbi));
             case k_channelOrder:
@@ -146,17 +149,18 @@ const String PluginProcessor::getParameterText(int index)
                     default: return "NULL";
                 }
             case k_numSources: return String(ambi_roomsim_getNumSources(hAmbi));
+            case k_numReceivers: return String(ambi_roomsim_getNumReceivers(hAmbi));
             default: return "NULL";
         }
-    }
-    /* source direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        if (!(index % 2))
-            return String(ambi_roomsim_getSourceAzi_deg(hAmbi, index/2));
-        else
-            return String(ambi_roomsim_getSourceElev_deg(hAmbi, (index-1)/2));
-    }
+//    }
+//    /* source direction parameters */
+//    else{
+//        index-=k_NumOfParameters;
+//        if (!(index % 2))
+//            return String(ambi_roomsim_getSourceAzi_deg(hAmbi, index/2));
+//        else
+//            return String(ambi_roomsim_getSourceElev_deg(hAmbi, (index-1)/2));
+//    }
 }
 
 const String PluginProcessor::getInputChannelName (int channelIndex) const
@@ -279,17 +283,28 @@ AudioProcessorEditor* PluginProcessor::createEditor()
 //==============================================================================
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-    XmlElement xml("AMBIENCPLUGINSETTINGS");
+    XmlElement xml("AMBIROOMSIMPLUGINSETTINGS");
     for(int i=0; i<ambi_roomsim_getMaxNumSources(); i++){
-        xml.setAttribute("SourceAziDeg" + String(i), ambi_roomsim_getSourceAzi_deg(hAmbi,i));
-        xml.setAttribute("SourceElevDeg" + String(i), ambi_roomsim_getSourceElev_deg(hAmbi,i));
+        xml.setAttribute("SourceX" + String(i), ambi_roomsim_getSourceX(hAmbi,i));
+        xml.setAttribute("SourceY" + String(i), ambi_roomsim_getSourceY(hAmbi,i));
+        xml.setAttribute("SourceZ" + String(i), ambi_roomsim_getSourceZ(hAmbi,i));
     }
-    
-    xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
+    for(int i=0; i<ambi_roomsim_getMaxNumReceivers(); i++){
+        xml.setAttribute("ReceiverX" + String(i), ambi_roomsim_getReceiverX(hAmbi,i));
+        xml.setAttribute("ReceiverY" + String(i), ambi_roomsim_getReceiverY(hAmbi,i));
+        xml.setAttribute("ReceiverZ" + String(i), ambi_roomsim_getReceiverZ(hAmbi,i));
+    }
+    for(int i=0; i<3; i++)
+        for(int j=0; j<2; j++)
+            xml.setAttribute("wallAbsCoeff" + String(i) + "_" + String(j), ambi_roomsim_getWallAbsCoeff(hAmbi, i, j));
+    xml.setAttribute("RoomX", ambi_roomsim_getRoomDimX(hAmbi));
+    xml.setAttribute("RoomY", ambi_roomsim_getRoomDimY(hAmbi));
+    xml.setAttribute("RoomZ", ambi_roomsim_getRoomDimZ(hAmbi)); 
     xml.setAttribute("NORM", ambi_roomsim_getNormType(hAmbi));
     xml.setAttribute("CHORDER", ambi_roomsim_getChOrder(hAmbi));
     xml.setAttribute("OUT_ORDER", ambi_roomsim_getOutputOrder(hAmbi));
     xml.setAttribute("nSources", ambi_roomsim_getNumSources(hAmbi));
+    xml.setAttribute("nReceivers", ambi_roomsim_getNumReceivers(hAmbi));
 
     copyXmlToBinary(xml, destData);
 }
@@ -299,18 +314,37 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
 
     if (xmlState != nullptr) {
-        if (xmlState->hasTagName("AMBIENCPLUGINSETTINGS")) {
+        if (xmlState->hasTagName("AMBIROOMSIMPLUGINSETTINGS")) {
             for(int i=0; i<ambi_roomsim_getMaxNumSources(); i++){
-//                if(xmlState->hasAttribute("SourceAziDeg" + String(i)))
-//                    ambi_roomsim_setSourceAzi_deg(hAmbi, i, (float)xmlState->getDoubleAttribute("SourceAziDeg" + String(i), 0.0f));
-//                if(xmlState->hasAttribute("SourceElevDeg" + String(i)))
-//                    ambi_roomsim_setSourceElev_deg(hAmbi, i, (float)xmlState->getDoubleAttribute("SourceElevDeg" + String(i), 0.0f));
+                if(xmlState->hasAttribute("SourceX" + String(i)))
+                    ambi_roomsim_setSourceX(hAmbi, i, (float)xmlState->getDoubleAttribute("SourceX" + String(i), 0.0f));
+                if(xmlState->hasAttribute("SourceY" + String(i)))
+                    ambi_roomsim_setSourceY(hAmbi, i, (float)xmlState->getDoubleAttribute("SourceY" + String(i), 0.0f));
+                if(xmlState->hasAttribute("SourceZ" + String(i)))
+                    ambi_roomsim_setSourceZ(hAmbi, i, (float)xmlState->getDoubleAttribute("SourceZ" + String(i), 0.0f));
             }
+            for(int i=0; i<ambi_roomsim_getMaxNumReceivers(); i++){
+                if(xmlState->hasAttribute("ReceiverX" + String(i)))
+                    ambi_roomsim_setReceiverX(hAmbi, i, (float)xmlState->getDoubleAttribute("ReceiverX" + String(i), 0.0f));
+                if(xmlState->hasAttribute("ReceiverY" + String(i)))
+                    ambi_roomsim_setReceiverY(hAmbi, i, (float)xmlState->getDoubleAttribute("ReceiverY" + String(i), 0.0f));
+                if(xmlState->hasAttribute("ReceiverZ" + String(i)))
+                    ambi_roomsim_setReceiverZ(hAmbi, i, (float)xmlState->getDoubleAttribute("ReceiverZ" + String(i), 0.0f));
+            }
+            for(int i=0; i<3; i++)
+                for(int j=0; j<2; j++)
+                    if(xmlState->hasAttribute("wallAbsCoeff" + String(i) + "_" + String(j)))
+                        ambi_roomsim_setWallAbsCoeff(hAmbi, i, j, (float)xmlState->getDoubleAttribute("wallAbsCoeff" + String(i) + "_" + String(j), 0.0f));
+            if(xmlState->hasAttribute("RoomX"))
+                ambi_roomsim_setRoomDimX(hAmbi, (float)xmlState->getDoubleAttribute("RoomX", 0.0f));
+            if(xmlState->hasAttribute("RoomY"))
+                ambi_roomsim_setRoomDimY(hAmbi, (float)xmlState->getDoubleAttribute("RoomY", 0.0f));
+            if(xmlState->hasAttribute("RoomZ"))
+                ambi_roomsim_setRoomDimZ(hAmbi, (float)xmlState->getDoubleAttribute("RoomZ", 0.0f));
             if(xmlState->hasAttribute("nSources"))
                 ambi_roomsim_setNumSources(hAmbi, xmlState->getIntAttribute("nSources", 1));
-            
-            if(xmlState->hasAttribute("JSONFilePath"))
-                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            if(xmlState->hasAttribute("nReceivers"))
+                ambi_roomsim_setNumReceivers(hAmbi, xmlState->getIntAttribute("nReceivers", 1));
 
             if(xmlState->hasAttribute("NORM"))
                 ambi_roomsim_setNormType(hAmbi, xmlState->getIntAttribute("NORM", 1));
@@ -330,71 +364,3 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new PluginProcessor();
 }
-
-/* Adapted from the AllRADecoder by Daniel Rudrich, (c) 2017 (GPLv3 license) */
-void PluginProcessor::saveConfigurationToFile (File destination)
-{
-    sources.removeAllChildren(nullptr);
-    for (int i=0; i<ambi_roomsim_getNumSources(hAmbi);i++)
-    {
-        sources.appendChild (ConfigurationHelper::
-                             createElement(ambi_roomsim_getSourceAzi_deg(hAmbi, i),
-                                          ambi_roomsim_getSourceElev_deg(hAmbi, i),
-                                          1.0f, i+1, false, 1.0f), nullptr);
-    }
-    DynamicObject* jsonObj = new DynamicObject();
-    jsonObj->setProperty("Name", var("SPARTA AmbiENC source directions."));
-    char versionString[10];
-    strcpy(versionString, "v");
-    strcat(versionString, JucePlugin_VersionString);
-    jsonObj->setProperty("Description", var("This configuration file was created with the SPARTA AmbiENC " + String(versionString) + " plug-in. " + Time::getCurrentTime().toString(true, true)));
-    jsonObj->setProperty ("SourceArrangement", ConfigurationHelper::convertElementsToVar (sources, "Source Directions"));
-    Result result = ConfigurationHelper::writeConfigurationToFile (destination, var (jsonObj));
-}
-
-/* Adapted from the AllRADecoder by Daniel Rudrich, (c) 2017 (GPLv3 license) */
-void PluginProcessor::loadConfiguration (const File& configFile)
-{
-    int channelIDs[MAX_NUM_CHANNELS+1] = {0};
-    int virtual_channelIDs[MAX_NUM_CHANNELS+1] = {0};
-    sources.removeAllChildren(nullptr);
-    Result result = ConfigurationHelper::parseFileForGenericLayout(configFile, sources, nullptr);
-    if(result.wasOk()){
-        int num_srcs, num_virtual_srcs, src_idx, jj;
-        num_srcs = num_virtual_srcs = src_idx = jj = 0;
-        /* get Channel IDs and find number of directions and virtual directions */
-        for (ValueTree::Iterator it = sources.begin(); it != sources.end(); ++it){
-            if ( !((*it).getProperty("Imaginary"))){
-                num_srcs++; channelIDs[jj] = (*it).getProperty("Channel");
-            }
-            else{
-                virtual_channelIDs[num_virtual_srcs] = (*it).getProperty("Channel");
-                num_virtual_srcs++; channelIDs[jj] = -1;
-            }
-            jj++;
-        }
-        /* remove virtual channels and shift the channel indices down */
-        for(int i=0; i<num_virtual_srcs; i++)
-            for(int j=0; j<num_srcs+num_virtual_srcs; j++)
-                if(channelIDs[j] == -1)
-                    for(int k=j; k<num_srcs+num_virtual_srcs; k++)
-                        channelIDs[k] = channelIDs[k+1];
-        
-        /* then decriment the channel IDs to remove the gaps */
-        for(int i=0; i<num_virtual_srcs; i++)
-            for(int j=0; j<num_srcs+num_virtual_srcs; j++)
-                if( channelIDs[j] > virtual_channelIDs[i]-i )
-                    channelIDs[j]--;
-        
-        /* update with the new configuration  */
-        ambi_roomsim_setNumSources(hAmbi, num_srcs);
-        for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it){
-            if ( !((*it).getProperty("Imaginary"))){
-//                ambi_roomsim_setSourceAzi_deg(hAmbi, channelIDs[src_idx]-1, (*it).getProperty("Azimuth"));
-//                ambi_roomsim_setSourceElev_deg(hAmbi, channelIDs[src_idx]-1, (*it).getProperty("Elevation"));
-                src_idx++;
-            }
-        }
-    }
-}
-
