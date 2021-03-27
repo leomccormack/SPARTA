@@ -20,7 +20,8 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
-#include <JuceHeader.h>
+
+#include "JuceHeader.h"
 #include "PluginProcessor.h"
 #include "../../resources/SPARTALookAndFeel.h"
 
@@ -38,14 +39,16 @@ typedef enum _SPARTA_WARNINGS{
 //==============================================================================
 /**
                                                                     //[Comments]
-    An auto-generated component, created by the Projucer.
+    An auto-generated component, created by the Introjucer.
 
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
-                      private FilenameComponentListener
+                      private FilenameComponentListener,
+                      public juce::Button::Listener,
+                      public juce::Slider::Listener
 {
 public:
     //==============================================================================
@@ -54,10 +57,13 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
     void resized() override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
+    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
 
 
 
@@ -74,18 +80,39 @@ private:
     FilenameComponent fileChooser;
 
     /* sofa file loading */
-    void filenameComponentChanged (FilenameComponent*) override  {
-        String directory = fileChooser.getCurrentFile().getFullPathName();
-        const char* new_cstring = (const char*)directory.toUTF8();
-        //ambi_bin_setSofaFilePath(hAmbi, new_cstring);
-    }
+     void filenameComponentChanged (FilenameComponent*) override  {
+         String directory = fileChooser.getCurrentFile().getFullPathName();
+         const char* new_cstring = (const char*)directory.toUTF8();
+         tvconv_setSofaFilePath(hTVC, new_cstring);
+     }
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
 
+//    /* wav file loading */
+//    void filenameComponentChanged (FilenameComponent*) override  {
+//        String wavFilePath = fileChooser.getCurrentFile().getFullPathName();
+//        hVst->setWavDirectory(wavFilePath);
+//        hVst->loadWavFile();
+//    }
+
+    /* tooltips */
+    SharedResourcePointer<TooltipWindow> tipWindow;
+    std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
+
     //[/UserVariables]
 
     //==============================================================================
+    std::unique_ptr<juce::ToggleButton> TBenablePartConv;
+    std::unique_ptr<juce::Label> label_hostBlockSize;
+    std::unique_ptr<juce::Label> label_NFilters;
+    std::unique_ptr<juce::Label> label_filterLength;
+    std::unique_ptr<juce::Label> label_hostfs;
+    std::unique_ptr<juce::Label> label_filterfs;
+    std::unique_ptr<juce::Slider> SL_num_inputs;
+    std::unique_ptr<juce::Label> label_MatrixNInputs;
+    std::unique_ptr<juce::Label> label_MatrixNoutputs;
+    std::unique_ptr<juce::Label> label_NOutputs;
 
 
     //==============================================================================
