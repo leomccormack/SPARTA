@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.8
 
   ------------------------------------------------------------------------------
 
@@ -47,7 +47,8 @@ typedef enum _SPARTA_WARNINGS{
 */
 class PluginEditor  : public AudioProcessorEditor,
                       public MultiTimer,
-                      public juce::Slider::Listener
+                      public juce::Slider::Listener,
+                      public juce::Button::Listener
 {
 public:
     //==============================================================================
@@ -62,6 +63,7 @@ public:
     void paint (juce::Graphics& g) override;
     void resized() override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
@@ -89,6 +91,9 @@ private:
 
     //==============================================================================
     std::unique_ptr<juce::Slider> SL_nChannels;
+    std::unique_ptr<juce::Slider> SL_decorAmount;
+    std::unique_ptr<juce::ToggleButton> tb_compLevel;
+    std::unique_ptr<juce::ToggleButton> tb_bypassTransients;
 
 
     //==============================================================================

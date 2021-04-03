@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.8
 
   ------------------------------------------------------------------------------
 
@@ -41,13 +41,36 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_nChannels->setTextBoxStyle (juce::Slider::TextBoxLeft, false, 80, 20);
     SL_nChannels->addListener (this);
 
-    SL_nChannels->setBounds (176, 65, 65, 16);
+    SL_nChannels->setBounds (171, 50, 65, 16);
+
+    SL_decorAmount.reset (new juce::Slider ("new slider"));
+    addAndMakeVisible (SL_decorAmount.get());
+    SL_decorAmount->setRange (0, 1, 0.01);
+    SL_decorAmount->setSliderStyle (juce::Slider::LinearHorizontal);
+    SL_decorAmount->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
+    SL_decorAmount->addListener (this);
+
+    SL_decorAmount->setBounds (128, 73, 108, 18);
+
+    tb_compLevel.reset (new juce::ToggleButton ("new toggle button"));
+    addAndMakeVisible (tb_compLevel.get());
+    tb_compLevel->setButtonText (juce::String());
+    tb_compLevel->addListener (this);
+
+    tb_compLevel->setBounds (393, 47, 23, 24);
+
+    tb_bypassTransients.reset (new juce::ToggleButton ("new toggle button"));
+    addAndMakeVisible (tb_bypassTransients.get());
+    tb_bypassTransients->setButtonText (juce::String());
+    tb_bypassTransients->addListener (this);
+
+    tb_bypassTransients->setBounds (393, 72, 23, 24);
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (600, 120);
+    setSize (440, 110);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -78,6 +101,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* grab current parameter settings */
     SL_nChannels->setValue(decorrelator_getNumberOfChannels(hDecor), dontSendNotification);
+    SL_decorAmount->setValue(decorrelator_getDecorrelationAmount(hDecor), dontSendNotification);
+    tb_compLevel->setToggleState((bool)decorrelator_getLevelCompensationFlag(hDecor), dontSendNotification);
+    tb_bypassTransients->setToggleState((bool)decorrelator_getTransientBypassFlag(hDecor), dontSendNotification);
 
     /* tooltips */
     SL_nChannels->setTooltip("Number of input/output channels to decorrelate");
@@ -104,6 +130,9 @@ PluginEditor::~PluginEditor()
     //[/Destructor_pre]
 
     SL_nChannels = nullptr;
+    SL_decorAmount = nullptr;
+    tb_compLevel = nullptr;
+    tb_bypassTransients = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -120,22 +149,22 @@ void PluginEditor::paint (juce::Graphics& g)
     g.fillAll (juce::Colours::white);
 
     {
-        int x = 0, y = 80, width = 600, height = 40;
+        int x = 0, y = 70, width = 440, height = 40;
         juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
                                              16.0f - 0.0f + x,
-                                             120.0f - 80.0f + y,
+                                             120.0f - 70.0f + y,
                                              fillColour2,
                                              16.0f - 0.0f + x,
-                                             88.0f - 80.0f + y,
+                                             88.0f - 70.0f + y,
                                              false));
         g.fillRect (x, y, width, height);
     }
 
     {
-        int x = 0, y = 30, width = 656, height = 50;
+        int x = 0, y = 30, width = 440, height = 40;
         juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -150,7 +179,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        float x = 1.0f, y = 2.0f, width = 597.0f, height = 31.0f;
+        float x = 1.0f, y = 2.0f, width = 438.0f, height = 31.0f;
         juce::Colour fillColour1 = juce::Colour (0xff041518), fillColour2 = juce::Colour (0xff19313f);
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -168,7 +197,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 12, y = 58, width = 237, height = 29;
+        int x = 12, y = 44, width = 412, height = 54;
         juce::Colour fillColour = juce::Colour (0x08f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x35a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -181,25 +210,13 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 19, y = 57, width = 173, height = 30;
+        int x = 18, y = 43, width = 173, height = 30;
         juce::String text (TRANS("Number of Channels:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 545, y = -39, width = 80, height = 30;
-        juce::String text (TRANS("Comp. EQ:"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -229,7 +246,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 0, y = 0, width = 656, height = 2;
+        int x = 0, y = 0, width = 440, height = 2;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -239,7 +256,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 598, y = 0, width = 2, height = 120;
+        int x = 438, y = 0, width = 2, height = 120;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -259,13 +276,49 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 0, y = 118, width = 600, height = 2;
+        int x = 0, y = 108, width = 440, height = 2;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 2);
 
+    }
+
+    {
+        int x = 18, y = 67, width = 173, height = 30;
+        juce::String text (TRANS("Decorrelation:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 266, y = 67, width = 134, height = 30;
+        juce::String text (TRANS("Bypass Transients:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 266, y = 43, width = 158, height = 30;
+        juce::String text (TRANS("Compensate Level:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
     }
 
     //[UserPaint] Add your own custom painting code here..
@@ -330,9 +383,37 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
         decorrelator_setNumberOfChannels(hDecor, (int)SL_nChannels->getValue());
         //[/UserSliderCode_SL_nChannels]
     }
+    else if (sliderThatWasMoved == SL_decorAmount.get())
+    {
+        //[UserSliderCode_SL_decorAmount] -- add your slider handling code here..
+        decorrelator_setDecorrelationAmount(hDecor, (float)SL_decorAmount->getValue());
+        //[/UserSliderCode_SL_decorAmount]
+    }
 
     //[UsersliderValueChanged_Post]
     //[/UsersliderValueChanged_Post]
+}
+
+void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
+{
+    //[UserbuttonClicked_Pre]
+    //[/UserbuttonClicked_Pre]
+
+    if (buttonThatWasClicked == tb_compLevel.get())
+    {
+        //[UserButtonCode_tb_compLevel] -- add your button handler code here..
+        decorrelator_setLevelCompensationFlag(hDecor, (int)tb_compLevel->getToggleState());
+        //[/UserButtonCode_tb_compLevel]
+    }
+    else if (buttonThatWasClicked == tb_bypassTransients.get())
+    {
+        //[UserButtonCode_tb_bypassTransients] -- add your button handler code here..
+        decorrelator_setTransientBypassFlag(hDecor, (int)tb_bypassTransients->getToggleState());
+        //[/UserButtonCode_tb_bypassTransients]
+    }
+
+    //[UserbuttonClicked_Post]
+    //[/UserbuttonClicked_Post]
 }
 
 
@@ -400,21 +481,18 @@ BEGIN_JUCER_METADATA
                  parentClasses="public AudioProcessorEditor, public MultiTimer"
                  constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), progressbar(progress)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="600" initialHeight="120">
+                 fixedSize="1" initialWidth="440" initialHeight="110">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 80 600 40" fill="linear: 16 120, 16 88, 0=ff19313f, 1=ff041518"
+    <RECT pos="0 70 440 40" fill="linear: 16 120, 16 88, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <RECT pos="0 30 656 50" fill="linear: 8 32, 8 64, 0=ff19313f, 1=ff041518"
+    <RECT pos="0 30 440 40" fill="linear: 8 32, 8 64, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <ROUNDRECT pos="1 2 597 31" cornerSize="5.0" fill="linear: 0 32, 592 32, 0=ff041518, 1=ff19313f"
+    <ROUNDRECT pos="1 2 438 31" cornerSize="5.0" fill="linear: 0 32, 592 32, 0=ff041518, 1=ff19313f"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="12 58 237 29" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 44 412 54" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 35a0a0a0"/>
-    <TEXT pos="19 57 173 30" fill="solid: ffffffff" hasStroke="0" text="Number of Channels:"
+    <TEXT pos="18 43 173 30" fill="solid: ffffffff" hasStroke="0" text="Number of Channels:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="545 -39 80 30" fill="solid: ffffffff" hasStroke="0" text="Comp. EQ:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="16 1 196 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
           fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
@@ -422,20 +500,40 @@ BEGIN_JUCER_METADATA
     <TEXT pos="92 1 184 32" fill="solid: ffbeffba" hasStroke="0" text="Decorrelator"
           fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="0 0 656 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="0 0 440 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="598 0 2 120" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="438 0 2 120" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
     <RECT pos="0 0 2 120" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="0 118 600 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="0 108 440 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
+    <TEXT pos="18 67 173 30" fill="solid: ffffffff" hasStroke="0" text="Decorrelation:"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="266 67 134 30" fill="solid: ffffffff" hasStroke="0" text="Bypass Transients:"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="266 43 158 30" fill="solid: ffffffff" hasStroke="0" text="Compensate Level:"
+          fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <SLIDER name="new slider" id="21d3cac663b3ac08" memberName="SL_nChannels"
-          virtualName="" explicitFocusOrder="0" pos="176 65 65 16" min="1.0"
+          virtualName="" explicitFocusOrder="0" pos="171 50 65 16" min="1.0"
           max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
+  <SLIDER name="new slider" id="d9ad5f70d2212591" memberName="SL_decorAmount"
+          virtualName="" explicitFocusOrder="0" pos="128 73 108 18" min="0.0"
+          max="1.0" int="0.01" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
+  <TOGGLEBUTTON name="new toggle button" id="5461719ed498c991" memberName="tb_compLevel"
+                virtualName="" explicitFocusOrder="0" pos="393 47 23 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TOGGLEBUTTON name="new toggle button" id="943669b0479499db" memberName="tb_bypassTransients"
+                virtualName="" explicitFocusOrder="0" pos="393 72 23 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
