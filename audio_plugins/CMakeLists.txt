@@ -5,6 +5,7 @@ message(STATUS "Configuring SPARTA (Version ${PROJECT_VERSION})...")
 # Add the SPARTA plugins to the build tree
 add_subdirectory(_SPARTA_ambiDRC_)
 add_subdirectory(_SPARTA_ambiENC_)
+add_subdirectory(_SPARTA_ambiRoomSim_)
 add_subdirectory(_SPARTA_array2sh_)
 add_subdirectory(_SPARTA_beamformer_)
 add_subdirectory(_SPARTA_decorrelator_)
