@@ -102,11 +102,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* grab current parameter settings */
     SL_nChannels->setValue(decorrelator_getNumberOfChannels(hDecor), dontSendNotification);
     SL_decorAmount->setValue(decorrelator_getDecorrelationAmount(hDecor), dontSendNotification);
-    tb_compLevel->setToggleState((bool)decorrelator_getLevelCompensationFlag(hDecor), dontSendNotification);
+    tb_compLevel->setToggleState((bool)decorrelator_getLevelCompensationFlag(hDecor), dontSendNotification); 
     tb_bypassTransients->setToggleState((bool)decorrelator_getTransientBypassFlag(hDecor), dontSendNotification);
 
     /* tooltips */
     SL_nChannels->setTooltip("Number of input/output channels to decorrelate");
+    SL_decorAmount->setTooltip("Amount of decorrelation; 1=fully decorrelated, 0=bypassed.");
+    tb_compLevel->setTooltip("Enable/Disable energy compensation.");
+    tb_bypassTransients->setTooltip("Enable/Disable transient extractor. When enabled only the residual is decorrelated, with the extracted transients passed through without decorrelation.");
 
     /* Plugin description */
     pluginDescription.reset (new juce::ComboBox ("new combo box"));

@@ -211,6 +211,9 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     XmlElement xml("DECORRELATORPLUGINSETTINGS");
     
     xml.setAttribute("NCHANNELS", decorrelator_getNumberOfChannels(hDecor));
+    xml.setAttribute("DECOR_AMOUNT", decorrelator_getDecorrelationAmount(hDecor));
+    xml.setAttribute("ENERGY_COMP", decorrelator_getLevelCompensationFlag(hDecor));
+    xml.setAttribute("BYPASS_TRANSIENTS", decorrelator_getTransientBypassFlag(hDecor));
     copyXmlToBinary(xml, destData);
 }
 
@@ -223,6 +226,12 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             
             if(xmlState->hasAttribute("NCHANNELS"))
                 decorrelator_setNumberOfChannels(hDecor, xmlState->getIntAttribute("NCHANNELS", 2));
+            if(xmlState->hasAttribute("DECOR_AMOUNT"))
+                decorrelator_setDecorrelationAmount(hDecor, (float)xmlState->getDoubleAttribute("DECOR_AMOUNT", 2));
+            if(xmlState->hasAttribute("ENERGY_COMP"))
+                decorrelator_setLevelCompensationFlag(hDecor, xmlState->getIntAttribute("ENERGY_COMP", 2));
+            if(xmlState->hasAttribute("BYPASS_TRANSIENTS"))
+                decorrelator_setTransientBypassFlag(hDecor, xmlState->getIntAttribute("BYPASS_TRANSIENTS", 2));
             
             decorrelator_refreshParams(hDecor);
         }
