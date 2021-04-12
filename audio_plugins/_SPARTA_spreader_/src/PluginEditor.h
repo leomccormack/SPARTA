@@ -52,7 +52,8 @@ class PluginEditor  : public AudioProcessorEditor,
                       public MultiTimer,
                       private FilenameComponentListener,
                       public juce::Slider::Listener,
-                      public juce::Button::Listener
+                      public juce::Button::Listener,
+                      public juce::ComboBox::Listener
 {
 public:
     //==============================================================================
@@ -69,6 +70,7 @@ public:
     void resized() override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
+    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
 
 
 
@@ -118,6 +120,9 @@ private:
     std::unique_ptr<juce::ToggleButton> TBuseDefaultHRIRs;
     std::unique_ptr<juce::Label> label_DAW_fs;
     std::unique_ptr<juce::Label> label_N_CH;
+    std::unique_ptr<juce::ComboBox> CBmode;
+    std::unique_ptr<juce::Label> label_IR_length;
+    std::unique_ptr<juce::Slider> SL_avgCoeff;
 
 
     //==============================================================================

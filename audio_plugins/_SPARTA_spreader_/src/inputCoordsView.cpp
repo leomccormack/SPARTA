@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.8
 
   ------------------------------------------------------------------------------
 
@@ -59,29 +59,45 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
     currentNCH =_currentNCH;
     aziSliders =  new std::unique_ptr<Slider>[(unsigned long)maxNCH];
     elevSliders =  new std::unique_ptr<Slider>[(unsigned long)maxNCH];
+    spreadSliders =  new std::unique_ptr<Slider>[(unsigned long)maxNCH];
 
     for( int i=0; i<maxNCH; i++){
         /* create and initialise azimuth sliders */
         aziSliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (aziSliders[i].get());
-        aziSliders[i]->setRange (-360.0, 360.0, 0.001);
+        aziSliders[i]->setRange (-360.0, 360.0, 0.1);
         aziSliders[i]->setValue(spreader_getSourceAzi_deg(hSpr, i));
-        aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
-        aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
-        aziSliders[i]->setBounds(-25, 8 + i*sensorEdit_height, 96, 16);
+        aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 48, 20);
+        aziSliders[i]->setBounds(22, 8 + i*sensorEdit_height, 48, 16);
         aziSliders[i]->addListener (this);
+        aziSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
+        aziSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+        aziSliders[i]->setSliderSnapsToMousePosition(false);
 
         /* create and initialise elevation sliders */
         elevSliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (elevSliders[i].get());
-        elevSliders[i]->setRange (-180.0, 180.0, 0.001);
+        elevSliders[i]->setRange (-180.0, 180.0, 0.1);
         elevSliders[i]->setValue(spreader_getSourceElev_deg(hSpr, i));
-        elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
-        elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
-        elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 96, 16);
+        elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 48, 20);
+        elevSliders[i]->setBounds(73, 8 + i*sensorEdit_height, 48, 16);
         elevSliders[i]->addListener (this);
-    }
+        elevSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
+        elevSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+        elevSliders[i]->setSliderSnapsToMousePosition(false);
 
+        /* create and initialise spreading sliders */
+        spreadSliders[i].reset (new Slider ("new slider"));
+        addAndMakeVisible (spreadSliders[i].get());
+        spreadSliders[i]->setRange (0.0, 180.0, 0.1);
+        spreadSliders[i]->setValue(spreader_getSourceElev_deg(hSpr, i));
+        spreadSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 48, 20);
+        spreadSliders[i]->setBounds(124, 8 + i*sensorEdit_height, 48, 16);
+        spreadSliders[i]->addListener (this);
+        spreadSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
+        spreadSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+        spreadSliders[i]->setSliderSnapsToMousePosition(false);
+    }
     sliderHasChanged = true;
 
 	/* Get and display current settings */
@@ -103,9 +119,11 @@ inputCoordsView::~inputCoordsView()
     for( int i=0; i<maxNCH; i++){
         aziSliders[i] = nullptr;
         elevSliders[i] = nullptr;
+        spreadSliders[i] = nullptr;
     }
     delete [] aziSliders;
     delete [] elevSliders;
+    delete [] spreadSliders;
     //[/Destructor]
 }
 
@@ -153,7 +171,7 @@ void inputCoordsView::paint (juce::Graphics& g)
     for( int i=0; i<maxNCH; i++){
         /* draw sensor IDs */
         g.setColour (fillColour);
-        g.drawText (String(i+1), 72, 5+ i*sensorEdit_height, 33, 23,
+        g.drawText (String(i+1), -6, 5+ i*sensorEdit_height, 33, 23,
                     Justification::centred, true);
 
         /* draw rectangle around sensor parameter */
@@ -191,6 +209,10 @@ void inputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
             spreader_setSourceElev_deg(hSpr, i, (float)elevSliders[i]->getValue());
             break;
         }
+        if (sliderThatWasMoved == spreadSliders[i].get()) {
+            spreader_setSourceSpread_deg(hSpr, i, (float)spreadSliders[i]->getValue());
+            break;
+        }
     }
 
     //[/UsersliderValueChanged_Pre]
@@ -213,10 +235,12 @@ void inputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 void inputCoordsView::refreshCoords(){
     /* update slider values and limits */
     for( int i=0; i<maxNCH; i++){
-        aziSliders[i]->setRange (-360.0, 360.0, 0.001);
+        aziSliders[i]->setRange (-360.0, 360.0, 0.1);
         aziSliders[i]->setValue(spreader_getSourceAzi_deg(hSpr, i), dontSendNotification);
-        elevSliders[i]->setRange (-180.0, 180.0, 0.001);
+        elevSliders[i]->setRange (-180.0, 180.0, 0.1);
         elevSliders[i]->setValue(spreader_getSourceElev_deg(hSpr, i), dontSendNotification);
+        spreadSliders[i]->setRange (0.0, 180.0, 0.1);
+        spreadSliders[i]->setValue(spreader_getSourceSpread_deg(hSpr, i), dontSendNotification);
     }
 }
 
