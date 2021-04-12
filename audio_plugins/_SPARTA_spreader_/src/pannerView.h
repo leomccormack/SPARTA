@@ -71,7 +71,7 @@ private:
     bool showInputs;
     bool showOutputs;
     Rectangle<float> SourceIcons[SPREADER_MAX_NUM_SOURCES];
-    Rectangle<float> LoudspeakerIcons[SPREADER_MAX_NUM_SOURCES];
+    Rectangle<float> LoudspeakerIcons[MAX_NUM_OUT_DIRS];
     int NSources;
     int NLoudspeakers;
     bool sourceIconIsClicked;

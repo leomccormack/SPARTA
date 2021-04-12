@@ -26,7 +26,7 @@
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(64), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(2), true))
+	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
 	spreader_create(&hSpr);
 
@@ -44,7 +44,7 @@ void PluginProcessor::setParameter (int index, float newValue)
     /* standard parameters */
     if(index < k_NumOfParameters){
         switch (index) {
-            case k_numInputs:       spreader_setNumSources(hSpr, (int)(newValue*(float)(MAX_NUM_INPUTS)+0.5)); break;
+            case k_numInputs:       spreader_setNumSources(hSpr, (int)(newValue*(float)(SPREADER_MAX_NUM_SOURCES)+0.5)); break;
         }
     }
     /* source direction parameters */
@@ -77,7 +77,7 @@ float PluginProcessor::getParameter (int index)
     /* standard parameters */
     if(index < k_NumOfParameters){
         switch (index) {
-            case k_numInputs:       return (float)(spreader_getNumSources(hSpr))/(float)(MAX_NUM_INPUTS);
+            case k_numInputs:       return (float)(spreader_getNumSources(hSpr))/(float)(SPREADER_MAX_NUM_SOURCES);
             default: return 0.0f;
         }
     }
@@ -93,7 +93,7 @@ float PluginProcessor::getParameter (int index)
 
 int PluginProcessor::getNumParameters()
 {
-	return k_NumOfParameters + 2*MAX_NUM_INPUTS;
+	return k_NumOfParameters + 2*SPREADER_MAX_NUM_SOURCES;
 }
 
 const String PluginProcessor::getName() const
@@ -238,7 +238,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
                 pFrameData[ch] = &bufferData[ch][frame*frameSize];
 
             /* perform processing */
-            //spreader_process(hSpr, pFrameData, pFrameData, nNumInputs, nNumOutputs, frameSize);
+            spreader_process(hSpr, pFrameData, pFrameData, nNumInputs, nNumOutputs, frameSize);
         }
     }
     else
@@ -260,15 +260,15 @@ AudioProcessorEditor* PluginProcessor::createEditor()
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
     XmlElement xml("SPREADERPLUGINSETTINGS");
-//    for(int i=0; i<spreader_getMaxNumSources(); i++){
-//        xml.setAttribute("SourceAziDeg" + String(i), spreader_getSourceAzi_deg(hSpr,i));
-//        xml.setAttribute("SourceElevDeg" + String(i), spreader_getSourceElev_deg(hSpr,i));
-//    }
-//    xml.setAttribute("nSources", spreader_getNumSources(hSpr));
-//    
-//    if(!spreader_getUseDefaultHRIRsflag(hSpr))
-//        xml.setAttribute("SofaFilePath", String(spreader_getSofaFilePath(hSpr)));
-//    
+    for(int i=0; i<spreader_getMaxNumSources(); i++){
+        xml.setAttribute("SourceAziDeg" + String(i), spreader_getSourceAzi_deg(hSpr,i));
+        xml.setAttribute("SourceElevDeg" + String(i), spreader_getSourceElev_deg(hSpr,i));
+    }
+    xml.setAttribute("nSources", spreader_getNumSources(hSpr));
+
+    if(!spreader_getUseDefaultHRIRsflag(hSpr))
+        xml.setAttribute("SofaFilePath", String(spreader_getSofaFilePath(hSpr)));
+
     copyXmlToBinary(xml, destData);
 }
 
@@ -276,26 +276,26 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
 
-//    if (xmlState != nullptr) {
-//        if (xmlState->hasTagName("SPREADERPLUGINSETTINGS")) {
-//            for(int i=0; i<spreader_getMaxNumSources(); i++){
-//                if(xmlState->hasAttribute("SourceAziDeg" + String(i)))
-//                    spreader_setSourceAzi_deg(hSpr, i, (float)xmlState->getDoubleAttribute("SourceAziDeg" + String(i), 0.0f));
-//                if(xmlState->hasAttribute("SourceElevDeg" + String(i)))
-//                    spreader_setSourceElev_deg(hSpr, i, (float)xmlState->getDoubleAttribute("SourceElevDeg" + String(i), 0.0f));
-//            }
-//            if(xmlState->hasAttribute("nSources"))
-//               spreader_setNumSources(hSpr, xmlState->getIntAttribute("nSources", 1));
-//
-//            if(xmlState->hasAttribute("SofaFilePath")){
-//                String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
-//                const char* new_cstring = (const char*)directory.toUTF8();
-//                spreader_setSofaFilePath(hSpr, new_cstring);
-//            }
-//
-//            spreader_refreshSettings(hSpr);
-//        }
-//    }
+    if (xmlState != nullptr) {
+        if (xmlState->hasTagName("SPREADERPLUGINSETTINGS")) {
+            for(int i=0; i<spreader_getMaxNumSources(); i++){
+                if(xmlState->hasAttribute("SourceAziDeg" + String(i)))
+                    spreader_setSourceAzi_deg(hSpr, i, (float)xmlState->getDoubleAttribute("SourceAziDeg" + String(i), 0.0f));
+                if(xmlState->hasAttribute("SourceElevDeg" + String(i)))
+                    spreader_setSourceElev_deg(hSpr, i, (float)xmlState->getDoubleAttribute("SourceElevDeg" + String(i), 0.0f));
+            }
+            if(xmlState->hasAttribute("nSources"))
+               spreader_setNumSources(hSpr, xmlState->getIntAttribute("nSources", 1));
+
+            if(xmlState->hasAttribute("SofaFilePath")){
+                String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
+                const char* new_cstring = (const char*)directory.toUTF8();
+                spreader_setSofaFilePath(hSpr, new_cstring);
+            }
+
+            spreader_refreshSettings(hSpr);
+        }
+    }
 }
 
 //==============================================================================

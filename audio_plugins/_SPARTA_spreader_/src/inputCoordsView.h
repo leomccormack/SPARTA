@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.8
 
   ------------------------------------------------------------------------------
 
@@ -73,6 +73,7 @@ private:
     void refreshCoords();
     std::unique_ptr<Slider>* aziSliders;
     std::unique_ptr<Slider>* elevSliders;
+    std::unique_ptr<Slider>* spreadSliders;
     int maxNCH, currentNCH;
     bool sliderHasChanged;
 

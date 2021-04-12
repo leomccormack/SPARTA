@@ -85,8 +85,8 @@ private:
                 /* reinitialise codec if needed */
                 if(spreader_getCodecStatus(hSpr) == CODEC_STATUS_NOT_INITIALISED){
                     try{
-                        //std::thread threadInit(spreader_initCodec, hSpr);
-                        //threadInit.detach();
+                        std::thread threadInit(spreader_initCodec, hSpr);
+                        threadInit.detach();
                     } catch (const std::exception& exception) {
                         std::cout << "Could not create thread" << exception.what() << std::endl;
                     }
