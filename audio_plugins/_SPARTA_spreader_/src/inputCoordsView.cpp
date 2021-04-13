@@ -89,7 +89,7 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         /* create and initialise spreading sliders */
         spreadSliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (spreadSliders[i].get());
-        spreadSliders[i]->setRange (0.0, 180.0, 0.1);
+        spreadSliders[i]->setRange (0.0, 360.0, 0.1);
         spreadSliders[i]->setValue(spreader_getSourceElev_deg(hSpr, i));
         spreadSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 48, 20);
         spreadSliders[i]->setBounds(124, 8 + i*sensorEdit_height, 48, 16);
@@ -239,7 +239,7 @@ void inputCoordsView::refreshCoords(){
         aziSliders[i]->setValue(spreader_getSourceAzi_deg(hSpr, i), dontSendNotification);
         elevSliders[i]->setRange (-180.0, 180.0, 0.1);
         elevSliders[i]->setValue(spreader_getSourceElev_deg(hSpr, i), dontSendNotification);
-        spreadSliders[i]->setRange (0.0, 180.0, 0.1);
+        spreadSliders[i]->setRange (0.0, 360.0, 0.1);
         spreadSliders[i]->setValue(spreader_getSourceSpread_deg(hSpr, i), dontSendNotification);
     }
 }
