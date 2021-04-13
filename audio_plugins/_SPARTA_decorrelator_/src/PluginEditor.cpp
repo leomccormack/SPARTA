@@ -108,7 +108,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* tooltips */
     SL_nChannels->setTooltip("Number of input/output channels to decorrelate");
     SL_decorAmount->setTooltip("Amount of decorrelation; 1=fully decorrelated, 0=bypassed.");
-    tb_compLevel->setTooltip("Enable/Disable energy compensation.");
+    tb_compLevel->setTooltip("Enable/Disable energy compensation, which can help if the loudness is falling off as the decorrelation amount is increased.");
     tb_bypassTransients->setTooltip("Enable/Disable transient extractor. When enabled only the residual is decorrelated, with the extracted transients passed through without decorrelation.");
 
     /* Plugin description */
@@ -117,7 +117,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pluginDescription->setBounds (0, 0, 200, 32);
     pluginDescription->setAlpha(0.0f);
     pluginDescription->setEnabled(false);
-    pluginDescription->setTooltip(TRANS("WIP"));
+    pluginDescription->setTooltip(TRANS("A basic multi-channel decorrelator plug-in."));
 
     startTimer(TIMER_GUI_RELATED, 20);
 

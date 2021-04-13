@@ -208,6 +208,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_N_CH->setTooltip("Number of triangles found when computing the Convex Hull of the IR grid.");
     label_HRIR_fs->setTooltip("Sampling rate used when measuring/modelling the IRs.");
     label_DAW_fs->setTooltip("Current sampling rate, as dictated by the DAW/Host.");
+    SL_avgCoeff->setTooltip("Amount of parameter averaging (0: none, 0.99: lots).");
 
     /* Plugin description */
     pluginDescription.reset (new juce::ComboBox ("new combo box"));
@@ -215,7 +216,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pluginDescription->setBounds (0, 0, 200, 32);
     pluginDescription->setAlpha(0.0f);
     pluginDescription->setEnabled(false);
-    pluginDescription->setTooltip(TRANS("WIP\n"));
+    pluginDescription->setTooltip(TRANS("An arbitrary array panner with coherent and incoherent spreading options. Basically, any array (up to 64 channel) that can be desribed based on a number of impulse response (IR) measurements and loaded as a SOFA file can be used (e.g. HRIRs, or microphone array IRs).\n"));
 
 	/* Specify screen refresh rate */
     startTimer(TIMER_GUI_RELATED, 40);

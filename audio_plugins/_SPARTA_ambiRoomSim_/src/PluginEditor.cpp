@@ -312,6 +312,19 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorder->setTooltip("The encoding order. Note that the plug-in will output (order+1)^2 Ambisonic (spherical harmonic) signals.");
     CBoutputFormat->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
     CBnormalisation->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
+    SL_num_sources->setTooltip("Number of sound sources to include in the simulation (one input channel for each).");
+    SL_num_receivers->setTooltip("Number of Ambisonic receivers to include in the simulation (outputs stacked up to a maximum of 64 channels).");
+    s_roomLenX->setTooltip("Room length along the X-axis, in metres.");
+    s_roomLenY->setTooltip("Room length along the Y-axis, in metres.");
+    s_roomLenZ->setTooltip("Room length along the Z-axis, in metres.");
+    s_attenCoeff_pX->setTooltip("Wall absorption coefficient for the wall at which the positive X-axis intersects.");
+    s_attenCoeff_nX->setTooltip("Wall absorption coefficient for the wall at which the negative X-axis intersects.");
+    s_attenCoeff_pY->setTooltip("Wall absorption coefficient for the wall at which the positive Y-axis intersects.");
+    s_attenCoeff_nY->setTooltip("Wall absorption coefficient for the wall at which the negative Y-axis intersects.");
+    s_attenCoeff_pZ->setTooltip("Wall absorption coefficient for the wall at which the positive Z-axis intersects.");
+    s_attenCoeff_nZ->setTooltip("Wall absorption coefficient for the wall at which the negative Z-axis intersects.");
+    TB_enableIMS->setTooltip("Whether to enable reflection orders greater than 0.");
+    SL_max_reflection_order->setTooltip("The maximum reflection order for the simulation.");
 
     /* Plugin description */
     pluginDescription.reset (new juce::ComboBox ("new combo box"));
@@ -319,7 +332,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pluginDescription->setBounds (0, 0, 200, 32);
     pluginDescription->setAlpha(0.0f);
     pluginDescription->setEnabled(false);
-    pluginDescription->setTooltip(TRANS("WIP"));
+    pluginDescription->setTooltip(TRANS("This is a shoebox room simulator based on the image source method. It supports multiple sources and Ambisonic receivers. Due to the 64 channel limit, the number of receivers is order-dependent; e.g.: up to 16xFOA, 4xTOA, or 1x7th-order receivers."));
 
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
