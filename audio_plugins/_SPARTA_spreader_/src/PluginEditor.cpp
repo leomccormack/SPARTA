@@ -39,7 +39,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_sources.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_num_sources.get());
-    SL_num_sources->setRange (1, 64, 1);
+    SL_num_sources->setRange (1, 8, 1);
     SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
@@ -905,7 +905,7 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_sources"
           virtualName="" explicitFocusOrder="0" pos="152 65 48 20" min="1.0"
-          max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          max="8.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_N_dirs"
