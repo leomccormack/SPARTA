@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.4
+  Created with Projucer version: 6.0.8
 
   ------------------------------------------------------------------------------
 
@@ -71,9 +71,9 @@ private:
     bool showInputs;
     bool showOutputs;
     Rectangle<float> SourceIcons[SPREADER_MAX_NUM_SOURCES];
-    Rectangle<float> LoudspeakerIcons[MAX_NUM_OUT_DIRS];
+    Rectangle<float> IRIcons[MAX_NUM_OUT_DIRS];
     int NSources;
-    int NLoudspeakers;
+    int NIRs;
     bool sourceIconIsClicked;
     int indexOfClickedSource;
     //[/UserVariables]

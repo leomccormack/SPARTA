@@ -263,8 +263,11 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     for(int i=0; i<spreader_getMaxNumSources(); i++){
         xml.setAttribute("SourceAziDeg" + String(i), spreader_getSourceAzi_deg(hSpr,i));
         xml.setAttribute("SourceElevDeg" + String(i), spreader_getSourceElev_deg(hSpr,i));
+        xml.setAttribute("SourceSpreadDeg" + String(i), spreader_getSourceSpread_deg(hSpr,i));
     }
     xml.setAttribute("nSources", spreader_getNumSources(hSpr));
+    xml.setAttribute("procMode", spreader_getSpreadingMode(hSpr));
+    xml.setAttribute("avgCoeff", spreader_getAveragingCoeff(hSpr));
 
     if(!spreader_getUseDefaultHRIRsflag(hSpr))
         xml.setAttribute("SofaFilePath", String(spreader_getSofaFilePath(hSpr)));
@@ -283,9 +286,15 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                     spreader_setSourceAzi_deg(hSpr, i, (float)xmlState->getDoubleAttribute("SourceAziDeg" + String(i), 0.0f));
                 if(xmlState->hasAttribute("SourceElevDeg" + String(i)))
                     spreader_setSourceElev_deg(hSpr, i, (float)xmlState->getDoubleAttribute("SourceElevDeg" + String(i), 0.0f));
+                if(xmlState->hasAttribute("SourceSpreadDeg" + String(i)))
+                    spreader_setSourceSpread_deg(hSpr, i, (float)xmlState->getDoubleAttribute("SourceSpreadDeg" + String(i), 0.0f));
             }
             if(xmlState->hasAttribute("nSources"))
-               spreader_setNumSources(hSpr, xmlState->getIntAttribute("nSources", 1));
+                spreader_setNumSources(hSpr, xmlState->getIntAttribute("nSources", 1));
+            if(xmlState->hasAttribute("procMode"))
+                spreader_setSpreadingMode(hSpr, xmlState->getIntAttribute("procMode", 1));
+            if(xmlState->hasAttribute("avgCoeff"))
+                spreader_setAveragingCoeff(hSpr, xmlState->getDoubleAttribute("avgCoeff", 0.5f));
 
             if(xmlState->hasAttribute("SofaFilePath")){
                 String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");

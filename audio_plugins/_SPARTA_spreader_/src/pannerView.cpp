@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.4
+  Created with Projucer version: 6.0.8
 
   ------------------------------------------------------------------------------
 
@@ -55,12 +55,12 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
                                    icon_size);
     }
     NSources = spreader_getNumSources(hSpr);
-    NLoudspeakers = spreader_getNDirs(hSpr)>MAX_NUM_OUT_DIRS? MAX_NUM_OUT_DIRS : spreader_getNDirs(hSpr);
-    for(int ls=0; ls<NLoudspeakers; ls++){
-        LoudspeakerIcons[ls].setBounds(width - width*(spreader_getIRAzi_deg(hSpr, ls) + 180.0f)/360.f - icon_size/2.0f,
-                                       height - height*(spreader_getIRElev_deg(hSpr, ls)+90.0f)/180.0f - icon_size/2.0f,
-                                       icon_size,
-                                       icon_size);
+    NIRs = spreader_getNDirs(hSpr)>MAX_NUM_OUT_DIRS? MAX_NUM_OUT_DIRS : spreader_getNDirs(hSpr);
+    for(int ls=0; ls<NIRs; ls++){
+        IRIcons[ls].setBounds(width - width*(spreader_getIRAzi_deg(hSpr, ls) + 180.0f)/360.f - icon_size/2.0f,
+                              height - height*(spreader_getIRElev_deg(hSpr, ls)+90.0f)/180.0f - icon_size/2.0f,
+                              icon_size,
+                              icon_size);
     }
     showInputs = true;
     showOutputs = true;
@@ -145,22 +145,32 @@ void pannerView::paint (juce::Graphics& g)
     }
 
     if(showOutputs){
-        /* Draw loudspeaker/HRIR icons */
-        for(int ls=0; ls<NLoudspeakers; ls++){
+        /* Draw IR icons */
+        for(int ls=0; ls<NIRs; ls++){
             /* icon */
             g.setColour(Colour::fromFloatRGBA(0.5f, 1.0f, 0.1f, 1.0f));
             g.setOpacity(0.3f);
-            g.fillRect(LoudspeakerIcons[ls]);
+            g.fillRect(IRIcons[ls]);
         }
     }
 
     if(showInputs){
         /* Draw Source icons */
         for(int src=0; src<NSources; src++){
+            /* spread */
+            int* actDir = spreader_getDirectionActivePtr(hSpr, src);
+            //g.setColour(Colour::fromFloatRGBA(1.0f, 0.0f, 1.0f, 0.85f));
+            g.setColour(Colours::white);
+            g.setOpacity(0.15f);
+            if(actDir!=NULL){
+                for(int ls=0; ls<NIRs; ls++){
+                    if(actDir[ls])
+                        g.fillRect(IRIcons[ls]);
+                }
+            }
+
             /* icon */
-            //g.setColour(Colour::fromFloatRGBA(1.0-((float)src/(float)NSources), 0.3f, ((float)src/(float)NSources), 1.0f));
             g.setColour(Colour::fromFloatRGBA(1.0f, 0.0f, 1.0f, 0.85f));
-            //setColourGradient(g, (float)src/(float)NSources);
             g.setOpacity(0.2f);
             g.fillEllipse(SourceIcons[src].expanded(8.0f,8.0f));
             g.setOpacity(0.4f);
@@ -241,12 +251,12 @@ void pannerView::refreshPanView()
                                    icon_size);
     }
     NSources = spreader_getNumSources(hSpr);
-    NLoudspeakers = spreader_getNDirs(hSpr)>MAX_NUM_OUT_DIRS ? MAX_NUM_OUT_DIRS : spreader_getNDirs(hSpr);
-    for(int ls=0; ls<NLoudspeakers; ls++){
-        LoudspeakerIcons[ls].setBounds(width - width*(spreader_getIRAzi_deg(hSpr, ls) + 180.0f)/360.f - icon_size/2.0f,
-                                       height - height*(spreader_getIRElev_deg(hSpr, ls) + 90.0f)/180.0f - icon_size/2.0f,
-                                       icon_size,
-                                       icon_size);
+    NIRs = spreader_getNDirs(hSpr)>MAX_NUM_OUT_DIRS ? MAX_NUM_OUT_DIRS : spreader_getNDirs(hSpr);
+    for(int ls=0; ls<NIRs; ls++){
+        IRIcons[ls].setBounds(width - width*(spreader_getIRAzi_deg(hSpr, ls) + 180.0f)/360.f - icon_size/2.0f,
+                              height - height*(spreader_getIRElev_deg(hSpr, ls) + 90.0f)/180.0f - icon_size/2.0f,
+                              icon_size,
+                              icon_size);
     }
 
     repaint();
