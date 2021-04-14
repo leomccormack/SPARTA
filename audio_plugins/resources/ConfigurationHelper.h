@@ -412,7 +412,7 @@ public:
         for (int i = 0; i < nElements; ++i)
         {
             var& element = elementArray[i];
-            float azimuth, elevation, radius, gain;
+            float azimuth, elevation, distance, gain;
             int channel;
             bool isImaginary;
             
@@ -432,13 +432,13 @@ public:
             else
                 return Result::fail ("Wrong datatype for attribute 'Elevation' for element #" + String (i+1) + ".");
             
-            if (! element.hasProperty ("Radius"))
-                return Result::fail ("No 'Radius' attribute for element #" + String (i+1) + ".");
-            var rad = element.getProperty ("Radius", var());
-            if (rad.isDouble() || rad.isInt())
-                radius = rad;
+            if (! element.hasProperty ("Distance"))
+                return Result::fail ("No 'Distance' attribute for element #" + String (i+1) + ".");
+            var dist = element.getProperty ("Distance", var());
+            if (dist.isDouble() || dist.isInt())
+                distance = dist;
             else
-                return Result::fail("Wrong datatype for attribute 'Radius' for element #" + String (i+1) + ".");
+                return Result::fail("Wrong datatype for attribute 'Distance' for element #" + String (i+1) + ".");
             
             if (! element.hasProperty ("Gain"))
                 return Result::fail ("No 'Gain' attribute for element #" + String (i+1) + ".");
@@ -464,7 +464,7 @@ public:
             else
                 return Result::fail ("Wrong datatype for attribute 'IsImaginary' for element #" + String (i+1) + ".");
 
-            elements.appendChild (createElement(azimuth, elevation, radius, channel, isImaginary, gain), undoManager);
+            elements.appendChild (createElement(azimuth, elevation, distance, channel, isImaginary, gain), undoManager);
         }
         
         return Result::ok();
@@ -473,13 +473,13 @@ public:
     /**
      Creates a single element ValueTree, which can be appended to another ValueTree holding several elements.
      */
-    static ValueTree createElement (const float azimuth, const float elevation, const float radius, const int channel, const bool isImaginary, const float gain)
+    static ValueTree createElement (const float azimuth, const float elevation, const float distance, const int channel, const bool isImaginary, const float gain)
     {
         ValueTree newElement ("Element");
         
         newElement.setProperty ("Azimuth", azimuth, nullptr);
         newElement.setProperty ("Elevation", elevation, nullptr);
-        newElement.setProperty ("Radius", radius, nullptr);
+        newElement.setProperty ("Distance", distance, nullptr);
         newElement.setProperty ("Channel", channel, nullptr);
         newElement.setProperty ("Imaginary", isImaginary, nullptr);
         newElement.setProperty ("Gain", gain, nullptr);
@@ -590,7 +590,7 @@ public:
 
             loudspeaker->setProperty ("Azimuth", (*it).getProperty ("Azimuth"));
             loudspeaker->setProperty ("Elevation", (*it).getProperty ("Elevation"));
-            loudspeaker->setProperty ("Radius", (*it).getProperty ("Radius"));
+            loudspeaker->setProperty ("Distance", (*it).getProperty ("Distance"));
             loudspeaker->setProperty ("IsImaginary", (*it).getProperty("Imaginary"));
             loudspeaker->setProperty ("Channel", (*it).getProperty("Channel"));
             loudspeaker->setProperty ("Gain", (*it).getProperty("Gain"));
@@ -624,7 +624,7 @@ public:
             
             element->setProperty ("Azimuth", (*it).getProperty ("Azimuth"));
             element->setProperty ("Elevation", (*it).getProperty ("Elevation"));
-            element->setProperty ("Radius", (*it).getProperty ("Radius"));
+            element->setProperty ("Distance", (*it).getProperty ("Distance"));
             element->setProperty ("IsImaginary", (*it).getProperty("Imaginary"));
             element->setProperty ("Channel", (*it).getProperty("Channel"));
             element->setProperty ("Gain", (*it).getProperty("Gain"));
