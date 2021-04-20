@@ -47,23 +47,32 @@ void PluginProcessor::setParameter (int index, float newValue)
             case k_numInputs:       spreader_setNumSources(hSpr, (int)(newValue*(float)(SPREADER_MAX_NUM_SOURCES)+0.5)); break;
         }
     }
-    /* source direction parameters */
+    /* source direction and spread parameters */
     else{
         index-=k_NumOfParameters;
         float newValueScaled;
-        if (!(index % 2)){
-            newValueScaled = (newValue - 0.5f)*360.0f;
-            if (newValueScaled != spreader_getSourceAzi_deg(hSpr, index/2)){
-                spreader_setSourceAzi_deg(hSpr, index/2, newValueScaled);
-                refreshWindow = true;
-            }
-        }
-        else{
-            newValueScaled = (newValue - 0.5f)*180.0f;
-            if (newValueScaled != spreader_getSourceElev_deg(hSpr, index/2)){
-                spreader_setSourceElev_deg(hSpr, index/2, newValueScaled);
-                refreshWindow = true;
-            }
+        switch((index % 3)){
+            case 0:
+                newValueScaled = (newValue - 0.5f)*360.0f;
+                if (newValueScaled != spreader_getSourceAzi_deg(hSpr, (int)((float)index/3.0f+0.001f))){
+                    spreader_setSourceAzi_deg(hSpr, (int)((float)index/3.0f+0.001f), newValueScaled);
+                    refreshWindow = true;
+                }
+                break;
+            case 1:
+                newValueScaled = (newValue - 0.5f)*180.0f;
+                if (newValueScaled != spreader_getSourceElev_deg(hSpr, (int)((float)index/3.0f+0.001f))){
+                    spreader_setSourceElev_deg(hSpr, (int)((float)index/3.0f+0.001f), newValueScaled);
+                    refreshWindow = true;
+                }
+                break;
+            case 2:
+                newValueScaled = newValue*360.0f;
+                if (newValueScaled != spreader_getSourceSpread_deg(hSpr, (int)((float)index/3.0f+0.001f))){
+                    spreader_setSourceSpread_deg(hSpr, (int)((float)index/3.0f+0.001f), newValueScaled);
+                    refreshWindow = true;
+                }
+                break;
         }
     }
 }
@@ -81,19 +90,21 @@ float PluginProcessor::getParameter (int index)
             default: return 0.0f;
         }
     }
-    /* source direction parameters */
-    else{
+    /* source direction and spread parameters */
+    else {
         index-=k_NumOfParameters;
-        if (!(index % 2))
-            return (spreader_getSourceAzi_deg(hSpr, index/2)/360.0f) + 0.5f;
-        else
-            return (spreader_getSourceElev_deg(hSpr, (index-1)/2)/180.0f) + 0.5f;
+        switch((index % 3)){
+            case 0: return (spreader_getSourceAzi_deg(hSpr, (int)((float)index/3.0f+0.001f))/360.0f) + 0.5f;
+            case 1: return (spreader_getSourceElev_deg(hSpr, (int)((float)index/3.0f+0.001f))/180.0f) + 0.5f;
+            case 2: return (spreader_getSourceSpread_deg(hSpr, (int)((float)index/3.0f+0.001f))/360.0f);
+            default: return 0.0f;
+        }
     }
 }
 
 int PluginProcessor::getNumParameters()
 {
-	return k_NumOfParameters + 2*SPREADER_MAX_NUM_SOURCES;
+	return k_NumOfParameters + 3*SPREADER_MAX_NUM_SOURCES;
 }
 
 const String PluginProcessor::getName() const
@@ -110,13 +121,15 @@ const String PluginProcessor::getParameterName (int index)
             default: return "NULL";
         }
     }
-    /* source direction parameters */
-    else{
+    /* source direction and spread parameters */
+    else {
         index-=k_NumOfParameters;
-        if (!(index % 2))
-            return TRANS("Azim_") + String(index/2);
-        else
-            return TRANS("Elev_") + String((index-1)/2);
+        switch((index % 3)){
+            case 0: return TRANS("SrcAzim_") + String((int)((float)index/3.0f+0.001f));
+            case 1: return TRANS("SrcElev_") + String((int)((float)index/3.0f+0.001f));
+            case 2: return TRANS("SrcSpread_") + String((int)((float)index/3.0f+0.001f));
+            default: return "NULL";
+        }
     }
 }
 
@@ -129,13 +142,15 @@ const String PluginProcessor::getParameterText(int index)
             default: return "NULL";
         }
     }
-    /* source direction parameters */
-    else{
+    /* source direction and spread parameters */
+    else {
         index-=k_NumOfParameters;
-        if (!(index % 2))
-            return String(spreader_getSourceAzi_deg(hSpr, index/2));
-        else
-            return String(spreader_getSourceElev_deg(hSpr, (index-1)/2));
+        switch((index % 3)){
+            case 0: return String(spreader_getSourceAzi_deg(hSpr, (int)((float)index/3.0f+0.001f)));
+            case 1: return String(spreader_getSourceElev_deg(hSpr, (int)((float)index/3.0f+0.001f)));
+            case 2: return String(spreader_getSourceSpread_deg(hSpr, (int)((float)index/3.0f+0.001f)));
+            default: return "NULL";
+        }
     }
 }
 
