@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.5
+  Created with Projucer version: 6.0.8
 
   ------------------------------------------------------------------------------
 
@@ -317,7 +317,7 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
                 ambi_roomsim_setSourceY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
                 ambi_roomsim_setSourceZ(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[2])/scale);
                 break;
-            default: assert(0); break;
+            default: break;
         }
     }
     else if(receiverIconIsClicked){
@@ -335,7 +335,7 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
                 ambi_roomsim_setReceiverY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
                 ambi_roomsim_setReceiverZ(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[2])/scale);
                 break;
-            default: assert(0); break;
+            default: break;
         }
     }
     //[/UserCode_mouseDrag]
