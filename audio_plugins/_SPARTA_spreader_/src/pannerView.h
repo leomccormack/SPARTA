@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.0.8
 
   ------------------------------------------------------------------------------
 
@@ -24,6 +24,7 @@
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
 
+#define MAX_NUM_OUT_DIRS 15000
 //[/Headers]
 
 
@@ -36,60 +37,52 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class inputCoordsView  : public Component,
-                         public juce::Slider::Listener
+class pannerView  : public Component
 {
 public:
     //==============================================================================
-    inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH );
-    ~inputCoordsView() override;
+    pannerView (PluginProcessor* ownerFilter, int _width, int _height);
+    ~pannerView() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    void setNCH(int newNCH){
-        newNCH = newNCH > MAX_NUM_CHANNELS ? MAX_NUM_CHANNELS : newNCH;
-        refreshCoords();
-        if(newNCH!=currentNCH){
-            currentNCH = newNCH;
-            resized();
-            sliderHasChanged = true;
-        }
-    }
 
-    bool getHasASliderChanged(){
-        return sliderHasChanged;
-    }
+    void refreshPanView();
+    void setShowInputs(bool state){ showInputs = state; }
+    void setShowOutputs(bool state){ showOutputs = state; }
+    bool getSourceIconIsClicked(){ return sourceIconIsClicked; }
 
-    void setHasASliderChange(bool newState){
-        sliderHasChanged = newState;
-    }
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
     void resized() override;
-    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void mouseDown (const juce::MouseEvent& e) override;
+    void mouseDrag (const juce::MouseEvent& e) override;
+    void mouseUp (const juce::MouseEvent& e) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
-    void* hAmbi;
-    void refreshCoords();
-    std::unique_ptr<Slider>* xSliders;
-    std::unique_ptr<Slider>* ySliders;
-    std::unique_ptr<Slider>* zSliders;
-    int maxNCH, currentNCH;
-    bool sliderHasChanged;
-
+    void* hSpr;
+    int width;
+    int height;
+    bool showInputs;
+    bool showOutputs;
+    Rectangle<float> SourceIcons[SPREADER_MAX_NUM_SOURCES];
+    Rectangle<float> IRIcons[MAX_NUM_OUT_DIRS];
+    int NSources;
+    int NIRs;
+    bool sourceIconIsClicked;
+    int indexOfClickedSource;
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<juce::Slider> dummySlider;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (inputCoordsView)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (pannerView)
 };
 
 //[EndFile] You can add extra defines here...

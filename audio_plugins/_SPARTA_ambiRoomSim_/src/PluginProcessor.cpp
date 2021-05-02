@@ -48,24 +48,61 @@ void PluginProcessor::setParameter (int index, float newValue)
             case k_numReceivers:  ambi_roomsim_setNumReceivers(hAmbi, (int)(newValue*(float)(ROOM_SIM_MAX_NUM_RECEIVERS)+0.5)); break;
         }
     }
-    /* source direction parameters */
+    /* source position parameters */
+    else if(index<3*ROOM_SIM_MAX_NUM_SOURCES+k_NumOfParameters){
+        index-=k_NumOfParameters;
+        float newValueScaled;
+        switch((index % 3)){
+            case 0:
+                newValueScaled = newValue * ambi_roomsim_getRoomDimX(hAmbi);
+                if (newValueScaled != ambi_roomsim_getSourceX(hAmbi, (int)((float)index/3.0f+0.001f))){
+                    ambi_roomsim_setSourceX(hAmbi, (int)((float)index/3.0f+0.001f), newValueScaled);
+                    refreshWindow = true;
+                }
+                break;
+            case 1:
+                newValueScaled = newValue * ambi_roomsim_getRoomDimY(hAmbi);
+                if (newValueScaled != ambi_roomsim_getSourceY(hAmbi, (int)((float)index/3.0f+0.001f))){
+                    ambi_roomsim_setSourceY(hAmbi, (int)((float)index/3.0f+0.001f), newValueScaled);
+                    refreshWindow = true;
+                }
+                break;
+            case 2:
+                newValueScaled = newValue * ambi_roomsim_getRoomDimZ(hAmbi);
+                if (newValueScaled != ambi_roomsim_getSourceZ(hAmbi, (int)((float)index/3.0f+0.001f))){
+                    ambi_roomsim_setSourceZ(hAmbi, (int)((float)index/3.0f+0.001f), newValueScaled);
+                    refreshWindow = true;
+                }
+                break;
+        }
+    }
+    /* Receiver position parameters */
     else{
-//        index-=k_NumOfParameters;
-//        float newValueScaled;
-//        if (!(index % 3)){
-//            newValueScaled = (newValue - 0.5f)*360.0f;
-//            if (newValueScaled != ambi_roomsim_getSourceAzi_deg(hAmbi, index/2)){
-//                ambi_roomsim_setSourceAzi_deg(hAmbi, index/2, newValueScaled);
-//                refreshWindow = true;
-//            }
-//        }
-//        else{
-//            newValueScaled = (newValue - 0.5f)*180.0f;
-//            if (newValueScaled != ambi_roomsim_getSourceElev_deg(hAmbi, index/2)){
-//                ambi_roomsim_setSourceElev_deg(hAmbi, index/2, newValueScaled);
-//                refreshWindow = true;
-//            }
-//        }
+        index-= (k_NumOfParameters+3*ROOM_SIM_MAX_NUM_SOURCES);
+        float newValueScaled;
+        switch((index % 3)){
+            case 0:
+                newValueScaled = newValue * ambi_roomsim_getRoomDimX(hAmbi);
+                if (newValueScaled != ambi_roomsim_getReceiverX(hAmbi, (int)((float)index/3.0f+0.001f))){
+                    ambi_roomsim_setReceiverX(hAmbi, (int)((float)index/3.0f+0.001f), newValueScaled);
+                    refreshWindow = true;
+                }
+                break;
+            case 1:
+                newValueScaled = newValue * ambi_roomsim_getRoomDimY(hAmbi);
+                if (newValueScaled != ambi_roomsim_getReceiverY(hAmbi, (int)((float)index/3.0f+0.001f))){
+                    ambi_roomsim_setReceiverY(hAmbi, (int)((float)index/3.0f+0.001f), newValueScaled);
+                    refreshWindow = true;
+                }
+                break;
+            case 2:
+                newValueScaled = newValue * ambi_roomsim_getRoomDimZ(hAmbi);
+                if (newValueScaled != ambi_roomsim_getReceiverZ(hAmbi, (int)((float)index/3.0f+0.001f))){
+                    ambi_roomsim_setReceiverZ(hAmbi, (int)((float)index/3.0f+0.001f), newValueScaled);
+                    refreshWindow = true;
+                }
+                break;
+        }
     }
 }
 
@@ -76,7 +113,7 @@ void PluginProcessor::setCurrentProgram (int /*index*/)
 float PluginProcessor::getParameter (int index)
 {
     /* standard parameters */
-    //if(index < k_NumOfParameters){
+    if(index < k_NumOfParameters){
         switch (index) {
             case k_outputOrder:   return (float)(ambi_roomsim_getOutputOrder(hAmbi)-1)/(float)(MAX_SH_ORDER-1);
             case k_channelOrder:  return (float)(ambi_roomsim_getChOrder(hAmbi)-1)/(float)(NUM_CH_ORDERINGS-1);
@@ -85,20 +122,32 @@ float PluginProcessor::getParameter (int index)
             case k_numReceivers:  return (float)(ambi_roomsim_getNumReceivers(hAmbi))/(float)(ROOM_SIM_MAX_NUM_RECEIVERS);
             default: return 0.0f;
         }
-    //}
-    /* source + receiver position parameters */
-//    else{
-//        index-=k_NumOfParameters;
-//        if ((index % 3)==0)
-//            return (ambi_roomsim_getSourceX(hAmbi, index/3)/360.0f) + 0.5f;
-//        else
-//            return (ambi_roomsim_getSourceElev_deg(hAmbi, (index-1)/3)/180.0f) + 0.5f;
-//    }
+    }
+    /* source position parameters */
+    else if(index<3*ROOM_SIM_MAX_NUM_SOURCES+k_NumOfParameters){
+        index-=k_NumOfParameters;
+        switch((index % 3)){
+            case 0: return ambi_roomsim_getSourceX(hAmbi, (int)((float)index/3.0f+0.001f))/ambi_roomsim_getRoomDimX(hAmbi);
+            case 1: return ambi_roomsim_getSourceY(hAmbi, (int)((float)index/3.0f+0.001f))/ambi_roomsim_getRoomDimY(hAmbi);
+            case 2: return ambi_roomsim_getSourceZ(hAmbi, (int)((float)index/3.0f+0.001f))/ambi_roomsim_getRoomDimZ(hAmbi);
+            default: return 0.0f;
+        }
+    }
+    /* Receiver position parameters */
+    else{
+        index-= (k_NumOfParameters+3*ROOM_SIM_MAX_NUM_SOURCES);
+        switch((index % 3)){
+            case 0: return ambi_roomsim_getReceiverX(hAmbi, (int)((float)index/3.0f+0.001f))/ambi_roomsim_getRoomDimX(hAmbi);
+            case 1: return ambi_roomsim_getReceiverY(hAmbi, (int)((float)index/3.0f+0.001f))/ambi_roomsim_getRoomDimY(hAmbi);
+            case 2: return ambi_roomsim_getReceiverZ(hAmbi, (int)((float)index/3.0f+0.001f))/ambi_roomsim_getRoomDimZ(hAmbi);
+            default: return 0.0f;
+        }
+    }
 }
 
 int PluginProcessor::getNumParameters()
 {
-    return k_NumOfParameters;// + 3*ROOM_SIM_MAX_NUM_SOURCES + 3*ROOM_SIM_MAX_NUM_RECEIVERS;
+    return k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + 3*ROOM_SIM_MAX_NUM_RECEIVERS;
 }
 
 const String PluginProcessor::getName() const
@@ -109,7 +158,7 @@ const String PluginProcessor::getName() const
 const String PluginProcessor::getParameterName (int index)
 {
     /* standard parameters */
-    //if(index < k_NumOfParameters){
+    if(index < k_NumOfParameters){
         switch (index) {
             case k_outputOrder:  return "order";
             case k_channelOrder: return "channel_order";
@@ -118,21 +167,33 @@ const String PluginProcessor::getParameterName (int index)
             case k_numReceivers: return "num_receivers";
             default: return "NULL";
         }
-    //}
-    /* source direction parameters */
-//    else{
-//        index-=k_NumOfParameters;
-//        if (!(index % 2))
-//            return TRANS("Azim_") + String(index/2);
-//        else
-//            return TRANS("Elev_") + String((index-1)/2);
-//    }
+    }
+    /* source position parameters */
+    else if(index<3*ROOM_SIM_MAX_NUM_SOURCES+k_NumOfParameters){
+        index-=k_NumOfParameters;
+        switch((index % 3)){
+            case 0: return TRANS("SourceX_") + String((int)((float)index/3.0f+0.001f));
+            case 1: return TRANS("SourceY_") + String((int)((float)index/3.0f+0.001f));
+            case 2: return TRANS("SourceZ_") + String((int)((float)index/3.0f+0.001f));
+            default: return "NULL";
+        }
+    }
+    /* Receiver position parameters */
+    else{
+        index-= (k_NumOfParameters+3*ROOM_SIM_MAX_NUM_SOURCES);
+        switch((index % 3)){
+            case 0: return TRANS("ReceiverX_") + String((int)((float)index/3.0f+0.001f));
+            case 1: return TRANS("ReceiverY_") + String((int)((float)index/3.0f+0.001f));
+            case 2: return TRANS("ReceiverZ_") + String((int)((float)index/3.0f+0.001f));
+            default: return "NULL";
+        }
+    }
 }
 
 const String PluginProcessor::getParameterText(int index)
 {
     /* standard parameters */
-//    if(index < k_NumOfParameters){
+    if(index < k_NumOfParameters){
         switch (index) {
             case k_outputOrder: return String(ambi_roomsim_getOutputOrder(hAmbi));
             case k_channelOrder:
@@ -152,15 +213,27 @@ const String PluginProcessor::getParameterText(int index)
             case k_numReceivers: return String(ambi_roomsim_getNumReceivers(hAmbi));
             default: return "NULL";
         }
-//    }
-//    /* source direction parameters */
-//    else{
-//        index-=k_NumOfParameters;
-//        if (!(index % 2))
-//            return String(ambi_roomsim_getSourceAzi_deg(hAmbi, index/2));
-//        else
-//            return String(ambi_roomsim_getSourceElev_deg(hAmbi, (index-1)/2));
-//    }
+    }
+    /* source position parameters */
+    else if(index<3*ROOM_SIM_MAX_NUM_SOURCES+k_NumOfParameters){
+        index-=k_NumOfParameters;
+        switch((index % 3)){
+            case 0: return String(ambi_roomsim_getSourceX(hAmbi, (int)((float)index/3.0f+0.001f)));
+            case 1: return String(ambi_roomsim_getSourceY(hAmbi, (int)((float)index/3.0f+0.001f)));
+            case 2: return String(ambi_roomsim_getSourceZ(hAmbi, (int)((float)index/3.0f+0.001f)));
+            default: return "NULL";
+        }
+    }
+    /* Receiver position parameters */
+    else{
+        index-= (k_NumOfParameters+3*ROOM_SIM_MAX_NUM_SOURCES);
+        switch((index % 3)){
+            case 0: return String(ambi_roomsim_getReceiverX(hAmbi, (int)((float)index/3.0f+0.001f)));
+            case 1: return String(ambi_roomsim_getReceiverY(hAmbi, (int)((float)index/3.0f+0.001f)));
+            case 2: return String(ambi_roomsim_getReceiverZ(hAmbi, (int)((float)index/3.0f+0.001f)));
+            default: return "NULL";
+        }
+    } 
 }
 
 const String PluginProcessor::getInputChannelName (int channelIndex) const
