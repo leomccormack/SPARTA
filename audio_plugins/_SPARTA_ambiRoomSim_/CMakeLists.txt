@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-project(sparta_array2sh VERSION 1.6.7)
+project(sparta_ambiRoomSim VERSION 1.0.0)
 message(STATUS "  ${PROJECT_NAME}")
 
 # juce helper function to create a library, which is configured as a JUCE plugin
@@ -15,7 +15,7 @@ juce_add_plugin(${PROJECT_NAME}
     EDITOR_WANTS_KEYBOARD_FOCUS FALSE           
     COPY_PLUGIN_AFTER_BUILD     TRUE     # Where does this go in Windows + Linux?
     PLUGIN_MANUFACTURER_CODE    LEOM                
-    PLUGIN_CODE                 ASOA                     
+    PLUGIN_CODE                 ARSA                     
     FORMATS                     VST      # ( VST AAX Unity VST3 AU AUv3 Standalone )
     PRODUCT_NAME                "${PROJECT_NAME}"
 )   
@@ -31,16 +31,12 @@ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginProcessor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginEditor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginProcessor.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/anaview_window.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/anaview_window.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/anaview.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/anaview.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/eqview_window.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/eqview_window.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/eqview.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/eqview.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/sensorCoordsView.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/sensorCoordsView.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pannerView.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pannerView.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/inputCoordsView.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/inputCoordsView.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/outputCoordsView.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/outputCoordsView.cpp
 )
 
 # Add any extra JUCE-specific pre-processor definitions
@@ -55,7 +51,7 @@ PUBLIC
 # Link with saf example, and the required juce modules
 target_link_libraries(${PROJECT_NAME} 
 PRIVATE 
-    saf_example_array2sh
+    saf_example_ambi_roomsim
     juce::juce_recommended_config_flags
     juce::juce_recommended_lto_flags
     juce::juce_audio_plugin_client

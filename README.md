@@ -25,6 +25,7 @@ This repository contains the following VST plug-ins:
 * **PowerMap** - A sound-field visualisation plug-in based on Ambisonic signals as input (up to 7th order), with PWD/MVDR/MUSIC/Min-Norm options.
 * **Rotator** - A flexible Ambisonic rotator (up to 7th order) with head-tracking support via OSC messages. 
 * **SLDoA** - A frequency-dependent sound-field visualiser (up to 7th order), based on depicting the direction-of-arrival (DoA) estimates derived from spatially localised active-intensity vectors. The low frequency estimates are shown with blue icons, mid-frequencies with green, and high-frequencies with red. 
+* **Spreader** - An arbitrary array (HRIRs, microphone array IRs, etc.) encoder with coherent and incoherent spreading modes.
 
 ## Pre-built plug-ins
 
