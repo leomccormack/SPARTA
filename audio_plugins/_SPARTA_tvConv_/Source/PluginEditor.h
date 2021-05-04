@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.5
+  Created with Projucer version: 6.0.8
 
   ------------------------------------------------------------------------------
 
@@ -57,6 +57,9 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    
+    /* Refresh coordinate limits based on loaded sofa files*/
+    void refreshCoords();
 
     //[/UserMethods]
 
@@ -84,17 +87,11 @@ private:
          String directory = fileChooser.getCurrentFile().getFullPathName();
          const char* new_cstring = (const char*)directory.toUTF8();
          tvconv_setSofaFilePath(hTVC, new_cstring);
+         refreshCoords();
      }
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
-
-//    /* wav file loading */
-//    void filenameComponentChanged (FilenameComponent*) override  {
-//        String wavFilePath = fileChooser.getCurrentFile().getFullPathName();
-//        hVst->setWavDirectory(wavFilePath);
-//        hVst->loadWavFile();
-//    }
 
     /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
@@ -105,14 +102,19 @@ private:
     //==============================================================================
     std::unique_ptr<juce::ToggleButton> TBenablePartConv;
     std::unique_ptr<juce::Label> label_hostBlockSize;
-    std::unique_ptr<juce::Label> label_NFilters;
     std::unique_ptr<juce::Label> label_filterLength;
     std::unique_ptr<juce::Label> label_hostfs;
     std::unique_ptr<juce::Label> label_filterfs;
     std::unique_ptr<juce::Slider> SL_num_inputs;
-    std::unique_ptr<juce::Label> label_MatrixNInputs;
-    std::unique_ptr<juce::Label> label_MatrixNoutputs;
     std::unique_ptr<juce::Label> label_NOutputs;
+    std::unique_ptr<juce::Label> label_nIRpositions;
+    std::unique_ptr<juce::Slider> SL_source_y;
+    std::unique_ptr<juce::Slider> SL_source_z;
+    std::unique_ptr<juce::Slider> SL_source_x;
+    std::unique_ptr<juce::Slider> SL_receiver_x;
+    std::unique_ptr<juce::Slider> SL_receiver_y;
+    std::unique_ptr<juce::Slider> SL_receiver_z;
+    std::unique_ptr<juce::Label> label_receiverIdx;
 
 
     //==============================================================================

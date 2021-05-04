@@ -31,14 +31,14 @@ class PluginProcessor  : public AudioProcessor,
 {
 public:
     /* Set/Get functions */
-        void* getFXHandle() { return hTVCnv; }
-        int getCurrentBlockSize(){ return nHostBlockSize; }
-        int getCurrentNumInputs(){ return nNumInputs; }
-        int getCurrentNumOutputs(){ return nNumOutputs; }
-        void setSofaDirectory(String newDirectory){
+    void* getFXHandle() { return hTVCnv; }
+    int getCurrentBlockSize(){ return nHostBlockSize; }
+    int getCurrentNumInputs(){ return nNumInputs; }
+    int getCurrentNumOutputs(){ return nNumOutputs; }
+    void setSofaDirectory(String newDirectory){
             lastSofaDirectory = newDirectory;
-        }
-        String getSofaDirectory(){ return lastSofaDirectory; }
+    }
+    String getSofaDirectory(){ return lastSofaDirectory; }
     
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 /*index*/, pointer_sized_int /*value*/, void* /*ptr*/, float /*opt*/) override { return 0; }
@@ -49,6 +49,7 @@ public:
             return 1;
         return 0;
     }
+    
     
 private:
     void* hTVCnv;         /* tvconv handle */
