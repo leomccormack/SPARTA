@@ -271,7 +271,7 @@
                userNotes="-L/usr/local/lib -lsaf_mkl_custom" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom&#10;-Wl,-rpath,/usr/local/lib&#10;"
                extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra "
                extraDefs="SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER_MODULE"
-               xcodeValidArchs="i386,x86_64">
+               xcodeValidArchs="i386,x86_64" vstLegacyFolder="../../SDKs/VST_SDK/VST2_SDK">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_binauraliser_debug"
                        binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/compilers_and_libraries/mac/mkl/include"
