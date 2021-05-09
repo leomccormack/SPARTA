@@ -57,7 +57,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    
+
     /* Refresh coordinate limits based on loaded sofa files*/
     void refreshCoords();
 
@@ -80,11 +80,11 @@ private:
     SPARTALookAndFeel LAF;
 
     /* sofa loading */
-    FilenameComponent fileChooser;
+    std::unique_ptr<juce::FilenameComponent> fileComp;
 
     /* sofa file loading */
      void filenameComponentChanged (FilenameComponent*) override  {
-         String directory = fileChooser.getCurrentFile().getFullPathName();
+         String directory = fileComp->getCurrentFile().getFullPathName();
          const char* new_cstring = (const char*)directory.toUTF8();
          tvconv_setSofaFilePath(hTVC, new_cstring);
          refreshCoords();

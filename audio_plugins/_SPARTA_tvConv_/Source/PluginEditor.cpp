@@ -30,9 +30,7 @@
 
 //==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter), fileChooser ("File", File(), true, false, false,
-      "*.sofa;*.nc;", String(),
-      "Load SOFA File")
+    : AudioProcessorEditor(ownerFilter)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -232,11 +230,21 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
 
     /* file loader */
-    addAndMakeVisible (fileChooser);
-    fileChooser.addListener (this);
-    fileChooser.setBounds (16, 90, 272, 20);
+    fileComp.reset (new FilenameComponent("fileComp", {},
+                                          true, false, false,
+                                          "*.sofa;*.nc;", {},
+                                          "Load SOFA File"));
+    addAndMakeVisible (fileComp.get());
+    fileComp->addListener(this);
+    fileComp->setBounds (16, 90, 272, 20);
     if(hVst->getSofaDirectory() != TRANS("no_file"))
-        fileChooser.setCurrentFile(hVst->getSofaDirectory(), true);
+        fileComp->setCurrentFile(hVst->getSofaDirectory(), true);
+    else {
+        SL_receiver_x->setEnabled(false);
+        SL_receiver_y->setEnabled(false);
+        SL_receiver_z->setEnabled(false);
+    }
+
 
 	/* fetch current configuration */
     TBenablePartConv->setToggleState((bool)tvconv_getEnablePart(hTVC), dontSendNotification);
@@ -300,6 +308,7 @@ PluginEditor::~PluginEditor()
 
     //[Destructor]. You can add your own custom destruction code here..
     setLookAndFeel(nullptr);
+    fileComp = nullptr;
     //[/Destructor]
 }
 
@@ -398,8 +407,8 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 92, y = 1, width = 140, height = 32;
-        juce::String text (TRANS("TimeVarCovolver"));
+        int x = 92, y = 1, width = 148, height = 32;
+        juce::String text (TRANS("TimeVarConvolver"));
         juce::Colour fillColour = juce::Colour (0xffe9ff00);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -673,7 +682,7 @@ void PluginEditor::paint (juce::Graphics& g)
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		240, 16, 530, 11,
+		250, 16, 530, 11,
 		Justification::centredLeft, true);
 
     /* display warning message */
@@ -759,16 +768,19 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     else if (sliderThatWasMoved == SL_receiver_x.get())
     {
         //[UserSliderCode_SL_receiver_x] -- add your slider handling code here..
+        tvconv_setPosition(hTVC, 0, SL_receiver_x->getValue());
         //[/UserSliderCode_SL_receiver_x]
     }
     else if (sliderThatWasMoved == SL_receiver_y.get())
     {
         //[UserSliderCode_SL_receiver_y] -- add your slider handling code here..
+        tvconv_setPosition(hTVC, 1, SL_receiver_y->getValue());
         //[/UserSliderCode_SL_receiver_y]
     }
     else if (sliderThatWasMoved == SL_receiver_z.get())
     {
         //[UserSliderCode_SL_receiver_z] -- add your slider handling code here..
+        tvconv_setPosition(hTVC, 2, SL_receiver_z->getValue());
         //[/UserSliderCode_SL_receiver_z]
     }
 
@@ -811,19 +823,32 @@ void PluginEditor::timerCallback()
 
 void PluginEditor::refreshCoords()
 {
-    SL_receiver_x->setRange(tvconv_getMinDimension(hTVC, 0),
-                            tvconv_getMaxDimension(hTVC, 0),
-                            0.001);
+    if (tvconv_getMaxDimension(hTVC, 0) > tvconv_getMinDimension(hTVC, 0)){
+        SL_receiver_x->setEnabled(true);
+        SL_receiver_x->setRange(tvconv_getMinDimension(hTVC, 0),
+                                tvconv_getMaxDimension(hTVC, 0),
+                                0.001);
+    } else {
+        SL_receiver_x->setEnabled(false);
+    }
     SL_receiver_x->setValue(tvconv_getPosition(hTVC, 0));
-    
-    SL_receiver_y->setRange(tvconv_getMinDimension(hTVC, 1),
-                            tvconv_getMaxDimension(hTVC, 1),
-                            0.001);
+    if (tvconv_getMaxDimension(hTVC, 1) > tvconv_getMinDimension(hTVC, 1)){
+        SL_receiver_y->setEnabled(true);
+        SL_receiver_y->setRange(tvconv_getMinDimension(hTVC, 1),
+                                tvconv_getMaxDimension(hTVC, 1),
+                                0.001);
+    } else {
+        SL_receiver_y->setEnabled(false);
+    }
     SL_receiver_y->setValue(tvconv_getPosition(hTVC, 1));
-    
-    SL_receiver_z->setRange(tvconv_getMinDimension(hTVC, 2),
-                            tvconv_getMaxDimension(hTVC, 2),
-                            0.001);
+    if (tvconv_getMaxDimension(hTVC, 2) > tvconv_getMinDimension(hTVC, 2)){
+        SL_receiver_z->setEnabled(true);
+        SL_receiver_z->setRange(tvconv_getMinDimension(hTVC, 2),
+                                tvconv_getMaxDimension(hTVC, 2),
+                                0.001);
+    } else {
+        SL_receiver_z->setEnabled(false);
+    }
     SL_receiver_z->setValue(tvconv_getPosition(hTVC, 2));
 }
 
@@ -841,7 +866,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
                  parentClasses="public AudioProcessorEditor, public Timer, private FilenameComponentListener"
-                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter), fileChooser (&quot;File&quot;, File(), true, false, false,&#10;      &quot;*.sofa;*.nc;&quot;, String(),&#10;      &quot;Load SOFA File&quot;)"
+                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="780" initialHeight="500">
   <BACKGROUND backgroundColour="ffffffff">
@@ -858,7 +883,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
           fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="92 1 140 32" fill="solid: ffe9ff00" hasStroke="0" text="TimeVarCovolver"
+    <TEXT pos="92 1 148 32" fill="solid: ffe9ff00" hasStroke="0" text="TimeVarConvolver"
           fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 780 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
