@@ -65,8 +65,8 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
             rotator_setQuaternionX(hRot, message[1].getFloat32());
         if (message[2].isFloat32())
             rotator_setQuaternionY(hRot, message[2].getFloat32());
-        if (message[2].isFloat32())
-            rotator_setQuaternionZ(hRot, message[2].getFloat32());
+        if (message[3].isFloat32())
+            rotator_setQuaternionZ(hRot, message[3].getFloat32());
         return;
     }
     /* if values are sent individually: */
