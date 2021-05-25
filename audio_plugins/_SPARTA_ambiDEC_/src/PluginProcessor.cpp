@@ -51,7 +51,7 @@ void PluginProcessor::setParameter (int index, float newValue)
             case k_maxREweight1:    ambi_dec_setDecEnableMaxrE(hAmbi, 0, (int)(newValue+0.5f)); break;
             case k_maxREweight2:    ambi_dec_setDecEnableMaxrE(hAmbi, 1, (int)(newValue+0.5f)); break;
             case k_diffEQ1:         ambi_dec_setDecNormType(hAmbi, 0, (int)(newValue+1.5f)); break;
-            case k_diffEQ2:         ambi_dec_setDecNormType(hAmbi, 0, (int)(newValue+1.5f)); break;
+            case k_diffEQ2:         ambi_dec_setDecNormType(hAmbi, 1, (int)(newValue+1.5f)); break;
             case k_transitionFreq:  ambi_dec_setTransitionFreq(hAmbi, newValue*(AMBI_DEC_TRANSITION_MAX_VALUE-AMBI_DEC_TRANSITION_MIN_VALUE)+AMBI_DEC_TRANSITION_MIN_VALUE); break;
             case k_binauraliseLS:   ambi_dec_setBinauraliseLSflag(hAmbi, (int)(newValue+0.5f)); break;
         }
