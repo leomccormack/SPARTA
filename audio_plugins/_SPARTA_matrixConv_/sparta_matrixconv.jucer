@@ -193,8 +193,8 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2017 targetFolder="make/win64/VisualStudio2017/" extraDefs="SAF_USE_INTEL_MKL"
-            externalLibraries="saf_mkl_custom.lib" extraCompilerFlags="/bigobj">
+    <VS2017 targetFolder="make/win64/VisualStudio2017/" extraDefs="SAF_USE_INTEL_MKL_LP64"
+            externalLibraries="saf_mkl_custom_lp64.lib" extraCompilerFlags="/bigobj">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
                        targetName="sparta_matrixconv_debug" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"/>
@@ -219,8 +219,8 @@
       </MODULEPATHS>
     </VS2017>
     <VS2015 targetFolder="make/win64/VisualStudio2015/" vstFolder="C://SDKs/VST3 SDK"
-            externalLibraries="saf_mkl_custom.lib" vst3Folder="../../../../SDKs/VST3_SDK/"
-            windowsTargetPlatformVersion="8.1" extraDefs="SAF_USE_INTEL_MKL"
+            externalLibraries="saf_mkl_custom_lp64.lib" vst3Folder="../../../../SDKs/VST3_SDK/"
+            windowsTargetPlatformVersion="8.1" extraDefs="SAF_USE_INTEL_MKL_LP64"
             extraCompilerFlags="/bigobj">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
@@ -252,9 +252,9 @@
     </VS2015>
     <XCODE_MAC targetFolder="make/MacOSX/Xcode/" vstFolder="../../../../SDKs/VST3 SDK"
                externalLibraries="" vst3Folder="../../../../SDKs/VST3_SDK/"
-               extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom&#10;-Wl,-rpath,/usr/local/lib"
+               extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom_lp64&#10;-Wl,-rpath,/usr/local/lib"
                extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra"
-               userNotes="-L/usr/local/lib -liomp5&#10;" extraDefs="SAF_USE_INTEL_MKL"
+               userNotes="-L/usr/local/lib -liomp5&#10;" extraDefs="SAF_USE_INTEL_MKL_LP64"
                xcodeValidArchs="i386,x86_64">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_matrixconv_debug"
@@ -283,8 +283,8 @@
         <MODULEPATH id="juce_dsp" path="../../SDKs/JUCE/modules/"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <LINUX_MAKE targetFolder="make/LinuxMakefile" extraLinkerFlags="-L/usr/lib -lsaf_mkl_custom&#10;-Wl,-rpath,/usr/lib"
-                extraCompilerFlags="-pedantic" extraDefs="SAF_USE_INTEL_MKL">
+    <LINUX_MAKE targetFolder="make/LinuxMakefile" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom_lp64&#10;-Wl,-rpath,/usr/local/lib"
+                extraCompilerFlags="-pedantic" extraDefs="SAF_USE_INTEL_MKL_LP64">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_matrixconv_debug"
                        linkTimeOptimisation="1" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK"/>

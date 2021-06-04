@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(sparta_head VERSION 1.4.1)
+project(sparta_head VERSION 1.5.1)
 
 # Build everything as "Release" by default
 if (NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
