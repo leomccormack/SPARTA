@@ -967,7 +967,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 720, y = 106, width = 160, height = 30;
-        juce::String text (TRANS("Apply Pre-Processing:"));
+        juce::String text (TRANS("Apply Diffuse-Field EQ:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1181,7 +1181,7 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == TBenablePreProc.get())
     {
         //[UserButtonCode_TBenablePreProc] -- add your button handler code here..
-        binauraliser_setEnableHRIRsPreProc(hBin, (int)TBenablePreProc->getToggleState());
+        binauraliser_setEnableHRIRsDiffuseEQ(hBin, (int)TBenablePreProc->getToggleState());
         //[/UserButtonCode_TBenablePreProc]
     }
 
@@ -1211,8 +1211,8 @@ void PluginEditor::timerCallback(int timerID)
             sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
             if(binauraliser_getUseDefaultHRIRsflag(hBin)!=TBuseDefaultHRIRs->getToggleState())
                 TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
-            if(binauraliser_getEnableHRIRsPreProc(hBin)!=TBenablePreProc->getToggleState())
-                TBenablePreProc->setToggleState(binauraliser_getEnableHRIRsPreProc(hBin), dontSendNotification);
+            if(binauraliser_getEnableHRIRsDiffuseEQ(hBin)!=TBenablePreProc->getToggleState())
+                TBenablePreProc->setToggleState(binauraliser_getEnableHRIRsDiffuseEQ(hBin), dontSendNotification);
             if(binauraliser_getNumSources(hBin)!=SL_num_sources->getValue())
                 SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
             if(binauraliser_getYaw(hBin)!=s_yaw->getValue())
@@ -1438,7 +1438,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: ffb9b9b9"/>
     <RECT pos="0 360 920 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <TEXT pos="720 106 160 30" fill="solid: ffffffff" hasStroke="0" text="Apply Pre-Processing:"
+    <TEXT pos="720 106 160 30" fill="solid: ffffffff" hasStroke="0" text="Apply Diffuse-Field EQ:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
