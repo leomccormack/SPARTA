@@ -35,14 +35,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    TBenablePartConv.reset (new juce::ToggleButton ("new toggle button"));
-    addAndMakeVisible (TBenablePartConv.get());
-    TBenablePartConv->setButtonText (juce::String());
-    TBenablePartConv->addListener (this);
-    TBenablePartConv->setToggleState (true, juce::dontSendNotification);
-
-    TBenablePartConv->setBounds (264, 112, 26, 26);
-
     label_hostBlockSize.reset (new juce::Label ("new label",
                                                 juce::String()));
     addAndMakeVisible (label_hostBlockSize.get());
@@ -247,7 +239,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
 
 	/* fetch current configuration */
-    TBenablePartConv->setToggleState((bool)tvconv_getEnablePart(hTVC), dontSendNotification);
     SL_num_inputs->setValue(tvconv_getNumInputChannels(hTVC), dontSendNotification);
 
     /* tooltips */
@@ -289,7 +280,6 @@ PluginEditor::~PluginEditor()
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
 
-    TBenablePartConv = nullptr;
     label_hostBlockSize = nullptr;
     label_filterLength = nullptr;
     label_hostfs = nullptr;
@@ -351,7 +341,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 10, y = 60, width = 288, height = 81;
+        int x = 10, y = 60, width = 286, height = 76;
         juce::Colour fillColour = juce::Colour (0x10c7c7c7);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -497,18 +487,6 @@ void PluginEditor::paint (juce::Graphics& g)
     {
         int x = 18, y = 300, width = 144, height = 30;
         juce::String text (TRANS("Host Samplerate:"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 18, y = 108, width = 232, height = 30;
-        juce::String text (TRANS("Enable Partitioned Convolution:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -723,22 +701,6 @@ void PluginEditor::resized()
     //[/UserResized]
 }
 
-void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
-{
-    //[UserbuttonClicked_Pre]
-    //[/UserbuttonClicked_Pre]
-
-    if (buttonThatWasClicked == TBenablePartConv.get())
-    {
-        //[UserButtonCode_TBenablePartConv] -- add your button handler code here..
-        tvconv_setEnablePart(hTVC, (int)TBenablePartConv->getToggleState());
-        //[/UserButtonCode_TBenablePartConv]
-    }
-
-    //[UserbuttonClicked_Post]
-    //[/UserbuttonClicked_Post]
-}
-
 void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     //[UsersliderValueChanged_Pre]
@@ -747,7 +709,6 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == SL_num_inputs.get())
     {
         //[UserSliderCode_SL_num_inputs] -- add your slider handling code here..
-        tvconv_setNumInputChannels(hTVC, (int)SL_num_inputs->getValue());
         //[/UserSliderCode_SL_num_inputs]
     }
     else if (sliderThatWasMoved == SL_source_y.get())
@@ -874,7 +835,7 @@ BEGIN_JUCER_METADATA
           hasStroke="0"/>
     <RECT pos="0 312 780 186" fill="linear: 8 496, 8 416, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <RECT pos="10 60 288 81" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+    <RECT pos="10 60 286 76" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <ROUNDRECT pos="1 2 778 31" cornerSize="5.0" fill="linear: 0 32, 528 32, 0=ff041518, 1=ff19313f"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
@@ -904,9 +865,6 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="18 300 144 30" fill="solid: ffffffff" hasStroke="0" text="Host Samplerate:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="18 108 232 30" fill="solid: ffffffff" hasStroke="0" text="Enable Partitioned Convolution:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="18 60 224 30" fill="solid: ffffffff" hasStroke="0" text="Number of Sources:"
@@ -947,9 +905,6 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
-  <TOGGLEBUTTON name="new toggle button" id="abe48e7ad8d6ea52" memberName="TBenablePartConv"
-                virtualName="" explicitFocusOrder="0" pos="264 112 26 26" buttonText=""
-                connectedEdges="0" needsCallback="1" radioGroupId="0" state="1"/>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_hostBlockSize"
          virtualName="" explicitFocusOrder="0" pos="224 184 60 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"

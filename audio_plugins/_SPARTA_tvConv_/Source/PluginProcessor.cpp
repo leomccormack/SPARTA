@@ -164,8 +164,6 @@ void PluginProcessor::getStateInformation (juce::MemoryBlock& destData)
     /* Create an outer XML element.. */
     XmlElement xml("TVCONVAUDIOPLUGINSETTINGS");
     xml.setAttribute("LastSofaFilePath", lastSofaDirectory);
-    xml.setAttribute("usePartitionedConv", tvconv_getEnablePart(hTVCnv));
-    xml.setAttribute("numInputChannels", tvconv_getNumInputChannels(hTVCnv));
     copyXmlToBinary(xml, destData);
 }
 
@@ -185,10 +183,6 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                     const char* new_cstring = (const char*)directory.toUTF8();
                     tvconv_setSofaFilePath(hTVCnv, new_cstring);
                 }
-                if(xmlState->hasAttribute("usePartitionedConv"))
-                    tvconv_setEnablePart(hTVCnv, xmlState->getIntAttribute("usePartitionedConv", 1));
-                if(xmlState->hasAttribute("numInputChannels"))
-                    tvconv_setNumInputChannels(hTVCnv, xmlState->getIntAttribute("numInputChannels", 1));
             }
         }
 }
