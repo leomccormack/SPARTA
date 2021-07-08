@@ -395,6 +395,7 @@ void PluginProcessor::loadConfiguration (const File& configFile)
                 src_idx++;
             }
         }
+        refreshWindow=true;
     }
 }
 
