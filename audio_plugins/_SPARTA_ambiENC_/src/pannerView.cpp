@@ -178,6 +178,11 @@ void pannerView::mouseDown (const MouseEvent& e)
         if(icon_int.expanded(4, 4).contains(e.getMouseDownPosition())){
             sourceIconIsClicked = true;
             indexOfClickedSource = i;
+
+            // Solo on ALT
+            if(e.mods.isAltDown()){
+                ambi_enc_setSourceSolo(hAmbi, i);
+            }
             break;
         }
     }
@@ -199,10 +204,14 @@ void pannerView::mouseDrag (const MouseEvent& e)
     //[/UserCode_mouseDrag]
 }
 
-void pannerView::mouseUp (const MouseEvent& /*e*/)
+void pannerView::mouseUp (const MouseEvent& e)
 {
     //[UserCode_mouseUp] -- Add your code here...
     sourceIconIsClicked = false;
+    // UnSolo on ALT if not clicked on Source
+    if(!e.mods.isAltDown()){
+        ambi_enc_setUnSolo(hAmbi);
+    }
     //[/UserCode_mouseUp]
 }
 
