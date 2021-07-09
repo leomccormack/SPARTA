@@ -118,7 +118,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
     CBorder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
     CBorder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
-    CBbeamType->addItem(TRANS("Card"), STATIC_BEAM_TYPE_CARDIOID);
+    CBbeamType->addItem(TRANS("Cardioid"), STATIC_BEAM_TYPE_CARDIOID);
     CBbeamType->addItem(TRANS("HyperCard"), STATIC_BEAM_TYPE_HYPERCARDIOID);
     CBbeamType->addItem(TRANS("MaxEV"), STATIC_BEAM_TYPE_MAX_EV);
     CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
