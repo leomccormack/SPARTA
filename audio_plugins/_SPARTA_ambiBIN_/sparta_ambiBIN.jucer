@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_ambiBIN" projectType="audioplug" version="1.5.3"
+<JUCERPROJECT id="lfkRjX" name="sparta_ambiBIN" projectType="audioplug" version="1.5.4"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiBIN" pluginDesc="sparta_ambiBIN"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ABOA"
@@ -98,10 +98,6 @@
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_decor.c"/>
             <FILE id="Ui9Srg" name="saf_utility_decor.h" compile="0" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_decor.h"/>
-            <FILE id="DGOdV2" name="saf_utility_error.c" compile="1" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_error.c"/>
-            <FILE id="bkapRl" name="saf_utility_error.h" compile="0" resource="0"
-                  file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_error.h"/>
             <FILE id="nankTE" name="saf_utility_fft.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_utilities/saf_utility_fft.c"/>
             <FILE id="aO4N4G" name="saf_utility_fft.h" compile="0" resource="0"
@@ -193,8 +189,8 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2017 targetFolder="make/win64/VisualStudio2017/" externalLibraries="saf_mkl_custom.lib&#10;libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib"
-            extraDefs="SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;&#10;"
+    <VS2017 targetFolder="make/win64/VisualStudio2017/" externalLibraries="saf_mkl_custom_lp64.lib&#10;libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib"
+            extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;&#10;"
             extraCompilerFlags="/bigobj">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_ambiBIN_debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
@@ -223,10 +219,10 @@
       </MODULEPATHS>
     </VS2017>
     <VS2015 targetFolder="make/win64/VisualStudio2015/" vstFolder="C://SDKs/VST3 SDK"
-            externalLibraries="saf_mkl_custom.lib&#10;libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib"
+            externalLibraries="saf_mkl_custom_lp64.lib&#10;libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib"
             extraLinkerFlags="" extraCompilerFlags="/bigobj" IPPLibrary=""
             vst3Folder="../../../../SDKs/VST3_SDK/" windowsTargetPlatformVersion="8.1"
-            extraDefs="SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;&#10;">
+            extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="sparta_ambiBIN_debug"
@@ -258,9 +254,9 @@
       </MODULEPATHS>
     </VS2015>
     <XCODE_MAC targetFolder="make/MacOSX/Xcode/" vstFolder="../../../SDKs/VST3 SDK"
-               externalLibraries="netcdf&#10;hdf5&#10;hdf5_hl&#10;z" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom&#10;-Wl,-rpath,/usr/local/lib"
+               externalLibraries="netcdf&#10;hdf5&#10;hdf5_hl&#10;z" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom_lp64&#10;-Wl,-rpath,/usr/local/lib"
                vst3Folder="../../../../SDKs/VST3_SDK/" extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra"
-               extraDefs="SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;&#10;"
+               extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;&#10;"
                xcodeValidArchs="i386,x86_64">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_ambiBIN_debug"
@@ -290,8 +286,8 @@
         <MODULEPATH id="juce_audio_utils" path="../../SDKs/JUCE/modules/"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <LINUX_MAKE targetFolder="make/LinuxMakefile" extraLinkerFlags="-L/usr/lib -lsaf_mkl_custom&#10;-L/lib/x86_64-linux-gnu -lnetcdf&#10;-Wl,-rpath,/usr/lib"
-                extraCompilerFlags="-pedantic" extraDefs="SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;&#10;">
+    <LINUX_MAKE targetFolder="make/LinuxMakefile" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom_lp64&#10;-L/lib/x86_64-linux-gnu -lnetcdf&#10;-Wl,-rpath,/usr/local/lib"
+                extraCompilerFlags="-pedantic" extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_ambiBIN_debug" linkTimeOptimisation="1"
                        headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include"/>
