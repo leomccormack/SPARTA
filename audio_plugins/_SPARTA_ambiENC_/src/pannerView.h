@@ -70,6 +70,7 @@ private:
     int NSources;
     bool sourceIconIsClicked;
     int indexOfClickedSource;
+    bool soloActive;
     //[/UserVariables]
 
     //==============================================================================
