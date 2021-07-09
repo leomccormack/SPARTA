@@ -200,8 +200,8 @@
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
   <EXPORTFORMATS>
-    <VS2017 targetFolder="make/win64/VisualStudio2017/" extraDefs="SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER_MODULE"
-            extraCompilerFlags="/bigobj" externalLibraries="saf_mkl_custom.lib&#10;libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib">
+    <VS2017 targetFolder="make/win64/VisualStudio2017/" extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_ENABLE_SOFA_READER_MODULE"
+            extraCompilerFlags="/bigobj" externalLibraries="saf_mkl_custom_lp64.lib&#10;libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_tvconv_debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
@@ -226,8 +226,8 @@
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
-    <VS2015 targetFolder="make/win64/VisualStudio2015/" extraDefs="SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER_MODULE"
-            extraCompilerFlags="/bigobj" externalLibraries="saf_mkl_custom.lib&#10;libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib">
+    <VS2015 targetFolder="make/win64/VisualStudio2015/" extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_ENABLE_SOFA_READER_MODULE"
+            extraCompilerFlags="/bigobj" externalLibraries="saf_mkl_custom_lp64.lib&#10;libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_tvconv_debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
@@ -252,9 +252,9 @@
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
-    <XCODE_MAC targetFolder="make/MacOSX/Xcode" extraDefs="SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER_MODULE"
+    <XCODE_MAC targetFolder="make/MacOSX/Xcode" extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_ENABLE_SOFA_READER_MODULE"
                extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra"
-               extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom&#10;-Wl,-rpath,/usr/local/lib"
+               extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom_lp64&#10;-Wl,-rpath,/usr/local/lib"
                xcodeValidArchs="i386,x86_64" userNotes="-L/usr/local/lib -lsaf_mkl_custom"
                externalLibraries="netcdf&#10;hdf5&#10;hdf5_hl&#10;z" vstLegacyFolder="../../SDKs/VST_SDK/VST2_SDK">
       <CONFIGURATIONS>
@@ -282,8 +282,8 @@
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <LINUX_MAKE targetFolder="make/LinuxMakefile" extraDefs="SAF_USE_INTEL_MKL&#10;SAF_ENABLE_SOFA_READER_MODULE"
-                extraCompilerFlags="-pedantic" extraLinkerFlags="-L/usr/lib -lsaf_mkl_custom&#10;-L/lib/x86_64-linux-gnu -lnetcdf&#10;-Wl,-rpath,/usr/lib">
+    <LINUX_MAKE targetFolder="make/LinuxMakefile" extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_ENABLE_SOFA_READER_MODULE"
+                extraCompilerFlags="-pedantic" extraLinkerFlags="-L/usr/lib -lsaf_mkl_custom_lp64&#10;-L/lib/x86_64-linux-gnu -lnetcdf&#10;-Wl,-rpath,/usr/lib">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_tvconv_debug" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include"
                        linkTimeOptimisation="1"/>
