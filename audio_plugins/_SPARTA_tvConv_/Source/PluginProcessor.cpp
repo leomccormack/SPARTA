@@ -14,6 +14,7 @@ PluginProcessor::PluginProcessor() :
     AudioProcessor(BusesProperties()
                    .withInput("Input", AudioChannelSet::discreteChannels(64), true)
                    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
+//                   apvts(*this, nullptr, "Parameters", createParameters())
 {
     nSampleRate = 48000;
     nHostBlockSize = -1;
@@ -21,6 +22,8 @@ PluginProcessor::PluginProcessor() :
     //durationInSeconds = 0.0f;
     lastSofaDirectory = TRANS("no_file");
     tvconv_create(&hTVCnv);
+    refreshWindow = true;
+
 }
 
 PluginProcessor::~PluginProcessor()
@@ -78,17 +81,75 @@ int PluginProcessor::getCurrentProgram()
     return 0;
 }
 
-void PluginProcessor::setCurrentProgram (int index)
+void PluginProcessor::setCurrentProgram (int /*index*/)
 {
 }
 
-const juce::String PluginProcessor::getProgramName (int index)
+const juce::String PluginProcessor::getProgramName (int /*index*/)
 {
     return {};
 }
 
-void PluginProcessor::changeProgramName (int index, const juce::String& newName)
+void PluginProcessor::changeProgramName (int /*index*/, const juce::String& /*newName*/)
 {
+}
+
+//==============================================================================
+int PluginProcessor::getNumParameters()
+{
+    return k_NumOfParameters;
+}
+
+float PluginProcessor::getParameter(int index)
+{
+    switch (index) {
+        case k_receiverCoordX:
+            return tvconv_getPosition(hTVCnv, 0);
+        case k_receiverCoordY:
+            return tvconv_getPosition(hTVCnv, 1);
+        case k_receiverCoordZ:
+            return tvconv_getPosition(hTVCnv, 2);
+        default:
+            return 0.0f;
+    }
+}
+
+const String PluginProcessor::getParameterName (int index)
+{
+    switch (index) {
+        case k_receiverCoordX: return "receiver_coordinate_x";
+        case k_receiverCoordY: return "receiver_coordinate_y";
+        case k_receiverCoordZ: return "receiver_coordinate_z";
+        default: return "NULL";
+    }
+}
+
+const String PluginProcessor::getParameterText(int index)
+{
+    switch (index) {
+        case k_receiverCoordX:
+            return String(tvconv_getPosition(hTVCnv, 0));
+        case k_receiverCoordY:
+            return String(tvconv_getPosition(hTVCnv, 1));
+        case k_receiverCoordZ:
+            return String(tvconv_getPosition(hTVCnv, 2));
+        default:
+            return "NULL";
+    }
+}
+
+void PluginProcessor::setParameter (int index, float newValue)
+{
+    float newValueScaled;
+    if (index < 3) {
+        newValueScaled = newValue *
+        (tvconv_getMaxDimension(hTVCnv, index) - tvconv_getMinDimension(hTVCnv, index)) +
+        tvconv_getMinDimension(hTVCnv, index);
+        if (newValueScaled != tvconv_getPosition(hTVCnv, index)){
+            tvconv_setPosition(hTVCnv, index, newValueScaled);
+            refreshWindow = true;
+        }
+    }
 }
 
 //==============================================================================
@@ -164,6 +225,9 @@ void PluginProcessor::getStateInformation (juce::MemoryBlock& destData)
     /* Create an outer XML element.. */
     XmlElement xml("TVCONVAUDIOPLUGINSETTINGS");
     xml.setAttribute("LastSofaFilePath", lastSofaDirectory);
+    xml.setAttribute("ReceiverX", tvconv_getPosition(hTVCnv, 0));
+    xml.setAttribute("ReceiverY", tvconv_getPosition(hTVCnv, 1));
+    xml.setAttribute("ReceiverZ", tvconv_getPosition(hTVCnv, 2));
     copyXmlToBinary(xml, destData);
 }
 
@@ -183,6 +247,20 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                     const char* new_cstring = (const char*)directory.toUTF8();
                     tvconv_setSofaFilePath(hTVCnv, new_cstring);
                 }
+                if (xmlState->hasAttribute("ReceiverX")){
+                    tvconv_setPosition(hTVCnv, 0,
+                        (float)xmlState->getDoubleAttribute("ReceiverX"));
+                }
+                if (xmlState->hasAttribute("ReceiverY")){
+                    tvconv_setPosition(hTVCnv, 1,
+                        (float)xmlState->getDoubleAttribute("ReceiverY"));
+                }
+                if (xmlState->hasAttribute("ReceiverZ")){
+                    tvconv_setPosition(hTVCnv, 2,
+                        (float)xmlState->getDoubleAttribute("ReceiverZ"));
+                }
+                
+                tvconv_refreshParams(hTVCnv);
             }
         }
 }

@@ -21,6 +21,10 @@
 
 enum {
     /* For the default VST GUI */
+    k_receiverCoordX,
+    k_receiverCoordY,
+    k_receiverCoordZ,
+
     k_NumOfParameters
 };
 //==============================================================================
@@ -39,6 +43,11 @@ public:
             lastSofaDirectory = newDirectory;
     }
     String getSofaDirectory(){ return lastSofaDirectory; }
+    
+    /* For refreshing window during automation */
+    bool refreshWindow;
+    void setRefreshWindow(bool newState) { refreshWindow = newState; }
+    bool getRefreshWindow() { return refreshWindow; }
     
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 /*index*/, pointer_sized_int /*value*/, void* /*ptr*/, float /*opt*/) override { return 0; }
@@ -96,10 +105,18 @@ public:
     void setCurrentProgram (int index) override;
     const juce::String getProgramName (int index) override;
     void changeProgramName (int index, const juce::String& newName) override;
+    
+    //==============================================================================
+    int getNumParameters() override;
+    float getParameter (int index) override;
+    const String getParameterName (int index) override;
+    const String getParameterText (int index) override;
+    void setParameter (int index, float newValue) override;
 
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+    
 
 private:
     //==============================================================================
