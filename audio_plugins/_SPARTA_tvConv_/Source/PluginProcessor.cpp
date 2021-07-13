@@ -14,16 +14,11 @@ PluginProcessor::PluginProcessor() :
     AudioProcessor(BusesProperties()
                    .withInput("Input", AudioChannelSet::discreteChannels(64), true)
                    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
-//                   apvts(*this, nullptr, "Parameters", createParameters())
 {
     nSampleRate = 48000;
     nHostBlockSize = -1;
-    //formatManager.registerBasicFormats();
-    //durationInSeconds = 0.0f;
-    lastSofaDirectory = TRANS("no_file");
     tvconv_create(&hTVCnv);
     refreshWindow = true;
-
 }
 
 PluginProcessor::~PluginProcessor()
@@ -102,16 +97,13 @@ int PluginProcessor::getNumParameters()
 
 float PluginProcessor::getParameter(int index)
 {
-    switch (index) {
-        case k_receiverCoordX:
-            return tvconv_getPosition(hTVCnv, 0);
-        case k_receiverCoordY:
-            return tvconv_getPosition(hTVCnv, 1);
-        case k_receiverCoordZ:
-            return tvconv_getPosition(hTVCnv, 2);
-        default:
-            return 0.0f;
+    if (index < 3) {
+        if (tvconv_getMaxDimension(hTVCnv, index) > tvconv_getMinDimension(hTVCnv, index)){
+            return (tvconv_getPosition(hTVCnv, index)-tvconv_getMinDimension(hTVCnv, index))/
+                (tvconv_getMaxDimension(hTVCnv, index)-tvconv_getMinDimension(hTVCnv, index));
+        }
     }
+    return 0.0f;
 }
 
 const String PluginProcessor::getParameterName (int index)
@@ -126,16 +118,10 @@ const String PluginProcessor::getParameterName (int index)
 
 const String PluginProcessor::getParameterText(int index)
 {
-    switch (index) {
-        case k_receiverCoordX:
-            return String(tvconv_getPosition(hTVCnv, 0));
-        case k_receiverCoordY:
-            return String(tvconv_getPosition(hTVCnv, 1));
-        case k_receiverCoordZ:
-            return String(tvconv_getPosition(hTVCnv, 2));
-        default:
-            return "NULL";
+    if (index < 3) {
+        return String(tvconv_getPosition(hTVCnv, index));
     }
+    else return "NULL";
 }
 
 void PluginProcessor::setParameter (int index, float newValue)
@@ -224,7 +210,7 @@ void PluginProcessor::getStateInformation (juce::MemoryBlock& destData)
     // as intermediaries to make it easy to save and load complex data.
     /* Create an outer XML element.. */
     XmlElement xml("TVCONVAUDIOPLUGINSETTINGS");
-    xml.setAttribute("LastSofaFilePath", lastSofaDirectory);
+    xml.setAttribute("LastSofaFilePath", tvconv_getSofaFilePath(hTVCnv));
     xml.setAttribute("ReceiverX", tvconv_getPosition(hTVCnv, 0));
     xml.setAttribute("ReceiverY", tvconv_getPosition(hTVCnv, 1));
     xml.setAttribute("ReceiverZ", tvconv_getPosition(hTVCnv, 2));
@@ -243,7 +229,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if (xmlState->hasTagName("TVCONVAUDIOPLUGINSETTINGS")) {
      
                 if(xmlState->hasAttribute("LastSofaFilePath")){
-                    String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
+                    String directory = xmlState->getStringAttribute("LastSofaFilePath", "no_file");
                     const char* new_cstring = (const char*)directory.toUTF8();
                     tvconv_setSofaFilePath(hTVCnv, new_cstring);
                 }

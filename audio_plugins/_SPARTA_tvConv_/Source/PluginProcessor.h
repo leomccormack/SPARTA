@@ -11,7 +11,7 @@
 #include <JuceHeader.h>
 #include "tvconv.h"
 #include <string.h>
-#define BUILD_VER_SUFFIX "alpha" /* String to be added before the version name on the GUI (beta, alpha etc..) */
+#define BUILD_VER_SUFFIX "beta" /* String to be added before the version name on the GUI (beta, alpha etc..) */
 #ifndef MIN
 # define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
 #endif
@@ -39,10 +39,6 @@ public:
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
     int getCurrentNumOutputs(){ return nNumOutputs; }
-    void setSofaDirectory(String newDirectory){
-            lastSofaDirectory = newDirectory;
-    }
-    String getSofaDirectory(){ return lastSofaDirectory; }
     
     /* For refreshing window during automation */
     bool refreshWindow;
@@ -66,7 +62,6 @@ private:
     int nNumOutputs;      /* current number of output channels */
     int nSampleRate;      /* current host sample rate */
     int nHostBlockSize;   /* typical host block size to expect, in samples */
-    String lastSofaDirectory;
     
     
 /***************************************************************************\

@@ -180,7 +180,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_receiverIdx->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_receiverIdx->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_receiverIdx->setBounds (176, 456, 60, 20);
+    label_receiverIdx->setBounds (176, 456, 48, 20);
 
 
     //[UserPreSize]
@@ -229,9 +229,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (fileComp.get());
     fileComp->addListener(this);
     fileComp->setBounds (16, 90, 272, 20);
-    if(hVst->getSofaDirectory() != TRANS("no_file"))
-        fileComp->setCurrentFile(hVst->getSofaDirectory(), true);
-    else {
+    if(strcmp(tvconv_getSofaFilePath(hTVC), "no_file") != 0){
+        fileComp->setCurrentFile(String(tvconv_getSofaFilePath(hTVC)), true, dontSendNotification);
+        refreshCoords();
+    } else {
         SL_receiver_x->setEnabled(false);
         SL_receiver_y->setEnabled(false);
         SL_receiver_z->setEnabled(false);
@@ -241,33 +242,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 	/* fetch current configuration */
     SL_num_inputs->setValue(tvconv_getNumInputChannels(hTVC), dontSendNotification);
 
-    /* tooltips */
-//    fileChooser.setTooltip("Load multi-channel *.wav file here. For example, if you want to do a 4 x 8 matrix convolution, then the number of inputs should be set to 8, and you should load a 4 channel .wav file, where the filters are concatenated for each input. This will map the 8 inputs to the 4 outputs, as dictated by your 4 x 8 filter matrix.");
-//    TBenablePartConv->setTooltip("Enable/Disable partitioned convolution. Try both and use whichever uses less CPU. The end result is the same.");
-//    label_hostBlockSize->setTooltip("The current host block size. The higher the block size, the less CPU the plug-in will use.");
-//    label_NFilters->setTooltip("The number of filters in the loaded sofa file per position.");
-//    label_filterLength->setTooltip("Filter length in seconds. If this is 0 then something is wrong with the current configuration. (e.g. loaded wav length is not divisable by the number of inputs specified.");
-//    label_hostfs->setTooltip("The host samplerate. This should match the filter samplerate.");
-//    label_filterfs->setTooltip("The filter samplerate. This should match the host samplerate.");
-//    SL_num_inputs->setTooltip("The number of input channels.");
-//    label_MatrixNInputs->setTooltip("The number of input channels.");
-//    label_MatrixNoutputs->setTooltip("The number of output channels");
-//    label_NOutputs->setTooltip("The number of output channels. (number of channels in the loaded wav file)");
-//
-//    /* Plugin description */
-//    pluginDescription.reset (new juce::ComboBox ("new combo box"));
-//    addAndMakeVisible (pluginDescription.get());
-//    pluginDescription->setBounds (0, 0, 200, 32);
-//    pluginDescription->setAlpha(0.0f);
-//    pluginDescription->setEnabled(false);
-//    pluginDescription->setTooltip(TRANS("A simple matrix convolver with an (optional) partitioned-convolution mode. The matrix of filters should be concatenated for each output channel and loaded as a .wav file. You need only inform the plug-in of the number if input channels, and it will take care of the rest.\n\n")+
-//                                  TRANS("Example 1, spatial reverberation: if you have a B-Format/Ambisonic room impulse response (RIR), you may convolve it with a monophonic input signal and the output will exhibit (much of) the spatial characteristics of the measured room. Simply load this Ambisonic RIR into the plug-in and set the number of input channels to 1. You may then decode the resulting Ambisonic output to your loudspeaker array (e.g. using sparta_ambiDEC) or to headphones (e.g. using sparta_ambiBIN). However, please note that the limitations of lower-order Ambisonics for signals (namely, colouration and poor spatial accuracy) will also be present with lower-order Ambisonic RIRs; at least, when applied in this manner. Consider referring to Example 3, for a more spatially accurate method of reproducing the spatial characteristics of rooms captured as Ambisonic RIRs.\n\n") +
-//                                  TRANS(" Example 2, microphone array to Ambisonics encoding: if you have a matrix of filters to go from an Eigenmike (32 channel) recording to 4th order Ambisonics (25 channel), then the plugin requires a 25-channel wav file to be loaded, and the number of input channels to be set to 32. In this case: the first 32 filters will map the input to the first output channel, filters 33-64 will map the input to the second output channel, ... , and the last 32 filters will map the input to the 25th output channel. This may be used as an alternative to sparta_array2sh.\n\n") +
-//                                  TRANS("Example 3, more advanced spatial reverberation: if you have a monophonic recording and you wish to reproduce it as if it were in your favourite concert hall, first measure a B-Format/Ambisonic room impulse response (RIR) of the hall, and then convert this Ambisonic RIR to your loudspeaker set-up using HOSIRR. Then load the resulting rendered loudspeaker array RIR into the plug-in and set the number of input channels to 1. Note it is recommended to use HOSIRR (which is a parametric renderer), to convert your B-Format/Ambisonic IRs into arbitrary loudspeaker array IRs as the resulting convolved output will generally be more spatially accurate when compared to linear (non-parametric) Ambisonic decoding; as described by Example 1.\n\n") +
-//                                  TRANS("Example 4, virtual monitoring of a multichannel setup: if you have a set of binaural head-related impulse responses (BRIRs) which correspond to the loudspeaker directions of a measured listening room, you may use this 2 x L matrix of filters to reproduce loudspeaker mixes (L-channels) over headphones. Simply concatenate the BRIRs for each input channel into a two channel wav file and load them into the plugin, then set the number of inputs to be the number of BRIRs/virtual-loudspeakers in the mix.\n"));
+    /* Plugin description */
+    pluginDescription.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (pluginDescription.get());
+    pluginDescription->setBounds (0, 0, 240, 32);
+    pluginDescription->setAlpha(0.0f);
+    pluginDescription->setEnabled(false);
+    pluginDescription->setTooltip(TRANS("Time-varying impulse response convolver. A set of IRs can be loaded from a sofa file, where IRs have to be assigned with different ListenerPositions. The position of the receiver can be varied during playback using the parameter sliders. The convolver finds the nearest neighbour IR of the selected position. It applies overlap-add partitioned convolution and cross-fades between previous and current positions to produce smooth transitions. Each IR can have up to 64 channels (7th order Ambisonics). Single fixed SourcePosition is assumed and only mono input is supported.\n"));
 
     /* Specify screen refresh rate */
-    startTimer(30); /*ms (40ms = 25 frames per second) */
+    startTimer(40); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -620,7 +604,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 18, y = 428, width = 142, height = 30;
-        juce::String text (TRANS("Receiver:"));
+        juce::String text (TRANS("Listener:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -644,7 +628,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 18, y = 452, width = 142, height = 30;
-        juce::String text (TRANS("Receiver Index:"));
+        juce::String text (TRANS("Listener Index:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -763,6 +747,10 @@ void PluginEditor::timerCallback()
     label_filterfs->setText(String(tvconv_getIRFs(hTVC)), dontSendNotification);
     label_receiverIdx->setText(String(tvconv_getPositionIdx(hTVC)), dontSendNotification);
 
+    SL_receiver_x->setValue(tvconv_getPosition(hTVC, 0));
+    SL_receiver_y->setValue(tvconv_getPosition(hTVC, 1));
+    SL_receiver_z->setValue(tvconv_getPosition(hTVC, 2));
+
     /* display warning message, if needed */
     if((tvconv_getNIRs(hTVC) != 0) && (tvconv_getHostFs(hTVC)!=tvconv_getIRFs(hTVC))){
         currentWarning = k_warning_sampleRate_missmatch;
@@ -811,6 +799,13 @@ void PluginEditor::refreshCoords()
         SL_receiver_z->setEnabled(false);
     }
     SL_receiver_z->setValue(tvconv_getPosition(hTVC, 2));
+
+    SL_source_x->setRange(tvconv_getSourcePosition(hTVC, 0), tvconv_getSourcePosition(hTVC, 0)+1, 0.1);
+    SL_source_x->setValue(tvconv_getSourcePosition(hTVC, 0));
+    SL_source_y->setRange(tvconv_getSourcePosition(hTVC, 1), tvconv_getSourcePosition(hTVC, 1)+1, 0.1);
+    SL_source_y->setValue(tvconv_getSourcePosition(hTVC, 1));
+    SL_source_z->setRange(tvconv_getSourcePosition(hTVC, 2), tvconv_getSourcePosition(hTVC, 2)+1, 0.1);
+    SL_source_z->setValue(tvconv_getSourcePosition(hTVC, 2));
 }
 
 //[/MiscUserCode]
@@ -895,13 +890,13 @@ BEGIN_JUCER_METADATA
     <TEXT pos="18 404 134 30" fill="solid: ffffffff" hasStroke="0" text="Source:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="18 428 142 30" fill="solid: ffffffff" hasStroke="0" text="Receiver:"
+    <TEXT pos="18 428 142 30" fill="solid: ffffffff" hasStroke="0" text="Listener:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="120 380 160 30" fill="solid: ffffffff" hasStroke="0" text="x           y           z"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
-    <TEXT pos="18 452 142 30" fill="solid: ffffffff" hasStroke="0" text="Receiver Index:"
+    <TEXT pos="18 452 142 30" fill="solid: ffffffff" hasStroke="0" text="Listener Index:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
@@ -971,7 +966,7 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <LABEL name="new label" id="d173a8591e895adf" memberName="label_receiverIdx"
-         virtualName="" explicitFocusOrder="0" pos="176 456 60 20" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="176 456 48 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
