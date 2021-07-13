@@ -90,8 +90,6 @@ private:
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
-
-    /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
