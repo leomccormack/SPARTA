@@ -65,6 +65,7 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     showInputs = true;
     showOutputs = true;
 	sourceIconIsClicked = false;
+    soloActive = false;
     //[/Constructor]
 }
 
@@ -174,8 +175,11 @@ void pannerView::paint (juce::Graphics& g)
         }
     }
 
-
-
+    /* Draw SOLO ACTIVE */
+    if(soloActive){
+        g.setColour(Colours::red);
+        g.drawSingleLineText("SoloActive", 5, 15);
+    }
 
     //[/UserPaint]
 }
@@ -201,6 +205,12 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
         if(icon_int.expanded(4, 4).contains(e.getMouseDownPosition())){
             sourceIconIsClicked = true;
             indexOfClickedSource = i;
+
+            // Solo on ALT
+            if(e.mods.isAltDown()){
+                binauraliser_setSourceSolo(hBin, i);
+                soloActive = true;
+            }
             break;
         }
     }
@@ -226,6 +236,12 @@ void pannerView::mouseUp (const juce::MouseEvent& e)
 {
     //[UserCode_mouseUp] -- Add your code here...
     sourceIconIsClicked = false;
+    // UnSolo on ALT if not clicked on Source
+    if(!e.mods.isAltDown()){
+        binauraliser_setUnSolo(hBin);
+        soloActive = false;
+    }
+    repaint();
     //[/UserCode_mouseUp]
 }
 
