@@ -56,6 +56,7 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
                                    icon_size);
     }
     NSources = ambi_enc_getNumSources(hAmbi);
+    soloActive = false;
 
     //[/Constructor]
 }
@@ -154,6 +155,12 @@ void pannerView::paint (Graphics& g)
         g.drawText(String(src+1), SourceIcons[src].expanded(10.0f, 0.0f), Justification::centred, true); // .translated(icon_size, -icon_size)
     }
 
+    /* Draw SOLO ACTIVE */
+    if(soloActive){
+        g.setColour(Colours::red);
+        g.drawSingleLineText("SoloActive", 5, 15);
+    }
+
     //[/UserPaint]
 }
 
@@ -178,6 +185,12 @@ void pannerView::mouseDown (const MouseEvent& e)
         if(icon_int.expanded(4, 4).contains(e.getMouseDownPosition())){
             sourceIconIsClicked = true;
             indexOfClickedSource = i;
+
+            // Solo on ALT
+            if(e.mods.isAltDown()){
+                ambi_enc_setSourceSolo(hAmbi, i);
+                soloActive = true;
+            }
             break;
         }
     }
@@ -199,10 +212,16 @@ void pannerView::mouseDrag (const MouseEvent& e)
     //[/UserCode_mouseDrag]
 }
 
-void pannerView::mouseUp (const MouseEvent& /*e*/)
+void pannerView::mouseUp (const MouseEvent& e)
 {
     //[UserCode_mouseUp] -- Add your code here...
     sourceIconIsClicked = false;
+    // UnSolo on ALT if not clicked on Source
+    if(!e.mods.isAltDown()){
+        ambi_enc_setUnSolo(hAmbi);
+        soloActive = false;
+    }
+    repaint();
     //[/UserCode_mouseUp]
 }
 
