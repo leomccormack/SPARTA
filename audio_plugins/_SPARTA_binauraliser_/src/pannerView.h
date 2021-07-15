@@ -76,6 +76,7 @@ private:
     int NLoudspeakers;
     bool sourceIconIsClicked;
     int indexOfClickedSource;
+    bool soloActive;
     //[/UserVariables]
 
     //==============================================================================
