@@ -29,18 +29,6 @@
               file="../../SDKs/Spatial_Audio_Framework/examples/src/tvconv/tvconv_internal.c"/>
       </GROUP>
     </GROUP>
-    <GROUP id="{F3630AB7-D595-A9DA-3FB7-1E424AF7E93E}" name="matrixconv">
-      <GROUP id="{4DE891F1-952F-39C2-D165-F8F43C9D16ED}" name="Header Files">
-        <FILE id="OKLTnN" name="matrixconv.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/include/matrixconv.h"/>
-        <FILE id="hqis4Y" name="matrixconv_internal.h" compile="0" resource="0"
-              file="../../SDKs/Spatial_Audio_Framework/examples/src/matrixconv/matrixconv_internal.h"/>
-      </GROUP>
-      <GROUP id="{4A38EEBA-C51C-24A3-4D78-3FB6AE715A43}" name="Source Files">
-        <FILE id="DIDYbp" name="matrixconv.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/src/matrixconv/matrixconv.c"/>
-        <FILE id="z1eppY" name="matrixconv_internal.c" compile="1" resource="0"
-              file="../../SDKs/Spatial_Audio_Framework/examples/src/matrixconv/matrixconv_internal.c"/>
-      </GROUP>
-    </GROUP>
     <GROUP id="{3C505CFF-EF4B-C9B5-87F3-28F2E3EA6F77}" name="Spatial Audio Framework">
       <GROUP id="{DA58AC3A-359C-0238-6BD6-3C02CE8481C4}" name="framework">
         <GROUP id="{6BD5DEE2-5100-56D5-43D2-13D6EE3FA2F6}" name="include">
