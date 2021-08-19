@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="lfkRjX" name="sparta_binauraliser" projectType="audioplug"
-              version="1.5.8" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
+              version="1.6.0" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_binauraliser" pluginDesc="sparta_binauraliser"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="BINA"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
@@ -189,6 +189,17 @@
           <GROUP id="{2A5A90E3-CCA7-A495-14D9-2FDDBF835E18}" name="md_malloc">
             <FILE id="dhQngC" name="md_malloc.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/md_malloc/md_malloc.c"/>
             <FILE id="OBtvKW" name="md_malloc.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/md_malloc/md_malloc.h"/>
+          </GROUP>
+          <GROUP id="{43F57640-BBC6-05B7-4D72-BE8F49472F23}" name="speex_resampler">
+            <FILE id="ipWFnI" name="arch.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/speex_resampler/arch.h"/>
+            <FILE id="QWau1p" name="os_support.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/speex_resampler/os_support.h"/>
+            <FILE id="Gh3PRN" name="resample.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/speex_resampler/resample.c"/>
+            <FILE id="mw0DAa" name="resample_neon.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/speex_resampler/resample_neon.h"/>
+            <FILE id="i9Dgne" name="resample_sse.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/resources/speex_resampler/resample_sse.h"/>
+            <FILE id="myOaIC" name="speex_resampler.h" compile="0" resource="0"
+                  file="../../SDKs/Spatial_Audio_Framework/framework/resources/speex_resampler/speex_resampler.h"/>
+            <FILE id="mg7JB2" name="speexdsp_types.h" compile="0" resource="0"
+                  file="../../SDKs/Spatial_Audio_Framework/framework/resources/speex_resampler/speexdsp_types.h"/>
           </GROUP>
           <FILE id="uLFgxJ" name="CMakeLists.txt" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/resources/CMakeLists.txt"/>
         </GROUP>
