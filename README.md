@@ -31,7 +31,7 @@ This repository contains the following VST plug-ins:
 
 [![Github All Releases](https://img.shields.io/github/downloads/leomccormack/SPARTA/total.svg)]()
 
-[The plug-in suite may be downloaded from here](http://research.spa.aalto.fi/projects/sparta_vsts/) [Mac OSX (10.10 or higher), Linux (x86_64), and Windows (64-bit)].
+[The plug-in suite may be downloaded from here](https://github.com/leomccormack/SPARTA/releases/latest) [Mac OSX (10.10 or higher), Linux (x86_64), and Windows (x86_64)].
 
 ## Building the plug-ins yourself
 
