@@ -1128,11 +1128,13 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         FileChooser myChooser ("Load configuration...",
                                hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                "*.json");
-        if (myChooser.browseForFileToOpen()) {
-            File configFile (myChooser.getResult());
+        auto folderChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectDirectories;
+        myChooser.launchAsync (folderChooserFlags, [this] (const FileChooser& chooser)
+        {
+            File configFile (chooser.getResult());
             hVst->setLastDir(configFile.getParentDirectory());
             hVst->loadConfiguration (configFile);
-        }
+        });
         //[/UserButtonCode_tb_loadJSON]
     }
     else if (buttonThatWasClicked == tb_saveJSON.get())
@@ -1141,11 +1143,13 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         FileChooser myChooser ("Save configuration...",
                                hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                "*.json");
-        if (myChooser.browseForFileToSave (true)) {
-            File configFile (myChooser.getResult());
+        auto folderChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectDirectories;
+        myChooser.launchAsync (folderChooserFlags, [this] (const FileChooser& chooser)
+        {
+            File configFile (chooser.getResult());
             hVst->setLastDir(configFile.getParentDirectory());
             hVst->saveConfigurationToFile (configFile);
-        }
+        });
         //[/UserButtonCode_tb_saveJSON]
     }
     else if (buttonThatWasClicked == t_flipYaw.get())
