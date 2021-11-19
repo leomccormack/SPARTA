@@ -50,18 +50,16 @@ The [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.stein
 SDKs/VST2_SDK
 ```
 
-**MacOSX, Linux and Windows (x86_64/amd64)** users must install a custom Intel MKL library. Detailed instructions on how to do this can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/docs/PERFORMANCE_LIBRARY_INSTRUCTIONS.md). 
-
-**Raspberry Pi (ARM)** users instead require OpenBLAS and LAPACKE libraries:
+By default, **MacOSX, Linux and Windows (x86_64/amd64)** users need to install [Intel oneAPI](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html) (MKL and IPP) and run the **install-safmkl**.sh/.bat and **install-safipp**.sh/.bat scripts found in SDKs/Spatial_Audio_Framework/scripts. Whereas, **Raspberry Pi (ARM)** users instead require OpenBLAS and LAPACKE libraries:
 ``` 
 sudo apt-get install liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
 ```
+However, alternative performance libraries may also be used. More information can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/docs/PERFORMANCE_LIBRARY_INSTRUCTIONS.md).
 
-**Linux (x86_64/amd64 and ARM)** users must also install the following libraries (the former line for JUCE, and the latter line for the Spatial_Audio_Framework):
+**Linux (x86_64/amd64 and ARM)** users must also install the following libraries required by JUCE:
 
 ```
 sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x11proto-xext-dev libcurl4-openssl-dev libasound2-dev
-sudo apt-get install libhdf5-dev libnetcdf-dev libnetcdff-dev
 ```
 
 ## Building the plug-ins via CMake 
