@@ -93,6 +93,9 @@ private:
     inputCoordsView* sourceCoordsView_handle;
     FilenameComponent fileChooser;
 
+    /* json file loading/saving */
+    std::unique_ptr<juce::FileChooser> chooser;
+
     /* sofa file loading */
     void filenameComponentChanged (FilenameComponent*) override  {
         String directory = fileChooser.getCurrentFile().getFullPathName();

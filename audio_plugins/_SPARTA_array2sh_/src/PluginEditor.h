@@ -104,6 +104,9 @@ private:
     bool needScreenRefreshFLAG;
     bool showDegreesInstead;
 
+    /* json file loading/saving */
+    std::unique_ptr<juce::FileChooser> chooser;
+
     /* warnings */
     SPARTA_WARNINGS currentWarning;
 

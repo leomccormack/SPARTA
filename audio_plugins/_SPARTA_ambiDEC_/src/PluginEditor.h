@@ -95,8 +95,10 @@ private:
     outputCoordsView* outputCoordsView_handle;
     FilenameComponent fileChooser;
 
-    /* sofa file loading */
+    /* json file loading/saving */
     std::unique_ptr<juce::FileChooser> chooser;
+
+    /* sofa file loading */
     void filenameComponentChanged (FilenameComponent*) override  {
         String directory = fileChooser.getCurrentFile().getFullPathName();
         const char* new_cstring = (const char*)directory.toUTF8();
