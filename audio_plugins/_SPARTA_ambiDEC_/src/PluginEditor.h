@@ -96,6 +96,7 @@ private:
     FilenameComponent fileChooser;
 
     /* sofa file loading */
+    std::unique_ptr<juce::FileChooser> chooser;
     void filenameComponentChanged (FilenameComponent*) override  {
         String directory = fileChooser.getCurrentFile().getFullPathName();
         const char* new_cstring = (const char*)directory.toUTF8();
