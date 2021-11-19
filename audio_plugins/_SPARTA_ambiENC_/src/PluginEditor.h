@@ -88,6 +88,9 @@ private:
     std::unique_ptr<pannerView> panWindow;
     bool refreshPanViewWindow;
 
+    /* json file loading/saving */
+    std::unique_ptr<juce::FileChooser> chooser;
+
     /* warnings */
     SPARTA_WARNINGS currentWarning;
 

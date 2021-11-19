@@ -1046,60 +1046,66 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == tb_loadJSON_src.get())
     {
         //[UserButtonCode_tb_loadJSON_src] -- add your button handler code here..
-        FileChooser myChooser ("Load configuration...",
-                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
-                               "*.json");
-        auto folderChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectDirectories;
-        myChooser.launchAsync (folderChooserFlags, [this] (const FileChooser& chooser)
-        {
-            File configFile (chooser.getResult());
-            hVst->setLastDir(configFile.getParentDirectory());
-            hVst->loadConfiguration (configFile, 0);
+        chooser = std::make_unique<juce::FileChooser> ("Load configuration...",
+                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       "*.json");
+        auto chooserFlags = juce::FileBrowserComponent::openMode
+                                  | juce::FileBrowserComponent::canSelectFiles;
+        chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
+            auto file = fc.getResult();
+            if (file != File{}){
+                hVst->setLastDir(file.getParentDirectory());
+                hVst->loadConfiguration (file,0);
+            }
         });
         //[/UserButtonCode_tb_loadJSON_src]
     }
     else if (buttonThatWasClicked == tb_saveJSON_src.get())
     {
         //[UserButtonCode_tb_saveJSON_src] -- add your button handler code here..
-        FileChooser myChooser ("Save configuration...",
-                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
-                               "*.json");
-        auto folderChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectDirectories;
-        myChooser.launchAsync (folderChooserFlags, [this] (const FileChooser& chooser)
-        {
-            File configFile (chooser.getResult());
-            hVst->setLastDir(configFile.getParentDirectory());
-            hVst->saveConfigurationToFile (configFile, 0);
+        chooser = std::make_unique<juce::FileChooser> ("Save configuration...",
+                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       "*.json");
+        auto chooserFlags = juce::FileBrowserComponent::saveMode;
+        chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
+            auto file = fc.getResult();
+            if (file != File{}) {
+                hVst->setLastDir(file.getParentDirectory());
+                hVst->saveConfigurationToFile (file,0);
+            }
         });
         //[/UserButtonCode_tb_saveJSON_src]
     }
     else if (buttonThatWasClicked == tb_loadJSON_ls.get())
     {
         //[UserButtonCode_tb_loadJSON_ls] -- add your button handler code here..
-        FileChooser myChooser ("Load configuration...",
-                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
-                               "*.json");
-        auto folderChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectDirectories;
-        myChooser.launchAsync (folderChooserFlags, [this] (const FileChooser& chooser)
-        {
-            File configFile (chooser.getResult());
-            hVst->setLastDir(configFile.getParentDirectory());
-            hVst->loadConfiguration (configFile,1);
+        chooser = std::make_unique<juce::FileChooser> ("Load configuration...",
+                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       "*.json");
+        auto chooserFlags = juce::FileBrowserComponent::openMode
+                                  | juce::FileBrowserComponent::canSelectFiles;
+        chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
+            auto file = fc.getResult();
+            if (file != File{}){
+                hVst->setLastDir(file.getParentDirectory());
+                hVst->loadConfiguration (file,1);
+            }
         });
         //[/UserButtonCode_tb_loadJSON_ls]
     }
     else if (buttonThatWasClicked == tb_saveJSON_ls.get())
     {
         //[UserButtonCode_tb_saveJSON_ls] -- add your button handler code here..
-        FileChooser myChooser ("Save configuration...",
-                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
-                               "*.json");
-        auto folderChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectDirectories;
-        myChooser.launchAsync (folderChooserFlags, [this] (const FileChooser& chooser)
-        {
-            File configFile (chooser.getResult());
-            hVst->setLastDir(configFile.getParentDirectory());
-            hVst->saveConfigurationToFile (configFile,1);
+        chooser = std::make_unique<juce::FileChooser> ("Save configuration...",
+                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       "*.json");
+        auto chooserFlags = juce::FileBrowserComponent::saveMode;
+        chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
+            auto file = fc.getResult();
+            if (file != File{}) {
+                hVst->setLastDir(file.getParentDirectory());
+                hVst->saveConfigurationToFile (file,1);
+            }
         });
         //[/UserButtonCode_tb_saveJSON_ls]
     }

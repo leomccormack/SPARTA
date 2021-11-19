@@ -1125,30 +1125,33 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == tb_loadJSON.get())
     {
         //[UserButtonCode_tb_loadJSON] -- add your button handler code here..
-        FileChooser myChooser ("Load configuration...",
-                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
-                               "*.json");
-        auto folderChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectDirectories;
-        myChooser.launchAsync (folderChooserFlags, [this] (const FileChooser& chooser)
-        {
-            File configFile (chooser.getResult());
-            hVst->setLastDir(configFile.getParentDirectory());
-            hVst->loadConfiguration (configFile);
+        chooser = std::make_unique<juce::FileChooser> ("Load configuration...",
+                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       "*.json");
+        auto chooserFlags = juce::FileBrowserComponent::openMode
+                                  | juce::FileBrowserComponent::canSelectFiles;
+        chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
+            auto file = fc.getResult();
+            if (file != File{}){
+                hVst->setLastDir(file.getParentDirectory());
+                hVst->loadConfiguration (file);
+            }
         });
         //[/UserButtonCode_tb_loadJSON]
     }
     else if (buttonThatWasClicked == tb_saveJSON.get())
     {
         //[UserButtonCode_tb_saveJSON] -- add your button handler code here..
-        FileChooser myChooser ("Save configuration...",
-                               hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
-                               "*.json");
-        auto folderChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectDirectories;
-        myChooser.launchAsync (folderChooserFlags, [this] (const FileChooser& chooser)
-        {
-            File configFile (chooser.getResult());
-            hVst->setLastDir(configFile.getParentDirectory());
-            hVst->saveConfigurationToFile (configFile);
+        chooser = std::make_unique<juce::FileChooser> ("Save configuration...",
+                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       "*.json");
+        auto chooserFlags = juce::FileBrowserComponent::saveMode;
+        chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
+            auto file = fc.getResult();
+            if (file != File{}) {
+                hVst->setLastDir(file.getParentDirectory());
+                hVst->saveConfigurationToFile (file);
+            }
         });
         //[/UserButtonCode_tb_saveJSON]
     }
