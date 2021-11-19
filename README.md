@@ -54,7 +54,7 @@ By default, **MacOSX, Linux and Windows (x86_64/amd64)** users need to install [
 ``` 
 sudo apt-get install liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
 ```
-However, alternative performance libraries may also be used. More information can be found [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/docs/PERFORMANCE_LIBRARY_INSTRUCTIONS.md).
+Note, however, that alternative performance libraries may also be used, with more information provided [here](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/docs/PERFORMANCE_LIBRARY_INSTRUCTIONS.md).
 
 **Linux (x86_64/amd64 and ARM)** users must also install the following libraries required by JUCE:
 
