@@ -19,6 +19,8 @@
 # define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
 #endif
 
+#define DEFAULT_OSC_PORT 9000
+
 enum {
     /* For the default VST GUI */
     k_receiverCoordX,
@@ -31,6 +33,7 @@ enum {
 /**
 */
 class PluginProcessor  : public AudioProcessor,
+                         private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
                          public VSTCallbackHandler
 {
 public:
@@ -54,6 +57,16 @@ public:
             return 1;
         return 0;
     }
+
+    /* OSC */
+    void oscMessageReceived(const OSCMessage& message) override;
+    void setOscPortID(int newID) {
+        osc.disconnect();
+        osc_port_ID = newID;
+        osc_connected = osc.connect(osc_port_ID);
+    }
+    int getOscPortID() { return osc_port_ID; }
+    bool getOscPortConnected() { return osc_connected; }
     
     
 private:
@@ -62,6 +75,9 @@ private:
     int nNumOutputs;      /* current number of output channels */
     int nSampleRate;      /* current host sample rate */
     int nHostBlockSize;   /* typical host block size to expect, in samples */
+    OSCReceiver osc;
+    bool osc_connected;
+    int osc_port_ID;
     
     
 /***************************************************************************\
@@ -107,6 +123,7 @@ public:
     const String getParameterName (int index) override;
     const String getParameterText (int index) override;
     void setParameter (int index, float newValue) override;
+    void setParameterRaw(int index, float newValue);
 
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;

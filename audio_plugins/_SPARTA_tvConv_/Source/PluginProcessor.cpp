@@ -12,21 +12,53 @@
 //==============================================================================
 PluginProcessor::PluginProcessor() :
     AudioProcessor(BusesProperties()
-                   .withInput("Input", AudioChannelSet::discreteChannels(64), true)
-                   .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
+        .withInput("Input", AudioChannelSet::discreteChannels(64), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
     nSampleRate = 48000;
     nHostBlockSize = -1;
     tvconv_create(&hTVCnv);
     refreshWindow = true;
+
+    /* specify here on which UDP port number to receive incoming OSC messages */
+    osc_port_ID = DEFAULT_OSC_PORT;
+    osc_connected = osc.connect(osc_port_ID);
+    /* tell the component to listen for OSC messages */
+    osc.addListener(this);
+
+    if (osc_connected)
+    {
+        DBG("osc connected");
+    }
+    else
+    {
+        DBG("osc not connected");
+    }
+    
 }
 
 PluginProcessor::~PluginProcessor()
 {
+    osc.disconnect();
+    osc.removeListener(this);
     tvconv_destroy(&hTVCnv);
 }
 
 //==============================================================================
+
+
+void PluginProcessor::oscMessageReceived(const OSCMessage& message)
+{
+    if (message.size() == 3 && message.getAddressPattern().toString().compare("xyz")) {
+        if (message[0].isFloat32())
+            setParameterRaw(0, message[0].getFloat32());
+        if (message[1].isFloat32())
+            setParameterRaw(1, message[1].getFloat32());
+        if (message[2].isFloat32())
+            setParameterRaw(2, message[2].getFloat32());
+        return;
+    }
+}
 
 const juce::String PluginProcessor::getName() const
 {
@@ -126,6 +158,7 @@ const String PluginProcessor::getParameterText(int index)
 
 void PluginProcessor::setParameter (int index, float newValue)
 {
+    DBG("param set");
     float newValueScaled;
     if (index < 3) {
         newValueScaled = newValue *
@@ -138,9 +171,20 @@ void PluginProcessor::setParameter (int index, float newValue)
     }
 }
 
+void PluginProcessor::setParameterRaw(int index, float newValue)
+{
+    if (index < 3) {
+        if (newValue != tvconv_getPosition(hTVCnv, index)) {
+            tvconv_setPosition(hTVCnv, index, newValue);
+            refreshWindow = true;
+        }
+    }
+}
+
 //==============================================================================
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+
     nHostBlockSize = samplesPerBlock;
     nNumInputs =  getTotalNumInputChannels();
     nNumOutputs = getTotalNumOutputChannels();
