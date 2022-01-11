@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.8
+  Created with Projucer version: 6.1.4
 
   ------------------------------------------------------------------------------
 
@@ -146,20 +146,20 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_receiver_x.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_receiver_x.get());
     SL_receiver_x->setRange (0, 1, 0.001);
-    SL_receiver_x->setSliderStyle (juce::Slider::LinearBarVertical);
+    SL_receiver_x->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_receiver_x->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_receiver_x->addListener (this);
 
-    SL_receiver_x->setBounds (120, 432, 48, 20);
+    SL_receiver_x->setBounds (88, 432, 112, 20);
 
     SL_receiver_y.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_receiver_y.get());
     SL_receiver_y->setRange (0, 1, 0.001);
-    SL_receiver_y->setSliderStyle (juce::Slider::LinearBarVertical);
+    SL_receiver_y->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_receiver_y->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_receiver_y->addListener (this);
 
-    SL_receiver_y->setBounds (176, 432, 48, 20);
+    SL_receiver_y->setBounds (208, 432, 112, 20);
 
     SL_receiver_z.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_receiver_z.get());
@@ -168,7 +168,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_receiver_z->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_receiver_z->addListener (this);
 
-    SL_receiver_z->setBounds (232, 432, 48, 20);
+    SL_receiver_z->setBounds (336, 432, 48, 20);
 
     label_receiverIdx.reset (new juce::Label ("new label",
                                               juce::String()));
@@ -310,16 +310,16 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 0, y = 312, width = 780, height = 186;
+        int x = 4, y = 316, width = 780, height = 186;
         juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
-                                             8.0f - 0.0f + x,
-                                             496.0f - 312.0f + y,
+                                             8.0f - 4.0f + x,
+                                             496.0f - 316.0f + y,
                                              fillColour2,
-                                             8.0f - 0.0f + x,
-                                             416.0f - 312.0f + y,
+                                             8.0f - 4.0f + x,
+                                             416.0f - 316.0f + y,
                                              false));
         g.fillRect (x, y, width, height);
     }
@@ -541,7 +541,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 312, y = 60, width = 458, height = 424;
+        int x = 408, y = 60, width = 362, height = 424;
         juce::Colour fillColour = juce::Colour (0x10c7c7c7);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -566,7 +566,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 10, y = 372, width = 288, height = 112;
+        int x = 12, y = 372, width = 382, height = 112;
         juce::Colour fillColour = juce::Colour (0x10c7c7c7);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -591,7 +591,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 18, y = 404, width = 134, height = 30;
+        int x = 18, y = 404, width = 54, height = 30;
         juce::String text (TRANS("Source:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -828,7 +828,7 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="2 28 780 290" fill="linear: 8 32, 8 112, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <RECT pos="0 312 780 186" fill="linear: 8 496, 8 416, 0=ff19313f, 1=ff041518"
+    <RECT pos="4 316 780 186" fill="linear: 8 496, 8 416, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
     <RECT pos="10 60 286 76" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -877,17 +877,17 @@ BEGIN_JUCER_METADATA
     <TEXT pos="18 228 200 30" fill="solid: ffffffff" hasStroke="0" text="N# IR positions:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="312 60 458 424" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+    <RECT pos="408 60 362 424" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="314 30 456 31" fill="solid: ffffffff" hasStroke="0" text="Coordinate View"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
-    <RECT pos="10 372 288 112" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+    <RECT pos="12 372 382 112" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="18 340 270 31" fill="solid: ffffffff" hasStroke="0" text="Coordinates"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
-    <TEXT pos="18 404 134 30" fill="solid: ffffffff" hasStroke="0" text="Source:"
+    <TEXT pos="18 404 54 30" fill="solid: ffffffff" hasStroke="0" text="Source:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="18 428 142 30" fill="solid: ffffffff" hasStroke="0" text="Listener:"
@@ -951,17 +951,17 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="572be8cab2789e9d" memberName="SL_receiver_x"
-          virtualName="" explicitFocusOrder="0" pos="120 432 48 20" min="0.0"
-          max="1.0" int="0.001" style="LinearBarVertical" textBoxPos="TextBoxRight"
+          virtualName="" explicitFocusOrder="0" pos="88 432 112 20" min="0.0"
+          max="1.0" int="0.001" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="2c60d2500e81284e" memberName="SL_receiver_y"
-          virtualName="" explicitFocusOrder="0" pos="176 432 48 20" min="0.0"
-          max="1.0" int="0.001" style="LinearBarVertical" textBoxPos="TextBoxRight"
+          virtualName="" explicitFocusOrder="0" pos="208 432 112 20" min="0.0"
+          max="1.0" int="0.001" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="a60197fb8a061339" memberName="SL_receiver_z"
-          virtualName="" explicitFocusOrder="0" pos="232 432 48 20" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="336 432 48 20" min="0.0"
           max="1.0" int="0.001" style="LinearBarVertical" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
