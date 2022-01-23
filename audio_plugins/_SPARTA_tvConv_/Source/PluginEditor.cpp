@@ -146,20 +146,20 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_receiver_x.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_receiver_x.get());
     SL_receiver_x->setRange (0, 1, 0.001);
-    SL_receiver_x->setSliderStyle (juce::Slider::LinearHorizontal);
+    SL_receiver_x->setSliderStyle (juce::Slider::LinearBarVertical);
     SL_receiver_x->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_receiver_x->addListener (this);
 
-    SL_receiver_x->setBounds (88, 432, 112, 20);
+    SL_receiver_x->setBounds (120, 432, 48, 20);
 
     SL_receiver_y.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_receiver_y.get());
     SL_receiver_y->setRange (0, 1, 0.001);
-    SL_receiver_y->setSliderStyle (juce::Slider::LinearHorizontal);
+    SL_receiver_y->setSliderStyle (juce::Slider::LinearBarVertical);
     SL_receiver_y->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_receiver_y->addListener (this);
 
-    SL_receiver_y->setBounds (208, 432, 112, 20);
+    SL_receiver_y->setBounds (176, 432, 48, 20);
 
     SL_receiver_z.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_receiver_z.get());
@@ -168,7 +168,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_receiver_z->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_receiver_z->addListener (this);
 
-    SL_receiver_z->setBounds (336, 432, 48, 20);
+    SL_receiver_z->setBounds (232, 432, 56, 20);
 
     label_receiverIdx.reset (new juce::Label ("new label",
                                               juce::String()));
@@ -800,6 +800,8 @@ void PluginEditor::refreshCoords()
     }
     SL_receiver_z->setValue(tvconv_getPosition(hTVC, 2));
 
+    float sourcePosition = tvconv_getSourcePosition(hTVC, 0);
+
     SL_source_x->setRange(tvconv_getSourcePosition(hTVC, 0), tvconv_getSourcePosition(hTVC, 0)+1, 0.1);
     SL_source_x->setValue(tvconv_getSourcePosition(hTVC, 0));
     SL_source_y->setRange(tvconv_getSourcePosition(hTVC, 1), tvconv_getSourcePosition(hTVC, 1)+1, 0.1);
@@ -951,17 +953,17 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="572be8cab2789e9d" memberName="SL_receiver_x"
-          virtualName="" explicitFocusOrder="0" pos="88 432 112 20" min="0.0"
-          max="1.0" int="0.001" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          virtualName="" explicitFocusOrder="0" pos="120 432 48 20" min="0.0"
+          max="1.0" int="0.001" style="LinearBarVertical" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="2c60d2500e81284e" memberName="SL_receiver_y"
-          virtualName="" explicitFocusOrder="0" pos="208 432 112 20" min="0.0"
-          max="1.0" int="0.001" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          virtualName="" explicitFocusOrder="0" pos="176 432 48 20" min="0.0"
+          max="1.0" int="0.001" style="LinearBarVertical" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="a60197fb8a061339" memberName="SL_receiver_z"
-          virtualName="" explicitFocusOrder="0" pos="336 432 48 20" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="232 432 56 20" min="0.0"
           max="1.0" int="0.001" style="LinearBarVertical" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
