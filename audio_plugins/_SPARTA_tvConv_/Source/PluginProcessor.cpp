@@ -258,6 +258,9 @@ void PluginProcessor::getStateInformation (juce::MemoryBlock& destData)
     xml.setAttribute("ReceiverX", tvconv_getPosition(hTVCnv, 0));
     xml.setAttribute("ReceiverY", tvconv_getPosition(hTVCnv, 1));
     xml.setAttribute("ReceiverZ", tvconv_getPosition(hTVCnv, 2));
+
+    xml.setAttribute("OSC_PORT", osc_port_ID);
+
     copyXmlToBinary(xml, destData);
 }
 
@@ -288,6 +291,11 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 if (xmlState->hasAttribute("ReceiverZ")){
                     tvconv_setPosition(hTVCnv, 2,
                         (float)xmlState->getDoubleAttribute("ReceiverZ"));
+                }
+
+                if (xmlState->hasAttribute("OSC_PORT")) {
+                    osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
+                    osc.connect(osc_port_ID);
                 }
                 
                 tvconv_refreshParams(hTVCnv);
