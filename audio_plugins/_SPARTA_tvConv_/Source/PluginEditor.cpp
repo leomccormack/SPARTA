@@ -168,7 +168,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_receiver_z->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_receiver_z->addListener (this);
 
-    SL_receiver_z->setBounds (232, 432, 56, 20);
+    SL_receiver_z->setBounds (232, 432, 48, 20);
 
     label_receiverIdx.reset (new juce::Label ("new label",
                                               juce::String()));
@@ -181,6 +181,28 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_receiverIdx->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
     label_receiverIdx->setBounds (176, 456, 48, 20);
+
+    te_oscport.reset (new juce::TextEditor ("new text editor"));
+    addAndMakeVisible (te_oscport.get());
+    te_oscport->setMultiLine (false);
+    te_oscport->setReturnKeyStartsNewLine (false);
+    te_oscport->setReadOnly (false);
+    te_oscport->setScrollbarsShown (true);
+    te_oscport->setCaretVisible (false);
+    te_oscport->setPopupMenuEnabled (true);
+    te_oscport->setColour (juce::TextEditor::textColourId, juce::Colours::white);
+    te_oscport->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
+    te_oscport->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
+    te_oscport->setText (TRANS("9000"));
+
+    te_oscport->setBounds (320, 80, 42, 22);
+
+    TBRotFlag.reset (new juce::ToggleButton ("rotation button"));
+    addAndMakeVisible (TBRotFlag.get());
+    TBRotFlag->setButtonText (juce::String());
+    TBRotFlag->addListener (this);
+
+    TBRotFlag->setBounds (336, 200, 32, 24);
 
 
     //[UserPreSize]
@@ -278,6 +300,8 @@ PluginEditor::~PluginEditor()
     SL_receiver_y = nullptr;
     SL_receiver_z = nullptr;
     label_receiverIdx = nullptr;
+    te_oscport = nullptr;
+    TBRotFlag = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -566,7 +590,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 12, y = 372, width = 382, height = 112;
+        int x = 13, y = 372, width = 382, height = 112;
         juce::Colour fillColour = juce::Colour (0x10c7c7c7);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -636,6 +660,56 @@ void PluginEditor::paint (juce::Graphics& g)
         g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 309, y = 60, width = 67, height = 76;
+        juce::Colour fillColour = juce::Colour (0x10c7c7c7);
+        juce::Colour strokeColour = juce::Colour (0x1fffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
+    {
+        int x = 317, y = 52, width = 91, height = 35;
+        juce::String text (TRANS("OSC port:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 301, y = 164, width = 99, height = 35;
+        juce::String text (TRANS("Enable Rotation:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centred, true);
+    }
+
+    {
+        int x = 309, y = 172, width = 91, height = 68;
+        juce::Colour fillColour = juce::Colour (0x10c7c7c7);
+        juce::Colour strokeColour = juce::Colour (0x1fffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
     }
 
     //[UserPaint] Add your own custom painting code here..
@@ -733,6 +807,21 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     //[/UsersliderValueChanged_Post]
 }
 
+void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
+{
+    //[UserbuttonClicked_Pre]
+    //[/UserbuttonClicked_Pre]
+
+    if (buttonThatWasClicked == TBRotFlag.get())
+    {
+        //[UserButtonCode_TBRotFlag] -- add your button handler code here..
+        //[/UserButtonCode_TBRotFlag]
+    }
+
+    //[UserbuttonClicked_Post]
+    //[/UserbuttonClicked_Post]
+}
+
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
@@ -768,6 +857,10 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_none;
         repaint(0,0,getWidth(),32);
     }
+
+    /* check if OSC port has changed */
+    if (hVst->getOscPortID() != te_oscport->getText().getIntValue())
+        hVst->setOscPortID(te_oscport->getText().getIntValue());
 }
 
 void PluginEditor::refreshCoords()
@@ -884,7 +977,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="314 30 456 31" fill="solid: ffffffff" hasStroke="0" text="Coordinate View"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
-    <RECT pos="12 372 382 112" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+    <RECT pos="13 372 382 112" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <TEXT pos="18 340 270 31" fill="solid: ffffffff" hasStroke="0" text="Coordinates"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
@@ -901,6 +994,16 @@ BEGIN_JUCER_METADATA
     <TEXT pos="18 452 142 30" fill="solid: ffffffff" hasStroke="0" text="Listener Index:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
+    <RECT pos="309 60 67 76" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+          strokeColour="solid: 1fffffff"/>
+    <TEXT pos="317 52 91 35" fill="solid: ffffffff" hasStroke="0" text="OSC port:"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="301 164 99 35" fill="solid: ffffffff" hasStroke="0" text="Enable Rotation:"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
+    <RECT pos="309 172 91 68" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+          strokeColour="solid: 1fffffff"/>
   </BACKGROUND>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_hostBlockSize"
          virtualName="" explicitFocusOrder="0" pos="224 184 60 20" outlineCol="68a3a2a2"
@@ -963,7 +1066,7 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="a60197fb8a061339" memberName="SL_receiver_z"
-          virtualName="" explicitFocusOrder="0" pos="232 432 56 20" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="232 432 48 20" min="0.0"
           max="1.0" int="0.001" style="LinearBarVertical" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
@@ -972,6 +1075,13 @@ BEGIN_JUCER_METADATA
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
+  <TEXTEDITOR name="new text editor" id="1799da9e8cf495d6" memberName="te_oscport"
+              virtualName="" explicitFocusOrder="0" pos="320 80 42 22" textcol="ffffffff"
+              bkgcol="ffffff" outlinecol="6c838080" initialText="9000" multiline="0"
+              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="0" popupmenu="1"/>
+  <TOGGLEBUTTON name="rotation button" id="b4fec6d3e1a2bae2" memberName="TBRotFlag"
+                virtualName="" explicitFocusOrder="0" pos="336 200 32 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

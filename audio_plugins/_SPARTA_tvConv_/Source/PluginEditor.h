@@ -47,7 +47,8 @@ typedef enum _SPARTA_WARNINGS{
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
                       private FilenameComponentListener,
-                      public juce::Slider::Listener
+                      public juce::Slider::Listener,
+                      public juce::Button::Listener
 {
 public:
     //==============================================================================
@@ -65,6 +66,7 @@ public:
     void paint (juce::Graphics& g) override;
     void resized() override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
@@ -110,6 +112,8 @@ private:
     std::unique_ptr<juce::Slider> SL_receiver_y;
     std::unique_ptr<juce::Slider> SL_receiver_z;
     std::unique_ptr<juce::Label> label_receiverIdx;
+    std::unique_ptr<juce::TextEditor> te_oscport;
+    std::unique_ptr<juce::ToggleButton> TBRotFlag;
 
 
     //==============================================================================
