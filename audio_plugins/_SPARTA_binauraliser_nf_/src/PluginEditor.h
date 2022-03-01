@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.4
+  Created with Projucer version: 6.1.6
 
   ------------------------------------------------------------------------------
 
@@ -100,7 +100,7 @@ private:
         binauraliser_setSofaFilePath(hBin, new_cstring);
         refreshPanViewWindow = true;
     }
-    
+
     /* json file loading/saving */
     std::unique_ptr<juce::FileChooser> chooser;
 

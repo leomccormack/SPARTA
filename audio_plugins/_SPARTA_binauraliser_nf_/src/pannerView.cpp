@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.4
+  Created with Projucer version: 6.1.6
 
   ------------------------------------------------------------------------------
 
@@ -33,8 +33,12 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
+
     //[UserPreSize]
     //[/UserPreSize]
+
+    setSize (492, 246);
+
 
     //[Constructor] You can add your own custom stuff here..
     hVst = ownerFilter;
@@ -50,9 +54,9 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     distRange = NormalisableRange<float>(binauraliserNF_getNearfieldLimit_m(hBin), hVst->upperDistRange, 0, 0.5f);
     // pixel radius corresponding to a 45 degree spread: height/4
     iconGrowFac = NormalisableRange<float>(1.0f, (height / 4.0f) / (icon_radius * 3.0f));
-    
+
     setSize (width, height);
-    
+
     for(int src=0; src<MAX_NUM_INPUTS; src++){
         SourceIcons[src].setBounds(
                                    width - width * (binauraliser_getSourceAzi_deg(hBin, src) + 180.0f) / 360.f - icon_radius,
@@ -94,7 +98,7 @@ void pannerView::paint (juce::Graphics& g)
     //[/UserPrePaint]
 
     {
-        int x = 0, y = 0;
+        int x = 0, y = 0, width = 492, height = 246;
         juce::Colour fillColour1 = juce::Colour (0xff4e4e4e), fillColour2 = juce::Colour (0xff202020);
         juce::Colour strokeColour = juce::Colour (0xff9e9e9e);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -161,7 +165,7 @@ void pannerView::paint (juce::Graphics& g)
             g.fillRect(LoudspeakerIcons[ls]);
         }
     }
-    
+
     if(showInputs){
         /* Draw Source icons */
         for(int src=0; src<NSources; src++){
@@ -186,7 +190,7 @@ void pannerView::paint (juce::Graphics& g)
             g.drawText(String(src+1), SourceIcons[src].expanded(10.0f, 0.0f), Justification::centred, true);
         }
     }
-    
+
     /* Draw SOLO ACTIVE */
     if(soloActive){
         g.setColour(Colours::red);
@@ -216,7 +220,7 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
         if(icon_int.expanded(4, 4).contains(e.getMouseDownPosition())){
             sourceIconIsClicked = true;
             indexOfClickedSource = i;
-            
+
             // Solo on ALT
             if(e.mods.isAltDown()){
                 binauraliser_setSourceSolo(hBin, i);
@@ -247,7 +251,7 @@ void pannerView::mouseUp (const juce::MouseEvent& e)
 {
     //[UserCode_mouseUp] -- Add your code here...
     sourceIconIsClicked = false;
-    
+
     // UnSolo on ALT if not clicked on Source
     if(!e.mods.isAltDown()){
         binauraliser_setUnSolo(hBin);
@@ -256,6 +260,8 @@ void pannerView::mouseUp (const juce::MouseEvent& e)
     repaint();
     //[/UserCode_mouseUp]
 }
+
+
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void pannerView::refreshPanView()
