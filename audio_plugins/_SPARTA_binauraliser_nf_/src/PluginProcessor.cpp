@@ -346,7 +346,7 @@ AudioProcessorEditor* PluginProcessor::createEditor()
 //==============================================================================
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-    XmlElement xml("BINAURALISERPLUGINSETTINGS");
+    XmlElement xml("BINAURALISERNFPLUGINSETTINGS");
     for(int i=0; i<binauraliser_getMaxNumSources(); i++){
         xml.setAttribute("SourceAziDeg" + String(i), binauraliser_getSourceAzi_deg(hBin,i));
         xml.setAttribute("SourceElevDeg" + String(i), binauraliser_getSourceElev_deg(hBin,i));
@@ -379,7 +379,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     
     if (xmlState != nullptr) {
-        if (xmlState->hasTagName("BINAURALISERPLUGINSETTINGS")) {
+        if (xmlState->hasTagName("BINAURALISERNFPLUGINSETTINGS")) {
             for(int i=0; i<binauraliser_getMaxNumSources(); i++){
                 if(xmlState->hasAttribute("SourceAziDeg" + String(i)))
                     binauraliser_setSourceAzi_deg(hBin, i, (float)xmlState->getDoubleAttribute("SourceAziDeg" + String(i), 0.0f));
@@ -502,7 +502,7 @@ void PluginProcessor::loadConfiguration (const File& configFile)
             if ( !((*it).getProperty("Imaginary"))){
                 binauraliser_setSourceAzi_deg(hBin, channelIDs[src_idx]-1, (*it).getProperty("Azimuth"));
                 binauraliser_setSourceElev_deg(hBin, channelIDs[src_idx]-1, (*it).getProperty("Elevation"));
-                binauraliserNF_setSourceDist_m(hBin, channelIDs[src_idx]-1, (*it).getProperty("Distance"));
+                binauraliserNF_setSourceDist_m(hBin, channelIDs[src_idx]-1, (*it).getProperty("Radius"));
                 src_idx++;
             }
         }
