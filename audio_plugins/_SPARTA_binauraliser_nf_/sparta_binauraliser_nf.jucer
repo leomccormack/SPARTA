@@ -6,7 +6,7 @@
               pluginDesc="sparta_binauraliser_nf" pluginManufacturer="AALTO"
               pluginManufacturerCode="LEOM" pluginCode="BINF" pluginIsSynth="0"
               pluginWantsMidiIn="0" pluginProducesMidiOut="0" pluginSilenceInIsSilenceOut="0"
-              pluginEditorRequiresKeys="0" pluginAUExportPrefix="sparta_binauraliserAU"
+              pluginEditorRequiresKeys="0" pluginAUExportPrefix="sparta_binauraliserNFAU"
               pluginRTASCategory="" aaxIdentifier="com.yourcompany.panner"
               pluginAAXCategory="2" buildVST3="0" buildRTAS="0" buildAAX="0"
               pluginManufacturerEmail="support@yourcompany.com" companyName="Aalto"

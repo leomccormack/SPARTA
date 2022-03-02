@@ -100,7 +100,7 @@ private:
         binauraliser_setSofaFilePath(hBin, new_cstring);
         refreshPanViewWindow = true;
     }
-    
+
     /* json file loading/saving */
     std::unique_ptr<juce::FileChooser> chooser;
 

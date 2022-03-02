@@ -37,7 +37,7 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class pannerView  : public Component
+class pannerView : public Component
 {
 public:
     //==============================================================================
@@ -59,8 +59,6 @@ public:
     void mouseDown (const juce::MouseEvent& e) override;
     void mouseDrag (const juce::MouseEvent& e) override;
     void mouseUp (const juce::MouseEvent& e) override;
-//    void mouseWheelMove (const juce::MouseEvent& e, const juce::MouseWheelDetails& wheel) override;
-
 
 
 private:
