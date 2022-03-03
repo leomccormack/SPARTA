@@ -48,6 +48,7 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
 
     void refreshPanView();
+    void updateSrcLsIconBounds();
     void setShowInputs(bool state){ showInputs = state; }
     void setShowOutputs(bool state){ showOutputs = state; }
     bool getSourceIconIsClicked(){ return sourceIconIsClicked; }
@@ -79,8 +80,10 @@ private:
     bool sourceIconIsClicked;
     int indexOfClickedSource;
     bool soloActive;
-    float icon_diam;
-    float icon_radius;
+    float icon_diam_src;
+    float icon_radius_src;
+    float icon_diam_hrir;
+    float icon_radius_hrir;
     NormalisableRange<float> distRange;
     NormalisableRange<float> iconGrowFac;
     float ffThresh;
