@@ -15,7 +15,7 @@ juce_add_plugin(${PROJECT_NAME}
     EDITOR_WANTS_KEYBOARD_FOCUS FALSE
     COPY_PLUGIN_AFTER_BUILD     TRUE     # Where does this go in Windows + Linux?
     PLUGIN_MANUFACTURER_CODE    LEOM
-    PLUGIN_CODE                 BINANF
+    PLUGIN_CODE                 BINF
     FORMATS                     VST      # ( VST AAX Unity VST3 AU AUv3 Standalone )
     PRODUCT_NAME                "${PROJECT_NAME}"
 )
