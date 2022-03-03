@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.4
+  Created with Projucer version: 6.1.6
 
   ------------------------------------------------------------------------------
 
@@ -889,31 +889,32 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 16, y = 1, width = 76, height = 32;
-        juce::String text (TRANS("SPARTA |"));
+        int x = 16, y = 1, width = 100, height = 32;
+        juce::String text (TRANS("SPARTA|"));
+        juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
-        juce::Font font (18.00f, juce::Font::plain);
-        g.setFont (font.withTypefaceStyle ("Bold"));
-        g.setColour (juce::Colours::white);
+        g.setColour (fillColour);
+        g.setFont (juce::Font (18.80f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    juce::Justification::right, true);
-        x += 16+40; width = 120;
-        text = (TRANS(" Binauraliser"));
-        g.setColour (juce::Colour (0xffff73f9));
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 92, y = 1, width = 112, height = 32;
+        juce::String text (TRANS("Binauraliser"));
+        juce::Colour fillColour = juce::Colour (0xffff73f9);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (18.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    juce::Justification::right, true);
-        x += (width+2);
-        text = (TRANS("NF"));
-        g.setFont (font.withTypefaceStyle ("Bold Italic"));
-        g.setColour (juce::Colour::fromFloatRGBA(255.f/255.f, 183.f/255.f, 3.f/255.f, 1.f));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::left, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
         int x = 28, y = 122, width = 176, height = 28;
-        juce::String text (juce::CharPointer_UTF8 (" #   Azi\xc2\xb0     Elev\xc2\xb0   Dist (m)"));
+        juce::String text (juce::CharPointer_UTF8 ("   Azi\xc2\xb0     Elev\xc2\xb0   Dist (m)"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -971,6 +972,18 @@ void PluginEditor::paint (juce::Graphics& g)
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 190, y = 0, width = 112, height = 32;
+        juce::String text (TRANS("NF"));
+        juce::Colour fillColour = juce::Colour (0xffffb873);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (18.80f, juce::Font::bold | juce::Font::italic));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -1432,7 +1445,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="92 1 112 32" fill="solid: ffff73f9" hasStroke="0" text="Binauraliser"
           fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="66 122 108 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
+    <TEXT pos="28 122 176 28" fill="solid: ffffffff" hasStroke="0" text="   Azi&#176;     Elev&#176;   Dist (m)"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 922 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
@@ -1446,6 +1459,9 @@ BEGIN_JUCER_METADATA
     <TEXT pos="720 106 160 30" fill="solid: ffffffff" hasStroke="0" text="Apply Pre-Processing:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="190 0 112 32" fill="solid: ffffb873" hasStroke="0" text="NF"
+          fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
+          italic="1" justification="33" typefaceStyle="Bold Italic"/>
   </BACKGROUND>
   <COMBOBOX name="new combo box" id="5a2f99f88aa51390" memberName="CBsourceDirsPreset"
             virtualName="" explicitFocusOrder="0" pos="88 66 112 20" editable="0"
@@ -1544,3 +1560,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

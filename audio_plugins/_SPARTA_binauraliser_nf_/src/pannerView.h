@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.4
+  Created with Projucer version: 6.1.6
 
   ------------------------------------------------------------------------------
 
@@ -61,6 +61,7 @@ public:
     void mouseUp (const juce::MouseEvent& e) override;
 
 
+
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
@@ -95,4 +96,3 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
-

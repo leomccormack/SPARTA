@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 6.1.6
 
   ------------------------------------------------------------------------------
 
@@ -34,17 +34,22 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
-    // TODO: remove dummySlider?
+
     dummySlider.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (dummySlider.get());
     dummySlider->setRange (0.01, 0.3, 0.001);
     dummySlider->setSliderStyle (juce::Slider::LinearHorizontal);
     dummySlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 70, 20);
     dummySlider->addListener (this);
+
     dummySlider->setBounds (-176, 144, 96, 16);
+
 
     //[UserPreSize]
     //[/UserPreSize]
+
+    setSize (176, 400);
+
 
     //[Constructor] You can add your own custom stuff here..
     setSize (sensorEdit_width, sensorEdit_height*currentNCH);
@@ -55,7 +60,7 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
     aziSliders = new std::unique_ptr<Slider>[(unsigned long)maxNCH];
     elevSliders = new std::unique_ptr<Slider>[(unsigned long)maxNCH];
     distSliders = new std::unique_ptr<Slider>[(unsigned long)maxNCH];
-    
+
     int left = 15, tbw = 45, tbh = 20, tbhpad = 6; // text box layout dimensions
     int tbvpad = (sensorEdit_height - tbh) / 2;
     for( int i=0; i<maxNCH; i++){
@@ -86,7 +91,7 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         elevSliders[i]->setColour(Slider::rotarySliderFillColourId, Colours::transparentBlack);
         elevSliders[i]->setBounds(left+tbhpad+tbw+tbhpad, tbvpad + i*sensorEdit_height, tbw, tbh);
         elevSliders[i]->addListener (this);
-        
+
         /* create and initialise distance sliders */
         distSliders[i].reset (new Slider ("new slider"));
         distSliders[i]->setTooltip("Distance from the center of the head (m). Filters disengage when maximally far (approx > 3 m).");
@@ -238,10 +243,10 @@ void inputCoordsView::refreshCoords(){
     for( int i=0; i<maxNCH; i++){
         aziSliders[i]->setRange (-360.0, 360.0, 0.1); // TODO: this range doens't conform to binauraliser_setSourceAzi_deg, so UI bugs out beyond +/-180 when dragging (but value OK on mouseup)
         aziSliders[i]->setValue(binauraliser_getSourceAzi_deg(hBin, i), dontSendNotification);
-        
+
         elevSliders[i]->setRange (-180.0, 180.0, 0.1);
         elevSliders[i]->setValue (binauraliser_getSourceElev_deg(hBin, i), dontSendNotification);
-        
+
         distSliders[i]->setRange (binauraliserNF_getNearfieldLimit_m(hBin), hVst->upperDistRange, 0.01);
         distSliders[i]->setValue (binauraliserNF_getSourceDist_m(hBin, i), dontSendNotification);
     }
