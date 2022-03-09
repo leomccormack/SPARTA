@@ -18,6 +18,15 @@ PluginProcessor::PluginProcessor() :
     nSampleRate = 48000;
     nHostBlockSize = -1;
     tvconv_create(&hTVCnv);
+    
+    // (@todo) to be automated
+    enable_rotation = true;
+    
+    rotator_create(&hRot);
+
+    // (@todo) needs to be made adaptive 
+    rotator_setOrder(hRot, 4);
+
     refreshWindow = true;
 
     /* specify here on which UDP port number to receive incoming OSC messages */
@@ -56,6 +65,43 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
             setParameterRaw(1, message[1].getFloat32());
         if (message[2].isFloat32())
             setParameterRaw(2, message[2].getFloat32());
+        return;
+    }
+    
+    else if (message.size() == 7 && message.getAddressPattern().toString().compare("xyzq")) {
+        if (message[0].isFloat32())
+            setParameterRaw(0, message[0].getFloat32());
+        if (message[1].isFloat32())
+            setParameterRaw(1, message[1].getFloat32());
+        if (message[2].isFloat32())
+            setParameterRaw(2, message[2].getFloat32());
+
+        if (message[3].isFloat32())
+            rotator_setQuaternionW(hRot, message[3].getFloat32());
+        if (message[4].isFloat32())
+            rotator_setQuaternionX(hRot, message[4].getFloat32());
+        if (message[5].isFloat32())
+            rotator_setQuaternionY(hRot, message[5].getFloat32());
+        if (message[6].isFloat32())
+            rotator_setQuaternionY(hRot, message[6].getFloat32());
+        return;
+    }
+
+    else if (message.size() == 6 && message.getAddressPattern().toString().compare("xyzypr")) {
+        if (message[0].isFloat32())
+            setParameterRaw(0, message[0].getFloat32());
+        if (message[1].isFloat32())
+            setParameterRaw(1, message[1].getFloat32());
+        if (message[2].isFloat32())
+            setParameterRaw(2, message[2].getFloat32());
+
+        if (message[3].isFloat32())
+            rotator_setYaw(hRot, message[3].getFloat32());
+        if (message[4].isFloat32())
+            rotator_setPitch(hRot, message[4].getFloat32());
+        if (message[5].isFloat32())
+            rotator_setRoll(hRot, message[5].getFloat32());
+
         return;
     }
 }
@@ -192,7 +238,20 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     //isPlaying = false;
 
     tvconv_init(hTVCnv, nSampleRate, nHostBlockSize);
+
+    int numConvolverOutputChannels = tvconv_getNumOutputChannels(hTVCnv);
+
+    if (numConvolverOutputChannels) {
+        
+        int sh_order = sqrt(numConvolverOutputChannels) - 1;
+        
+        DBG("order");
+        DBG(String(sh_order));
+        rotator_setOrder(hRot, sh_order);
+    }
+
     AudioProcessor::setLatencySamples(tvconv_getProcessingDelay(hTVCnv));
+    rotator_init(hRot, (float)sampleRate);
 }
 
 void PluginProcessor::releaseResources()
@@ -233,6 +292,24 @@ void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Midi
     float** bufferData = buffer.getArrayOfWritePointers();
 
     tvconv_process(hTVCnv, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);
+
+    if (enable_rotation) {
+        float* pFrameData[MAX_NUM_CHANNELS];
+        int frameSize = rotator_getFrameSize();
+
+        if ((nCurrentBlockSize % frameSize == 0)) { /* divisible by frame size */
+            for (int frame = 0; frame < nCurrentBlockSize / frameSize; frame++) {
+                for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+                    pFrameData[ch] = &bufferData[ch][frame * frameSize];
+
+                /* perform processing */
+                rotator_process(hRot, pFrameData, pFrameData, nNumOutputs, nNumOutputs, frameSize);
+            }
+        }
+        else
+            buffer.clear();
+    }
+
 }
 
 //==============================================================================
@@ -296,6 +373,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 if (xmlState->hasAttribute("OSC_PORT")) {
                     osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
                     osc.connect(osc_port_ID);
+                }
+
+                if (xmlState->hasAttribute("TBRotFlag")) {
+                    DBG("flag set");
                 }
                 
                 tvconv_refreshParams(hTVCnv);

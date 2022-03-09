@@ -567,14 +567,10 @@ void PluginEditor::paint (juce::Graphics& g)
     {
         int x = 408, y = 60, width = 362, height = 424;
         juce::Colour fillColour = juce::Colour (0x10c7c7c7);
-        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
     }
 
     {
@@ -972,8 +968,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="18 228 200 30" fill="solid: ffffffff" hasStroke="0" text="N# IR positions:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="408 60 362 424" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
+    <RECT pos="408 60 362 424" fill="solid: 10c7c7c7" hasStroke="0"/>
     <TEXT pos="314 30 456 31" fill="solid: ffffffff" hasStroke="0" text="Coordinate View"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
