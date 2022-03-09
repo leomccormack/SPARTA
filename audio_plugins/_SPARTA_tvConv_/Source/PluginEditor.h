@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.5
+  Created with Projucer version: 6.1.4
 
   ------------------------------------------------------------------------------
 
@@ -27,14 +27,11 @@
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
-    k_warning_frameSize,
-    k_warning_supported_fs,
-    k_warning_mismatch_fs,
-    k_warning_osc_connection_fail,
-    k_warning_NinputCH,
-    k_warning_NoutputCH
-}SPARTA_WARNINGS;
+    k_warning_sampleRate_missmatch,
+    k_warning_nInputs_more_than_64,
+    k_warning_nOutputs_more_than_64
 
+}SPARTA_WARNINGS;
 //[/Headers]
 
 
@@ -48,11 +45,10 @@ typedef enum _SPARTA_WARNINGS{
                                                                     //[/Comments]
 */
 class PluginEditor  : public AudioProcessorEditor,
-                      public MultiTimer,
+                      public Timer,
                       private FilenameComponentListener,
-                      public juce::Button::Listener,
-                      public juce::ComboBox::Listener,
-                      public juce::Slider::Listener
+                      public juce::Slider::Listener,
+                      public juce::Button::Listener
 {
 public:
     //==============================================================================
@@ -62,72 +58,62 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
 
+    /* Refresh coordinate limits based on loaded sofa files*/
+    void refreshCoords();
+
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
     void resized() override;
-    void buttonClicked (juce::Button* buttonThatWasClicked) override;
-    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
-    void* hAmbi;
-    void timerCallback(int timerID) override;
-    std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
-    OpenGLContext openGLContext;
-    double progress = 0.0;
-    ProgressBar progressbar;
+    void* hTVC;
+    void timerCallback() override;
 
     /* Look and Feel */
     SPARTALookAndFeel LAF;
 
     /* sofa loading */
-    FilenameComponent fileChooser;
+    std::unique_ptr<juce::FilenameComponent> fileComp;
 
     /* sofa file loading */
-    void filenameComponentChanged (FilenameComponent*) override  {
-        String directory = fileChooser.getCurrentFile().getFullPathName();
-        const char* new_cstring = (const char*)directory.toUTF8();
-        ambi_bin_setSofaFilePath(hAmbi, new_cstring);
-    }
+     void filenameComponentChanged (FilenameComponent*) override  {
+         String directory = fileComp->getCurrentFile().getFullPathName();
+         const char* new_cstring = (const char*)directory.toUTF8();
+         tvconv_setSofaFilePath(hTVC, new_cstring);
+         refreshCoords();
+     }
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
-
-    /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<juce::ToggleButton> TBuseDefaultHRIRs;
-    std::unique_ptr<juce::ComboBox> CBorderPreset;
-    std::unique_ptr<juce::ComboBox> CBchFormat;
-    std::unique_ptr<juce::ComboBox> CBnormScheme;
-    std::unique_ptr<juce::ToggleButton> TBmaxRE;
-    std::unique_ptr<juce::Slider> s_yaw;
-    std::unique_ptr<juce::Slider> s_pitch;
-    std::unique_ptr<juce::Slider> s_roll;
+    std::unique_ptr<juce::Label> label_hostBlockSize;
+    std::unique_ptr<juce::Label> label_filterLength;
+    std::unique_ptr<juce::Label> label_hostfs;
+    std::unique_ptr<juce::Label> label_filterfs;
+    std::unique_ptr<juce::Slider> SL_num_inputs;
+    std::unique_ptr<juce::Label> label_NOutputs;
+    std::unique_ptr<juce::Label> label_nIRpositions;
+    std::unique_ptr<juce::Slider> SL_source_y;
+    std::unique_ptr<juce::Slider> SL_source_z;
+    std::unique_ptr<juce::Slider> SL_source_x;
+    std::unique_ptr<juce::Slider> SL_receiver_x;
+    std::unique_ptr<juce::Slider> SL_receiver_y;
+    std::unique_ptr<juce::Slider> SL_receiver_z;
+    std::unique_ptr<juce::Label> label_receiverIdx;
     std::unique_ptr<juce::TextEditor> te_oscport;
-    std::unique_ptr<juce::Label> label_N_dirs;
-    std::unique_ptr<juce::Label> label_HRIR_len;
-    std::unique_ptr<juce::Label> label_HRIR_fs;
-    std::unique_ptr<juce::Label> label_DAW_fs;
-    std::unique_ptr<juce::ToggleButton> t_flipPitch;
-    std::unique_ptr<juce::ToggleButton> t_flipRoll;
-    std::unique_ptr<juce::ToggleButton> t_flipYaw;
-    std::unique_ptr<juce::ToggleButton> TBcompEQ;
-    std::unique_ptr<juce::ToggleButton> TBrpyFlag;
-    std::unique_ptr<juce::ToggleButton> TBenableRot;
-    std::unique_ptr<juce::ComboBox> CBdecoderMethod;
-    std::unique_ptr<juce::ToggleButton> TBdiffMatching;
-    std::unique_ptr<juce::ToggleButton> TBtruncationEQ;
-    std::unique_ptr<juce::ComboBox> CBhrirPreProc;
+    std::unique_ptr<juce::ToggleButton> TBRotFlag;
 
 
     //==============================================================================
