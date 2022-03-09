@@ -7,6 +7,18 @@
               companyEmail="rapolas.daugintis@gmail.com" pluginManufacturerCode="RAPD"
               pluginCode="TVCN" displaySplashScreen="1">
   <MAINGROUP id="IbvuHL" name="sparta_tvconv">
+    <GROUP id="{F9F6581A-BBDF-ED56-7FC5-BEC13FE2CD51}" name="rotator">
+      <GROUP id="{BFC946CA-5190-4C89-CB9C-8849D9F8754B}" name="Source Files">
+        <FILE id="KfBD7V" name="rotator.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/src/rotator/rotator.c"/>
+        <FILE id="qdaAQq" name="rotator_internal.c" compile="1" resource="0"
+              file="../../SDKs/Spatial_Audio_Framework/examples/src/rotator/rotator_internal.c"/>
+      </GROUP>
+      <GROUP id="{E1AAA901-2B6B-1B39-C854-7DA808C15BE7}" name="Header Files">
+        <FILE id="fCOpSz" name="rotator.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/include/rotator.h"/>
+        <FILE id="d7bXDa" name="rotator_internal.h" compile="0" resource="0"
+              file="../../SDKs/Spatial_Audio_Framework/examples/src/rotator/rotator_internal.h"/>
+      </GROUP>
+    </GROUP>
     <FILE id="F6UktL" name="SPARTALookAndFeel.h" compile="0" resource="0"
           file="../resources/SPARTALookAndFeel.h"/>
     <FILE id="vvYHTQ" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
