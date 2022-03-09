@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "tvconv.h"
+#include "rotator.h"
 #include <string.h>
 #define BUILD_VER_SUFFIX "beta" /* String to be added before the version name on the GUI (beta, alpha etc..) */
 #ifndef MIN
@@ -27,7 +28,12 @@ enum {
     k_receiverCoordY,
     k_receiverCoordZ,
 
-    k_NumOfParameters
+    k_NumOfParameters,
+
+    k_qw,
+    k_qx,
+    k_qy,
+    k_qz
 };
 //==============================================================================
 /**
@@ -71,6 +77,7 @@ public:
     
 private:
     void* hTVCnv;         /* tvconv handle */
+    void* hRot;             /* rotator handle */
     int nNumInputs;       /* current number of input channels */
     int nNumOutputs;      /* current number of output channels */
     int nSampleRate;      /* current host sample rate */
@@ -78,6 +85,7 @@ private:
     OSCReceiver osc;
     bool osc_connected;
     int osc_port_ID;
+    bool enable_rotation;
     
     
 /***************************************************************************\
