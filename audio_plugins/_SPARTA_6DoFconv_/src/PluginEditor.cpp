@@ -233,13 +233,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_inputs->setColour(Slider::trackColourId, Colours::transparentBlack);
     SL_num_inputs->setSliderSnapsToMousePosition(false);
     SL_num_inputs->setEnabled(false); /* One source allowed for now*/
-
     SL_source_x->setColour(Slider::trackColourId, Colours::transparentBlack);
     SL_source_x->setSliderSnapsToMousePosition(false);
     SL_source_y->setColour(Slider::trackColourId, Colours::transparentBlack);
     SL_source_y->setSliderSnapsToMousePosition(false);
     SL_source_z->setColour(Slider::trackColourId, Colours::transparentBlack);
     SL_source_z->setSliderSnapsToMousePosition(false);
+
     /*Source position not implemented yet*/
     SL_source_x->setEnabled(false);
     SL_source_y->setEnabled(false);
@@ -271,13 +271,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     }
 
 	/* fetch current configuration */
+    CBviewMode->addItem(TRANS("Top View"), TOP_VIEW+1); /* must start from 1... */
+    CBviewMode->addItem(TRANS("Side View"), SIDE_VIEW+1);
     CBviewMode->setSelectedId(TOP_VIEW+1, dontSendNotification);
     SL_num_inputs->setValue(tvconv_getNumInputChannels(hTVC), dontSendNotification);
 
     /* create scene view window */
     sceneWindow.reset (new sceneView(ownerFilter, 440, 432));
     addAndMakeVisible (sceneWindow.get());
-    sceneWindow->setViewMode(CBviewMode->getSelectedId());
+    sceneWindow->setViewMode(CBviewMode->getSelectedId()-1);
     sceneWindow->setBounds (408, 58, 440, 432);
     refreshSceneViewWindow = true;
 
@@ -805,19 +807,22 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     else if (sliderThatWasMoved == SL_receiver_x.get())
     {
         //[UserSliderCode_SL_receiver_x] -- add your slider handling code here..
-        tvconv_setTargetPosition(hTVC, 0, SL_receiver_x->getValue());
+        tvconv_setTargetPosition(hTVC, SL_receiver_x->getValue(), 0);
+        refreshSceneViewWindow = true;
         //[/UserSliderCode_SL_receiver_x]
     }
     else if (sliderThatWasMoved == SL_receiver_y.get())
     {
         //[UserSliderCode_SL_receiver_y] -- add your slider handling code here..
-        tvconv_setTargetPosition(hTVC, 1, SL_receiver_y->getValue());
+        tvconv_setTargetPosition(hTVC, SL_receiver_y->getValue(), 1);
+        refreshSceneViewWindow = true;
         //[/UserSliderCode_SL_receiver_y]
     }
     else if (sliderThatWasMoved == SL_receiver_z.get())
     {
         //[UserSliderCode_SL_receiver_z] -- add your slider handling code here..
-        tvconv_setTargetPosition(hTVC, 2, SL_receiver_z->getValue());
+        tvconv_setTargetPosition(hTVC, SL_receiver_z->getValue(), 2);
+        refreshSceneViewWindow = true;
         //[/UserSliderCode_SL_receiver_z]
     }
 
@@ -848,6 +853,8 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBviewMode.get())
     {
         //[UserComboBoxCode_CBviewMode] -- add your combo box handling code here..
+        sceneWindow->setViewMode(CBviewMode->getSelectedId()-1);
+        refreshSceneViewWindow = true;
         //[/UserComboBoxCode_CBviewMode]
     }
 
@@ -890,6 +897,8 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_none;
         repaint(0,0,getWidth(),32);
     }
+
+    sceneWindow->refreshSceneView();
 
     /* check if OSC port has changed */
     if (hVst->getOscPortID() != te_oscport->getText().getIntValue())
