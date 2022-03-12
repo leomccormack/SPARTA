@@ -889,7 +889,7 @@ void PluginEditor::refreshCoords()
     }
     SL_receiver_z->setValue(tvconv_getPosition(hTVC, 2));
 
-    float sourcePosition = tvconv_getSourcePosition(hTVC, 0);
+    //float sourcePosition = tvconv_getSourcePosition(hTVC, 0);
 
     SL_source_x->setRange(tvconv_getSourcePosition(hTVC, 0), tvconv_getSourcePosition(hTVC, 0)+1, 0.1);
     SL_source_x->setValue(tvconv_getSourcePosition(hTVC, 0));

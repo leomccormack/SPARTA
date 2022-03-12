@@ -77,7 +77,7 @@ public:
     
 private:
     void* hTVCnv;         /* tvconv handle */
-    void* hRot;             /* rotator handle */
+    void* hRot;           /* rotator handle */
     int nNumInputs;       /* current number of input channels */
     int nNumOutputs;      /* current number of output channels */
     int nSampleRate;      /* current host sample rate */
