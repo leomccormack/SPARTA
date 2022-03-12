@@ -264,7 +264,7 @@ void sceneView::mouseDrag (const juce::MouseEvent& e)
         switch(topOrSideView){
             case TOP_VIEW:
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-                tvconv_setTargetPosition(hTVCnv, -(point.getX() - view_x - room_dims_pixels[1])/scale,  1/*Y*/);
+                tvconv_setTargetPosition(hTVCnv, -(point.getX() - view_x - room_dims_pixels[1])/scale, 1/*Y*/);
                 tvconv_setTargetPosition(hTVCnv, -(point.getY() - view_y - room_dims_pixels[0])/scale, 0/*X*/);
                 break;
 
