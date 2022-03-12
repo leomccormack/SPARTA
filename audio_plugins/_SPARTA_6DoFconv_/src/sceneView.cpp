@@ -25,7 +25,7 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
-const float iconWidth = 10.0f;
+const float iconWidth = 6.0f;
 const float iconRadius = iconWidth/2.0f;
 const float room_pixels = 386;
 
@@ -51,13 +51,11 @@ sceneView::sceneView (PluginProcessor* ownerFilter, int _width, int _height)
     //[Constructor] You can add your own custom stuff here..
     setSize(_width, _height);
     hVst = ownerFilter;
-    hCmp = hVst->getFXHandle();
+    hTVCnv = hVst->getFXHandle();
     width = _width;
     height = _height;
     topOrSideView = TOP_VIEW; /* default */
-    receiverIconIsClicked = false;
-    sourceIconIsClicked = false;
-    listenerIconIsClicked = false;
+    targetIconIsClicked = false;
     drawDoAs = true;
     drawIntersections = true;
     drawTargets = true;
@@ -83,12 +81,18 @@ void sceneView::paint (juce::Graphics& g)
 
     //[UserPaint] Add your own custom painting code here..
 
-    Rectangle<float> recIcon, srcIcon, lstIcon;
+    Rectangle<float> lstIcon;
 
     float room_dims_pixels[3], room_dims_m[3];
-    room_dims_m[0] = obcompass_getRoomDimX(hCmp);
-    room_dims_m[1] = obcompass_getRoomDimY(hCmp);
-    room_dims_m[2] = obcompass_getRoomDimZ(hCmp);
+    if (tvconv_getNumListenerPositions(hTVCnv)==0){
+        room_dims_m[0] = room_dims_m[1] = 1.0f;
+        room_dims_m[2] = 0.35f;
+    }
+    else{
+        room_dims_m[0] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 0) * 1.2f;
+        room_dims_m[1] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 1) * 1.2f;
+        room_dims_m[2] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 2) * 1.2f;
+    }
 
     /* Scaling factor to convert metres to pixels */
     float scale = room_pixels/MAX(MAX(room_dims_m[0], room_dims_m[1]), room_dims_m[2]);
@@ -149,137 +153,10 @@ void sceneView::paint (juce::Graphics& g)
     g.drawText("y",  view_x + room_dims_pixels[xp_idx]/2.0f-5.0f, view_y+room_dims_pixels[yp_idx]+7.0f, 10, 10, Justification::centred, true);
     g.drawText(topOrSideView==TOP_VIEW ? "x" : "z",  view_x + room_dims_pixels[xp_idx]+12.0f, view_y+room_dims_pixels[yp_idx]/2.0f-5.0f, 10, 10, Justification::centred, true);
 
-    /* Draw the estimated parameters / tracked targets */
-    obcompass_plotting_data* pPlot;
-    obcompass_getPlottingDataPtr(hCmp, &pPlot);
-    if(pPlot->conStatus==OBCOMPASS_PLOTTING_CONTAINER_READY_NOT_PLOTTED){
-        pPlot->conStatus = OBCOMPASS_PLOTTING_CONTAINER_READY_CURRENTLY_PLOTTING;
-        float maxFreq = pPlot->pCentreFreqs[pPlot->nBands-1];
-
-        /* Draw DoA vectors */
-        if(drawDoAs){
-            float rayLength = 0.75*MIN(room_dims_m[yp_idx], room_dims_m[xp_idx]);
-
-            /* Loop over receivers and plot the vectors originating from them */
-            for(int ri=0; ri<obcompass_getNumReceiversSAFE(hCmp); ri++){
-                float orig_xy[2], dest_xy[2];
-                orig_xy[0] = obcompass_getReceiverY(hCmp, ri);
-                orig_xy[1] = topOrSideView==TOP_VIEW ? obcompass_getReceiverX(hCmp, ri) : obcompass_getReceiverZ(hCmp, ri);
-                for(int doa=0; doa<pPlot->curNDirs[ri]; doa++){
-                    dest_xy[0] = orig_xy[0] + pPlot->dirs_xyz_perRec[ri][doa*3+xp_idx] * rayLength;
-                    dest_xy[1] = orig_xy[1] + pPlot->dirs_xyz_perRec[ri][doa*3+yp_idx] * rayLength;
-                    float colScale_0_1 = sqrtf(pPlot->pCentreFreqs[pPlot->dirs_band_idx[ri][doa]] /maxFreq);
-                    g.setColour(Colour::fromFloatRGBA(1.0f-colScale_0_1, colScale_0_1, 0.5f+colScale_0_1/2.0f, 0.5f));
-                    g.drawLine(view_x + room_dims_pixels[xp_idx] - orig_xy[0]*scale,
-                               view_y + room_dims_pixels[yp_idx] - orig_xy[1]*scale,
-                               view_x + room_dims_pixels[xp_idx] - dest_xy[0]*scale,
-                               view_y + room_dims_pixels[yp_idx] - dest_xy[1]*scale, 2.0f);
-                }
-            }
-        }
-
-        /* Draw intersections */
-        if(drawIntersections){
-            for(int it=0; it<pPlot->curNIntersections; it++){
-                float pos_xy[2];
-                float colScale_0_1 = sqrtf(pPlot->pCentreFreqs[pPlot->intersections_band_idx[it]] /maxFreq);
-                pos_xy[0] = view_x + room_dims_pixels[xp_idx] - pPlot->intersections_xyz[it*3+xp_idx]*scale;
-                pos_xy[1] = view_y + room_dims_pixels[yp_idx] - pPlot->intersections_xyz[it*3+yp_idx]  *scale;
-                g.setColour(Colour::fromFloatRGBA(1.0f-colScale_0_1, colScale_0_1, 0.5f+colScale_0_1/2.0f, 0.5f));
-                g.fillEllipse(pos_xy[0]-3.0f, pos_xy[1]-3.0f, 6.0f, 6.0f);
-                g.setColour(Colours::lightgrey);
-                g.drawEllipse(pos_xy[0]-3.0f, pos_xy[1]-3.0f, 6.0f, 6.0f,1.0f);
-            }
-        }
-
-        /* Draw targets */
-        if(drawTargets){
-            for(int ti=0; ti<pPlot->curNtargets; ti++){
-                float pos_xy[2], var[2];
-                pos_xy[0] = view_x + room_dims_pixels[xp_idx] - pPlot->targets_pos_xyz[ti*3+xp_idx]*scale;
-                pos_xy[1] = view_y + room_dims_pixels[yp_idx] - pPlot->targets_pos_xyz[ti*3+yp_idx]*scale;
-                var[0] = 10.0f*sqrtf(MAX(pPlot->targets_var_xyz[ti*3+xp_idx], 2.23e-7f))*scale;
-                var[1] = 10.0f*sqrtf(MAX(pPlot->targets_var_xyz[ti*3+yp_idx], 2.23e-7f))*scale;
-
-                /* variance */
-                g.setColour(Colours::orange);
-                g.setOpacity(0.3f);
-                g.fillEllipse(pos_xy[0]-var[0], pos_xy[1]-var[1], var[0]*2.0f, var[1]*2.0f);
-
-                /* position */
-                g.setOpacity(0.9f);
-                g.fillEllipse(pos_xy[0]-5.0f, pos_xy[1]-5.0f, 10.0f, 10.0f);
-                g.drawText(String(ti+1), pos_xy[0]+3.0f, pos_xy[1]-15.0f, 10.0f, 10.0f, Justification::centred);
-                g.setColour(Colours::lightgrey);
-                g.drawEllipse(pos_xy[0]-5.0f, pos_xy[1]-5.0f, 10.0f, 10.0f, 1.0f);
-            }
-        }
-
-        /* Receiver grouping lines */
-        if((obcompass_getRenderingMode(hCmp)==OBCOMPASS_RENDER_BINAURAL || obcompass_getRenderingMode(hCmp)==OBCOMPASS_RENDER_SH) && pPlot->recGrpIndices!=NULL){
-            g.setColour(Colours::azure);
-            g.setOpacity(0.4f);
-            for(int gp=0; gp<pPlot->nRecGrps; gp++){
-                for(int rg=0; rg<pPlot->nRecsPerGrp; rg++){
-                    int tarrg = rg+1;
-                    if (tarrg==pPlot->nRecsPerGrp)
-                        tarrg = 0;
-                    g.drawLine(view_x + room_dims_pixels[xp_idx] - scale*(obcompass_getReceiverY(hCmp, pPlot->recGrpIndices[gp*(pPlot->nRecsPerGrp)+rg])),
-                               view_y + room_dims_pixels[yp_idx] - scale*(topOrSideView==TOP_VIEW ? obcompass_getReceiverX(hCmp, pPlot->recGrpIndices[gp*(pPlot->nRecsPerGrp)+rg]) :
-                                                                          obcompass_getReceiverZ(hCmp, pPlot->recGrpIndices[gp*(pPlot->nRecsPerGrp)+rg])),
-                               view_x + room_dims_pixels[xp_idx] - scale*(obcompass_getReceiverY(hCmp, pPlot->recGrpIndices[(gp)*(pPlot->nRecsPerGrp)+tarrg])),
-                               view_y + room_dims_pixels[yp_idx] - scale*(topOrSideView==TOP_VIEW ? obcompass_getReceiverX(hCmp, pPlot->recGrpIndices[(gp)*(pPlot->nRecsPerGrp)+tarrg]) :
-                                                                          obcompass_getReceiverZ(hCmp, pPlot->recGrpIndices[(gp)*(pPlot->nRecsPerGrp)+tarrg])), 2.0f);
-                }
-            }
-
-            /* Draw interpolation weights text, under each receiver */
-            g.setColour(Colours::cyan);
-            g.setOpacity(0.8f);
-            g.setFont(10.0f);
-            for(int ri=0; ri<obcompass_getNumReceiversSAFE(hCmp); ri++){
-                float point_x = view_x + room_dims_pixels[xp_idx] - scale*(obcompass_getReceiverY(hCmp, ri));
-                float point_y = view_y + room_dims_pixels[yp_idx] - scale*(topOrSideView==TOP_VIEW ? obcompass_getReceiverX(hCmp, ri) : obcompass_getReceiverZ(hCmp, ri));
-                g.drawText(String(pPlot->interpWeights[ri],3,false), point_x-12, point_y+10, 28, 12, Justification::centredLeft);
-            }
-        }
-
-        pPlot->conStatus = OBCOMPASS_PLOTTING_CONTAINER_READY_HAS_BEEN_PLOTTED;
-    }
-
-    g.setFont(14.0f);
-    /* Source icons */
-    if(!obcompass_getEnableSourceTracker(hCmp)){
-        for(int src=0; src<obcompass_getNumSources(hCmp); src++){
-            float point_x = view_x + room_dims_pixels[xp_idx] - scale*(obcompass_getSourceY(hCmp, src));
-            float point_y = view_y + room_dims_pixels[yp_idx] - scale*(topOrSideView==TOP_VIEW ? obcompass_getSourceX(hCmp, src) : obcompass_getSourceZ(hCmp, src));
-            srcIcon.setBounds(point_x-5.0f, point_y-5.0f, 10.0f, 10.0f);
-            g.setOpacity(0.9f);
-            g.setColour(Colours::orange);
-            g.fillEllipse(srcIcon);
-            g.drawText(String(src+1), srcIcon.translated(8.0f, -8.0f), Justification::centred);
-            g.setColour(Colours::lightgrey);
-            g.drawEllipse(srcIcon, 1.0f);
-        }
-    }
-
-    /* Receiver icons */
-    for(int rec=0; rec<obcompass_getNumReceiversSAFE(hCmp); rec++){
-        float point_x = view_x + room_dims_pixels[xp_idx] - scale*(obcompass_getReceiverY(hCmp, rec));
-        float point_y = view_y + room_dims_pixels[yp_idx] - scale*(topOrSideView==TOP_VIEW ? obcompass_getReceiverX(hCmp, rec) : obcompass_getReceiverZ(hCmp, rec));
-        recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
-        g.setOpacity(0.9f);
-        g.setColour(Colours::magenta);
-        g.fillEllipse(recIcon);
-        g.drawText(String(rec+1), recIcon.translated(8.0f, -8.0f), Justification::centred);
-        g.setColour(Colours::lightgrey);
-        g.drawEllipse(recIcon, 1.0f);
-    }
-
     /* Listener icon */
-    if(obcompass_getRenderingMode(hCmp)==OBCOMPASS_RENDER_BINAURAL || obcompass_getRenderingMode(hCmp)==OBCOMPASS_RENDER_SH){
-        float point_x = view_x + room_dims_pixels[xp_idx] - scale*(obcompass_getListenerY(hCmp));
-        float point_y = view_y + room_dims_pixels[yp_idx] - scale*(topOrSideView==TOP_VIEW ? obcompass_getListenerX(hCmp) : obcompass_getListenerZ(hCmp));
+    for(int i=0; i<tvconv_getNumListenerPositions(hTVCnv); i++){
+        float point_x = view_x + room_dims_pixels[xp_idx] - scale*(tvconv_getListenerPosition(hTVCnv, i, 1/*Y*/));
+        float point_y = view_y + room_dims_pixels[yp_idx] - scale*(topOrSideView==TOP_VIEW ? tvconv_getListenerPosition(hTVCnv, i, 0/*X*/) : tvconv_getListenerPosition(hTVCnv, i, 2/*Z*/));
         lstIcon.setBounds(point_x-iconRadius*1.2f, point_y-iconRadius*1.2f, iconWidth*1.2f, iconWidth*1.2f);
         g.setOpacity(0.9f);
         g.setColour(Colours::darkcyan);
@@ -287,6 +164,16 @@ void sceneView::paint (juce::Graphics& g)
         g.setColour(Colours::lightgrey);
         g.drawEllipse(lstIcon, 1.0f);
     }
+
+    float point_x = view_x + room_dims_pixels[xp_idx] - scale*(tvconv_getTargetPosition(hTVCnv, 1/*Y*/));
+    float point_y = view_y + room_dims_pixels[yp_idx] - scale*(topOrSideView==TOP_VIEW ? tvconv_getTargetPosition(hTVCnv, 0/*X*/) : tvconv_getTargetPosition(hTVCnv, 2/*Z*/));
+    lstIcon.setBounds(point_x-iconRadius*1.2f, point_y-iconRadius*1.2f, iconWidth*1.2f, iconWidth*1.2f);
+    g.setOpacity(0.9f);
+    g.setColour(Colours::orange);
+    g.fillEllipse(lstIcon);
+    g.setColour(Colours::lightgrey);
+    g.drawEllipse(lstIcon, 1.0f);
+
     //[/UserPaint]
 }
 
@@ -303,11 +190,17 @@ void sceneView::mouseDown (const juce::MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
 
-    Rectangle<int> recIcon, srcIcon;
+    Rectangle<int> recIcon;
     float room_dims_pixels[3], room_dims_m[3];
-    room_dims_m[0] = obcompass_getRoomDimX(hCmp);
-    room_dims_m[1] = obcompass_getRoomDimY(hCmp);
-    room_dims_m[2] = obcompass_getRoomDimZ(hCmp);
+    if (tvconv_getNumListenerPositions(hTVCnv)==0){
+        room_dims_m[0] = room_dims_m[1] = 1.0f;
+        room_dims_m[2] = 0.35f;
+    }
+    else{
+        room_dims_m[0] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 0) * 1.2f;
+        room_dims_m[1] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 1) * 1.2f;
+        room_dims_m[2] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 2) * 1.2f;
+    }
 
     /* Scaling factor to convert metres to pixels */
     float scale = room_pixels/MAX(MAX(room_dims_m[0], room_dims_m[1]), room_dims_m[2]);
@@ -319,71 +212,21 @@ void sceneView::mouseDown (const juce::MouseEvent& e)
 
     if(topOrSideView==TOP_VIEW){
         /* REC */
-        for(int rec=0; rec<obcompass_getNumReceivers(hCmp); rec++){
-            float point_x = view_x + room_dims_pixels[1] - scale*(obcompass_getReceiverY(hCmp, rec));
-            float point_y = view_y + room_dims_pixels[0] - scale*(obcompass_getReceiverX(hCmp, rec));
-            recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
-            if(recIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-                receiverIconIsClicked = true;
-                indexOfClickedIcon = rec;
-                return;
-            }
-        }
-
-        /* SRC */
-        for(int src=0; src<obcompass_getNumSources(hCmp); src++){
-            float point_x = view_x + room_dims_pixels[1] - scale*(obcompass_getSourceY(hCmp, src));
-            float point_y = view_y + room_dims_pixels[0] - scale*(obcompass_getSourceX(hCmp, src));
-            srcIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
-            if(srcIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-                sourceIconIsClicked = true;
-                indexOfClickedIcon = src;
-                return;
-            }
-        }
-
-        /* LST */
-        float point_x = view_x + room_dims_pixels[1] - scale*(obcompass_getListenerY(hCmp));
-        float point_y = view_y + room_dims_pixels[0] - scale*(obcompass_getListenerX(hCmp));
-        srcIcon.setBounds(point_x-iconRadius*1.3f, point_y-iconRadius*1.3f, iconWidth*1.3f, iconWidth*1.3f);
-        if(srcIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-            listenerIconIsClicked = true;
-            indexOfClickedIcon = 0;
+        float point_x = view_x + room_dims_pixels[1] - scale*(tvconv_getTargetPosition(hTVCnv, 1/*Y*/));
+        float point_y = view_y + room_dims_pixels[0] - scale*(tvconv_getTargetPosition(hTVCnv, 0/*X*/));
+        recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        if(recIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
+            targetIconIsClicked = true;
             return;
         }
     }
     else if(topOrSideView==SIDE_VIEW){
         /* REC */
-        for(int rec=0; rec<obcompass_getNumReceivers(hCmp); rec++){
-            float point_x = view_x + room_dims_pixels[1] - scale*(obcompass_getReceiverY(hCmp, rec));
-            float point_y = view_y + room_dims_pixels[2] - scale*(obcompass_getReceiverZ(hCmp, rec));
-            recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
-            if(recIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-                receiverIconIsClicked = true;
-                indexOfClickedIcon = rec;
-                return;
-            }
-        }
-
-        /* SRC */
-        for(int src=0; src<obcompass_getNumSources(hCmp); src++){
-            float point_x = view_x + room_dims_pixels[1] - scale*(obcompass_getSourceY(hCmp, src));
-            float point_y = view_y + room_dims_pixels[2] - scale*(obcompass_getSourceZ(hCmp, src));
-            srcIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
-            if(srcIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-                sourceIconIsClicked = true;
-                indexOfClickedIcon = src;
-                return;
-            }
-        }
-
-        /* LST */
-        float point_x = view_x + room_dims_pixels[1] - scale*(obcompass_getListenerY(hCmp));
-        float point_y = view_y + room_dims_pixels[2] - scale*(obcompass_getListenerZ(hCmp));
-        srcIcon.setBounds(point_x-iconRadius*1.2f, point_y-iconRadius*1.2f, iconWidth*1.2f, iconWidth*1.2f);
-        if(srcIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-            listenerIconIsClicked = true;
-            indexOfClickedIcon = 0;
+        float point_x = view_x + room_dims_pixels[1] - scale*(tvconv_getTargetPosition(hTVCnv, 1/*Y*/));
+        float point_y = view_y + room_dims_pixels[2] - scale*(tvconv_getTargetPosition(hTVCnv, 2/*Z*/));
+        recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        if(recIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
+            targetIconIsClicked = true;
             return;
         }
     }
@@ -400,61 +243,35 @@ void sceneView::mouseDrag (const juce::MouseEvent& e)
     float view_x, view_y;
     view_x = 27.0f; view_y = 12.0f;
 
-    if(receiverIconIsClicked || sourceIconIsClicked || listenerIconIsClicked){
+    if(targetIconIsClicked){
         /* Scaling factor to convert metres to pixels */
-        room_dims_m[0] = obcompass_getRoomDimX(hCmp);
-        room_dims_m[1] = obcompass_getRoomDimY(hCmp);
-        room_dims_m[2] = obcompass_getRoomDimZ(hCmp);
+        if (tvconv_getNumListenerPositions(hTVCnv)==0){
+            room_dims_m[0] = room_dims_m[1] = 1.0f;
+            room_dims_m[2] = 0.35f;
+        }
+        else{
+            room_dims_m[0] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 0) * 1.2f;
+            room_dims_m[1] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 1) * 1.2f;
+            room_dims_m[2] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 2) * 1.2f;
+        }
         scale = room_pixels/MAX(MAX(room_dims_m[0], room_dims_m[1]), room_dims_m[2]);
         room_dims_pixels[0] = room_dims_m[0]*scale;
         room_dims_pixels[1] = room_dims_m[1]*scale;
         room_dims_pixels[2] = room_dims_m[2]*scale;
     }
 
-    if(listenerIconIsClicked){
+    if(targetIconIsClicked){
         switch(topOrSideView){
             case TOP_VIEW:
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-                obcompass_setListenerY(hCmp, -(point.getX() - view_x - room_dims_pixels[1])/scale);
-                obcompass_setListenerX(hCmp, -(point.getY() - view_y - room_dims_pixels[0])/scale);
+                tvconv_setTargetPosition(hTVCnv, -(point.getX() - view_x - room_dims_pixels[1])/scale,  1/*Y*/);
+                tvconv_setTargetPosition(hTVCnv, -(point.getY() - view_y - room_dims_pixels[0])/scale, 0/*X*/);
                 break;
 
             case SIDE_VIEW:
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-                obcompass_setListenerY(hCmp, -(point.getX() - view_x - room_dims_pixels[1])/scale);
-                obcompass_setListenerZ(hCmp, -(point.getY() - view_y - room_dims_pixels[2])/scale);
-                break;
-            default: break;
-        }
-    }
-    else if(receiverIconIsClicked){
-        switch(topOrSideView){
-            case TOP_VIEW:
-                point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-                obcompass_setReceiverY(hCmp, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
-                obcompass_setReceiverX(hCmp, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[0])/scale);
-                break;
-
-            case SIDE_VIEW:
-                point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-                obcompass_setReceiverY(hCmp, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
-                obcompass_setReceiverZ(hCmp, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[2])/scale);
-                break;
-            default: break;
-        }
-    }
-    else if(sourceIconIsClicked){
-        switch(topOrSideView){
-            case TOP_VIEW:
-                point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-                obcompass_setSourceY(hCmp, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
-                obcompass_setSourceX(hCmp, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[0])/scale);
-                break;
-
-            case SIDE_VIEW:
-                point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-                obcompass_setSourceY(hCmp, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
-                obcompass_setSourceZ(hCmp, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[2])/scale);
+                tvconv_setTargetPosition(hTVCnv, -(point.getX() - view_x - room_dims_pixels[1])/scale, 1/*Y*/);
+                tvconv_setTargetPosition(hTVCnv, -(point.getY() - view_y - room_dims_pixels[2])/scale, 2/*Z*/);
                 break;
             default: break;
         }
@@ -467,9 +284,7 @@ void sceneView::mouseUp (const juce::MouseEvent& e)
 {
     //[UserCode_mouseUp] -- Add your code here...
     (void)e;
-    receiverIconIsClicked = false;
-    sourceIconIsClicked = false;
-    listenerIconIsClicked = false;
+    targetIconIsClicked = false;
     //[/UserCode_mouseUp]
 }
 
