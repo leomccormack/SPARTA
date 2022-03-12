@@ -177,7 +177,7 @@ float PluginProcessor::getParameter(int index)
 {
     if (index < 3) {
         if (tvconv_getMaxDimension(hTVCnv, index) > tvconv_getMinDimension(hTVCnv, index)){
-            return (tvconv_getPosition(hTVCnv, index)-tvconv_getMinDimension(hTVCnv, index))/
+            return (tvconv_getTargetPosition(hTVCnv, index)-tvconv_getMinDimension(hTVCnv, index))/
                 (tvconv_getMaxDimension(hTVCnv, index)-tvconv_getMinDimension(hTVCnv, index));
         }
     }
@@ -197,7 +197,7 @@ const String PluginProcessor::getParameterName (int index)
 const String PluginProcessor::getParameterText(int index)
 {
     if (index < 3) {
-        return String(tvconv_getPosition(hTVCnv, index));
+        return String(tvconv_getTargetPosition(hTVCnv, index));
     }
     else return "NULL";
 }
@@ -210,8 +210,8 @@ void PluginProcessor::setParameter (int index, float newValue)
         newValueScaled = newValue *
         (tvconv_getMaxDimension(hTVCnv, index) - tvconv_getMinDimension(hTVCnv, index)) +
         tvconv_getMinDimension(hTVCnv, index);
-        if (newValueScaled != tvconv_getPosition(hTVCnv, index)){
-            tvconv_setPosition(hTVCnv, index, newValueScaled);
+        if (newValueScaled != tvconv_getTargetPosition(hTVCnv, index)){
+            tvconv_setTargetPosition(hTVCnv, index, newValueScaled);
             refreshWindow = true;
         }
     }
@@ -220,8 +220,8 @@ void PluginProcessor::setParameter (int index, float newValue)
 void PluginProcessor::setParameterRaw(int index, float newValue)
 {
     if (index < 3) {
-        if (newValue != tvconv_getPosition(hTVCnv, index)) {
-            tvconv_setPosition(hTVCnv, index, newValue);
+        if (newValue != tvconv_getTargetPosition(hTVCnv, index)) {
+            tvconv_setTargetPosition(hTVCnv, index, newValue);
             refreshWindow = true;
         }
     }
@@ -332,9 +332,9 @@ void PluginProcessor::getStateInformation (juce::MemoryBlock& destData)
     /* Create an outer XML element.. */
     XmlElement xml("TVCONVAUDIOPLUGINSETTINGS");
     xml.setAttribute("LastSofaFilePath", tvconv_getSofaFilePath(hTVCnv));
-    xml.setAttribute("ReceiverX", tvconv_getPosition(hTVCnv, 0));
-    xml.setAttribute("ReceiverY", tvconv_getPosition(hTVCnv, 1));
-    xml.setAttribute("ReceiverZ", tvconv_getPosition(hTVCnv, 2));
+    xml.setAttribute("ReceiverX", tvconv_getTargetPosition(hTVCnv, 0));
+    xml.setAttribute("ReceiverY", tvconv_getTargetPosition(hTVCnv, 1));
+    xml.setAttribute("ReceiverZ", tvconv_getTargetPosition(hTVCnv, 2));
 
     xml.setAttribute("OSC_PORT", osc_port_ID);
 
@@ -358,15 +358,15 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                     tvconv_setSofaFilePath(hTVCnv, new_cstring);
                 }
                 if (xmlState->hasAttribute("ReceiverX")){
-                    tvconv_setPosition(hTVCnv, 0,
+                    tvconv_setTargetPosition(hTVCnv, 0,
                         (float)xmlState->getDoubleAttribute("ReceiverX"));
                 }
                 if (xmlState->hasAttribute("ReceiverY")){
-                    tvconv_setPosition(hTVCnv, 1,
+                    tvconv_setTargetPosition(hTVCnv, 1,
                         (float)xmlState->getDoubleAttribute("ReceiverY"));
                 }
                 if (xmlState->hasAttribute("ReceiverZ")){
-                    tvconv_setPosition(hTVCnv, 2,
+                    tvconv_setTargetPosition(hTVCnv, 2,
                         (float)xmlState->getDoubleAttribute("ReceiverZ"));
                 }
 

@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.1.4
+  Created with Projucer version: 6.1.6
 
   ------------------------------------------------------------------------------
 
@@ -24,6 +24,7 @@
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
 #include "../../resources/SPARTALookAndFeel.h"
+#include "sceneView.h"
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
@@ -48,7 +49,8 @@ class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
                       private FilenameComponentListener,
                       public juce::Slider::Listener,
-                      public juce::Button::Listener
+                      public juce::Button::Listener,
+                      public juce::ComboBox::Listener
 {
 public:
     //==============================================================================
@@ -67,6 +69,7 @@ public:
     void resized() override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
+    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
 
 
 
@@ -89,6 +92,10 @@ private:
          tvconv_setSofaFilePath(hTVC, new_cstring);
          refreshCoords();
      }
+
+    /* scene view window */
+    std::unique_ptr<sceneView> sceneWindow;
+    bool refreshSceneViewWindow;
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
@@ -114,6 +121,7 @@ private:
     std::unique_ptr<juce::Label> label_receiverIdx;
     std::unique_ptr<juce::TextEditor> te_oscport;
     std::unique_ptr<juce::ToggleButton> TBRotFlag;
+    std::unique_ptr<juce::ComboBox> CBviewMode;
 
 
     //==============================================================================

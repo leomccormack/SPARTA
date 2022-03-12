@@ -5,7 +5,7 @@
               pluginFormats="buildVST" pluginManufacturer="AALTO" pluginAAXCategory="2"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
               companyEmail="rapolas.daugintis@gmail.com" pluginManufacturerCode="RAPD"
-              pluginCode="TVCN" displaySplashScreen="1" version="1.0.0">
+              pluginCode="TVCN" displaySplashScreen="0" version="1.0.0">
   <MAINGROUP id="IbvuHL" name="sparta_6DoFconv">
     <FILE id="J0lg3N" name="PluginEditor.cpp" compile="1" resource="0"
           file="src/PluginEditor.cpp"/>
@@ -14,6 +14,8 @@
           file="src/PluginProcessor.cpp"/>
     <FILE id="PtBXpL" name="PluginProcessor.h" compile="0" resource="0"
           file="src/PluginProcessor.h"/>
+    <FILE id="adqFmW" name="sceneView.cpp" compile="1" resource="0" file="src/sceneView.cpp"/>
+    <FILE id="H1SyVi" name="sceneView.h" compile="0" resource="0" file="src/sceneView.h"/>
     <GROUP id="{F9F6581A-BBDF-ED56-7FC5-BEC13FE2CD51}" name="rotator">
       <GROUP id="{BFC946CA-5190-4C89-CB9C-8849D9F8754B}" name="Source Files">
         <FILE id="KfBD7V" name="rotator.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/src/rotator/rotator.c"/>

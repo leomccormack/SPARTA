@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.1.4
+  Created with Projucer version: 6.1.6
 
   ------------------------------------------------------------------------------
 
@@ -204,11 +204,21 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     TBRotFlag->setBounds (336, 200, 32, 24);
 
+    CBviewMode.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (CBviewMode.get());
+    CBviewMode->setEditableText (false);
+    CBviewMode->setJustificationType (juce::Justification::centredLeft);
+    CBviewMode->setTextWhenNothingSelected (juce::String());
+    CBviewMode->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBviewMode->addListener (this);
+
+    CBviewMode->setBounds (755, 38, 92, 16);
+
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (780, 500);
+    setSize (860, 500);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -260,9 +270,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
         SL_receiver_z->setEnabled(false);
     }
 
-
 	/* fetch current configuration */
+    CBviewMode->setSelectedId(TOP_VIEW+1, dontSendNotification);
     SL_num_inputs->setValue(tvconv_getNumInputChannels(hTVC), dontSendNotification);
+
+    /* create scene view window */
+    sceneWindow.reset (new sceneView(ownerFilter, 440, 432));
+    addAndMakeVisible (sceneWindow.get());
+    sceneWindow->setViewMode(CBviewMode->getSelectedId());
+    sceneWindow->setBounds (408, 58, 440, 432);
+    refreshSceneViewWindow = true;
 
     /* Plugin description */
     pluginDescription.reset (new juce::ComboBox ("new combo box"));
@@ -302,6 +319,7 @@ PluginEditor::~PluginEditor()
     label_receiverIdx = nullptr;
     te_oscport = nullptr;
     TBRotFlag = nullptr;
+    CBviewMode = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -319,7 +337,7 @@ void PluginEditor::paint (juce::Graphics& g)
     g.fillAll (juce::Colours::white);
 
     {
-        int x = 2, y = 28, width = 780, height = 290;
+        int x = 2, y = 28, width = 860, height = 290;
         juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -334,15 +352,15 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 4, y = 316, width = 780, height = 186;
+        int x = 0, y = 316, width = 860, height = 186;
         juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
-                                             8.0f - 4.0f + x,
+                                             8.0f - 0.0f + x,
                                              496.0f - 316.0f + y,
                                              fillColour2,
-                                             8.0f - 4.0f + x,
+                                             8.0f - 0.0f + x,
                                              416.0f - 316.0f + y,
                                              false));
         g.fillRect (x, y, width, height);
@@ -362,7 +380,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        float x = 1.0f, y = 2.0f, width = 778.0f, height = 31.0f;
+        float x = 1.0f, y = 2.0f, width = 858.0f, height = 31.0f;
         juce::Colour fillColour1 = juce::Colour (0xff041518), fillColour2 = juce::Colour (0xff19313f);
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -417,7 +435,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 0, y = 0, width = 780, height = 2;
+        int x = 0, y = 0, width = 860, height = 2;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -437,7 +455,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 778, y = 0, width = 2, height = 500;
+        int x = 858, y = 0, width = 2, height = 500;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -447,7 +465,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 0, y = 498, width = 780, height = 2;
+        int x = 0, y = 498, width = 860, height = 2;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -565,16 +583,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 408, y = 60, width = 362, height = 424;
-        juce::Colour fillColour = juce::Colour (0x10c7c7c7);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-    }
-
-    {
-        int x = 314, y = 30, width = 456, height = 31;
+        int x = 415, y = 30, width = 417, height = 31;
         juce::String text (TRANS("Coordinate View"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -708,6 +717,19 @@ void PluginEditor::paint (juce::Graphics& g)
 
     }
 
+    {
+        int x = 408, y = 58, width = 440, height = 434;
+        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
+        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
     /* display version/date built */
@@ -783,19 +805,19 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     else if (sliderThatWasMoved == SL_receiver_x.get())
     {
         //[UserSliderCode_SL_receiver_x] -- add your slider handling code here..
-        tvconv_setPosition(hTVC, 0, SL_receiver_x->getValue());
+        tvconv_setTargetPosition(hTVC, 0, SL_receiver_x->getValue());
         //[/UserSliderCode_SL_receiver_x]
     }
     else if (sliderThatWasMoved == SL_receiver_y.get())
     {
         //[UserSliderCode_SL_receiver_y] -- add your slider handling code here..
-        tvconv_setPosition(hTVC, 1, SL_receiver_y->getValue());
+        tvconv_setTargetPosition(hTVC, 1, SL_receiver_y->getValue());
         //[/UserSliderCode_SL_receiver_y]
     }
     else if (sliderThatWasMoved == SL_receiver_z.get())
     {
         //[UserSliderCode_SL_receiver_z] -- add your slider handling code here..
-        tvconv_setPosition(hTVC, 2, SL_receiver_z->getValue());
+        tvconv_setTargetPosition(hTVC, 2, SL_receiver_z->getValue());
         //[/UserSliderCode_SL_receiver_z]
     }
 
@@ -818,6 +840,21 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     //[/UserbuttonClicked_Post]
 }
 
+void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
+{
+    //[UsercomboBoxChanged_Pre]
+    //[/UsercomboBoxChanged_Pre]
+
+    if (comboBoxThatHasChanged == CBviewMode.get())
+    {
+        //[UserComboBoxCode_CBviewMode] -- add your combo box handling code here..
+        //[/UserComboBoxCode_CBviewMode]
+    }
+
+    //[UsercomboBoxChanged_Post]
+    //[/UsercomboBoxChanged_Post]
+}
+
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
@@ -825,19 +862,19 @@ void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
     label_hostBlockSize->setText(String(tvconv_getHostBlockSize(hTVC)), dontSendNotification);
-    label_NOutputs->setText(String(tvconv_getNIRs(hTVC)), dontSendNotification);
-    label_nIRpositions->setText(String(tvconv_getNPositions(hTVC)), dontSendNotification);
+    label_NOutputs->setText(String(tvconv_getNumIRs(hTVC)), dontSendNotification);
+    label_nIRpositions->setText(String(tvconv_getNumListenerPositions(hTVC)), dontSendNotification);
     label_filterLength->setText(String((float)tvconv_getIRLength(hTVC)/MAX((float)tvconv_getIRFs(hTVC),1/*avoid nan*/)), dontSendNotification);
     label_hostfs->setText(String(tvconv_getHostFs(hTVC)), dontSendNotification);
     label_filterfs->setText(String(tvconv_getIRFs(hTVC)), dontSendNotification);
     label_receiverIdx->setText(String(tvconv_getPositionIdx(hTVC)), dontSendNotification);
 
-    SL_receiver_x->setValue(tvconv_getPosition(hTVC, 0));
-    SL_receiver_y->setValue(tvconv_getPosition(hTVC, 1));
-    SL_receiver_z->setValue(tvconv_getPosition(hTVC, 2));
+    SL_receiver_x->setValue(tvconv_getTargetPosition(hTVC, 0));
+    SL_receiver_y->setValue(tvconv_getTargetPosition(hTVC, 1));
+    SL_receiver_z->setValue(tvconv_getTargetPosition(hTVC, 2));
 
     /* display warning message, if needed */
-    if((tvconv_getNIRs(hTVC) != 0) && (tvconv_getHostFs(hTVC)!=tvconv_getIRFs(hTVC))){
+    if((tvconv_getNumIRs(hTVC) != 0) && (tvconv_getHostFs(hTVC)!=tvconv_getIRFs(hTVC))){
         currentWarning = k_warning_sampleRate_missmatch;
         repaint(0,0,getWidth(),32);
     }
@@ -869,7 +906,7 @@ void PluginEditor::refreshCoords()
     } else {
         SL_receiver_x->setEnabled(false);
     }
-    SL_receiver_x->setValue(tvconv_getPosition(hTVC, 0));
+    SL_receiver_x->setValue(tvconv_getTargetPosition(hTVC, 0));
     if (tvconv_getMaxDimension(hTVC, 1) > tvconv_getMinDimension(hTVC, 1)){
         SL_receiver_y->setEnabled(true);
         SL_receiver_y->setRange(tvconv_getMinDimension(hTVC, 1),
@@ -878,7 +915,7 @@ void PluginEditor::refreshCoords()
     } else {
         SL_receiver_y->setEnabled(false);
     }
-    SL_receiver_y->setValue(tvconv_getPosition(hTVC, 1));
+    SL_receiver_y->setValue(tvconv_getTargetPosition(hTVC, 1));
     if (tvconv_getMaxDimension(hTVC, 2) > tvconv_getMinDimension(hTVC, 2)){
         SL_receiver_z->setEnabled(true);
         SL_receiver_z->setRange(tvconv_getMinDimension(hTVC, 2),
@@ -887,7 +924,7 @@ void PluginEditor::refreshCoords()
     } else {
         SL_receiver_z->setEnabled(false);
     }
-    SL_receiver_z->setValue(tvconv_getPosition(hTVC, 2));
+    SL_receiver_z->setValue(tvconv_getTargetPosition(hTVC, 2));
 
     //float sourcePosition = tvconv_getSourcePosition(hTVC, 0);
 
@@ -915,15 +952,15 @@ BEGIN_JUCER_METADATA
                  parentClasses="public AudioProcessorEditor, public Timer, private FilenameComponentListener"
                  constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="780" initialHeight="500">
+                 fixedSize="1" initialWidth="860" initialHeight="500">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="2 28 780 290" fill="linear: 8 32, 8 112, 0=ff19313f, 1=ff041518"
+    <RECT pos="2 28 860 290" fill="linear: 8 32, 8 112, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <RECT pos="4 316 780 186" fill="linear: 8 496, 8 416, 0=ff19313f, 1=ff041518"
+    <RECT pos="0 316 860 186" fill="linear: 8 496, 8 416, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
     <RECT pos="10 60 286 76" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <ROUNDRECT pos="1 2 778 31" cornerSize="5.0" fill="linear: 0 32, 528 32, 0=ff041518, 1=ff19313f"
+    <ROUNDRECT pos="1 2 858 31" cornerSize="5.0" fill="linear: 0 32, 528 32, 0=ff041518, 1=ff19313f"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="10 172 288 164" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -933,13 +970,13 @@ BEGIN_JUCER_METADATA
     <TEXT pos="92 1 148 32" fill="solid: ffe9ff00" hasStroke="0" text="TimeVarConvolver"
           fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="0 0 780 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="0 0 860 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
     <RECT pos="0 0 2 500" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="778 0 2 500" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="858 0 2 500" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="0 498 780 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="0 498 860 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
     <TEXT pos="18 180 115 30" fill="solid: ffffffff" hasStroke="0" text="Host Block Size:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
@@ -968,8 +1005,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="18 228 200 30" fill="solid: ffffffff" hasStroke="0" text="N# IR positions:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="408 60 362 424" fill="solid: 10c7c7c7" hasStroke="0"/>
-    <TEXT pos="314 30 456 31" fill="solid: ffffffff" hasStroke="0" text="Coordinate View"
+    <TEXT pos="415 30 417 31" fill="solid: ffffffff" hasStroke="0" text="Coordinate View"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <RECT pos="13 372 382 112" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
@@ -999,6 +1035,8 @@ BEGIN_JUCER_METADATA
           italic="0" justification="36" typefaceStyle="Bold"/>
     <RECT pos="309 172 91 68" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 1fffffff"/>
+    <RECT pos="408 58 440 434" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+          strokeColour="solid: 67a0a0a0"/>
   </BACKGROUND>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_hostBlockSize"
          virtualName="" explicitFocusOrder="0" pos="224 184 60 20" outlineCol="68a3a2a2"
@@ -1077,6 +1115,9 @@ BEGIN_JUCER_METADATA
   <TOGGLEBUTTON name="rotation button" id="b4fec6d3e1a2bae2" memberName="TBRotFlag"
                 virtualName="" explicitFocusOrder="0" pos="336 200 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <COMBOBOX name="new combo box" id="6406656f2512d83e" memberName="CBviewMode"
+            virtualName="" explicitFocusOrder="0" pos="755 38 92 16" editable="0"
+            layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -52,8 +52,8 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
 
     void refreshSceneView();
-    bool getReceiverIconIsClicked(){
-        return receiverIconIsClicked;
+    bool getTargetIconIsClicked(){
+        return targetIconIsClicked;
     }
 
     void setViewMode(int newMode){
@@ -85,13 +85,10 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
-    void* hCmp;
+    void* hTVCnv; 
     int width;
     int height;
-    bool receiverIconIsClicked;
-    bool sourceIconIsClicked;
-    bool listenerIconIsClicked;
-    int indexOfClickedIcon;
+    bool targetIconIsClicked;
 
     int topOrSideView;
 
