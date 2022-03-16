@@ -28,8 +28,10 @@ target_sources(${PROJECT_NAME}
 PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginEditor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginProcessor.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/sceneView.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginEditor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginProcessor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/sceneView.cpp
 )
 
 # Add any extra JUCE-specific pre-processor definitions

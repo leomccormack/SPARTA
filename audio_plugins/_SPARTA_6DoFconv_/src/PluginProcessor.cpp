@@ -68,14 +68,13 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
         return;
     }
     
-    else if (message.size() == 7 && message.getAddressPattern().toString().compare("xyzq")) {
+    else if (message.size() == 7 && message.getAddressPattern().toString().compare("xyzquat")) {
         if (message[0].isFloat32())
             setParameterRaw(0, message[0].getFloat32());
         if (message[1].isFloat32())
             setParameterRaw(1, message[1].getFloat32());
         if (message[2].isFloat32())
             setParameterRaw(2, message[2].getFloat32());
-
         if (message[3].isFloat32())
             rotator_setQuaternionW(hRot, message[3].getFloat32());
         if (message[4].isFloat32())
@@ -94,7 +93,6 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
             setParameterRaw(1, message[1].getFloat32());
         if (message[2].isFloat32())
             setParameterRaw(2, message[2].getFloat32());
-
         if (message[3].isFloat32())
             rotator_setYaw(hRot, message[3].getFloat32());
         if (message[4].isFloat32())
@@ -358,16 +356,16 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                     tvconv_setSofaFilePath(hTVCnv, new_cstring);
                 }
                 if (xmlState->hasAttribute("ReceiverX")){
-                    tvconv_setTargetPosition(hTVCnv, 0,
-                        (float)xmlState->getDoubleAttribute("ReceiverX"));
+                    tvconv_setTargetPosition(hTVCnv,
+                        (float)xmlState->getDoubleAttribute("ReceiverX"), 0);
                 }
                 if (xmlState->hasAttribute("ReceiverY")){
-                    tvconv_setTargetPosition(hTVCnv, 1,
-                        (float)xmlState->getDoubleAttribute("ReceiverY"));
+                    tvconv_setTargetPosition(hTVCnv,
+                        (float)xmlState->getDoubleAttribute("ReceiverY"), 1);
                 }
                 if (xmlState->hasAttribute("ReceiverZ")){
-                    tvconv_setTargetPosition(hTVCnv, 2,
-                        (float)xmlState->getDoubleAttribute("ReceiverZ"));
+                    tvconv_setTargetPosition(hTVCnv,
+                        (float)xmlState->getDoubleAttribute("ReceiverZ"), 2);
                 }
 
                 if (xmlState->hasAttribute("OSC_PORT")) {
