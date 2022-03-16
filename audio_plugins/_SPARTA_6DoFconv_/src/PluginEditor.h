@@ -49,8 +49,8 @@ class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
                       private FilenameComponentListener,
                       public juce::Slider::Listener,
-                      public juce::Button::Listener,
-                      public juce::ComboBox::Listener
+                      public juce::ComboBox::Listener,
+                      public juce::Button::Listener
 {
 public:
     //==============================================================================
@@ -68,8 +68,8 @@ public:
     void paint (juce::Graphics& g) override;
     void resized() override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
-    void buttonClicked (juce::Button* buttonThatWasClicked) override;
     void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
@@ -109,7 +109,6 @@ private:
     std::unique_ptr<juce::Label> label_filterLength;
     std::unique_ptr<juce::Label> label_hostfs;
     std::unique_ptr<juce::Label> label_filterfs;
-    std::unique_ptr<juce::Slider> SL_num_inputs;
     std::unique_ptr<juce::Label> label_NOutputs;
     std::unique_ptr<juce::Label> label_nIRpositions;
     std::unique_ptr<juce::Slider> SL_source_y;
@@ -120,8 +119,14 @@ private:
     std::unique_ptr<juce::Slider> SL_receiver_z;
     std::unique_ptr<juce::Label> label_receiverIdx;
     std::unique_ptr<juce::TextEditor> te_oscport;
-    std::unique_ptr<juce::ToggleButton> TBRotFlag;
     std::unique_ptr<juce::ComboBox> CBviewMode;
+    std::unique_ptr<juce::Slider> s_yaw;
+    std::unique_ptr<juce::Slider> s_pitch;
+    std::unique_ptr<juce::Slider> s_roll;
+    std::unique_ptr<juce::ToggleButton> t_flipYaw;
+    std::unique_ptr<juce::ToggleButton> t_flipPitch;
+    std::unique_ptr<juce::ToggleButton> t_flipRoll;
+    std::unique_ptr<juce::ToggleButton> TBenableRotation;
 
 
     //==============================================================================

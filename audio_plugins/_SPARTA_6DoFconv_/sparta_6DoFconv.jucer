@@ -7,6 +7,8 @@
               companyEmail="rapolas.daugintis@gmail.com" pluginManufacturerCode="RAPD"
               pluginCode="TVCN" displaySplashScreen="0" version="1.0.0">
   <MAINGROUP id="IbvuHL" name="sparta_6DoFconv">
+    <FILE id="F6UktL" name="SPARTALookAndFeel.h" compile="0" resource="0"
+          file="../resources/SPARTALookAndFeel.h"/>
     <FILE id="J0lg3N" name="PluginEditor.cpp" compile="1" resource="0"
           file="src/PluginEditor.cpp"/>
     <FILE id="WyNm1w" name="PluginEditor.h" compile="0" resource="0" file="src/PluginEditor.h"/>
@@ -28,8 +30,6 @@
               file="../../SDKs/Spatial_Audio_Framework/examples/src/rotator/rotator_internal.h"/>
       </GROUP>
     </GROUP>
-    <FILE id="F6UktL" name="SPARTALookAndFeel.h" compile="0" resource="0"
-          file="../resources/SPARTALookAndFeel.h"/>
     <GROUP id="{2C2482EC-BCE3-E10D-AD3A-774164C5012A}" name="tvconv">
       <GROUP id="{9A792367-E4A3-714A-D2D1-FA4C033F022B}" name="Header Files">
         <FILE id="XfcfxB" name="_common.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/include/_common.h"/>
@@ -343,7 +343,7 @@
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_6DoFconv_debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/oneapi/mkl/latest/include/&#10;/opt/intel/oneapi/ipp/latest/include/"
                        osxCompatibility="10.10 SDK" osxArchitecture="64BitIntel" libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"
-                       macOSDeploymentTarget="10.10" defines="VDEBUG"/>
+                       macOSDeploymentTarget="10.10"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="sparta_6DoFconv" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/oneapi/mkl/latest/include/&#10;/opt/intel/oneapi/ipp/latest/include/"
                        osxCompatibility="10.10 SDK" osxArchitecture="64BitIntel" userNotes="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"

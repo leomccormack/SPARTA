@@ -25,7 +25,7 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
-const float iconWidth = 6.0f;
+const float iconWidth = 8.0f;
 const float iconRadius = iconWidth/2.0f;
 const float room_pixels = 386;
 
@@ -89,9 +89,9 @@ void sceneView::paint (juce::Graphics& g)
         room_dims_m[2] = 0.35f;
     }
     else{
-        room_dims_m[0] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 0) * 1.2f;
-        room_dims_m[1] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 1) * 1.2f;
-        room_dims_m[2] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 2) * 1.2f;
+        room_dims_m[0] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)), 1.0f) * 1.2f;
+        room_dims_m[1] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)), 1.0f) * 1.2f;
+        room_dims_m[2] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)), 0.35f) * 1.2f;
     }
 
     /* Scaling factor to convert metres to pixels */
@@ -153,20 +153,45 @@ void sceneView::paint (juce::Graphics& g)
     g.drawText("y",  view_x + room_dims_pixels[xp_idx]/2.0f-5.0f, view_y+room_dims_pixels[yp_idx]+7.0f, 10, 10, Justification::centred, true);
     g.drawText(topOrSideView==TOP_VIEW ? "x" : "z",  view_x + room_dims_pixels[xp_idx]+12.0f, view_y+room_dims_pixels[yp_idx]/2.0f-5.0f, 10, 10, Justification::centred, true);
 
-    /* Listener icon */
+    /* Listener icons */
+    int targetIndex = tvconv_getListenerPositionIdx(hTVCnv);
     for(int i=0; i<tvconv_getNumListenerPositions(hTVCnv); i++){
         float point_x = view_x + room_dims_pixels[xp_idx] - scale*(tvconv_getListenerPosition(hTVCnv, i, 1/*Y*/));
         float point_y = view_y + room_dims_pixels[yp_idx] - scale*(topOrSideView==TOP_VIEW ? tvconv_getListenerPosition(hTVCnv, i, 0/*X*/) : tvconv_getListenerPosition(hTVCnv, i, 2/*Z*/));
-        lstIcon.setBounds(point_x-iconRadius*1.2f, point_y-iconRadius*1.2f, iconWidth*1.2f, iconWidth*1.2f);
-        g.setOpacity(0.9f);
-        g.setColour(Colours::darkcyan);
-        g.fillEllipse(lstIcon);
-        g.setColour(Colours::lightgrey);
-        g.drawEllipse(lstIcon, 1.0f);
+        if(i==targetIndex){
+            lstIcon.setBounds(point_x-iconRadius*1.8f, point_y-iconRadius*1.8f, iconWidth*1.8f, iconWidth*1.8f);
+            g.setColour(Colours::white);
+            g.drawText(String(targetIndex), lstIcon.translated(10.0f, -10.0f), Justification::centred);
+            g.setColour(Colours::green);
+            g.fillEllipse(lstIcon);
+            g.setColour(Colours::lightgrey);
+            g.setOpacity(0.9f);
+            g.drawEllipse(lstIcon, 1.0f);
+        }
+        else{
+            lstIcon.setBounds(point_x-iconRadius*1.4f, point_y-iconRadius*1.4f, iconWidth*1.4f, iconWidth*1.4f);
+            g.setColour(Colours::darkcyan);
+            g.setOpacity(0.3f);
+            g.fillEllipse(lstIcon);
+            g.setColour(Colours::lightgrey);
+            g.setOpacity(0.3f);
+            g.drawEllipse(lstIcon, 1.0f);
+        }
     }
 
-    float point_x = view_x + room_dims_pixels[xp_idx] - scale*(tvconv_getTargetPosition(hTVCnv, 1/*Y*/));
-    float point_y = view_y + room_dims_pixels[yp_idx] - scale*(topOrSideView==TOP_VIEW ? tvconv_getTargetPosition(hTVCnv, 0/*X*/) : tvconv_getTargetPosition(hTVCnv, 2/*Z*/));
+    /* Source icon */
+    float point_x = view_x + room_dims_pixels[xp_idx] - scale*(tvconv_getSourcePosition(hTVCnv, 1/*Y*/));
+    float point_y = view_y + room_dims_pixels[yp_idx] - scale*(topOrSideView==TOP_VIEW ? tvconv_getSourcePosition(hTVCnv, 0/*X*/) : tvconv_getSourcePosition(hTVCnv, 2/*Z*/));
+    lstIcon.setBounds(point_x-iconRadius*1.2f, point_y-iconRadius*1.2f, iconWidth*1.2f, iconWidth*1.2f);
+    g.setOpacity(0.9f);
+    g.setColour(Colours::magenta);
+    g.fillEllipse(lstIcon);
+    g.setColour(Colours::lightgrey);
+    g.drawEllipse(lstIcon, 1.0f);
+
+    /* Target Listener position */
+    point_x = view_x + room_dims_pixels[xp_idx] - scale*(tvconv_getTargetPosition(hTVCnv, 1/*Y*/));
+    point_y = view_y + room_dims_pixels[yp_idx] - scale*(topOrSideView==TOP_VIEW ? tvconv_getTargetPosition(hTVCnv, 0/*X*/) : tvconv_getTargetPosition(hTVCnv, 2/*Z*/));
     lstIcon.setBounds(point_x-iconRadius*1.2f, point_y-iconRadius*1.2f, iconWidth*1.2f, iconWidth*1.2f);
     g.setOpacity(0.9f);
     g.setColour(Colours::orange);
@@ -197,9 +222,9 @@ void sceneView::mouseDown (const juce::MouseEvent& e)
         room_dims_m[2] = 0.35f;
     }
     else{
-        room_dims_m[0] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 0) * 1.2f;
-        room_dims_m[1] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 1) * 1.2f;
-        room_dims_m[2] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 2) * 1.2f;
+        room_dims_m[0] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)), 1.0f) * 1.2f;
+        room_dims_m[1] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)), 1.0f) * 1.2f;
+        room_dims_m[2] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)), 0.35f) * 1.2f;
     }
 
     /* Scaling factor to convert metres to pixels */
@@ -250,9 +275,9 @@ void sceneView::mouseDrag (const juce::MouseEvent& e)
             room_dims_m[2] = 0.35f;
         }
         else{
-            room_dims_m[0] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 0) * 1.2f;
-            room_dims_m[1] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 1) * 1.2f;
-            room_dims_m[2] = 10.0f;// tvconv_getMaxDimension(hTVCnv, 2) * 1.2f;
+            room_dims_m[0] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)), 1.0f) * 1.2f;
+            room_dims_m[1] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)), 1.0f) * 1.2f;
+            room_dims_m[2] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)), 0.35f) * 1.2f;
         }
         scale = room_pixels/MAX(MAX(room_dims_m[0], room_dims_m[1]), room_dims_m[2]);
         room_dims_pixels[0] = room_dims_m[0]*scale;
