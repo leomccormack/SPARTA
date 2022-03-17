@@ -77,6 +77,7 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
     void* hTVC;
+    void* hRot;
     void timerCallback() override;
 
     /* Look and Feel */
