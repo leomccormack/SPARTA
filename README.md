@@ -21,6 +21,7 @@ This repository contains the following VST plug-ins:
 * **DirASS** - A sound-field visualiser based on re-assigning the energy of beamformers. This re-assignment is based on DoA estimates extracted from "spatially-constrained" regions, which are centred around each beamformer look-direction. 
 * **MatrixConv** - A basic matrix convolver with an optional partitioned convolution mode. The user need only specify the number of inputs and load the filters via a wav file.
 * **MultiConv** - A basic multi-channel convolver with an optional partitioned convolution mode. Unlike "MatrixConv", this plug-in does not perform any matrixing. Instead, each input channel is convolved with the respective filter; i.e. numInputs = numFilters = numOutputs.
+* **6DoFconv** - A time-varying partitioned convolution multi-channel convolver for SOFA files containing RIRs with multiple listener positions.
 * **Panner** - A frequency-dependent 3-D panner using the VBAP method (up to 64 inputs and outputs).
 * **PitchShifter** - A very basic multi-channel pitch shifter, based on the phase-vocoder approach.
 * **PowerMap** - A sound-field visualisation plug-in based on Ambisonic signals as input (up to 7th order), with PWD/MVDR/MUSIC/Min-Norm options.
