@@ -12,7 +12,7 @@
 #include "tvconv.h"
 #include "rotator.h"
 #include <string.h>
-#define BUILD_VER_SUFFIX "beta" /* String to be added before the version name on the GUI (beta, alpha etc..) */
+#define BUILD_VER_SUFFIX "alpha" /* String to be added before the version name on the GUI (beta, alpha etc..) */
 #ifndef MIN
 # define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
 #endif
@@ -45,9 +45,12 @@ class PluginProcessor  : public AudioProcessor,
 public:
     /* Set/Get functions */
     void* getFXHandle() { return hTVCnv; }
+    void* getFXHandle_rot() { return hRot; }
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
     int getCurrentNumOutputs(){ return nNumOutputs; }
+    void setEnableRotation(bool newState){ enable_rotation = newState; }
+    bool getEnableRotation(){ return enable_rotation; }
     
     /* For refreshing window during automation */
     bool refreshWindow;

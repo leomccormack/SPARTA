@@ -275,6 +275,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor] You can add your own custom stuff here..
 	hVst = ownerFilter;
     hTVC = hVst->getFXHandle();
+    hRot = hVst->getFXHandle_rot();
 
     /* Look and Feel */
     LAF.setDefaultColours();
@@ -317,9 +318,17 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     }
 
 	/* fetch current configuration */
+    te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
     CBviewMode->addItem(TRANS("Top View"), TOP_VIEW+1); /* must start from 1... */
     CBviewMode->addItem(TRANS("Side View"), SIDE_VIEW+1);
     CBviewMode->setSelectedId(TOP_VIEW+1, dontSendNotification);
+    s_yaw->setValue(rotator_getYaw(hRot), dontSendNotification);
+    s_pitch->setValue(rotator_getPitch(hRot), dontSendNotification);
+    s_roll->setValue(rotator_getRoll(hRot), dontSendNotification);
+    t_flipYaw->setToggleState((bool)rotator_getFlipYaw(hRot), dontSendNotification);
+    t_flipPitch->setToggleState((bool)rotator_getFlipPitch(hRot), dontSendNotification);
+    t_flipRoll->setToggleState((bool)rotator_getFlipRoll(hRot), dontSendNotification);
+    TBenableRotation->setToggleState(hVst->getEnableRotation(), dontSendNotification);
 
     /* create scene view window */
     sceneWindow.reset (new sceneView(ownerFilter, 440, 432));
@@ -327,6 +336,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     sceneWindow->setViewMode(CBviewMode->getSelectedId()-1);
     sceneWindow->setBounds (408, 58, 440, 432);
     refreshSceneViewWindow = true;
+
+    /* tooltips */
+    TBenableRotation->setTooltip("Enable spherical harmonic/sound-field rotation. This is only applicable if you have loaded Ambisonic IRs, which are in the ACN channel ordering convention");
+    s_yaw->setTooltip("Sets the 'Yaw' rotation angle (in degrees).");
+    s_pitch->setTooltip("Sets the 'Pitch' rotation angle (in degrees).");
+    s_roll->setTooltip("Sets the 'Roll' rotation angle (in degrees).");
+    t_flipYaw->setTooltip("Flips the sign (+/-) of the 'Yaw' rotation angle.");
+    t_flipPitch->setTooltip("Flips the sign (+/-) of the 'Pitch' rotation angle.");
+    t_flipRoll->setTooltip("Flips the sign (+/-) of the 'Roll' rotation angle.");
 
     /* Plugin description */
     pluginDescription.reset (new juce::ComboBox ("new combo box"));
@@ -958,7 +976,7 @@ void PluginEditor::paint (juce::Graphics& g)
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		250, 16, 530, 11,
+		200, 16, 530, 11,
 		Justification::centredLeft, true);
 
     /* display warning message */
@@ -1043,16 +1061,19 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     else if (sliderThatWasMoved == s_yaw.get())
     {
         //[UserSliderCode_s_yaw] -- add your slider handling code here..
+        rotator_setYaw(hRot, (float)s_yaw->getValue());
         //[/UserSliderCode_s_yaw]
     }
     else if (sliderThatWasMoved == s_pitch.get())
     {
         //[UserSliderCode_s_pitch] -- add your slider handling code here..
+        rotator_setPitch(hRot, (float)s_pitch->getValue());
         //[/UserSliderCode_s_pitch]
     }
     else if (sliderThatWasMoved == s_roll.get())
     {
         //[UserSliderCode_s_roll] -- add your slider handling code here..
+        rotator_setRoll(hRot, (float)s_roll->getValue());
         //[/UserSliderCode_s_roll]
     }
 
@@ -1085,21 +1106,25 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     if (buttonThatWasClicked == t_flipYaw.get())
     {
         //[UserButtonCode_t_flipYaw] -- add your button handler code here..
+        rotator_setFlipYaw(hRot, (int)t_flipYaw->getToggleState());
         //[/UserButtonCode_t_flipYaw]
     }
     else if (buttonThatWasClicked == t_flipPitch.get())
     {
         //[UserButtonCode_t_flipPitch] -- add your button handler code here..
+        rotator_setFlipPitch(hRot, (int)t_flipPitch->getToggleState());
         //[/UserButtonCode_t_flipPitch]
     }
     else if (buttonThatWasClicked == t_flipRoll.get())
     {
         //[UserButtonCode_t_flipRoll] -- add your button handler code here..
+        rotator_setFlipRoll(hRot, (int)t_flipRoll->getToggleState());
         //[/UserButtonCode_t_flipRoll]
     }
     else if (buttonThatWasClicked == TBenableRotation.get())
     {
         //[UserButtonCode_TBenableRotation] -- add your button handler code here..
+        hVst->setEnableRotation(TBenableRotation->getToggleState());
         //[/UserButtonCode_TBenableRotation]
     }
 
@@ -1113,6 +1138,9 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
+    s_yaw->setValue(rotator_getYaw(hRot), dontSendNotification);
+    s_pitch->setValue(rotator_getPitch(hRot), dontSendNotification);
+    s_roll->setValue(rotator_getRoll(hRot), dontSendNotification);
     label_hostBlockSize->setText(String(tvconv_getHostBlockSize(hTVC)), dontSendNotification);
     label_NOutputs->setText(String(tvconv_getNumIRs(hTVC)), dontSendNotification);
     label_nIRpositions->setText(String(tvconv_getNumListenerPositions(hTVC)), dontSendNotification);
