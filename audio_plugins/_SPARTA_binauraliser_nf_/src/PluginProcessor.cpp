@@ -81,13 +81,13 @@ void PluginProcessor::setParameter (int index, float newValue)
         switch (index) {
             case k_enableRotation:  binauraliser_setEnableRotation(hBin, (int)(newValue + 0.5f)); break;
             case k_useRollPitchYaw: binauraliser_setRPYflag(hBin, (int)(newValue + 0.5f)); break;
-            case k_yaw:             binauraliser_setYaw(hBin, (newValue-0.5f)*360.0f ); break;
-            case k_pitch:           binauraliser_setPitch(hBin, (newValue - 0.5f)*180.0f); break;
-            case k_roll:            binauraliser_setRoll(hBin, (newValue - 0.5f)*180.0f); break;
+            case k_yaw:             binauraliser_setYaw(hBin, (newValue - 0.5f) * 360.0f); break;
+            case k_pitch:           binauraliser_setPitch(hBin, (newValue - 0.5f) * 180.0f); break;
+            case k_roll:            binauraliser_setRoll(hBin, (newValue - 0.5f) * 180.0f); break;
             case k_flipYaw:         binauraliser_setFlipYaw(hBin, (int)(newValue + 0.5f));  break;
             case k_flipPitch:       binauraliser_setFlipPitch(hBin, (int)(newValue + 0.5f)); break;
             case k_flipRoll:        binauraliser_setFlipRoll(hBin, (int)(newValue + 0.5f)); break;
-            case k_numInputs:       binauraliser_setNumSources(hBin, (int)(newValue*(float)(MAX_NUM_INPUTS)+0.5)); break;
+            case k_numInputs:       binauraliser_setNumSources(hBin, (int)(newValue*(float)(MAX_NUM_INPUTS) + 0.5)); break;
         }
     }
     /* source direction parameters */
@@ -96,10 +96,11 @@ void PluginProcessor::setParameter (int index, float newValue)
         float newValueScaled;
         switch (index % 3) {
             case 0:
-                newValueScaled = (newValue - 0.5f)*360.0f;
-                /* TODO: this changed value check happens twice
-                 * (also in binauraliser_setSourceAzi_deg), as with the following checks... I see it's used here to prevent extraneous refreshes, but perhaps setters could return a bool on successful update
-                 * i.e. refreshWindow = binauraliser_setSourceAzi_deg(hBin, index/3, newValueScaled);
+                newValueScaled = (newValue - 0.5f) * 360.0f;
+                /* optim TBD: this changed-value check happens twice (in
+                 * binauraliser_setSourceAzi_deg), same for the following checks...
+                 * Setters could return a valueUpdated bool on successful update, e.g.
+                 *   refreshWindow = binauraliser_setSourceAzi_deg(hBin, index/3, newValueScaled);
                  */
                 if (newValueScaled != binauraliser_getSourceAzi_deg(hBin, index/3)){
                     binauraliser_setSourceAzi_deg(hBin, index/3, newValueScaled);
@@ -107,14 +108,13 @@ void PluginProcessor::setParameter (int index, float newValue)
                 }
                 break;
             case 1:
-                newValueScaled = (newValue - 0.5f)*180.0f;
+                newValueScaled = (newValue - 0.5f) * 180.0f;
                 if (newValueScaled != binauraliser_getSourceElev_deg(hBin, index/3)){
                     binauraliser_setSourceElev_deg(hBin, index/3, newValueScaled);
                     refreshWindow = true;
                 }
                 break;
             case 2:
-                // TODO: replace harcoded vals with pData->farfield_thresh_m, pData->nearfield_limit_m
                 newValueScaled = newValue * (ffThresh - nfThresh) + nfThresh;
                 if (newValueScaled != binauraliserNF_getSourceDist_m(hBin, index/3)){
                     binauraliserNF_setSourceDist_m(hBin, index/3, newValueScaled);

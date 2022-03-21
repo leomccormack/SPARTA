@@ -47,32 +47,20 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     height = _height;
     halfWidth = width / 2.0f;
     halfHeight = height / 2.0f;
-    icon_diam = height / 25.0f; // size of "farthest" distance
-    icon_radius = icon_diam / 2.0f;
+    icon_diam_src = height / 25.0f;
+    icon_radius_src = icon_diam_src / 2.0f;
+    icon_diam_hrir = height / 45.0f;
+    icon_radius_hrir = icon_diam_src / 2.0f;
     ffThresh = binauraliserNF_getFarfieldThresh_m(hBin);
     // distance range of a source (closest -> farthest)
     distRange = NormalisableRange<float>(binauraliserNF_getNearfieldLimit_m(hBin), hVst->upperDistRange, 0, 0.5f);
     // pixel radius corresponding to a 45 degree spread: height/4
-    iconGrowFac = NormalisableRange<float>(1.0f, (height / 4.0f) / (icon_radius * 3.0f));
+    iconGrowFac = NormalisableRange<float>(1.0f, (height / 4.0f) / (icon_radius_src * 3.0f));
 
     setSize (width, height);
 
-    for(int src=0; src<MAX_NUM_INPUTS; src++){
-        SourceIcons[src].setBounds(
-                                   width - width * (binauraliser_getSourceAzi_deg(hBin, src) + 180.0f) / 360.f - icon_radius,
-                                   height - height * (binauraliser_getSourceElev_deg(hBin, src) + 90.0f) / 180.0f - icon_radius,
-                                   icon_diam,
-                                   icon_diam );
-    }
-    NSources = binauraliser_getNumSources(hBin);
-    NLoudspeakers = binauraliser_getNDirs(hBin)>MAX_NUM_OUT_DIRS? MAX_NUM_OUT_DIRS : binauraliser_getNDirs(hBin);
-    for(int ls=0; ls<NLoudspeakers; ls++){
-        LoudspeakerIcons[ls].setBounds(
-                                       width - width * (binauraliser_getHRIRAzi_deg(hBin, ls) + 180.0f) / 360.f - icon_radius,
-                                       height - height * (binauraliser_getHRIRElev_deg(hBin, ls)+90.0f) / 180.0f - icon_radius,
-                                       icon_diam,
-                                       icon_diam );
-    }
+    updateSrcLsIconBounds();
+    
     showInputs = true;
     showOutputs = true;
 	sourceIconIsClicked = false;
@@ -162,7 +150,7 @@ void pannerView::paint (juce::Graphics& g)
             /* icon */
             g.setColour(Colour::fromFloatRGBA(0.5f, 1.0f, 0.1f, 1.0f));
             g.setOpacity(0.3f);
-            g.fillRect(LoudspeakerIcons[ls]);
+            g.fillEllipse(LoudspeakerIcons[ls]);
         }
     }
 
@@ -171,7 +159,7 @@ void pannerView::paint (juce::Graphics& g)
         for(int src=0; src<NSources; src++){
             float curDist = binauraliserNF_getSourceDist_m(hBin, src);
             float srcDist_norm = 1.0f - distRange.convertTo0to1(curDist);
-            float newDim1 = icon_radius * iconGrowFac.convertFrom0to1(srcDist_norm);
+            float newDim1 = icon_radius_src * iconGrowFac.convertFrom0to1(srcDist_norm);
             float newDim2 = newDim1 * 2.0f;
             float newDim3 = newDim1 * 3.0f;
             g.setColour(Colour::fromFloatRGBA(1.0f, 0.0f, 1.0f, 0.85f));
@@ -237,11 +225,11 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
     //[UserCode_mouseDrag] -- Add your code here...
     if(sourceIconIsClicked){
         Point<float> point;
-        point.setXY((float)e.getPosition().getX()-icon_radius, (float)e.getPosition().getY()-icon_radius);
+        point.setXY((float)e.getPosition().getX()-icon_radius_src, (float)e.getPosition().getY()-icon_radius_src);
         binauraliser_setSourceAzi_deg(hBin, indexOfClickedSource,
-                                   ((width - (point.getX() + icon_radius))*360.0f)/width-180.0f);
+                                   ((width - (point.getX() + icon_radius_src)) * 360.0f) / width - 180.0f);
         binauraliser_setSourceElev_deg(hBin, indexOfClickedSource,
-                                   ((height - (point.getY() + icon_radius))*180.0f)/height - 90.0f);
+                                   ((height - (point.getY() + icon_radius_src)) * 180.0f) / height - 90.0f);
     }
 
     //[/UserCode_mouseDrag]
@@ -266,23 +254,30 @@ void pannerView::mouseUp (const juce::MouseEvent& e)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void pannerView::refreshPanView()
 {
-    for(int src=0; src<MAX_NUM_INPUTS; src++){
-        SourceIcons[src].setBounds(width - width*(binauraliser_getSourceAzi_deg(hBin, src) + 180.0f)/360.f - icon_radius,
-                                   height - height*(binauraliser_getSourceElev_deg(hBin, src) + 90.0f)/180.0f - icon_radius,
-                                   icon_diam,
-                                   icon_diam);
-    }
-    NSources = binauraliser_getNumSources(hBin);
-    NLoudspeakers = binauraliser_getNDirs(hBin)>MAX_NUM_OUT_DIRS ? MAX_NUM_OUT_DIRS : binauraliser_getNDirs(hBin);
-    for(int ls=0; ls<NLoudspeakers; ls++){
-        LoudspeakerIcons[ls].setBounds(width - width*(binauraliser_getHRIRAzi_deg(hBin, ls) + 180.0f)/360.f - icon_radius,
-                                       height - height*(binauraliser_getHRIRElev_deg(hBin, ls) + 90.0f)/180.0f - icon_radius,
-                                       icon_diam,
-                                       icon_diam);
-    }
-
+    updateSrcLsIconBounds();
     repaint();
 }
+
+void pannerView::updateSrcLsIconBounds()
+{
+    for(int src=0; src<MAX_NUM_INPUTS; src++){
+        SourceIcons[src].setBounds(
+                                   width - width * (binauraliser_getSourceAzi_deg(hBin, src) + 180.0f) / 360.f - icon_radius_src,
+                                   height - height * (binauraliser_getSourceElev_deg(hBin, src) + 90.0f) / 180.0f - icon_radius_src,
+                                   icon_diam_src,
+                                   icon_diam_src );
+    }
+    NSources = binauraliser_getNumSources(hBin);
+    NLoudspeakers = binauraliser_getNDirs(hBin)>MAX_NUM_OUT_DIRS? MAX_NUM_OUT_DIRS : binauraliser_getNDirs(hBin);
+    for(int ls=0; ls<NLoudspeakers; ls++){
+        LoudspeakerIcons[ls].setBounds(
+                                       width - width * (binauraliser_getHRIRAzi_deg(hBin, ls) + 180.0f) / 360.f - icon_radius_hrir,
+                                       height - height * (binauraliser_getHRIRElev_deg(hBin, ls) + 90.0f) / 180.0f - icon_radius_hrir,
+                                       icon_diam_hrir,
+                                       icon_diam_hrir );
+    }
+}
+
 //[/MiscUserCode]
 
 
