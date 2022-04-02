@@ -87,8 +87,11 @@ private:
     SPARTALookAndFeel LAF;
 
     /* for openGL speed-ups */
+#ifndef PLUGIN_EDITOR_DISABLE_OPENGL
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
-	OpenGLContext openGLContext;
+    OpenGLContext openGLContext;
+#endif
+    
     std::unique_ptr<log2dSlider> anaOrder2dSlider;
 
     /* OVERLAY */

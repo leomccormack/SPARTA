@@ -72,8 +72,10 @@ private:
     PluginProcessor* hVst;
     void* hAmbi;
     void timerCallback() override;
+#ifndef PLUGIN_EDITOR_DISABLE_OPENGL
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
+#endif
     std::unique_ptr<TFview> TFviewIncluded;
 
     /* Look and Feel */

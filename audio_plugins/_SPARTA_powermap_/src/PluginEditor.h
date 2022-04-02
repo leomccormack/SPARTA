@@ -86,8 +86,10 @@ private:
     SPARTALookAndFeel LAF;
 
     /* for openGL speed-ups */
+#ifndef PLUGIN_EDITOR_DISABLE_OPENGL
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
+#endif
 
     /* for the powermap overlay */
     Rectangle<int> previewArea;

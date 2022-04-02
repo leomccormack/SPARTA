@@ -146,8 +146,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     hSpr = hVst->getFXHandle();
 
     /* init OpenGL */
+#ifndef PLUGIN_EDITOR_DISABLE_OPENGL
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
+#endif
 
     /* Look and Feel */
     LAF.setDefaultColours();
