@@ -74,7 +74,7 @@ void pannerView::paint (juce::Graphics& g)
 
     //[UserPaint] Add your own custom painting code here..
 
-    Rectangle<float> srcIcon, recIcon;
+    Rectangle<float> srcIcon, tmpIcon, recIcon;
 
     float room_dims_pixels[3], room_dims_m[3];
     room_dims_m[0] = ambi_roomsim_getRoomDimX(hAmbi);
@@ -126,10 +126,11 @@ void pannerView::paint (juce::Graphics& g)
         float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
         float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getSourceX(hAmbi, src));
         srcIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        tmpIcon.setBounds(point_x-iconRadius*3, point_y-iconRadius, iconWidth*3, iconWidth);
         g.setOpacity(0.7f);
         g.fillEllipse(srcIcon);
         g.setOpacity(0.8f);
-        g.drawText(String(src+1), srcIcon.translated(8.0f, -8.0f), Justification::centred);
+        g.drawText(String(src+1), tmpIcon.translated(8.0f, -8.0f), Justification::centred);
     }
 
     /* Receiver icons */
@@ -138,10 +139,11 @@ void pannerView::paint (juce::Graphics& g)
         float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getReceiverY(hAmbi, rec));
         float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getReceiverX(hAmbi, rec));
         recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        tmpIcon.setBounds(point_x-iconRadius*3, point_y-iconRadius, iconWidth*3, iconWidth);
         g.setOpacity(0.7f);
         g.fillEllipse(recIcon);
         g.setOpacity(0.8f);
-        g.drawText(String(rec+1), recIcon.translated(8.0f, -8.0f), Justification::centred);
+        g.drawText(String(rec+1), tmpIcon.translated(8.0f, -8.0f), Justification::centred);
     }
 
 

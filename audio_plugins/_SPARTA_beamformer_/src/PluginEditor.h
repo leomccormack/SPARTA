@@ -72,8 +72,10 @@ private:
     PluginProcessor* hVst;
     void* hBeam;
     void timerCallback() override;
+#ifndef PLUGIN_EDITOR_DISABLE_OPENGL
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
+#endif
 
     /* Look and Feel */
     SPARTALookAndFeel LAF;

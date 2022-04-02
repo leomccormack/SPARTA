@@ -174,8 +174,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //[Constructor] You can add your own custom stuff here..
 	hVst = ownerFilter;
     hAmbi = hVst->getFXHandle();
+#ifndef PLUGIN_EDITOR_DISABLE_OPENGL
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
+#endif
 
     /* Look and Feel */
     LAF.setDefaultColours();

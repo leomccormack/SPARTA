@@ -56,6 +56,19 @@ PRIVATE
     juce::juce_recommended_lto_flags
     juce::juce_audio_plugin_client
     juce::juce_audio_utils
-    juce::juce_opengl
     juce::juce_graphics
 )
+
+# The JUCE OpenGL module seems to have some issues on Linux...
+if(UNIX AND NOT APPLE)
+    message(STATUS "    (juce_opengl module disabled)")
+    target_compile_definitions(${PROJECT_NAME}
+    PUBLIC 
+        PLUGIN_EDITOR_DISABLE_OPENGL=1
+    )
+else()
+    target_link_libraries(${PROJECT_NAME} 
+    PRIVATE 
+        juce::juce_opengl
+    )
+endif()

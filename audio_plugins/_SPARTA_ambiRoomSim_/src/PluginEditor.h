@@ -75,8 +75,10 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     PluginProcessor* hVst;
     void* hAmbi;
+#ifndef PLUGIN_EDITOR_DISABLE_OPENGL
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
+#endif
 
     /* Look and Feel */
     SPARTALookAndFeel LAF;
