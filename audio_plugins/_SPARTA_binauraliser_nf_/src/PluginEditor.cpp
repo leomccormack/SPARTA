@@ -892,7 +892,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 1, width = 100, height = 32;
-        juce::String text (TRANS("SPARTA|"));
+        juce::String text (TRANS("SPARTA |"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -903,7 +903,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 92, y = 1, width = 112, height = 32;
+        int x = 96, y = 1, width = 100, height = 32;
         juce::String text (TRANS("Binauraliser"));
         juce::Colour fillColour = juce::Colour (0xffff73f9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -915,8 +915,8 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 28, y = 122, width = 176, height = 28;
-        juce::String text (juce::CharPointer_UTF8 ("   Azi\xc2\xb0     Elev\xc2\xb0   Dist (m)"));
+        int x = 28, y = 124, width = 176, height = 28;
+        juce::String text (juce::CharPointer_UTF8 ("      Azi\xc2\xb0     Elev\xc2\xb0   Dist (m)"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -979,7 +979,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 190, y = 0, width = 112, height = 32;
+        int x = 191, y = 1, width = 25, height = 32;
         juce::String text (TRANS("NF"));
         juce::Colour fillColour = juce::Colour (0xffffb873);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -1441,13 +1441,13 @@ BEGIN_JUCER_METADATA
     <TEXT pos="721 187 160 30" fill="solid: ffffffff" hasStroke="0" text="Enable Rotation:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
+    <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA |"
           fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="92 1 112 32" fill="solid: ffff73f9" hasStroke="0" text="Binauraliser"
+    <TEXT pos="96 1 100 32" fill="solid: ffff73f9" hasStroke="0" text="Binauraliser"
           fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="28 122 176 28" fill="solid: ffffffff" hasStroke="0" text="   Azi&#176;     Elev&#176;   Dist (m)"
+    <TEXT pos="28 124 176 28" fill="solid: ffffffff" hasStroke="0" text="      Azi&#176;     Elev&#176;   Dist (m)"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 922 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
@@ -1461,7 +1461,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="720 106 160 30" fill="solid: ffffffff" hasStroke="0" text="Apply Pre-Processing:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="190 0 112 32" fill="solid: ffffb873" hasStroke="0" text="NF"
+    <TEXT pos="191 1 25 32" fill="solid: ffffb873" hasStroke="0" text="NF"
           fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="1" justification="33" typefaceStyle="Bold Italic"/>
   </BACKGROUND>
