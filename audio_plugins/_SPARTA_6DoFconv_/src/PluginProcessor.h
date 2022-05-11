@@ -22,6 +22,35 @@
 
 #define DEFAULT_OSC_PORT 9000
 
+#define ENABLE_DBG_OSC 0
+#if ENABLE_DBG_OSC
+#define DBG_OSC(prefix, osc_msg) JUCE_BLOCK_WITH_FORCED_SEMICOLON ( \
+    juce::String tempDbgBuf; \
+    tempDbgBuf << prefix << osc_msg.getAddressPattern().toString(); \
+    for(int i = 0; i < osc_msg.size(); i++) { \
+        OSCArgument arg = osc_msg[i]; \
+        OSCType osc_type; \
+        tempDbgBuf << " "; \
+        if(arg.isInt32()) { \
+            tempDbgBuf << arg.getInt32(); \
+        } else if(arg.isFloat32()) { \
+            tempDbgBuf << arg.getFloat32(); \
+        } else if(arg.isString()) {  \
+            tempDbgBuf << arg.getString(); \
+        } else if(arg.isBlob()) { \
+            tempDbgBuf << "<blob>"; \
+        } else if(arg.isColour()) { \
+            tempDbgBuf << "<colour>"; \
+        } else { \
+            tempDbgBuf << "<unknown>"; \
+        } \
+    } \
+    juce::Logger::outputDebugString (tempDbgBuf); \
+)
+#else
+#define DBG_OSC(prefix, osc_msg) 
+#endif
+
 enum {
     /* For the default VST GUI */
     k_receiverCoordX,

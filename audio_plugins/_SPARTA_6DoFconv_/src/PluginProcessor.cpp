@@ -58,6 +58,8 @@ PluginProcessor::~PluginProcessor()
 
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 {
+    DBG_OSC("osc received: ", message);
+
     if (message.size() == 3 && message.getAddressPattern().toString().compare("xyz")) {
         if (message[0].isFloat32())
             setParameterRaw(0, message[0].getFloat32());
