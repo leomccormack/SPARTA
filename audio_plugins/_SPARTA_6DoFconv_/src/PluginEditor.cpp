@@ -265,11 +265,65 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     TBenableRotation->setBounds (85, 402, 32, 24);
 
+    te_myip.reset (new juce::TextEditor ("new text editor"));
+    addAndMakeVisible (te_myip.get());
+    te_myip->setMultiLine (false);
+    te_myip->setReturnKeyStartsNewLine (false);
+    te_myip->setReadOnly (false);
+    te_myip->setScrollbarsShown (true);
+    te_myip->setCaretVisible (false);
+    te_myip->setPopupMenuEnabled (true);
+    te_myip->setColour (juce::TextEditor::textColourId, juce::Colours::white);
+    te_myip->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
+    te_myip->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
+    te_myip->setText (TRANS("127.0.0.1"));
+
+    te_myip->setBounds (160, 525, 110, 22);
+
+    te_serverip.reset (new juce::TextEditor ("new text editor"));
+    addAndMakeVisible (te_serverip.get());
+    te_serverip->setMultiLine (false);
+    te_serverip->setReturnKeyStartsNewLine (false);
+    te_serverip->setReadOnly (false);
+    te_serverip->setScrollbarsShown (true);
+    te_serverip->setCaretVisible (false);
+    te_serverip->setPopupMenuEnabled (true);
+    te_serverip->setColour (juce::TextEditor::textColourId, juce::Colours::white);
+    te_serverip->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
+    te_serverip->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
+    te_serverip->setText (TRANS("127.0.0.1"));
+
+    te_serverip->setBounds (160, 549, 110, 22);
+
+    bt_connect.reset (new juce::TextButton ("connect"));
+    addAndMakeVisible (bt_connect.get());
+    bt_connect->addListener (this);
+
+    bt_connect->setBounds (280, 573, 110, 22);
+
+    te_connectionlabel.reset (new juce::Label ("new label",
+                                               juce::String()));
+    addAndMakeVisible (te_connectionlabel.get());
+    te_connectionlabel->setFont (juce::Font (14.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    te_connectionlabel->setJustificationType (juce::Justification::topLeft);
+    te_connectionlabel->setEditable (false, false, false);
+    te_connectionlabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    te_connectionlabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+
+    te_connectionlabel->setBounds (280, 530, 110, 39);
+
+    tb_unicast.reset (new juce::ToggleButton ("new toggle button"));
+    addAndMakeVisible (tb_unicast.get());
+    tb_unicast->setButtonText (TRANS("Enabled"));
+    tb_unicast->addListener (this);
+
+    tb_unicast->setBounds (160, 573, 110, 22);
+
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (860, 500);
+    setSize (860, 610);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -390,6 +444,11 @@ PluginEditor::~PluginEditor()
     t_flipPitch = nullptr;
     t_flipRoll = nullptr;
     TBenableRotation = nullptr;
+    te_myip = nullptr;
+    te_serverip = nullptr;
+    bt_connect = nullptr;
+    te_connectionlabel = nullptr;
+    tb_unicast = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -422,7 +481,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 0, y = 316, width = 860, height = 186;
+        int x = 0, y = 316, width = 860, height = 296;
         juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -502,7 +561,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 408, y = 58, width = 440, height = 434;
+        int x = 408, y = 58, width = 440, height = 542;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -593,7 +652,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 0, y = 0, width = 2, height = 500;
+        int x = 0, y = 0, width = 2, height = 610;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -603,7 +662,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 858, y = 0, width = 2, height = 500;
+        int x = 858, y = 0, width = 2, height = 610;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -613,7 +672,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 0, y = 498, width = 860, height = 2;
+        int x = 0, y = 608, width = 860, height = 2;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -970,6 +1029,67 @@ void PluginEditor::paint (juce::Graphics& g)
                     juce::Justification::centred, true);
     }
 
+    {
+        int x = 10, y = 521, width = 390, height = 79;
+        juce::Colour fillColour = juce::Colour (0x10c7c7c7);
+        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
+    {
+        int x = 71, y = 495, width = 270, height = 31;
+        juce::String text (TRANS("NatNet Client"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centred, true);
+    }
+
+    {
+        int x = 18, y = 523, width = 142, height = 26;
+        juce::String text (TRANS("IP Address:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 18, y = 547, width = 142, height = 26;
+        juce::String text (TRANS("Server IP Address:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 18, y = 571, width = 142, height = 26;
+        juce::String text (TRANS("Unicast:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
     /* display version/date built */
@@ -1127,6 +1247,16 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         hVst->setEnableRotation(TBenableRotation->getToggleState());
         //[/UserButtonCode_TBenableRotation]
     }
+    else if (buttonThatWasClicked == bt_connect.get())
+    {
+        //[UserButtonCode_bt_connect] -- add your button handler code here..
+        //[/UserButtonCode_bt_connect]
+    }
+    else if (buttonThatWasClicked == tb_unicast.get())
+    {
+        //[UserButtonCode_tb_unicast] -- add your button handler code here..
+        //[/UserButtonCode_tb_unicast]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -1234,11 +1364,11 @@ BEGIN_JUCER_METADATA
                  parentClasses="public AudioProcessorEditor, public Timer, private FilenameComponentListener"
                  constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="860" initialHeight="500">
+                 fixedSize="1" initialWidth="860" initialHeight="610">
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="2 28 860 290" fill="linear: 8 32, 8 112, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
-    <RECT pos="0 316 860 186" fill="linear: 8 496, 8 416, 0=ff19313f, 1=ff041518"
+    <RECT pos="0 316 860 296" fill="linear: 8 496, 8 416, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
     <RECT pos="10 256 390 88" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1250,7 +1380,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="183 375 218 116" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="408 58 440 434" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="408 58 440 542" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="10 58 390 28" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1266,11 +1396,11 @@ BEGIN_JUCER_METADATA
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 860 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="0 0 2 500" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="0 0 2 610" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="858 0 2 500" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="858 0 2 610" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="0 498 860 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="0 608 860 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
     <TEXT pos="18 86 115 30" fill="solid: ffffffff" hasStroke="0" text="Host Block Size:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
@@ -1359,6 +1489,20 @@ BEGIN_JUCER_METADATA
     <TEXT pos="18 455 160 30" fill="solid: ffffffff" hasStroke="0" text="loaded Ambisonic IRs)"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
+    <RECT pos="10 521 390 79" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+          strokeColour="solid: 67a0a0a0"/>
+    <TEXT pos="71 495 270 31" fill="solid: ffffffff" hasStroke="0" text="NatNet Client"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
+    <TEXT pos="18 523 142 26" fill="solid: ffffffff" hasStroke="0" text="IP Address:"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="18 547 142 26" fill="solid: ffffffff" hasStroke="0" text="Server IP Address:"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="18 571 142 26" fill="solid: ffffffff" hasStroke="0" text="Unicast:"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_hostBlockSize"
          virtualName="" explicitFocusOrder="0" pos="136 95 60 20" outlineCol="68a3a2a2"
@@ -1461,6 +1605,27 @@ BEGIN_JUCER_METADATA
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="a45ef80fa16bd3f0" memberName="TBenableRotation"
                 virtualName="" explicitFocusOrder="0" pos="85 402 32 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TEXTEDITOR name="new text editor" id="60e9708fea0d003a" memberName="te_myip"
+              virtualName="" explicitFocusOrder="0" pos="160 525 110 22" textcol="ffffffff"
+              bkgcol="ffffff" outlinecol="6c838080" initialText="127.0.0.1"
+              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
+              caret="0" popupmenu="1"/>
+  <TEXTEDITOR name="new text editor" id="f8396d4e40c249a1" memberName="te_serverip"
+              virtualName="" explicitFocusOrder="0" pos="160 549 110 22" textcol="ffffffff"
+              bkgcol="ffffff" outlinecol="6c838080" initialText="127.0.0.1"
+              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
+              caret="0" popupmenu="1"/>
+  <TEXTBUTTON name="connect" id="cf0ea0fca66caeaf" memberName="bt_connect"
+              virtualName="" explicitFocusOrder="0" pos="280 573 110 22" buttonText="connect"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <LABEL name="new label" id="e9ef59c6d394b3c7" memberName="te_connectionlabel"
+         virtualName="" explicitFocusOrder="0" pos="280 530 110 39" edTextCol="ff000000"
+         edBkgCol="0" labelText="" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="14.0"
+         kerning="0.0" bold="0" italic="0" justification="9"/>
+  <TOGGLEBUTTON name="new toggle button" id="966e593234714c11" memberName="tb_unicast"
+                virtualName="" explicitFocusOrder="0" pos="160 573 110 22" buttonText="Enabled"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 

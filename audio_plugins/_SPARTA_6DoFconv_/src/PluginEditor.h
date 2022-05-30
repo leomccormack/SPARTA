@@ -128,6 +128,11 @@ private:
     std::unique_ptr<juce::ToggleButton> t_flipPitch;
     std::unique_ptr<juce::ToggleButton> t_flipRoll;
     std::unique_ptr<juce::ToggleButton> TBenableRotation;
+    std::unique_ptr<juce::TextEditor> te_myip;
+    std::unique_ptr<juce::TextEditor> te_serverip;
+    std::unique_ptr<juce::TextButton> bt_connect;
+    std::unique_ptr<juce::Label> te_connectionlabel;
+    std::unique_ptr<juce::ToggleButton> tb_unicast;
 
 
     //==============================================================================
