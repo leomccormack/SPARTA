@@ -5,8 +5,19 @@
               pluginFormats="buildVST" pluginManufacturer="AALTO" pluginAAXCategory="2"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
               companyEmail="rapolas.daugintis@gmail.com" pluginManufacturerCode="RAPD"
-              pluginCode="TVCN" displaySplashScreen="1" version="1.0.0" headerPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include">
+              pluginCode="TVCN" displaySplashScreen="1" version="1.0.0" headerPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;../../../../../SDKs/NatNetSDK/include">
   <MAINGROUP id="IbvuHL" name="sparta_6DoFconv">
+    <GROUP id="{C7B63A4B-C90A-34F2-6A26-27284A985AAE}" name="NatNetSDK">
+      <GROUP id="{091B0F26-2973-87AD-DA77-D02D4475879C}" name="include">
+        <FILE id="wk7ooL" name="NatNetCAPI.h" compile="0" resource="0" file="../../SDKs/NatNetSDK/include/NatNetCAPI.h"/>
+        <FILE id="x4Zj5D" name="NatNetClient.h" compile="0" resource="0" file="../../SDKs/NatNetSDK/include/NatNetClient.h"/>
+        <FILE id="RHsrwO" name="NatNetRepeater.h" compile="0" resource="0"
+              file="../../SDKs/NatNetSDK/include/NatNetRepeater.h"/>
+        <FILE id="SCB2wo" name="NatNetRequests.h" compile="0" resource="0"
+              file="../../SDKs/NatNetSDK/include/NatNetRequests.h"/>
+        <FILE id="Q2pD2H" name="NatNetTypes.h" compile="0" resource="0" file="../../SDKs/NatNetSDK/include/NatNetTypes.h"/>
+      </GROUP>
+    </GROUP>
     <FILE id="F6UktL" name="SPARTALookAndFeel.h" compile="0" resource="0"
           file="../resources/SPARTALookAndFeel.h"/>
     <FILE id="J0lg3N" name="PluginEditor.cpp" compile="1" resource="0"
@@ -280,14 +291,14 @@
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
   <EXPORTFORMATS>
     <VS2017 targetFolder="make/win64/VisualStudio2017/" extraDefs="SAF_ENABLE_SOFA_READER_MODULE  &#10;SAF_ENABLE_NETCDF&#10;SAF_USE_INTEL_MKL_LP64 "
-            extraCompilerFlags="/bigobj" externalLibraries="saf_mkl_custom_lp64.lib&#10;netcdf.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;libszip.lib&#10;"
+            extraCompilerFlags="/bigobj" externalLibraries="saf_mkl_custom_lp64.lib&#10;netcdf.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;libszip.lib&#10;NatNetLib.lib"
             userNotes="SAF_ENABLE_NETCDF&#10;netcdf.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;libszip.lib">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_6DoFconv_debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;C:\Program Files (x86)\Intel\oneAPI\mkl\2022.0.0\include"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
+                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib&#10;../../../../../SDKs/NatNetSDK/lib/x64"
                        linkTimeOptimisation="1"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="sparta_6DoFconv" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;C:\Program Files (x86)\Intel\oneAPI\mkl\2022.0.0\include"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"/>
+                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib&#10;../../../../../SDKs/NatNetSDK/lib/x64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../SDKs/JUCE/modules"/>
