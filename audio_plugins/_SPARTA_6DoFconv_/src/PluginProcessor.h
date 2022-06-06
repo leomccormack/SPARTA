@@ -12,7 +12,12 @@
 #include "tvconv.h"
 #include "rotator.h"
 #include <string.h>
-#define BUILD_VER_SUFFIX "alpha" /* String to be added before the version name on the GUI (beta, alpha etc..) */
+#define BUILD_VER_SUFFIX0 "alpha" /* String to be added before the version name on the GUI (beta, alpha etc..) */
+#ifndef NDEBUG
+#define BUILD_VER_SUFFIX (BUILD_VER_SUFFIX0 " (DEBUG)")
+#else
+#define BUILD_VER_SUFFIX BUILD_VER_SUFFIX0
+#endif
 #ifndef MIN
 # define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
 #endif
