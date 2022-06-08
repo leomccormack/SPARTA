@@ -26,10 +26,6 @@
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 
-// file-level pointer to the editor - there shouldn't be more than one, right?...
-// ugly, but NatNet callbacks need to be C-style function pointers and that doesn't really work with C++ instance methods
-//PluginEditor* thePluginEditor = nullptr;
-
 //[/MiscUserDefs]
 
 //==============================================================================
@@ -37,13 +33,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     : AudioProcessorEditor(ownerFilter)
 {
     //[Constructor_pre] You can add your own custom stuff here..
-
-    //natNetClient.reset(new NatNetClient());
-    natNetClient = new NatNetClient();
-
-    //jassert(thePluginEditor == nullptr);
-    //thePluginEditor = this;
-
     //[/Constructor_pre]
 
     label_hostBlockSize.reset (new juce::Label ("new label",
@@ -425,6 +414,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* warnings */
     currentWarning = k_warning_none;
 
+    /* NatNet */
+    originalConnectButtonText = bt_connect->getButtonText();
+    hVst->addNatNetConnListener(this);
+
     //[/Constructor]
 }
 
@@ -465,6 +458,7 @@ PluginEditor::~PluginEditor()
     //[Destructor]. You can add your own custom destruction code here..
     setLookAndFeel(nullptr);
     fileComp = nullptr;
+    hVst->removeNatNetConnListener(this);
     //[/Destructor]
 }
 
@@ -1261,9 +1255,18 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == bt_connect.get())
     {
         //[UserButtonCode_bt_connect] -- add your button handler code here..
-        String my_ip = te_myip->getText();
-        String server_ip = te_serverip->getText();
-        bool unicast = tb_unicast->getToggleState();
+        // TODO: maybe there's a better way to track this state
+        bool connect = bt_connect->getButtonText() == originalConnectButtonText;
+        if (connect) {
+            String myIp = te_myip->getText();
+            String serverIp = te_serverip->getText();
+            bool unicast = tb_unicast->getToggleState();
+            ConnectionType connType = unicast ? ConnectionType::ConnectionType_Unicast : ConnectionType::ConnectionType_Multicast;
+
+            hVst->connectNatNet(myIp.toRawUTF8(), serverIp.toRawUTF8(), connType);
+        } else {
+            hVst->disconnectNatNet();
+        }
 
         //[/UserButtonCode_bt_connect]
     }
@@ -1280,6 +1283,64 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+
+void PluginEditor::refreshCoords()
+{
+    if (tvconv_getMaxDimension(hTVC, 0) > tvconv_getMinDimension(hTVC, 0)) {
+        SL_receiver_x->setEnabled(true);
+        SL_receiver_x->setRange(tvconv_getMinDimension(hTVC, 0),
+            tvconv_getMaxDimension(hTVC, 0),
+            0.001);
+    } else {
+        SL_receiver_x->setEnabled(false);
+    }
+    SL_receiver_x->setValue(tvconv_getTargetPosition(hTVC, 0));
+    if (tvconv_getMaxDimension(hTVC, 1) > tvconv_getMinDimension(hTVC, 1)) {
+        SL_receiver_y->setEnabled(true);
+        SL_receiver_y->setRange(tvconv_getMinDimension(hTVC, 1),
+            tvconv_getMaxDimension(hTVC, 1),
+            0.001);
+    } else {
+        SL_receiver_y->setEnabled(false);
+    }
+    SL_receiver_y->setValue(tvconv_getTargetPosition(hTVC, 1));
+    if (tvconv_getMaxDimension(hTVC, 2) > tvconv_getMinDimension(hTVC, 2)) {
+        SL_receiver_z->setEnabled(true);
+        SL_receiver_z->setRange(tvconv_getMinDimension(hTVC, 2),
+            tvconv_getMaxDimension(hTVC, 2),
+            0.001);
+    } else {
+        SL_receiver_z->setEnabled(false);
+    }
+    SL_receiver_z->setValue(tvconv_getTargetPosition(hTVC, 2));
+
+    //float sourcePosition = tvconv_getSourcePosition(hTVC, 0);
+
+    SL_source_x->setRange(tvconv_getSourcePosition(hTVC, 0), tvconv_getSourcePosition(hTVC, 0) + 1, 0.1);
+    SL_source_x->setValue(tvconv_getSourcePosition(hTVC, 0));
+    SL_source_y->setRange(tvconv_getSourcePosition(hTVC, 1), tvconv_getSourcePosition(hTVC, 1) + 1, 0.1);
+    SL_source_y->setValue(tvconv_getSourcePosition(hTVC, 1));
+    SL_source_z->setRange(tvconv_getSourcePosition(hTVC, 2), tvconv_getSourcePosition(hTVC, 2) + 1, 0.1);
+    SL_source_z->setValue(tvconv_getSourcePosition(hTVC, 2));
+}
+
+void PluginEditor::actionListenerCallback(const String& message) {
+    StringArray parts;
+    parts.addTokens(message, " ");
+    jassert(parts.size() >= 1);
+    String id = parts[0];
+    if (id == "natnet_connect") {
+        te_connectionlabel->setText("connected", NotificationType::dontSendNotification);
+        bt_connect->setButtonText("disconnect");
+    } else if(id == "natnet_connect_error") {
+        te_connectionlabel->setText("connection error", NotificationType::dontSendNotification);
+        bt_connect->setButtonText(originalConnectButtonText);
+    } else if (id == "natnet_disconnect") {
+        te_connectionlabel->setText("disconnected", NotificationType::dontSendNotification);
+        bt_connect->setButtonText(originalConnectButtonText);
+    }
+}
+
 void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
@@ -1322,175 +1383,6 @@ void PluginEditor::timerCallback()
     if (hVst->getOscPortID() != te_oscport->getText().getIntValue())
         hVst->setOscPortID(te_oscport->getText().getIntValue());
 }
-
-void PluginEditor::refreshCoords()
-{
-    if (tvconv_getMaxDimension(hTVC, 0) > tvconv_getMinDimension(hTVC, 0)){
-        SL_receiver_x->setEnabled(true);
-        SL_receiver_x->setRange(tvconv_getMinDimension(hTVC, 0),
-                                tvconv_getMaxDimension(hTVC, 0),
-                                0.001);
-    } else {
-        SL_receiver_x->setEnabled(false);
-    }
-    SL_receiver_x->setValue(tvconv_getTargetPosition(hTVC, 0));
-    if (tvconv_getMaxDimension(hTVC, 1) > tvconv_getMinDimension(hTVC, 1)){
-        SL_receiver_y->setEnabled(true);
-        SL_receiver_y->setRange(tvconv_getMinDimension(hTVC, 1),
-                                tvconv_getMaxDimension(hTVC, 1),
-                                0.001);
-    } else {
-        SL_receiver_y->setEnabled(false);
-    }
-    SL_receiver_y->setValue(tvconv_getTargetPosition(hTVC, 1));
-    if (tvconv_getMaxDimension(hTVC, 2) > tvconv_getMinDimension(hTVC, 2)){
-        SL_receiver_z->setEnabled(true);
-        SL_receiver_z->setRange(tvconv_getMinDimension(hTVC, 2),
-                                tvconv_getMaxDimension(hTVC, 2),
-                                0.001);
-    } else {
-        SL_receiver_z->setEnabled(false);
-    }
-    SL_receiver_z->setValue(tvconv_getTargetPosition(hTVC, 2));
-
-    //float sourcePosition = tvconv_getSourcePosition(hTVC, 0);
-
-    SL_source_x->setRange(tvconv_getSourcePosition(hTVC, 0), tvconv_getSourcePosition(hTVC, 0)+1, 0.1);
-    SL_source_x->setValue(tvconv_getSourcePosition(hTVC, 0));
-    SL_source_y->setRange(tvconv_getSourcePosition(hTVC, 1), tvconv_getSourcePosition(hTVC, 1)+1, 0.1);
-    SL_source_y->setValue(tvconv_getSourcePosition(hTVC, 1));
-    SL_source_z->setRange(tvconv_getSourcePosition(hTVC, 2), tvconv_getSourcePosition(hTVC, 2)+1, 0.1);
-    SL_source_z->setValue(tvconv_getSourcePosition(hTVC, 2));
-}
-
-#if 0
-// Initialize the NatNet client with client and server IP addresses.
-bool PluginEditor::initNatNet(char* myIpAddress, char* serverIpAddress, ConnectionType connType)
-{
-    unsigned char ver[4];
-    NatNet_GetVersion(ver);
-
-    // Set callback handlers
-    // Callback for NatNet messages.
-
-    // typedef void (NATNET_CALLCONV* NatNetLogCallback)( Verbosity level, const char* message );
-
-    NatNet_SetLogCallback(staticHandleNatNetMessage);
-    // this function will receive data from the server
-    natnetClient.SetFrameReceivedCallback(staticHandleNatNetData);
-
-    sNatNetClientConnectParams connectParams;
-    connectParams.connectionType = connType;
-    connectParams.localAddress = myIpAddress;
-    connectParams.serverAddress = serverIpAddress;
-    int retCode = natnetClient.Connect(connectParams);
-    if (retCode != ErrorCode_OK)
-    {
-        //Unable to connect to server.
-        return false;
-    }
-    else
-    {
-        // Print server info
-        sServerDescription ServerDescription;
-        memset(&ServerDescription, 0, sizeof(ServerDescription));
-        natnetClient.GetServerDescription(&ServerDescription);
-        if (!ServerDescription.HostPresent)
-        {
-            //Unable to connect to server. Host not present
-            return false;
-        }
-    }
-
-    /*
-    // Retrieve RigidBody description from server
-    sDataDescriptions* pDataDefs = NULL;
-    retCode = natnetClient.GetDataDescriptionList(&pDataDefs);
-    if (retCode != ErrorCode_OK || ParseRigidBodyDescription(pDataDefs) == false)
-    {
-        //Unable to retrieve RigidBody description
-        //return false;
-    }
-    NatNet_FreeDescriptions(pDataDefs);
-    pDataDefs = NULL;
-
-    // example of NatNet general message passing. Set units to millimeters
-    // and get the multiplicative conversion factor in the response.
-    void* response;
-    int nBytes;
-    retCode = natnetClient.SendMessageAndWait("UnitsToMillimeters", &response, &nBytes);
-    if (retCode == ErrorCode_OK)
-    {
-        unitConversion = *(float*)response;
-    }
-
-    retCode = natnetClient.SendMessageAndWait("UpAxis", &response, &nBytes);
-    if (retCode == ErrorCode_OK)
-    {
-        upAxis = *(long*)response;
-    }
-    */
-
-    return true;
-}
-
-void PluginEditor::handleNatNetData(sFrameOfMocapData* data, void* pUserData) {
-    DBG("handleNatNetData()");
-}
-
-void PluginEditor::handleNatNetMessage(Verbosity msgType, const char* msg) {
-    DBG("handleNatNetMessage()");
-}
-
-void NATNET_CALLCONV PluginEditor::staticHandleNatNetData(sFrameOfMocapData* data, void* pUserData) {
-    //jassert(thePluginEditor != nullptr);
-    //thePluginEditor->handleNatNetData(data, pUserData);
-}
-
-void NATNET_CALLCONV PluginEditor::staticHandleNatNetMessage(Verbosity msgType, const char* msg) {
-    //jassert(thePluginEditor != nullptr);
-    //thePluginEditor->handleNatNetMessage(msgType, msg);
-}
-
-bool PluginEditor::parseRigidBodyDescription(sDataDescriptions* pDataDefs) {
-    /*
-    mapIDToName.clear();
-
-    if (pDataDefs == NULL || pDataDefs->nDataDescriptions <= 0)
-        return false;
-
-    // preserve a "RigidBody ID to Rigid Body Name" mapping, which we can lookup during data streaming
-    int iSkel = 0;
-    for (int i = 0, j = 0; i < pDataDefs->nDataDescriptions; i++)
-    {
-        if (pDataDefs->arrDataDescriptions[i].type == Descriptor_RigidBody)
-        {
-            sRigidBodyDescription* pRB = pDataDefs->arrDataDescriptions[i].Data.RigidBodyDescription;
-            mapIDToName[pRB->ID] = std::string(pRB->szName);
-        }
-        else if (pDataDefs->arrDataDescriptions[i].type == Descriptor_Skeleton)
-        {
-            sSkeletonDescription* pSK = pDataDefs->arrDataDescriptions[i].Data.SkeletonDescription;
-            for (int i = 0; i < pSK->nRigidBodies; i++)
-            {
-                // Note: Within FrameOfMocapData, skeleton rigid body ids are of the form:
-                //   parent skeleton ID   : high word (upper 16 bits of int)
-                //   rigid body id        : low word  (lower 16 bits of int)
-                //
-                // However within DataDescriptions they are not, so apply that here for correct lookup during streaming
-                int id = pSK->RigidBodies[i].ID | (pSK->skeletonID << 16);
-                mapIDToName[id] = std::string(pSK->RigidBodies[i].szName);
-            }
-            iSkel++;
-        }
-        else
-            continue;
-    }
-    */
-
-    return true;
-}
-#endif
 
 //[/MiscUserCode]
 
