@@ -390,3 +390,97 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new PluginProcessor();
 }
+
+FARPROC WINAPI delayHook(unsigned dliNotify, PDelayLoadInfo pdli) {
+    switch (dliNotify) {
+    case dliStartProcessing:
+        // If you want to return control to the helper, return 0.
+        // Otherwise, return a pointer to a FARPROC helper function
+        // that will be used instead, thereby bypassing the rest
+        // of the helper.
+        break;
+
+    case dliNotePreLoadLibrary:
+        // If you want to return control to the helper, return 0.
+        // Otherwise, return your own HMODULE to be used by the
+        // helper instead of having it call LoadLibrary itself.
+        {
+            std::string natNetDllName = "NatNetLib.dll";
+            if(natNetDllName == pdli->szDll) {
+                // get the path of the dll we're in
+
+                char thisDllPath[MAX_PATH];
+                HMODULE hm = NULL;
+
+                if (GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                    GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                    (LPCSTR)&delayHook, &hm) == 0
+                ) {
+                    int ret = GetLastError();
+                    DBG("GetModuleHandle failed, error = " << ret);
+                    return 0;
+                }
+
+                if (GetModuleFileName(hm, thisDllPath, sizeof(thisDllPath)) == 0) {
+                    int ret = GetLastError();
+                    DBG("GetModuleFileName failed, error = " << ret);
+                    return 0;
+                }
+
+                // find dirname of the path
+
+                std::string thisDllPathStr = thisDllPath;
+                size_t lastSepPos = thisDllPathStr.find_last_of("/\\");
+                if (lastSepPos == std::string::npos) {
+                    DBG("Failed to find last path separator of " << thisDllPath);
+                    return 0;
+                }
+
+                // construct natnet dll path and load
+
+                std::string natNetDllPath = thisDllPathStr.substr(0, lastSepPos + 1) + "NatNetLib.nonvst-dll";
+                return reinterpret_cast<FARPROC>(LoadLibrary(natNetDllPath.c_str()));
+            }
+        }
+        break;
+
+    case dliNotePreGetProcAddress:
+        // If you want to return control to the helper, return 0.
+        // If you choose you may supply your own FARPROC function
+        // address and bypass the helper's call to GetProcAddress.
+        break;
+
+    case dliFailLoadLib:
+        // LoadLibrary failed.
+        // If you don't want to handle this failure yourself, return 0.
+        // In this case the helper will raise an exception
+        // (ERROR_MOD_NOT_FOUND) and exit.
+        // If you want to handle the failure by loading an alternate
+        // DLL (for example), then return the HMODULE for
+        // the alternate DLL. The helper will continue execution with
+        // this alternate DLL and attempt to find the
+        // requested entrypoint via GetProcAddress.
+        break;
+
+    case dliFailGetProc:
+        // GetProcAddress failed.
+        // If you don't want to handle this failure yourself, return 0.
+        // In this case the helper will raise an exception
+        // (ERROR_PROC_NOT_FOUND) and exit.
+        // If you choose, you may handle the failure by returning
+        // an alternate FARPROC function address.
+        break;
+
+    case dliNoteEndProcessing:
+        // This notification is called after all processing is done.
+        // There is no opportunity for modifying the helper's behavior
+        // at this point except by longjmp()/throw()/RaiseException.
+        // No return value is processed.
+        break;
+    }
+
+    return NULL;
+}
+
+ExternC const PfnDliHook __pfnDliNotifyHook2 = delayHook;
+ExternC const PfnDliHook __pfnDliFailureHook2 = delayHook;
