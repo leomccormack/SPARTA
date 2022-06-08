@@ -12,6 +12,10 @@
 #include "tvconv.h"
 #include "rotator.h"
 #include <string.h>
+#define NOGDI
+#include <Windows.h>
+#include <delayimp.h>
+
 #define BUILD_VER_SUFFIX0 "alpha" /* String to be added before the version name on the GUI (beta, alpha etc..) */
 #ifndef NDEBUG
 #define BUILD_VER_SUFFIX (BUILD_VER_SUFFIX0 " (DEBUG)")

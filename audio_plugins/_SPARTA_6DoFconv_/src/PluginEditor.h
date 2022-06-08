@@ -26,6 +26,10 @@
 #include "../../resources/SPARTALookAndFeel.h"
 #include "sceneView.h"
 
+#include "NatNetTypes.h"
+#include "NatNetCAPI.h"
+#include "NatNetClient.h"
+
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
     k_warning_sampleRate_missmatch,
@@ -62,6 +66,22 @@ public:
 
     /* Refresh coordinate limits based on loaded sofa files*/
     void refreshCoords();
+
+#if 0
+    /* NatNet */
+    bool initNatNet(char* myIpAddress, char* serverIpAddress, ConnectionType connType);
+
+    void handleNatNetData(sFrameOfMocapData* data, void* pUserData);
+    void handleNatNetMessage(Verbosity msgType, const char* msg);
+
+    // NatNet SDK takes callbacks as function pointers and is thus incompatible with C++ instance methods
+    // so we make these static functions which grab a file-level pointer to our instance and invoke the corresponding methods
+    // very ugly!
+    static void NATNET_CALLCONV staticHandleNatNetData(sFrameOfMocapData* data, void* pUserData); // receives data from the server
+    static void NATNET_CALLCONV staticHandleNatNetMessage(Verbosity msgType, const char* msg); // receives NatNet error messages
+
+    bool parseRigidBodyDescription(sDataDescriptions* pDataDefs);
+#endif
 
     //[/UserMethods]
 
@@ -102,6 +122,9 @@ private:
     SPARTA_WARNINGS currentWarning;
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
+
+    /* NatNet */
+    NatNetClient* natNetClient;
 
     //[/UserVariables]
 
