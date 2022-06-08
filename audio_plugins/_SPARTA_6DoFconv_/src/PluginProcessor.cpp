@@ -9,12 +9,19 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+// file-level pointer to the PluginProcessor - there shouldn't be more than one, right?...
+// ugly, but NatNet callbacks need to be C-style function pointers and that doesn't really work with C++ instance methods
+static PluginProcessor* thePluginProcessor = nullptr;
+
 //==============================================================================
 PluginProcessor::PluginProcessor() :
     AudioProcessor(BusesProperties()
         .withInput("Input", AudioChannelSet::discreteChannels(64), true)
         .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
 {
+    jassert(thePluginProcessor == nullptr);
+    thePluginProcessor = this;
+
     nSampleRate = 48000;
     nHostBlockSize = -1;
     tvconv_create(&hTVCnv);
@@ -390,6 +397,157 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new PluginProcessor();
 }
+
+// NatNet
+
+// Initialize the NatNet client with client and server IP addresses.
+void PluginProcessor::connectNatNet(const char* myIpAddress, const char* serverIpAddress, ConnectionType connType)
+{
+    unsigned char ver[4];
+    NatNet_GetVersion(ver);
+
+    // Set callback handlers
+    // Callback for NatNet messages.
+
+    // typedef void (NATNET_CALLCONV* NatNetLogCallback)( Verbosity level, const char* message );
+
+    sNatNetClientConnectParams connectParams;
+    connectParams.connectionType = connType;
+    connectParams.localAddress = myIpAddress;
+    connectParams.serverAddress = serverIpAddress;
+    natNetClient.Disconnect();
+    int retCode = natNetClient.Connect(connectParams);
+    if (retCode != ErrorCode_OK) {
+        //Unable to connect to server.
+        sendNatNetConnMessage("natnet_connect_error");
+        return;
+    } else {
+        // Print server info
+        sServerDescription ServerDescription;
+        memset(&ServerDescription, 0, sizeof(ServerDescription));
+        natNetClient.GetServerDescription(&ServerDescription);
+        if (!ServerDescription.HostPresent)
+        {
+            //Unable to connect to server. Host not present
+            sendNatNetConnMessage("natnet_connect_error");
+            return;
+        }
+    }
+
+    // Retrieve RigidBody description from server
+    sDataDescriptions* pDataDefs = NULL;
+    retCode = natNetClient.GetDataDescriptionList(&pDataDefs);
+    if (retCode != ErrorCode_OK || parseRigidBodyDescription(pDataDefs) == false)
+    {
+        //Unable to retrieve RigidBody description
+        //return false;
+        // TODO: report
+        return;
+    }
+    NatNet_FreeDescriptions(pDataDefs);
+    pDataDefs = NULL;
+
+    // example of NatNet general message passing. Set units to millimeters
+    // and get the multiplicative conversion factor in the response.
+    void* response;
+    int nBytes;
+    retCode = natNetClient.SendMessageAndWait("UnitsToMillimeters", &response, &nBytes);
+    if (retCode == ErrorCode_OK)
+    {
+        natNetUnitConversion = *(float*)response;
+    }
+
+    retCode = natNetClient.SendMessageAndWait("UpAxis", &response, &nBytes);
+    if (retCode == ErrorCode_OK)
+    {
+        natNetUpAxis = *(long*)response;
+    }
+
+    sendNatNetConnMessage("natnet_connect");
+
+    NatNet_SetLogCallback(staticHandleNatNetMessage);
+    // this function will receive data from the server
+    natNetClient.SetFrameReceivedCallback(staticHandleNatNetData);
+
+    return;
+}
+
+void PluginProcessor::disconnectNatNet() {
+    natNetClient.Disconnect();
+    sendNatNetConnMessage("natnet_disconnect");
+}
+
+void PluginProcessor::addNatNetConnListener(ActionListener* listener) {
+    natNetConnBroadcaster.addActionListener(listener);
+}
+
+void PluginProcessor::removeNatNetConnListener(ActionListener* listener) {
+    natNetConnBroadcaster.removeActionListener(listener);
+}
+
+void PluginProcessor::sendNatNetConnMessage(const String& message) {
+    natNetConnBroadcaster.sendActionMessage(message);
+}
+
+void PluginProcessor::handleNatNetData(sFrameOfMocapData* data, void* pUserData) {
+    DBG("handleNatNetData()");
+}
+
+void PluginProcessor::handleNatNetMessage(Verbosity msgType, const char* msg) {
+    DBG("handleNatNetMessage()");
+}
+
+void NATNET_CALLCONV PluginProcessor::staticHandleNatNetData(sFrameOfMocapData* data, void* pUserData) {
+    jassert(thePluginProcessor != nullptr);
+    thePluginProcessor->handleNatNetData(data, pUserData);
+}
+
+void NATNET_CALLCONV PluginProcessor::staticHandleNatNetMessage(Verbosity msgType, const char* msg) {
+    jassert(thePluginProcessor != nullptr);
+    thePluginProcessor->handleNatNetMessage(msgType, msg);
+}
+
+bool PluginProcessor::parseRigidBodyDescription(sDataDescriptions* pDataDefs) {
+    /*
+    mapIDToName.clear();
+
+    if (pDataDefs == NULL || pDataDefs->nDataDescriptions <= 0)
+        return false;
+
+    // preserve a "RigidBody ID to Rigid Body Name" mapping, which we can lookup during data streaming
+    int iSkel = 0;
+    for (int i = 0, j = 0; i < pDataDefs->nDataDescriptions; i++)
+    {
+        if (pDataDefs->arrDataDescriptions[i].type == Descriptor_RigidBody)
+        {
+            sRigidBodyDescription* pRB = pDataDefs->arrDataDescriptions[i].Data.RigidBodyDescription;
+            mapIDToName[pRB->ID] = std::string(pRB->szName);
+        }
+        else if (pDataDefs->arrDataDescriptions[i].type == Descriptor_Skeleton)
+        {
+            sSkeletonDescription* pSK = pDataDefs->arrDataDescriptions[i].Data.SkeletonDescription;
+            for (int i = 0; i < pSK->nRigidBodies; i++)
+            {
+                // Note: Within FrameOfMocapData, skeleton rigid body ids are of the form:
+                //   parent skeleton ID   : high word (upper 16 bits of int)
+                //   rigid body id        : low word  (lower 16 bits of int)
+                //
+                // However within DataDescriptions they are not, so apply that here for correct lookup during streaming
+                int id = pSK->RigidBodies[i].ID | (pSK->skeletonID << 16);
+                mapIDToName[id] = std::string(pSK->RigidBodies[i].szName);
+            }
+            iSkel++;
+        }
+        else
+            continue;
+    }
+    */
+
+    return true;
+}
+
+
+// delayload for the NatNetSdk DLL
 
 FARPROC WINAPI delayHook(unsigned dliNotify, PDelayLoadInfo pdli) {
     switch (dliNotify) {
