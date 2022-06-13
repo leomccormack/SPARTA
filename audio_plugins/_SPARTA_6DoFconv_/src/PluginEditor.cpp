@@ -179,7 +179,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_oscport->setReturnKeyStartsNewLine (false);
     te_oscport->setReadOnly (false);
     te_oscport->setScrollbarsShown (true);
-    te_oscport->setCaretVisible (false);
+    te_oscport->setCaretVisible (true);
     te_oscport->setPopupMenuEnabled (true);
     te_oscport->setColour (juce::TextEditor::textColourId, juce::Colours::white);
     te_oscport->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
@@ -271,7 +271,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_myip->setReturnKeyStartsNewLine (false);
     te_myip->setReadOnly (false);
     te_myip->setScrollbarsShown (true);
-    te_myip->setCaretVisible (false);
+    te_myip->setCaretVisible (true);
     te_myip->setPopupMenuEnabled (true);
     te_myip->setColour (juce::TextEditor::textColourId, juce::Colours::white);
     te_myip->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
@@ -286,7 +286,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_serverip->setReturnKeyStartsNewLine (false);
     te_serverip->setReadOnly (false);
     te_serverip->setScrollbarsShown (true);
-    te_serverip->setCaretVisible (false);
+    te_serverip->setCaretVisible (true);
     te_serverip->setPopupMenuEnabled (true);
     te_serverip->setColour (juce::TextEditor::textColourId, juce::Colours::white);
     te_serverip->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
@@ -1609,7 +1609,7 @@ BEGIN_JUCER_METADATA
   <TEXTEDITOR name="new text editor" id="1799da9e8cf495d6" memberName="te_oscport"
               virtualName="" explicitFocusOrder="0" pos="344 296 42 22" textcol="ffffffff"
               bkgcol="ffffff" outlinecol="6c838080" initialText="9000" multiline="0"
-              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="0" popupmenu="1"/>
+              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
   <COMBOBOX name="new combo box" id="6406656f2512d83e" memberName="CBviewMode"
             virtualName="" explicitFocusOrder="0" pos="755 38 92 16" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
@@ -1647,12 +1647,12 @@ BEGIN_JUCER_METADATA
               virtualName="" explicitFocusOrder="0" pos="160 525 110 22" textcol="ffffffff"
               bkgcol="ffffff" outlinecol="6c838080" initialText="127.0.0.1"
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
-              caret="0" popupmenu="1"/>
+              caret="1" popupmenu="1"/>
   <TEXTEDITOR name="new text editor" id="f8396d4e40c249a1" memberName="te_serverip"
               virtualName="" explicitFocusOrder="0" pos="160 549 110 22" textcol="ffffffff"
               bkgcol="ffffff" outlinecol="6c838080" initialText="127.0.0.1"
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
-              caret="0" popupmenu="1"/>
+              caret="1" popupmenu="1"/>
   <TEXTBUTTON name="connect" id="cf0ea0fca66caeaf" memberName="bt_connect"
               virtualName="" explicitFocusOrder="0" pos="280 573 110 22" buttonText="connect"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
