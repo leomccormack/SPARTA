@@ -20,6 +20,10 @@
 #include "NatNetCAPI.h"
 #include "NatNetClient.h"
 
+#include "MarkerPositionCollection.h"
+#include "RigidBodyCollection.h"
+#include "TransformedData.h"
+
 #define BUILD_VER_SUFFIX0 "alpha" /* String to be added before the version name on the GUI (beta, alpha etc..) */
 #ifndef NDEBUG
 #define BUILD_VER_SUFFIX (BUILD_VER_SUFFIX0 " (DEBUG)")
@@ -154,6 +158,14 @@ private:
     void sendNatNetConnMessage(const String& message);
     float natNetUnitConversion;
     long natNetUpAxis;
+
+    // Objects for saving off marker and rigid body data streamed from NatNet.
+    MarkerPositionCollection markerPositions;
+    RigidBodyCollection rigidBodies;
+    std::map<int, std::string> mapIDToName;
+
+    // Currently only transforming data for one rigid body, so don't bother with a collection
+    TransformedData transData;
 
 
     

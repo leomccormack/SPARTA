@@ -25,6 +25,7 @@
 #include "PluginProcessor.h"
 #include "../../resources/SPARTALookAndFeel.h"
 #include "sceneView.h"
+#include "AdHocActionListener.h"
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
@@ -50,8 +51,7 @@ class PluginEditor  : public AudioProcessorEditor,
                       private FilenameComponentListener,
                       public juce::Slider::Listener,
                       public juce::ComboBox::Listener,
-                      public juce::Button::Listener,
-                      public juce::ActionListener
+                      public juce::Button::Listener
 {
 public:
     //==============================================================================
@@ -63,7 +63,6 @@ public:
 
     /* Refresh coordinate limits based on loaded sofa files*/
     void refreshCoords();
-    void actionListenerCallback(const String& message) override;
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -104,6 +103,10 @@ private:
     SPARTA_WARNINGS currentWarning;
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
+
+    /* NatNet */
+    AdHocActionListener natNetConnListener;
+    void natNetconnListenerCallback(const String& message);
 
     //[/UserVariables]
 

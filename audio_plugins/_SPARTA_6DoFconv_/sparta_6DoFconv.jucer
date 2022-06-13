@@ -5,8 +5,30 @@
               pluginFormats="buildVST" pluginManufacturer="AALTO" pluginAAXCategory="2"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
               companyEmail="rapolas.daugintis@gmail.com" pluginManufacturerCode="RAPD"
-              pluginCode="TVCN" displaySplashScreen="1" version="1.0.0" headerPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;../../../../../SDKs/NatNetSDK/include">
+              pluginCode="TVCN" displaySplashScreen="1" version="1.0.0" headerPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;../../../../../SDKs/NatNetSDK/include&#10;../../../src/NatNetTools">
   <MAINGROUP id="IbvuHL" name="sparta_6DoFconv">
+    <GROUP id="{292064C3-D074-003C-6E95-DB7EEDC5973F}" name="NatNetTools">
+      <FILE id="LFIejC" name="MathUtils.cpp" compile="1" resource="0" file="src/NatNetTools/MathUtils.cpp"/>
+      <FILE id="iiFbil" name="MathUtils.h" compile="0" resource="0" file="src/NatNetTools/MathUtils.h"/>
+      <FILE id="IeEODg" name="MarkerPositionCollection.cpp" compile="1" resource="0"
+            file="src/NatNetTools/MarkerPositionCollection.cpp"/>
+      <FILE id="GLAOnK" name="AdHocActionListener.cpp" compile="1" resource="0"
+            file="src/NatNetTools/AdHocActionListener.cpp"/>
+      <FILE id="Gz4DpR" name="AdHocActionListener.h" compile="0" resource="0"
+            file="src/NatNetTools/AdHocActionListener.h"/>
+      <FILE id="fpdIk0" name="MarkerPositionCollection.h" compile="0" resource="0"
+            file="src/NatNetTools/MarkerPositionCollection.h"/>
+      <FILE id="UzLR8s" name="NATUtils.cpp" compile="1" resource="0" file="src/NatNetTools/NATUtils.cpp"/>
+      <FILE id="xxm1s8" name="NATUtils.h" compile="0" resource="0" file="src/NatNetTools/NATUtils.h"/>
+      <FILE id="agrxrB" name="RigidBodyCollection.cpp" compile="1" resource="0"
+            file="src/NatNetTools/RigidBodyCollection.cpp"/>
+      <FILE id="Mi36Ie" name="RigidBodyCollection.h" compile="0" resource="0"
+            file="src/NatNetTools/RigidBodyCollection.h"/>
+      <FILE id="csWv4m" name="TransformedData.cpp" compile="1" resource="0"
+            file="src/NatNetTools/TransformedData.cpp"/>
+      <FILE id="U7yo8t" name="TransformedData.h" compile="0" resource="0"
+            file="src/NatNetTools/TransformedData.h"/>
+    </GROUP>
     <GROUP id="{C7B63A4B-C90A-34F2-6A26-27284A985AAE}" name="NatNetSDK">
       <GROUP id="{091B0F26-2973-87AD-DA77-D02D4475879C}" name="include">
         <FILE id="wk7ooL" name="NatNetCAPI.h" compile="0" resource="0" file="../../SDKs/NatNetSDK/include/NatNetCAPI.h"/>
