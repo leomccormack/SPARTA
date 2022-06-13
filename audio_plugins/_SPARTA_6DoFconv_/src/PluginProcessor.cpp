@@ -490,7 +490,51 @@ void PluginProcessor::sendNatNetConnMessage(const String& message) {
 }
 
 void PluginProcessor::handleNatNetData(sFrameOfMocapData* data, void* pUserData) {
-    DBG("handleNatNetData()");
+    int mcount = min(MarkerPositionCollection::MAX_MARKER_COUNT, data->MocapData->nMarkers);
+    markerPositions.SetMarkerPositions(data->MocapData->Markers, mcount);
+
+    // Marker Data
+    markerPositions.SetLabledMarkers(data->LabeledMarkers, data->nLabeledMarkers);
+
+    // nOtherMarkers is deprecated
+    // mcount = min(MarkerPositionCollection::MAX_MARKER_COUNT, data->nOtherMarkers);
+    // markerPositions.AppendMarkerPositions(data->OtherMarkers, mcount);
+
+    // rigid bodies
+    int rbcount = min(RigidBodyCollection::MAX_RIGIDBODY_COUNT, data->nRigidBodies);
+    rigidBodies.SetRigidBodyData(data->RigidBodies, rbcount);
+
+    // for first rigid body, transform data and send OSC
+    if (rbcount > 0) {
+        int i = 0;
+        transData.setFromBodyData(
+            rigidBodies.GetCoordinates(i),
+            rigidBodies.GetQuaternion(i),
+            natNetUpAxis
+        );
+        
+        setParameterRaw(0, transData.x);
+        setParameterRaw(1, transData.y);
+        setParameterRaw(2, transData.z);
+        rotator_setYaw(hRot, transData.yaw);
+        rotator_setPitch(hRot, transData.pitch);
+        rotator_setRoll(hRot, transData.roll);
+    }
+
+    /*
+    // skeleton segment (bones) as collection of rigid bodies
+    for (int s = 0; s < data->nSkeletons; s++)
+    {
+        rigidBodies.AppendRigidBodyData(data->Skeletons[s].RigidBodyData, data->Skeletons[s].nRigidBodies);
+    }
+
+    // timecode
+    NatNetClient* pClient = (NatNetClient*)pUserData;
+    int hour, minute, second, frame, subframe;
+    NatNet_DecodeTimecode(data->Timecode, data->TimecodeSubframe, &hour, &minute, &second, &frame, &subframe);
+    // decode timecode into friendly string
+    NatNet_TimecodeStringify(data->Timecode, data->TimecodeSubframe, szTimecode, 128);
+    */
 }
 
 void PluginProcessor::handleNatNetMessage(Verbosity msgType, const char* msg) {
@@ -508,7 +552,6 @@ void NATNET_CALLCONV PluginProcessor::staticHandleNatNetMessage(Verbosity msgTyp
 }
 
 bool PluginProcessor::parseRigidBodyDescription(sDataDescriptions* pDataDefs) {
-    /*
     mapIDToName.clear();
 
     if (pDataDefs == NULL || pDataDefs->nDataDescriptions <= 0)
@@ -541,7 +584,6 @@ bool PluginProcessor::parseRigidBodyDescription(sDataDescriptions* pDataDefs) {
         else
             continue;
     }
-    */
 
     return true;
 }

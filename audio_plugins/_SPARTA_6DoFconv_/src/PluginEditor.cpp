@@ -416,7 +416,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* NatNet */
     originalConnectButtonText = bt_connect->getButtonText();
-    hVst->addNatNetConnListener(this);
+    natNetConnListener.setCallback([this](const String& message) { natNetconnListenerCallback(message); });
+    hVst->addNatNetConnListener(&natNetConnListener);
 
     //[/Constructor]
 }
@@ -458,7 +459,7 @@ PluginEditor::~PluginEditor()
     //[Destructor]. You can add your own custom destruction code here..
     setLookAndFeel(nullptr);
     fileComp = nullptr;
-    hVst->removeNatNetConnListener(this);
+    hVst->removeNatNetConnListener(&natNetConnListener);
     //[/Destructor]
 }
 
@@ -1324,23 +1325,6 @@ void PluginEditor::refreshCoords()
     SL_source_z->setValue(tvconv_getSourcePosition(hTVC, 2));
 }
 
-void PluginEditor::actionListenerCallback(const String& message) {
-    StringArray parts;
-    parts.addTokens(message, " ");
-    jassert(parts.size() >= 1);
-    String id = parts[0];
-    if (id == "natnet_connect") {
-        te_connectionlabel->setText("connected", NotificationType::dontSendNotification);
-        bt_connect->setButtonText("disconnect");
-    } else if(id == "natnet_connect_error") {
-        te_connectionlabel->setText("connection error", NotificationType::dontSendNotification);
-        bt_connect->setButtonText(originalConnectButtonText);
-    } else if (id == "natnet_disconnect") {
-        te_connectionlabel->setText("disconnected", NotificationType::dontSendNotification);
-        bt_connect->setButtonText(originalConnectButtonText);
-    }
-}
-
 void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
@@ -1382,6 +1366,23 @@ void PluginEditor::timerCallback()
     /* check if OSC port has changed */
     if (hVst->getOscPortID() != te_oscport->getText().getIntValue())
         hVst->setOscPortID(te_oscport->getText().getIntValue());
+}
+
+void PluginEditor::natNetconnListenerCallback(const String& message) {
+    StringArray parts;
+    parts.addTokens(message, " ");
+    jassert(parts.size() >= 1);
+    String id = parts[0];
+    if (id == "natnet_connect") {
+        te_connectionlabel->setText("connected", NotificationType::dontSendNotification);
+        bt_connect->setButtonText("disconnect");
+    } else if (id == "natnet_connect_error") {
+        te_connectionlabel->setText("connection error", NotificationType::dontSendNotification);
+        bt_connect->setButtonText(originalConnectButtonText);
+    } else if (id == "natnet_disconnect") {
+        te_connectionlabel->setText("disconnected", NotificationType::dontSendNotification);
+        bt_connect->setButtonText(originalConnectButtonText);
+    }
 }
 
 //[/MiscUserCode]
