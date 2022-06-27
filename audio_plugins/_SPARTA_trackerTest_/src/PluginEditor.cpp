@@ -72,7 +72,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_oscport->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
     te_oscport->setText (TRANS("9000"));
 
-    te_oscport->setBounds (344, 124, 42, 22);
+    te_oscport->setBounds (160, 322, 42, 22);
 
     te_myip.reset (new juce::TextEditor ("new text editor"));
     addAndMakeVisible (te_myip.get());
@@ -138,7 +138,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_x->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_x->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_x->setBounds (144, 114, 48, 20);
+    label_x->setBounds (140, 114, 48, 20);
 
     label_y.reset (new juce::Label ("new label",
                                     juce::String()));
@@ -150,7 +150,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_y->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_y->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_y->setBounds (200, 114, 48, 20);
+    label_y->setBounds (196, 114, 48, 20);
 
     label_z.reset (new juce::Label ("new label",
                                     juce::String()));
@@ -162,7 +162,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_z->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_z->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_z->setBounds (256, 114, 48, 20);
+    label_z->setBounds (252, 114, 48, 20);
 
     label_yaw.reset (new juce::Label ("new label",
                                       juce::String()));
@@ -174,7 +174,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_yaw->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_yaw->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_yaw->setBounds (144, 160, 48, 20);
+    label_yaw->setBounds (140, 160, 48, 20);
 
     label_pitch.reset (new juce::Label ("new label",
                                         juce::String()));
@@ -186,7 +186,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_pitch->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_pitch->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_pitch->setBounds (200, 160, 48, 20);
+    label_pitch->setBounds (196, 160, 48, 20);
 
     label_roll.reset (new juce::Label ("new label",
                                        juce::String()));
@@ -198,20 +198,95 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_roll->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     label_roll->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_roll->setBounds (256, 160, 48, 20);
+    label_roll->setBounds (252, 160, 48, 20);
 
     tb_unmute.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (tb_unmute.get());
     tb_unmute->setButtonText (TRANS("Unmute (DANGEROUS! MAKE SURE THIS IS NOT ROUTED TO SPEAKERS)"));
     tb_unmute->addListener (this);
 
-    tb_unmute->setBounds (7, 297, 393, 24);
+    tb_unmute->setBounds (7, 443, 393, 24);
+
+    juce__comboBox.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (juce__comboBox.get());
+    juce__comboBox->setEditableText (false);
+    juce__comboBox->setJustificationType (juce::Justification::centredLeft);
+    juce__comboBox->setTextWhenNothingSelected (juce::String());
+    juce__comboBox->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    juce__comboBox->addListener (this);
+
+    juce__comboBox->setBounds (408, 192, 150, 24);
+
+    cb_sourceMode.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (cb_sourceMode.get());
+    cb_sourceMode->setEditableText (false);
+    cb_sourceMode->setJustificationType (juce::Justification::centredLeft);
+    cb_sourceMode->setTextWhenNothingSelected (juce::String());
+    cb_sourceMode->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    cb_sourceMode->addItem (TRANS("NatNet"), 1);
+    cb_sourceMode->addItem (TRANS("OSC"), 2);
+    cb_sourceMode->addItem (TRANS("MIDI"), 3);
+    cb_sourceMode->addListener (this);
+
+    cb_sourceMode->setBounds (318, 135, 72, 24);
+
+    te_midiCcCoarse.reset (new juce::TextEditor ("new text editor"));
+    addAndMakeVisible (te_midiCcCoarse.get());
+    te_midiCcCoarse->setMultiLine (false);
+    te_midiCcCoarse->setReturnKeyStartsNewLine (false);
+    te_midiCcCoarse->setReadOnly (false);
+    te_midiCcCoarse->setScrollbarsShown (true);
+    te_midiCcCoarse->setCaretVisible (true);
+    te_midiCcCoarse->setPopupMenuEnabled (true);
+    te_midiCcCoarse->setColour (juce::TextEditor::textColourId, juce::Colours::white);
+    te_midiCcCoarse->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
+    te_midiCcCoarse->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
+    te_midiCcCoarse->setText (TRANS("16"));
+
+    te_midiCcCoarse->setBounds (128, 378, 42, 22);
+
+    te_midiCcFine.reset (new juce::TextEditor ("new text editor"));
+    addAndMakeVisible (te_midiCcFine.get());
+    te_midiCcFine->setMultiLine (false);
+    te_midiCcFine->setReturnKeyStartsNewLine (false);
+    te_midiCcFine->setReadOnly (false);
+    te_midiCcFine->setScrollbarsShown (true);
+    te_midiCcFine->setCaretVisible (true);
+    te_midiCcFine->setPopupMenuEnabled (true);
+    te_midiCcFine->setColour (juce::TextEditor::textColourId, juce::Colours::white);
+    te_midiCcFine->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
+    te_midiCcFine->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
+    te_midiCcFine->setText (TRANS("48"));
+
+    te_midiCcFine->setBounds (128, 402, 42, 22);
+
+    tb_midiQuaternions.reset (new juce::ToggleButton ("new toggle button"));
+    addAndMakeVisible (tb_midiQuaternions.get());
+    tb_midiQuaternions->setButtonText (TRANS("Yes"));
+    tb_midiQuaternions->addListener (this);
+
+    tb_midiQuaternions->setBounds (319, 402, 72, 22);
+
+    te_midiChannel.reset (new juce::TextEditor ("new text editor"));
+    addAndMakeVisible (te_midiChannel.get());
+    te_midiChannel->setMultiLine (false);
+    te_midiChannel->setReturnKeyStartsNewLine (false);
+    te_midiChannel->setReadOnly (false);
+    te_midiChannel->setScrollbarsShown (true);
+    te_midiChannel->setCaretVisible (true);
+    te_midiChannel->setPopupMenuEnabled (true);
+    te_midiChannel->setColour (juce::TextEditor::textColourId, juce::Colours::white);
+    te_midiChannel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
+    te_midiChannel->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
+    te_midiChannel->setText (TRANS("1"));
+
+    te_midiChannel->setBounds (320, 378, 42, 22);
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (410, 326);
+    setSize (410, 482);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -222,7 +297,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     setLookAndFeel(&LAF);
 
 	/* fetch current configuration */
-    te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
+    te_oscport->setText(String(hVst->headtrackerReceiver.oscReceiver.port), dontSendNotification);
+    cb_sourceMode->setSelectedItemIndex(hVst->headtrackerReceiver.getActiveSource());
 
     /* tooltips */
 
@@ -243,7 +319,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* NatNet */
     originalConnectButtonText = bt_connect->getButtonText();
     natNetConnListener.setCallback([this](const String& message) { natNetconnListenerCallback(message); });
-    hVst->addNatNetConnListener(&natNetConnListener);
+    hVst->headtrackerReceiver.natNetReceiver.addConnListener(&natNetConnListener);
 
     //[/Constructor]
 }
@@ -268,11 +344,17 @@ PluginEditor::~PluginEditor()
     label_pitch = nullptr;
     label_roll = nullptr;
     tb_unmute = nullptr;
+    juce__comboBox = nullptr;
+    cb_sourceMode = nullptr;
+    te_midiCcCoarse = nullptr;
+    te_midiCcFine = nullptr;
+    tb_midiQuaternions = nullptr;
+    te_midiChannel = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
     setLookAndFeel(nullptr);
-    hVst->removeNatNetConnListener(&natNetConnListener);
+    hVst->headtrackerReceiver.natNetReceiver.removeConnListener(&natNetConnListener);
     //[/Destructor]
 }
 
@@ -285,7 +367,7 @@ void PluginEditor::paint (juce::Graphics& g)
     g.fillAll (juce::Colours::white);
 
     {
-        int x = 2, y = 28, width = 408, height = 306;
+        int x = 2, y = 28, width = 408, height = 452;
         juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -297,6 +379,31 @@ void PluginEditor::paint (juce::Graphics& g)
                                              112.0f - 28.0f + y,
                                              false));
         g.fillRect (x, y, width, height);
+    }
+
+    {
+        int x = 10, y = 318, width = 390, height = 32;
+        juce::Colour fillColour = juce::Colour (0x10c7c7c7);
+        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
+    {
+        int x = 71, y = 190, width = 270, height = 31;
+        juce::String text (TRANS("NatNet Client"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centred, true);
     }
 
     {
@@ -313,7 +420,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 329, y = 84, width = 71, height = 108;
+        int x = 308, y = 84, width = 92, height = 108;
         juce::Colour fillColour = juce::Colour (0x10c7c7c7);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -401,7 +508,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 408, y = 0, width = 2, height = 324;
+        int x = 408, y = 0, width = 2, height = 480;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -411,7 +518,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 0, y = 324, width = 410, height = 2;
+        int x = 0, y = 480, width = 410, height = 2;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -457,19 +564,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 343, y = 91, width = 91, height = 35;
-        juce::String text (TRANS("OSC Port"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 143, y = 86, width = 160, height = 30;
+        int x = 139, y = 86, width = 160, height = 30;
         juce::String text (TRANS("x           y           z"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -491,18 +586,6 @@ void PluginEditor::paint (juce::Graphics& g)
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 1);
 
-    }
-
-    {
-        int x = 71, y = 190, width = 270, height = 31;
-        juce::String text (TRANS("NatNet Client"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
     }
 
     {
@@ -542,7 +625,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 144, y = 133, width = 160, height = 30;
+        int x = 140, y = 133, width = 160, height = 30;
         juce::String text (TRANS("yaw     pitch      roll"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -556,6 +639,115 @@ void PluginEditor::paint (juce::Graphics& g)
     {
         int x = 18, y = 155, width = 121, height = 30;
         juce::String text (TRANS("Source Rotation:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 314, y = 110, width = 80, height = 26;
+        juce::String text (TRANS("Source mode"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centred, true);
+    }
+
+    {
+        int x = 71, y = 293, width = 270, height = 31;
+        juce::String text (TRANS("OSC"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centred, true);
+    }
+
+    {
+        int x = 18, y = 320, width = 142, height = 26;
+        juce::String text (TRANS("Port:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 71, y = 349, width = 270, height = 31;
+        juce::String text (TRANS("MIDI"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centred, true);
+    }
+
+    {
+        int x = 10, y = 374, width = 390, height = 54;
+        juce::Colour fillColour = juce::Colour (0x10c7c7c7);
+        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
+    {
+        int x = 18, y = 376, width = 102, height = 26;
+        juce::String text (TRANS("CC# (coarse):"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 18, y = 400, width = 102, height = 26;
+        juce::String text (TRANS("CC# (fine):"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 210, y = 400, width = 102, height = 26;
+        juce::String text (TRANS("Quaternions:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 210, y = 376, width = 102, height = 26;
+        juce::String text (TRANS("Channel:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -628,9 +820,13 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
             bool unicast = tb_unicast->getToggleState();
             ConnectionType connType = unicast ? ConnectionType::ConnectionType_Unicast : ConnectionType::ConnectionType_Multicast;
 
-            hVst->connectNatNet(myIp.toRawUTF8(), serverIp.toRawUTF8(), connType);
+            hVst->headtrackerReceiver.natNetReceiver.myAddress = myIp;
+            hVst->headtrackerReceiver.natNetReceiver.serverAddress = serverIp;
+            hVst->headtrackerReceiver.natNetReceiver.connectionType = connType;
+
+            hVst->headtrackerReceiver.natNetReceiver.enable();
         } else {
-            hVst->disconnectNatNet();
+            hVst->headtrackerReceiver.natNetReceiver.disable();
         }
 
         //[/UserButtonCode_bt_connect]
@@ -646,9 +842,36 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         hVst->setUnmute(tb_unmute->getToggleState());
         //[/UserButtonCode_tb_unmute]
     }
+    else if (buttonThatWasClicked == tb_midiQuaternions.get())
+    {
+        //[UserButtonCode_tb_midiQuaternions] -- add your button handler code here..
+        tb_midiQuaternions->getToggleState();
+        //[/UserButtonCode_tb_midiQuaternions]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
+}
+
+void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
+{
+    //[UsercomboBoxChanged_Pre]
+    //[/UsercomboBoxChanged_Pre]
+
+    if (comboBoxThatHasChanged == juce__comboBox.get())
+    {
+        //[UserComboBoxCode_juce__comboBox] -- add your combo box handling code here..
+        //[/UserComboBoxCode_juce__comboBox]
+    }
+    else if (comboBoxThatHasChanged == cb_sourceMode.get())
+    {
+        //[UserComboBoxCode_cb_sourceMode] -- add your combo box handling code here..
+        hVst->headtrackerReceiver.setActiveSource(static_cast<HeadtrackerTypes::Source>(cb_sourceMode->getSelectedItemIndex()));
+        //[/UserComboBoxCode_cb_sourceMode]
+    }
+
+    //[UsercomboBoxChanged_Post]
+    //[/UsercomboBoxChanged_Post]
 }
 
 
@@ -671,8 +894,8 @@ void PluginEditor::timerCallback()
     label_roll->setText(String(hVst->getRoll(), decimals), dontSendNotification);
 
     /* check if OSC port has changed */
-    if (hVst->getOscPortID() != te_oscport->getText().getIntValue())
-        hVst->setOscPortID(te_oscport->getText().getIntValue());
+    if (hVst->headtrackerReceiver.oscReceiver.port != te_oscport->getText().getIntValue())
+        hVst->headtrackerReceiver.oscReceiver.port = te_oscport->getText().getIntValue();
 }
 
 void PluginEditor::natNetconnListenerCallback(const String& message) {
@@ -708,13 +931,18 @@ BEGIN_JUCER_METADATA
                  parentClasses="public AudioProcessorEditor, public Timer" constructorParams="PluginProcessor* ownerFilter"
                  variableInitialisers="AudioProcessorEditor(ownerFilter)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
-                 initialWidth="410" initialHeight="326">
+                 initialWidth="410" initialHeight="482">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="2 28 408 306" fill="linear: 8 32, 8 112, 0=ff19313f, 1=ff041518"
+    <RECT pos="2 28 408 452" fill="linear: 8 32, 8 112, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
+    <RECT pos="10 318 390 32" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+          strokeColour="solid: 67a0a0a0"/>
+    <TEXT pos="71 190 270 31" fill="solid: ffffffff" hasStroke="0" text="NatNet Client"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
     <RECT pos="10 84 390 108" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="329 84 71 108" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+    <RECT pos="308 84 92 108" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <ROUNDRECT pos="1 2 408 31" cornerSize="5.0" fill="linear: 0 32, 528 32, 0=ff041518, 1=ff19313f"
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
@@ -730,9 +958,9 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: ffb9b9b9"/>
     <RECT pos="0 0 2 324" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="408 0 2 324" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="408 0 2 480" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="0 324 410 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
+    <RECT pos="0 480 410 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
     <TEXT pos="18 50 115 30" fill="solid: ffffffff" hasStroke="0" text="Host Block Size:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
@@ -743,17 +971,11 @@ BEGIN_JUCER_METADATA
     <TEXT pos="18 108 121 30" fill="solid: ffffffff" hasStroke="0" text="Source Position:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="343 91 91 35" fill="solid: ffffffff" hasStroke="0" text="OSC Port"
-          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="143 86 160 30" fill="solid: ffffffff" hasStroke="0" text="x           y           z"
+    <TEXT pos="139 86 160 30" fill="solid: ffffffff" hasStroke="0" text="x           y           z"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <RECT pos="10 216 390 79" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="71 190 270 31" fill="solid: ffffffff" hasStroke="0" text="NatNet Client"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="18 218 142 26" fill="solid: ffffffff" hasStroke="0" text="IP Address:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
@@ -763,10 +985,36 @@ BEGIN_JUCER_METADATA
     <TEXT pos="18 266 142 26" fill="solid: ffffffff" hasStroke="0" text="Unicast:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="144 133 160 30" fill="solid: ffffffff" hasStroke="0" text="yaw     pitch      roll"
+    <TEXT pos="140 133 160 30" fill="solid: ffffffff" hasStroke="0" text="yaw     pitch      roll"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
     <TEXT pos="18 155 121 30" fill="solid: ffffffff" hasStroke="0" text="Source Rotation:"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="314 110 80 26" fill="solid: ffffffff" hasStroke="0" text="Source mode"
+          fontname="Default font" fontsize="11.0" kerning="0.0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
+    <TEXT pos="71 293 270 31" fill="solid: ffffffff" hasStroke="0" text="OSC"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
+    <TEXT pos="18 320 142 26" fill="solid: ffffffff" hasStroke="0" text="Port:"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="71 349 270 31" fill="solid: ffffffff" hasStroke="0" text="MIDI"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="36" typefaceStyle="Bold"/>
+    <RECT pos="10 374 390 54" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+          strokeColour="solid: 67a0a0a0"/>
+    <TEXT pos="18 376 102 26" fill="solid: ffffffff" hasStroke="0" text="CC# (coarse):"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="18 400 102 26" fill="solid: ffffffff" hasStroke="0" text="CC# (fine):"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="210 400 102 26" fill="solid: ffffffff" hasStroke="0" text="Quaternions:"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="210 376 102 26" fill="solid: ffffffff" hasStroke="0" text="Channel:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
@@ -781,7 +1029,7 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <TEXTEDITOR name="new text editor" id="1799da9e8cf495d6" memberName="te_oscport"
-              virtualName="" explicitFocusOrder="0" pos="344 124 42 22" textcol="ffffffff"
+              virtualName="" explicitFocusOrder="0" pos="160 322 42 22" textcol="ffffffff"
               bkgcol="ffffff" outlinecol="6c838080" initialText="9000" multiline="0"
               retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
   <TEXTEDITOR name="new text editor" id="60e9708fea0d003a" memberName="te_myip"
@@ -806,38 +1054,60 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="160 268 110 22" buttonText="Enabled"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <LABEL name="new label" id="244f8b31bbee0615" memberName="label_x" virtualName=""
-         explicitFocusOrder="0" pos="144 114 48 20" outlineCol="68a3a2a2"
+         explicitFocusOrder="0" pos="140 114 48 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="520fa9fa22c52b0d" memberName="label_y" virtualName=""
-         explicitFocusOrder="0" pos="200 114 48 20" outlineCol="68a3a2a2"
+         explicitFocusOrder="0" pos="196 114 48 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="f709ae6e14e4cb76" memberName="label_z" virtualName=""
-         explicitFocusOrder="0" pos="256 114 48 20" outlineCol="68a3a2a2"
+         explicitFocusOrder="0" pos="252 114 48 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="9bb95f8d5ebcc920" memberName="label_yaw"
-         virtualName="" explicitFocusOrder="0" pos="144 160 48 20" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="140 160 48 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="b47b691d0d443ed8" memberName="label_pitch"
-         virtualName="" explicitFocusOrder="0" pos="200 160 48 20" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="196 160 48 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="dca2d55d6c7c562b" memberName="label_roll"
-         virtualName="" explicitFocusOrder="0" pos="256 160 48 20" outlineCol="68a3a2a2"
+         virtualName="" explicitFocusOrder="0" pos="252 160 48 20" outlineCol="68a3a2a2"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="f9cc0651ab491a56" memberName="tb_unmute"
-                virtualName="" explicitFocusOrder="0" pos="7 297 393 24" buttonText="Unmute (DANGEROUS! MAKE SURE THIS IS NOT ROUTED TO SPEAKERS)"
+                virtualName="" explicitFocusOrder="0" pos="7 443 393 24" buttonText="Unmute (DANGEROUS! MAKE SURE THIS IS NOT ROUTED TO SPEAKERS)"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <COMBOBOX name="new combo box" id="4e7387bcea96b2c2" memberName="juce__comboBox"
+            virtualName="" explicitFocusOrder="0" pos="408 192 150 24" editable="0"
+            layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
+  <COMBOBOX name="new combo box" id="28ef328a4079820" memberName="cb_sourceMode"
+            virtualName="" explicitFocusOrder="0" pos="318 135 72 24" editable="0"
+            layout="33" items="NatNet&#10;OSC&#10;MIDI" textWhenNonSelected=""
+            textWhenNoItems="(no choices)"/>
+  <TEXTEDITOR name="new text editor" id="4613ab94650e752c" memberName="te_midiCcCoarse"
+              virtualName="" explicitFocusOrder="0" pos="128 378 42 22" textcol="ffffffff"
+              bkgcol="ffffff" outlinecol="6c838080" initialText="16" multiline="0"
+              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
+  <TEXTEDITOR name="new text editor" id="a9e35af4ba2a54a8" memberName="te_midiCcFine"
+              virtualName="" explicitFocusOrder="0" pos="128 402 42 22" textcol="ffffffff"
+              bkgcol="ffffff" outlinecol="6c838080" initialText="48" multiline="0"
+              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
+  <TOGGLEBUTTON name="new toggle button" id="49b1046bffae38cc" memberName="tb_midiQuaternions"
+                virtualName="" explicitFocusOrder="0" pos="319 402 72 22" buttonText="Yes"
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TEXTEDITOR name="new text editor" id="81a4ab89fe67a6f5" memberName="te_midiChannel"
+              virtualName="" explicitFocusOrder="0" pos="320 378 42 22" textcol="ffffffff"
+              bkgcol="ffffff" outlinecol="6c838080" initialText="1" multiline="0"
+              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

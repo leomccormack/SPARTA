@@ -24,7 +24,7 @@
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
 #include "../../resources/SPARTALookAndFeel.h"
-#include "AdHocActionListener.h"
+#include "NatNetTools/AdHocActionListener.h"
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
@@ -47,7 +47,8 @@ typedef enum _SPARTA_WARNINGS{
 */
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
-                      public juce::Button::Listener
+                      public juce::Button::Listener,
+                      public juce::ComboBox::Listener
 {
 public:
     //==============================================================================
@@ -62,6 +63,7 @@ public:
     void paint (juce::Graphics& g) override;
     void resized() override;
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
+    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
 
 
 
@@ -101,6 +103,12 @@ private:
     std::unique_ptr<juce::Label> label_pitch;
     std::unique_ptr<juce::Label> label_roll;
     std::unique_ptr<juce::ToggleButton> tb_unmute;
+    std::unique_ptr<juce::ComboBox> juce__comboBox;
+    std::unique_ptr<juce::ComboBox> cb_sourceMode;
+    std::unique_ptr<juce::TextEditor> te_midiCcCoarse;
+    std::unique_ptr<juce::TextEditor> te_midiCcFine;
+    std::unique_ptr<juce::ToggleButton> tb_midiQuaternions;
+    std::unique_ptr<juce::TextEditor> te_midiChannel;
 
 
     //==============================================================================

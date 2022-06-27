@@ -10,17 +10,8 @@
 
 #include <JuceHeader.h>
 #include <string.h>
-#define NOGDI
-#include <Windows.h>
-#include <delayimp.h>
 
-#include "NatNetTypes.h"
-#include "NatNetCAPI.h"
-#include "NatNetClient.h"
-
-#include "MarkerPositionCollection.h"
-#include "RigidBodyCollection.h"
-#include "TransformedData.h"
+#include "HeadtrackerReceiver.h"
 
 #define BUILD_VER_SUFFIX0 "alpha" /* String to be added before the version name on the GUI (beta, alpha etc..) */
 #ifndef NDEBUG
@@ -34,8 +25,6 @@
 #ifndef MAX
 # define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
 #endif
-
-#define DEFAULT_OSC_PORT 9000
 
 #define ENABLE_DBG_OSC 0
 #if ENABLE_DBG_OSC
@@ -79,11 +68,11 @@ enum {
     k_qy,
     k_qz
 };
+
 //==============================================================================
 /**
 */
 class PluginProcessor  : public AudioProcessor,
-                         private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
                          public VSTCallbackHandler
 {
 public:
@@ -107,67 +96,30 @@ public:
         return 0;
     }
 
-    /* OSC */
-    void oscMessageReceived(const OSCMessage& message) override;
-    void setOscPortID(int newID) {
-        osc.disconnect();
-        osc_port_ID = newID;
-        osc_connected = osc.connect(osc_port_ID);
-    }
-    int getOscPortID() { return osc_port_ID; }
-    bool getOscPortConnected() { return osc_connected; }
-    
-    /* NatNet */
-    void connectNatNet(const char* myIpAddress, const char* serverIpAddress, ConnectionType connType);
-    void disconnectNatNet();
-    void addNatNetConnListener(ActionListener* listener);
-    void removeNatNetConnListener(ActionListener* listener);
-
-    void handleNatNetData(sFrameOfMocapData* data, void* pUserData);
-    void handleNatNetMessage(Verbosity msgType, const char* msg);
-
-    // NatNet SDK takes callbacks as function pointers and is thus incompatible with C++ instance methods
-    // so we make these static functions which grab a file-level pointer to our instance and invoke the corresponding methods
-    // very ugly!
-    static void NATNET_CALLCONV staticHandleNatNetData(sFrameOfMocapData* data, void* pUserData); // receives data from the server
-    static void NATNET_CALLCONV staticHandleNatNetMessage(Verbosity msgType, const char* msg); // receives NatNet error messages
-
-    bool parseRigidBodyDescription(sDataDescriptions* pDataDefs);
-
     float getX();
     float getY();
     float getZ();
     float getYaw();
     float getPitch();
     float getRoll();
-    
+
     void setUnmute(bool shouldUnmute);
+
+    HeadtrackerReceiver headtrackerReceiver;
 
 private:
     int nNumInputs;       /* current number of input channels */
     int nNumOutputs;      /* current number of output channels */
     int nSampleRate;      /* current host sample rate */
     int nHostBlockSize;   /* typical host block size to expect, in samples */
-    OSCReceiver osc;
-    bool osc_connected;
-    int osc_port_ID;
+    float x;
+    float y;
+    float z;
+    float yaw;
+    float pitch;
+    float roll;
 
-    /* NatNet */
-    NatNetClient natNetClient;
-    ActionBroadcaster natNetConnBroadcaster;
-    void sendNatNetConnMessage(const String& message);
-    float natNetUnitConversion;
-    long natNetUpAxis;
-
-    // Objects for saving off marker and rigid body data streamed from NatNet.
-    MarkerPositionCollection markerPositions;
-    RigidBodyCollection rigidBodies;
-    std::map<int, std::string> mapIDToName;
-
-    // Currently only transforming data for one rigid body, so don't bother with a collection
-    TransformedData transData;
     bool unmute;
-
 
     
 /***************************************************************************\
