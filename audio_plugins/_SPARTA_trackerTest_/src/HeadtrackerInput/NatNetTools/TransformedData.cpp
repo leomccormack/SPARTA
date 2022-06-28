@@ -37,10 +37,6 @@ void TransformedData::setFromBodyData(
 
 	EulerAngles ea = Eul_FromQuat(q, order);
 
-	ea.x = NATUtils::RadiansToDegrees(ea.x);
-	ea.y = NATUtils::RadiansToDegrees(ea.y);
-	ea.z = NATUtils::RadiansToDegrees(ea.z);
-
 	this->yaw = ea.x;
 	this->pitch = ea.y;
 	this->roll = ea.z;

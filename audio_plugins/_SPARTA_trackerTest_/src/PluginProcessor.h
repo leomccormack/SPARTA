@@ -12,6 +12,7 @@
 #include <string.h>
 
 #include "HeadtrackerReceiver.h"
+#include "NatNetTools/NATUtils.h"
 
 #define BUILD_VER_SUFFIX0 "alpha" /* String to be added before the version name on the GUI (beta, alpha etc..) */
 #ifndef NDEBUG

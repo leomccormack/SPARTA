@@ -16,11 +16,11 @@ public:
 	MidiReceiver();
 	~MidiReceiver();
 
-	juce::String inputName = "Headtracker #2";
-	int channel = 2;
+	juce::String inputName = "";
+	int channel = 1;
 	int firstCcNumCoarse = 16;
 	int firstCcNumFine = 48;
-	bool receiveQuaternions = true;
+	bool receiveQuaternions = false;
 
 	bool enable();
 	void disable();

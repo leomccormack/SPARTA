@@ -17,9 +17,9 @@ PluginProcessor::PluginProcessor() :
         this->x = x;
         this->y = y;
         this->z = z;
-        this->yaw = yaw;
-        this->pitch = pitch;
-        this->roll = roll;
+        this->yaw = NATUtils::RadiansToDegrees(yaw);
+        this->pitch = NATUtils::RadiansToDegrees(pitch);
+        this->roll = NATUtils::RadiansToDegrees(roll);
     })
 {
     nSampleRate = 48000;
