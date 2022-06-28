@@ -13,6 +13,8 @@ public:
 	HeadtrackerReceiver(xyzyprCallback callback);
 	HeadtrackerReceiver();
 
+	bool enable();
+	void disable();
 	Source getActiveSource();
 	void setActiveSource(Source source);
 

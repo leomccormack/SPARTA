@@ -205,7 +205,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     tb_unmute->setButtonText (TRANS("Unmute (DANGEROUS! MAKE SURE THIS IS NOT ROUTED TO SPEAKERS)"));
     tb_unmute->addListener (this);
 
-    tb_unmute->setBounds (7, 443, 393, 24);
+    tb_unmute->setBounds (7, 454, 393, 24);
 
     juce__comboBox.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (juce__comboBox.get());
@@ -243,7 +243,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_midiCcCoarse->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
     te_midiCcCoarse->setText (TRANS("16"));
 
-    te_midiCcCoarse->setBounds (128, 378, 42, 22);
+    te_midiCcCoarse->setBounds (128, 402, 42, 22);
 
     te_midiCcFine.reset (new juce::TextEditor ("new text editor"));
     addAndMakeVisible (te_midiCcFine.get());
@@ -258,14 +258,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_midiCcFine->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
     te_midiCcFine->setText (TRANS("48"));
 
-    te_midiCcFine->setBounds (128, 402, 42, 22);
+    te_midiCcFine->setBounds (128, 426, 42, 22);
 
     tb_midiQuaternions.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (tb_midiQuaternions.get());
     tb_midiQuaternions->setButtonText (TRANS("Yes"));
     tb_midiQuaternions->addListener (this);
 
-    tb_midiQuaternions->setBounds (319, 402, 72, 22);
+    tb_midiQuaternions->setBounds (319, 426, 72, 22);
 
     te_midiChannel.reset (new juce::TextEditor ("new text editor"));
     addAndMakeVisible (te_midiChannel.get());
@@ -280,7 +280,23 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_midiChannel->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
     te_midiChannel->setText (TRANS("1"));
 
-    te_midiChannel->setBounds (320, 378, 42, 22);
+    te_midiChannel->setBounds (320, 402, 42, 22);
+
+    cb_midiDevice.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (cb_midiDevice.get());
+    cb_midiDevice->setEditableText (false);
+    cb_midiDevice->setJustificationType (juce::Justification::centredLeft);
+    cb_midiDevice->setTextWhenNothingSelected (juce::String());
+    cb_midiDevice->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    cb_midiDevice->addListener (this);
+
+    cb_midiDevice->setBounds (128, 379, 192, 22);
+
+    bt_midiRescan.reset (new juce::TextButton ("rescan"));
+    addAndMakeVisible (bt_midiRescan.get());
+    bt_midiRescan->addListener (this);
+
+    bt_midiRescan->setBounds (325, 379, 68, 22);
 
 
     //[UserPreSize]
@@ -297,6 +313,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     setLookAndFeel(&LAF);
 
 	/* fetch current configuration */
+
+    te_myip->setText(hVst->headtrackerReceiver.natNetReceiver.myAddress);
+    te_serverip->setText(hVst->headtrackerReceiver.natNetReceiver.serverAddress);
+    tb_unicast->setToggleState(hVst->headtrackerReceiver.natNetReceiver.connectionType == ConnectionType::ConnectionType_Unicast, false);
+    te_midiCcCoarse->setText(String(hVst->headtrackerReceiver.midiReceiver.firstCcNumCoarse));
+    te_midiCcFine->setText(String(hVst->headtrackerReceiver.midiReceiver.firstCcNumFine));
+    te_midiChannel->setText(String(hVst->headtrackerReceiver.midiReceiver.channel));
+    tb_midiQuaternions->setToggleState(hVst->headtrackerReceiver.midiReceiver.receiveQuaternions, false);
     te_oscport->setText(String(hVst->headtrackerReceiver.oscReceiver.port), dontSendNotification);
     cb_sourceMode->setSelectedItemIndex(hVst->headtrackerReceiver.getActiveSource());
 
@@ -315,6 +339,17 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* warnings */
     currentWarning = k_warning_none;
+
+    te_myip->addListener(this);
+    te_serverip->addListener(this);
+
+    te_midiCcCoarse->addListener(this);
+    te_midiCcFine->addListener(this);
+    te_midiChannel->addListener(this);
+
+    te_oscport->addListener(this);
+
+    refreshMidiDevices();
 
     /* NatNet */
     originalConnectButtonText = bt_connect->getButtonText();
@@ -350,6 +385,8 @@ PluginEditor::~PluginEditor()
     te_midiCcFine = nullptr;
     tb_midiQuaternions = nullptr;
     te_midiChannel = nullptr;
+    cb_midiDevice = nullptr;
+    bt_midiRescan = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -697,7 +734,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 10, y = 374, width = 390, height = 54;
+        int x = 10, y = 374, width = 390, height = 78;
         juce::Colour fillColour = juce::Colour (0x10c7c7c7);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -710,7 +747,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 18, y = 376, width = 102, height = 26;
+        int x = 18, y = 400, width = 102, height = 26;
         juce::String text (TRANS("CC# (coarse):"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -722,7 +759,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 18, y = 400, width = 102, height = 26;
+        int x = 18, y = 424, width = 102, height = 26;
         juce::String text (TRANS("CC# (fine):"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -734,7 +771,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 210, y = 400, width = 102, height = 26;
+        int x = 210, y = 424, width = 102, height = 26;
         juce::String text (TRANS("Quaternions:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -746,8 +783,20 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 210, y = 376, width = 102, height = 26;
+        int x = 210, y = 400, width = 102, height = 26;
         juce::String text (TRANS("Channel:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
+    {
+        int x = 18, y = 376, width = 102, height = 26;
+        juce::String text (TRANS("Device:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -845,8 +894,17 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == tb_midiQuaternions.get())
     {
         //[UserButtonCode_tb_midiQuaternions] -- add your button handler code here..
-        tb_midiQuaternions->getToggleState();
+        hVst->headtrackerReceiver.midiReceiver.receiveQuaternions = tb_midiQuaternions->getToggleState();
+        if (hVst->headtrackerReceiver.getActiveSource() == Source::SOURCE_MIDI) {
+            hVst->headtrackerReceiver.enable();
+        }
         //[/UserButtonCode_tb_midiQuaternions]
+    }
+    else if (buttonThatWasClicked == bt_midiRescan.get())
+    {
+        //[UserButtonCode_bt_midiRescan] -- add your button handler code here..
+        refreshMidiDevices();
+        //[/UserButtonCode_bt_midiRescan]
     }
 
     //[UserbuttonClicked_Post]
@@ -869,6 +927,15 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
         hVst->headtrackerReceiver.setActiveSource(static_cast<HeadtrackerTypes::Source>(cb_sourceMode->getSelectedItemIndex()));
         //[/UserComboBoxCode_cb_sourceMode]
     }
+    else if (comboBoxThatHasChanged == cb_midiDevice.get())
+    {
+        //[UserComboBoxCode_cb_midiDevice] -- add your combo box handling code here..
+        hVst->headtrackerReceiver.midiReceiver.inputName = midiInputs[comboBoxThatHasChanged->getSelectedItemIndex()];
+        if (hVst->headtrackerReceiver.getActiveSource() == Source::SOURCE_MIDI) {
+            hVst->headtrackerReceiver.enable();
+        }
+        //[/UserComboBoxCode_cb_midiDevice]
+    }
 
     //[UsercomboBoxChanged_Post]
     //[/UsercomboBoxChanged_Post]
@@ -877,6 +944,57 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+
+void PluginEditor::refreshMidiDevices()
+{
+    midiInputs = juce::MidiInput::getDevices();
+    cb_midiDevice->clear();
+    cb_midiDevice->addItemList(midiInputs, 1);
+    const int selectedIndex = midiInputs.indexOf(hVst->headtrackerReceiver.midiReceiver.inputName);
+    cb_midiDevice->setSelectedItemIndex(selectedIndex >= 0 ? selectedIndex : 0);
+}
+
+void PluginEditor::textEditorTextChanged(TextEditor& textEditor) {
+    String text = textEditor.getText();
+    if (&textEditor == te_midiCcCoarse.get()) {
+        int num = text.getIntValue();
+        hVst->headtrackerReceiver.midiReceiver.firstCcNumCoarse = num;
+        if (hVst->headtrackerReceiver.getActiveSource() == Source::SOURCE_MIDI) {
+            hVst->headtrackerReceiver.enable();
+        }
+    } else if (&textEditor == te_midiCcFine.get()) {
+        int num = text.getIntValue();
+        hVst->headtrackerReceiver.midiReceiver.firstCcNumFine = num;
+        if (hVst->headtrackerReceiver.getActiveSource() == Source::SOURCE_MIDI) {
+            hVst->headtrackerReceiver.enable();
+        }
+    } else if (&textEditor == te_midiChannel.get()) {
+        int num = text.getIntValue();
+        hVst->headtrackerReceiver.midiReceiver.channel = num;
+        if (hVst->headtrackerReceiver.getActiveSource() == Source::SOURCE_MIDI) {
+            hVst->headtrackerReceiver.enable();
+        }
+    } else if (&textEditor == te_oscport.get()) {
+        int port = text.getIntValue();
+        if (port > 0) {
+            hVst->headtrackerReceiver.oscReceiver.port = port;
+            if (hVst->headtrackerReceiver.getActiveSource() == Source::SOURCE_OSC) {
+                hVst->headtrackerReceiver.enable();
+            }
+        }
+    }
+
+    /*
+    te_myip->addListener(this);
+    te_serverip->addListener(this);
+
+    te_midiCcCoarse->addListener(this);
+    te_midiCcFine->addListener(this);
+    te_midiChannel->addListener(this);
+
+    te_oscport->addListener(this);
+    */
+}
 
 void PluginEditor::timerCallback()
 {
@@ -928,10 +1046,10 @@ void PluginEditor::natNetconnListenerCallback(const String& message) {
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer" constructorParams="PluginProcessor* ownerFilter"
-                 variableInitialisers="AudioProcessorEditor(ownerFilter)" snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
-                 initialWidth="410" initialHeight="482">
+                 parentClasses="public AudioProcessorEditor, public Timer, public juce::TextEditor::Listener"
+                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="1" initialWidth="410" initialHeight="482">
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="2 28 408 452" fill="linear: 8 32, 8 112, 0=ff19313f, 1=ff041518"
           hasStroke="0"/>
@@ -1003,18 +1121,21 @@ BEGIN_JUCER_METADATA
     <TEXT pos="71 349 270 31" fill="solid: ffffffff" hasStroke="0" text="MIDI"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="36" typefaceStyle="Bold"/>
-    <RECT pos="10 374 390 54" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
+    <RECT pos="10 374 390 78" fill="solid: 10c7c7c7" hasStroke="1" stroke="1.1, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="18 376 102 26" fill="solid: ffffffff" hasStroke="0" text="CC# (coarse):"
+    <TEXT pos="18 400 102 26" fill="solid: ffffffff" hasStroke="0" text="CC# (coarse):"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="18 400 102 26" fill="solid: ffffffff" hasStroke="0" text="CC# (fine):"
+    <TEXT pos="18 424 102 26" fill="solid: ffffffff" hasStroke="0" text="CC# (fine):"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="210 400 102 26" fill="solid: ffffffff" hasStroke="0" text="Quaternions:"
+    <TEXT pos="210 424 102 26" fill="solid: ffffffff" hasStroke="0" text="Quaternions:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="210 376 102 26" fill="solid: ffffffff" hasStroke="0" text="Channel:"
+    <TEXT pos="210 400 102 26" fill="solid: ffffffff" hasStroke="0" text="Channel:"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
+    <TEXT pos="18 376 102 26" fill="solid: ffffffff" hasStroke="0" text="Device:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
@@ -1084,7 +1205,7 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="f9cc0651ab491a56" memberName="tb_unmute"
-                virtualName="" explicitFocusOrder="0" pos="7 443 393 24" buttonText="Unmute (DANGEROUS! MAKE SURE THIS IS NOT ROUTED TO SPEAKERS)"
+                virtualName="" explicitFocusOrder="0" pos="7 454 393 24" buttonText="Unmute (DANGEROUS! MAKE SURE THIS IS NOT ROUTED TO SPEAKERS)"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <COMBOBOX name="new combo box" id="4e7387bcea96b2c2" memberName="juce__comboBox"
             virtualName="" explicitFocusOrder="0" pos="408 192 150 24" editable="0"
@@ -1094,20 +1215,26 @@ BEGIN_JUCER_METADATA
             layout="33" items="NatNet&#10;OSC&#10;MIDI" textWhenNonSelected=""
             textWhenNoItems="(no choices)"/>
   <TEXTEDITOR name="new text editor" id="4613ab94650e752c" memberName="te_midiCcCoarse"
-              virtualName="" explicitFocusOrder="0" pos="128 378 42 22" textcol="ffffffff"
+              virtualName="" explicitFocusOrder="0" pos="128 402 42 22" textcol="ffffffff"
               bkgcol="ffffff" outlinecol="6c838080" initialText="16" multiline="0"
               retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
   <TEXTEDITOR name="new text editor" id="a9e35af4ba2a54a8" memberName="te_midiCcFine"
-              virtualName="" explicitFocusOrder="0" pos="128 402 42 22" textcol="ffffffff"
+              virtualName="" explicitFocusOrder="0" pos="128 426 42 22" textcol="ffffffff"
               bkgcol="ffffff" outlinecol="6c838080" initialText="48" multiline="0"
               retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
   <TOGGLEBUTTON name="new toggle button" id="49b1046bffae38cc" memberName="tb_midiQuaternions"
-                virtualName="" explicitFocusOrder="0" pos="319 402 72 22" buttonText="Yes"
+                virtualName="" explicitFocusOrder="0" pos="319 426 72 22" buttonText="Yes"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TEXTEDITOR name="new text editor" id="81a4ab89fe67a6f5" memberName="te_midiChannel"
-              virtualName="" explicitFocusOrder="0" pos="320 378 42 22" textcol="ffffffff"
+              virtualName="" explicitFocusOrder="0" pos="320 402 42 22" textcol="ffffffff"
               bkgcol="ffffff" outlinecol="6c838080" initialText="1" multiline="0"
               retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
+  <COMBOBOX name="new combo box" id="ec9eeadcf5da0bc3" memberName="cb_midiDevice"
+            virtualName="" explicitFocusOrder="0" pos="128 379 192 22" editable="0"
+            layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
+  <TEXTBUTTON name="rescan" id="87f009dff7912e2d" memberName="bt_midiRescan"
+              virtualName="" explicitFocusOrder="0" pos="325 379 68 22" buttonText="rescan"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -47,6 +47,7 @@ typedef enum _SPARTA_WARNINGS{
 */
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,
+                      public juce::TextEditor::Listener,
                       public juce::Button::Listener,
                       public juce::ComboBox::Listener
 {
@@ -57,7 +58,8 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-
+    void refreshMidiDevices();
+    void textEditorTextChanged(TextEditor& textEditor) override;
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -72,6 +74,7 @@ private:
     PluginProcessor* hVst;
     void timerCallback() override;
     String originalConnectButtonText;
+    StringArray midiInputs;
 
     /* Look and Feel */
     SPARTALookAndFeel LAF;
@@ -109,6 +112,8 @@ private:
     std::unique_ptr<juce::TextEditor> te_midiCcFine;
     std::unique_ptr<juce::ToggleButton> tb_midiQuaternions;
     std::unique_ptr<juce::TextEditor> te_midiChannel;
+    std::unique_ptr<juce::ComboBox> cb_midiDevice;
+    std::unique_ptr<juce::TextButton> bt_midiRescan;
 
 
     //==============================================================================
