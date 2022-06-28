@@ -32,7 +32,8 @@ void OscReceiver::disable()
 
 void OscReceiver::oscMessageReceived(const OSCMessage& message)
 {
-    if (message.size() == 3 && message.getAddressPattern().toString().compare("xyz")) {
+    String addr = message.getAddressPattern().toString();
+    if (addr == "/xyz" && message.size() == 3) {
         float x = 0.0;
         float y = 0.0;
         float z = 0.0;
@@ -43,7 +44,7 @@ void OscReceiver::oscMessageReceived(const OSCMessage& message)
         if (message[2].isFloat32())
             z = message[2].getFloat32();
         onXyzyprReceived(Source::SOURCE_OSC, x, y, z, 0.0, 0.0, 0.0);
-    } /* else if (message.size() == 7 && message.getAddressPattern().toString().compare("xyzquat")) {
+    } /* else if (addr == "/xyzquat" && message.size() == 7) {
         if (message[0].isFloat32())
             x = message[0].getFloat32();
         if (message[1].isFloat32())
@@ -59,7 +60,7 @@ void OscReceiver::oscMessageReceived(const OSCMessage& message)
                     if (message[6].isFloat32())
                         //rotator_setQuaternionY(hRot, message[6].getFloat32());
                         return;
-    }*/ else if (message.size() == 6 && message.getAddressPattern().toString().compare("xyzypr")) {
+    }*/ else if (addr == "/xyzypr" && message.size() == 6) {
         float x = 0.0;
         float y = 0.0;
         float z = 0.0;
