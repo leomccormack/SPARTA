@@ -10,22 +10,32 @@ using namespace HeadtrackerTypes;
 
 class MidiReceiver : public juce::MidiInputCallback
 {
-
 public:
+	enum class Type { MrHeadTracker, Supperware };
+
+	MidiReceiver(xyzyprCallback callback, Type type);
 	MidiReceiver(xyzyprCallback callback);
 	MidiReceiver();
 	~MidiReceiver();
 
+	Type type;
+
 	juce::String inputName = "";
+
+	// params for MrHeadTracker
 	int channel = 1;
 	int firstCcNumCoarse = 16;
 	int firstCcNumFine = 48;
+	bool guessType = true;
 	bool receiveQuaternions = false;
 
 	bool enable();
 	void disable();
 
 	void handleIncomingMidiMessage(MidiInput* source, const MidiMessage& message) override;
+	void handleMrHeadTrackerMessage(const MidiMessage& message);
+	void handleSupperwareMessage(const MidiMessage& message);
+	bool initSupperware();
 
 private:
 	enum { NUM_COMPONENTS = 4 };
