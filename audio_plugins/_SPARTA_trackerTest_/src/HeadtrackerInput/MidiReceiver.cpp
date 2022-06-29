@@ -3,11 +3,18 @@
 const float MidiReceiver::RADTO14 = 2607.594587617613379;
 const float MidiReceiver::ONETO14 = 8191;
 
-MidiReceiver::MidiReceiver(xyzyprCallback callback) {
-	onXyzyprReceived = callback;
+MidiReceiver::MidiReceiver(xyzyprCallback callback, Type type)
+{
+    this->onXyzyprReceived = callback;
+    this->type = type;
 }
 
-MidiReceiver::MidiReceiver() : MidiReceiver([](Source source, float x, float y, float z, float yaw, float pitch, float roll) {})
+MidiReceiver::MidiReceiver(xyzyprCallback callback) :
+    MidiReceiver(callback, Type::Supperware)
+{}
+
+MidiReceiver::MidiReceiver() :
+    MidiReceiver([](Source source, float x, float y, float z, float yaw, float pitch, float roll) {})
 {}
 
 MidiReceiver::~MidiReceiver() {
@@ -22,6 +29,11 @@ bool MidiReceiver::enable()
 
     const juce::ScopedLock scopedLock(changingMidiInput);
 
+    if (guessType) {
+        bool looksLikeSupperware = inputName == "Head Tracker";
+        type = looksLikeSupperware ? Type::Supperware : Type::MrHeadTracker;
+    }
+
     auto midiInputs = juce::MidiInput::getDevices();
 
     const int inputIndex = midiInputs.indexOf(inputName);
@@ -33,7 +45,7 @@ bool MidiReceiver::enable()
 
     midiInput = juce::MidiInput::openDevice(inputIndex, this);
     if (midiInput == nullptr) {
-        DBG("openDevice failed");
+        DBG("MidiInput::openDevice failed");
         return false;
     }
 
@@ -41,7 +53,11 @@ bool MidiReceiver::enable()
 
     DBG("opened midi input: " << midiInput->getName());
 
-	return true;
+    if (type == Type::Supperware) {
+        return initSupperware();
+    }
+
+    return true;
 }
 
 void MidiReceiver::disable()
@@ -56,6 +72,18 @@ void MidiReceiver::disable()
 
 void MidiReceiver::handleIncomingMidiMessage(MidiInput* source, const MidiMessage& message)
 {
+    switch (type) {
+    case Type::MrHeadTracker:
+        handleMrHeadTrackerMessage(message);
+        break;
+    case Type::Supperware:
+        handleSupperwareMessage(message);
+        break;
+    }
+}
+
+void MidiReceiver::handleMrHeadTrackerMessage(const MidiMessage& message)
+{
     if (!(message.isController() && message.getChannel() == channel)) {
         return;
     }
@@ -66,7 +94,7 @@ void MidiReceiver::handleIncomingMidiMessage(MidiInput* source, const MidiMessag
     bool isCoarse = firstCcNumCoarse <= num && num < firstCcNumCoarse + NUM_COMPONENTS;
     bool isFine = firstCcNumFine <= num && num < firstCcNumFine + NUM_COMPONENTS;
 
-    if(!(isFine || isCoarse)) {
+    if (!(isFine || isCoarse)) {
         return;
     }
 
@@ -99,6 +127,77 @@ void MidiReceiver::handleIncomingMidiMessage(MidiInput* source, const MidiMessag
             onXyzyprReceived(Source::SOURCE_MIDI, 0.0, 0.0, 0.0, yaw, pitch, roll);
         }
     }
+}
+
+void MidiReceiver::handleSupperwareMessage(const MidiMessage& message)
+{
+    if (!message.isSysEx()) {
+        return;
+    }
+    
+    int sysExLen = message.getSysExDataSize();
+    if (sysExLen < 11) {
+        return;
+    }
+
+    const uint8_t* sysExData = message.getSysExData();
+    // Orientation in Tait-Bryan Angles
+    // (f0) 00 21 42 40 00 <14-bit yaw> <14-bit pitch> <14-bit roll> (f7)
+    bool isYpr =
+        sysExData[0] == 0x00 &&
+        sysExData[1] == 0x21 &&
+        sysExData[2] == 0x42 &&
+        sysExData[3] == 0x40 &&
+        sysExData[4] == 0x00;
+    if (!isYpr) {
+        return;
+    }
+
+    for (size_t i = 0; i < 3; i++) {
+        coarse[i] = sysExData[5 + 2*i];
+        fine[i] = sysExData[6 + 2*i];
+    }
+    
+    float yaw = computeYprComponent(0);
+    float pitch = computeYprComponent(1);
+    float roll = computeYprComponent(2);
+
+    onXyzyprReceived(Source::SOURCE_MIDI, 0.0, 0.0, 0.0, yaw, pitch, roll);
+}
+
+bool MidiReceiver::initSupperware()
+{
+    auto midiOutputs = juce::MidiOutput::getDevices();
+
+    const int outputIndex = midiOutputs.indexOf(inputName);
+
+    if (outputIndex < 0) {
+        DBG("no matching midi output found");
+        return false;
+    }
+
+    auto midiOutput = juce::MidiOutput::openDevice(outputIndex);
+    if (midiOutput == nullptr) {
+        DBG("MidiOutput::openDevice failed");
+        return false;
+    }
+
+    // protocol: https://supperware.net/downloads/head-tracker/head%20tracker%20protocol.pdf
+    // Reset; turn on all sensors and processing; enable yaw, pitch and roll output at 50Hz
+    uint8_t data[] = {
+        0x00, 0x21, 0x42,
+        0x00,
+        0x00,
+        0x48,
+        0x01,
+        0x01
+    };
+    int dataLen = sizeof(data);
+    MidiMessage resetMsg = MidiMessage::createSysExMessage(data, dataLen);
+
+    midiOutput->sendMessageNow(resetMsg);
+
+    return true;
 }
 
 bool MidiReceiver::haveAllComponents()
