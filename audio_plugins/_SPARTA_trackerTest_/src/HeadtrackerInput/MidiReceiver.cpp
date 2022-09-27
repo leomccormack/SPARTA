@@ -152,15 +152,10 @@ void MidiReceiver::handleSupperwareMessage(const MidiMessage& message)
     if (!isYpr) {
         return;
     }
-
-    for (size_t i = 0; i < 3; i++) {
-        coarse[i] = sysExData[5 + 2*i];
-        fine[i] = sysExData[6 + 2*i];
-    }
     
-    float yaw = computeYprComponent(0);
-    float pitch = computeYprComponent(1);
-    float roll = computeYprComponent(2);
+    float yaw = computeSupperwareYprcomponent(sysExData[5], sysExData[6]);
+    float pitch = computeSupperwareYprcomponent(sysExData[7], sysExData[8]);
+    float roll = computeSupperwareYprcomponent(sysExData[9], sysExData[10]);
 
     onXyzyprReceived(Source::SOURCE_MIDI, 0.0, 0.0, 0.0, yaw, pitch, roll);
 }
@@ -227,6 +222,14 @@ float MidiReceiver::computeQuatComponent(size_t index)
 float MidiReceiver::computeYprComponent(size_t index)
 {
     return computeCombinedComponent(index) / RADTO14 - MathConstants<float>::pi;
+}
+
+float MidiReceiver::computeSupperwareYprcomponent(uint8_t hi, uint8_t lo) {
+    // from https://supperware.net/downloads/head-tracker/head%20tracker%20protocol.pdf page 12
+    int i = (128 * hi) + lo;
+    if(i >= 8192) { i -= 16384; }
+    float f_radian = i / 2048.0f;
+    return f_radian;
 }
 
 void MidiReceiver::quatToYpr(float w, float x, float y, float z, float& yaw, float& pitch, float& roll)

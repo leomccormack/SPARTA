@@ -54,5 +54,6 @@ private:
 	int computeCombinedComponent(size_t index);
 	float computeQuatComponent(size_t index);
 	float computeYprComponent(size_t index);
+	float computeSupperwareYprcomponent(uint8_t hi, uint8_t lo);
 	void quatToYpr(float w, float x, float y, float z, float& yaw, float& pitch, float& roll);
 };
