@@ -3,6 +3,21 @@
 const float MidiReceiver::RADTO14 = 2607.594587617613379;
 const float MidiReceiver::ONETO14 = 8191;
 
+const uint8_t MidiReceiver::SUPPERWARE_SETUP_RESET = 1 << 6;
+const uint8_t MidiReceiver::SUPPERWARE_SETUP_RATE_50HZ = 0 << 4;
+const uint8_t MidiReceiver::SUPPERWARE_SETUP_RATE_25HZ = 1 << 4;
+const uint8_t MidiReceiver::SUPPERWARE_SETUP_RATE_100HZ = 2 << 4;
+const uint8_t MidiReceiver::SUPPERWARE_SETUP_SENSORS_OFF = 0 << 3;
+const uint8_t MidiReceiver::SUPPERWARE_SETUP_SENSORS_ON = 1 << 3;
+const uint8_t MidiReceiver::SUPPERWARE_DATA_RAW_OFF = 0 << 4;
+const uint8_t MidiReceiver::SUPPERWARE_DATA_RAW_COMPASS = 1 << 4;
+const uint8_t MidiReceiver::SUPPERWARE_DATA_RAW_NO_COMPASS = 2 << 4;
+const uint8_t MidiReceiver::SUPPERWARE_DATA_ORIENT_TAIT_BRYAN = 0 << 2;
+const uint8_t MidiReceiver::SUPPERWARE_DATA_ORIENT_QUATERNIONS = 1 << 2;
+const uint8_t MidiReceiver::SUPPERWARE_DATA_ORIENT_ORTHO_MATRIX = 2 << 2;
+const uint8_t MidiReceiver::SUPPERWARE_DATA_TRACKING_OFF = 0;
+const uint8_t MidiReceiver::SUPPERWARE_DATA_TRACKING_ON = 1;
+
 MidiReceiver::MidiReceiver(xyzyprCallback callback, Type type)
 {
     this->onXyzyprReceived = callback;
@@ -180,12 +195,16 @@ bool MidiReceiver::initSupperware()
     // protocol: https://supperware.net/downloads/head-tracker/head%20tracker%20protocol.pdf
     // Reset; turn on all sensors and processing; enable yaw, pitch and roll output at 50Hz
     uint8_t data[] = {
+        // header
         0x00, 0x21, 0x42,
+        // configure sensors and processing pipeline
         0x00,
+        // sensor setup
         0x00,
-        0x48,
+        SUPPERWARE_SETUP_RESET | SUPPERWARE_SETUP_RATE_100HZ | SUPPERWARE_SETUP_SENSORS_ON,
+        // data output and formatting
         0x01,
-        0x01
+        SUPPERWARE_DATA_RAW_OFF | SUPPERWARE_DATA_ORIENT_TAIT_BRYAN | SUPPERWARE_DATA_TRACKING_ON
     };
     int dataLen = sizeof(data);
     MidiMessage resetMsg = MidiMessage::createSysExMessage(data, dataLen);

@@ -42,6 +42,21 @@ private:
 	static const float RADTO14;
 	static const float ONETO14;
 
+	static const uint8_t SUPPERWARE_SETUP_RESET;
+	static const uint8_t SUPPERWARE_SETUP_RATE_50HZ;
+	static const uint8_t SUPPERWARE_SETUP_RATE_25HZ;
+	static const uint8_t SUPPERWARE_SETUP_RATE_100HZ;
+	static const uint8_t SUPPERWARE_SETUP_SENSORS_OFF;
+	static const uint8_t SUPPERWARE_SETUP_SENSORS_ON;
+	static const uint8_t SUPPERWARE_DATA_RAW_OFF;
+	static const uint8_t SUPPERWARE_DATA_RAW_COMPASS;
+	static const uint8_t SUPPERWARE_DATA_RAW_NO_COMPASS;
+	static const uint8_t SUPPERWARE_DATA_ORIENT_TAIT_BRYAN;
+	static const uint8_t SUPPERWARE_DATA_ORIENT_QUATERNIONS;
+	static const uint8_t SUPPERWARE_DATA_ORIENT_ORTHO_MATRIX;
+	static const uint8_t SUPPERWARE_DATA_TRACKING_OFF;
+	static const uint8_t SUPPERWARE_DATA_TRACKING_ON;
+
 	xyzyprCallback onXyzyprReceived;
 	std::unique_ptr<juce::MidiInput> midiInput;
 	juce::CriticalSection changingMidiInput;
