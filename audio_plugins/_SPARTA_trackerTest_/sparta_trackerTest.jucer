@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="qn48N9" name="sparta_trackerTest" projectType="audioplug"
+<JUCERPROJECT id="x7eDcK" name="sparta_trackerTest" projectType="audioplug"
               jucerFormatVersion="1" companyName="Aalto" companyCopyright="Aalto"
               bundleIdentifier="com.AALTO.SPARTA" pluginFormats="buildVST"
               pluginManufacturer="AALTO" pluginAAXCategory="2" userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
-              companyEmail="rapolas.daugintis@gmail.com" pluginManufacturerCode="RAPD"
-              pluginCode="TVCN" displaySplashScreen="1" version="1.0.0" headerPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;../../../../../SDKs/NatNetSDK/include&#10;../../../src/HeadtrackerInput"
+              companyEmail="miranda@pulusound.fi" pluginManufacturerCode="RAPD"
+              pluginCode="TRKT" displaySplashScreen="1" version="1.0.0" headerPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;../../../../../SDKs/NatNetSDK/include&#10;../../../src/HeadtrackerInput"
               pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn">
   <MAINGROUP id="IbvuHL" name="sparta_trackerTest">
     <GROUP id="{C7B63A4B-C90A-34F2-6A26-27284A985AAE}" name="NatNetSDK">
