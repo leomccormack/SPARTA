@@ -82,7 +82,7 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
         if (message[5].isFloat32())
             rotator_setQuaternionY(hRot, message[5].getFloat32());
         if (message[6].isFloat32())
-            rotator_setQuaternionY(hRot, message[6].getFloat32());
+            rotator_setQuaternionZ(hRot, message[6].getFloat32());
         return;
     }
 
@@ -185,9 +185,17 @@ float PluginProcessor::getParameter(int index)
 const String PluginProcessor::getParameterName (int index)
 {
     switch (index) {
-        case k_receiverCoordX: return "receiver_coordinate_x";
-        case k_receiverCoordY: return "receiver_coordinate_y";
-        case k_receiverCoordZ: return "receiver_coordinate_z";
+        case k_receiverCoordX:	return "receiver_coordinate_x";
+        case k_receiverCoordY:	return "receiver_coordinate_y";
+        case k_receiverCoordZ:	return "receiver_coordinate_z";
+		case k_qw:				return "receiver_quaternion_w";
+		case k_qx:				return "receiver_quaternion_x";
+		case k_qy:				return "receiver_quaternion_y";
+		case k_qz:				return "receiver_quaternion_z";
+		case k_yaw:				return "receiver_yaw";
+		case k_pitch:			return "receiver_pitch";
+		case k_roll:			return "receiver_roll";
+
         default: return "NULL";
     }
 }
@@ -203,6 +211,8 @@ const String PluginProcessor::getParameterText(int index)
 void PluginProcessor::setParameter (int index, float newValue)
 {
     DBG("param set");
+
+	// VST parameters are in the range [0, 1]
     float newValueScaled;
     if (index < 3) {
         newValueScaled = newValue *
@@ -213,6 +223,43 @@ void PluginProcessor::setParameter (int index, float newValue)
             refreshWindow = true;
         }
     }
+	if( index == k_qw )
+	{
+		newValueScaled = (newValue - 0.5) * 2.0f;
+		rotator_setQuaternionW(hRot, newValueScaled);
+	}
+	if ( index == k_qx )
+	{
+		newValueScaled = (newValue - 0.5) * 2.0f;
+		rotator_setQuaternionX(hRot, newValueScaled);
+	}
+	if ( index == k_qy )
+	{
+		newValueScaled = (newValue - 0.5) * 2.0f;
+		rotator_setQuaternionY(hRot, newValueScaled);
+	}
+	if ( index == k_qz )
+	{
+		newValueScaled = (newValue - 0.5) * 2.0f;
+		rotator_setQuaternionZ(hRot, newValueScaled);
+	}
+	if( index == k_yaw )
+	{
+		newValueScaled = ( newValue - 0.5 ) * 360.0f;
+		rotator_setYaw( hRot, newValueScaled );
+	}
+	if( index == k_pitch )
+	{	
+		newValueScaled = ( newValue - 0.5 ) * 360.0f;
+		rotator_setPitch( hRot, newValueScaled );
+	}
+	if( index == k_roll )
+	{
+		newValueScaled = ( newValue - 0.5 ) * 360.0f;
+		rotator_setRoll( hRot, newValueScaled );
+	}
+
+	//refreshWindow = true;
 }
 
 void PluginProcessor::setParameterRaw(int index, float newValue)

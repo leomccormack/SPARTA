@@ -28,12 +28,16 @@ enum {
     k_receiverCoordY,
     k_receiverCoordZ,
 
-    k_NumOfParameters,
-
     k_qw,
     k_qx,
     k_qy,
-    k_qz
+    k_qz,
+
+	k_yaw,
+	k_pitch,
+	k_roll,
+
+	k_NumOfParameters
 };
 //==============================================================================
 /**
