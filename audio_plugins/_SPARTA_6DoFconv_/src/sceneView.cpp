@@ -337,11 +337,21 @@ room_dims_pixels_o[2] = room_dims_pixels[2] - room_offset_pixels[2];
 
 
 // Compute room grid lines
-// TODO: n cifre significtive in base a room_dims_m_o
-primaryLineSpacing = round(10*room_dims_m_o[0] / 5)/10; 
+float gridStepSize[] = { 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, .2, .5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000 };
+float stepSizeBoudaries[] = { 0.00316, 0.00707, 0.0141, 0.0316, 0.0707, 0.1414, 0.3162, 0.7071, 1.4142, 3.1623, 7.0711, 14.1421, 31.6228, 70.7107, 141.4, 316.2, 707.1, 1414.2 };
+float spacing = MAX(MAX(room_dims_m_o[0], room_dims_m_o[1]), room_dims_m_o[2]) / 5;
+int spacingIndex = 0;
+for( int i = 0; i < sizeof(stepSizeBoudaries); i++ )
+{
+    if (spacing < stepSizeBoudaries[i])
+    {
+        spacingIndex = i;
+        break;
+    }
+}
+primaryLineSpacing = gridStepSize[spacingIndex];
 secondaryLineSpacing = primaryLineSpacing / 5;
 
-int a = 1;
 }
 
 
