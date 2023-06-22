@@ -89,6 +89,7 @@ private:
 
     /* sofa loading */
     std::unique_ptr<juce::FilenameComponent> fileComp;
+    SAF_TVCONV_ERROR_CODES tvConvError;
 
     /* sofa file loading */
      void filenameComponentChanged (FilenameComponent*) override  {

@@ -703,7 +703,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 71, y = 34, width = 270, height = 31;
+        int x = 18, y = 34, width = 120, height = 31;
         juce::String text (TRANS("Load IR dataset"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -711,7 +711,7 @@ void PluginEditor::paint (juce::Graphics& g)
         g.setColour (fillColour);
         g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
@@ -1022,6 +1022,47 @@ void PluginEditor::paint (juce::Graphics& g)
             break;
     }
 
+    g.setColour(Colours::white);
+    switch (tvConvError)
+    {
+    case SAF_TVCONV_NOT_INIT: /** TVCONV no file loaded */
+        g.drawText(TRANS("SOFA file not initialized"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    case SAF_TVCONV_SOFA_LOADING: /** Loading SOFA file */
+        g.drawText(TRANS("SOFA file: loading"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    case SAF_TVCONV_SOFA_OK: /** None of the error checks failed */
+        g.drawText(TRANS("SOFA file loaded"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    case SAF_TVCONV_SOFA_ERROR_INVALID_FILE_OR_FILE_PATH:  /** Not a SOFA file, or no such file was found in the specified location */
+        g.drawText(TRANS("SOFA file not loaded: INVALID FILE OR FILE PATH"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    case SAF_TVCONV_SOFA_ERROR_DIMENSIONS_UNEXPECTED:      /** Dimensions of the SOFA data were not as expected */
+        g.drawText(TRANS("SOFA file not loaded: DIMENSIONS UNEXPECTED"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    case SAF_TVCONV_SOFA_ERROR_FORMAT_UNEXPECTED: /** The data-type of the SOFA data was not as expected */
+        g.drawText(TRANS("SOFA file not loaded: FORMAT UNEXPECTED"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    case SAF_TVCONV_SOFA_ERROR_NETCDF_IN_USE: /** NetCDF is not thread safe! */
+        g.drawText(TRANS("SOFA file not loaded: NETCDF IN USE"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    default:
+        g.drawText(TRANS("SOFA file state"), 136, 45, 264, 11, Justification::centredLeft, true);
+    }
 
     //[/UserPaint]
 }
@@ -1190,6 +1231,10 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_none;
         repaint(0,0,getWidth(),32);
     }
+
+    tvConvError = tvconv_getSofaErrorState(hTVC);
+    repaint(136, 45, 264, 11);
+
 
     if (refreshSceneViewWindow == true)
     {
