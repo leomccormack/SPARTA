@@ -101,7 +101,10 @@ private:
 
     /* scene view window */
     std::unique_ptr<sceneView> sceneWindow;
+    int refreshInterval             = 40; /*ms (40ms = 25 frames per second) if refreshDecimationFactor = 1 */
     bool refreshSceneViewWindow;
+    int refreshDecimationCounter    = 1;
+    int targetDecimatedRefreshRate  = 1;
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
