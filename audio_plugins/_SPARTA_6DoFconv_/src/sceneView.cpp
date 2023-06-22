@@ -40,6 +40,12 @@ float room_dims_pixels[3], room_dims_m[3], room_offset_m[3], room_offset_pixels[
 float room_dims_pixels_o[3], room_dims_m_o[3];
 float scale;
 
+// Room grid lines
+float primaryLineSpacing = 4.0;
+int primaryLineLabelDownsample = 1;
+float secondaryLineSpacing = 2.0f;
+
+
 
 #ifndef CLAMP
 /** Ensures value "a" is clamped between the "min" and "max" values */
@@ -103,10 +109,6 @@ void sceneView::paint (juce::Graphics& g)
 	// Y from bottom to top (top view)
 	// Z from bottom to top (sid view)
 
-	int primaryLineSpacing = 4;
-	int primaryLineLabelDownsample = 2;
-	float secondaryLineSpacing = 2.0f;
-
     Rectangle<float> lstIcon;
 
     computeRoomDims();
@@ -136,14 +138,14 @@ void sceneView::paint (juce::Graphics& g)
         float line_x = view_x + i*room_dims_pixels_o[xp_idx]/room_dims_m_o[xp_idx];
         g.drawLine (line_x, view_y, line_x, view_y+room_dims_pixels_o[yp_idx], 1.000f);
     }
-    for(int i=0; i<=(int)room_dims_m_o[xp_idx]; i+= primaryLineSpacing){
+    for(float i=0; i<=room_dims_m_o[xp_idx]; i+= primaryLineSpacing){
         /* Verticle lines */
         float line_x = view_x + (float)i*room_dims_pixels_o[xp_idx]/room_dims_m_o[xp_idx];
         g.setOpacity(0.35f);
         g.drawLine (line_x, view_y, line_x, view_y+room_dims_pixels_o[yp_idx], 1.000f);
         g.setOpacity(0.75f);
-        if( (i%primaryLineLabelDownsample)==0 )
-            g.drawText(String(i+(int)room_offset_m[xp_idx]), line_x-10, view_y+room_dims_pixels_o[yp_idx]+5, 20, 10, Justification::centred, true);
+        //if( (i%primaryLineLabelDownsample)==0 )
+        g.drawText(String(i+room_offset_m[xp_idx],1,false), line_x-10, view_y+room_dims_pixels_o[yp_idx]+5, 30, 10, Justification::centred, true);
     }
     g.setOpacity(0.15f);
     for(float i=0.0f; i<=room_dims_m_o[yp_idx]; i+= secondaryLineSpacing){
@@ -151,14 +153,14 @@ void sceneView::paint (juce::Graphics& g)
         float line_y = view_y + room_dims_pixels_o[yp_idx] - i*room_dims_pixels_o[yp_idx]/room_dims_m_o[yp_idx];
         g.drawLine (view_x, line_y, view_x+room_dims_pixels_o[xp_idx], line_y, 1.000f);
     }
-    for(int i=0; i<=(int)room_dims_m_o[yp_idx]; i+= primaryLineSpacing){
+    for(float i=0; i<=room_dims_m_o[yp_idx]; i+= primaryLineSpacing){
         /* Horizontal lines*/
         float line_y = view_y + room_dims_pixels_o[yp_idx] - (float)i*room_dims_pixels_o[yp_idx]/room_dims_m_o[yp_idx];
         g.setOpacity(0.35f);
         g.drawLine (view_x, line_y, view_x+room_dims_pixels_o[xp_idx], line_y, 1.000f);
         g.setOpacity(0.75f);
-        if( (i%primaryLineLabelDownsample)==0 )
-            g.drawText(String(i+(int)room_offset_m[yp_idx]), view_x - 20, line_y-5, 20, 10, Justification::centred, true);
+        //if( (i%primaryLineLabelDownsample)==0 )
+        g.drawText(String(i+room_offset_m[yp_idx],1,false), view_x - 20, line_y-5, 30, 10, Justification::centred, true);
     }
     g.setFont(14.0f);
     g.drawText("x [m]",  view_x + room_dims_pixels_o[xp_idx]/2.0f+5.0f, view_y+room_dims_pixels_o[yp_idx]+20.0f, 40, 10, Justification::centred, true);
@@ -333,6 +335,13 @@ room_dims_pixels_o[0] = room_dims_pixels[0] - room_offset_pixels[0];
 room_dims_pixels_o[1] = room_dims_pixels[1] - room_offset_pixels[1];
 room_dims_pixels_o[2] = room_dims_pixels[2] - room_offset_pixels[2];
 
+
+// Compute room grid lines
+// TODO: n cifre significtive in base a room_dims_m_o
+primaryLineSpacing = round(10*room_dims_m_o[0] / 5)/10; 
+secondaryLineSpacing = primaryLineSpacing / 5;
+
+int a = 1;
 }
 
 
