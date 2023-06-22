@@ -27,7 +27,13 @@
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 const float iconWidth = 8.0f;
 const float iconRadius = iconWidth/2.0f;
-const float room_pixels = 386;
+
+// Room size in pixels
+const float room_pixels = 380;
+
+// Offset of the room rectangle in pixels
+const float view_x = 40.0f;
+const float view_y = 12.0f;
 
 #ifndef CLAMP
 /** Ensures value "a" is clamped between the "min" and "max" values */
@@ -129,8 +135,6 @@ void sceneView::paint (juce::Graphics& g)
     room_dims_pixels_o[1] = room_dims_pixels[1]-room_offset_pixels[1];
     room_dims_pixels_o[2] = room_dims_pixels[2]-room_offset_pixels[2];
 
-	// Offset of the main rectangle
-    float view_x = 27.0f , view_y = 12.0f;
     int xp_idx, yp_idx;
 
     if(topOrSideView==TOP_VIEW){
@@ -163,7 +167,7 @@ void sceneView::paint (juce::Graphics& g)
         g.drawLine (line_x, view_y, line_x, view_y+room_dims_pixels_o[yp_idx], 1.000f);
         g.setOpacity(0.75f);
         if( (i%primaryLineLabelDownsample)==0 )
-            g.drawText(String(i+(int)room_offset_m[yp_idx]), line_x-10, view_y+room_dims_pixels_o[yp_idx]+5, 20, 10, Justification::centred, true);
+            g.drawText(String(i+(int)room_offset_m[xp_idx]), line_x-10, view_y+room_dims_pixels_o[yp_idx]+5, 20, 10, Justification::centred, true);
     }
     g.setOpacity(0.15f);
     for(float i=0.0f; i<=room_dims_m_o[yp_idx]; i+= secondaryLineSpacing){
@@ -178,11 +182,11 @@ void sceneView::paint (juce::Graphics& g)
         g.drawLine (view_x, line_y, view_x+room_dims_pixels_o[xp_idx], line_y, 1.000f);
         g.setOpacity(0.75f);
         if( (i%primaryLineLabelDownsample)==0 )
-            g.drawText(String(i+(int)room_offset_m[xp_idx]), view_x - 20, line_y-5, 20, 10, Justification::centred, true);
+            g.drawText(String(i+(int)room_offset_m[yp_idx]), view_x - 20, line_y-5, 20, 10, Justification::centred, true);
     }
     g.setFont(14.0f);
-    g.drawText("x",  view_x + room_dims_pixels_o[xp_idx]/2.0f+5.0f, view_y+room_dims_pixels_o[yp_idx]+20.0f, 10, 10, Justification::centred, true);
-    g.drawText(topOrSideView==TOP_VIEW ? "y" : "z",  view_x -30.0f, view_y+room_dims_pixels_o[yp_idx]/2.0f-5.0f, 10, 10, Justification::centred, true);
+    g.drawText("x [m]",  view_x + room_dims_pixels_o[xp_idx]/2.0f+5.0f, view_y+room_dims_pixels_o[yp_idx]+20.0f, 40, 10, Justification::centred, true);
+    g.drawText(topOrSideView==TOP_VIEW ? "y [m]" : "z [m]",  view_x -40.0f, view_y+room_dims_pixels_o[yp_idx]/2.0f-5.0f, 40, 10, Justification::centred, true);
 
     /* Listener icons */
     int targetIndex = tvconv_getListenerPositionIdx(hTVCnv);
@@ -284,8 +288,6 @@ void sceneView::mouseDown (const juce::MouseEvent& e)
     room_dims_pixels_o[1] = room_dims_pixels[1]-room_offset_pixels[1];
     room_dims_pixels_o[2] = room_dims_pixels[2]-room_offset_pixels[2];
 
-    float view_x = 27.0f; float view_y = 12.0f;
-
     if(topOrSideView==TOP_VIEW){
         float point_x = view_x + scale*(tvconv_getTargetPosition(hTVCnv, 0/*X*/) - room_offset_m[0]);
         float point_y = view_y + room_dims_pixels_o[1] - scale*(tvconv_getTargetPosition(hTVCnv, 1/*Y*/) - room_offset_m[1]);
@@ -316,8 +318,6 @@ void sceneView::mouseDrag (const juce::MouseEvent& e)
     float room_dims_pixels_o[3], room_dims_m_o[3];
     float scale;
     Point<float> point;
-    float view_x, view_y;
-    view_x = 27.0f; view_y = 12.0f;
 
     if(targetIconIsClicked){
         /* Scaling factor to convert metres to pixels */
