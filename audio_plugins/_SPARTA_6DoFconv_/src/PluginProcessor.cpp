@@ -58,7 +58,7 @@ PluginProcessor::~PluginProcessor()
 
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 {
-    if (message.size() == 3 && message.getAddressPattern().toString().compare("xyz")) {
+    if (message.size() == 3 && message.getAddressPattern().toString().compare("/xyz") == 0 ) {
         if (message[0].isFloat32())
             setParameterRaw(0, message[0].getFloat32());
         if (message[1].isFloat32())
@@ -68,7 +68,19 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
         return;
     }
     
-    else if (message.size() == 7 && message.getAddressPattern().toString().compare("xyzquat")) {
+    else if (message.size() == 4 && message.getAddressPattern().toString().compare("/quat") == 0) {
+        if (message[0].isFloat32())
+            rotator_setQuaternionW(hRot, message[0].getFloat32());
+        if (message[1].isFloat32())
+            rotator_setQuaternionX(hRot, message[1].getFloat32());
+        if (message[2].isFloat32())
+            rotator_setQuaternionY(hRot, message[2].getFloat32());
+        if (message[3].isFloat32())
+            rotator_setQuaternionZ(hRot, message[3].getFloat32());
+        return;
+    }
+
+    else if (message.size() == 7 && message.getAddressPattern().toString().compare("/xyzquat") == 0) {
         if (message[0].isFloat32())
             setParameterRaw(0, message[0].getFloat32());
         if (message[1].isFloat32())
@@ -86,7 +98,17 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
         return;
     }
 
-    else if (message.size() == 6 && message.getAddressPattern().toString().compare("xyzypr")) {
+    else if (message.size() == 3 && message.getAddressPattern().toString().compare("/ypr") == 0) {
+        if (message[0].isFloat32())
+            rotator_setYaw(hRot, message[0].getFloat32());
+        if (message[1].isFloat32())
+            rotator_setPitch(hRot, message[1].getFloat32());
+        if (message[2].isFloat32())
+            rotator_setRoll(hRot, message[2].getFloat32());
+        return;
+    }
+
+    else if (message.size() == 6 && message.getAddressPattern().toString().compare("/xyzypr") == 0 ) {
         if (message[0].isFloat32())
             setParameterRaw(0, message[0].getFloat32());
         if (message[1].isFloat32())
@@ -99,7 +121,6 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
             rotator_setPitch(hRot, message[4].getFloat32());
         if (message[5].isFloat32())
             rotator_setRoll(hRot, message[5].getFloat32());
-
         return;
     }
 }

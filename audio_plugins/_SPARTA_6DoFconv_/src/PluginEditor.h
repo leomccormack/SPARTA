@@ -63,6 +63,10 @@ public:
     /* Refresh coordinate limits based on loaded sofa files*/
     void refreshCoords();
 
+    bool getRefreshSceneViewWindow();
+
+    void setRefreshSceneViewWindow(bool val);
+
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -92,6 +96,7 @@ private:
          const char* new_cstring = (const char*)directory.toUTF8();
          tvconv_setSofaFilePath(hTVC, new_cstring);
          refreshCoords();
+
      }
 
     /* scene view window */
