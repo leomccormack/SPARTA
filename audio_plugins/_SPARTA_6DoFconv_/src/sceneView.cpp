@@ -31,9 +31,15 @@ const float iconRadius = iconWidth/2.0f;
 // Room size in pixels
 const float room_pixels = 380;
 
-// Offset of the room rectangle in pixels
+// View offset of the room rectangle in pixels
 const float view_x = 40.0f;
 const float view_y = 12.0f;
+
+// Room dimensions 
+float room_dims_pixels[3], room_dims_m[3], room_offset_m[3], room_offset_pixels[3];
+float room_dims_pixels_o[3], room_dims_m_o[3];
+float scale;
+
 
 #ifndef CLAMP
 /** Ensures value "a" is clamped between the "min" and "max" values */
@@ -101,39 +107,9 @@ void sceneView::paint (juce::Graphics& g)
 	int primaryLineLabelDownsample = 2;
 	float secondaryLineSpacing = 2.0f;
 
-
     Rectangle<float> lstIcon;
 
-    float room_dims_pixels[3], room_dims_m[3], room_offset_m[3], room_offset_pixels[3];
-    float room_dims_pixels_o[3], room_dims_m_o[3];
-    if (tvconv_getNumListenerPositions(hTVCnv)==0){
-        room_dims_m[0] = room_dims_m[1] = 1.0f;
-        room_dims_m[2] = 0.35f;
-        room_offset_m[0] = room_offset_m[1] = room_offset_m[2] = 0.0f;
-    }
-    else{
-        room_dims_m[0] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)), 1.0f) * 1.2f;
-        room_dims_m[1] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)), 1.0f) * 1.2f;
-        room_dims_m[2] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)), 0.35f) * 1.2f;
-        room_offset_m[0] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)) * 0.8f);
-        room_offset_m[1] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)) * 0.8f);
-        room_offset_m[2] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)) * 0.8f);
-    }
-    room_dims_m_o[0] = room_dims_m[0]-room_offset_m[0];
-    room_dims_m_o[1] = room_dims_m[1]-room_offset_m[1];
-    room_dims_m_o[2] = room_dims_m[2]-room_offset_m[2];
-
-    /* Scaling factor to convert metres to pixels */
-    float scale = room_pixels/MAX(MAX(room_dims_m[0]-room_offset_m[0], room_dims_m[1]-room_offset_m[1]), room_dims_m[2]-room_offset_m[2]);
-    room_dims_pixels[0] = room_dims_m[0]*scale;
-    room_dims_pixels[1] = room_dims_m[1]*scale;
-    room_dims_pixels[2] = room_dims_m[2]*scale;
-    room_offset_pixels[0] = room_offset_m[0]*scale;
-    room_offset_pixels[1] = room_offset_m[1]*scale;
-    room_offset_pixels[2] = room_offset_m[2]*scale;
-    room_dims_pixels_o[0] = room_dims_pixels[0]-room_offset_pixels[0];
-    room_dims_pixels_o[1] = room_dims_pixels[1]-room_offset_pixels[1];
-    room_dims_pixels_o[2] = room_dims_pixels[2]-room_offset_pixels[2];
+    computeRoomDims();
 
     int xp_idx, yp_idx;
 
@@ -257,36 +233,8 @@ void sceneView::mouseDown (const juce::MouseEvent& e)
     //[UserCode_mouseDown] -- Add your code here...
 
     Rectangle<int> recIcon;
-    float room_dims_pixels[3], room_dims_m[3], room_offset_m[3], room_offset_pixels[3];
-    float room_dims_pixels_o[3], room_dims_m_o[3];
-    if (tvconv_getNumListenerPositions(hTVCnv)==0){
-        room_dims_m[0] = room_dims_m[1] = 1.0f;
-        room_dims_m[2] = 0.35f;
-        room_offset_m[0] = room_offset_m[1] = room_offset_m[2] = 0.0f;
-    }
-    else{
-        room_dims_m[0] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)), 1.0f) * 1.2f;
-        room_dims_m[1] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)), 1.0f) * 1.2f;
-        room_dims_m[2] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)), 0.35f) * 1.2f;
-        room_offset_m[0] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)) * 0.8f);
-        room_offset_m[1] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)) * 0.8f);
-        room_offset_m[2] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)) * 0.8f);
-    }
-    room_dims_m_o[0] = room_dims_m[0]-room_offset_m[0];
-    room_dims_m_o[1] = room_dims_m[1]-room_offset_m[1];
-    room_dims_m_o[2] = room_dims_m[2]-room_offset_m[2];
 
-    /* Scaling factor to convert metres to pixels */
-    float scale = room_pixels/MAX(MAX(room_dims_m[0]-room_offset_m[0], room_dims_m[1]-room_offset_m[1]), room_dims_m[2]-room_offset_m[2]);
-    room_dims_pixels[0] = room_dims_m[0]*scale;
-    room_dims_pixels[1] = room_dims_m[1]*scale;
-    room_dims_pixels[2] = room_dims_m[2]*scale;
-    room_offset_pixels[0] = room_offset_m[0]*scale;
-    room_offset_pixels[1] = room_offset_m[1]*scale;
-    room_offset_pixels[2] = room_offset_m[2]*scale;
-    room_dims_pixels_o[0] = room_dims_pixels[0]-room_offset_pixels[0];
-    room_dims_pixels_o[1] = room_dims_pixels[1]-room_offset_pixels[1];
-    room_dims_pixels_o[2] = room_dims_pixels[2]-room_offset_pixels[2];
+    computeRoomDims();
 
     if(topOrSideView==TOP_VIEW){
         float point_x = view_x + scale*(tvconv_getTargetPosition(hTVCnv, 0/*X*/) - room_offset_m[0]);
@@ -314,39 +262,11 @@ void sceneView::mouseDrag (const juce::MouseEvent& e)
 {
     //[UserCode_mouseDrag] -- Add your code here...
 
-    float room_dims_pixels[3], room_dims_m[3], room_offset_m[3], room_offset_pixels[3];
-    float room_dims_pixels_o[3], room_dims_m_o[3];
-    float scale;
     Point<float> point;
 
     if(targetIconIsClicked){
-        /* Scaling factor to convert metres to pixels */
-        if (tvconv_getNumListenerPositions(hTVCnv)==0){
-            room_dims_m[0] = room_dims_m[1] = 1.0f;
-            room_dims_m[2] = 0.35f;
-            room_offset_m[0] = room_offset_m[1] = room_offset_m[2] = 0.0f;
-        }
-        else{
-            room_dims_m[0] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)), 1.0f) * 1.2f;
-            room_dims_m[1] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)), 1.0f) * 1.2f;
-            room_dims_m[2] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)), 0.35f) * 1.2f;
-            room_offset_m[0] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)) * 0.8f);
-            room_offset_m[1] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)) * 0.8f);
-            room_offset_m[2] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)) * 0.8f);
-        }
-        room_dims_m_o[0] = room_dims_m[0]-room_offset_m[0];
-        room_dims_m_o[1] = room_dims_m[1]-room_offset_m[1];
-        room_dims_m_o[2] = room_dims_m[2]-room_offset_m[2];
-        scale = room_pixels/MAX(MAX(room_dims_m[0]-room_offset_m[0], room_dims_m[1]-room_offset_m[1]), room_dims_m[2]-room_offset_m[2]);
-        room_dims_pixels[0] = room_dims_m[0]*scale;
-        room_dims_pixels[1] = room_dims_m[1]*scale;
-        room_dims_pixels[2] = room_dims_m[2]*scale;
-        room_offset_pixels[0] = room_offset_m[0]*scale;
-        room_offset_pixels[1] = room_offset_m[1]*scale;
-        room_offset_pixels[2] = room_offset_m[2]*scale;
-        room_dims_pixels_o[0] = room_dims_pixels[0]-room_offset_pixels[0];
-        room_dims_pixels_o[1] = room_dims_pixels[1]-room_offset_pixels[1];
-        room_dims_pixels_o[2] = room_dims_pixels[2]-room_offset_pixels[2];
+
+        computeRoomDims();
     }
 
     if(targetIconIsClicked){
@@ -380,6 +300,44 @@ void sceneView::mouseUp (const juce::MouseEvent& e)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+
+void sceneView::computeRoomDims()
+{
+
+if (tvconv_getNumListenerPositions(hTVCnv) == 0) {
+    room_dims_m[0] = room_dims_m[1] = 1.0f;
+    room_dims_m[2] = 0.35f;
+    room_offset_m[0] = room_offset_m[1] = room_offset_m[2] = 0.0f;
+}
+else {
+    room_dims_m[0] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)), 1.0f) * 1.2f;
+    room_dims_m[1] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)), 1.0f) * 1.2f;
+    room_dims_m[2] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)), 0.35f) * 1.2f;
+    room_offset_m[0] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)) * 0.8f);
+    room_offset_m[1] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)) * 0.8f);
+    room_offset_m[2] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)) * 0.8f);
+}
+room_dims_m_o[0] = room_dims_m[0] - room_offset_m[0];
+room_dims_m_o[1] = room_dims_m[1] - room_offset_m[1];
+room_dims_m_o[2] = room_dims_m[2] - room_offset_m[2];
+
+/* Scaling factor to convert metres to pixels */
+scale = room_pixels / MAX(MAX(room_dims_m[0] - room_offset_m[0], room_dims_m[1] - room_offset_m[1]), room_dims_m[2] - room_offset_m[2]);
+room_dims_pixels[0] = room_dims_m[0] * scale;
+room_dims_pixels[1] = room_dims_m[1] * scale;
+room_dims_pixels[2] = room_dims_m[2] * scale;
+room_offset_pixels[0] = room_offset_m[0] * scale;
+room_offset_pixels[1] = room_offset_m[1] * scale;
+room_offset_pixels[2] = room_offset_m[2] * scale;
+room_dims_pixels_o[0] = room_dims_pixels[0] - room_offset_pixels[0];
+room_dims_pixels_o[1] = room_dims_pixels[1] - room_offset_pixels[1];
+room_dims_pixels_o[2] = room_dims_pixels[2] - room_offset_pixels[2];
+
+}
+
+
+
+
 void sceneView::refreshSceneView()
 {
     repaint();
