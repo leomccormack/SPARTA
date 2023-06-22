@@ -656,7 +656,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 210, y = 86, width = 200, height = 30;
-        juce::String text (TRANS("IR Length (s):"));
+        juce::String text (TRANS("IR Length [s]:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -740,7 +740,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 71, y = 231, width = 270, height = 31;
-        juce::String text (TRANS("Target Listener Position"));
+        juce::String text (TRANS("Target Listener Position [m]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -812,7 +812,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 221, y = 374, width = 49, height = 30;
-        juce::String text (TRANS("\\ypr[0]"));
+        juce::String text (TRANS("/ypr[0]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -896,7 +896,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 294, y = 374, width = 40, height = 30;
-        juce::String text (TRANS("\\ypr[1]"));
+        juce::String text (TRANS("/ypr[1]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -908,7 +908,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 350, y = 374, width = 40, height = 30;
-        juce::String text (TRANS("\\ypr[2]"));
+        juce::String text (TRANS("/ypr[2]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -944,7 +944,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 71, y = 349, width = 270, height = 31;
-        juce::String text (TRANS("Ambisonic Sound-Field Rotation"));
+        juce::String text (TRANS("Ambisonic Sound-Field Rotation [degrees]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
