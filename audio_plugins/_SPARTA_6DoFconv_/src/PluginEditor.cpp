@@ -346,7 +346,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
         // string is different from "no_file" -> it's been selected a valid file
         fileComp->setCurrentFile(String(tvconv_getSofaFilePath(hTVC)), true, dontSendNotification);
         refreshCoords();
-        //sceneWindow->computeRoomDims();
+        refreshSceneViewWindow = true;
+        sceneWindow->refreshSceneView();
     }
     else {
         SL_receiver_x->setEnabled(false);
@@ -374,7 +375,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pluginDescription->setTooltip(TRANS("Time-varying impulse response convolver. A set of IRs can be loaded from a sofa file, where IRs have to be assigned with different ListenerPositions. The position of the receiver can be varied during playback using the parameter sliders. The convolver finds the nearest neighbour IR of the selected position. It applies overlap-add partitioned convolution and cross-fades between previous and current positions to produce smooth transitions. Each IR can have up to 64 channels (7th order Ambisonics). Single fixed SourcePosition is assumed and only mono input is supported.\n"));
 
     /* Specify screen refresh rate */
-    startTimer(40); /*ms (40ms = 25 frames per second) */
+    startTimer(refreshInterval); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -1190,7 +1191,20 @@ void PluginEditor::timerCallback()
         repaint(0,0,getWidth(),32);
     }
 
-    sceneWindow->refreshSceneView();
+    if (refreshSceneViewWindow == true)
+    {
+        sceneWindow->refreshSceneView();
+        refreshSceneViewWindow = false;
+    }
+    else
+    {
+        refreshDecimationCounter--;
+        if (refreshDecimationCounter == 0)
+        {
+            refreshDecimationCounter = 25;
+            sceneWindow->refreshSceneView();
+        }
+    }
 
     /* check if OSC port has changed */
     if (hVst->getOscPortID() != te_oscport->getText().getIntValue())
@@ -1251,7 +1265,7 @@ void PluginEditor::refreshCoords()
 
 bool PluginEditor::getRefreshSceneViewWindow()
 {
-    return refreshSceneViewWindow;
+    return this->refreshSceneViewWindow;
 }
 
 void PluginEditor::setRefreshSceneViewWindow(bool val)
