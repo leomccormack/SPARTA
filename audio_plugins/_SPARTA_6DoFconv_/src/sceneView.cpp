@@ -312,12 +312,12 @@ if (tvconv_getNumListenerPositions(hTVCnv) == 0) {
     room_offset_m[0] = room_offset_m[1] = room_offset_m[2] = 0.0f;
 }
 else {
-    room_dims_m[0] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)), 1.0f) * 1.2f;
-    room_dims_m[1] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)), 1.0f) * 1.2f;
-    room_dims_m[2] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)), 0.35f) * 1.2f;
-    room_offset_m[0] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)) * 0.8f);
-    room_offset_m[1] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)) * 0.8f);
-    room_offset_m[2] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)) * 0.8f);
+    room_dims_m[0] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)), 0.01f) * 1.2f;
+    room_dims_m[1] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)), 0.01f) * 1.2f;
+    room_dims_m[2] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)), 0.003f) * 1.2f;
+    room_offset_m[0] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)) * 0.8f * 10.0f) / 10.0f;
+    room_offset_m[1] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)) * 0.8f * 10.0f) / 10.0f;
+    room_offset_m[2] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)) * 0.8f * 10.0f) / 10.0f;
 }
 room_dims_m_o[0] = room_dims_m[0] - room_offset_m[0];
 room_dims_m_o[1] = room_dims_m[1] - room_offset_m[1];
@@ -351,6 +351,7 @@ for( int i = 0; i < sizeof(stepSizeBoudaries); i++ )
 }
 primaryLineSpacing = gridStepSize[spacingIndex];
 secondaryLineSpacing = primaryLineSpacing / 5;
+
 
 }
 

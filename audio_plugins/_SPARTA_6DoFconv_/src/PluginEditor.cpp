@@ -192,6 +192,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_oscport->setText (TRANS("9000"));
 
     te_oscport->setBounds (344, 296, 42, 22);
+    te_oscport->setTooltip("OSC addresses: /xyz [m]; /quat [-1,1]; /xyzquat [m][-1, 1]; /ypr [deg]; /xyzypr [m][deg].");
 
     // COMBO BOX //////////////////////////////////////////////////////////////////////////////////////////////////////
     CBviewMode.reset (new juce::ComboBox ("new combo box"));
