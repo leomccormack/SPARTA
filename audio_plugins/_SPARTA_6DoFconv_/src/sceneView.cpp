@@ -46,7 +46,6 @@ int primaryLineLabelDownsample = 1;
 float secondaryLineSpacing = 2.0f;
 
 
-
 #ifndef CLAMP
 /** Ensures value "a" is clamped between the "min" and "max" values */
 # define CLAMP(a,min,max) (MAX(min, MIN(max, a)))
@@ -105,23 +104,28 @@ void sceneView::paint (juce::Graphics& g)
 	// Y from top to bottom
 	//
 	// Listener axis directions:
-	// X from left to right
+	// X from right to left
 	// Y from bottom to top (top view)
-	// Z from bottom to top (sid view)
+	// Z from bottom to top (side view)
 
     Rectangle<float> lstIcon;
 
     computeRoomDims();
 
     int xp_idx, yp_idx;
+    String xAxisLabel, yAxisLabel;
 
     if(topOrSideView==TOP_VIEW){
         xp_idx = 1;  /* Y */
         yp_idx = 0;  /* X */
+        xAxisLabel = String("Y");
+        yAxisLabel = String("X");
     }
     else{ // SIDE VIEW
         xp_idx = 1;  /* Y */
         yp_idx = 2;  /* Z */
+        xAxisLabel = String("Y");
+        yAxisLabel = String("Z");
     }
 
     /* Background and border */
@@ -144,7 +148,7 @@ void sceneView::paint (juce::Graphics& g)
         g.setOpacity(0.35f);
         g.drawLine (line_x, view_y, line_x, view_y+room_dims_pixels_o[yp_idx], 1.000f);
         g.setOpacity(0.75f);
-        //if( (i%primaryLineLabelDownsample)==0 )
+        // vertical lines labels
         g.drawText(String(i+room_offset_m[xp_idx],1,false), line_x-10, view_y+room_dims_pixels_o[yp_idx]+5, 30, 10, Justification::centred, true);
     }
     g.setOpacity(0.15f);
@@ -159,20 +163,19 @@ void sceneView::paint (juce::Graphics& g)
         g.setOpacity(0.35f);
         g.drawLine (view_x, line_y, view_x+room_dims_pixels_o[xp_idx], line_y, 1.000f);
         g.setOpacity(0.75f);
-        //if( (i%primaryLineLabelDownsample)==0 )
+        // horizontal lines labels
         g.drawText(String(i+room_offset_m[yp_idx],1,false), view_x +room_dims_pixels_o[xp_idx], line_y-5, 30, 10, Justification::centred, true);
     }
+    // Axis name labels ("X", "Y", "Z")
     g.setFont(14.0f);
-    g.drawText("Y",  view_x + room_dims_pixels_o[xp_idx]/2.0f+5.0f, view_y+room_dims_pixels_o[yp_idx]+20.0f, 20, 10, Justification::centred, true);
-    g.drawText(topOrSideView==TOP_VIEW ? "X" : "Z",  view_x + room_dims_pixels_o[xp_idx] + 20.0f, view_y+room_dims_pixels_o[yp_idx]/2.0f-5.0f, 20, 10, Justification::centred, true);
+    g.drawText( xAxisLabel, view_x + room_dims_pixels_o[xp_idx]/2.0f+5.0f, view_y+room_dims_pixels_o[yp_idx]+20.0f, 20, 10, Justification::centred, true);
+    g.drawText( yAxisLabel, view_x + room_dims_pixels_o[xp_idx] + 20.0f, view_y+room_dims_pixels_o[yp_idx]/2.0f-5.0f, 20, 10, Justification::centred, true);
 
     /* Listener icons */
     int targetIndex = tvconv_getListenerPositionIdx(hTVCnv);
     for(int i=0; i<tvconv_getNumListenerPositions(hTVCnv); i++){
-        float point_x = view_x + room_dims_pixels_o[xp_idx] - scale*(tvconv_getListenerPosition(hTVCnv, i, 1/*Y*/) - room_offset_m[1]/*Y*/);
-        float point_y = view_y + room_dims_pixels_o[yp_idx] - scale*(topOrSideView==TOP_VIEW ?
-                                                                     tvconv_getListenerPosition(hTVCnv, i, 0/*X*/) - room_offset_m[0]/*X*/ :
-                                                                     tvconv_getListenerPosition(hTVCnv, i, 2/*Z*/) - room_offset_m[2]/*Z*/);
+        float point_x = view_x + room_dims_pixels_o[xp_idx] - scale*(tvconv_getListenerPosition(hTVCnv, i, xp_idx/*Y*/) - room_offset_m[xp_idx]);
+        float point_y = view_y + room_dims_pixels_o[yp_idx] - scale*(tvconv_getListenerPosition(hTVCnv, i, yp_idx/*X or Z*/) - room_offset_m[yp_idx]);
         if(i==targetIndex){
             lstIcon.setBounds(point_x-iconRadius*1.8f, point_y-iconRadius*1.8f, iconWidth*1.8f, iconWidth*1.8f);
             g.setColour(Colours::white);
@@ -195,10 +198,8 @@ void sceneView::paint (juce::Graphics& g)
     }
 
     /* Source icon */
-    float point_x = view_x + room_dims_pixels_o[xp_idx] - scale*(tvconv_getSourcePosition(hTVCnv, 1/*Y*/) - room_offset_m[1]/*Y*/);
-    float point_y = view_y + room_dims_pixels_o[yp_idx] - scale*(topOrSideView==TOP_VIEW ?
-                                                                 tvconv_getSourcePosition(hTVCnv, 0/*X*/) - room_offset_m[0]/*X*/ :
-                                                                 tvconv_getSourcePosition(hTVCnv, 2/*Z*/) - room_offset_m[2]/*Z*/);
+    float point_x = view_x + room_dims_pixels_o[xp_idx] - scale*(tvconv_getSourcePosition(hTVCnv, xp_idx/*Y*/) - room_offset_m[xp_idx]);
+    float point_y = view_y + room_dims_pixels_o[yp_idx] - scale*(tvconv_getSourcePosition(hTVCnv, yp_idx/*X or Z*/) - room_offset_m[yp_idx]);
     lstIcon.setBounds(point_x-iconRadius*1.2f, point_y-iconRadius*1.2f, iconWidth*1.2f, iconWidth*1.2f);
     g.setOpacity(0.9f);
     g.setColour(Colours::magenta);
@@ -207,10 +208,8 @@ void sceneView::paint (juce::Graphics& g)
     g.drawEllipse(lstIcon, 1.0f);
 
     /* Target Listener position */
-    point_x = view_x + room_dims_pixels_o[xp_idx] - scale*(tvconv_getTargetPosition(hTVCnv, 1/*Y*/) - room_offset_m[1]);
-    point_y = view_y + room_dims_pixels_o[yp_idx] - scale*(topOrSideView==TOP_VIEW ?
-                                                           tvconv_getTargetPosition(hTVCnv, 0/*X*/) - room_offset_m[0] :
-                                                           tvconv_getTargetPosition(hTVCnv, 2/*Z*/) - room_offset_m[2]);
+    point_x = view_x + room_dims_pixels_o[xp_idx] - scale*(tvconv_getTargetPosition(hTVCnv, xp_idx/*Y*/) - room_offset_m[xp_idx]);
+    point_y = view_y + room_dims_pixels_o[yp_idx] - scale*(tvconv_getTargetPosition(hTVCnv, yp_idx /*X or Z*/) - room_offset_m[yp_idx]);
     lstIcon.setBounds(point_x-iconRadius*1.2f, point_y-iconRadius*1.2f, iconWidth*1.2f, iconWidth*1.2f);
     g.setOpacity(0.9f);
     g.setColour(Colours::orange);
@@ -256,25 +255,6 @@ void sceneView::mouseDown (const juce::MouseEvent& e)
         return;
     }
 
-    //if(topOrSideView==TOP_VIEW){
-    //    float point_x = view_x + room_dims_pixels_o[0] - scale*(tvconv_getTargetPosition(hTVCnv, 0/*X*/) - room_offset_m[0]);
-    //    float point_y = view_y + room_dims_pixels_o[1] - scale*(tvconv_getTargetPosition(hTVCnv, 1/*Y*/) - room_offset_m[1]);
-    //    recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
-    //    if(recIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-    //        targetIconIsClicked = true;
-    //        return;
-    //    }
-    //}
-    //else if(topOrSideView==SIDE_VIEW){
-    //    /* REC */
-    //    float point_x = view_x + room_dims_pixels_o[0] - scale*(tvconv_getTargetPosition(hTVCnv, 0/*X*/) - room_offset_m[0]);
-    //    float point_y = view_y + room_dims_pixels_o[2] - scale*(tvconv_getTargetPosition(hTVCnv, 2/*Z*/) - room_offset_m[2]);
-    //    recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
-    //    if(recIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-    //        targetIconIsClicked = true;
-    //        return;
-    //    }
-    //}
     //[/UserCode_mouseDown]
 }
 
@@ -297,29 +277,11 @@ void sceneView::mouseDrag (const juce::MouseEvent& e)
     if(targetIconIsClicked){
 
         computeRoomDims();
-    }
-
-    if(targetIconIsClicked){
 
         point.setXY((float)e.getPosition().getX() - 2, (float)e.getPosition().getY() - 2);
         tvconv_setTargetPosition(hTVCnv, -(point.getX() - view_x - room_dims_pixels_o[xp_idx]) / scale + room_offset_m[xp_idx], xp_idx);
         tvconv_setTargetPosition(hTVCnv, -(point.getY() - view_y - room_dims_pixels_o[yp_idx]) / scale + room_offset_m[yp_idx], yp_idx);
 
-
-        //switch(topOrSideView){
-        //    case TOP_VIEW:
-        //        point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-        //        tvconv_setTargetPosition(hTVCnv, -(point.getX() - view_x - room_dims_pixels_o[0])/scale + room_offset_m[0], 0/*X*/);
-        //        tvconv_setTargetPosition(hTVCnv, -(point.getY() - view_y - room_dims_pixels_o[1])/scale + room_offset_m[1], 1/*Y*/);
-        //        break;
-
-        //    case SIDE_VIEW:
-        //        point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-        //        tvconv_setTargetPosition(hTVCnv, -(point.getX() - view_x - room_dims_pixels_o[0])/scale + room_offset_m[0], 0/*X*/);
-        //        tvconv_setTargetPosition(hTVCnv, -(point.getY() - view_y - room_dims_pixels_o[2])/scale + room_offset_m[2], 2/*Z*/);
-        //        break;
-        //    default: break;
-        //}
     }
 
     //[/UserCode_mouseDrag]
@@ -385,7 +347,6 @@ for( int i = 0; i < sizeof(stepSizeBoudaries); i++ )
 }
 primaryLineSpacing = gridStepSize[spacingIndex];
 secondaryLineSpacing = primaryLineSpacing / 5;
-
 
 }
 
