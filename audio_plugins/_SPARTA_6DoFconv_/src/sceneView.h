@@ -51,6 +51,8 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
 
+    void computeRoomDims();
+
     void refreshSceneView();
     bool getTargetIconIsClicked(){
         return targetIconIsClicked;
