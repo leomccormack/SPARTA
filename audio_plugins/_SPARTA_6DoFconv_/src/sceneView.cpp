@@ -116,11 +116,11 @@ void sceneView::paint (juce::Graphics& g)
     int xp_idx, yp_idx;
 
     if(topOrSideView==TOP_VIEW){
-        xp_idx = 0;  /* X */
-        yp_idx = 1;  /* Y */
+        xp_idx = 1;  /* Y */
+        yp_idx = 0;  /* X */
     }
-    else{
-        xp_idx = 0;  /* X */
+    else{ // SIDE VIEW
+        xp_idx = 1;  /* Y */
         yp_idx = 2;  /* Z */
     }
 
@@ -163,16 +163,16 @@ void sceneView::paint (juce::Graphics& g)
         g.drawText(String(i+room_offset_m[yp_idx],1,false), view_x +room_dims_pixels_o[xp_idx], line_y-5, 30, 10, Justification::centred, true);
     }
     g.setFont(14.0f);
-    g.drawText("x [m]",  view_x + room_dims_pixels_o[xp_idx]/2.0f+5.0f, view_y+room_dims_pixels_o[yp_idx]+20.0f, 40, 10, Justification::centred, true);
-    g.drawText(topOrSideView==TOP_VIEW ? "y [m]" : "z [m]",  view_x + room_dims_pixels_o[xp_idx] + 12.0f, view_y+room_dims_pixels_o[yp_idx]/2.0f-5.0f, 40, 10, Justification::centred, true);
+    g.drawText("Y",  view_x + room_dims_pixels_o[xp_idx]/2.0f+5.0f, view_y+room_dims_pixels_o[yp_idx]+20.0f, 20, 10, Justification::centred, true);
+    g.drawText(topOrSideView==TOP_VIEW ? "X" : "Z",  view_x + room_dims_pixels_o[xp_idx] + 20.0f, view_y+room_dims_pixels_o[yp_idx]/2.0f-5.0f, 20, 10, Justification::centred, true);
 
     /* Listener icons */
     int targetIndex = tvconv_getListenerPositionIdx(hTVCnv);
     for(int i=0; i<tvconv_getNumListenerPositions(hTVCnv); i++){
-        float point_x = view_x + room_dims_pixels_o[xp_idx] - scale*(tvconv_getListenerPosition(hTVCnv, i, 0/*X*/) - room_offset_m[0]);
+        float point_x = view_x + room_dims_pixels_o[xp_idx] - scale*(tvconv_getListenerPosition(hTVCnv, i, 1/*Y*/) - room_offset_m[1]/*Y*/);
         float point_y = view_y + room_dims_pixels_o[yp_idx] - scale*(topOrSideView==TOP_VIEW ?
-                                                                     tvconv_getListenerPosition(hTVCnv, i, 1/*Y*/) - room_offset_m[1] :
-                                                                     tvconv_getListenerPosition(hTVCnv, i, 2/*Z*/) - room_offset_m[2]);
+                                                                     tvconv_getListenerPosition(hTVCnv, i, 0/*X*/) - room_offset_m[0]/*X*/ :
+                                                                     tvconv_getListenerPosition(hTVCnv, i, 2/*Z*/) - room_offset_m[2]/*Z*/);
         if(i==targetIndex){
             lstIcon.setBounds(point_x-iconRadius*1.8f, point_y-iconRadius*1.8f, iconWidth*1.8f, iconWidth*1.8f);
             g.setColour(Colours::white);
@@ -195,10 +195,10 @@ void sceneView::paint (juce::Graphics& g)
     }
 
     /* Source icon */
-    float point_x = view_x + room_dims_pixels_o[xp_idx] - scale*(tvconv_getSourcePosition(hTVCnv, 0/*X*/) - room_offset_m[0]);
+    float point_x = view_x + room_dims_pixels_o[xp_idx] - scale*(tvconv_getSourcePosition(hTVCnv, 1/*Y*/) - room_offset_m[1]/*Y*/);
     float point_y = view_y + room_dims_pixels_o[yp_idx] - scale*(topOrSideView==TOP_VIEW ?
-                                                                 tvconv_getSourcePosition(hTVCnv, 1/*Y*/) - room_offset_m[1] :
-                                                                 tvconv_getSourcePosition(hTVCnv, 2/*Z*/) - room_offset_m[2]);
+                                                                 tvconv_getSourcePosition(hTVCnv, 0/*X*/) - room_offset_m[0]/*X*/ :
+                                                                 tvconv_getSourcePosition(hTVCnv, 2/*Z*/) - room_offset_m[2]/*Z*/);
     lstIcon.setBounds(point_x-iconRadius*1.2f, point_y-iconRadius*1.2f, iconWidth*1.2f, iconWidth*1.2f);
     g.setOpacity(0.9f);
     g.setColour(Colours::magenta);
@@ -207,9 +207,9 @@ void sceneView::paint (juce::Graphics& g)
     g.drawEllipse(lstIcon, 1.0f);
 
     /* Target Listener position */
-    point_x = view_x + room_dims_pixels_o[xp_idx] - scale*(tvconv_getTargetPosition(hTVCnv, 0/*X*/) - room_offset_m[0]);
+    point_x = view_x + room_dims_pixels_o[xp_idx] - scale*(tvconv_getTargetPosition(hTVCnv, 1/*Y*/) - room_offset_m[1]);
     point_y = view_y + room_dims_pixels_o[yp_idx] - scale*(topOrSideView==TOP_VIEW ?
-                                                           tvconv_getTargetPosition(hTVCnv, 1/*Y*/) - room_offset_m[1] :
+                                                           tvconv_getTargetPosition(hTVCnv, 0/*X*/) - room_offset_m[0] :
                                                            tvconv_getTargetPosition(hTVCnv, 2/*Z*/) - room_offset_m[2]);
     lstIcon.setBounds(point_x-iconRadius*1.2f, point_y-iconRadius*1.2f, iconWidth*1.2f, iconWidth*1.2f);
     g.setOpacity(0.9f);
@@ -238,25 +238,43 @@ void sceneView::mouseDown (const juce::MouseEvent& e)
 
     computeRoomDims();
 
-    if(topOrSideView==TOP_VIEW){
-        float point_x = view_x + room_dims_pixels_o[0] - scale*(tvconv_getTargetPosition(hTVCnv, 0/*X*/) - room_offset_m[0]);
-        float point_y = view_y + room_dims_pixels_o[1] - scale*(tvconv_getTargetPosition(hTVCnv, 1/*Y*/) - room_offset_m[1]);
-        recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
-        if(recIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-            targetIconIsClicked = true;
-            return;
-        }
+    int xp_idx, yp_idx;
+    if (topOrSideView == TOP_VIEW) {
+        xp_idx = 1;  /* Y */
+        yp_idx = 0;  /* X */
     }
-    else if(topOrSideView==SIDE_VIEW){
-        /* REC */
-        float point_x = view_x + room_dims_pixels_o[0] - scale*(tvconv_getTargetPosition(hTVCnv, 0/*X*/) - room_offset_m[0]);
-        float point_y = view_y + room_dims_pixels_o[2] - scale*(tvconv_getTargetPosition(hTVCnv, 2/*Z*/) - room_offset_m[2]);
-        recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
-        if(recIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-            targetIconIsClicked = true;
-            return;
-        }
+    else { // SIDE VIEW
+        xp_idx = 1;  /* Y */
+        yp_idx = 2;  /* Z */
     }
+
+    float point_x = view_x + room_dims_pixels_o[xp_idx] - scale * (tvconv_getTargetPosition(hTVCnv, xp_idx) - room_offset_m[xp_idx]);
+    float point_y = view_y + room_dims_pixels_o[yp_idx] - scale * (tvconv_getTargetPosition(hTVCnv, yp_idx) - room_offset_m[yp_idx]);
+    recIcon.setBounds(point_x - iconRadius, point_y - iconRadius, iconWidth, iconWidth);
+    if (recIcon.expanded(4, 4).contains(e.getMouseDownPosition())) {
+        targetIconIsClicked = true;
+        return;
+    }
+
+    //if(topOrSideView==TOP_VIEW){
+    //    float point_x = view_x + room_dims_pixels_o[0] - scale*(tvconv_getTargetPosition(hTVCnv, 0/*X*/) - room_offset_m[0]);
+    //    float point_y = view_y + room_dims_pixels_o[1] - scale*(tvconv_getTargetPosition(hTVCnv, 1/*Y*/) - room_offset_m[1]);
+    //    recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+    //    if(recIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
+    //        targetIconIsClicked = true;
+    //        return;
+    //    }
+    //}
+    //else if(topOrSideView==SIDE_VIEW){
+    //    /* REC */
+    //    float point_x = view_x + room_dims_pixels_o[0] - scale*(tvconv_getTargetPosition(hTVCnv, 0/*X*/) - room_offset_m[0]);
+    //    float point_y = view_y + room_dims_pixels_o[2] - scale*(tvconv_getTargetPosition(hTVCnv, 2/*Z*/) - room_offset_m[2]);
+    //    recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+    //    if(recIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
+    //        targetIconIsClicked = true;
+    //        return;
+    //    }
+    //}
     //[/UserCode_mouseDown]
 }
 
@@ -266,26 +284,42 @@ void sceneView::mouseDrag (const juce::MouseEvent& e)
 
     Point<float> point;
 
+    int xp_idx, yp_idx;
+    if (topOrSideView == TOP_VIEW) {
+        xp_idx = 1;  /* Y */
+        yp_idx = 0;  /* X */
+    }
+    else { // SIDE VIEW
+        xp_idx = 1;  /* Y */
+        yp_idx = 2;  /* Z */
+    }
+
     if(targetIconIsClicked){
 
         computeRoomDims();
     }
 
     if(targetIconIsClicked){
-        switch(topOrSideView){
-            case TOP_VIEW:
-                point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-                tvconv_setTargetPosition(hTVCnv, -(point.getX() - view_x - room_dims_pixels_o[0])/scale + room_offset_m[0], 0/*X*/);
-                tvconv_setTargetPosition(hTVCnv, -(point.getY() - view_y - room_dims_pixels_o[1])/scale + room_offset_m[1], 1/*Y*/);
-                break;
 
-            case SIDE_VIEW:
-                point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-                tvconv_setTargetPosition(hTVCnv, -(point.getX() - view_x - room_dims_pixels_o[0])/scale + room_offset_m[0], 0/*X*/);
-                tvconv_setTargetPosition(hTVCnv, -(point.getY() - view_y - room_dims_pixels_o[2])/scale + room_offset_m[2], 2/*Z*/);
-                break;
-            default: break;
-        }
+        point.setXY((float)e.getPosition().getX() - 2, (float)e.getPosition().getY() - 2);
+        tvconv_setTargetPosition(hTVCnv, -(point.getX() - view_x - room_dims_pixels_o[xp_idx]) / scale + room_offset_m[xp_idx], xp_idx);
+        tvconv_setTargetPosition(hTVCnv, -(point.getY() - view_y - room_dims_pixels_o[yp_idx]) / scale + room_offset_m[yp_idx], yp_idx);
+
+
+        //switch(topOrSideView){
+        //    case TOP_VIEW:
+        //        point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
+        //        tvconv_setTargetPosition(hTVCnv, -(point.getX() - view_x - room_dims_pixels_o[0])/scale + room_offset_m[0], 0/*X*/);
+        //        tvconv_setTargetPosition(hTVCnv, -(point.getY() - view_y - room_dims_pixels_o[1])/scale + room_offset_m[1], 1/*Y*/);
+        //        break;
+
+        //    case SIDE_VIEW:
+        //        point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
+        //        tvconv_setTargetPosition(hTVCnv, -(point.getX() - view_x - room_dims_pixels_o[0])/scale + room_offset_m[0], 0/*X*/);
+        //        tvconv_setTargetPosition(hTVCnv, -(point.getY() - view_y - room_dims_pixels_o[2])/scale + room_offset_m[2], 2/*Z*/);
+        //        break;
+        //    default: break;
+        //}
     }
 
     //[/UserCode_mouseDrag]

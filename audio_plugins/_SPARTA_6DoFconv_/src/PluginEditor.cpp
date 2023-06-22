@@ -728,7 +728,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 415, y = 34, width = 417, height = 31;
-        juce::String text (TRANS("Coordinate View"));
+        juce::String text (TRANS("Coordinate View [m]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
