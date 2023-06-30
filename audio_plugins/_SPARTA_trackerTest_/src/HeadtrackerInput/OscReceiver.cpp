@@ -60,7 +60,19 @@ void OscReceiver::oscMessageReceived(const OSCMessage& message)
                     if (message[6].isFloat32())
                         //rotator_setQuaternionY(hRot, message[6].getFloat32());
                         return;
-    }*/ else if (addr == "/xyzypr" && message.size() == 6) {
+    }*/
+    else if (addr == "/ypr" && message.size() == 3) {
+        float yaw = 0.0;
+        float pitch = 0.0;
+        float roll = 0.0;
+        if (message[0].isFloat32())
+            yaw = message[0].getFloat32();
+        if (message[1].isFloat32())
+            pitch = message[1].getFloat32();
+        if (message[2].isFloat32())
+            roll = message[2].getFloat32();
+        onXyzyprReceived(Source::SOURCE_OSC, 0.0, 0.0, 0.0, yaw, pitch, roll);
+    } else if (addr == "/xyzypr" && message.size() == 6) {
         float x = 0.0;
         float y = 0.0;
         float z = 0.0;
