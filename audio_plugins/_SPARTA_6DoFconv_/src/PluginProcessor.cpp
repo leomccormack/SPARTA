@@ -209,7 +209,7 @@ void PluginProcessor::setParameter (int index, float newValue)
         (tvconv_getMaxDimension(hTVCnv, index) - tvconv_getMinDimension(hTVCnv, index)) +
         tvconv_getMinDimension(hTVCnv, index);
         if (newValueScaled != tvconv_getTargetPosition(hTVCnv, index)){
-            tvconv_setTargetPosition(hTVCnv, index, newValueScaled);
+            tvconv_setTargetPosition(hTVCnv, newValueScaled, index);
             refreshWindow = true;
         }
     }
@@ -219,7 +219,7 @@ void PluginProcessor::setParameterRaw(int index, float newValue)
 {
     if (index < 3) {
         if (newValue != tvconv_getTargetPosition(hTVCnv, index)) {
-            tvconv_setTargetPosition(hTVCnv, index, newValue);
+            tvconv_setTargetPosition(hTVCnv, newValue, index);
             refreshWindow = true;
         }
     }
