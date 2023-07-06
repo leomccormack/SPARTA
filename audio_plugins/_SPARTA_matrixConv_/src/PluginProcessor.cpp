@@ -173,7 +173,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
-    float** bufferData = buffer.getArrayOfWritePointers();
+    float* const* bufferData = buffer.getArrayOfWritePointers();
 
     matrixconv_process(hMCnv, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);
 }
