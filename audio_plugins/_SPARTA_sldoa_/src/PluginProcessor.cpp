@@ -174,7 +174,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
 {
 	int nCurrentBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
-    float** bufferData = buffer.getArrayOfWritePointers();
+    float* const* bufferData = buffer.getArrayOfWritePointers();
  
     /* check whether the playhead is moving */
     playHead = getPlayHead();
