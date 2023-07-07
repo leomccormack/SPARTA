@@ -7,39 +7,6 @@
               companyEmail="rapolas.daugintis@gmail.com" pluginManufacturerCode="RAPD"
               pluginCode="TVCN" displaySplashScreen="1" version="1.0.0" headerPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;../../../../../SDKs/NatNetSDK/include&#10;../../../src/NatNetTools">
   <MAINGROUP id="IbvuHL" name="sparta_6DoFconv">
-    <GROUP id="{292064C3-D074-003C-6E95-DB7EEDC5973F}" name="NatNetTools">
-      <FILE id="LFIejC" name="MathUtils.cpp" compile="1" resource="0" file="src/NatNetTools/MathUtils.cpp"/>
-      <FILE id="iiFbil" name="MathUtils.h" compile="0" resource="0" file="src/NatNetTools/MathUtils.h"/>
-      <FILE id="IeEODg" name="MarkerPositionCollection.cpp" compile="1" resource="0"
-            file="src/NatNetTools/MarkerPositionCollection.cpp"/>
-      <FILE id="GLAOnK" name="AdHocActionListener.cpp" compile="1" resource="0"
-            file="src/NatNetTools/AdHocActionListener.cpp"/>
-      <FILE id="Gz4DpR" name="AdHocActionListener.h" compile="0" resource="0"
-            file="src/NatNetTools/AdHocActionListener.h"/>
-      <FILE id="fpdIk0" name="MarkerPositionCollection.h" compile="0" resource="0"
-            file="src/NatNetTools/MarkerPositionCollection.h"/>
-      <FILE id="UzLR8s" name="NATUtils.cpp" compile="1" resource="0" file="src/NatNetTools/NATUtils.cpp"/>
-      <FILE id="xxm1s8" name="NATUtils.h" compile="0" resource="0" file="src/NatNetTools/NATUtils.h"/>
-      <FILE id="agrxrB" name="RigidBodyCollection.cpp" compile="1" resource="0"
-            file="src/NatNetTools/RigidBodyCollection.cpp"/>
-      <FILE id="Mi36Ie" name="RigidBodyCollection.h" compile="0" resource="0"
-            file="src/NatNetTools/RigidBodyCollection.h"/>
-      <FILE id="csWv4m" name="TransformedData.cpp" compile="1" resource="0"
-            file="src/NatNetTools/TransformedData.cpp"/>
-      <FILE id="U7yo8t" name="TransformedData.h" compile="0" resource="0"
-            file="src/NatNetTools/TransformedData.h"/>
-    </GROUP>
-    <GROUP id="{C7B63A4B-C90A-34F2-6A26-27284A985AAE}" name="NatNetSDK">
-      <GROUP id="{091B0F26-2973-87AD-DA77-D02D4475879C}" name="include">
-        <FILE id="wk7ooL" name="NatNetCAPI.h" compile="0" resource="0" file="../../SDKs/NatNetSDK/include/NatNetCAPI.h"/>
-        <FILE id="x4Zj5D" name="NatNetClient.h" compile="0" resource="0" file="../../SDKs/NatNetSDK/include/NatNetClient.h"/>
-        <FILE id="RHsrwO" name="NatNetRepeater.h" compile="0" resource="0"
-              file="../../SDKs/NatNetSDK/include/NatNetRepeater.h"/>
-        <FILE id="SCB2wo" name="NatNetRequests.h" compile="0" resource="0"
-              file="../../SDKs/NatNetSDK/include/NatNetRequests.h"/>
-        <FILE id="Q2pD2H" name="NatNetTypes.h" compile="0" resource="0" file="../../SDKs/NatNetSDK/include/NatNetTypes.h"/>
-      </GROUP>
-    </GROUP>
     <FILE id="F6UktL" name="SPARTALookAndFeel.h" compile="0" resource="0"
           file="../resources/SPARTALookAndFeel.h"/>
     <FILE id="J0lg3N" name="PluginEditor.cpp" compile="1" resource="0"
@@ -342,34 +309,6 @@
         <MODULEPATH id="juce_osc" path="../../SDKs/JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
-    <VS2015 targetFolder="make/win64/VisualStudio2015/" extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_ENABLE_SOFA_READER_MODULE"
-            extraCompilerFlags="/bigobj" externalLibraries="saf_mkl_custom_lp64.lib&#10;"
-            userNotes="libszip.lib&#10;libzlib.lib&#10;libhdf5.lib&#10;libhdf5_hl.lib&#10;netcdf.lib">
-      <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_6DoFconv_debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
-                       linkTimeOptimisation="1"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="sparta_6DoFconv" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"/>
-      </CONFIGURATIONS>
-      <MODULEPATHS>
-        <MODULEPATH id="juce_audio_basics" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_core" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_dsp" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules"/>
-        <MODULEPATH id="juce_osc" path="../../SDKs/JUCE/modules"/>
-      </MODULEPATHS>
-    </VS2015>
     <XCODE_MAC targetFolder="make/MacOSX/Xcode" extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;SAF_USE_INTEL_IPP&#10;SAF_ENABLE_NETCDF"
                extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra"
                extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom_lp64 -lsaf_ipp_custom&#10;-Wl,-rpath,/usr/local/lib"

@@ -12,17 +12,6 @@
 #include "tvconv.h"
 #include "rotator.h"
 #include <string.h>
-#define NOGDI
-#include <Windows.h>
-#include <delayimp.h>
-
-#include "NatNetTypes.h"
-#include "NatNetCAPI.h"
-#include "NatNetClient.h"
-
-#include "MarkerPositionCollection.h"
-#include "RigidBodyCollection.h"
-#include "TransformedData.h"
 
 #define BUILD_VER_SUFFIX0 "alpha" /* String to be added before the version name on the GUI (beta, alpha etc..) */
 #ifndef NDEBUG
@@ -123,23 +112,7 @@ public:
     int getOscPortID() { return osc_port_ID; }
     bool getOscPortConnected() { return osc_connected; }
     
-    /* NatNet */
-    void connectNatNet(const char* myIpAddress, const char* serverIpAddress, ConnectionType connType);
-    void disconnectNatNet();
-    void addNatNetConnListener(ActionListener* listener);
-    void removeNatNetConnListener(ActionListener* listener);
 
-    void handleNatNetData(sFrameOfMocapData* data, void* pUserData);
-    void handleNatNetMessage(Verbosity msgType, const char* msg);
-
-    // NatNet SDK takes callbacks as function pointers and is thus incompatible with C++ instance methods
-    // so we make these static functions which grab a file-level pointer to our instance and invoke the corresponding methods
-    // very ugly!
-    static void NATNET_CALLCONV staticHandleNatNetData(sFrameOfMocapData* data, void* pUserData); // receives data from the server
-    static void NATNET_CALLCONV staticHandleNatNetMessage(Verbosity msgType, const char* msg); // receives NatNet error messages
-
-    bool parseRigidBodyDescription(sDataDescriptions* pDataDefs);
-    
 private:
     void* hTVCnv;         /* tvconv handle */
     void* hRot;           /* rotator handle */
@@ -151,23 +124,6 @@ private:
     bool osc_connected;
     int osc_port_ID;
     bool enable_rotation;
-
-    /* NatNet */
-    NatNetClient natNetClient;
-    ActionBroadcaster natNetConnBroadcaster;
-    void sendNatNetConnMessage(const String& message);
-    float natNetUnitConversion;
-    long natNetUpAxis;
-
-    // Objects for saving off marker and rigid body data streamed from NatNet.
-    MarkerPositionCollection markerPositions;
-    RigidBodyCollection rigidBodies;
-    std::map<int, std::string> mapIDToName;
-
-    // Currently only transforming data for one rigid body, so don't bother with a collection
-    TransformedData transData;
-
-
     
 /***************************************************************************\
                     JUCE Functions
