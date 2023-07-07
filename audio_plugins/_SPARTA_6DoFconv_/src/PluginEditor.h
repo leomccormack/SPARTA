@@ -25,6 +25,7 @@
 #include "PluginProcessor.h"
 #include "../../resources/SPARTALookAndFeel.h"
 #include "sceneView.h"
+#include "AdHocActionListener.h"
 
 typedef enum _SPARTA_WARNINGS{
     k_warning_none,
@@ -62,7 +63,6 @@ public:
 
     /* Refresh coordinate limits based on loaded sofa files*/
     void refreshCoords();
-
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -79,6 +79,7 @@ private:
     void* hTVC;
     void* hRot;
     void timerCallback() override;
+    String originalConnectButtonText;
 
     /* Look and Feel */
     SPARTALookAndFeel LAF;
@@ -102,6 +103,10 @@ private:
     SPARTA_WARNINGS currentWarning;
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
+
+    /* NatNet */
+    AdHocActionListener natNetConnListener;
+    void natNetconnListenerCallback(const String& message);
 
     //[/UserVariables]
 
@@ -128,6 +133,11 @@ private:
     std::unique_ptr<juce::ToggleButton> t_flipPitch;
     std::unique_ptr<juce::ToggleButton> t_flipRoll;
     std::unique_ptr<juce::ToggleButton> TBenableRotation;
+    std::unique_ptr<juce::TextEditor> te_myip;
+    std::unique_ptr<juce::TextEditor> te_serverip;
+    std::unique_ptr<juce::TextButton> bt_connect;
+    std::unique_ptr<juce::Label> te_connectionlabel;
+    std::unique_ptr<juce::ToggleButton> tb_unicast;
 
 
     //==============================================================================
