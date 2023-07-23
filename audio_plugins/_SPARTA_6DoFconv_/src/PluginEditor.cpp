@@ -1305,6 +1305,17 @@ void PluginEditor::refreshCoords()
     SL_source_y->setValue(tvconv_getSourcePosition(hTVC, 1));
     SL_source_z->setRange(tvconv_getSourcePosition(hTVC, 2), tvconv_getSourcePosition(hTVC, 2)+1, 0.1);
     SL_source_z->setValue(tvconv_getSourcePosition(hTVC, 2));
+
+	// Notify the host about the room size
+	hVst->room_size_x->beginChangeGesture();
+	hVst->room_size_x->setValueNotifyingHost(tvconv_getMaxDimension(hTVC, 0) - tvconv_getMinDimension(hTVC, 0));
+	hVst->room_size_x->endChangeGesture();
+	hVst->room_size_y->beginChangeGesture();
+	hVst->room_size_y->setValueNotifyingHost(tvconv_getMaxDimension(hTVC, 1) - tvconv_getMinDimension(hTVC, 1));
+	hVst->room_size_y->endChangeGesture();
+	hVst->room_size_z->beginChangeGesture();
+	hVst->room_size_z->setValueNotifyingHost(tvconv_getMaxDimension(hTVC, 2) - tvconv_getMinDimension(hTVC, 2));
+	hVst->room_size_z->endChangeGesture();
 }
 
 
