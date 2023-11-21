@@ -40,7 +40,7 @@ enum {
 };
 
 class PluginProcessor  : public AudioProcessor,
-                         public VSTCallbackHandler
+                         public VST2ClientExtensions
 {
 public:
     /* Set/Get functions */
@@ -62,6 +62,7 @@ public:
             return 1;
         return 0;
     }
+    VST2ClientExtensions* getVST2ClientExtensions() override {return this;}
 
     /* wav file loading */
     void loadWavFile() {
@@ -75,7 +76,7 @@ public:
                 fileBuffer.setSize ((int)reader->numChannels, (int) reader->lengthInSamples);
                 reader->read (&fileBuffer, 0, (int) reader->lengthInSamples, 0, true, true);
             }
-            const float** H = fileBuffer.getArrayOfReadPointers();
+            const float* const* H = fileBuffer.getArrayOfReadPointers();
             multiconv_setFilters(hMCnv, H, fileBuffer.getNumChannels(), fileBuffer.getNumSamples(), (int)reader->sampleRate);
         }
     }

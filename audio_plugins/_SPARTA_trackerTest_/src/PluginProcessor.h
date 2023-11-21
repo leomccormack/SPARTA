@@ -74,7 +74,7 @@ enum {
 /**
 */
 class PluginProcessor  : public AudioProcessor,
-                         public VSTCallbackHandler
+                         public VST2ClientExtensions
 {
 public:
     /* Set/Get functions */
@@ -96,6 +96,7 @@ public:
             return 1;
         return 0;
     }
+    VST2ClientExtensions* getVST2ClientExtensions() override {return this;}
 
     float getX();
     float getY();

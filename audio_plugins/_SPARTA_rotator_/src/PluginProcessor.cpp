@@ -48,7 +48,7 @@ PluginProcessor::~PluginProcessor()
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 {
     /* if Euler rotation angles are sent as an array \ypr[3] */
-    if (message.size() == 3 && message.getAddressPattern().toString().compare("ypr")) {
+    if (message.size() == 3 && message.getAddressPattern().toString().compare("/ypr")==0) {
         if (message[0].isFloat32())
             rotator_setYaw(hRot, message[0].getFloat32());
         if (message[1].isFloat32())
@@ -58,7 +58,7 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
         return;
     }
     /* if Quaternion values are sent as an array \quaternion[4] */
-    if (message.size() == 4 && message.getAddressPattern().toString().compare("quaternion")) {
+    if (message.size() == 4 && message.getAddressPattern().toString().compare("/quaternion")==0) {
         if (message[0].isFloat32())
             rotator_setQuaternionW(hRot, message[0].getFloat32());
         if (message[1].isFloat32())
@@ -70,19 +70,19 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
         return;
     }
     /* if values are sent individually: */
-    if(message.getAddressPattern().toString().compare("yaw"))
+    if(message.getAddressPattern().toString().compare("/yaw")==0)
         rotator_setYaw(hRot, message[0].getFloat32());
-    else if(message.getAddressPattern().toString().compare("pitch"))
+    else if(message.getAddressPattern().toString().compare("/pitch")==0)
         rotator_setPitch(hRot, message[0].getFloat32());
-    else if(message.getAddressPattern().toString().compare("roll"))
+    else if(message.getAddressPattern().toString().compare("/roll")==0)
         rotator_setRoll(hRot, message[0].getFloat32());
-    else if(message.getAddressPattern().toString().compare("qw"))
+    else if(message.getAddressPattern().toString().compare("/qw")==0)
         rotator_setQuaternionW(hRot, message[0].getFloat32());
-    else if(message.getAddressPattern().toString().compare("qx"))
+    else if(message.getAddressPattern().toString().compare("/qx")==0)
         rotator_setQuaternionX(hRot, message[0].getFloat32());
-    else if(message.getAddressPattern().toString().compare("qy"))
+    else if(message.getAddressPattern().toString().compare("/qy")==0)
         rotator_setQuaternionY(hRot, message[0].getFloat32());
-    else if(message.getAddressPattern().toString().compare("qz"))
+    else if(message.getAddressPattern().toString().compare("/qz")==0)
         rotator_setQuaternionZ(hRot, message[0].getFloat32());
 }
 

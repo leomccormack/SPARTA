@@ -58,7 +58,7 @@ enum {
 class PluginProcessor  : public AudioProcessor,
                          public MultiTimer,
                          private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
-                         public VSTCallbackHandler
+                         public juce::VST2ClientExtensions
 {
 public:
     /* Get functions */
@@ -76,6 +76,7 @@ public:
             return 1;
         return 0;
     }
+    VST2ClientExtensions* getVST2ClientExtensions() override {return this;}
     
     /* OSC */
     void oscMessageReceived(const OSCMessage& message) override;
