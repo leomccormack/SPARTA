@@ -67,7 +67,7 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 {
     DBG_OSC("osc received: ", message);
 
-    if (message.size() == 3 && message.getAddressPattern().toString().compare("xyz")) {
+    if (message.size() == 3 && message.getAddressPattern().toString().compare("/xyz")==0) {
         if (message[0].isFloat32())
             setParameterRaw(0, message[0].getFloat32());
         if (message[1].isFloat32())
@@ -77,7 +77,7 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
         return;
     }
     
-    else if (message.size() == 7 && message.getAddressPattern().toString().compare("xyzquat")) {
+    else if (message.size() == 7 && message.getAddressPattern().toString().compare("/xyzquat")==0) {
         if (message[0].isFloat32())
             setParameterRaw(0, message[0].getFloat32());
         if (message[1].isFloat32())
@@ -95,7 +95,7 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
         return;
     }
 
-    else if (message.size() == 6 && message.getAddressPattern().toString().compare("xyzypr")) {
+    else if (message.size() == 6 && message.getAddressPattern().toString().compare("/xyzypr")==0) {
         if (message[0].isFloat32())
             setParameterRaw(0, message[0].getFloat32());
         if (message[1].isFloat32())
