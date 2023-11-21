@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_ambiBIN" projectType="audioplug" version="1.5.6"
+<JUCERPROJECT id="lfkRjX" name="sparta_ambiBIN" projectType="audioplug" version="1.5.7"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiBIN" pluginDesc="sparta_ambiBIN"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ABOA"
@@ -80,26 +80,26 @@
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sh/saf_sh_internal.h"/>
           </GROUP>
           <GROUP id="{4C5FC4A1-E08A-E255-28AB-F4B71A94A22D}" name="saf_sofa_reader">
-            <GROUP id="{4BDBF5DE-AA24-B409-8B50-59E7C211CB48}" name="libmysofa">
-              <GROUP id="{02AC66E3-258E-4F2B-E6FC-E17BB917F055}" name="internal">
-                <FILE id="FyRjFR" name="hdf_dataobject.c" compile="1" resource="0"
+            <FILE id="cZM3Ty" name="CMakeLists.txt" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/CMakeLists.txt"/>
+            <GROUP id="{4BE4FF87-84D1-384B-0675-79E895CD32E8}" name="libmysofa">
+              <GROUP id="{6000E775-3BF6-F276-B6C4-134C55FEBE3F}" name="internal">
+                <FILE id="apDY7x" name="hdf_dataobject.c" compile="1" resource="0"
                       file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_dataobject.c"/>
-                <FILE id="kgx9vg" name="hdf_fractalhead.c" compile="1" resource="0"
+                <FILE id="l8nPyb" name="hdf_fractalhead.c" compile="1" resource="0"
                       file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_fractalhead.c"/>
-                <FILE id="aNpfKG" name="hdf_reader.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_reader.c"/>
-                <FILE id="qhqX4K" name="hdf_reader.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_reader.h"/>
-                <FILE id="J9dxA7" name="kdtree.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/kdtree.c"/>
-                <FILE id="mgoCV5" name="kdtree.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/kdtree.h"/>
-                <FILE id="fMye4W" name="mysofa_internal.c" compile="1" resource="0"
+                <FILE id="ma91vo" name="hdf_reader.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_reader.c"/>
+                <FILE id="pl3w9X" name="hdf_reader.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_reader.h"/>
+                <FILE id="e5vGWC" name="kdtree.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/kdtree.c"/>
+                <FILE id="Npnc7V" name="kdtree.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/kdtree.h"/>
+                <FILE id="uUVRcO" name="mysofa_internal.c" compile="1" resource="0"
                       file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/mysofa_internal.c"/>
-                <FILE id="GknGIf" name="mysofa_internal.h" compile="0" resource="0"
+                <FILE id="HPvYVk" name="mysofa_internal.h" compile="0" resource="0"
                       file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/mysofa_internal.h"/>
               </GROUP>
-              <FILE id="FvGFpL" name="LICENSE" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/LICENSE"/>
-              <FILE id="gHiDan" name="mysofa.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/mysofa.c"/>
-              <FILE id="QadC5t" name="mysofa.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/mysofa.h"/>
+              <FILE id="V5mgo5" name="LICENSE" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/LICENSE"/>
+              <FILE id="tfaWBr" name="mysofa.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/mysofa.c"/>
+              <FILE id="h0J1rz" name="mysofa.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/mysofa.h"/>
             </GROUP>
-            <FILE id="cZM3Ty" name="CMakeLists.txt" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/CMakeLists.txt"/>
             <FILE id="v9RhMC" name="saf_sofa_reader.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/saf_sofa_reader.c"/>
             <FILE id="ejW7QY" name="saf_sofa_reader.h" compile="0" resource="0"

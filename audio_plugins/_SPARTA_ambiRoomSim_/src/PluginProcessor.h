@@ -46,7 +46,7 @@ enum {
 };
 
 class PluginProcessor  : public AudioProcessor,
-                         public VSTCallbackHandler
+                         public juce::VST2ClientExtensions
 {
 public:
     /* Get functions */
@@ -68,6 +68,7 @@ public:
             return 1;
         return 0;
     }
+    VST2ClientExtensions* getVST2ClientExtensions() override {return this;}
     
 private:
     void* hAmbi;          /* ambi_roomsim handle */

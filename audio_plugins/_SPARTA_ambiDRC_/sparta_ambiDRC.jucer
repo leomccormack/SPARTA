@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_ambiDRC" projectType="audioplug" version="1.2.7"
+<JUCERPROJECT id="lfkRjX" name="sparta_ambiDRC" projectType="audioplug" version="1.2.8"
               bundleIdentifier="com.LeoMcCormack.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiDRC" pluginDesc="sparta_ambiDRC"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ADRC"
@@ -14,7 +14,7 @@
               buildAUv3="0" pluginIsMidiEffectPlugin="0" displaySplashScreen="0"
               reportAppUsage="0" splashScreenColour="Dark" buildStandalone="0"
               enableIAA="0" companyCopyright="Aalto" pluginFormats="buildVST"
-              cppLanguageStandard="14" jucerFormatVersion="1">
+              jucerFormatVersion="1">
   <MAINGROUP id="imnfnp" name="sparta_ambiDRC">
     <FILE id="OvNdFt" name="SPARTALookAndFeel.h" compile="0" resource="0"
           file="../resources/SPARTALookAndFeel.h"/>
@@ -84,26 +84,26 @@
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sh/saf_sh_internal.h"/>
           </GROUP>
           <GROUP id="{590A6E5F-B805-8C8F-5E5D-2F4A805A29C8}" name="saf_sofa_reader">
-            <GROUP id="{28B4DCFB-292F-B471-D1BE-3190D5953181}" name="libmysofa">
-              <GROUP id="{AB534E35-FECF-EA25-B2E3-EB8684FBB0AF}" name="internal">
-                <FILE id="hWjx2v" name="hdf_dataobject.c" compile="1" resource="0"
+            <FILE id="sk9ySK" name="CMakeLists.txt" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/CMakeLists.txt"/>
+            <GROUP id="{2A211EDA-2816-4320-D74D-ACF787C435EA}" name="libmysofa">
+              <GROUP id="{F8D5E193-F114-5A16-1F9E-91B731336592}" name="internal">
+                <FILE id="jkWtDt" name="hdf_dataobject.c" compile="1" resource="0"
                       file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_dataobject.c"/>
-                <FILE id="IXJUzo" name="hdf_fractalhead.c" compile="1" resource="0"
+                <FILE id="gmC2Px" name="hdf_fractalhead.c" compile="1" resource="0"
                       file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_fractalhead.c"/>
-                <FILE id="Sf1hMs" name="hdf_reader.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_reader.c"/>
-                <FILE id="xn3zbj" name="hdf_reader.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_reader.h"/>
-                <FILE id="zQ1oeu" name="kdtree.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/kdtree.c"/>
-                <FILE id="zd6TTx" name="kdtree.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/kdtree.h"/>
-                <FILE id="aNFfwk" name="mysofa_internal.c" compile="1" resource="0"
+                <FILE id="gyr9m2" name="hdf_reader.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_reader.c"/>
+                <FILE id="WptAEx" name="hdf_reader.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/hdf_reader.h"/>
+                <FILE id="ML9zhG" name="kdtree.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/kdtree.c"/>
+                <FILE id="oLICvB" name="kdtree.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/kdtree.h"/>
+                <FILE id="FaVQl0" name="mysofa_internal.c" compile="1" resource="0"
                       file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/mysofa_internal.c"/>
-                <FILE id="QpMAzj" name="mysofa_internal.h" compile="0" resource="0"
+                <FILE id="qzh4c5" name="mysofa_internal.h" compile="0" resource="0"
                       file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/internal/mysofa_internal.h"/>
               </GROUP>
-              <FILE id="bgWSe7" name="LICENSE" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/LICENSE"/>
-              <FILE id="w37tst" name="mysofa.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/mysofa.c"/>
-              <FILE id="KT4bsQ" name="mysofa.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/mysofa.h"/>
+              <FILE id="QR4GR5" name="LICENSE" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/LICENSE"/>
+              <FILE id="RCxwWd" name="mysofa.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/mysofa.c"/>
+              <FILE id="WRwXsf" name="mysofa.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/libmysofa/mysofa.h"/>
             </GROUP>
-            <FILE id="sk9ySK" name="CMakeLists.txt" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/CMakeLists.txt"/>
             <FILE id="ayjAm2" name="saf_sofa_reader.c" compile="1" resource="0"
                   file="../../SDKs/Spatial_Audio_Framework/framework/modules/saf_sofa_reader/saf_sofa_reader.c"/>
             <FILE id="FghUR0" name="saf_sofa_reader.h" compile="0" resource="0"
@@ -286,35 +286,6 @@
         <MODULEPATH id="juce_audio_basics" path="../../SDKs/JUCE/modules/"/>
       </MODULEPATHS>
     </VS2017>
-    <VS2015 targetFolder="make/win64/VisualStudio2015" vstFolder="C://SDKs/VST3 SDK"
-            externalLibraries="saf_mkl_custom_lp64.lib&#10;saf_ipp_custom.lib"
-            vst3Folder="../../../../SDKs/VST3 SDK/" extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_USE_INTEL_IPP"
-            extraCompilerFlags="/bigobj">
-      <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName=" sparta_ambiDRC_debug"
-                       headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/Intel/oneAPI/mkl/latest/include&#10;C:/Program Files (x86)/Intel/oneAPI/ipp/latest/include"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"/>
-        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="sparta_ambiDRC" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/Intel/oneAPI/mkl/latest/include&#10;C:/Program Files (x86)/Intel/oneAPI/ipp/latest/include"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"/>
-      </CONFIGURATIONS>
-      <MODULEPATHS>
-        <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_gui_extra" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_gui_basics" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_graphics" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_events" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_data_structures" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_cryptography" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_core" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_audio_processors" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_audio_formats" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_audio_devices" path="../../SDKs/JUCE/modules/"/>
-        <MODULEPATH id="juce_audio_basics" path="../../SDKs/JUCE/modules/"/>
-      </MODULEPATHS>
-    </VS2015>
     <XCODE_MAC targetFolder="make/MacOSX/Xcode/" vstFolder="../../../../SDKs/VST3 SDK"
                externalLibraries="" vst3Folder="../../../../SDKs/VST3 SDK/"
                userNotes="-L/usr/local/lib -lsaf_mkl_custom" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom_lp64 -lsaf_ipp_custom&#10;-Wl,-rpath,/usr/local/lib"
