@@ -46,5 +46,6 @@ add_subdirectory(SDKs)
 # Configure SPARTA plugins
 option(BUILD_PLUGIN_FORMAT_VST2 "Build VST2 plugins" ON)
 option(BUILD_PLUGIN_FORMAT_VST3 "Build VST3 plugins" OFF)
+option(BUILD_PLUGIN_FORMAT_AU   "Build AU plugins"   OFF)
 option(BUILD_PLUGIN_FORMAT_LV2  "Build LV2 plugins"  OFF)
 add_subdirectory(audio_plugins)
