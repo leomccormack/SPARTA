@@ -107,6 +107,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_nIRpositions->setBounds (136, 139, 60, 20);
 
+
+    // SOURCE SLIDERS /////////////////////////////////////////////////////////////////////////////////////////////////
     SL_source_y.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_source_y.get());
     SL_source_y->setRange (0, 1, 0.001);
@@ -134,6 +136,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_source_x->setBounds (144, 200, 48, 20);
 
+
+    // RECEIVER SLIDERS ///////////////////////////////////////////////////////////////////////////////////////////////
     SL_receiver_x.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_receiver_x.get());
     SL_receiver_x->setRange (0, 1, 0.001);
@@ -173,6 +177,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_receiverIdx->setBounds (200, 308, 48, 20);
 
+    // OSC PORT TEXT EDITOR ///////////////////////////////////////////////////////////////////////////////////////////
     te_oscport.reset (new juce::TextEditor ("new text editor"));
     addAndMakeVisible (te_oscport.get());
     te_oscport->setMultiLine (false);
@@ -187,7 +192,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_oscport->setText (TRANS("9000"));
 
     te_oscport->setBounds (344, 296, 42, 22);
+    te_oscport->setTooltip("OSC addresses: /xyz [m]; /quat [-1,1]; /xyzquat [m][-1, 1]; /ypr [deg]; /xyzypr [m][deg].");
 
+    // COMBO BOX //////////////////////////////////////////////////////////////////////////////////////////////////////
     CBviewMode.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBviewMode.get());
     CBviewMode->setEditableText (false);
@@ -198,6 +205,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBviewMode->setBounds (755, 38, 92, 16);
 
+
+    // Yaw, Pitch & Roll sliders //////////////////////////////////////////////////////////////////////////////////////
     s_yaw.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_yaw.get());
     s_yaw->setRange (-180, 180, 0.01);
@@ -237,6 +246,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_roll->setBounds (326, 396, 60, 68);
 
+
+    // Yaw, Pitch and Roll flip toggle button /////////////////////////////////////////////////////////////////////////
     t_flipYaw.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (juce::String());
@@ -300,24 +311,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_source_y->setEnabled(false);
     SL_source_z->setEnabled(false);
 
-    /* file loader */
-    fileComp.reset (new FilenameComponent("fileComp", {},
-                                          true, false, false,
-                                          "*.sofa;*.nc;", {},
-                                          "Load SOFA File"));
-    addAndMakeVisible (fileComp.get());
-    fileComp->addListener(this);
-    fileComp->setBounds (16, 62, 380, 20);
-    if(strcmp(tvconv_getSofaFilePath(hTVC), "no_file") != 0){
-        fileComp->setCurrentFile(String(tvconv_getSofaFilePath(hTVC)), true, dontSendNotification);
-        refreshCoords();
-    } else {
-        SL_receiver_x->setEnabled(false);
-        SL_receiver_y->setEnabled(false);
-        SL_receiver_z->setEnabled(false);
-    }
 
-	/* fetch current configuration */
+	/* fetch current configuration *///////////////////////////////////////////////////////////////////////////////////
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
     CBviewMode->addItem(TRANS("Top View"), TOP_VIEW+1); /* must start from 1... */
     CBviewMode->addItem(TRANS("Side View"), SIDE_VIEW+1);
@@ -330,14 +325,38 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     t_flipRoll->setToggleState((bool)rotator_getFlipRoll(hRot), dontSendNotification);
     TBenableRotation->setToggleState(hVst->getEnableRotation(), dontSendNotification);
 
-    /* create scene view window */
+
+    /* create SCENE VIEW window *//////////////////////////////////////////////////////////////////////////////////////
     sceneWindow.reset (new sceneView(ownerFilter, 440, 432));
     addAndMakeVisible (sceneWindow.get());
     sceneWindow->setViewMode(CBviewMode->getSelectedId()-1);
     sceneWindow->setBounds (408, 58, 440, 432);
     refreshSceneViewWindow = true;
 
-    /* tooltips */
+
+    /* file loader *///////////////////////////////////////////////////////////////////////////////////////////////////
+    fileComp.reset(new FilenameComponent("fileComp", {},
+        true, false, false,
+        "*.sofa;*.nc;", {},
+        "Load SOFA File"));
+    addAndMakeVisible(fileComp.get());
+    fileComp->addListener(this);
+    fileComp->setBounds(16, 62, 380, 20);
+    if (strcmp(tvconv_getSofaFilePath(hTVC), "no_file") != 0) {
+        // string is different from "no_file" -> it's been selected a valid file
+        fileComp->setCurrentFile(String(tvconv_getSofaFilePath(hTVC)), true, dontSendNotification);
+        refreshCoords();
+        refreshSceneViewWindow = true;
+        sceneWindow->refreshSceneView();
+    }
+    else {
+        SL_receiver_x->setEnabled(false);
+        SL_receiver_y->setEnabled(false);
+        SL_receiver_z->setEnabled(false);
+    }
+
+
+    /* tooltips *//////////////////////////////////////////////////////////////////////////////////////////////////////
     TBenableRotation->setTooltip("Enable spherical harmonic/sound-field rotation. This is only applicable if you have loaded Ambisonic IRs, which are in the ACN channel ordering convention");
     s_yaw->setTooltip("Sets the 'Yaw' rotation angle (in degrees).");
     s_pitch->setTooltip("Sets the 'Pitch' rotation angle (in degrees).");
@@ -346,7 +365,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     t_flipPitch->setTooltip("Flips the sign (+/-) of the 'Pitch' rotation angle.");
     t_flipRoll->setTooltip("Flips the sign (+/-) of the 'Roll' rotation angle.");
 
-    /* Plugin description */
+
+    /* Plugin description *////////////////////////////////////////////////////////////////////////////////////////////
     pluginDescription.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (pluginDescription.get());
     pluginDescription->setBounds (0, 0, 240, 32);
@@ -355,7 +375,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pluginDescription->setTooltip(TRANS("Time-varying impulse response convolver. A set of IRs can be loaded from a sofa file, where IRs have to be assigned with different ListenerPositions. The position of the receiver can be varied during playback using the parameter sliders. The convolver finds the nearest neighbour IR of the selected position. It applies overlap-add partitioned convolution and cross-fades between previous and current positions to produce smooth transitions. Each IR can have up to 64 channels (7th order Ambisonics). Single fixed SourcePosition is assumed and only mono input is supported.\n"));
 
     /* Specify screen refresh rate */
-    startTimer(40); /*ms (40ms = 25 frames per second) */
+    startTimer(refreshInterval); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -636,7 +656,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 210, y = 86, width = 200, height = 30;
-        juce::String text (TRANS("IR Length (s):"));
+        juce::String text (TRANS("IR Length [s]:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -683,7 +703,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 71, y = 34, width = 270, height = 31;
+        int x = 18, y = 34, width = 120, height = 31;
         juce::String text (TRANS("Load IR dataset"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -691,7 +711,7 @@ void PluginEditor::paint (juce::Graphics& g)
         g.setColour (fillColour);
         g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
+                    juce::Justification::centredLeft, true);
     }
 
     {
@@ -708,7 +728,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 415, y = 34, width = 417, height = 31;
-        juce::String text (TRANS("Coordinate View"));
+        juce::String text (TRANS("Coordinate View [m]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -720,7 +740,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 71, y = 231, width = 270, height = 31;
-        juce::String text (TRANS("Target Listener Position"));
+        juce::String text (TRANS("Target Listener Position [m]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -792,7 +812,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 221, y = 374, width = 49, height = 30;
-        juce::String text (TRANS("\\ypr[0]"));
+        juce::String text (TRANS("/ypr[0]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -876,7 +896,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 294, y = 374, width = 40, height = 30;
-        juce::String text (TRANS("\\ypr[1]"));
+        juce::String text (TRANS("/ypr[1]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -888,7 +908,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 350, y = 374, width = 40, height = 30;
-        juce::String text (TRANS("\\ypr[2]"));
+        juce::String text (TRANS("/ypr[2]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -924,7 +944,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 71, y = 349, width = 270, height = 31;
-        juce::String text (TRANS("Ambisonic Sound-Field Rotation"));
+        juce::String text (TRANS("Ambisonic Sound-Field Rotation [degrees]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1002,6 +1022,47 @@ void PluginEditor::paint (juce::Graphics& g)
             break;
     }
 
+    g.setColour(Colours::white);
+    switch (tvConvError)
+    {
+    case SAF_TVCONV_NOT_INIT: /** TVCONV no file loaded */
+        g.drawText(TRANS("SOFA file not initialized"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    case SAF_TVCONV_SOFA_LOADING: /** Loading SOFA file */
+        g.drawText(TRANS("SOFA file: loading"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    case SAF_TVCONV_SOFA_OK: /** None of the error checks failed */
+        g.drawText(TRANS("SOFA file loaded"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    case SAF_TVCONV_SOFA_ERROR_INVALID_FILE_OR_FILE_PATH:  /** Not a SOFA file, or no such file was found in the specified location */
+        g.drawText(TRANS("SOFA file not loaded: INVALID FILE OR FILE PATH"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    case SAF_TVCONV_SOFA_ERROR_DIMENSIONS_UNEXPECTED:      /** Dimensions of the SOFA data were not as expected */
+        g.drawText(TRANS("SOFA file not loaded: DIMENSIONS UNEXPECTED"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    case SAF_TVCONV_SOFA_ERROR_FORMAT_UNEXPECTED: /** The data-type of the SOFA data was not as expected */
+        g.drawText(TRANS("SOFA file not loaded: FORMAT UNEXPECTED"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    case SAF_TVCONV_SOFA_ERROR_NETCDF_IN_USE: /** NetCDF is not thread safe! */
+        g.drawText(TRANS("SOFA file not loaded: NETCDF IN USE"),
+            136, 45, 264, 11,
+            Justification::centredLeft, true);
+        break;
+    default:
+        g.drawText(TRANS("SOFA file state"), 136, 45, 264, 11, Justification::centredLeft, true);
+    }
 
     //[/UserPaint]
 }
@@ -1212,13 +1273,103 @@ void PluginEditor::timerCallback()
         repaint(0,0,getWidth(),32);
     }
 
-    sceneWindow->refreshSceneView();
+    tvConvError = tvconv_getSofaErrorState(hTVC);
+    repaint(136, 45, 264, 11);
+
+
+    if (refreshSceneViewWindow == true)
+    {
+        sceneWindow->refreshSceneView();
+        refreshSceneViewWindow = false;
+    }
+    else
+    {
+        refreshDecimationCounter--;
+        if (refreshDecimationCounter == 0)
+        {
+            refreshDecimationCounter = 25;
+            sceneWindow->refreshSceneView();
+        }
+    }
 
     /* check if OSC port has changed */
     if (hVst->getOscPortID() != te_oscport->getText().getIntValue())
         hVst->setOscPortID(te_oscport->getText().getIntValue());
 }
- 
+
+void PluginEditor::refreshCoords()
+{
+    // Get receiver position data from convolver and update slider X
+    if (tvconv_getMaxDimension(hTVC, 0) > tvconv_getMinDimension(hTVC, 0))
+    {
+        SL_receiver_x->setEnabled(true);
+        SL_receiver_x->setRange(tvconv_getMinDimension(hTVC, 0),
+                                tvconv_getMaxDimension(hTVC, 0),
+                                0.001);
+    } 
+    else 
+    {
+        SL_receiver_x->setEnabled(false);
+    }
+    SL_receiver_x->setValue(tvconv_getTargetPosition(hTVC, 0));
+
+    // Get receiver position data from convolver and update slider Y
+    if (tvconv_getMaxDimension(hTVC, 1) > tvconv_getMinDimension(hTVC, 1)){
+        SL_receiver_y->setEnabled(true);
+        SL_receiver_y->setRange(tvconv_getMinDimension(hTVC, 1),
+                                tvconv_getMaxDimension(hTVC, 1),
+                                0.001);
+    } else {
+        SL_receiver_y->setEnabled(false);
+    }
+    SL_receiver_y->setValue(tvconv_getTargetPosition(hTVC, 1));
+
+    // Get receiver position data from convolver and update slider Z
+    if (tvconv_getMaxDimension(hTVC, 2) > tvconv_getMinDimension(hTVC, 2)){
+        SL_receiver_z->setEnabled(true);
+        SL_receiver_z->setRange(tvconv_getMinDimension(hTVC, 2),
+                                tvconv_getMaxDimension(hTVC, 2),
+                                0.001);
+    } else {
+        SL_receiver_z->setEnabled(false);
+    }
+    SL_receiver_z->setValue(tvconv_getTargetPosition(hTVC, 2));
+
+
+    // Get SOURCE position data from convolver and update sliders (XYZ)
+    
+    //float sourcePosition = tvconv_getSourcePosition(hTVC, 0);
+
+    SL_source_x->setRange(tvconv_getSourcePosition(hTVC, 0), tvconv_getSourcePosition(hTVC, 0)+1, 0.1);
+    SL_source_x->setValue(tvconv_getSourcePosition(hTVC, 0));
+    SL_source_y->setRange(tvconv_getSourcePosition(hTVC, 1), tvconv_getSourcePosition(hTVC, 1)+1, 0.1);
+    SL_source_y->setValue(tvconv_getSourcePosition(hTVC, 1));
+    SL_source_z->setRange(tvconv_getSourcePosition(hTVC, 2), tvconv_getSourcePosition(hTVC, 2)+1, 0.1);
+    SL_source_z->setValue(tvconv_getSourcePosition(hTVC, 2));
+
+	// Notify the host about the room size
+	hVst->room_size_x->beginChangeGesture();
+	hVst->room_size_x->setValueNotifyingHost(tvconv_getMaxDimension(hTVC, 0) - tvconv_getMinDimension(hTVC, 0));
+	hVst->room_size_x->endChangeGesture();
+	hVst->room_size_y->beginChangeGesture();
+	hVst->room_size_y->setValueNotifyingHost(tvconv_getMaxDimension(hTVC, 1) - tvconv_getMinDimension(hTVC, 1));
+	hVst->room_size_y->endChangeGesture();
+	hVst->room_size_z->beginChangeGesture();
+	hVst->room_size_z->setValueNotifyingHost(tvconv_getMaxDimension(hTVC, 2) - tvconv_getMinDimension(hTVC, 2));
+	hVst->room_size_z->endChangeGesture();
+}
+
+
+bool PluginEditor::getRefreshSceneViewWindow()
+{
+    return this->refreshSceneViewWindow;
+}
+
+void PluginEditor::setRefreshSceneViewWindow(bool val)
+{
+    refreshSceneViewWindow = val;
+}
+
 
 //[/MiscUserCode]
 
