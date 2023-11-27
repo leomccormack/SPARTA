@@ -62,6 +62,11 @@ public:
 
     /* Refresh coordinate limits based on loaded sofa files*/
     void refreshCoords();
+
+    bool getRefreshSceneViewWindow();
+
+    void setRefreshSceneViewWindow(bool val);
+
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -85,6 +90,7 @@ private:
 
     /* sofa loading */
     std::unique_ptr<juce::FilenameComponent> fileComp;
+    SAF_TVCONV_ERROR_CODES tvConvError;
 
     /* sofa file loading */
      void filenameComponentChanged (FilenameComponent*) override  {
@@ -92,11 +98,15 @@ private:
          const char* new_cstring = (const char*)directory.toUTF8();
          tvconv_setSofaFilePath(hTVC, new_cstring);
          refreshCoords();
+
      }
 
     /* scene view window */
     std::unique_ptr<sceneView> sceneWindow;
+    int refreshInterval             = 40; /*ms (40ms = 25 frames per second) if refreshDecimationFactor = 1 */
     bool refreshSceneViewWindow;
+    int refreshDecimationCounter    = 1;
+    int targetDecimatedRefreshRate  = 1;
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
