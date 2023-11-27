@@ -50,7 +50,86 @@ PluginProcessor::PluginProcessor() :
     {
         DBG("osc not connected");
     }
-    
+
+	// Parameter 1
+    addParameter(receiver_coordinate_x = new juce::AudioParameterFloat("receiver_coordinate_x", // parameterID
+        "receiver_coordinate_x", // parameter name
+        0.0f,   // minimum value
+        1.0f,   // maximum value
+        0.5f)); // default value
+	// Parameter 2
+	addParameter(receiver_coordinate_y = new juce::AudioParameterFloat("receiver_coordinate_y", // parameterID
+		"receiver_coordinate_y", // parameter name
+		0.0f,   // minimum value
+		1.0f,   // maximum value
+		0.5f)); // default value
+	// Parameter 3
+	addParameter(receiver_coordinate_z = new juce::AudioParameterFloat("receiver_coordinate_z", // parameterID
+		"receiver_coordinate_z", // parameter name
+		0.0f,   // minimum value
+		1.0f,   // maximum value
+		0.5f)); // default value
+	// Parameter 4
+	addParameter(receiver_quaternion_w = new juce::AudioParameterFloat("receiver_quaternion_w", // parameterID
+		"receiver_quaternion_w", // parameter name
+		0.0f,   // minimum value
+		1.0f,   // maximum value
+		0.5f)); // default value
+	// Parameter 5
+	addParameter(receiver_quaternion_x = new juce::AudioParameterFloat("receiver_quaternion_x", // parameterID
+		"receiver_quaternion_x", // parameter name
+		0.0f,   // minimum value
+		1.0f,   // maximum value
+		0.5f)); // default value
+	// Parameter 6
+	addParameter(receiver_quaternion_y = new juce::AudioParameterFloat("receiver_quaternion_y", // parameterID
+		"receiver_quaternion_y", // parameter name
+		0.0f,   // minimum value
+		1.0f,   // maximum value
+		0.5f)); // default value
+	// Parameter 7
+	addParameter(receiver_quaternion_z = new juce::AudioParameterFloat("receiver_quaternion_z", // parameterID
+		"receiver_quaternion_z", // parameter name
+		0.0f,   // minimum value
+		1.0f,   // maximum value
+		0.5f)); // default value
+	// Parameter 8
+	addParameter(receiver_yaw = new juce::AudioParameterFloat("receiver_yaw", // parameterID
+		"receiver_yaw", // parameter name
+		0.0f,   // minimum value
+		1.0f,   // maximum value
+		0.5f)); // default value
+	// Parameter 9
+	addParameter(receiver_pitch = new juce::AudioParameterFloat("receiver_pitch", // parameterID
+		"receiver_pitch", // parameter name
+		0.0f,   // minimum value
+		1.0f,   // maximum value
+		0.5f)); // default value
+	// Parameter 10
+	addParameter(receiver_roll = new juce::AudioParameterFloat("receiver_roll", // parameterID
+		"receiver_roll", // parameter name
+		0.0f,   // minimum value
+		1.0f,   // maximum value
+		0.5f)); // default value
+	// Parameter 11
+	addParameter(room_size_x = new juce::AudioParameterFloat("room_size_x", // parameterID
+		"room_size_x", // parameter name
+		0.0f,   // minimum value
+		1.0f,   // maximum value
+		0.5f)); // default value
+	// Parameter 12
+	addParameter(room_size_y = new juce::AudioParameterFloat("room_size_y", // parameterID
+		"room_size_y", // parameter name
+		0.0f,   // minimum value
+		1.0f,   // maximum value
+		0.5f)); // default value
+	// Parameter 13
+	addParameter(room_size_z = new juce::AudioParameterFloat("room_size_z", // parameterID
+		"room_size_z", // parameter name
+		0.0f,   // minimum value
+		1.0f,   // maximum value
+		0.5f)); // default value
+
 }
 
 PluginProcessor::~PluginProcessor()
@@ -65,9 +144,8 @@ PluginProcessor::~PluginProcessor()
 
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 {
-    DBG_OSC("osc received: ", message);
 
-    if (message.size() == 3 && message.getAddressPattern().toString().compare("/xyz")==0) {
+    if (message.size() == 3 && message.getAddressPattern().toString().compare("/xyz") == 0 ) {
         if (message[0].isFloat32())
             setParameterRaw(0, message[0].getFloat32());
         if (message[1].isFloat32())
@@ -76,8 +154,20 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
             setParameterRaw(2, message[2].getFloat32());
         return;
     }
-    
-    else if (message.size() == 7 && message.getAddressPattern().toString().compare("/xyzquat")==0) {
+
+    else if (message.size() == 4 && message.getAddressPattern().toString().compare("/quat") == 0) {
+        if (message[0].isFloat32())
+            rotator_setQuaternionW(hRot, message[0].getFloat32());
+        if (message[1].isFloat32())
+            rotator_setQuaternionX(hRot, message[1].getFloat32());
+        if (message[2].isFloat32())
+            rotator_setQuaternionY(hRot, message[2].getFloat32());
+        if (message[3].isFloat32())
+            rotator_setQuaternionZ(hRot, message[3].getFloat32());
+        return;
+    }
+
+    else if (message.size() == 7 && message.getAddressPattern().toString().compare("/xyzquat") == 0) {
         if (message[0].isFloat32())
             setParameterRaw(0, message[0].getFloat32());
         if (message[1].isFloat32())
@@ -91,11 +181,21 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
         if (message[5].isFloat32())
             rotator_setQuaternionY(hRot, message[5].getFloat32());
         if (message[6].isFloat32())
-            rotator_setQuaternionY(hRot, message[6].getFloat32());
+            rotator_setQuaternionZ(hRot, message[6].getFloat32());
         return;
     }
 
-    else if (message.size() == 6 && message.getAddressPattern().toString().compare("/xyzypr")==0) {
+    else if (message.size() == 3 && message.getAddressPattern().toString().compare("/ypr") == 0) {
+        if (message[0].isFloat32())
+            rotator_setYaw(hRot, message[0].getFloat32());
+        if (message[1].isFloat32())
+            rotator_setPitch(hRot, message[1].getFloat32());
+        if (message[2].isFloat32())
+            rotator_setRoll(hRot, message[2].getFloat32());
+        return;
+    }
+
+    else if (message.size() == 6 && message.getAddressPattern().toString().compare("/xyzypr") == 0 ) {
         if (message[0].isFloat32())
             setParameterRaw(0, message[0].getFloat32());
         if (message[1].isFloat32())
@@ -108,7 +208,6 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
             rotator_setPitch(hRot, message[4].getFloat32());
         if (message[5].isFloat32())
             rotator_setRoll(hRot, message[5].getFloat32());
-
         return;
     }
 }
@@ -182,23 +281,51 @@ int PluginProcessor::getNumParameters()
 
 float PluginProcessor::getParameter(int index)
 {
-    if (index < 3) {
-        if (tvconv_getMaxDimension(hTVCnv, index) > tvconv_getMinDimension(hTVCnv, index)){
+    if (index < 3) 
+    {
+        if (tvconv_getMaxDimension(hTVCnv, index) > tvconv_getMinDimension(hTVCnv, index))
+        {
             return (tvconv_getTargetPosition(hTVCnv, index)-tvconv_getMinDimension(hTVCnv, index))/
                 (tvconv_getMaxDimension(hTVCnv, index)-tvconv_getMinDimension(hTVCnv, index));
         }
     }
+    if (index == k_room_size_x)
+    {
+        return (tvconv_getMaxDimension(hTVCnv, 0) - tvconv_getMinDimension(hTVCnv, 0));
+    }
+    if (index == k_room_size_y)
+    {
+        return (tvconv_getMaxDimension(hTVCnv, 1) - tvconv_getMinDimension(hTVCnv, 1));
+    }
+    if (index == k_room_size_z)
+    {
+        return (tvconv_getMaxDimension(hTVCnv, 2) - tvconv_getMinDimension(hTVCnv, 2));
+    }
+
+    // otherwise
     return 0.0f;
 }
 
 const String PluginProcessor::getParameterName (int index)
 {
     switch (index) {
-        case k_receiverCoordX: return "receiver_coordinate_x";
-        case k_receiverCoordY: return "receiver_coordinate_y";
-        case k_receiverCoordZ: return "receiver_coordinate_z";
+        //case k_receiverCoordX:	return "receiver_coordinate_x";
+  //      case k_receiverCoordY:	return "receiver_coordinate_y";
+  //      case k_receiverCoordZ:	return "receiver_coordinate_z";
+		//case k_qw:				return "receiver_quaternion_w";
+		//case k_qx:				return "receiver_quaternion_x";
+		//case k_qy:				return "receiver_quaternion_y";
+		//case k_qz:				return "receiver_quaternion_z";
+		//case k_yaw:				return "receiver_yaw";
+		//case k_pitch:			return "receiver_pitch";
+		//case k_roll:			return "receiver_roll";
+  //      case k_room_size_x:		return "room_size_x";
+  //      case k_room_size_y:		return "room_size_y";
+  //      case k_room_size_z:		return "room_size_z";
+	
         default: return "NULL";
     }
+	//return "NULL";
 }
 
 const String PluginProcessor::getParameterText(int index)
@@ -212,6 +339,8 @@ const String PluginProcessor::getParameterText(int index)
 void PluginProcessor::setParameter (int index, float newValue)
 {
     DBG("param set");
+
+	// VST parameters are in the range [0, 1]
     float newValueScaled;
     if (index < 3) {
         newValueScaled = newValue *
@@ -222,6 +351,43 @@ void PluginProcessor::setParameter (int index, float newValue)
             refreshWindow = true;
         }
     }
+	if( index == k_qw )
+	{
+		newValueScaled = (newValue - 0.5) * 2.0f;
+		rotator_setQuaternionW(hRot, newValueScaled);
+	}
+	if ( index == k_qx )
+	{
+		newValueScaled = (newValue - 0.5) * 2.0f;
+		rotator_setQuaternionX(hRot, newValueScaled);
+	}
+	if ( index == k_qy )
+	{
+		newValueScaled = (newValue - 0.5) * 2.0f;
+		rotator_setQuaternionY(hRot, newValueScaled);
+	}
+	if ( index == k_qz )
+	{
+		newValueScaled = (newValue - 0.5) * 2.0f;
+		rotator_setQuaternionZ(hRot, newValueScaled);
+	}
+	if( index == k_yaw )
+	{
+		newValueScaled = ( newValue - 0.5 ) * 360.0f;
+		rotator_setYaw( hRot, newValueScaled );
+	}
+	if( index == k_pitch )
+	{	
+		newValueScaled = ( newValue - 0.5 ) * 360.0f;
+		rotator_setPitch( hRot, newValueScaled );
+	}
+	if( index == k_roll )
+	{
+		newValueScaled = ( newValue - 0.5 ) * 360.0f;
+		rotator_setRoll( hRot, newValueScaled );
+	}
+
+	//refreshWindow = true;
 }
 
 void PluginProcessor::setParameterRaw(int index, float newValue)
@@ -387,6 +553,17 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 }
                 
                 tvconv_refreshParams(hTVCnv);
+
+				// Notify the host about the room size
+                room_size_x->beginChangeGesture();
+				room_size_x->setValueNotifyingHost( tvconv_getMaxDimension(hTVCnv, 0) - tvconv_getMinDimension(hTVCnv, 0) );
+				room_size_x->endChangeGesture();
+				room_size_y->beginChangeGesture();
+				room_size_y->setValueNotifyingHost( tvconv_getMaxDimension(hTVCnv, 1) - tvconv_getMinDimension(hTVCnv, 1) );
+				room_size_y->endChangeGesture();
+				room_size_z->beginChangeGesture();
+				room_size_z->setValueNotifyingHost( tvconv_getMaxDimension(hTVCnv, 2) - tvconv_getMinDimension(hTVCnv, 2) );
+				room_size_z->endChangeGesture();
             }
         }
 }
