@@ -72,7 +72,7 @@ The plug-ins may be built with CMake (version 3.15 or higher):
  mkdir build
  cmake -S . -B build -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_ENABLE_NETCDF=1
  cd build
- cmake --build . --target ALL_BUILD --config Release
+ make
  ```
  
 Or for Visual Studio users (using x64 Native Tools Command Prompt as **administrator**):
