@@ -38,6 +38,7 @@ typedef enum _TIMERS{
 /* Parameter tags: for the default VST GUI */
 enum {	 
     k_nChannels,
+    k_decorrelation,
     
 	k_NumOfParameters
 };
