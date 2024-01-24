@@ -334,7 +334,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pluginDescription->setBounds (0, 0, 200, 32);
     pluginDescription->setAlpha(0.0f);
     pluginDescription->setEnabled(false);
-    pluginDescription->setTooltip(TRANS("This is a shoebox room simulator based on the image source method. It supports multiple sources and Ambisonic receivers. Due to the 64 channel limit, the number of receivers is order-dependent; e.g.: up to 16xFOA, 4xTOA, or 1x7th-order receivers."));
+    pluginDescription->setTooltip(TRANS("This is a shoebox room simulator based on the image source method. It supports multiple sources and Ambisonic receivers. Due to the 64 channel limit, the number of receivers is order-dependent; e.g.: up to 16x FOA, 4x 3rd order, or 1x 7th-order receivers."));
 
 	/* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
