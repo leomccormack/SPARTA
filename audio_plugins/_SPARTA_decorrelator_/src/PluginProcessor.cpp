@@ -39,8 +39,8 @@ PluginProcessor::~PluginProcessor()
 void PluginProcessor::setParameter (int index, float newValue)
 {
     switch (index) {
-        case k_nChannels:  decorrelator_setNumberOfChannels(hDecor, (int)(newValue*(float)(MAX_NUM_CHANNELS-1) + 1.5f));
-         
+        case k_nChannels:  decorrelator_setNumberOfChannels(hDecor, (int)(newValue*(float)(MAX_NUM_CHANNELS-1) + 1.5f)); break;
+        case k_decorrelation: decorrelator_setDecorrelationAmount(hDecor, newValue); break;
         default: break;
     }
 }
@@ -53,6 +53,7 @@ float PluginProcessor::getParameter (int index)
 {
     switch (index) {
         case k_nChannels:   return (float)(decorrelator_getNumberOfChannels(hDecor)-1)/(float)(MAX_NUM_CHANNELS-1);
+        case k_decorrelation: return decorrelator_getDecorrelationAmount(hDecor);
         default: return 0.0f;
     }
 }
@@ -71,6 +72,7 @@ const String PluginProcessor::getParameterName (int index)
 {
     switch (index) {
         case k_nChannels:            return "order";
+        case k_decorrelation:        return "decorrelation";
        
         default: return "NULL";
     }
@@ -80,6 +82,7 @@ const String PluginProcessor::getParameterText(int index)
 {
     switch (index) {
         case k_nChannels: return String(decorrelator_getNumberOfChannels(hDecor));
+        case k_decorrelation: return String(decorrelator_getDecorrelationAmount(hDecor));
         default: return "NULL";
     }
 }
