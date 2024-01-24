@@ -346,7 +346,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
 
     /* tooltips *//////////////////////////////////////////////////////////////////////////////////////////////////////
-    TBenableRotation->setTooltip("Enable spherical harmonic/sound-field rotation. This is only applicable if you have loaded Ambisonic IRs, which are in the ACN channel ordering convention");
+    TBenableRotation->setTooltip("Enable spherical harmonic/sound-field rotation. This is only applicable if you have loaded Ambisonic IRs, which must be in the ACN channel ordering convention. (Note that the Ambisonics normalisation convention does not affect the rotations (i.e. it doesn't matter if the Ambisonic signals are N3D or SN3D, the rotations will be correct)).");
     s_yaw->setTooltip("Sets the 'Yaw' rotation angle (in degrees).");
     s_pitch->setTooltip("Sets the 'Pitch' rotation angle (in degrees).");
     s_roll->setTooltip("Sets the 'Roll' rotation angle (in degrees).");
