@@ -170,6 +170,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
     CBorder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
     CBorder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
+    CBorder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
+    CBorder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
+    CBorder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
     CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
     CBoutputFormat->addItem (TRANS("FuMa"), CH_FUMA);
     CBnorm->addItem (TRANS("N3D"), NORM_N3D);

@@ -238,6 +238,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBinputOrder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
     CBinputOrder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
     CBinputOrder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
+    CBinputOrder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
+    CBinputOrder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
+    CBinputOrder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
 
     /* add upscale order options */
     CBupscaleOrder->addItem (TRANS("1st order"), UPSCALE_ORDER_FIRST);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="lfkRjX" name="sparta_pitchShifter" projectType="audioplug"
-              version="1.0.2" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
+              version="1.1.0" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_pitchShifter" pluginDesc="sparta_pitchShifter"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="PSOA"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"

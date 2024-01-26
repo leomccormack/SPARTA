@@ -25,8 +25,8 @@
 
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(64), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
 {
     dirass_create(&hDir);
 
@@ -160,7 +160,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     nHostBlockSize = samplesPerBlock;
     nSampleRate = (int)(sampleRate + 0.5);
-    nNumInputs = getTotalNumInputChannels(); 
+    nNumInputs = jmin(getTotalNumInputChannels(), MAX_NUM_CHANNELS);
     isPlaying = false;
     dirass_init(hDir, nSampleRate);
 
@@ -175,7 +175,7 @@ void PluginProcessor::releaseResources()
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     int nCurrentBlockSize = buffer.getNumSamples();
-    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
+    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), MAX_NUM_CHANNELS);
     float* const* bufferData = buffer.getArrayOfWritePointers();
 
     /* check whether the playhead is moving */

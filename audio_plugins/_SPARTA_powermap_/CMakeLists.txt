@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-project(sparta_powermap VERSION 1.4.4)
+project(sparta_powermap VERSION 1.5.0)
 message(STATUS "  ${PROJECT_NAME}")
 
 # juce helper function to create a library, which is configured as a JUCE plugin

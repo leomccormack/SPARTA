@@ -16,8 +16,8 @@ static PluginProcessor* thePluginProcessor = nullptr;
 //==============================================================================
 PluginProcessor::PluginProcessor() :
     AudioProcessor(BusesProperties()
-        .withInput("Input", AudioChannelSet::discreteChannels(64), true)
-        .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
+        .withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
 {
     jassert(thePluginProcessor == nullptr);
     thePluginProcessor = this;
@@ -405,8 +405,8 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
 
     nHostBlockSize = samplesPerBlock;
-    nNumInputs =  getTotalNumInputChannels();
-    nNumOutputs = getTotalNumOutputChannels();
+    nNumInputs =  jmin(getTotalNumInputChannels(), MAX_NUM_CHANNELS);
+    nNumOutputs = jmin(getTotalNumOutputChannels(), MAX_NUM_CHANNELS);
     nSampleRate = (int)(sampleRate + 0.5);
     //isPlaying = false;
 
@@ -460,8 +460,8 @@ bool PluginProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& /*midiMessages*/)
 {
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
-    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
-    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
+    nNumInputs = jmin(jmin(getTotalNumInputChannels(), buffer.getNumChannels()), MAX_NUM_CHANNELS);
+    nNumOutputs = jmin(jmin(getTotalNumOutputChannels(), buffer.getNumChannels()), MAX_NUM_CHANNELS);
     float* const* bufferData = buffer.getArrayOfWritePointers();
 
     tvconv_process(hTVCnv, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);
@@ -472,7 +472,7 @@ void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Midi
 
         if ((nCurrentBlockSize % frameSize == 0)) { /* divisible by frame size */
             for (int frame = 0; frame < nCurrentBlockSize / frameSize; frame++) {
-                for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+                for (int ch = 0; ch < jmin(buffer.getNumChannels(), MAX_NUM_CHANNELS); ch++)
                     pFrameData[ch] = &bufferData[ch][frame * frameSize];
 
                 /* perform processing */

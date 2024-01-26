@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-project(sparta_ambiDEC VERSION 1.6.6)
+project(sparta_ambiDEC VERSION 1.7.0)
 message(STATUS "  ${PROJECT_NAME}")
 
 # juce helper function to create a library, which is configured as a JUCE plugin

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_sldoa" projectType="audioplug" version="1.4.5"
+<JUCERPROJECT id="lfkRjX" name="sparta_sldoa" projectType="audioplug" version="1.5.0"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_sldoa" pluginDesc="sparta_sldoa"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="SLOA"
@@ -34,15 +34,11 @@
         <FILE id="S3NMxe" name="sldoa.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/include/sldoa.h"/>
         <FILE id="HivqEB" name="sldoa_internal.h" compile="0" resource="0"
               file="../../SDKs/Spatial_Audio_Framework/examples/src/sldoa/sldoa_internal.h"/>
-        <FILE id="oMZ6K3" name="sldoa_database.h" compile="0" resource="0"
-              file="../../SDKs/Spatial_Audio_Framework/examples/src/sldoa/sldoa_database.h"/>
       </GROUP>
       <GROUP id="{453AAB65-313A-A63C-A76D-DA88EB1A2099}" name="Source Files">
         <FILE id="icCmUM" name="sldoa.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/src/sldoa/sldoa.c"/>
         <FILE id="U3Glb5" name="sldoa_internal.c" compile="1" resource="0"
               file="../../SDKs/Spatial_Audio_Framework/examples/src/sldoa/sldoa_internal.c"/>
-        <FILE id="svKziS" name="sldoa_database.c" compile="1" resource="0"
-              file="../../SDKs/Spatial_Audio_Framework/examples/src/sldoa/sldoa_database.c"/>
       </GROUP>
     </GROUP>
     <GROUP id="{FE06285D-FCA9-6D98-5EFF-382EF66607CF}" name="Spatial_Audio_Framework">
