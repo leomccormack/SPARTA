@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.1.2
+  Created with Projucer version: 7.0.9
 
   ------------------------------------------------------------------------------
 
@@ -106,7 +106,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBmode->setEditableText (false);
     CBmode->setJustificationType (juce::Justification::centredLeft);
     CBmode->setTextWhenNothingSelected (juce::String());
-    CBmode->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBmode->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBmode->addListener (this);
 
     CBmode->setBounds (816, 125, 86, 20);
@@ -392,7 +392,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 23, y = 58, width = 153, height = 30;
-        juce::String text (TRANS("Number of Inputs:"));
+        juce::String text (TRANS ("Number of Inputs:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -404,7 +404,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 84, y = 32, width = 113, height = 30;
-        juce::String text (TRANS("Inputs"));
+        juce::String text (TRANS ("Inputs"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -416,7 +416,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 782, y = 32, width = 113, height = 30;
-        juce::String text (TRANS("Outputs"));
+        juce::String text (TRANS ("Outputs"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -428,7 +428,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 392, y = 32, width = 136, height = 30;
-        juce::String text (TRANS("Panning Window"));
+        juce::String text (TRANS ("Panning Window"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -440,7 +440,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 720, y = 58, width = 160, height = 30;
-        juce::String text (TRANS("Use Default IR set:"));
+        juce::String text (TRANS ("Use Default IR set:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -452,7 +452,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 722, y = 274, width = 118, height = 30;
-        juce::String text (TRANS("DAW Samplerate:"));
+        juce::String text (TRANS ("DAW Samplerate:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -464,7 +464,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 1, width = 100, height = 32;
-        juce::String text (TRANS("SPARTA|"));
+        juce::String text (TRANS ("SPARTA|"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -476,7 +476,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 92, y = 1, width = 112, height = 32;
-        juce::String text (TRANS("Spreader"));
+        juce::String text (TRANS ("Spreader"));
         juce::Colour fillColour = juce::Colour (0xfffff973);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -540,7 +540,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 722, y = 250, width = 118, height = 30;
-        juce::String text (TRANS("IR Samplerate:"));
+        juce::String text (TRANS ("IR Samplerate:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -552,7 +552,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 722, y = 202, width = 126, height = 30;
-        juce::String text (TRANS("Num Directions:"));
+        juce::String text (TRANS ("Num Directions:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -564,7 +564,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 722, y = 226, width = 89, height = 30;
-        juce::String text (TRANS("IR length:"));
+        juce::String text (TRANS ("IR length:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -576,7 +576,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 722, y = 118, width = 89, height = 30;
-        juce::String text (TRANS("Spread Mode:"));
+        juce::String text (TRANS ("Spread Mode:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -588,7 +588,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 722, y = 178, width = 142, height = 30;
-        juce::String text (TRANS("Num Channels:"));
+        juce::String text (TRANS ("Num Channels:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -600,7 +600,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 722, y = 146, width = 89, height = 30;
-        juce::String text (TRANS("Avg Coeff:"));
+        juce::String text (TRANS ("Avg Coeff:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
