@@ -25,8 +25,8 @@
 
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(64), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
 {
 	nSampleRate = 48000;
 	sldoa_create(&hSld);
@@ -157,7 +157,7 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     nHostBlockSize = samplesPerBlock;
-    nNumInputs =  getTotalNumInputChannels();
+    nNumInputs =  jmin(getTotalNumInputChannels(), MAX_NUM_CHANNELS);
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false; 
 	sldoa_init(hSld, nSampleRate);
@@ -173,7 +173,7 @@ void PluginProcessor::releaseResources()
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
 	int nCurrentBlockSize = buffer.getNumSamples();
-    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
+    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), MAX_NUM_CHANNELS);
     float* const* bufferData = buffer.getArrayOfWritePointers();
  
     /* check whether the playhead is moving */

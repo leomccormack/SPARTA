@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 7.0.9
 
   ------------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_channels.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_num_channels.get());
-    SL_num_channels->setRange (1, 64, 1);
+    SL_num_channels->setRange (1, 128, 1);
     SL_num_channels->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_channels->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_channels->addListener (this);
@@ -62,7 +62,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBfftsize->setEditableText (false);
     CBfftsize->setJustificationType (juce::Justification::centredLeft);
     CBfftsize->setTextWhenNothingSelected (juce::String());
-    CBfftsize->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBfftsize->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBfftsize->addListener (this);
 
     CBfftsize->setBounds (98, 78, 112, 19);
@@ -72,7 +72,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBoversampling->setEditableText (false);
     CBoversampling->setJustificationType (juce::Justification::centredLeft);
     CBoversampling->setTextWhenNothingSelected (juce::String());
-    CBoversampling->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBoversampling->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBoversampling->addListener (this);
 
     CBoversampling->setBounds (361, 78, 112, 19);
@@ -252,7 +252,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 218, y = 41, width = 139, height = 30;
-        juce::String text (TRANS("Pitch Shift Factor:"));
+        juce::String text (TRANS ("Pitch Shift Factor:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -264,7 +264,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 41, width = 152, height = 30;
-        juce::String text (TRANS("Number of Channels:"));
+        juce::String text (TRANS ("Number of Channels:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -276,7 +276,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 1, width = 100, height = 32;
-        juce::String text (TRANS("SPARTA|"));
+        juce::String text (TRANS ("SPARTA|"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -288,7 +288,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 92, y = 1, width = 124, height = 32;
-        juce::String text (TRANS("PitchShifter"));
+        juce::String text (TRANS ("PitchShifter"));
         juce::Colour fillColour = juce::Colour (0xff8dff86);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -340,7 +340,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 15, y = 71, width = 96, height = 35;
-        juce::String text (TRANS("FFT Size:"));
+        juce::String text (TRANS ("FFT Size:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -352,7 +352,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 230, y = 71, width = 96, height = 35;
-        juce::String text (TRANS("Oversampling:"));
+        juce::String text (TRANS ("Oversampling:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -543,7 +543,7 @@ BEGIN_JUCER_METADATA
           needsCallback="1"/>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_channels"
           virtualName="" explicitFocusOrder="0" pos="163 47 48 20" min="1.0"
-          max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          max="128.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="aeb0b2f644784061" memberName="CBfftsize"

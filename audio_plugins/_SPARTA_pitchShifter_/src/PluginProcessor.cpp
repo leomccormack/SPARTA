@@ -24,8 +24,8 @@
 
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(64), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
 {
 	nSampleRate = 48000; 
 	pitch_shifter_create(&hPS);
@@ -184,8 +184,8 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     nHostBlockSize = samplesPerBlock;
-    nNumInputs =  getTotalNumInputChannels();
-    nNumOutputs = getTotalNumOutputChannels();
+    nNumInputs =  jmin(getTotalNumInputChannels(), MAX_NUM_CHANNELS);
+    nNumOutputs = jmin(getTotalNumOutputChannels(), MAX_NUM_CHANNELS);
     nSampleRate = (int)(sampleRate + 0.5);
 
 	pitch_shifter_init(hPS, (float)sampleRate);
@@ -199,8 +199,8 @@ void PluginProcessor::releaseResources()
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
-    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
-    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
+    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), MAX_NUM_CHANNELS);
+    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), MAX_NUM_CHANNELS);
     float* const* bufferData = buffer.getArrayOfWritePointers();
 
     pitch_shifter_process(hPS, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);

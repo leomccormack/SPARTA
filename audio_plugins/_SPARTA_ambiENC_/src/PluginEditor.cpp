@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 7.0.9
 
   ------------------------------------------------------------------------------
 
@@ -40,14 +40,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBsourceDirsPreset->setEditableText (false);
     CBsourceDirsPreset->setJustificationType (juce::Justification::centredLeft);
     CBsourceDirsPreset->setTextWhenNothingSelected (juce::String());
-    CBsourceDirsPreset->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBsourceDirsPreset->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBsourceDirsPreset->addListener (this);
 
     CBsourceDirsPreset->setBounds (88, 96, 112, 20);
 
     SL_num_sources.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_num_sources.get());
-    SL_num_sources->setRange (1, 64, 1);
+    SL_num_sources->setRange (1, 128, 1);
     SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
@@ -58,8 +58,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (juce::Justification::centredLeft);
-    CBoutputFormat->setTextWhenNothingSelected (TRANS("ACN"));
-    CBoutputFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBoutputFormat->setTextWhenNothingSelected (TRANS ("ACN"));
+    CBoutputFormat->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBoutputFormat->addListener (this);
 
     CBoutputFormat->setBounds (343, 316, 112, 20);
@@ -68,8 +68,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (CBnormalisation.get());
     CBnormalisation->setEditableText (false);
     CBnormalisation->setJustificationType (juce::Justification::centredLeft);
-    CBnormalisation->setTextWhenNothingSelected (TRANS("N3D"));
-    CBnormalisation->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBnormalisation->setTextWhenNothingSelected (TRANS ("N3D"));
+    CBnormalisation->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBnormalisation->addListener (this);
 
     CBnormalisation->setBounds (578, 316, 112, 20);
@@ -79,14 +79,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorder->setEditableText (false);
     CBorder->setJustificationType (juce::Justification::centredLeft);
     CBorder->setTextWhenNothingSelected (juce::String());
-    CBorder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBorder->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBorder->addListener (this);
 
     CBorder->setBounds (88, 64, 112, 20);
 
     tb_loadJSON.reset (new juce::TextButton ("new button"));
     addAndMakeVisible (tb_loadJSON.get());
-    tb_loadJSON->setButtonText (TRANS("Import"));
+    tb_loadJSON->setButtonText (TRANS ("Import"));
     tb_loadJSON->setConnectedEdges (juce::Button::ConnectedOnRight);
     tb_loadJSON->addListener (this);
     tb_loadJSON->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff14889e));
@@ -95,7 +95,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     tb_saveJSON.reset (new juce::TextButton ("new button"));
     addAndMakeVisible (tb_saveJSON.get());
-    tb_saveJSON->setButtonText (TRANS("Export"));
+    tb_saveJSON->setButtonText (TRANS ("Export"));
     tb_saveJSON->setConnectedEdges (juce::Button::ConnectedOnLeft);
     tb_saveJSON->addListener (this);
     tb_saveJSON->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff224d97));
@@ -166,6 +166,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
     CBorder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
     CBorder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
+    CBorder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
+    CBorder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
+    CBorder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
     CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
     CBoutputFormat->addItem (TRANS("FuMa"), CH_FUMA);
     CBnormalisation->addItem (TRANS("N3D"), NORM_N3D);
@@ -313,7 +316,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 20, y = 90, width = 67, height = 30;
-        juce::String text (TRANS("Presets: "));
+        juce::String text (TRANS ("Presets: "));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -351,7 +354,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 20, y = 120, width = 180, height = 30;
-        juce::String text (TRANS("Number of Inputs:"));
+        juce::String text (TRANS ("Number of Inputs:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -363,7 +366,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 72, y = 32, width = 96, height = 30;
-        juce::String text (TRANS("Encoding"));
+        juce::String text (TRANS ("Encoding"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -375,7 +378,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 405, y = 32, width = 163, height = 30;
-        juce::String text (TRANS("Panning Window"));
+        juce::String text (TRANS ("Panning Window"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -400,7 +403,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 231, y = 311, width = 145, height = 30;
-        juce::String text (TRANS("Channel Order:"));
+        juce::String text (TRANS ("Channel Order:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -412,7 +415,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 471, y = 311, width = 145, height = 30;
-        juce::String text (TRANS("Normalisation:"));
+        juce::String text (TRANS ("Normalisation:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -437,7 +440,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 20, y = 60, width = 67, height = 30;
-        juce::String text (TRANS("Order: "));
+        juce::String text (TRANS ("Order: "));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -462,7 +465,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 1, width = 100, height = 32;
-        juce::String text (TRANS("SPARTA|"));
+        juce::String text (TRANS ("SPARTA|"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -474,7 +477,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 92, y = 1, width = 112, height = 32;
-        juce::String text (TRANS("AmbiENC"));
+        juce::String text (TRANS ("AmbiENC"));
         juce::Colour fillColour = juce::Colour (0xfffb6f54);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -804,7 +807,7 @@ BEGIN_JUCER_METADATA
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_sources"
           virtualName="" explicitFocusOrder="0" pos="152 126 48 20" min="1.0"
-          max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          max="128.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="63f8ff411606aafd" memberName="CBoutputFormat"

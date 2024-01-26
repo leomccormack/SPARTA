@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 7.0.9
 
   ------------------------------------------------------------------------------
 
@@ -106,7 +106,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_inputs.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_num_inputs.get());
-    SL_num_inputs->setRange (1, 64, 1);
+    SL_num_inputs->setRange (1, 128, 1);
     SL_num_inputs->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_inputs->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_num_inputs->addListener (this);
@@ -161,7 +161,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pluginDescription->setBounds (0, 0, 200, 32);
     pluginDescription->setAlpha(0.0f);
     pluginDescription->setEnabled(false);
-    pluginDescription->setTooltip(TRANS("A simple multi-channel convolver with an (optional) partitioned-convolution mode. The plugin will convolve each input channel with the respective filter up to the maximum of 64 channels/filters.\n\nNote that this is not to be confused with the sparta_matrixconv plug-in. For this plug-in, the number inputs = the number of filters = the number of outputs. i.e. no matrixing is applied."));
+    pluginDescription->setTooltip(TRANS("A simple multi-channel convolver with an (optional) partitioned-convolution mode. The plugin will convolve each input channel with the respective filter up to the maximum of 128 channels/filters.\n\nNote that this is not to be confused with the sparta_matrixconv plug-in. For this plug-in, the number inputs = the number of filters = the number of outputs. i.e. no matrixing is applied."));
 
     /* Specify screen refresh rate */
     startTimer(30); /*ms (40ms = 25 frames per second) */
@@ -275,7 +275,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 1, width = 100, height = 32;
-        juce::String text (TRANS("SPARTA|"));
+        juce::String text (TRANS ("SPARTA|"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -287,7 +287,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 92, y = 1, width = 124, height = 32;
-        juce::String text (TRANS("MultiConv"));
+        juce::String text (TRANS ("MultiConv"));
         juce::Colour fillColour = juce::Colour (0xff7deeff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -339,7 +339,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 312, y = 40, width = 115, height = 30;
-        juce::String text (TRANS("Host Block Size:"));
+        juce::String text (TRANS ("Host Block Size:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -351,7 +351,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 92, width = 232, height = 30;
-        juce::String text (TRANS("Number of Filters in .wav File:"));
+        juce::String text (TRANS ("Number of Filters in .wav File:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -363,7 +363,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 312, y = 66, width = 200, height = 30;
-        juce::String text (TRANS("Filter Length (s):"));
+        juce::String text (TRANS ("Filter Length (s):"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -375,7 +375,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 312, y = 92, width = 128, height = 30;
-        juce::String text (TRANS("Filter Samplerate:"));
+        juce::String text (TRANS ("Filter Samplerate:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -387,7 +387,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 312, y = 118, width = 144, height = 30;
-        juce::String text (TRANS("Host Samplerate:"));
+        juce::String text (TRANS ("Host Samplerate:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -399,7 +399,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 118, width = 288, height = 30;
-        juce::String text (TRANS("Enable Partitioned Convolution:"));
+        juce::String text (TRANS ("Enable Partitioned Convolution:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -411,7 +411,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 40, width = 224, height = 30;
-        juce::String text (TRANS("Number of In/Output Channels:"));
+        juce::String text (TRANS ("Number of In/Output Channels:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -423,7 +423,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 66, width = 208, height = 30;
-        juce::String text (TRANS("Filters:"));
+        juce::String text (TRANS ("Filters:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -635,7 +635,7 @@ BEGIN_JUCER_METADATA
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_inputs"
           virtualName="" explicitFocusOrder="0" pos="237 46 48 20" min="1.0"
-          max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          max="128.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
 </JUCER_COMPONENT>

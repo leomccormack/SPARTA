@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.8
+  Created with Projucer version: 7.0.9
 
   ------------------------------------------------------------------------------
 
@@ -48,8 +48,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (juce::Justification::centredLeft);
-    CBoutputFormat->setTextWhenNothingSelected (TRANS("ACN"));
-    CBoutputFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBoutputFormat->setTextWhenNothingSelected (TRANS ("ACN"));
+    CBoutputFormat->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBoutputFormat->addListener (this);
 
     CBoutputFormat->setBounds (316, 247, 76, 20);
@@ -58,8 +58,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (CBnormalisation.get());
     CBnormalisation->setEditableText (false);
     CBnormalisation->setJustificationType (juce::Justification::centredLeft);
-    CBnormalisation->setTextWhenNothingSelected (TRANS("N3D"));
-    CBnormalisation->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBnormalisation->setTextWhenNothingSelected (TRANS ("N3D"));
+    CBnormalisation->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBnormalisation->addListener (this);
 
     CBnormalisation->setBounds (398, 247, 76, 20);
@@ -69,7 +69,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorder->setEditableText (false);
     CBorder->setJustificationType (juce::Justification::centredLeft);
     CBorder->setTextWhenNothingSelected (juce::String());
-    CBorder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBorder->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBorder->addListener (this);
 
     CBorder->setBounds (156, 247, 92, 20);
@@ -258,6 +258,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
     CBorder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
     CBorder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
+    CBorder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
+    CBorder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
+    CBorder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
     CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
     CBoutputFormat->addItem (TRANS("FuMa"), CH_FUMA);
     CBnormalisation->addItem (TRANS("N3D"), NORM_N3D);
@@ -511,7 +514,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 200, y = 33, width = 96, height = 30;
-        juce::String text (TRANS("Room Settings"));
+        juce::String text (TRANS ("Room Settings"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -523,7 +526,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 588, y = 33, width = 163, height = 30;
-        juce::String text (TRANS("Room View"));
+        juce::String text (TRANS ("Room View"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -535,7 +538,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 256, y = 241, width = 145, height = 30;
-        juce::String text (TRANS("Format:"));
+        juce::String text (TRANS ("Format:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -547,7 +550,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 21, y = 241, width = 153, height = 30;
-        juce::String text (TRANS("SH Encoding Order: "));
+        juce::String text (TRANS ("SH Encoding Order: "));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -559,7 +562,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 1, width = 100, height = 32;
-        juce::String text (TRANS("SPARTA|"));
+        juce::String text (TRANS ("SPARTA|"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -571,7 +574,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 92, y = 1, width = 148, height = 32;
-        juce::String text (TRANS("AmbiRoomSim"));
+        juce::String text (TRANS ("AmbiRoomSim"));
         juce::Colour fillColour = juce::Colour (0xffffda2b);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -623,7 +626,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 23, y = 124, width = 60, height = 30;
-        juce::String text (TRANS("Width"));
+        juce::String text (TRANS ("Width"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -635,7 +638,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 95, y = 124, width = 60, height = 30;
-        juce::String text (TRANS("Depth"));
+        juce::String text (TRANS ("Depth"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -647,7 +650,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 167, y = 124, width = 60, height = 30;
-        juce::String text (TRANS("Height"));
+        juce::String text (TRANS ("Height"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -659,7 +662,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 20, y = 95, width = 169, height = 30;
-        juce::String text (TRANS("Max Reflection Order:"));
+        juce::String text (TRANS ("Max Reflection Order:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -671,7 +674,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 192, y = 217, width = 137, height = 30;
-        juce::String text (TRANS("Receiver Settings"));
+        juce::String text (TRANS ("Receiver Settings"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -683,7 +686,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 256, y = 57, width = 60, height = 30;
-        juce::String text (TRANS("Atten. X"));
+        juce::String text (TRANS ("Atten. X"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -695,7 +698,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 304, y = 81, width = 24, height = 30;
-        juce::String text (TRANS("+"));
+        juce::String text (TRANS ("+"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -707,7 +710,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 304, y = 145, width = 24, height = 30;
-        juce::String text (TRANS("-"));
+        juce::String text (TRANS ("-"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -719,7 +722,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 332, y = 57, width = 60, height = 30;
-        juce::String text (TRANS("Atten. Y"));
+        juce::String text (TRANS ("Atten. Y"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -731,7 +734,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 380, y = 81, width = 24, height = 30;
-        juce::String text (TRANS("+"));
+        juce::String text (TRANS ("+"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -743,7 +746,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 380, y = 145, width = 24, height = 30;
-        juce::String text (TRANS("-"));
+        juce::String text (TRANS ("-"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -755,7 +758,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 408, y = 57, width = 60, height = 30;
-        juce::String text (TRANS("Atten. Z"));
+        juce::String text (TRANS ("Atten. Z"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -767,7 +770,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 456, y = 81, width = 24, height = 30;
-        juce::String text (TRANS("+"));
+        juce::String text (TRANS ("+"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -779,7 +782,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 456, y = 145, width = 24, height = 30;
-        juce::String text (TRANS("-"));
+        juce::String text (TRANS ("-"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -791,7 +794,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 56, y = 272, width = 137, height = 30;
-        juce::String text (TRANS("Source Coordinates"));
+        juce::String text (TRANS ("Source Coordinates"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -803,7 +806,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 24, y = 323, width = 200, height = 30;
-        juce::String text (TRANS("#        x            y             z"));
+        juce::String text (TRANS ("#        x            y             z"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -815,7 +818,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 21, y = 297, width = 153, height = 30;
-        juce::String text (TRANS("Number of Sources: "));
+        juce::String text (TRANS ("Number of Sources: "));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -837,7 +840,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 20, y = 63, width = 169, height = 30;
-        juce::String text (TRANS("Enable Image Sources:"));
+        juce::String text (TRANS ("Enable Image Sources:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -875,7 +878,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 288, y = 272, width = 152, height = 30;
-        juce::String text (TRANS("Receiver Coordinates"));
+        juce::String text (TRANS ("Receiver Coordinates"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -887,7 +890,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 264, y = 323, width = 200, height = 30;
-        juce::String text (TRANS("#        x            y             z"));
+        juce::String text (TRANS ("#        x            y             z"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -899,7 +902,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 261, y = 297, width = 155, height = 30;
-        juce::String text (TRANS("Number of Receivers: "));
+        juce::String text (TRANS ("Number of Receivers: "));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]

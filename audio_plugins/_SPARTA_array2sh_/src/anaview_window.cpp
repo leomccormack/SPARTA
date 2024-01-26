@@ -34,6 +34,7 @@ static int round_nearest(int number, int multiple) {
 
 static void setCurveColour(Graphics& g, int n){
     switch(n){
+        default: /* fall through */
         case 0: g.setColour(Colours::blue); break;
         case 1: g.setColour(Colours::red); break;
         case 2: g.setColour(Colours::yellow); break;
@@ -42,8 +43,12 @@ static void setCurveColour(Graphics& g, int n){
         case 5: g.setColour(Colours::lightblue); break;
         case 6: g.setColour(Colours::darkred); break;
         case 7: g.setColour(Colours::darkblue); break;
+        case 8: g.setColour(Colours::blue); break;
+        case 9: g.setColour(Colours::red); break;
+        case 10: g.setColour(Colours::yellow); break;
     }
 }
+
 //[/MiscUserDefs]
 
 //==============================================================================

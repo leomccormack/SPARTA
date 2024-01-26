@@ -4,8 +4,8 @@
 
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(64), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(64), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
 {
 	nSampleRate = 48000;
 	ambi_drc_create(&hAmbi);
@@ -186,8 +186,8 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     nHostBlockSize = samplesPerBlock;
-    nNumInputs =  getTotalNumInputChannels();
-    nNumOutputs = getTotalNumOutputChannels();
+    nNumInputs =  jmin(getTotalNumInputChannels(), MAX_NUM_CHANNELS);
+    nNumOutputs = jmin(getTotalNumOutputChannels(), MAX_NUM_CHANNELS);
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
 
@@ -202,8 +202,8 @@ void PluginProcessor::releaseResources()
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
-    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
-    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
+    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), MAX_NUM_CHANNELS);
+    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), MAX_NUM_CHANNELS);
     float* const* bufferData = buffer.getArrayOfWritePointers();
     float* pFrameData[MAX_NUM_CHANNELS];
     int frameSize = ambi_drc_getFrameSize();
@@ -218,7 +218,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     /* process one frame at a time: */
     if((nCurrentBlockSize % frameSize == 0)){ /* divisible by frame size */
         for (int frame = 0; frame < nCurrentBlockSize/frameSize; frame++) {
-            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+            for (int ch = 0; ch < jmin(buffer.getNumChannels(), MAX_NUM_CHANNELS); ch++)
                 pFrameData[ch] = &bufferData[ch][frame*frameSize];
 
             /* perform processing */

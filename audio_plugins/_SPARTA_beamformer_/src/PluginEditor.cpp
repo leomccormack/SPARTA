@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 7.0.9
 
   ------------------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_beams.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_num_beams.get());
-    SL_num_beams->setRange (1, 64, 1);
+    SL_num_beams->setRange (1, 128, 1);
     SL_num_beams->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_beams->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_beams->addListener (this);
@@ -48,8 +48,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (juce::Justification::centredLeft);
-    CBoutputFormat->setTextWhenNothingSelected (TRANS("ACN"));
-    CBoutputFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBoutputFormat->setTextWhenNothingSelected (TRANS ("ACN"));
+    CBoutputFormat->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBoutputFormat->addListener (this);
 
     CBoutputFormat->setBounds (133, 316, 112, 20);
@@ -58,8 +58,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (CBnormalisation.get());
     CBnormalisation->setEditableText (false);
     CBnormalisation->setJustificationType (juce::Justification::centredLeft);
-    CBnormalisation->setTextWhenNothingSelected (TRANS("N3D"));
-    CBnormalisation->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBnormalisation->setTextWhenNothingSelected (TRANS ("N3D"));
+    CBnormalisation->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBnormalisation->addListener (this);
 
     CBnormalisation->setBounds (368, 316, 112, 20);
@@ -69,7 +69,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorder->setEditableText (false);
     CBorder->setJustificationType (juce::Justification::centredLeft);
     CBorder->setTextWhenNothingSelected (juce::String());
-    CBorder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBorder->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBorder->addListener (this);
 
     CBorder->setBounds (578, 64, 112, 20);
@@ -79,7 +79,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBbeamType->setEditableText (false);
     CBbeamType->setJustificationType (juce::Justification::centredLeft);
     CBbeamType->setTextWhenNothingSelected (juce::String());
-    CBbeamType->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBbeamType->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBbeamType->addListener (this);
 
     CBbeamType->setBounds (594, 125, 96, 20);
@@ -120,6 +120,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBorder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
     CBorder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
     CBorder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
+    CBorder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
+    CBorder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
+    CBorder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
     CBbeamType->addItem(TRANS("Cardioid"), STATIC_BEAM_TYPE_CARDIOID);
     CBbeamType->addItem(TRANS("HyperCard"), STATIC_BEAM_TYPE_HYPERCARDIOID);
     CBbeamType->addItem(TRANS("MaxEV"), STATIC_BEAM_TYPE_MAX_EV);
@@ -159,7 +162,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBbeamType->setTooltip("Beamformer pattern.");
     CBoutputFormat->setTooltip("Ambisonic channel ordering convention (Note that AmbiX: ACN/SN3D).");
     CBnormalisation->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
- 
+
     /* Plugin description */
     pluginDescription.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (pluginDescription.get());
@@ -167,7 +170,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pluginDescription->setAlpha(0.0f);
     pluginDescription->setEnabled(false);
     pluginDescription->setTooltip(TRANS("A simple beamforming plug-in using Ambisonic signals as input; offering a variety of different static beam-pattern options.\n"));
-    
+
 	/* Specify screen refresh rate */
     startTimer(40);//80); /*ms (40ms = 25 frames per second) */
 
@@ -280,7 +283,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 508, y = 120, width = 124, height = 30;
-        juce::String text (TRANS("Beam Type:"));
+        juce::String text (TRANS ("Beam Type:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -318,7 +321,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 508, y = 90, width = 180, height = 30;
-        juce::String text (TRANS("Number of Beams:"));
+        juce::String text (TRANS ("Number of Beams:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -330,7 +333,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 552, y = 32, width = 108, height = 30;
-        juce::String text (TRANS("Beam Settings"));
+        juce::String text (TRANS ("Beam Settings"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -342,7 +345,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 197, y = 32, width = 163, height = 30;
-        juce::String text (TRANS("Steering Window"));
+        juce::String text (TRANS ("Steering Window"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -367,7 +370,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 23, y = 311, width = 145, height = 30;
-        juce::String text (TRANS("Channel Order:"));
+        juce::String text (TRANS ("Channel Order:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -379,7 +382,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 263, y = 311, width = 145, height = 30;
-        juce::String text (TRANS("Normalisation:"));
+        juce::String text (TRANS ("Normalisation:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -404,7 +407,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 508, y = 60, width = 67, height = 30;
-        juce::String text (TRANS("Order: "));
+        juce::String text (TRANS ("Order: "));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -416,7 +419,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 1, width = 100, height = 32;
-        juce::String text (TRANS("SPARTA|"));
+        juce::String text (TRANS ("SPARTA|"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -428,7 +431,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 92, y = 1, width = 132, height = 32;
-        juce::String text (TRANS("Beamformer"));
+        juce::String text (TRANS ("Beamformer"));
         juce::Colour fillColour = juce::Colour (0xff4fd1ff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -707,7 +710,7 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <SLIDER name="new slider" id="2c2a2b3d0614cc94" memberName="SL_num_beams"
           virtualName="" explicitFocusOrder="0" pos="640 96 48 20" min="1.0"
-          max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
+          max="128.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <COMBOBOX name="new combo box" id="63f8ff411606aafd" memberName="CBoutputFormat"

@@ -253,6 +253,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBmasterOrder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
     CBmasterOrder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
     CBmasterOrder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
+    CBmasterOrder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
+    CBmasterOrder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
+    CBmasterOrder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
 
     /* Add powermap options */
     CBpmap_method->addItem (TRANS("PWD"), PM_MODE_PWD);
@@ -982,7 +985,7 @@ void PluginEditor::paint (juce::Graphics& g)
 		Justification::centredLeft, true);
 
     /* label for max ORDER */
-    int x = 643, y = 540, width = 13, height = 30;
+    int x = 641, y = 540, width = 21, height = 30;
     String text  = String(powermap_getMasterOrder(hPm));
     Colour fillColour = Colours::white;
     g.setColour (fillColour);

@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.8
+  Created with Projucer version: 7.0.9
 
   ------------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_nChannels.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_nChannels.get());
-    SL_nChannels->setRange (1, 64, 1);
+    SL_nChannels->setRange (1, 128, 1);
     SL_nChannels->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_nChannels->setTextBoxStyle (juce::Slider::TextBoxLeft, false, 80, 20);
     SL_nChannels->addListener (this);
@@ -104,7 +104,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* grab current parameter settings */
     SL_nChannels->setValue(decorrelator_getNumberOfChannels(hDecor), dontSendNotification);
     SL_decorAmount->setValue(decorrelator_getDecorrelationAmount(hDecor), dontSendNotification);
-    tb_compLevel->setToggleState((bool)decorrelator_getLevelCompensationFlag(hDecor), dontSendNotification); 
+    tb_compLevel->setToggleState((bool)decorrelator_getLevelCompensationFlag(hDecor), dontSendNotification);
     tb_bypassTransients->setToggleState((bool)decorrelator_getTransientBypassFlag(hDecor), dontSendNotification);
 
     /* tooltips */
@@ -216,7 +216,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 18, y = 43, width = 173, height = 30;
-        juce::String text (TRANS("Number of Channels:"));
+        juce::String text (TRANS ("Number of Channels:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -228,7 +228,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 1, width = 196, height = 32;
-        juce::String text (TRANS("SPARTA|"));
+        juce::String text (TRANS ("SPARTA|"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -240,7 +240,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 92, y = 1, width = 184, height = 32;
-        juce::String text (TRANS("Decorrelator"));
+        juce::String text (TRANS ("Decorrelator"));
         juce::Colour fillColour = juce::Colour (0xffbeffba);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -292,7 +292,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 18, y = 67, width = 173, height = 30;
-        juce::String text (TRANS("Decorrelation:"));
+        juce::String text (TRANS ("Decorrelation:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -304,7 +304,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 266, y = 67, width = 134, height = 30;
-        juce::String text (TRANS("Bypass Transients:"));
+        juce::String text (TRANS ("Bypass Transients:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -316,7 +316,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 266, y = 43, width = 158, height = 30;
-        juce::String text (TRANS("Compensate Level:"));
+        juce::String text (TRANS ("Compensate Level:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -525,7 +525,7 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <SLIDER name="new slider" id="21d3cac663b3ac08" memberName="SL_nChannels"
           virtualName="" explicitFocusOrder="0" pos="171 50 65 16" min="1.0"
-          max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
+          max="128.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="d9ad5f70d2212591" memberName="SL_decorAmount"

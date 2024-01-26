@@ -206,6 +206,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     presetCB->addItem(TRANS("5th order"), SH_ORDER_FIFTH);
     presetCB->addItem(TRANS("6th order"), SH_ORDER_SIXTH);
     presetCB->addItem(TRANS("7th order"), SH_ORDER_SEVENTH);
+    presetCB->addItem(TRANS("8th order"), SH_ORDER_EIGHTH);
+    presetCB->addItem(TRANS("9th order"), SH_ORDER_NINTH);
+    presetCB->addItem(TRANS("10th order"), SH_ORDER_TENTH);
 
 	/* fetch current configuration */
     s_thresh->setRange(AMBI_DRC_THRESHOLD_MIN_VAL, AMBI_DRC_THRESHOLD_MAX_VAL, 0.01);
