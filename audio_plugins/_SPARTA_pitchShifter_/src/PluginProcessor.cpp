@@ -184,8 +184,8 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     nHostBlockSize = samplesPerBlock;
-    nNumInputs =  jmin(getTotalNumInputChannels(), MAX_NUM_CHANNELS);
-    nNumOutputs = jmin(getTotalNumOutputChannels(), MAX_NUM_CHANNELS);
+    nNumInputs =  getTotalNumInputChannels();
+    nNumOutputs = getTotalNumOutputChannels();
     nSampleRate = (int)(sampleRate + 0.5);
 
 	pitch_shifter_init(hPS, (float)sampleRate);
@@ -199,8 +199,8 @@ void PluginProcessor::releaseResources()
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
-    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), MAX_NUM_CHANNELS);
-    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), MAX_NUM_CHANNELS);
+    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
+    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
     float* const* bufferData = buffer.getArrayOfWritePointers();
 
     pitch_shifter_process(hPS, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);

@@ -160,7 +160,7 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     nHostBlockSize = samplesPerBlock;
     nSampleRate = (int)(sampleRate + 0.5);
-    nNumInputs = jmin(getTotalNumInputChannels(), MAX_NUM_CHANNELS);
+    nNumInputs = getTotalNumInputChannels();
     isPlaying = false;
     dirass_init(hDir, nSampleRate);
 
@@ -175,7 +175,7 @@ void PluginProcessor::releaseResources()
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     int nCurrentBlockSize = buffer.getNumSamples();
-    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), MAX_NUM_CHANNELS);
+    nNumInputs = getTotalNumInputChannels(), buffer.getNumChannels();
     float* const* bufferData = buffer.getArrayOfWritePointers();
 
     /* check whether the playhead is moving */

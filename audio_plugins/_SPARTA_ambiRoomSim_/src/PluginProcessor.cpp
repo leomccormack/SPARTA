@@ -308,8 +308,8 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     nHostBlockSize = samplesPerBlock;
-    nNumInputs =  jmin(getTotalNumInputChannels(), MAX_NUM_CHANNELS);
-    nNumOutputs = jmin(getTotalNumOutputChannels(), MAX_NUM_CHANNELS);
+    nNumInputs =  jmin(getTotalNumInputChannels(), 256);
+    nNumOutputs = jmin(getTotalNumOutputChannels(), 256);
     nSampleRate = (int)(sampleRate + 0.5);
 
 	ambi_roomsim_init(hAmbi, nSampleRate);
@@ -323,15 +323,15 @@ void PluginProcessor::releaseResources()
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
-    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), MAX_NUM_CHANNELS);
-    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), MAX_NUM_CHANNELS);
+    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), 256);
+    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), 256);
     float* const* bufferData = buffer.getArrayOfWritePointers();
-    float* pFrameData[MAX_NUM_CHANNELS];
+    float* pFrameData[256];
     int frameSize = ambi_roomsim_getFrameSize();
 
     if((nCurrentBlockSize % frameSize == 0)){ /* divisible by frame size */
         for (int frame = 0; frame < nCurrentBlockSize/frameSize; frame++) {
-            for (int ch = 0; ch < jmin(buffer.getNumChannels(), MAX_NUM_CHANNELS); ch++)
+            for (int ch = 0; ch < jmin(buffer.getNumChannels(), 256); ch++)
                 pFrameData[ch] = &bufferData[ch][frame*frameSize];
 
             /* perform processing */

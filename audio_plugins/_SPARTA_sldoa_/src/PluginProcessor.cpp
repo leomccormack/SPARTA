@@ -157,7 +157,7 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     nHostBlockSize = samplesPerBlock;
-    nNumInputs =  jmin(getTotalNumInputChannels(), MAX_NUM_CHANNELS);
+    nNumInputs =  getTotalNumInputChannels();
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false; 
 	sldoa_init(hSld, nSampleRate);
@@ -173,7 +173,7 @@ void PluginProcessor::releaseResources()
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
 	int nCurrentBlockSize = buffer.getNumSamples();
-    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), MAX_NUM_CHANNELS);
+    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     float* const* bufferData = buffer.getArrayOfWritePointers();
  
     /* check whether the playhead is moving */

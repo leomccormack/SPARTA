@@ -405,8 +405,8 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
 
     nHostBlockSize = samplesPerBlock;
-    nNumInputs =  jmin(getTotalNumInputChannels(), MAX_NUM_CHANNELS);
-    nNumOutputs = jmin(getTotalNumOutputChannels(), MAX_NUM_CHANNELS);
+    nNumInputs =  jmin(getTotalNumInputChannels(), 256);
+    nNumOutputs = jmin(getTotalNumOutputChannels(), 256);
     nSampleRate = (int)(sampleRate + 0.5);
     //isPlaying = false;
 
@@ -460,19 +460,19 @@ bool PluginProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& /*midiMessages*/)
 {
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
-    nNumInputs = jmin(jmin(getTotalNumInputChannels(), buffer.getNumChannels()), MAX_NUM_CHANNELS);
-    nNumOutputs = jmin(jmin(getTotalNumOutputChannels(), buffer.getNumChannels()), MAX_NUM_CHANNELS);
+    nNumInputs = jmin(jmin(getTotalNumInputChannels(), buffer.getNumChannels()), 256);
+    nNumOutputs = jmin(jmin(getTotalNumOutputChannels(), buffer.getNumChannels()), 256);
     float* const* bufferData = buffer.getArrayOfWritePointers();
 
     tvconv_process(hTVCnv, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);
 
     if (enable_rotation) {
-        float* pFrameData[MAX_NUM_CHANNELS];
+        float* pFrameData[256];
         int frameSize = rotator_getFrameSize();
 
         if ((nCurrentBlockSize % frameSize == 0)) { /* divisible by frame size */
             for (int frame = 0; frame < nCurrentBlockSize / frameSize; frame++) {
-                for (int ch = 0; ch < jmin(buffer.getNumChannels(), MAX_NUM_CHANNELS); ch++)
+                for (int ch = 0; ch < jmin(buffer.getNumChannels(), 256); ch++)
                     pFrameData[ch] = &bufferData[ch][frame * frameSize];
 
                 /* perform processing */
