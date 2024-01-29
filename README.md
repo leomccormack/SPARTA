@@ -9,24 +9,24 @@ Spatial Audio Real-Time Applications (SPARTA) [1]. A collection of VST audio plu
 ## Plug-in descriptions
 
 This repository contains the following VST plug-ins:
-* **AmbiBIN** - A binaural Ambisonic decoder (up to 7th order) with a built-in SOFA loader and head-tracking support via OSC messages. Includes: Least-Squares (LS), spatial re-sampling (SPR), time-alignment (TA), and magnitude least-squares (Mag-LS) decoding options.
-* **AmbiDEC** - A frequency-dependent loudspeaker Ambisonic decoder (up to 7th order) with user specifiable loudspeaker directions (up to 64), which may be optionally imported via JSON configuration files. Includes: All-Round (AllRAD), Energy-Preserving (EPAD), Spatial (SAD), and Mode-Matching (MMD) Ambisonic decoding options. The loudspeaker signals may also be binauralised for headphone playback.
-* **AmbiDRC** - A frequency-dependent dynamic range compressor for ambisonic signals (up to 7th order). 
-* **AmbiENC** - An Ambisonic encoder/panner (up to 7th order), with support for up to 64 input channels; the directions for which may also be imported via JSON configuration files. 
-* **AmbiRoomSim** - An Ambisonic encoder that also includes room reflections based on the image-source method using a shoebox room model. Multiple sources and multiple receivers are supported up to 64 channels (e.g. 16x 1st-order, 4x 3rd-order, or 1x 7th order receiver).
-* **Array2SH** - A microphone array spatial encoder (up to 7th order), with presets for several commercially available A-format and higher-order microphone arrays. The plug-in can also present objective evaluation metrics for the currently selected configuration.
-* **Beamformer** - A spherical harmonic domain beamforming plug-in with multiple beamforming strategies (up to 64 output beams).  
-* **Binauraliser** - A binaural panner (up to 64 input channels) with a built-in SOFA loader and head-tracking support via OSC messages.
+* **AmbiBIN** - A binaural Ambisonic decoder (up to 10th order) with a built-in SOFA loader and head-tracking support via OSC messages. Includes: Least-Squares (LS), spatial re-sampling (SPR), time-alignment (TA), and magnitude least-squares (Mag-LS) decoding options.
+* **AmbiDEC** - A frequency-dependent loudspeaker Ambisonic decoder (up to 10th order) with user specifiable loudspeaker directions (up to 128), which may be optionally imported via JSON configuration files. Includes: All-Round (AllRAD), Energy-Preserving (EPAD), Spatial (SAD), and Mode-Matching (MMD) Ambisonic decoding options. The loudspeaker signals may also be binauralised for headphone playback.
+* **AmbiDRC** - A frequency-dependent dynamic range compressor for ambisonic signals (up to 10th order). 
+* **AmbiENC** - An Ambisonic encoder/panner (up to 10th order), with support for up to 128 input channels; the directions for which may also be imported via JSON configuration files. 
+* **AmbiRoomSim** - An Ambisonic encoder that also includes room reflections based on the image-source method using a shoebox room model. Multiple sources and multiple receivers are supported up to 128 channels (e.g. 32x 1st-order, 8x 3rd-order, or 2x 7th order receiver).
+* **Array2SH** - A microphone array spatial encoder (up to 10th order), with presets for several commercially available A-format and higher-order microphone arrays. The plug-in can also present objective evaluation metrics for the currently selected configuration.
+* **Beamformer** - A spherical harmonic domain beamforming plug-in with multiple beamforming strategies (up to 128 output beams).  
+* **Binauraliser** - A binaural panner (up to 128 input channels) with a built-in SOFA loader and head-tracking support via OSC messages.
 * **BinauraliserNF** - Binauraliser, with the addition of proximity filtering for near field sound sources.
 * **DirASS** - A sound-field visualiser based on re-assigning the energy of beamformers. This re-assignment is based on DoA estimates extracted from "spatially-constrained" regions, which are centred around each beamformer look-direction. 
 * **MatrixConv** - A basic matrix convolver with an optional partitioned convolution mode. The user need only specify the number of inputs and load the filters via a wav file.
 * **MultiConv** - A basic multi-channel convolver with an optional partitioned convolution mode. Unlike "MatrixConv", this plug-in does not perform any matrixing. Instead, each input channel is convolved with the respective filter; i.e. numInputs = numFilters = numOutputs.
 * **6DoFconv** - A time-varying partitioned convolution multi-channel convolver for SOFA files containing RIRs with multiple listener positions.
-* **Panner** - A frequency-dependent 3-D panner using the VBAP method (up to 64 inputs and outputs).
+* **Panner** - A frequency-dependent 3-D panner using the VBAP method (up to 128 inputs and outputs).
 * **PitchShifter** - A very basic multi-channel pitch shifter, based on the phase-vocoder approach.
-* **PowerMap** - A sound-field visualisation plug-in based on Ambisonic signals as input (up to 7th order), with PWD/MVDR/MUSIC/Min-Norm options.
-* **Rotator** - A flexible Ambisonic rotator (up to 7th order) with head-tracking support via OSC messages. 
-* **SLDoA** - A frequency-dependent sound-field visualiser (up to 7th order), based on depicting the direction-of-arrival (DoA) estimates derived from spatially localised active-intensity vectors. The low frequency estimates are shown with blue icons, mid-frequencies with green, and high-frequencies with red. 
+* **PowerMap** - A sound-field visualisation plug-in based on Ambisonic signals as input (up to 10th order), with PWD/MVDR/MUSIC/Min-Norm options.
+* **Rotator** - A flexible Ambisonic rotator (up to 10th order) with head-tracking support via OSC messages. 
+* **SLDoA** - A frequency-dependent sound-field visualiser (up to 10th order), based on depicting the direction-of-arrival (DoA) estimates derived from spatially localised active-intensity vectors. The low frequency estimates are shown with blue icons, mid-frequencies with green, and high-frequencies with red. 
 * **Spreader** - An arbitrary array (HRIRs, microphone array IRs, etc.) encoder with coherent and incoherent spreading modes.
 * **TrackerTest** - A tool for outputting incoming headtracker data as audio signals.
 
@@ -70,14 +70,14 @@ sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x1
 The plug-ins may be built with CMake (version 3.15 or higher):
  ```
  mkdir build
- cmake -S . -B build -DSAF_ENABLE_SOFA_READER_MODULE=1 -DSAF_ENABLE_NETCDF=1
+ cmake -S . -B build -DSAF_ENABLE_SOFA_READER_MODULE=1
  cd build
  make
  ```
  
-Or for Visual Studio users (using x64 Native Tools Command Prompt as **administrator**):
+Or for Visual Studio 2022 users (using x64 Native Tools Command Prompt as **administrator**; and also building VST3 versions):
 ```
-cmake -S . -B build -G "Visual Studio 15 Win64" -DSAF_ENABLE_SOFA_READER_MODULE=1 
+cmake -S . -B build -G "Visual Studio 17" -DSAF_ENABLE_SOFA_READER_MODULE=1 -DBUILD_PLUGIN_FORMAT_VST3=1
 cd build
 msbuild ALL_BUILD.vcxproj /p:Configuration=Release /m
 ```
@@ -121,7 +121,7 @@ The build.plugins.sh script also supports many additional options:
 
 ## Building the plug-ins without scripts or CMake
 
-You may also manually open each .jucer file with the Projucer App and click "Save Project". This will generate Visual Studio (2015/2017) solution files, Xcode project files, Linux Makefiles (amd64), and Raspberry Pi Linux Makefiles (ARM), which are placed in:
+You may also manually open each .jucer file with the Projucer App and click "Save Project". This will generate Visual Studio (2017) solution files, Xcode project files, Linux Makefiles (amd64), and Raspberry Pi Linux Makefiles (ARM), which are placed in:
 
 ```
 audio_plugins/_SPARTA_X_/make/
