@@ -18,6 +18,7 @@ juce_add_plugin(${PROJECT_NAME}
     PLUGIN_CODE                 ASOA                     
     FORMATS                     ${BUILD_PLUGIN_FORMATS}      # ( VST AAX Unity VST3 AU AUv3 Standalone )
     PRODUCT_NAME                "${PROJECT_NAME}"
+    LV2URI                      "http://AALTO.${PROJECT_NAME}.${PROJECT_VERSION}"
 )   
 
 # Generates "JuceHeader.h", and adds its path to the include paths of the target
