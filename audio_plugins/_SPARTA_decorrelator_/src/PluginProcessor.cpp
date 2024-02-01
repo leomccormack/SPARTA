@@ -25,7 +25,7 @@
 PluginProcessor::PluginProcessor() :
     AudioProcessor(BusesProperties()
         .withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
-        .withOutput("Output", AudioChannelSet::discreteChannels(2), true))
+        .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
 {
 	decorrelator_create(&hDecor);
     startTimer(TIMER_PROCESSING_RELATED, 40); 

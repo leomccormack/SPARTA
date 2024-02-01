@@ -14,7 +14,10 @@
 static PluginProcessor* thePluginProcessor = nullptr;
 
 //==============================================================================
-PluginProcessor::PluginProcessor() 
+PluginProcessor::PluginProcessor():
+AudioProcessor(BusesProperties()
+    .withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
+    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
 {
     jassert(thePluginProcessor == nullptr);
     thePluginProcessor = this;
