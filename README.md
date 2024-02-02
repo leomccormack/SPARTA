@@ -8,7 +8,7 @@ Spatial Audio Real-Time Applications (SPARTA) [1]. A collection of VST/LV2 audio
 
 ## Plug-in descriptions
 
-This repository contains the following VST plug-ins:
+This repository contains the following audio plug-ins:
 * **AmbiBIN** - A binaural Ambisonic decoder (up to 10th order) with a built-in SOFA loader and head-tracking support via OSC messages. Includes: Least-Squares (LS), spatial re-sampling (SPR), time-alignment (TA), and magnitude least-squares (Mag-LS) decoding options.
 * **AmbiDEC** - A frequency-dependent loudspeaker Ambisonic decoder (up to 10th order) with user specifiable loudspeaker directions (up to 128), which may be optionally imported via JSON configuration files. Includes: All-Round (AllRAD), Energy-Preserving (EPAD), Spatial (SAD), and Mode-Matching (MMD) Ambisonic decoding options. The loudspeaker signals may also be binauralised for headphone playback.
 * **AmbiDRC** - A frequency-dependent dynamic range compressor for ambisonic signals (up to 10th order). 
