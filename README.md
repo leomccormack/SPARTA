@@ -1,6 +1,6 @@
 # SPARTA
 
-Spatial Audio Real-Time Applications (SPARTA) [1]. A collection of VST audio plug-ins for spatial audio production, reproduction and visualisation. Developed using [JUCE](https://github.com/WeAreROLI/JUCE/) and the [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework).
+Spatial Audio Real-Time Applications (SPARTA) [1]. A collection of VST/LV2 audio plug-ins for spatial audio production, reproduction and visualisation. Developed using [JUCE](https://github.com/WeAreROLI/JUCE/) and the [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework).
 
 ![](sparta_screenshot.png)
 
@@ -13,7 +13,7 @@ This repository contains the following VST plug-ins:
 * **AmbiDEC** - A frequency-dependent loudspeaker Ambisonic decoder (up to 10th order) with user specifiable loudspeaker directions (up to 128), which may be optionally imported via JSON configuration files. Includes: All-Round (AllRAD), Energy-Preserving (EPAD), Spatial (SAD), and Mode-Matching (MMD) Ambisonic decoding options. The loudspeaker signals may also be binauralised for headphone playback.
 * **AmbiDRC** - A frequency-dependent dynamic range compressor for ambisonic signals (up to 10th order). 
 * **AmbiENC** - An Ambisonic encoder/panner (up to 10th order), with support for up to 128 input channels; the directions for which may also be imported via JSON configuration files. 
-* **AmbiRoomSim** - An Ambisonic encoder that also includes room reflections based on the image-source method using a shoebox room model. Multiple sources and multiple receivers are supported up to 128 channels (e.g. 32x 1st-order, 8x 3rd-order, or 2x 7th order receiver).
+* **AmbiRoomSim** - An Ambisonic encoder that also includes room reflections based on the image-source method using a shoebox room model. Multiple sources and multiple receivers are supported up to 128 channels (e.g. 32x 1st-order, 8x 3rd-order, or 2x 7th order receivers).
 * **Array2SH** - A microphone array spatial encoder (up to 10th order), with presets for several commercially available A-format and higher-order microphone arrays. The plug-in can also present objective evaluation metrics for the currently selected configuration.
 * **Beamformer** - A spherical harmonic domain beamforming plug-in with multiple beamforming strategies (up to 128 output beams).  
 * **Binauraliser** - A binaural panner (up to 128 input channels) with a built-in SOFA loader and head-tracking support via OSC messages.
@@ -70,14 +70,14 @@ sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x1
 The plug-ins may be built with CMake (version 3.15 or higher):
  ```
  mkdir build
- cmake -S . -B build -DSAF_ENABLE_SOFA_READER_MODULE=1
+ cmake -S . -B build -DSAF_ENABLE_SOFA_READER_MODULE=1 
  cd build
  make
  ```
  
-Or for Visual Studio 2022 users (using x64 Native Tools Command Prompt as **administrator**; and also building VST3 versions):
+Or for Visual Studio 2022 users (using x64 Native Tools Command Prompt as **administrator**; and also e.g., building LV2 and VST3 versions):
 ```
-cmake -S . -B build -G "Visual Studio 17" -DSAF_ENABLE_SOFA_READER_MODULE=1 -DBUILD_PLUGIN_FORMAT_VST3=1
+cmake -S . -B build -G "Visual Studio 17" -DSAF_ENABLE_SOFA_READER_MODULE=1 -DBUILD_PLUGIN_FORMAT_LV2=1 -DBUILD_PLUGIN_FORMAT_VST3=1
 cd build
 msbuild ALL_BUILD.vcxproj /p:Configuration=Release /m
 ```
@@ -131,11 +131,11 @@ To generate project files for other IDEs, you may open and configure the include
 
 ## Contributing
 
-Suggestions and contributions to the code are both welcomed and encouraged. Feel free to branch off and submit pull requests. Note, however, that if the changes/additions are major, then maybe consider first discussing it via a github "issue" or by contacting the developers directly via email. We may also be able to help with the implementation if needed :-)
+Suggestions and contributions to the code are both welcomed and encouraged. Feel free to branch off and submit pull requests. If the changes/additions are major, then consider first discussing it via a github "issue" thread.
 
 ## Contributors 
 
-* **Leo McCormack** - C/C++ programmer and algorithm design (contact: leo.mccormack(at)aalto.fi)
+* **Leo McCormack** - C/C++ programmer and algorithm design
 * **Symeon Delikaris-Manias** - algorithm design
 * **Archontis Politis** -  algorithm design
 * **Ville Pulkki** - algorithm design
