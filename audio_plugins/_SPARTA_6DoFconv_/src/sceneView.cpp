@@ -1,30 +1,6 @@
-/*
-  ==============================================================================
-
-  This is an automatically generated GUI class created by the Projucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Projucer version: 6.1.6
-
-  ------------------------------------------------------------------------------
-
-  The Projucer is part of the JUCE library.
-  Copyright (c) 2020 - Raw Material Software Limited.
-
-  ==============================================================================
-*/
-
-//[Headers] You can add your own extra header files here...
-
-//[/Headers]
 
 #include "sceneView.h"
 
-
-//[MiscUserDefs] You can add your own user definitions and misc code here...
 const float iconWidth = 8.0f;
 const float iconRadius = iconWidth/2.0f;
 
@@ -50,22 +26,12 @@ float secondaryLineSpacing = 2.0f;
 /** Ensures value "a" is clamped between the "min" and "max" values */
 # define CLAMP(a,min,max) (MAX(min, MIN(max, a)))
 #endif
-//[/MiscUserDefs]
 
 //==============================================================================
 sceneView::sceneView (PluginProcessor* ownerFilter, int _width, int _height)
 {
-    //[Constructor_pre] You can add your own custom stuff here..
-    //[/Constructor_pre]
-
-
-    //[UserPreSize]
-    //[/UserPreSize]
-
     setSize (480, 240);
 
-
-    //[Constructor] You can add your own custom stuff here..
     setSize(_width, _height);
     hVst = ownerFilter;
     hTVCnv = hVst->getFXHandle();
@@ -76,29 +42,15 @@ sceneView::sceneView (PluginProcessor* ownerFilter, int _width, int _height)
     drawDoAs = true;
     drawIntersections = true;
     drawTargets = true;
-    //[/Constructor]
 }
 
 sceneView::~sceneView()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
-    //[/Destructor_pre]
-
-
-
-    //[Destructor]. You can add your own custom destruction code here..
-    //[/Destructor]
 }
 
 //==============================================================================
 void sceneView::paint (juce::Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-
-
 	// Screen graphics axis directon:
 	// X from left to right
 	// Y from top to bottom
@@ -216,23 +168,14 @@ void sceneView::paint (juce::Graphics& g)
     g.fillEllipse(lstIcon);
     g.setColour(Colours::lightgrey);
     g.drawEllipse(lstIcon, 1.0f);
-
-    //[/UserPaint]
 }
 
 void sceneView::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
 }
 
 void sceneView::mouseDown (const juce::MouseEvent& e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
-
     Rectangle<int> recIcon;
 
     computeRoomDims();
@@ -254,14 +197,10 @@ void sceneView::mouseDown (const juce::MouseEvent& e)
         targetIconIsClicked = true;
         return;
     }
-
-    //[/UserCode_mouseDown]
 }
 
 void sceneView::mouseDrag (const juce::MouseEvent& e)
 {
-    //[UserCode_mouseDrag] -- Add your code here...
-
     Point<float> point;
 
     int xp_idx, yp_idx;
@@ -283,109 +222,65 @@ void sceneView::mouseDrag (const juce::MouseEvent& e)
         tvconv_setTargetPosition(hTVCnv, -(point.getY() - view_y - room_dims_pixels_o[yp_idx]) / scale + room_offset_m[yp_idx], yp_idx);
 
     }
-
-    //[/UserCode_mouseDrag]
 }
 
 void sceneView::mouseUp (const juce::MouseEvent& e)
 {
-    //[UserCode_mouseUp] -- Add your code here...
     (void)e;
     targetIconIsClicked = false;
-    //[/UserCode_mouseUp]
 }
-
-
-
-//[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 
 void sceneView::computeRoomDims()
 {
-
-if (tvconv_getNumListenerPositions(hTVCnv) == 0) {
-    room_dims_m[0] = room_dims_m[1] = 1.0f;
-    room_dims_m[2] = 0.35f;
-    room_offset_m[0] = room_offset_m[1] = room_offset_m[2] = 0.0f;
-}
-else {
-    room_dims_m[0] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)), 0.01f) * 1.2f;
-    room_dims_m[1] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)), 0.01f) * 1.2f;
-    room_dims_m[2] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)), 0.003f) * 1.2f;
-    room_offset_m[0] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)) * 0.8f * 10.0f) / 10.0f;
-    room_offset_m[1] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)) * 0.8f * 10.0f) / 10.0f;
-    room_offset_m[2] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)) * 0.8f * 10.0f) / 10.0f;
-}
-room_dims_m_o[0] = room_dims_m[0] - room_offset_m[0];
-room_dims_m_o[1] = room_dims_m[1] - room_offset_m[1];
-room_dims_m_o[2] = room_dims_m[2] - room_offset_m[2];
-
-/* Scaling factor to convert metres to pixels */
-scale = room_pixels / MAX(MAX(room_dims_m[0] - room_offset_m[0], room_dims_m[1] - room_offset_m[1]), room_dims_m[2] - room_offset_m[2]);
-room_dims_pixels[0] = room_dims_m[0] * scale;
-room_dims_pixels[1] = room_dims_m[1] * scale;
-room_dims_pixels[2] = room_dims_m[2] * scale;
-room_offset_pixels[0] = room_offset_m[0] * scale;
-room_offset_pixels[1] = room_offset_m[1] * scale;
-room_offset_pixels[2] = room_offset_m[2] * scale;
-room_dims_pixels_o[0] = room_dims_pixels[0] - room_offset_pixels[0];
-room_dims_pixels_o[1] = room_dims_pixels[1] - room_offset_pixels[1];
-room_dims_pixels_o[2] = room_dims_pixels[2] - room_offset_pixels[2];
-
-
-// Compute room grid lines
-float gridStepSize[] = { 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, .2, .5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000 };
-float stepSizeBoudaries[] = { 0.00316, 0.00707, 0.0141, 0.0316, 0.0707, 0.1414, 0.3162, 0.7071, 1.4142, 3.1623, 7.0711, 14.1421, 31.6228, 70.7107, 141.4, 316.2, 707.1, 1414.2 };
-float spacing = MAX(MAX(room_dims_m_o[0], room_dims_m_o[1]), room_dims_m_o[2]) / 5;
-int spacingIndex = 0;
-for( int i = 0; i < sizeof(stepSizeBoudaries); i++ )
-{
-    if (spacing < stepSizeBoudaries[i])
-    {
-        spacingIndex = i;
-        break;
+    if (tvconv_getNumListenerPositions(hTVCnv) == 0) {
+        room_dims_m[0] = room_dims_m[1] = 1.0f;
+        room_dims_m[2] = 0.35f;
+        room_offset_m[0] = room_offset_m[1] = room_offset_m[2] = 0.0f;
     }
+    else {
+        room_dims_m[0] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)), 0.01f) * 1.2f;
+        room_dims_m[1] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)), 0.01f) * 1.2f;
+        room_dims_m[2] = MAX(MAX(tvconv_getMaxDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)), 0.003f) * 1.2f;
+        room_offset_m[0] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 0), tvconv_getSourcePosition(hTVCnv, 0)) * 0.8f * 10.0f) / 10.0f;
+        room_offset_m[1] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 1), tvconv_getSourcePosition(hTVCnv, 1)) * 0.8f * 10.0f) / 10.0f;
+        room_offset_m[2] = floorf(MIN(tvconv_getMinDimension(hTVCnv, 2), tvconv_getSourcePosition(hTVCnv, 2)) * 0.8f * 10.0f) / 10.0f;
+    }
+    room_dims_m_o[0] = room_dims_m[0] - room_offset_m[0];
+    room_dims_m_o[1] = room_dims_m[1] - room_offset_m[1];
+    room_dims_m_o[2] = room_dims_m[2] - room_offset_m[2];
+
+    /* Scaling factor to convert metres to pixels */
+    scale = room_pixels / MAX(MAX(room_dims_m[0] - room_offset_m[0], room_dims_m[1] - room_offset_m[1]), room_dims_m[2] - room_offset_m[2]);
+    room_dims_pixels[0] = room_dims_m[0] * scale;
+    room_dims_pixels[1] = room_dims_m[1] * scale;
+    room_dims_pixels[2] = room_dims_m[2] * scale;
+    room_offset_pixels[0] = room_offset_m[0] * scale;
+    room_offset_pixels[1] = room_offset_m[1] * scale;
+    room_offset_pixels[2] = room_offset_m[2] * scale;
+    room_dims_pixels_o[0] = room_dims_pixels[0] - room_offset_pixels[0];
+    room_dims_pixels_o[1] = room_dims_pixels[1] - room_offset_pixels[1];
+    room_dims_pixels_o[2] = room_dims_pixels[2] - room_offset_pixels[2];
+
+
+    // Compute room grid lines
+    float gridStepSize[] = { 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, .2, .5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000 };
+    float stepSizeBoudaries[] = { 0.00316, 0.00707, 0.0141, 0.0316, 0.0707, 0.1414, 0.3162, 0.7071, 1.4142, 3.1623, 7.0711, 14.1421, 31.6228, 70.7107, 141.4, 316.2, 707.1, 1414.2 };
+    float spacing = MAX(MAX(room_dims_m_o[0], room_dims_m_o[1]), room_dims_m_o[2]) / 5;
+    int spacingIndex = 0;
+    for( int i = 0; i < 18; i++ )
+    {
+        if (spacing < stepSizeBoudaries[i])
+        {
+            spacingIndex = i;
+            break;
+        }
+    }
+    primaryLineSpacing = gridStepSize[spacingIndex];
+    secondaryLineSpacing = primaryLineSpacing / 5;
 }
-primaryLineSpacing = gridStepSize[spacingIndex];
-secondaryLineSpacing = primaryLineSpacing / 5;
-
-}
-
-
 
 
 void sceneView::refreshSceneView()
 {
     repaint();
 }
-//[/MiscUserCode]
-
-
-//==============================================================================
-#if 0
-/*  -- Projucer information section --
-
-    This is where the Projucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
-
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="sceneView" componentName=""
-                 parentClasses="public Component" constructorParams="PluginProcessor* ownerFilter, int _width, int _height"
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="480" initialHeight="240">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="323e44"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
-
