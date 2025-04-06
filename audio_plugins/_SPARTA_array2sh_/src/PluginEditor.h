@@ -50,19 +50,14 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::Button::Listener
 {
 public:
-    //==============================================================================
     PluginEditor (PluginProcessor* ownerFilter);
     ~PluginEditor() override;
-
-    //==============================================================================
 
     void paint (juce::Graphics& g) override;
     void resized() override;
     void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
-
-
 
 private:
     PluginProcessor* hVst;
@@ -100,7 +95,6 @@ private:
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
     HyperlinkButton publicationLink { "(Related Publication)", { "https://leomccormack.github.io/sparta-site/docs/help/related-publications/mccormack2018real.pdf" } };
 
-    //==============================================================================
     std::unique_ptr<juce::ComboBox> presetCB;
     std::unique_ptr<juce::ComboBox> arrayTypeCB;
     std::unique_ptr<juce::Slider> QSlider;
@@ -121,7 +115,5 @@ private:
     std::unique_ptr<juce::ComboBox> CBencodingOrder;
     std::unique_ptr<juce::ToggleButton> applyDiffEQ;
 
-
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

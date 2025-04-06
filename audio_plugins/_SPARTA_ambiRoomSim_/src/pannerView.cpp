@@ -26,7 +26,6 @@ const float iconWidth = 8.0f;
 const float iconRadius = iconWidth/2.0f;
 const float room_pixels = 200;
 
-//==============================================================================
 pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
 {
     setSize(_width, _height);
@@ -43,7 +42,6 @@ pannerView::~pannerView()
 {
 }
 
-//==============================================================================
 void pannerView::paint (juce::Graphics& g)
 {
     Rectangle<float> srcIcon, tmpIcon, recIcon;

@@ -22,11 +22,9 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::Button::Listener
 {
 public:
-    //==============================================================================
     PluginEditor (PluginProcessor* ownerFilter);
     ~PluginEditor() override;
 
-    //==============================================================================
     /* Refresh coordinate limits based on loaded sofa files*/
     void refreshCoords();
 
@@ -68,15 +66,12 @@ private:
     int refreshInterval             = 40; /*ms (40ms = 25 frames per second) if refreshDecimationFactor = 1 */
     bool refreshSceneViewWindow;
     int refreshDecimationCounter    = 1;
-    int targetDecimatedRefreshRate  = 1;
 
     /* warnings */
     SPARTA_WARNINGS currentWarning;
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
-
-    //==============================================================================
     std::unique_ptr<juce::Label> label_hostBlockSize;
     std::unique_ptr<juce::Label> label_filterLength;
     std::unique_ptr<juce::Label> label_hostfs;
@@ -100,8 +95,6 @@ private:
     std::unique_ptr<juce::ToggleButton> t_flipRoll;
     std::unique_ptr<juce::ToggleButton> TBenableRotation;
 
-
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };
 

@@ -22,7 +22,6 @@
 
 #include "PluginEditor.h"
 
-//==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     : AudioProcessorEditor(ownerFilter), progressbar(progress), fileChooser ("File", File(), true, false, false,
       "*.sofa;*.nc;", String(),
@@ -393,7 +392,6 @@ PluginEditor::~PluginEditor()
     setLookAndFeel(nullptr);
 }
 
-//==============================================================================
 void PluginEditor::paint (juce::Graphics& g)
 {
     g.fillAll (juce::Colours::white);

@@ -30,11 +30,9 @@
 class TFview  : public Component
 {
 public:
-    //==============================================================================
     TFview (PluginProcessor* ownerFilter, int _width, int _height, float _min_freq, float _max_freq, float _min_dB, float _max_dB);
     ~TFview() override;
 
-    //==============================================================================
     void setFreqVector(float* _freqVector, int _numFreqPoints)
     {
         freqVector = _freqVector;
@@ -53,6 +51,5 @@ private:
 
     Rectangle<int> localBounds;
 
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TFview)
 };

@@ -12,7 +12,6 @@
 class sceneView  : public Component
 {
 public:
-    //==============================================================================
     sceneView (PluginProcessor* ownerFilter, int _width, int _height);
     ~sceneView() override;
 
@@ -61,6 +60,5 @@ private:
     bool drawIntersections;
     bool drawTargets;
 
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (sceneView)
 };

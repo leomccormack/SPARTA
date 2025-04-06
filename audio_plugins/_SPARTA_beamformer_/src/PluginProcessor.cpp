@@ -276,7 +276,6 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
         buffer.clear();
 }
 
-//==============================================================================
 bool PluginProcessor::hasEditor() const
 {
     return true; 
@@ -287,7 +286,6 @@ AudioProcessorEditor* PluginProcessor::createEditor()
     return new PluginEditor (this);
 }
 
-//==============================================================================
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
     XmlElement xml("BEAMFORMERPLUGINSETTINGS");
@@ -333,7 +331,6 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     }
 }
 
-//==============================================================================
 // This creates new instances of the plugin..
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {

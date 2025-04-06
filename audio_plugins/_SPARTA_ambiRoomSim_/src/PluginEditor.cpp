@@ -22,7 +22,6 @@
 
 #include "PluginEditor.h"
 
-//==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     : AudioProcessorEditor(ownerFilter)
 {
@@ -353,7 +352,6 @@ PluginEditor::~PluginEditor()
     sourceCoordsVP = nullptr;
 }
 
-//==============================================================================
 void PluginEditor::paint (juce::Graphics& g)
 {
     g.fillAll (juce::Colours::white);

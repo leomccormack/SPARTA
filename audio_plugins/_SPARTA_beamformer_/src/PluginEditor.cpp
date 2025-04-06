@@ -22,7 +22,6 @@
 
 #include "PluginEditor.h"
 
-//==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     : AudioProcessorEditor(ownerFilter)
 {
@@ -175,7 +174,6 @@ PluginEditor::~PluginEditor()
     panWindow = nullptr;
 }
 
-//==============================================================================
 void PluginEditor::paint (juce::Graphics& g)
 {
     g.fillAll (juce::Colours::white);

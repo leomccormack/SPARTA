@@ -40,8 +40,6 @@ float round_float(float in, int nDecimalPoints)
     return out;
 }
 
-
-//==============================================================================
 log2dSlider::log2dSlider (int _width, int _height, float _min_X_value, float _max_X_value, float _min_Y_value, float _max_Y_value, int _nDecimalPoints)
 {
     setSize (320, 50);
@@ -67,7 +65,6 @@ log2dSlider::~log2dSlider()
 {
 }
 
-//==============================================================================
 void log2dSlider::paint (Graphics& g)
 {
     /* background */

@@ -28,11 +28,9 @@
 class eqview  : public Component
 {
 public:
-    //==============================================================================
     eqview (int _width, int _height, float _min_freq, float _max_freq, float _min_dB, float _max_dB, float _fs);
     ~eqview() override;
 
-    //==============================================================================
     Rectangle<int> localBounds;
     std::unique_ptr<eqview_window> eqview_windowIncluded;
 

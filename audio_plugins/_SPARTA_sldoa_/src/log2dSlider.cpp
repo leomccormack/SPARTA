@@ -1,30 +1,27 @@
 /*
-  ==============================================================================
-
-  This is an automatically generated GUI class created by the Projucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Projucer version: 6.0.3
-
-  ------------------------------------------------------------------------------
-
-  The Projucer is part of the JUCE library.
-  Copyright (c) 2020 - Raw Material Software Limited.
-
-  ==============================================================================
+ ==============================================================================
+ 
+ This file is part of SPARTA; a suite of spatial audio plug-ins.
+ Copyright (c) 2017/2018 - Leo McCormack.
+ 
+ SPARTA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ SPARTA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ ==============================================================================
 */
-
-//[Headers] You can add your own extra header files here...
-
-//[/Headers]
 
 #include "log2dSlider.h"
 
-
-//[MiscUserDefs] You can add your own user definitions and misc code here...
 float round_float(float in, int nDecimalPoints)
 {
     float out;
@@ -35,23 +32,8 @@ float round_float(float in, int nDecimalPoints)
     return out;
 }
 
-
-//[/MiscUserDefs]
-
-//==============================================================================
 log2dSlider::log2dSlider (int _width, int _height, float _min_X_value, float _max_X_value, float _min_Y_value, float _max_Y_value, int _nDecimalPoints)
 {
-    //[Constructor_pre] You can add your own custom stuff here..
-    //[/Constructor_pre]
-
-
-    //[UserPreSize]
-    //[/UserPreSize]
-
-    setSize (320, 50);
-
-
-    //[Constructor] You can add your own custom stuff here..
     setSize (_width, _height);
     localBounds = getBounds();
 
@@ -67,28 +49,14 @@ log2dSlider::log2dSlider (int _width, int _height, float _min_X_value, float _ma
     Y_values = NULL;
     Y_values_int = NULL;
     refreshValues = true;
-    //[/Constructor]
 }
 
 log2dSlider::~log2dSlider()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
-    //[/Destructor_pre]
-
-
-
-    //[Destructor]. You can add your own custom destruction code here..
-    //[/Destructor]
 }
 
-//==============================================================================
 void log2dSlider::paint (juce::Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-
     /* background */
     int x = 0, y = 0;
     Colour fillColour1 = Colour (0x11ffffff), fillColour2 = Colour (0x425b5b5b);
@@ -158,23 +126,14 @@ void log2dSlider::paint (juce::Graphics& g)
             g.drawRect(Xpixel_1, (float)height- Ylength, Xpixel_2-Xpixel_1, Ylength ,1.0f);
         }
     }
-
-    //refreshValues = false;
-    //[/UserPaint]
 }
 
 void log2dSlider::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
 }
 
 void log2dSlider::mouseDown (const juce::MouseEvent& e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
     float c = log10f(min_X_value);
     float m = (log10f(max_X_value) - c)/(float)localBounds.getWidth();
     bool shouldContinue = true;
@@ -197,12 +156,10 @@ void log2dSlider::mouseDown (const juce::MouseEvent& e)
             }
         }
     }
-    //[/UserCode_mouseDown]
 }
 
 void log2dSlider::mouseDrag (const juce::MouseEvent& e)
 {
-    //[UserCode_mouseDrag] -- Add your code here...
     float c = log10f(min_X_value);
     float m = (log10f(max_X_value) - c)/(float)localBounds.getWidth();
     bool shouldContinue = true;
@@ -224,40 +181,5 @@ void log2dSlider::mouseDrag (const juce::MouseEvent& e)
             }
         }
     }
-    //[/UserCode_mouseDrag]
 }
-
-
-
-//[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-//[/MiscUserCode]
-
-
-//==============================================================================
-#if 0
-/*  -- Projucer information section --
-
-    This is where the Projucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
-
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="log2dSlider" componentName=""
-                 parentClasses="public Component" constructorParams="int _width, int _height, float _min_X_value, float _max_X_value, float _min_Y_value, float _max_Y_value, int _nDecimalPoints"
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="320" initialHeight="50">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="b9b9b9"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
 

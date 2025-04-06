@@ -80,7 +80,7 @@ enum {
 
 	k_NumOfParameters
 };
-//==============================================================================
+
 /**
 */
 class PluginProcessor  : public AudioProcessor,
@@ -140,21 +140,17 @@ private:
                     JUCE Functions
 \***************************************************************************/
 public:
-    //==============================================================================
     PluginProcessor();
     ~PluginProcessor() override;
 
-    //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
 
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 
-    //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;
     bool hasEditor() const override;
 
-    //==============================================================================
     const juce::String getName() const override;
 
     bool acceptsMidi() const override;
@@ -162,14 +158,12 @@ public:
     bool isMidiEffect() const override;
     double getTailLengthSeconds() const override;
 
-    //==============================================================================
     int getNumPrograms() override;
     int getCurrentProgram() override;
     void setCurrentProgram (int index) override;
     const juce::String getProgramName (int index) override;
     void changeProgramName (int index, const juce::String& newName) override;
     
-    //==============================================================================
     int getNumParameters() override;
     float getParameter (int index) override;
     const String getParameterName (int index) override;
@@ -177,7 +171,6 @@ public:
     void setParameter (int index, float newValue) override;
     void setParameterRaw(int index, float newValue);
 
-    //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     
@@ -196,7 +189,6 @@ public:
 	juce::AudioParameterFloat* room_size_z;
 
 private:
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
 
-	};
+};

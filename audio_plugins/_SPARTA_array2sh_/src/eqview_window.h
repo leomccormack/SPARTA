@@ -31,13 +31,10 @@
 class eqview_window  : public Component
 {
 public:
-    //==============================================================================
     eqview_window (int _width, int _height, float _min_freq, float _max_freq, float _min_dB, float _max_dB, float _fs);
     ~eqview_window();
 
-    //==============================================================================
     Rectangle<int> localBounds;
-
 
     void setSolidCurves_Handle(float* _freqVector, float** _solidCurves, int _numFreqPoints, int _numCurves)
     {

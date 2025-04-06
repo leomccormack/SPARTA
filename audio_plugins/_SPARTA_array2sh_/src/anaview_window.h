@@ -31,11 +31,9 @@
 class anaview_window  : public Component
 {
 public:
-    //==============================================================================
     anaview_window (int _width, int _height, float _min_freq, float _max_freq, float _min_Y, float _max_Y, float _yaxislineStepSize, float _fs);
     ~anaview_window() override;
 
-    //==============================================================================
     Rectangle<int> localBounds;
 
     void setSolidCurves_Handle(float* _freqVector, float* _solidCurves, int _numFreqPoints, int _numCurves)
@@ -62,6 +60,5 @@ private:
     int numCurves;
     int numFreqPoints;
 
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (anaview_window)
 };

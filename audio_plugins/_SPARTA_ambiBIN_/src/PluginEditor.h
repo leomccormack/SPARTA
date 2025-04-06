@@ -44,7 +44,6 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::Slider::Listener
 {
 public:
-    //==============================================================================
     PluginEditor (PluginProcessor* ownerFilter);
     ~PluginEditor() override;
 
@@ -85,7 +84,6 @@ private:
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
-    //==============================================================================
     std::unique_ptr<juce::ToggleButton> TBuseDefaultHRIRs;
     std::unique_ptr<juce::ComboBox> CBorderPreset;
     std::unique_ptr<juce::ComboBox> CBchFormat;
@@ -110,8 +108,6 @@ private:
     std::unique_ptr<juce::ToggleButton> TBtruncationEQ;
     std::unique_ptr<juce::ComboBox> CBhrirPreProc;
 
-
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };
 

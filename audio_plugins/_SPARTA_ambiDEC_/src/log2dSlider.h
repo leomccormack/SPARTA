@@ -28,11 +28,9 @@
 class log2dSlider  : public Component
 {
 public:
-    //==============================================================================
     log2dSlider (int _width, int _height, float _min_X_value, float _max_X_value, float _min_Y_value, float _max_Y_value, int _nDecimalPoints);
     ~log2dSlider();
 
-    //==============================================================================
     Rectangle<int> localBounds;
 
     void setDataHandles(float* _X_vector, float* _Y_values, int nPoints){
@@ -79,6 +77,5 @@ private:
     float* X_vector;
     int num_X_points;
 
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (log2dSlider)
 };

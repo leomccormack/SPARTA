@@ -41,11 +41,9 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::ComboBox::Listener
 {
 public:
-    //==============================================================================
     PluginEditor (PluginProcessor* ownerFilter);
     ~PluginEditor() override;
 
-    //==============================================================================
     void paint (juce::Graphics& g) override;
     void resized() override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
@@ -71,7 +69,6 @@ private:
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */ 
 
-    //==============================================================================
     std::unique_ptr<juce::Slider> s_ratio;
     std::unique_ptr<juce::Slider> s_knee;
     std::unique_ptr<juce::Slider> s_attack;
@@ -83,8 +80,6 @@ private:
     std::unique_ptr<juce::Slider> s_ingain;
     std::unique_ptr<juce::Slider> s_thresh;
 
-
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };
 
