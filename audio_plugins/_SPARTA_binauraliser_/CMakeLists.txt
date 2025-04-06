@@ -41,7 +41,6 @@ PRIVATE
 # Add any extra JUCE-specific pre-processor definitions
 target_compile_definitions(${PROJECT_NAME}
 PUBLIC 
-    JUCE_DISPLAY_SPLASH_SCREEN=0
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0

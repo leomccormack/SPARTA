@@ -1,40 +1,33 @@
 /*
-  ==============================================================================
-
-  This is an automatically generated GUI class created by the Projucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Projucer version: 6.0.8
-
-  ------------------------------------------------------------------------------
-
-  The Projucer is part of the JUCE library.
-  Copyright (c) 2020 - Raw Material Software Limited.
-
-  ==============================================================================
+ ==============================================================================
+ 
+ This file is part of SPARTA; a suite of spatial audio plug-ins.
+ Copyright (c) 2018 - Leo McCormack.
+ 
+ SPARTA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ SPARTA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ ==============================================================================
 */
-
-//[Headers] You can add your own extra header files here...
-
-//[/Headers]
 
 #include "outputCoordsView.h"
 
-
-//[MiscUserDefs] You can add your own user definitions and misc code here...
 const int sensorEdit_width = 212;
 const int sensorEdit_height = 32;
-//[/MiscUserDefs]
 
 //==============================================================================
 outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH )
 {
-    //[Constructor_pre] You can add your own custom stuff here..
-    //[/Constructor_pre]
-
     dummySlider.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (dummySlider.get());
     dummySlider->setRange (0.01, 0.3, 0.001);
@@ -44,14 +37,6 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
 
     dummySlider->setBounds (-176, 144, 96, 16);
 
-
-    //[UserPreSize]
-    //[/UserPreSize]
-
-    setSize (176, 400);
-
-
-    //[Constructor] You can add your own custom stuff here..
     setSize (sensorEdit_width, sensorEdit_height*currentNCH);
     hVst = ownerFilter;
     hAmbi = hVst->getFXHandle();
@@ -104,19 +89,12 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
     sliderHasChanged = true;
     refreshCoords();
     resized();
-
-    //[/Constructor]
 }
 
 outputCoordsView::~outputCoordsView()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
-    //[/Destructor_pre]
-
     dummySlider = nullptr;
 
-
-    //[Destructor]. You can add your own custom destruction code here..
     for( int i=0; i<maxNCH; i++){
         xSliders[i] = nullptr;
         ySliders[i] = nullptr;
@@ -125,20 +103,14 @@ outputCoordsView::~outputCoordsView()
     delete [] xSliders;
     delete [] ySliders;
     delete [] zSliders;
-    //[/Destructor]
 }
 
 //==============================================================================
 void outputCoordsView::paint (juce::Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
     {
         int x = 88, y = 0, width = 88, height = 2048;
         juce::Colour fillColour1 = juce::Colour (0x21ffffff), fillColour2 = juce::Colour (0x05252a25);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
                                              88.0f - 88.0f + x,
                                              128.0f - 0.0f + y,
@@ -152,8 +124,6 @@ void outputCoordsView::paint (juce::Graphics& g)
     {
         int x = 0, y = 0, width = 88, height = 2048;
         juce::Colour fillColour1 = juce::Colour (0x21ffffff), fillColour2 = juce::Colour (0x05252a25);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
                                              88.0f - 0.0f + x,
                                              128.0f - 0.0f + y,
@@ -164,10 +134,9 @@ void outputCoordsView::paint (juce::Graphics& g)
         g.fillRect (x, y, width, height);
     }
 
-    //[UserPaint] Add your own custom painting code here..
     Colour fillColour = Colours::white;
     g.setColour (fillColour);
-    g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
+    g.setFont (juce::FontOptions (15.00f, Font::plain).withStyle ("Regular"));
 
     for( int i=0; i<maxNCH; i++){
         /* draw sensor IDs */
@@ -182,25 +151,16 @@ void outputCoordsView::paint (juce::Graphics& g)
         g.setOpacity(0.15f);
         g.drawRect (0, i*sensorEdit_height, sensorEdit_width, sensorEdit_height+1, 1);
     }
-
-
-    //[/UserPaint]
 }
 
 void outputCoordsView::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
     setSize (sensorEdit_width, sensorEdit_height*currentNCH);
     repaint();
-    //[/UserResized]
 }
 
 void outputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
-    //[UsersliderValueChanged_Pre]
     for(int i=0; i<maxNCH; i++){
         if (sliderThatWasMoved == xSliders[i].get()) {
             ambi_roomsim_setReceiverX(hAmbi, i, (float)xSliders[i]->getValue());
@@ -216,22 +176,12 @@ void outputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
         }
     }
 
-    //[/UsersliderValueChanged_Pre]
-
     if (sliderThatWasMoved == dummySlider.get())
     {
-        //[UserSliderCode_dummySlider] -- add your slider handling code here..
-        //[/UserSliderCode_dummySlider]
     }
 
-    //[UsersliderValueChanged_Post]
     sliderHasChanged = true;
-    //[/UsersliderValueChanged_Post]
 }
-
-
-
-//[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 
 void outputCoordsView::refreshCoords(){
     /* update slider values and limits */
@@ -244,42 +194,3 @@ void outputCoordsView::refreshCoords(){
         zSliders[i]->setValue(ambi_roomsim_getReceiverZ(hAmbi, i), dontSendNotification);
     }
 }
-
-
-//[/MiscUserCode]
-
-
-//==============================================================================
-#if 0
-/*  -- Projucer information section --
-
-    This is where the Projucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
-
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="outputCoordsView" componentName=""
-                 parentClasses="public Component" constructorParams="PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH "
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="176" initialHeight="400">
-  <BACKGROUND backgroundColour="323e10">
-    <RECT pos="88 0 88 2048" fill="linear: 88 128, 176 128, 0=21ffffff, 1=5252a25"
-          hasStroke="0"/>
-    <RECT pos="0 0 88 2048" fill="linear: 88 128, 0 128, 0=21ffffff, 1=5252a25"
-          hasStroke="0"/>
-  </BACKGROUND>
-  <SLIDER name="new slider" id="4689db34530ab7c7" memberName="dummySlider"
-          virtualName="" explicitFocusOrder="0" pos="-176 144 96 16" min="0.01"
-          max="0.3" int="0.001" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="70" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="1"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
-

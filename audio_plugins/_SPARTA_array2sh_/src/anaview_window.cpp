@@ -1,30 +1,26 @@
 /*
-  ==============================================================================
-
-  This is an automatically generated GUI class created by the Projucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Projucer version: 6.0.3
-
-  ------------------------------------------------------------------------------
-
-  The Projucer is part of the JUCE library.
-  Copyright (c) 2020 - Raw Material Software Limited.
-
-  ==============================================================================
+ ==============================================================================
+ 
+ This file is part of SPARTA; a suite of spatial audio plug-ins.
+ Copyright (c) 2018 - Leo McCormack.
+ 
+ SPARTA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ SPARTA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ ==============================================================================
 */
 
-//[Headers] You can add your own extra header files here...
-
-//[/Headers]
-
 #include "anaview_window.h"
-
-
-//[MiscUserDefs] You can add your own user definitions and misc code here...
 
 static int round_nearest(int number, int multiple) {
     int result = number + multiple/2;
@@ -49,23 +45,9 @@ static void setCurveColour(Graphics& g, int n){
     }
 }
 
-//[/MiscUserDefs]
-
 //==============================================================================
 anaview_window::anaview_window (int _width, int _height, float _min_freq, float _max_freq, float _min_Y, float _max_Y, float _yaxislineStepSize, float _fs)
 {
-    //[Constructor_pre] You can add your own custom stuff here..
-    //[/Constructor_pre]
-
-
-    //[UserPreSize]
-    //[/UserPreSize]
-
-    setSize (600, 400);
-
-
-    //[Constructor] You can add your own custom stuff here..
-
     setSize (_width, _height);
     localBounds = getBounds();
 
@@ -80,29 +62,15 @@ anaview_window::anaview_window (int _width, int _height, float _min_freq, float 
 
     freqVector = NULL;
     solidCurves = NULL;
-
-    //[/Constructor]
 }
 
 anaview_window::~anaview_window()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
-    //[/Destructor_pre]
-
-
-
-    //[Destructor]. You can add your own custom destruction code here..
-    //[/Destructor]
 }
 
 //==============================================================================
 void anaview_window::paint (juce::Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-
     /* background */
     //Colour fillColour1 = Colour (0x75707070), fillColour2 = Colour (0xa1202020);
     Colour fillColour1 = Colour (0xff4e4e4e), fillColour2 = Colour (0xff202020);
@@ -191,51 +159,8 @@ void anaview_window::paint (juce::Graphics& g)
         setCurveColour(g, crv);
         g.drawLine(leg_x+18.0f, leg_y+(float)crv*10.0f+4.0f, leg_x+34.0f, leg_y+(float)crv*10.0f+4.0f, 2.0f);
     }
-    //[/UserPaint]
 }
 
 void anaview_window::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
 }
-
-
-
-//[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-//void overlay::refreshPowerMap(){
-//
-//    repaint();
-//
-//}
-
-//[/MiscUserCode]
-
-
-//==============================================================================
-#if 0
-/*  -- Projucer information section --
-
-    This is where the Projucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
-
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="anaview_window" componentName=""
-                 parentClasses="public Component" constructorParams="int _width, int _height, float _min_freq, float _max_freq, float _min_Y, float _max_Y, float _yaxislineStepSize, float _fs"
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="400">
-  <BACKGROUND backgroundColour="ffffff"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
-

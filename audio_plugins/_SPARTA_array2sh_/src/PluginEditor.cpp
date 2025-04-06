@@ -1,40 +1,32 @@
 /*
-  ==============================================================================
-
-  This is an automatically generated GUI class created by the Projucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Projucer version: 7.0.9
-
-  ------------------------------------------------------------------------------
-
-  The Projucer is part of the JUCE library.
-  Copyright (c) 2020 - Raw Material Software Limited.
-
-  ==============================================================================
+ ==============================================================================
+ 
+ This file is part of SPARTA; a suite of spatial audio plug-ins.
+ Copyright (c) 2018 - Leo McCormack.
+ 
+ SPARTA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ SPARTA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ ==============================================================================
 */
-
-//[Headers] You can add your own extra header files here...
-
-//[/Headers]
 
 #include "PluginEditor.h"
 
-
-//[MiscUserDefs] You can add your own user definitions and misc code here...
-
-//[/MiscUserDefs]
 
 //==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     : AudioProcessorEditor(ownerFilter) , progressbar(progress)
 {
-    //[Constructor_pre] You can add your own custom stuff here..
-    //[/Constructor_pre]
-
     presetCB.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (presetCB.get());
     presetCB->setEditableText (false);
@@ -226,14 +218,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     applyDiffEQ->setBounds (466, 309, 23, 24);
 
-
-    //[UserPreSize]
-    //[/UserPreSize]
-
     setSize (800, 450);
-
-
-    //[Constructor] You can add your own custom stuff here..
 
     /* handles */
 	hVst = ownerFilter;
@@ -431,15 +416,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* warnings */
     currentWarning = k_warning_none;
-
-    //[/Constructor]
 }
 
 PluginEditor::~PluginEditor()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
-    //[/Destructor_pre]
-
     presetCB = nullptr;
     arrayTypeCB = nullptr;
     QSlider = nullptr;
@@ -460,30 +440,22 @@ PluginEditor::~PluginEditor()
     CBencodingOrder = nullptr;
     applyDiffEQ = nullptr;
 
-
-    //[Destructor]. You can add your own custom destruction code here..
     setLookAndFeel(nullptr);
     eqviewIncluded = nullptr;
     cohviewIncluded = nullptr;
     ldiffviewIncluded = nullptr;
     sensorCoordsVP = nullptr;
     sensorCoordsView_handle = nullptr;
-    //[/Destructor]
 }
 
 //==============================================================================
 void PluginEditor::paint (juce::Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
     g.fillAll (juce::Colours::white);
 
     {
         int x = 0, y = 240, width = 800, height = 210;
         juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
                                              8.0f - 0.0f + x,
                                              448.0f - 240.0f + y,
@@ -497,8 +469,6 @@ void PluginEditor::paint (juce::Graphics& g)
     {
         int x = 0, y = 30, width = 800, height = 210;
         juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
                                              8.0f - 0.0f + x,
                                              32.0f - 30.0f + y,
@@ -513,8 +483,6 @@ void PluginEditor::paint (juce::Graphics& g)
         float x = 1.0f, y = 2.0f, width = 798.0f, height = 31.0f;
         juce::Colour fillColour1 = juce::Colour (0xff041518), fillColour2 = juce::Colour (0xff19313f);
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setGradientFill (juce::ColourGradient (fillColour1,
                                              0.0f - 1.0f + x,
                                              32.0f - 2.0f + y,
@@ -531,8 +499,6 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 12, y = 56, width = 204, height = 32;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -544,8 +510,6 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 228, y = 56, width = 556, height = 209;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -557,8 +521,6 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 280, y = 70, width = 456, height = 158;
         juce::Colour fillColour = juce::Colour (0x13000000);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -570,8 +532,6 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 506, y = 264, width = 278, height = 104;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -583,8 +543,6 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 506, y = 264, width = 278, height = 104;
         juce::Colour fillColour = juce::Colour (0x08f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -596,8 +554,6 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 506, y = 367, width = 278, height = 69;
         juce::Colour fillColour = juce::Colour (0x13f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -609,8 +565,6 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 228, y = 264, width = 279, height = 172;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -622,8 +576,6 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 228, y = 264, width = 279, height = 38;
         juce::Colour fillColour = juce::Colour (0x08f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -635,8 +587,6 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 12, y = 87, width = 204, height = 106;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -648,10 +598,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 20, y = 55, width = 67, height = 30;
         juce::String text (TRANS ("Presets: "));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -660,10 +608,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 20, y = 91, width = 180, height = 30;
         juce::String text (TRANS ("Number of Sensors: "));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (14.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (14.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -672,10 +618,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 20, y = 123, width = 180, height = 30;
         juce::String text (TRANS ("Array radius (mm):"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (14.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (14.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -684,10 +628,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 20, y = 155, width = 180, height = 30;
         juce::String text (TRANS ("Baffle radius (mm):"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (14.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (14.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -696,8 +638,6 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 12, y = 192, width = 204, height = 244;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -709,10 +649,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 240, y = 337, width = 172, height = 30;
         juce::String text (TRANS ("Speed of Sound (m/s):"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -721,10 +659,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 240, y = 369, width = 172, height = 30;
         juce::String text (TRANS ("Array Type:"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -733,10 +669,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 240, y = 401, width = 172, height = 30;
         juce::String text (TRANS ("Baffle-Directivity:"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -745,10 +679,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 520, y = 268, width = 172, height = 30;
         juce::String text (TRANS ("Filter Approach:"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -757,10 +689,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 520, y = 301, width = 172, height = 30;
         juce::String text (TRANS ("Max Gain (dB):"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -769,10 +699,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 520, y = 369, width = 172, height = 30;
         juce::String text (TRANS ("Channel Order:"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -781,10 +709,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 520, y = 401, width = 172, height = 30;
         juce::String text (TRANS ("Normalisation:"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -793,10 +719,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 520, y = 334, width = 172, height = 30;
         juce::String text (TRANS ("Post Gain (dB):"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -805,10 +729,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 75, y = 193, width = 101, height = 30;
         juce::String text (TRANS ("Azi   #   Elev"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -816,8 +738,6 @@ void PluginEditor::paint (juce::Graphics& g)
     {
         int x = 24, y = 224, width = 184, height = 200;
         juce::Colour strokeColour = juce::Colour (0x29b6b5b5);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 1);
 
@@ -827,10 +747,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 179, y = 193, width = 24, height = 23;
         juce::String text (juce::CharPointer_UTF8 ("\xc2\xb0"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -839,10 +757,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 92, y = 30, width = 88, height = 30;
         juce::String text (TRANS ("Inputs"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -851,10 +767,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 440, y = 30, width = 149, height = 30;
         juce::String text (TRANS ("Encoding Settings"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -863,10 +777,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 240, y = 268, width = 172, height = 30;
         juce::String text (TRANS ("Encoding Order:"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -875,10 +787,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 16, y = 1, width = 100, height = 32;
         juce::String text (TRANS ("SPARTA|"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (18.80f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (18.80f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -887,10 +797,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 92, y = 1, width = 112, height = 32;
         juce::String text (TRANS ("Array2SH"));
         juce::Colour fillColour = juce::Colour (0xffe9ff00);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (18.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (18.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -899,10 +807,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 240, y = 305, width = 248, height = 30;
         juce::String text (TRANS ("Enable Diffuse-EQ Past Aliasing:"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -911,10 +817,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 328, y = 65, width = 392, height = 31;
         juce::String text (TRANS ("Press the \"Analyse\" button"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centred, true);
     }
@@ -923,10 +827,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 291, y = 88, width = 477, height = 23;
         juce::String text (TRANS ("Corr: The spatial correlation is derived by comparing the patterns of the array responses with"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::FontOptions (11.00f, juce::Font::plain).withStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -935,10 +837,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 291, y = 104, width = 477, height = 23;
         juce::String text (TRANS ("the patterns of ideal spherical harmonics, where \'1\' means they are perfect, and \'0\' completely "));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::FontOptions (11.00f, juce::Font::plain).withStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -947,10 +847,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 291, y = 120, width = 477, height = 23;
         juce::String text (TRANS ("uncorrelated; the spatial aliasing frequency can therefore be observed for each order, as the "));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::FontOptions (11.00f, juce::Font::plain).withStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -959,10 +857,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 291, y = 160, width = 477, height = 23;
         juce::String text (TRANS ("Ldiff: The level difference is the mean level difference over all directions (diffuse level differe-"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::FontOptions (11.00f, juce::Font::plain).withStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -971,10 +867,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 291, y = 192, width = 477, height = 23;
         juce::String text (TRANS ("amplification limits [Max Gain (dB)] will result in noisier signals; however, this will also result in "));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::FontOptions (11.00f, juce::Font::plain).withStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -983,10 +877,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 291, y = 176, width = 477, height = 23;
         juce::String text (TRANS ("nce) between the ideal and simulated components. One can observe that higher permitted "));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::FontOptions (11.00f, juce::Font::plain).withStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -995,10 +887,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 291, y = 136, width = 477, height = 23;
         juce::String text (TRANS ("point where the spatial correlation tends towards 0."));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::FontOptions (11.00f, juce::Font::plain).withStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -1007,10 +897,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 291, y = 208, width = 477, height = 23;
         juce::String text (TRANS ("a wider frequency range of useful spherical harmonic components at each order."));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::FontOptions (11.00f, juce::Font::plain).withStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -1019,10 +907,8 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 673, y = 33, width = 119, height = 25;
         juce::String text (TRANS ("Display:"));
         juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (12.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.setFont (juce::FontOptions (12.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -1030,8 +916,6 @@ void PluginEditor::paint (juce::Graphics& g)
     {
         int x = 0, y = 0, width = 802, height = 2;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 2);
 
@@ -1040,8 +924,6 @@ void PluginEditor::paint (juce::Graphics& g)
     {
         int x = 0, y = 448, width = 802, height = 2;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 2);
 
@@ -1050,8 +932,6 @@ void PluginEditor::paint (juce::Graphics& g)
     {
         int x = 0, y = 0, width = 2, height = 450;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 2);
 
@@ -1060,8 +940,6 @@ void PluginEditor::paint (juce::Graphics& g)
     {
         int x = 798, y = 0, width = 2, height = 450;
         juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 2);
 
@@ -1071,8 +949,6 @@ void PluginEditor::paint (juce::Graphics& g)
         int x = 12, y = 56, width = 204, height = 32;
         juce::Colour fillColour = juce::Colour (0x08f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
@@ -1080,17 +956,15 @@ void PluginEditor::paint (juce::Graphics& g)
 
     }
 
-    //[UserPaint] Add your own custom painting code here..
-
 	g.setColour(Colours::white);
-	g.setFont(Font(11.00f, Font::plain));
+	g.setFont(juce::FontOptions (11.00f, Font::plain));
     g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
 		185, 16, 530, 11,
 		Justification::centredLeft, true);
 
     /* display warning message */
     g.setColour(Colours::red);
-    g.setFont(Font(11.00f, Font::plain));
+    g.setFont(juce::FontOptions (11.00f, Font::plain));
     switch (currentWarning){
         case k_warning_none:
             break;
@@ -1117,29 +991,16 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
     }
-
-    //[/UserPaint]
 }
 
 void PluginEditor::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-
-    //[/UserResized]
 }
 
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
-    //[UsercomboBoxChanged_Pre]
-
-    //[/UsercomboBoxChanged_Pre]
-
     if (comboBoxThatHasChanged == presetCB.get())
     {
-        //[UserComboBoxCode_presetCB] -- add your combo box handling code here..
         array2sh_setPreset(hA2sh, (ARRAY2SH_MICROPHONE_ARRAY_PRESETS)presetCB->getSelectedId());
 
         /* grab current parameter settings */
@@ -1162,58 +1023,42 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
         sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));
 
         needScreenRefreshFLAG = true;
-        //[/UserComboBoxCode_presetCB]
     }
     else if (comboBoxThatHasChanged == arrayTypeCB.get())
     {
-        //[UserComboBoxCode_arrayTypeCB] -- add your combo box handling code here..
         array2sh_setArrayType(hA2sh, arrayTypeCB->getSelectedId());
         needScreenRefreshFLAG = true;
-        //[/UserComboBoxCode_arrayTypeCB]
     }
     else if (comboBoxThatHasChanged == weightTypeCB.get())
     {
-        //[UserComboBoxCode_weightTypeCB] -- add your combo box handling code here..
         array2sh_setWeightType(hA2sh, weightTypeCB->getSelectedId());
         needScreenRefreshFLAG = true;
-        //[/UserComboBoxCode_weightTypeCB]
     }
     else if (comboBoxThatHasChanged == filterTypeCB.get())
     {
-        //[UserComboBoxCode_filterTypeCB] -- add your combo box handling code here..
         array2sh_setFilterType(hA2sh, filterTypeCB->getSelectedId());
         needScreenRefreshFLAG = true;
-        //[/UserComboBoxCode_filterTypeCB]
     }
     else if (comboBoxThatHasChanged == CHOrderingCB.get())
     {
-        //[UserComboBoxCode_CHOrderingCB] -- add your combo box handling code here..
         array2sh_setChOrder(hA2sh, CHOrderingCB->getSelectedId());
-        //[/UserComboBoxCode_CHOrderingCB]
     }
     else if (comboBoxThatHasChanged == normalisationCB.get())
     {
-        //[UserComboBoxCode_normalisationCB] -- add your combo box handling code here..
         array2sh_setNormType(hA2sh, normalisationCB->getSelectedId());
-        //[/UserComboBoxCode_normalisationCB]
     }
     else if (comboBoxThatHasChanged == dispWindow.get())
     {
-        //[UserComboBoxCode_dispWindow] -- add your combo box handling code here..
         dispID = (DISP_WINDOW)dispWindow->getSelectedId();
         needScreenRefreshFLAG = 1;
-        //[/UserComboBoxCode_dispWindow]
     }
     else if (comboBoxThatHasChanged == CBencodingOrder.get())
     {
-        //[UserComboBoxCode_CBencodingOrder] -- add your combo box handling code here..
         int newOrder = CBencodingOrder->getSelectedId();
         array2sh_setEncodingOrder(hA2sh, newOrder);
         needScreenRefreshFLAG = true;
-        //[/UserComboBoxCode_CBencodingOrder]
     }
 
-    //[UsercomboBoxChanged_Post]
     /* disable unsuitable parameters */
     bool shouldBeEnabled = array2sh_getWeightType(hA2sh) > WEIGHT_RIGID_DIPOLE ? false : true; /* is it a rigid array? */
     RSlider->setEnabled(shouldBeEnabled);
@@ -1224,33 +1069,23 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     weightTypeCB->setItemEnabled(WEIGHT_OPEN_DIPOLE, shouldBeEnabled);
 //    if( (array2sh_getArrayType(hA2sh) == 2) && ((array2sh_getWeightType(hA2sh) == 3) || (array2sh_getWeightType(hA2sh) == 4)) )
 //        weightTypeCB->setSelectedId(1, sendNotification); /* force a suitable option */
-
-    //[/UsercomboBoxChanged_Post]
 }
 
 void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
-    //[UsersliderValueChanged_Pre]
-    //[/UsersliderValueChanged_Pre]
-
     if (sliderThatWasMoved == QSlider.get())
     {
-        //[UserSliderCode_QSlider] -- add your slider handling code here..
         if(array2sh_getMinNumSensors(hA2sh)<= (int)QSlider->getValue())
             array2sh_setNumSensors(hA2sh, (int)QSlider->getValue());
         needScreenRefreshFLAG = true;
-        //[/UserSliderCode_QSlider]
     }
     else if (sliderThatWasMoved == rSlider.get())
     {
-        //[UserSliderCode_rSlider] -- add your slider handling code here..
         array2sh_setr(hA2sh, (float)rSlider->getValue()/1e3f);
         needScreenRefreshFLAG = true;
-        //[/UserSliderCode_rSlider]
     }
     else if (sliderThatWasMoved == RSlider.get())
     {
-        //[UserSliderCode_RSlider] -- add your slider handling code here..
         array2sh_setR(hA2sh, (float)RSlider->getValue()/1e3f);
         bool changerToo = (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_OMNI) ||
             (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_CARD) ||
@@ -1260,54 +1095,36 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
             rSlider->setValue(RSlider->getValue(), dontSendNotification);
         }
         needScreenRefreshFLAG = true;
-        //[/UserSliderCode_RSlider]
     }
     else if (sliderThatWasMoved == cSlider.get())
     {
-        //[UserSliderCode_cSlider] -- add your slider handling code here..
         array2sh_setc(hA2sh, (float)cSlider->getValue());
         needScreenRefreshFLAG = true;
-        //[/UserSliderCode_cSlider]
     }
     else if (sliderThatWasMoved == regAmountSlider.get())
     {
-        //[UserSliderCode_regAmountSlider] -- add your slider handling code here..
         array2sh_setRegPar(hA2sh, (float)regAmountSlider->getValue());
         needScreenRefreshFLAG = true;
-        //[/UserSliderCode_regAmountSlider]
     }
     else if (sliderThatWasMoved == gainSlider.get())
     {
-        //[UserSliderCode_gainSlider] -- add your slider handling code here..
         array2sh_setGain(hA2sh, (float)gainSlider->getValue());
-        //[/UserSliderCode_gainSlider]
     }
-
-    //[UsersliderValueChanged_Post]
-    //[/UsersliderValueChanged_Post]
 }
 
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
-    //[UserbuttonClicked_Pre]
-    //[/UserbuttonClicked_Pre]
-
     if (buttonThatWasClicked == degRadTB.get())
     {
-        //[UserButtonCode_degRadTB] -- add your button handler code here..
         showDegreesInstead = degRadTB->getToggleState();
         sensorCoordsView_handle->setUseDegreesInstead(showDegreesInstead);
-        //[/UserButtonCode_degRadTB]
     }
     else if (buttonThatWasClicked == textButton.get())
     {
-        //[UserButtonCode_textButton] -- add your button handler code here..
         array2sh_setRequestEncoderEvalFLAG(hA2sh, 1);
-        //[/UserButtonCode_textButton]
     }
     else if (buttonThatWasClicked == tb_loadJSON.get())
     {
-        //[UserButtonCode_tb_loadJSON] -- add your button handler code here..
         chooser = std::make_unique<juce::FileChooser> ("Load configuration...",
                                                        hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
@@ -1320,11 +1137,9 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
                 hVst->loadConfiguration (file);
             }
         });
-        //[/UserButtonCode_tb_loadJSON]
     }
     else if (buttonThatWasClicked == tb_saveJSON.get())
     {
-        //[UserButtonCode_tb_saveJSON] -- add your button handler code here..
         chooser = std::make_unique<juce::FileChooser> ("Save configuration...",
                                                        hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
@@ -1336,23 +1151,14 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
                 hVst->saveConfigurationToFile (file);
             }
         });
-        //[/UserButtonCode_tb_saveJSON]
     }
     else if (buttonThatWasClicked == applyDiffEQ.get())
     {
-        //[UserButtonCode_applyDiffEQ] -- add your button handler code here..
         array2sh_setDiffEQpastAliasing(hA2sh, (int)applyDiffEQ->getToggleState());
         needScreenRefreshFLAG = true;
-        //[/UserButtonCode_applyDiffEQ]
     }
-
-    //[UserbuttonClicked_Post]
-    //[/UserbuttonClicked_Post]
 }
 
-
-
-//[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PluginEditor::timerCallback(int timerID)
 {
     switch(timerID){
@@ -1518,235 +1324,4 @@ void PluginEditor::timerCallback(int timerID)
             break;
     }
 }
-
-
-
-//[/MiscUserCode]
-
-
-//==============================================================================
-#if 0
-/*  -- Projucer information section --
-
-    This is where the Projucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
-
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
-                 parentClasses="public AudioProcessorEditor, public MultiTimer"
-                 constructorParams="PluginProcessor* ownerFilter" variableInitialisers="AudioProcessorEditor(ownerFilter) , progressbar(progress)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="800" initialHeight="450">
-  <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="0 240 800 210" fill="linear: 8 448, 8 352, 0=ff19313f, 1=ff041518"
-          hasStroke="0"/>
-    <RECT pos="0 30 800 210" fill="linear: 8 32, 8 128, 0=ff19313f, 1=ff041518"
-          hasStroke="0"/>
-    <ROUNDRECT pos="1 2 798 31" cornerSize="5.0" fill="linear: 0 32, 792 24, 0=ff041518, 1=ff19313f"
-               hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="12 56 204 32" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="228 56 556 209" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="280 70 456 158" fill="solid: 13000000" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="506 264 278 104" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="506 264 278 104" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="506 367 278 69" fill="solid: 13f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="228 264 279 172" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="228 264 279 38" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 87 204 106" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="20 55 67 30" fill="solid: ffffffff" hasStroke="0" text="Presets: "
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="20 91 180 30" fill="solid: ffffffff" hasStroke="0" text="Number of Sensors: "
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="20 123 180 30" fill="solid: ffffffff" hasStroke="0" text="Array radius (mm):"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="20 155 180 30" fill="solid: ffffffff" hasStroke="0" text="Baffle radius (mm):"
-          fontname="Default font" fontsize="14.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="12 192 204 244" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="240 337 172 30" fill="solid: ffffffff" hasStroke="0" text="Speed of Sound (m/s):"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="240 369 172 30" fill="solid: ffffffff" hasStroke="0" text="Array Type:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="240 401 172 30" fill="solid: ffffffff" hasStroke="0" text="Baffle-Directivity:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="520 268 172 30" fill="solid: ffffffff" hasStroke="0" text="Filter Approach:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="520 301 172 30" fill="solid: ffffffff" hasStroke="0" text="Max Gain (dB):"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="520 369 172 30" fill="solid: ffffffff" hasStroke="0" text="Channel Order:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="520 401 172 30" fill="solid: ffffffff" hasStroke="0" text="Normalisation:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="520 334 172 30" fill="solid: ffffffff" hasStroke="0" text="Post Gain (dB):"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="75 193 101 30" fill="solid: ffffffff" hasStroke="0" text="Azi   #   Elev"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="24 224 184 200" fill="solid: 39a52a" hasStroke="1" stroke="1, mitered, butt"
-          strokeColour="solid: 29b6b5b5"/>
-    <TEXT pos="179 193 24 23" fill="solid: ffffffff" hasStroke="0" text="&#176;"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="92 30 88 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="440 30 149 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Settings"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="240 268 172 30" fill="solid: ffffffff" hasStroke="0" text="Encoding Order:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
-          fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="92 1 112 32" fill="solid: ffe9ff00" hasStroke="0" text="Array2SH"
-          fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="240 305 248 30" fill="solid: ffffffff" hasStroke="0" text="Enable Diffuse-EQ Past Aliasing:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="328 65 392 31" fill="solid: ffffffff" hasStroke="0" text="Press the &quot;Analyse&quot; button"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="291 88 477 23" fill="solid: ffffffff" hasStroke="0" text="Corr: The spatial correlation is derived by comparing the patterns of the array responses with"
-          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
-          italic="0" justification="33"/>
-    <TEXT pos="291 104 477 23" fill="solid: ffffffff" hasStroke="0" text="the patterns of ideal spherical harmonics, where '1' means they are perfect, and '0' completely "
-          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
-          italic="0" justification="33"/>
-    <TEXT pos="291 120 477 23" fill="solid: ffffffff" hasStroke="0" text="uncorrelated; the spatial aliasing frequency can therefore be observed for each order, as the "
-          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
-          italic="0" justification="33"/>
-    <TEXT pos="291 160 477 23" fill="solid: ffffffff" hasStroke="0" text="Ldiff: The level difference is the mean level difference over all directions (diffuse level differe-"
-          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
-          italic="0" justification="33"/>
-    <TEXT pos="291 192 477 23" fill="solid: ffffffff" hasStroke="0" text="amplification limits [Max Gain (dB)] will result in noisier signals; however, this will also result in "
-          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
-          italic="0" justification="33"/>
-    <TEXT pos="291 176 477 23" fill="solid: ffffffff" hasStroke="0" text="nce) between the ideal and simulated components. One can observe that higher permitted "
-          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
-          italic="0" justification="33"/>
-    <TEXT pos="291 136 477 23" fill="solid: ffffffff" hasStroke="0" text="point where the spatial correlation tends towards 0."
-          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
-          italic="0" justification="33"/>
-    <TEXT pos="291 208 477 23" fill="solid: ffffffff" hasStroke="0" text="a wider frequency range of useful spherical harmonic components at each order."
-          fontname="Default font" fontsize="11.0" kerning="0.0" bold="0"
-          italic="0" justification="33"/>
-    <TEXT pos="673 33 119 25" fill="solid: ffffffff" hasStroke="0" text="Display:"
-          fontname="Default font" fontsize="12.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="0 0 802 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
-          strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="0 448 802 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
-          strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="0 0 2 450" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
-          strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="798 0 2 450" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
-          strokeColour="solid: ffb9b9b9"/>
-    <RECT pos="12 56 204 32" fill="solid: 8f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
-          strokeColour="solid: 67a0a0a0"/>
-  </BACKGROUND>
-  <COMBOBOX name="new combo box" id="abcd469891fabf2d" memberName="presetCB"
-            virtualName="" explicitFocusOrder="0" pos="88 64 120 16" editable="0"
-            layout="33" items="Default" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
-  <COMBOBOX name="new combo box" id="ee4eaf9d9b41f219" memberName="arrayTypeCB"
-            virtualName="" explicitFocusOrder="0" pos="368 378 120 16" editable="0"
-            layout="33" items="Spherical&#10;Cylindrical" textWhenNonSelected="Spherical"
-            textWhenNoItems="(no choices)"/>
-  <SLIDER name="new slider" id="93dd93c125dcb3b3" memberName="QSlider"
-          virtualName="" explicitFocusOrder="0" pos="156 97 52 20" min="4.0"
-          max="128.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="1"/>
-  <SLIDER name="new slider" id="f6fe97a46cc051e2" memberName="rSlider"
-          virtualName="" explicitFocusOrder="0" pos="156 129 52 20" min="1.0"
-          max="400.0" int="0.01" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="45" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="1"/>
-  <SLIDER name="new slider" id="41d575604e9dcd3a" memberName="RSlider"
-          virtualName="" explicitFocusOrder="0" pos="156 161 52 20" trackcol="ff181f22"
-          rotaryslideroutline="ff263238" min="1.0" max="400.0" int="0.01"
-          style="LinearHorizontal" textBoxPos="TextBoxRight" textBoxEditable="1"
-          textBoxWidth="45" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
-  <SLIDER name="new slider" id="c3b6d9fc71650ee4" memberName="cSlider"
-          virtualName="" explicitFocusOrder="0" pos="408 346 80 16" min="200.0"
-          max="2000.0" int="0.01" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="55" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="1"/>
-  <COMBOBOX name="new combo box" id="ea26910fd5e03b81" memberName="weightTypeCB"
-            virtualName="" explicitFocusOrder="0" pos="368 410 120 16" editable="0"
-            layout="33" items="" textWhenNonSelected="Rigid" textWhenNoItems="(no choices)"/>
-  <COMBOBOX name="new combo box" id="d818d0d5310dc52a" memberName="filterTypeCB"
-            virtualName="" explicitFocusOrder="0" pos="640 276 128 16" editable="0"
-            layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
-  <SLIDER name="new slider" id="9f4f4ac547d19161" memberName="regAmountSlider"
-          virtualName="" explicitFocusOrder="0" pos="640 308 128 16" bkgcol="ff5c5d5e"
-          trackcol="ff315b6d" min="0.0" max="80.0" int="0.01" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
-          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
-  <COMBOBOX name="new combo box" id="44b90530e58253e" memberName="CHOrderingCB"
-            virtualName="" explicitFocusOrder="0" pos="640 377 128 16" editable="0"
-            layout="33" items="&#10;" textWhenNonSelected="ACN" textWhenNoItems="(no choices)"/>
-  <COMBOBOX name="new combo box" id="caeee0fc74db72a4" memberName="normalisationCB"
-            virtualName="" explicitFocusOrder="0" pos="640 409 128 16" editable="0"
-            layout="33" items="&#10;" textWhenNonSelected="N3D" textWhenNoItems="(no choices)"/>
-  <SLIDER name="new slider" id="ee4c42494881e7dc" memberName="gainSlider"
-          virtualName="" explicitFocusOrder="0" pos="640 341 128 16" bkgcol="ff5c5d5e"
-          trackcol="ff315b6d" min="-60.0" max="60.0" int="0.01" style="LinearHorizontal"
-          textBoxPos="TextBoxRight" textBoxEditable="1" textBoxWidth="55"
-          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
-  <TOGGLEBUTTON name="new toggle button" id="3fdbf3711d00f4db" memberName="degRadTB"
-                virtualName="" explicitFocusOrder="0" pos="186 198 23 24" buttonText=""
-                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
-  <TEXTBUTTON name="new button" id="dde3f82641b3717c" memberName="textButton"
-              virtualName="" explicitFocusOrder="0" pos="228 39 60 14" bgColOff="ff5c68a4"
-              buttonText="Analyse" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
-  <COMBOBOX name="new combo box" id="fb3d8d6828195921" memberName="dispWindow"
-            virtualName="" explicitFocusOrder="0" pos="721 39 63 14" editable="0"
-            layout="33" items="Filters&#10;Corr&#10;L Diff" textWhenNonSelected="Filters"
-            textWhenNoItems="(no choices)"/>
-  <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON"
-              virtualName="" explicitFocusOrder="0" pos="148 39 34 14" bgColOff="ff14889e"
-              buttonText="Import" connectedEdges="2" needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="new button" id="48c5d3526dcfe64f" memberName="tb_saveJSON"
-              virtualName="" explicitFocusOrder="0" pos="182 39 34 14" bgColOff="ff224d97"
-              bgColOn="ff181f9a" buttonText="Export" connectedEdges="1" needsCallback="1"
-              radioGroupId="0"/>
-  <COMBOBOX name="new combo box" id="a465903000494955" memberName="CBencodingOrder"
-            virtualName="" explicitFocusOrder="0" pos="368 274 120 20" editable="0"
-            layout="33" items="" textWhenNonSelected="Default" textWhenNoItems="(no choices)"/>
-  <TOGGLEBUTTON name="new toggle button" id="5461719ed498c991" memberName="applyDiffEQ"
-                virtualName="" explicitFocusOrder="0" pos="466 309 23 24" buttonText=""
-                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
 
