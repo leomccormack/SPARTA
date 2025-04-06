@@ -1,29 +1,26 @@
 /*
-  ==============================================================================
-
-  This is an automatically generated GUI class created by the Projucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Projucer version: 5.4.7
-
-  ------------------------------------------------------------------------------
-
-  The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
-
-  ==============================================================================
+ ==============================================================================
+ 
+ This file is part of SPARTA; a suite of spatial audio plug-ins.
+ Copyright (c) 2018 - Leo McCormack.
+ 
+ SPARTA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ SPARTA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ ==============================================================================
 */
 
-//[Headers] You can add your own extra header files here...
-//[/Headers]
-
 #include "TFview.h"
-
-
-//[MiscUserDefs] You can add your own user definitions and misc code here...
 
 #ifndef MIN
 #define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
@@ -31,22 +28,12 @@
 #ifndef MAX
 #define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
 #endif
-//[/MiscUserDefs]
 
 //==============================================================================
 TFview::TFview (PluginProcessor* ownerFilter, int _width, int _height, float _min_freq, float _max_freq, float _min_dB, float _max_dB)
 {
-    //[Constructor_pre] You can add your own custom stuff here..
-    //[/Constructor_pre]
-
-
-    //[UserPreSize]
-    //[/UserPreSize]
-
     setSize (470, 220);
 
-
-    //[Constructor] You can add your own custom stuff here..
     /* local pars */
 	hVst = ownerFilter;
     hAmbi = hVst->getFXHandle();
@@ -61,30 +48,16 @@ TFview::TFview (PluginProcessor* ownerFilter, int _width, int _height, float _mi
     /* component bounds */
     setSize(width, height);
     localBounds = getBounds();
-
-    //[/Constructor]
 }
 
 TFview::~TFview()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
-    //[/Destructor_pre]
-
-
-
-    //[Destructor]. You can add your own custom destruction code here..
-    //[/Destructor]
 }
 
 //==============================================================================
 void TFview::paint (Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
     g.fillAll (Colours::white);
-
-    //[UserPaint] Add your own custom painting code here..
 
     /* Background */
     int x = 0, y = 0;
@@ -176,46 +149,10 @@ void TFview::paint (Graphics& g)
 	g.drawLine(linePos, 0, linePos, height, 1);
 	g.setColour(Colour(0x7dffffff));
 	g.drawRect(0, 0, width, height, 1);
-
-    //[/UserPaint]
 }
 
 void TFview::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
 }
 
-
-
-//[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-//[/MiscUserCode]
-
-
-//==============================================================================
-#if 0
-/*  -- Projucer information section --
-
-    This is where the Projucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
-
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="TFview" componentName=""
-                 parentClasses="public Component" constructorParams="PluginProcessor* ownerFilter, int _width, int _height, float _min_freq, float _max_freq, float _min_dB, float _max_dB"
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="470" initialHeight="220">
-  <BACKGROUND backgroundColour="ffffffff"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
-
+ 
