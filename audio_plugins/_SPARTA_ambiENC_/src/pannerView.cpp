@@ -1,49 +1,34 @@
 /*
-  ==============================================================================
-
-  This is an automatically generated GUI class created by the Projucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Projucer version: 5.4.4
-
-  ------------------------------------------------------------------------------
-
-  The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
-
-  ==============================================================================
+ ==============================================================================
+ 
+ This file is part of SPARTA; a suite of spatial audio plug-ins.
+ Copyright (c) 2018 - Leo McCormack.
+ 
+ SPARTA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ SPARTA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ ==============================================================================
 */
-
-//[Headers] You can add your own extra header files here...
-
-//[/Headers]
 
 #include "pannerView.h"
 
-
-//[MiscUserDefs] You can add your own user definitions and misc code here...
 const float icon_size = 8.0f;
-
-
-//[/MiscUserDefs]
 
 //==============================================================================
 pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
 {
-    //[Constructor_pre] You can add your own custom stuff here..
-    //[/Constructor_pre]
-
-
-    //[UserPreSize]
-    //[/UserPreSize]
-
     setSize (480, 240);
 
-
-    //[Constructor] You can add your own custom stuff here..
     hVst = ownerFilter;
     hAmbi = hVst->getFXHandle();
     width = _width;
@@ -57,33 +42,19 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     }
     NSources = ambi_enc_getNumSources(hAmbi);
     soloActive = false;
-
-    //[/Constructor]
 }
 
 pannerView::~pannerView()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
-    //[/Destructor_pre]
-
-
-
-    //[Destructor]. You can add your own custom destruction code here..
-    //[/Destructor]
 }
 
 //==============================================================================
 void pannerView::paint (Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
     {
         int x = 0, y = 0, width = 480, height = 240;
         Colour fillColour1 = Colour (0xff4e4e4e), fillColour2 = Colour (0xff202020);
         Colour strokeColour = Colour (0xff9e9e9e);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (fillColour1,
                                        248.0f - 0.0f + x,
                                        0.0f - 0.0f + y,
@@ -96,10 +67,7 @@ void pannerView::paint (Graphics& g)
         g.drawRect (x, y, width, height, 1);
 
     }
-
-    //[UserPaint] Add your own custom painting code here..
-
-
+    
     /* Draw Grid lines and labels */
     int numGridLinesX = 8;
     int numGridLinesY = numGridLinesX / 2;
@@ -160,22 +128,14 @@ void pannerView::paint (Graphics& g)
         g.setColour(Colours::red);
         g.drawSingleLineText("SoloActive", 5, 15);
     }
-
-    //[/UserPaint]
 }
 
 void pannerView::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
 }
 
 void pannerView::mouseDown (const MouseEvent& e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
     for(int i=0; i<NSources; i++){
         Rectangle<int> icon_int;
         icon_int.setBounds(SourceIcons[i].getX(),
@@ -194,12 +154,10 @@ void pannerView::mouseDown (const MouseEvent& e)
             break;
         }
     }
-    //[/UserCode_mouseDown]
 }
 
 void pannerView::mouseDrag (const MouseEvent& e)
 {
-    //[UserCode_mouseDrag] -- Add your code here...
     if(sourceIconIsClicked){
         Point<float> point;
         point.setXY((float)e.getPosition().getX()-icon_size/2.0f, (float)e.getPosition().getY()-icon_size/2.0f);
@@ -208,13 +166,10 @@ void pannerView::mouseDrag (const MouseEvent& e)
         ambi_enc_setSourceElev_deg(hAmbi, indexOfClickedSource,
                                    ((height - (point.getY() + icon_size/2.0f))*180.0f)/height - 90.0f);
     }
-
-    //[/UserCode_mouseDrag]
 }
 
 void pannerView::mouseUp (const MouseEvent& e)
 {
-    //[UserCode_mouseUp] -- Add your code here...
     sourceIconIsClicked = false;
     // UnSolo on ALT if not clicked on Source
     if(!e.mods.isAltDown()){
@@ -222,12 +177,8 @@ void pannerView::mouseUp (const MouseEvent& e)
         soloActive = false;
     }
     repaint();
-    //[/UserCode_mouseUp]
 }
 
-
-
-//[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void pannerView::refreshPanView()
 {
     for(int src=0; src<MAX_NUM_CHANNELS; src++){
@@ -240,38 +191,3 @@ void pannerView::refreshPanView()
 
     repaint();
 }
-//[/MiscUserCode]
-
-
-//==============================================================================
-#if 0
-/*  -- Projucer information section --
-
-    This is where the Projucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
-
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="pannerView" componentName=""
-                 parentClasses="public Component" constructorParams="PluginProcessor* ownerFilter, int _width, int _height"
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="480" initialHeight="240">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="323e44">
-    <RECT pos="0 0 480 240" fill="linear: 248 0, 248 240, 0=ff4e4e4e, 1=ff202020"
-          hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: ff9e9e9e"/>
-  </BACKGROUND>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
-
