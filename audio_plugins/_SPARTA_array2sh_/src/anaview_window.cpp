@@ -45,7 +45,6 @@ static void setCurveColour(Graphics& g, int n){
     }
 }
 
-//==============================================================================
 anaview_window::anaview_window (int _width, int _height, float _min_freq, float _max_freq, float _min_Y, float _max_Y, float _yaxislineStepSize, float _fs)
 {
     setSize (_width, _height);
@@ -68,7 +67,6 @@ anaview_window::~anaview_window()
 {
 }
 
-//==============================================================================
 void anaview_window::paint (juce::Graphics& g)
 {
     /* background */

@@ -29,11 +29,9 @@ class sensorCoordsView  : public Component,
                           public juce::Slider::Listener
 {
 public:
-    //==============================================================================
     sensorCoordsView (PluginProcessor* ownerFilter, int _maxQ, int _currentQ, bool _useDegreesInstead);
     ~sensorCoordsView() override;
 
-    //==============================================================================
     void setUseDegreesInstead(bool newState);
     void setQ(int newQ){
 		newQ = newQ > MAX_NUM_CHANNELS ? MAX_NUM_CHANNELS : newQ;
@@ -59,11 +57,8 @@ private:
     int maxQ, currentQ;
     bool useDegreesInstead;
 
-    //==============================================================================
     std::unique_ptr<juce::Slider> dummySlider;
 
-
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (sensorCoordsView)
 };
 

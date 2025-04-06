@@ -25,7 +25,6 @@
 const int sensorEdit_width = 176;
 const int sensorEdit_height = 32;
 
-//==============================================================================
 inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH )
 {
     dummySlider.reset (new juce::Slider ("new slider"));
@@ -84,7 +83,6 @@ inputCoordsView::~inputCoordsView()
     delete [] elevSliders;
 }
 
-//==============================================================================
 void inputCoordsView::paint (juce::Graphics& g)
 {
     {

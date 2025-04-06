@@ -175,7 +175,7 @@ void PluginProcessor::releaseResources()
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     int nCurrentBlockSize = buffer.getNumSamples();
-    nNumInputs = getTotalNumInputChannels(), buffer.getNumChannels();
+    nNumInputs = getTotalNumInputChannels();// buffer.getNumChannels();
     float* const* bufferData = buffer.getArrayOfWritePointers();
 
     /* check whether the playhead is moving */
@@ -198,7 +198,6 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     dirass_analysis(hDir, bufferData, nNumInputs, nCurrentBlockSize, isPlaying);
 }
 
-//==============================================================================
 bool PluginProcessor::hasEditor() const
 {
     return true; 
@@ -209,7 +208,6 @@ AudioProcessorEditor* PluginProcessor::createEditor()
     return new PluginEditor (this);
 }
 
-//==============================================================================
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
  	XmlElement xml("DIRASSAUDIOPLUGINSETTINGS");
@@ -281,7 +279,6 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     }
 }
 
-//==============================================================================
 // This creates new instances of the plugin..
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {

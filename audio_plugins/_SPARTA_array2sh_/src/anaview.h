@@ -28,11 +28,9 @@
 class anaview  : public Component
 {
 public:
-    //==============================================================================
     anaview (int _width, int _height, float _min_freq, float _max_freq, float _min_Y, float _max_Y, String _ylabel, float _yaxislineStepSize, float _fs);
     ~anaview();
 
-    //==============================================================================
     Rectangle<int> localBounds;
     std::unique_ptr<anaview_window> anaview_windowIncluded;
 
@@ -52,6 +50,5 @@ private:
     String ylabel;
     float yaxislineStepSize;
 
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (anaview)
 };

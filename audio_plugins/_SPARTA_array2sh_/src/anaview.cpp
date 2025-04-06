@@ -36,7 +36,6 @@ static int round_nearest(int number, int multiple) {
     return result;
 }
 
-//==============================================================================
 anaview::anaview (int _width, int _height, float _min_freq, float _max_freq, float _min_Y, float _max_Y, String _ylabel, float _yaxislineStepSize, float _fs)
 {
     setSize (_width, _height);
@@ -64,7 +63,6 @@ anaview::~anaview()
 {
 }
 
-//==============================================================================
 void anaview::paint (Graphics& g)
 {
     localBounds = getBounds();

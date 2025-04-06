@@ -43,11 +43,9 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::Button::Listener
 {
 public:
-    //==============================================================================
     PluginEditor (PluginProcessor* ownerFilter);
     ~PluginEditor() override;
 
-    //==============================================================================
     void timerCallback() override;
 
     void paint (juce::Graphics& g) override;
@@ -85,7 +83,6 @@ private:
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
-    //==============================================================================
     std::unique_ptr<juce::ComboBox> CBsourceDirsPreset;
     std::unique_ptr<juce::Slider> SL_num_sources;
     std::unique_ptr<juce::ComboBox> CBoutputFormat;
@@ -94,6 +91,5 @@ private:
     std::unique_ptr<juce::TextButton> tb_loadJSON;
     std::unique_ptr<juce::TextButton> tb_saveJSON;
 
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

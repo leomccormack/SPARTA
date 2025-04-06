@@ -29,11 +29,9 @@ class inputCoordsView  : public Component,
                          public juce::Slider::Listener
 {
 public:
-    //==============================================================================
     inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH );
     ~inputCoordsView() override;
 
-    //==============================================================================
     void setNCH(int newNCH){
         newNCH = newNCH > MAX_NUM_CHANNELS ? MAX_NUM_CHANNELS : newNCH;
         refreshCoords();
@@ -65,11 +63,8 @@ private:
     int maxNCH, currentNCH;
     bool sliderHasChanged;
 
-    //==============================================================================
     std::unique_ptr<juce::Slider> dummySlider;
 
-
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (inputCoordsView)
 };
 

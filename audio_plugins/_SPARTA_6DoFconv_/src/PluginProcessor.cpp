@@ -13,7 +13,6 @@
 // ugly, but NatNet callbacks need to be C-style function pointers and that doesn't really work with C++ instance methods
 static PluginProcessor* thePluginProcessor = nullptr;
 
-//==============================================================================
 PluginProcessor::PluginProcessor():
 AudioProcessor(BusesProperties()
     .withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
@@ -138,9 +137,6 @@ PluginProcessor::~PluginProcessor()
     osc.removeListener(this);
     tvconv_destroy(&hTVCnv);
 }
-
-//==============================================================================
-
 
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 {
@@ -273,7 +269,6 @@ void PluginProcessor::changeProgramName (int /*index*/, const juce::String& /*ne
 {
 }
 
-//==============================================================================
 int PluginProcessor::getNumParameters()
 {
     return k_NumOfParameters;
@@ -400,7 +395,6 @@ void PluginProcessor::setParameterRaw(int index, float newValue)
     }
 }
 
-//==============================================================================
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
 
@@ -461,7 +455,6 @@ void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Midi
 
 }
 
-//==============================================================================
 bool PluginProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
@@ -472,7 +465,6 @@ juce::AudioProcessorEditor* PluginProcessor::createEditor()
     return new PluginEditor (this);
 }
 
-//==============================================================================
 void PluginProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
@@ -544,7 +536,6 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
         }
 }
 
-//==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {

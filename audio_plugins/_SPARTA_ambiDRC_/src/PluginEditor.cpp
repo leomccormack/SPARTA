@@ -26,7 +26,6 @@
 #define M_PI ( 3.14159265358979323846264338327950288f )
 #endif
 
-//==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     : AudioProcessorEditor(ownerFilter)
 {
@@ -262,7 +261,6 @@ PluginEditor::~PluginEditor()
     setLookAndFeel(nullptr);
 }
 
-//==============================================================================
 void PluginEditor::paint (juce::Graphics& g)
 {
     g.fillAll (juce::Colours::white);

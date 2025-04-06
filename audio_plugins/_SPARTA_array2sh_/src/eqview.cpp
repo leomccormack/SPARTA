@@ -37,7 +37,6 @@ static int round_nearest(int number, int multiple) {
     return result;
 }
 
-//==============================================================================
 eqview::eqview (int _width, int _height, float _min_freq, float _max_freq, float _min_dB, float _max_dB, float _fs)
 {
     setSize (_width, _height);
@@ -63,7 +62,6 @@ eqview::~eqview()
 {
 }
 
-//==============================================================================
 void eqview::paint (juce::Graphics& g)
 {
     localBounds = getBounds();

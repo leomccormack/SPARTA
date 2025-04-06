@@ -27,7 +27,6 @@ float secondaryLineSpacing = 2.0f;
 # define CLAMP(a,min,max) (MAX(min, MIN(max, a)))
 #endif
 
-//==============================================================================
 sceneView::sceneView (PluginProcessor* ownerFilter, int _width, int _height)
 {
     setSize (480, 240);
@@ -48,7 +47,6 @@ sceneView::~sceneView()
 {
 }
 
-//==============================================================================
 void sceneView::paint (juce::Graphics& g)
 {
 	// Screen graphics axis directon:

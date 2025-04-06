@@ -28,11 +28,8 @@
 class pannerView  : public Component
 {
 public:
-    //==============================================================================
     pannerView (PluginProcessor* ownerFilter, int _width, int _height);
     ~pannerView() override;
-
-    //==============================================================================
 
     void refreshPanView();
     bool getBeamIconIsClicked(){  return beamIconIsClicked;  }
@@ -53,6 +50,5 @@ private:
     bool beamIconIsClicked;
     int indexOfClickedBeam;
 
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (pannerView)
 };

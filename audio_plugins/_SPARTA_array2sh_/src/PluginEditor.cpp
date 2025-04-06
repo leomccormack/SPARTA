@@ -22,8 +22,6 @@
 
 #include "PluginEditor.h"
 
-
-//==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     : AudioProcessorEditor(ownerFilter) , progressbar(progress)
 {
@@ -448,7 +446,6 @@ PluginEditor::~PluginEditor()
     sensorCoordsView_handle = nullptr;
 }
 
-//==============================================================================
 void PluginEditor::paint (juce::Graphics& g)
 {
     g.fillAll (juce::Colours::white);

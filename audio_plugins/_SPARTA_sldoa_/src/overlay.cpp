@@ -1,29 +1,26 @@
 /*
-  ==============================================================================
-
-  This is an automatically generated GUI class created by the Projucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Projucer version: 5.4.4
-
-  ------------------------------------------------------------------------------
-
-  The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
-
-  ==============================================================================
+ ==============================================================================
+ 
+ This file is part of SPARTA; a suite of spatial audio plug-ins.
+ Copyright (c) 2017/2018 - Leo McCormack.
+ 
+ SPARTA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ SPARTA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ ==============================================================================
 */
 
-//[Headers] You can add your own extra header files here...
-//[/Headers]
-
 #include "overlay.h"
-
-
-//[MiscUserDefs] You can add your own user definitions and misc code here...
 
 static Colour getColour_val(float val)
 {
@@ -49,47 +46,21 @@ static Colour getColour_val(float val)
         return Colour::fromRGB(0, 62, 229);
 }
 
-
-//[/MiscUserDefs]
-
-//==============================================================================
 overlay::overlay (PluginProcessor* ownerFilter)
 {
-    //[Constructor_pre] You can add your own custom stuff here..
-    //[/Constructor_pre]
-
-
-    //[UserPreSize]
-    //[/UserPreSize]
-
     setSize (600, 400);
 
-
-    //[Constructor] You can add your own custom stuff here..
     hVst = ownerFilter;
     hSld = hVst->getFXHandle();
     hasFinishedDrawing = true;
-    //[/Constructor]
 }
 
 overlay::~overlay()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
-    //[/Destructor_pre]
-
-
-
-    //[Destructor]. You can add your own custom destruction code here..
-    //[/Destructor]
 }
 
-//==============================================================================
 void overlay::paint (Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
     if (hasFinishedDrawing) { /* in order to stop it from tripping over itself */
         hasFinishedDrawing = false;
 
@@ -176,65 +147,17 @@ void overlay::paint (Graphics& g)
 		}
         hasFinishedDrawing = true;
     }
-    //[/UserPaint]
 }
 
 void overlay::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
 }
 
-void overlay::mouseDown (const MouseEvent& e)
+void overlay::mouseDown (const MouseEvent& /*e*/)
 {
-    //[UserCode_mouseDown] -- Add your code here...
-
-    //[/UserCode_mouseDown]
 }
 
-void overlay::mouseDrag (const MouseEvent& e)
+void overlay::mouseDrag (const MouseEvent& /*e*/)
 {
-    //[UserCode_mouseDrag] -- Add your code here...
-
-    //[/UserCode_mouseDrag]
 }
-
-
-
-//[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-
-
-//[/MiscUserCode]
-
-
-//==============================================================================
-#if 0
-/*  -- Projucer information section --
-
-    This is where the Projucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
-
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="overlay" componentName=""
-                 parentClasses="public Component" constructorParams="PluginProcessor* ownerFilter"
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="400">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="ffffff"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
 

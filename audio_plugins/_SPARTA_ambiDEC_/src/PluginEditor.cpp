@@ -22,7 +22,6 @@
 
 #include "PluginEditor.h"
 
-//==============================================================================
 PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     : AudioProcessorEditor(ownerFilter), progressbar(progress), fileChooser ("File", File(), true, false, false,
       "*.sofa;*.nc;", String(),
@@ -414,7 +413,6 @@ PluginEditor::~PluginEditor()
     decOrder2dSlider = nullptr;
 }
 
-//==============================================================================
 void PluginEditor::paint (juce::Graphics& g)
 {
     g.fillAll (juce::Colours::white);

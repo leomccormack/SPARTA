@@ -24,7 +24,6 @@
 
 const float icon_size = 8.0f;
 
-//==============================================================================
 pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
 {
     setSize (480, 240);
@@ -47,7 +46,6 @@ pannerView::~pannerView()
 {
 }
 
-//==============================================================================
 void pannerView::paint (juce::Graphics& g)
 {
     {

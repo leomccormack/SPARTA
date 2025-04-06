@@ -47,7 +47,6 @@ static void setCurveColour(Graphics& g, int n){
     }
 }
 
-//==============================================================================
 eqview_window::eqview_window (int _width, int _height, float _min_freq, float _max_freq, float _min_dB, float _max_dB, float _fs)
 {
     setSize (_width, _height);
@@ -70,7 +69,6 @@ eqview_window::~eqview_window()
 {
 }
 
-//==============================================================================
 void eqview_window::paint (Graphics& g)
 {
     /* background */
