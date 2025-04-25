@@ -1134,6 +1134,10 @@ void PluginEditor::timerCallback(int timerID)
                 repaint(0,0,getWidth(),32);
             }
 
+            /* check if OSC port has changed */
+            if (hVst->getOscPortID() != te_oscport->getText().getIntValue())
+                hVst->setOscPortID(te_oscport->getText().getIntValue());
+
             break;
     }
 }
