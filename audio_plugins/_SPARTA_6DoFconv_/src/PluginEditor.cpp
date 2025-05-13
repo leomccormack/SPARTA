@@ -76,6 +76,17 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_nIRpositions->setBounds (136, 139, 60, 20);
 
+    label_sofaErrorState.reset (new juce::Label ("new label",
+                                               juce::String()));
+    addAndMakeVisible (label_sofaErrorState.get());
+    label_sofaErrorState->setFont (juce::FontOptions (11.00f, juce::Font::plain).withStyle ("Regular"));
+    label_sofaErrorState->setJustificationType (juce::Justification::centredLeft);
+    label_sofaErrorState->setEditable (false, false, false);
+    label_sofaErrorState->setColour (juce::TextEditor::textColourId, juce::Colours::white);
+    label_sofaErrorState->setBorderSize (juce::BorderSize<int> (0));
+
+    label_sofaErrorState->setBounds (10, 35, 264, 11);
+
     SL_source_y.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (SL_source_y.get());
     SL_source_y->setRange (0, 1, 0.001);
@@ -342,6 +353,7 @@ PluginEditor::~PluginEditor()
     label_filterfs = nullptr;
     label_NOutputs = nullptr;
     label_nIRpositions = nullptr;
+    label_sofaErrorState = nullptr;
     SL_source_y = nullptr;
     SL_source_z = nullptr;
     SL_source_x = nullptr;
@@ -910,48 +922,6 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
     }
-
-    g.setColour(Colours::white);
-    switch (tvConvError)
-    {
-    case SAF_TVCONV_NOT_INIT: /** TVCONV no file loaded */
-        g.drawText(TRANS("SOFA file not initialized"),
-            10, 35, 264, 11,
-            Justification::centredLeft, true);
-        break;
-    case SAF_TVCONV_SOFA_LOADING: /** Loading SOFA file */
-        g.drawText(TRANS("SOFA file: loading"),
-            10, 35, 264, 11,
-            Justification::centredLeft, true);
-        break;
-    case SAF_TVCONV_SOFA_OK: /** None of the error checks failed */
-        g.drawText(TRANS("SOFA file loaded"),
-            10, 35, 264, 11,
-            Justification::centredLeft, true);
-        break;
-    case SAF_TVCONV_SOFA_ERROR_INVALID_FILE_OR_FILE_PATH:  /** Not a SOFA file, or no such file was found in the specified location */
-        g.drawText(TRANS("SOFA file not loaded: INVALID FILE OR FILE PATH"),
-            10, 35, 264, 11,
-            Justification::centredLeft, true);
-        break;
-    case SAF_TVCONV_SOFA_ERROR_DIMENSIONS_UNEXPECTED:      /** Dimensions of the SOFA data were not as expected */
-        g.drawText(TRANS("SOFA file not loaded: DIMENSIONS UNEXPECTED"),
-            10, 35, 264, 11,
-            Justification::centredLeft, true);
-        break;
-    case SAF_TVCONV_SOFA_ERROR_FORMAT_UNEXPECTED: /** The data-type of the SOFA data was not as expected */
-        g.drawText(TRANS("SOFA file not loaded: FORMAT UNEXPECTED"),
-            10, 35, 264, 11,
-            Justification::centredLeft, true);
-        break;
-    case SAF_TVCONV_SOFA_ERROR_NETCDF_IN_USE: /** NetCDF is not thread safe! */
-        g.drawText(TRANS("SOFA file not loaded: NETCDF IN USE"),
-            10, 35, 264, 11,
-            Justification::centredLeft, true);
-        break;
-    default:
-        g.drawText(TRANS("SOFA file state"), 10, 35, 264, 11, Justification::centredLeft, true);
-    }
 }
 
 void PluginEditor::resized()
@@ -1070,6 +1040,30 @@ void PluginEditor::refreshCoords()
 }
 #endif
 
+namespace {
+String explainTvConvSofaError(SAF_TVCONV_ERROR_CODES tvConvError) {
+    switch (tvConvError)
+    {
+    case SAF_TVCONV_NOT_INIT: /** TVCONV no file loaded */
+        return TRANS("SOFA file not initialized");
+    case SAF_TVCONV_SOFA_LOADING: /** Loading SOFA file */
+        return TRANS("SOFA file: loading");
+    case SAF_TVCONV_SOFA_OK: /** None of the error checks failed */
+        return TRANS("SOFA file loaded");
+    case SAF_TVCONV_SOFA_ERROR_INVALID_FILE_OR_FILE_PATH:  /** Not a SOFA file, or no such file was found in the specified location */
+        return TRANS("SOFA file not loaded: INVALID FILE OR FILE PATH");
+    case SAF_TVCONV_SOFA_ERROR_DIMENSIONS_UNEXPECTED:      /** Dimensions of the SOFA data were not as expected */
+        return TRANS("SOFA file not loaded: DIMENSIONS UNEXPECTED");
+    case SAF_TVCONV_SOFA_ERROR_FORMAT_UNEXPECTED: /** The data-type of the SOFA data was not as expected */
+        return TRANS("SOFA file not loaded: FORMAT UNEXPECTED");
+    case SAF_TVCONV_SOFA_ERROR_NETCDF_IN_USE: /** NetCDF is not thread safe! */
+        return TRANS("SOFA file not loaded: NETCDF IN USE");
+    default:
+        return TRANS("SOFA file state");
+    }
+}
+}
+
 void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
@@ -1083,6 +1077,7 @@ void PluginEditor::timerCallback()
     label_hostfs->setText(String(tvconv_getHostFs(hTVC)), dontSendNotification);
     label_filterfs->setText(String(tvconv_getIRFs(hTVC)), dontSendNotification);
     label_receiverIdx->setText(String(tvconv_getListenerPositionIdx(hTVC)), dontSendNotification);
+    label_sofaErrorState->setText(explainTvConvSofaError(tvconv_getSofaErrorState(hTVC)), dontSendNotification);
 
     SL_receiver_x->setValue(tvconv_getTargetPosition(hTVC, 0));
     SL_receiver_y->setValue(tvconv_getTargetPosition(hTVC, 1));
@@ -1105,9 +1100,6 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_none;
         repaint(0,0,getWidth(),32);
     }
-
-    tvConvError = tvconv_getSofaErrorState(hTVC);
-    repaint(136, 45, 264, 11);
 
 
     if (refreshSceneViewWindow == true)
