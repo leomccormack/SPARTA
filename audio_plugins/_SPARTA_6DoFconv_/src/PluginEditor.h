@@ -50,7 +50,6 @@ private:
 
     /* sofa loading */
     std::unique_ptr<juce::FilenameComponent> fileComp;
-    SAF_TVCONV_ERROR_CODES tvConvError;
 
     /* sofa file loading */
      void filenameComponentChanged (FilenameComponent*) override  {
@@ -78,6 +77,7 @@ private:
     std::unique_ptr<juce::Label> label_filterfs;
     std::unique_ptr<juce::Label> label_NOutputs;
     std::unique_ptr<juce::Label> label_nIRpositions;
+    std::unique_ptr<juce::Label> label_sofaErrorState;
     std::unique_ptr<juce::Slider> SL_source_y;
     std::unique_ptr<juce::Slider> SL_source_z;
     std::unique_ptr<juce::Slider> SL_source_x;
