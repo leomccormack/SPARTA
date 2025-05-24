@@ -309,15 +309,18 @@
         <MODULEPATH id="juce_osc" path="../../SDKs/JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
-    <XCODE_MAC targetFolder="make/MacOSX/Xcode" extraDefs="SAF_USE_APPLE_ACCELERATE&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;"
+    <XCODE_MAC targetFolder="make/MacOSX/Xcode" extraDefs="SAF_USE_APPLE_ACCELERATE&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;SAF_ENABLE_NETCDF&#10;"
                extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra&#10;-Wno-strict-prototypes"
-               xcodeValidArchs="arm64,x86_64" userNotes="&#10;&#10;-L/usr/local/lib -lsaf_mkl_custom">
+               xcodeValidArchs="arm64,x86_64" userNotes="&#10;&#10;-L/usr/local/lib -lsaf_mkl_custom"
+               externalLibraries="hdf5_hl&#13;hdf5&#13;netcdf&#13;z">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_6DoFconv_debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
-                       osxCompatibility="11.0 SDK" osxArchitecture="64BitIntel" macOSDeploymentTarget="11.0"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="sparta_6DoFconv" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
+        <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_6DoFconv_debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
+                       osxCompatibility="11.0 SDK" osxArchitecture="64BitIntel" macOSDeploymentTarget="11.0"
+                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="sparta_6DoFconv" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
                        osxCompatibility="11.0 SDK" osxArchitecture="64BitIntel" userNotes="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
-                       linkTimeOptimisation="1" enablePluginBinaryCopyStep="1" macOSDeploymentTarget="11.0"/>
+                       linkTimeOptimisation="1" enablePluginBinaryCopyStep="1" macOSDeploymentTarget="11.0"
+                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../SDKs/JUCE/modules"/>
