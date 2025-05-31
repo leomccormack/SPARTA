@@ -23,10 +23,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
 {
 	nSampleRate = 48000;
 	rotator_create(&hRot);
@@ -95,8 +106,8 @@ void PluginProcessor::setParameter (int index, float newValue)
         case k_normType:        rotator_setNormType(hRot, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
         case k_useRollPitchYaw: rotator_setRPYflag(hRot, (int)(newValue + 0.5f)); break;
         case k_yaw:             rotator_setYaw(hRot, (newValue-0.5f)*360.0f ); break;
-        case k_pitch:           rotator_setPitch(hRot, (newValue - 0.5f)*180.0f); break;
-        case k_roll:            rotator_setRoll(hRot, (newValue - 0.5f)*180.0f); break;
+        case k_pitch:           rotator_setPitch(hRot, (newValue - 0.5f)*360.0f); break;
+        case k_roll:            rotator_setRoll(hRot, (newValue - 0.5f)*360.0f); break;
         case k_qw:              rotator_setQuaternionW(hRot, (newValue - 0.5f)*2.0f); break;
         case k_qx:              rotator_setQuaternionX(hRot, (newValue - 0.5f)*2.0f); break;
         case k_qy:              rotator_setQuaternionY(hRot, (newValue - 0.5f)*2.0f); break;
@@ -121,8 +132,8 @@ float PluginProcessor::getParameter (int index)
         case k_normType:        return (float)(rotator_getNormType(hRot)-1)/(float)(NUM_NORM_TYPES-1);
         case k_useRollPitchYaw: return (float)rotator_getRPYflag(hRot);
         case k_yaw:             return (rotator_getYaw(hRot)/360.0f) + 0.5f;
-        case k_pitch:           return (rotator_getPitch(hRot)/180.0f) + 0.5f;
-        case k_roll:            return (rotator_getRoll(hRot)/180.0f) + 0.5f;
+        case k_pitch:           return (rotator_getPitch(hRot)/360.0f) + 0.5f;
+        case k_roll:            return (rotator_getRoll(hRot)/360.0f) + 0.5f;
         case k_qw:              return (rotator_getQuaternionW(hRot)/2.0f) + 0.5f;
         case k_qx:              return (rotator_getQuaternionX(hRot)/2.0f) + 0.5f;
         case k_qy:              return (rotator_getQuaternionY(hRot)/2.0f) + 0.5f;

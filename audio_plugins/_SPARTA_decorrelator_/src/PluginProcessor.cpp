@@ -23,10 +23,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
 PluginProcessor::PluginProcessor() :
     AudioProcessor(BusesProperties()
-        .withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
-        .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
 {
 	decorrelator_create(&hDecor);
     startTimer(TIMER_PROCESSING_RELATED, 40); 
@@ -44,6 +55,17 @@ void PluginProcessor::setParameter (int index, float newValue)
         case k_decorrelation: decorrelator_setDecorrelationAmount(hDecor, newValue); break;
         default: break;
     }
+}
+
+bool PluginProcessor::isParameterAutomatable (int index) const
+{
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_nChannels: return false;
+            case k_decorrelation: return true;
+        }
+    }
+    return true;
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)

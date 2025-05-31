@@ -994,6 +994,17 @@ void PluginEditor::resized()
 {
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == presetCB.get())
@@ -1038,11 +1049,15 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     }
     else if (comboBoxThatHasChanged == CHOrderingCB.get())
     {
+        hVst->beginParameterChangeGesture(k_channelOrder);
         array2sh_setChOrder(hA2sh, CHOrderingCB->getSelectedId());
+        hVst->endParameterChangeGesture(k_channelOrder);
     }
     else if (comboBoxThatHasChanged == normalisationCB.get())
     {
+        hVst->beginParameterChangeGesture(k_normType);
         array2sh_setNormType(hA2sh, normalisationCB->getSelectedId());
+        hVst->endParameterChangeGesture(k_normType);
     }
     else if (comboBoxThatHasChanged == dispWindow.get())
     {
@@ -1105,7 +1120,9 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     }
     else if (sliderThatWasMoved == gainSlider.get())
     {
+        hVst->beginParameterChangeGesture(k_postGain);
         array2sh_setGain(hA2sh, (float)gainSlider->getValue());
+        hVst->endParameterChangeGesture(k_postGain);
     }
 }
 
@@ -1156,6 +1173,14 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
+
 void PluginEditor::timerCallback(int timerID)
 {
     switch(timerID){
@@ -1167,17 +1192,13 @@ void PluginEditor::timerCallback(int timerID)
             /* parameters whos values can change internally should be periodically refreshed */
             int curOrder = CBencodingOrder->getSelectedId();
             QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
-            if(RSlider->getValue()!=array2sh_getR(hA2sh)*1e3f)
-                RSlider->setValue(array2sh_getR(hA2sh)*1e3f, dontSendNotification);
-            if(CBencodingOrder->getSelectedId()!=array2sh_getEncodingOrder(hA2sh))
-                CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);
-            if(QSlider->getValue()!=array2sh_getNumSensors(hA2sh))
-                QSlider->setValue(array2sh_getNumSensors(hA2sh), dontSendNotification);
+            RSlider->setValue(array2sh_getR(hA2sh)*1e3f, dontSendNotification);
+            CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);
+            QSlider->setValue(array2sh_getNumSensors(hA2sh), dontSendNotification);
             sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));
-            if(CHOrderingCB->getSelectedId()!=array2sh_getChOrder(hA2sh))
-                CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), dontSendNotification);
-            if(normalisationCB->getSelectedId()!=array2sh_getNormType(hA2sh))
-                normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), dontSendNotification);
+            gainSlider->setValue(array2sh_getGain(hA2sh), dontSendNotification);
+            CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), dontSendNotification);
+            normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), dontSendNotification);
             CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
             normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
 

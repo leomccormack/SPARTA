@@ -32,6 +32,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_ratio.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_ratio.get());
     s_ratio->setRange (1, 30, 0.01);
+    s_ratio->setDoubleClickReturnValue(true, 8.0f);
     s_ratio->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_ratio->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_ratio->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -46,6 +47,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_knee.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_knee.get());
     s_knee->setRange (0, 10, 0.01);
+    s_knee->setDoubleClickReturnValue(true, 0.0f);
     s_knee->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_knee->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_knee->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -60,6 +62,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_attack.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_attack.get());
     s_attack->setRange (10, 200, 0.01);
+    s_attack->setDoubleClickReturnValue(true, 50.0f);
     s_attack->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attack->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_attack->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -74,6 +77,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_release.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_release.get());
     s_release->setRange (50, 1000, 0.01);
+    s_release->setDoubleClickReturnValue(true, 100.0f);
     s_release->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_release->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_release->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -88,6 +92,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_outgain.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_outgain.get());
     s_outgain->setRange (-20, 40, 0.01);
+    s_outgain->setDoubleClickReturnValue(true, 0.0f);
     s_outgain->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_outgain->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_outgain->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -132,6 +137,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_ingain.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_ingain.get());
     s_ingain->setRange (-20, 40, 0.01);
+    s_ingain->setDoubleClickReturnValue(true, 0.0f);
     s_ingain->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_ingain->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_ingain->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -146,6 +152,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_thresh.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_thresh.get());
     s_thresh->setRange (-60, 0, 0.01);
+    s_thresh->setDoubleClickReturnValue(true, 0.0f);
     s_thresh->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_thresh->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_thresh->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -770,8 +777,8 @@ void PluginEditor::paint (juce::Graphics& g)
 	g.setColour(Colours::white);
 	g.setFont(juce::FontOptions (11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		185, 16, 530, 11,
-		Justification::centredLeft, true);
+        185, 16, 530, 11,
+        Justification::centredLeft, true);
 
     /* display warning message */
     g.setColour(Colours::red);
@@ -841,35 +848,60 @@ void PluginEditor::resized()
 	repaint();
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == s_ratio.get())
     {
-		ambi_drc_setRatio(hAmbi, (float)s_ratio->getValue());
+        hVst->beginParameterChangeGesture(k_ratio);
+        ambi_drc_setRatio(hAmbi, (float)s_ratio->getValue());
+        hVst->endParameterChangeGesture(k_ratio);
     }
     else if (sliderThatWasMoved == s_knee.get())
     {
-		ambi_drc_setKnee(hAmbi, (float)s_knee->getValue());
+        hVst->beginParameterChangeGesture(k_knee);
+        ambi_drc_setKnee(hAmbi, (float)s_knee->getValue());
+        hVst->endParameterChangeGesture(k_knee);
     }
     else if (sliderThatWasMoved == s_attack.get())
     {
-		ambi_drc_setAttack(hAmbi, (float)s_attack->getValue());
+        hVst->beginParameterChangeGesture(k_attack_ms);
+        ambi_drc_setAttack(hAmbi, (float)s_attack->getValue());
+        hVst->endParameterChangeGesture(k_attack_ms);
     }
     else if (sliderThatWasMoved == s_release.get())
     {
-		ambi_drc_setRelease(hAmbi, (float)s_release->getValue());
+        hVst->beginParameterChangeGesture(k_release_ms);
+        ambi_drc_setRelease(hAmbi, (float)s_release->getValue());
+        hVst->endParameterChangeGesture(k_release_ms);
     }
     else if (sliderThatWasMoved == s_outgain.get())
     {
+        hVst->beginParameterChangeGesture(k_outGain);
         ambi_drc_setOutGain(hAmbi, (float)s_outgain->getValue());
+        hVst->endParameterChangeGesture(k_outGain);
     }
     else if (sliderThatWasMoved == s_ingain.get())
     {
+        hVst->beginParameterChangeGesture(k_inGain);
         ambi_drc_setInGain(hAmbi, (float)s_ingain->getValue());
+        hVst->endParameterChangeGesture(k_inGain);
     }
     else if (sliderThatWasMoved == s_thresh.get())
     {
+        hVst->beginParameterChangeGesture(k_theshold);
         ambi_drc_setThreshold(hAmbi, (float)s_thresh->getValue());
+        hVst->endParameterChangeGesture(k_theshold);
     }
 }
 
@@ -881,17 +913,36 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     }
     else if (comboBoxThatHasChanged == CHOrderingCB.get())
     {
+        hVst->beginParameterChangeGesture(k_channelOrder);
         ambi_drc_setChOrder(hAmbi, CHOrderingCB->getSelectedId());
+        hVst->endParameterChangeGesture(k_channelOrder);
     }
     else if (comboBoxThatHasChanged == normalisationCB.get())
     {
+        hVst->beginParameterChangeGesture(k_normType);
         ambi_drc_setNormType(hAmbi, normalisationCB->getSelectedId());
+        hVst->endParameterChangeGesture(k_normType);
     }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
+    s_thresh->setValue(ambi_drc_getThreshold(hAmbi), dontSendNotification);
+    s_ratio->setValue(ambi_drc_getRatio(hAmbi), dontSendNotification);
+    s_knee->setValue(ambi_drc_getKnee(hAmbi), dontSendNotification);
+    s_ingain->setValue(ambi_drc_getInGain(hAmbi), dontSendNotification);
+    s_outgain->setValue(ambi_drc_getOutGain(hAmbi), dontSendNotification);
+    s_attack->setValue(ambi_drc_getAttack(hAmbi), dontSendNotification);
+    s_release->setValue(ambi_drc_getRelease(hAmbi), dontSendNotification);
     CHOrderingCB->setSelectedId(ambi_drc_getChOrder(hAmbi), dontSendNotification);
     normalisationCB->setSelectedId(ambi_drc_getNormType(hAmbi), dontSendNotification);
     CHOrderingCB->setItemEnabled(CH_FUMA, ambi_drc_getInputPreset(hAmbi)==SH_ORDER_FIRST ? true : false);

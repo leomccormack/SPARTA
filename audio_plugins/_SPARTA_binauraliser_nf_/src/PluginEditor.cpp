@@ -148,6 +148,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_yaw.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_yaw.get());
     s_yaw->setRange (-180, 180, 0.01);
+    s_yaw->setDoubleClickReturnValue(true, 0.0f);
     s_yaw->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
     s_yaw->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6e));
@@ -161,6 +162,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_pitch.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_pitch.get());
     s_pitch->setRange (-180, 180, 0.01);
+    s_pitch->setDoubleClickReturnValue(true, 0.0f);
     s_pitch->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
     s_pitch->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -174,6 +176,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_roll.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_roll.get());
     s_roll->setRange (-180, 180, 0.01);
+    s_roll->setDoubleClickReturnValue(true, 0.0f);
     s_roll->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
     s_roll->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -925,6 +928,17 @@ void PluginEditor::resized()
 {
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
@@ -947,15 +961,21 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     }
     else if (sliderThatWasMoved == s_yaw.get())
     {
+        hVst->beginParameterChangeGesture(k_yaw);
         binauraliser_setYaw(hBin, (float)s_yaw->getValue());
+        hVst->endParameterChangeGesture(k_yaw);
     }
     else if (sliderThatWasMoved == s_pitch.get())
     {
+        hVst->beginParameterChangeGesture(k_pitch);
         binauraliser_setPitch(hBin, (float)s_pitch->getValue());
+        hVst->endParameterChangeGesture(k_pitch);
     }
     else if (sliderThatWasMoved == s_roll.get())
     {
+        hVst->beginParameterChangeGesture(k_roll);
         binauraliser_setRoll(hBin, (float)s_roll->getValue());
+        hVst->endParameterChangeGesture(k_roll);
     }
 }
 
@@ -1007,29 +1027,47 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
     else if (buttonThatWasClicked == t_flipYaw.get())
     {
+        hVst->beginParameterChangeGesture(k_flipYaw);
         binauraliser_setFlipYaw(hBin, (int)t_flipYaw->getToggleState());
+        hVst->endParameterChangeGesture(k_flipYaw);
     }
     else if (buttonThatWasClicked == t_flipPitch.get())
     {
+        hVst->beginParameterChangeGesture(k_flipPitch);
         binauraliser_setFlipPitch(hBin, (int)t_flipPitch->getToggleState());
+        hVst->endParameterChangeGesture(k_flipPitch);
     }
     else if (buttonThatWasClicked == t_flipRoll.get())
     {
+        hVst->beginParameterChangeGesture(k_flipRoll);
         binauraliser_setFlipRoll(hBin, (int)t_flipRoll->getToggleState());
+        hVst->endParameterChangeGesture(k_flipRoll);
     }
     else if (buttonThatWasClicked == TBrpyFlag.get())
     {
+        hVst->beginParameterChangeGesture(k_useRollPitchYaw);
         binauraliser_setRPYflag(hBin, (int)TBrpyFlag->getToggleState());
+        hVst->endParameterChangeGesture(k_useRollPitchYaw);
     }
     else if (buttonThatWasClicked == TBenableRotation.get())
     {
+        hVst->beginParameterChangeGesture(k_enableRotation);
         binauraliser_setEnableRotation(hBin, (int)TBenableRotation->getToggleState());
+        hVst->endParameterChangeGesture(k_enableRotation);
     }
     else if (buttonThatWasClicked == TBenablePreProc.get())
     {
         binauraliser_setEnableHRIRsDiffuseEQ(hBin, (int)TBenablePreProc->getToggleState());
     }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 void PluginEditor::timerCallback(int timerID)
 {
@@ -1048,18 +1086,17 @@ void PluginEditor::timerCallback(int timerID)
 
             /* parameters whos values can change internally should be periodically refreshed */
             sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
-            if(binauraliser_getUseDefaultHRIRsflag(hBin)!=TBuseDefaultHRIRs->getToggleState())
-                TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
-            if(binauraliser_getEnableHRIRsDiffuseEQ(hBin)!=TBenablePreProc->getToggleState())
-                TBenablePreProc->setToggleState(binauraliser_getEnableHRIRsDiffuseEQ(hBin), dontSendNotification);
-            if(binauraliser_getNumSources(hBin)!=SL_num_sources->getValue())
-                SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
-            if(binauraliser_getYaw(hBin)!=s_yaw->getValue())
-                s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
-            if(binauraliser_getPitch(hBin)!=s_pitch->getValue())
-                s_pitch->setValue(binauraliser_getPitch(hBin), dontSendNotification);
-            if(binauraliser_getRoll(hBin)!=s_roll->getValue())
-                s_roll->setValue(binauraliser_getRoll(hBin), dontSendNotification);
+            TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
+            TBenablePreProc->setToggleState(binauraliser_getEnableHRIRsDiffuseEQ(hBin), dontSendNotification);
+            SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
+            TBenableRotation->setToggleState((bool)binauraliser_getEnableRotation(hBin), dontSendNotification);
+            s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
+            s_pitch->setValue(binauraliser_getPitch(hBin), dontSendNotification);
+            s_roll->setValue(binauraliser_getRoll(hBin), dontSendNotification);
+            t_flipYaw->setToggleState((bool)binauraliser_getFlipYaw(hBin), dontSendNotification);
+            t_flipPitch->setToggleState((bool)binauraliser_getFlipPitch(hBin), dontSendNotification);
+            t_flipRoll->setToggleState((bool)binauraliser_getFlipRoll(hBin), dontSendNotification);
+            TBrpyFlag->setToggleState((bool)binauraliser_getRPYflag(hBin), dontSendNotification);
 
             /* Progress bar */
             if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){

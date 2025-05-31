@@ -23,9 +23,20 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h" 
 
-PluginProcessor::PluginProcessor() : 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
+PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
+		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
 	    .withOutput("Output", AudioChannelSet::discreteChannels(2), true))
 {
 	binauraliserNF_create(&hBin);
@@ -82,8 +93,8 @@ void PluginProcessor::setParameter (int index, float newValue)
             case k_enableRotation:  binauraliser_setEnableRotation(hBin, (int)(newValue + 0.5f)); break;
             case k_useRollPitchYaw: binauraliser_setRPYflag(hBin, (int)(newValue + 0.5f)); break;
             case k_yaw:             binauraliser_setYaw(hBin, (newValue - 0.5f) * 360.0f); break;
-            case k_pitch:           binauraliser_setPitch(hBin, (newValue - 0.5f) * 180.0f); break;
-            case k_roll:            binauraliser_setRoll(hBin, (newValue - 0.5f) * 180.0f); break;
+            case k_pitch:           binauraliser_setPitch(hBin, (newValue - 0.5f) * 360.0f); break;
+            case k_roll:            binauraliser_setRoll(hBin, (newValue - 0.5f) * 360.0f); break;
             case k_flipYaw:         binauraliser_setFlipYaw(hBin, (int)(newValue + 0.5f));  break;
             case k_flipPitch:       binauraliser_setFlipPitch(hBin, (int)(newValue + 0.5f)); break;
             case k_flipRoll:        binauraliser_setFlipRoll(hBin, (int)(newValue + 0.5f)); break;
@@ -123,6 +134,24 @@ void PluginProcessor::setParameter (int index, float newValue)
                 break;
             }
     }
+}
+
+bool PluginProcessor::isParameterAutomatable (int index) const
+{
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_enableRotation: return true;
+            case k_useRollPitchYaw: return true;
+            case k_yaw: return true;
+            case k_pitch: return true;
+            case k_roll: return true;
+            case k_flipYaw: return true;
+            case k_flipPitch: return true;
+            case k_flipRoll: return true;
+            case k_numInputs: return false;
+        }
+    }
+    return true;
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
@@ -189,9 +218,9 @@ const String PluginProcessor::getParameterName (int index)
     else{
         index-=k_NumOfParameters;
         switch (index % 3) {
-           case 0:  return TRANS("Azim_") + String(index/3);
-           case 1:  return TRANS("Elev_") + String(index/3);
-           case 2:  return TRANS("Dist_") + String(index/3);
+           case 0:  return TRANS("Azim_") + String(index/3 + 1);
+           case 1:  return TRANS("Elev_") + String(index/3 + 1);
+           case 2:  return TRANS("Dist_") + String(index/3 + 1);
            default: return "NULL";
         }
     }

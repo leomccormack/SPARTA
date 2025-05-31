@@ -9,14 +9,25 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
 // file-level pointer to the PluginProcessor - there shouldn't be more than one, right?...
 // ugly, but NatNet callbacks need to be C-style function pointers and that doesn't really work with C++ instance methods
 static PluginProcessor* thePluginProcessor = nullptr;
 
 PluginProcessor::PluginProcessor():
 AudioProcessor(BusesProperties()
-    .withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
-    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
+    .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
 {
     jassert(thePluginProcessor == nullptr);
     thePluginProcessor = this;

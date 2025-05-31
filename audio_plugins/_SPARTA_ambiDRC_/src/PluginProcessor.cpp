@@ -2,10 +2,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-PluginProcessor::PluginProcessor() : 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
+PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
 {
 	nSampleRate = 48000;
 	ambi_drc_create(&hAmbi);
@@ -34,6 +45,23 @@ void PluginProcessor::setParameter (int index, float newValue)
 	} 
 }
 
+bool PluginProcessor::isParameterAutomatable (int index) const
+{
+    switch (index) {
+        case k_inputOrder: return false;
+        case k_channelOrder: /* fall through */
+        case k_normType: /* fall through */
+        case k_theshold: /* fall through */
+        case k_ratio: /* fall through */
+        case k_knee: /* fall through */
+        case k_inGain: /* fall through */
+        case k_outGain: /* fall through */
+        case k_attack_ms: /* fall through */
+        case k_release_ms: /* fall through */
+        default: return true;
+    }
+}
+
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
 }
@@ -46,7 +74,7 @@ float PluginProcessor::getParameter (int index)
         case k_channelOrder: return (float)(ambi_drc_getChOrder(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
         case k_normType:     return (float)(ambi_drc_getNormType(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
         case k_theshold:     return (ambi_drc_getThreshold(hAmbi)-AMBI_DRC_THRESHOLD_MIN_VAL)/(AMBI_DRC_THRESHOLD_MAX_VAL-AMBI_DRC_THRESHOLD_MIN_VAL);
-        case k_ratio:        return (ambi_drc_getThreshold(hAmbi)-AMBI_DRC_RATIO_MIN_VAL)/(AMBI_DRC_RATIO_MAX_VAL-AMBI_DRC_RATIO_MIN_VAL);
+        case k_ratio:        return (ambi_drc_getRatio(hAmbi)-AMBI_DRC_RATIO_MIN_VAL)/(AMBI_DRC_RATIO_MAX_VAL-AMBI_DRC_RATIO_MIN_VAL);
         case k_knee:         return (ambi_drc_getKnee(hAmbi)-AMBI_DRC_KNEE_MIN_VAL)/(AMBI_DRC_KNEE_MAX_VAL-AMBI_DRC_KNEE_MIN_VAL);
         case k_inGain:       return (ambi_drc_getInGain(hAmbi)-AMBI_DRC_IN_GAIN_MIN_VAL)/(AMBI_DRC_IN_GAIN_MAX_VAL-AMBI_DRC_IN_GAIN_MIN_VAL);
         case k_outGain:      return (ambi_drc_getOutGain(hAmbi)-AMBI_DRC_OUT_GAIN_MIN_VAL)/(AMBI_DRC_OUT_GAIN_MAX_VAL-AMBI_DRC_OUT_GAIN_MIN_VAL);
