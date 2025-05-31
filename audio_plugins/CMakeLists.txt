@@ -21,6 +21,10 @@ if (BUILD_PLUGIN_FORMAT_LV2)
     list(APPEND BUILD_PLUGIN_FORMATS LV2)
     message("--  Building LV2 versions")
 endif()
+if (BUILD_PLUGIN_FORMAT_AAX) 
+    list(APPEND BUILD_PLUGIN_FORMATS AAX)
+    message("--  Building AAX versions")
+endif()
 
 # Add the SPARTA plugins to the build tree
 add_subdirectory(_SPARTA_ambiDRC_)

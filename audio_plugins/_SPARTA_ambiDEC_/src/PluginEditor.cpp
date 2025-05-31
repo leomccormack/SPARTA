@@ -906,6 +906,17 @@ void PluginEditor::resized()
 {
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == CBoutputDirsPreset.get())
@@ -919,11 +930,15 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     }
     else if (comboBoxThatHasChanged == CBchFormat.get())
     {
+        hVst->beginParameterChangeGesture(k_channelOrder);
         ambi_dec_setChOrder(hAmbi, CBchFormat->getSelectedId());
+        hVst->endParameterChangeGesture(k_channelOrder);
     }
     else if (comboBoxThatHasChanged == CBnormScheme.get())
     {
+        hVst->beginParameterChangeGesture(k_normType);
         ambi_dec_setNormType(hAmbi, CBnormScheme->getSelectedId());
+        hVst->endParameterChangeGesture(k_normType);
     }
     else if (comboBoxThatHasChanged == CBdec1method.get())
     {
@@ -961,7 +976,9 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     }
     else if (sliderThatWasMoved == SL_transitionFreq.get())
     {
+        hVst->beginParameterChangeGesture(k_transitionFreq);
         ambi_dec_setTransitionFreq(hAmbi, (float)SL_transitionFreq->getValue());
+        hVst->endParameterChangeGesture(k_transitionFreq);
     }
     else if (sliderThatWasMoved == s_decOrder.get())
     {
@@ -1023,6 +1040,14 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
+
 void PluginEditor::timerCallback(int timerID)
 {
     switch(timerID){
@@ -1032,25 +1057,18 @@ void PluginEditor::timerCallback(int timerID)
 
         case TIMER_GUI_RELATED:
             /* parameters whos values can change internally should be periodically refreshed */
-            if(TBuseDefaultHRIRs->getToggleState() != ambi_dec_getUseDefaultHRIRsflag(hAmbi) )
-                TBuseDefaultHRIRs->setToggleState(ambi_dec_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
-            if(TBBinauraliseLS->getToggleState() != ambi_dec_getBinauraliseLSflag(hAmbi) )
-                TBBinauraliseLS->setToggleState(ambi_dec_getBinauraliseLSflag(hAmbi), dontSendNotification);
-            if(TBenablePreProc->getToggleState() != ambi_dec_getEnableHRIRsPreProc(hAmbi) )
-                TBenablePreProc->setToggleState(ambi_dec_getEnableHRIRsPreProc(hAmbi), dontSendNotification);
-            if(SL_num_loudspeakers->getValue() != ambi_dec_getNumLoudspeakers(hAmbi) )
-                SL_num_loudspeakers->setValue(ambi_dec_getNumLoudspeakers(hAmbi),dontSendNotification);
-            if(CBdec1method->getSelectedId() != ambi_dec_getDecMethod(hAmbi, 0) )
-                CBdec1method->setSelectedId(ambi_dec_getDecMethod(hAmbi, 0));
-            if(CBdec2method->getSelectedId() != ambi_dec_getDecMethod(hAmbi, 1) )
-                CBdec2method->setSelectedId(ambi_dec_getDecMethod(hAmbi, 1));
-            if(CBchFormat->getSelectedId() != ambi_dec_getChOrder(hAmbi) )
-                CBchFormat->setSelectedId(ambi_dec_getChOrder(hAmbi), dontSendNotification);
-            if(CBnormScheme->getSelectedId() != ambi_dec_getNormType(hAmbi) )
-                CBnormScheme->setSelectedId(ambi_dec_getNormType(hAmbi), dontSendNotification);
+            TBuseDefaultHRIRs->setToggleState(ambi_dec_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
+            TBBinauraliseLS->setToggleState(ambi_dec_getBinauraliseLSflag(hAmbi), dontSendNotification);
+            TBenablePreProc->setToggleState(ambi_dec_getEnableHRIRsPreProc(hAmbi), dontSendNotification);
+            SL_num_loudspeakers->setValue(ambi_dec_getNumLoudspeakers(hAmbi),dontSendNotification);
+            CBdec1method->setSelectedId(ambi_dec_getDecMethod(hAmbi, 0));
+            CBdec2method->setSelectedId(ambi_dec_getDecMethod(hAmbi, 1));
+            CBchFormat->setSelectedId(ambi_dec_getChOrder(hAmbi), dontSendNotification);
+            CBnormScheme->setSelectedId(ambi_dec_getNormType(hAmbi), dontSendNotification);
             CBchFormat->setItemEnabled(CH_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
             CBnormScheme->setItemEnabled(NORM_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
             outputCoordsView_handle->setNCH(ambi_dec_getNumLoudspeakers(hAmbi));
+            SL_transitionFreq->setValue(ambi_dec_getTransitionFreq(hAmbi), dontSendNotification);
 
             /* refresh */
             if (decOrder2dSlider->getRefreshValuesFLAG()) {

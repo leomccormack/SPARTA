@@ -23,10 +23,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-PluginProcessor::PluginProcessor() : 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
+PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
 {
 	ambi_dec_create(&hAmbi);
     startTimer(TIMER_PROCESSING_RELATED, 80); 
@@ -73,6 +84,25 @@ void PluginProcessor::setParameter (int index, float newValue)
                 ambi_dec_setLoudspeakerElev_deg(hAmbi, index/2, newValueScaled);
             }
         }
+    }
+}
+
+bool PluginProcessor::isParameterAutomatable (int index) const
+{
+    switch (index) {
+        case k_inputOrder: return false;
+        case k_channelOrder: return true;
+        case k_normType: return true;
+        case k_decMethod1: return false;
+        case k_decMethod2: return false;
+        case k_maxREweight1: return false;
+        case k_maxREweight2: return false;
+        case k_diffEQ1: return false;
+        case k_diffEQ2: return false;
+        case k_transitionFreq: return true;
+        case k_binauraliseLS: return false;
+        case k_numLoudspeakers: return false;
+        default: return false;
     }
 }
 

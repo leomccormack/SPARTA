@@ -23,10 +23,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
 {
 	ambi_roomsim_create(&hAmbi);
     refreshWindow = true;
@@ -107,6 +118,20 @@ void PluginProcessor::setParameter (int index, float newValue)
     }
 }
 
+bool PluginProcessor::isParameterAutomatable (int index) const
+{
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_outputOrder: return false;
+            case k_channelOrder: return true;
+            case k_normType: return true;
+            case k_numSources: return false;
+            case k_numReceivers: return false;
+        }
+    }
+    return true;
+}
+
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
 }
@@ -173,9 +198,9 @@ const String PluginProcessor::getParameterName (int index)
     else if(index<3*ROOM_SIM_MAX_NUM_SOURCES+k_NumOfParameters){
         index-=k_NumOfParameters;
         switch((index % 3)){
-            case 0: return TRANS("SourceX_") + String((int)((float)index/3.0f+0.001f));
-            case 1: return TRANS("SourceY_") + String((int)((float)index/3.0f+0.001f));
-            case 2: return TRANS("SourceZ_") + String((int)((float)index/3.0f+0.001f));
+            case 0: return TRANS("SourceX_") + String((int)((float)index/3.0f+0.001f) + 1);
+            case 1: return TRANS("SourceY_") + String((int)((float)index/3.0f+0.001f) + 1);
+            case 2: return TRANS("SourceZ_") + String((int)((float)index/3.0f+0.001f) + 1);
             default: return "NULL";
         }
     }
@@ -183,9 +208,9 @@ const String PluginProcessor::getParameterName (int index)
     else{
         index-= (k_NumOfParameters+3*ROOM_SIM_MAX_NUM_SOURCES);
         switch((index % 3)){
-            case 0: return TRANS("ReceiverX_") + String((int)((float)index/3.0f+0.001f));
-            case 1: return TRANS("ReceiverY_") + String((int)((float)index/3.0f+0.001f));
-            case 2: return TRANS("ReceiverZ_") + String((int)((float)index/3.0f+0.001f));
+            case 0: return TRANS("ReceiverX_") + String((int)((float)index/3.0f+0.001f) + 1);
+            case 1: return TRANS("ReceiverY_") + String((int)((float)index/3.0f+0.001f) + 1);
+            case 2: return TRANS("ReceiverZ_") + String((int)((float)index/3.0f+0.001f) + 1);
             default: return "NULL";
         }
     }

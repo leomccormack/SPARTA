@@ -500,6 +500,17 @@ void PluginEditor::resized()
 {
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
@@ -509,11 +520,15 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     }
     else if (comboBoxThatHasChanged == CBoutputFormat.get())
     {
+        hVst->beginParameterChangeGesture(k_channelOrder);
         ambi_enc_setChOrder(hAmbi, CBoutputFormat->getSelectedId());
+        hVst->endParameterChangeGesture(k_channelOrder);
     }
     else if (comboBoxThatHasChanged == CBnormalisation.get())
     {
+        hVst->beginParameterChangeGesture(k_normType);
         ambi_enc_setNormType(hAmbi, CBnormalisation->getSelectedId());
+        hVst->endParameterChangeGesture(k_normType);
     }
     else if (comboBoxThatHasChanged == CBorder.get())
     {
@@ -525,10 +540,20 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == SL_num_sources.get())
     {
+        hVst->beginParameterChangeGesture(k_numSources);
         ambi_enc_setNumSources(hAmbi, (int)SL_num_sources->getValue());
         refreshPanViewWindow = true;
+        hVst->endParameterChangeGesture(k_numSources);
     }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
@@ -568,12 +593,9 @@ void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
     sourceCoordsView_handle->setNCH(ambi_enc_getNumSources(hAmbi));
-    if(SL_num_sources->getValue()!=ambi_enc_getNumSources(hAmbi))
-        SL_num_sources->setValue(ambi_enc_getNumSources(hAmbi),dontSendNotification);
-    if(CBoutputFormat->getSelectedId()!=ambi_enc_getChOrder(hAmbi))
-        CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hAmbi), dontSendNotification);
-    if(CBnormalisation->getSelectedId()!=ambi_enc_getNormType(hAmbi))
-        CBnormalisation->setSelectedId(ambi_enc_getNormType(hAmbi), dontSendNotification);
+    SL_num_sources->setValue(ambi_enc_getNumSources(hAmbi),dontSendNotification);
+    CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hAmbi), dontSendNotification);
+    CBnormalisation->setSelectedId(ambi_enc_getNormType(hAmbi), dontSendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
 

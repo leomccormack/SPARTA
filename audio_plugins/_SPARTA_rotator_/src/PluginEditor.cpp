@@ -28,6 +28,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_yaw.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_yaw.get());
     s_yaw->setRange (-180, 180, 0.01);
+    s_yaw->setDoubleClickReturnValue(true, 0.0f);
     s_yaw->setSliderStyle (juce::Slider::LinearHorizontal);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxAbove, false, 80, 20);
     s_yaw->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -41,6 +42,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_pitch.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_pitch.get());
     s_pitch->setRange (-180, 180, 0.01);
+    s_pitch->setDoubleClickReturnValue(true, 0.0f);
     s_pitch->setSliderStyle (juce::Slider::LinearVertical);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
     s_pitch->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -48,12 +50,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_pitch->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
     s_pitch->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
     s_pitch->addListener (this);
-
+    
     s_pitch->setBounds (304, 40, 96, 112);
 
     s_roll.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_roll.get());
     s_roll->setRange (-180, 180, 0.01);
+    s_roll->setDoubleClickReturnValue(true, 0.0f);
     s_roll->setSliderStyle (juce::Slider::LinearVertical);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
     s_roll->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -548,19 +551,36 @@ void PluginEditor::resized()
 	repaint();
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == s_yaw.get())
     {
+        hVst->beginParameterChangeGesture(k_yaw);
         rotator_setYaw(hRot, (float)s_yaw->getValue());
+        hVst->endParameterChangeGesture(k_yaw);
     }
     else if (sliderThatWasMoved == s_pitch.get())
     {
+        hVst->beginParameterChangeGesture(k_pitch);
         rotator_setPitch(hRot, (float)s_pitch->getValue());
+        hVst->endParameterChangeGesture(k_pitch);
     }
     else if (sliderThatWasMoved == s_roll.get())
     {
+        hVst->beginParameterChangeGesture(k_roll);
         rotator_setRoll(hRot, (float)s_roll->getValue());
+        hVst->endParameterChangeGesture(k_roll);
     }
 }
 
@@ -568,19 +588,27 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
     if (buttonThatWasClicked == t_flipYaw.get())
     {
+        hVst->beginParameterChangeGesture(k_flipYaw);
         rotator_setFlipYaw(hRot, (int)t_flipYaw->getToggleState());
+        hVst->endParameterChangeGesture(k_flipYaw);
     }
     else if (buttonThatWasClicked == t_flipPitch.get())
     {
+        hVst->beginParameterChangeGesture(k_flipPitch);
         rotator_setFlipPitch(hRot, (int)t_flipPitch->getToggleState());
+        hVst->endParameterChangeGesture(k_flipPitch);
     }
     else if (buttonThatWasClicked == t_flipRoll.get())
     {
+        hVst->beginParameterChangeGesture(k_flipRoll);
         rotator_setFlipRoll(hRot, (int)t_flipRoll->getToggleState());
+        hVst->endParameterChangeGesture(k_flipRoll);
     }
     else if (buttonThatWasClicked == TBrpyFlag.get())
     {
+        hVst->beginParameterChangeGesture(k_useRollPitchYaw);
         rotator_setRPYflag(hRot, (int)TBrpyFlag->getToggleState());
+        hVst->endParameterChangeGesture(k_useRollPitchYaw);
     }
 }
 
@@ -588,17 +616,31 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == CBoutputFormat.get())
     {
+        hVst->beginParameterChangeGesture(k_channelOrder);
         rotator_setChOrder(hRot, CBoutputFormat->getSelectedId());
+        hVst->endParameterChangeGesture(k_channelOrder);
     }
     else if (comboBoxThatHasChanged == CBnorm.get())
     {
+        hVst->beginParameterChangeGesture(k_normType);
         rotator_setNormType(hRot, CBnorm->getSelectedId());
+        hVst->endParameterChangeGesture(k_normType);
     }
     else if (comboBoxThatHasChanged == CBorder.get())
     {
+        hVst->beginParameterChangeGesture(k_inputOrder);
         rotator_setOrder(hRot, CBorder->getSelectedId());
+        hVst->endParameterChangeGesture(k_inputOrder);
     }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 void PluginEditor::timerCallback()
 {
@@ -606,8 +648,14 @@ void PluginEditor::timerCallback()
     s_yaw->setValue(rotator_getYaw(hRot), dontSendNotification);
     s_pitch->setValue(rotator_getPitch(hRot), dontSendNotification);
     s_roll->setValue(rotator_getRoll(hRot), dontSendNotification);
-    CBoutputFormat->setSelectedId(rotator_getChOrder(hRot), dontSendNotification);
+    t_flipYaw->setToggleState((bool)rotator_getFlipYaw(hRot), dontSendNotification);
+    t_flipPitch->setToggleState((bool)rotator_getFlipPitch(hRot), dontSendNotification);
+    t_flipRoll->setToggleState((bool)rotator_getFlipRoll(hRot), dontSendNotification);
     CBnorm->setSelectedId(rotator_getNormType(hRot), dontSendNotification);
+    CBoutputFormat->setSelectedId(rotator_getChOrder(hRot), dontSendNotification);
+    CBorder->setSelectedId(rotator_getOrder(hRot), dontSendNotification);
+    TBrpyFlag->setToggleState((bool)rotator_getRPYflag(hRot), dontSendNotification);
+
     CBoutputFormat->setItemEnabled(CH_FUMA, rotator_getOrder(hRot)==SH_ORDER_FIRST ? true : false);
     CBnorm->setItemEnabled(NORM_FUMA, rotator_getOrder(hRot)==SH_ORDER_FIRST ? true : false);
 

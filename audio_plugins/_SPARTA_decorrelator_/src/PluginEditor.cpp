@@ -311,6 +311,17 @@ void PluginEditor::resized()
 {
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == SL_nChannels.get())
@@ -319,9 +330,19 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     }
     else if (sliderThatWasMoved == SL_decorAmount.get())
     {
+        hVst->beginParameterChangeGesture(k_decorrelation);
         decorrelator_setDecorrelationAmount(hDecor, (float)SL_decorAmount->getValue());
+        hVst->endParameterChangeGesture(k_decorrelation);
     }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
@@ -343,6 +364,9 @@ void PluginEditor::timerCallback(int timerID)
             break;
 
         case TIMER_GUI_RELATED:
+            /* parameters whos values can change internally should be periodically refreshed */
+            SL_decorAmount->setValue(decorrelator_getDecorrelationAmount(hDecor), dontSendNotification);
+
             /* Progress bar */
             if(decorrelator_getCodecStatus(hDecor)==CODEC_STATUS_INITIALISING){
                 addAndMakeVisible(progressbar);

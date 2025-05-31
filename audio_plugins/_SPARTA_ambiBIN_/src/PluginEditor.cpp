@@ -74,6 +74,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_yaw.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_yaw.get());
     s_yaw->setRange (-180, 180, 0.01);
+    s_yaw->setDoubleClickReturnValue(true, 0.0f);
     s_yaw->setSliderStyle (juce::Slider::LinearHorizontal);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxAbove, false, 80, 20);
     s_yaw->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -87,6 +88,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_pitch.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_pitch.get());
     s_pitch->setRange (-180, 180, 0.01);
+    s_pitch->setDoubleClickReturnValue(true, 0.0f);
     s_pitch->setSliderStyle (juce::Slider::LinearVertical);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
     s_pitch->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -100,6 +102,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_roll.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_roll.get());
     s_roll->setRange (-180, 180, 0.01);
+    s_roll->setDoubleClickReturnValue(true, 0.0f);
     s_roll->setSliderStyle (juce::Slider::LinearVertical);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
     s_roll->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -898,6 +901,17 @@ void PluginEditor::resized()
 {
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
     if (buttonThatWasClicked == TBuseDefaultHRIRs.get())
@@ -910,15 +924,21 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
     else if (buttonThatWasClicked == t_flipPitch.get())
     {
+        hVst->beginParameterChangeGesture(k_flipPitch);
         ambi_bin_setFlipPitch(hAmbi, (int)t_flipPitch->getToggleState());
+        hVst->endParameterChangeGesture(k_flipPitch);
     }
     else if (buttonThatWasClicked == t_flipRoll.get())
     {
+        hVst->beginParameterChangeGesture(k_flipRoll);
         ambi_bin_setFlipRoll(hAmbi, (int)t_flipRoll->getToggleState());
+        hVst->endParameterChangeGesture(k_flipRoll);
     }
     else if (buttonThatWasClicked == t_flipYaw.get())
     {
+        hVst->beginParameterChangeGesture(k_flipYaw);
         ambi_bin_setFlipYaw(hAmbi, (int)t_flipYaw->getToggleState());
+        hVst->endParameterChangeGesture(k_flipYaw);
     }
     else if (buttonThatWasClicked == TBcompEQ.get())
     {
@@ -926,11 +946,15 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
     else if (buttonThatWasClicked == TBrpyFlag.get())
     {
+        hVst->beginParameterChangeGesture(k_useRollPitchYaw);
         ambi_bin_setRPYflag(hAmbi, (int)TBrpyFlag->getToggleState());
+        hVst->endParameterChangeGesture(k_useRollPitchYaw);
     }
     else if (buttonThatWasClicked == TBenableRot.get())
     {
+        hVst->beginParameterChangeGesture(k_enableRotation);
         ambi_bin_setEnableRotation(hAmbi, (int)TBenableRot->getToggleState());
+        hVst->endParameterChangeGesture(k_enableRotation);
     }
     else if (buttonThatWasClicked == TBdiffMatching.get())
     {
@@ -950,11 +974,15 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     }
     else if (comboBoxThatHasChanged == CBchFormat.get())
     {
+        hVst->beginParameterChangeGesture(k_channelOrder);
         ambi_bin_setChOrder(hAmbi, CBchFormat->getSelectedId());
+        hVst->endParameterChangeGesture(k_channelOrder);
     }
     else if (comboBoxThatHasChanged == CBnormScheme.get())
     {
+        hVst->beginParameterChangeGesture(k_normType);
         ambi_bin_setNormType(hAmbi, CBnormScheme->getSelectedId());
+        hVst->endParameterChangeGesture(k_normType);
     }
     else if (comboBoxThatHasChanged == CBdecoderMethod.get())
     {
@@ -970,17 +998,31 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == s_yaw.get())
     {
+        hVst->beginParameterChangeGesture(k_yaw);
         ambi_bin_setYaw(hAmbi, (float)s_yaw->getValue());
+        hVst->endParameterChangeGesture(k_yaw);
     }
     else if (sliderThatWasMoved == s_pitch.get())
     {
+        hVst->beginParameterChangeGesture(k_pitch);
         ambi_bin_setPitch(hAmbi, (float)s_pitch->getValue());
+        hVst->endParameterChangeGesture(k_pitch);
     }
     else if (sliderThatWasMoved == s_roll.get())
     {
+        hVst->beginParameterChangeGesture(k_roll);
         ambi_bin_setRoll(hAmbi, (float)s_roll->getValue());
+        hVst->endParameterChangeGesture(k_roll);
     }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 void PluginEditor::timerCallback(int timerID)
 {
@@ -991,27 +1033,24 @@ void PluginEditor::timerCallback(int timerID)
 
         case TIMER_GUI_RELATED:
             /* parameters whos values can change internally should be periodically refreshed */
-            if(TBuseDefaultHRIRs->getToggleState() != ambi_bin_getUseDefaultHRIRsflag(hAmbi))
-                TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
-            if(CBhrirPreProc->getSelectedId() != ambi_bin_getHRIRsPreProc(hAmbi))
-                CBhrirPreProc->setSelectedId(ambi_bin_getHRIRsPreProc(hAmbi), dontSendNotification);
-            if(s_yaw->getValue() != ambi_bin_getYaw(hAmbi))
-                s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
-            if(s_pitch->getValue() != ambi_bin_getPitch(hAmbi))
-                s_pitch->setValue(ambi_bin_getPitch(hAmbi), dontSendNotification);
-            if(s_roll->getValue() != ambi_bin_getRoll(hAmbi))
-                s_roll->setValue(ambi_bin_getRoll(hAmbi), dontSendNotification);
-            if(CBchFormat->getSelectedId() != ambi_bin_getChOrder(hAmbi))
-                CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), dontSendNotification);
-            if(CBnormScheme->getSelectedId() != ambi_bin_getNormType(hAmbi))
-                CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), dontSendNotification);
+            TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
+            CBhrirPreProc->setSelectedId(ambi_bin_getHRIRsPreProc(hAmbi), dontSendNotification);
+            TBenableRot->setToggleState(ambi_bin_getEnableRotation(hAmbi), dontSendNotification);
+            s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
+            s_pitch->setValue(ambi_bin_getPitch(hAmbi), dontSendNotification);
+            s_roll->setValue(ambi_bin_getRoll(hAmbi), dontSendNotification);
+            CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), dontSendNotification);
+            CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), dontSendNotification);
+            t_flipYaw->setToggleState((bool)ambi_bin_getFlipYaw(hAmbi), dontSendNotification);
+            t_flipPitch->setToggleState((bool)ambi_bin_getFlipPitch(hAmbi), dontSendNotification);
+            t_flipRoll->setToggleState((bool)ambi_bin_getFlipRoll(hAmbi), dontSendNotification);
+            TBrpyFlag->setToggleState((bool)ambi_bin_getRPYflag(hAmbi), dontSendNotification);
             label_N_dirs->setText(String(ambi_bin_getNDirs(hAmbi)), dontSendNotification);
             label_HRIR_len->setText(String(ambi_bin_getHRIRlength(hAmbi)), dontSendNotification);
             label_HRIR_fs->setText(String(ambi_bin_getHRIRsamplerate(hAmbi)), dontSendNotification);
             label_DAW_fs->setText(String(ambi_bin_getDAWsamplerate(hAmbi)), dontSendNotification);
             CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
             CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
-
 
             /* Progress bar */
             if(ambi_bin_getCodecStatus(hAmbi)==CODEC_STATUS_INITIALISING){

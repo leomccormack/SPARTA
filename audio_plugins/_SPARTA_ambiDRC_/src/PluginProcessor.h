@@ -91,6 +91,7 @@ public:
     int getNumParameters() override;
     float getParameter (int index) override;
     void setParameter (int index, float newValue) override;
+    bool isParameterAutomatable (int index) const override;
     const String getParameterName (int index) override;
     const String getParameterText (int index) override;
     const String getInputChannelName (int channelIndex) const override;

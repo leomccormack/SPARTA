@@ -22,9 +22,20 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
 PluginProcessor::PluginProcessor() :
     AudioProcessor(BusesProperties()
-        .withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
         .withOutput("Output", AudioChannelSet::discreteChannels(2), true))
 {
 	ambi_bin_create(&hAmbi);
@@ -80,13 +91,34 @@ void PluginProcessor::setParameter (int index, float newValue)
         case k_enableRotation:        ambi_bin_setEnableRotation(hAmbi, (int)(newValue + 0.5f)); break;
         case k_useRollPitchYaw:       ambi_bin_setRPYflag(hAmbi, (int)(newValue + 0.5f)); break;
         case k_yaw:                   ambi_bin_setYaw(hAmbi, (newValue-0.5f)*360.0f ); break;
-        case k_pitch:                 ambi_bin_setPitch(hAmbi, (newValue - 0.5f)*180.0f); break;
-        case k_roll:                  ambi_bin_setRoll(hAmbi, (newValue - 0.5f)*180.0f); break;
+        case k_pitch:                 ambi_bin_setPitch(hAmbi, (newValue - 0.5f)*360.0f); break;
+        case k_roll:                  ambi_bin_setRoll(hAmbi, (newValue - 0.5f)*360.0f); break;
         case k_flipYaw:               ambi_bin_setFlipYaw(hAmbi, (int)(newValue + 0.5f));  break;
         case k_flipPitch:             ambi_bin_setFlipPitch(hAmbi, (int)(newValue + 0.5f)); break;
         case k_flipRoll:              ambi_bin_setFlipRoll(hAmbi, (int)(newValue + 0.5f)); break;
          
         default: break;
+    }
+}
+
+bool PluginProcessor::isParameterAutomatable (int index) const
+{
+    switch (index) {
+        case k_inputOrder:            return false;
+        case k_channelOrder:          return true;
+        case k_normType:              return true;
+        case k_decMethod:             return false;
+        case k_enableDiffuseMatching: return false;
+        case k_enableMaxRE:           return false;
+        case k_enableRotation:        return true;
+        case k_useRollPitchYaw:       return true;
+        case k_yaw:                   return true;
+        case k_pitch:                 return true;
+        case k_roll:                  return true;
+        case k_flipYaw:               return true;
+        case k_flipPitch:             return true;
+        case k_flipRoll:              return true;
+        default: return false;
     }
 }
 

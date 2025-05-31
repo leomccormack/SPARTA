@@ -23,10 +23,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
 {
 	ambi_enc_create(&hAmbi);
     refreshWindow = true;
@@ -52,7 +63,7 @@ void PluginProcessor::setParameter (int index, float newValue)
     else{
         index-=k_NumOfParameters;
         float newValueScaled;
-        if (!(index % 2)){
+        if ((index % 2)==0){
             newValueScaled = (newValue - 0.5f)*360.0f;
             if (newValueScaled != ambi_enc_getSourceAzi_deg(hAmbi, index/2)){
                 ambi_enc_setSourceAzi_deg(hAmbi, index/2, newValueScaled);
@@ -61,12 +72,25 @@ void PluginProcessor::setParameter (int index, float newValue)
         }
         else{
             newValueScaled = (newValue - 0.5f)*180.0f;
-            if (newValueScaled != ambi_enc_getSourceElev_deg(hAmbi, index/2)){
-                ambi_enc_setSourceElev_deg(hAmbi, index/2, newValueScaled);
+            if (newValueScaled != ambi_enc_getSourceElev_deg(hAmbi, (index-1)/2)){
+                ambi_enc_setSourceElev_deg(hAmbi, (index-1)/2, newValueScaled);
                 refreshWindow = true;
             }
         }
     }
+}
+
+bool PluginProcessor::isParameterAutomatable (int index) const
+{
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_outputOrder: return false;
+            case k_channelOrder: return true;
+            case k_normType: return true;
+            case k_numSources: return true;
+        }
+    }
+    return true;
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
@@ -121,9 +145,9 @@ const String PluginProcessor::getParameterName (int index)
     else{
         index-=k_NumOfParameters;
         if (!(index % 2))
-            return TRANS("Azim_") + String(index/2);
+            return TRANS("Azim_") + String(index/2 + 1);
         else
-            return TRANS("Elev_") + String((index-1)/2);
+            return TRANS("Elev_") + String((index-1)/2 + 1);
     }
 }
 

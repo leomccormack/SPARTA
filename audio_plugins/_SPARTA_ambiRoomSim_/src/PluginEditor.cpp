@@ -887,6 +887,17 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     }
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == CBoutputFormat.get())
@@ -895,13 +906,25 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     }
     else if (comboBoxThatHasChanged == CBnormalisation.get())
     {
+        hVst->beginParameterChangeGesture(k_normType);
         ambi_roomsim_setNormType(hAmbi, CBnormalisation->getSelectedId());
+        hVst->endParameterChangeGesture(k_normType);
     }
     else if (comboBoxThatHasChanged == CBorder.get())
     {
+        hVst->beginParameterChangeGesture(k_channelOrder);
         ambi_roomsim_setOutputOrder(hAmbi, CBorder->getSelectedId());
+        hVst->endParameterChangeGesture(k_channelOrder);
     }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
@@ -916,14 +939,10 @@ void PluginEditor::timerCallback()
     /* parameters whos values can change internally should be periodically refreshed */
     sourceCoordsView_handle->setNCH(ambi_roomsim_getNumSources(hAmbi));
     receiverCoordsView_handle->setNCH(ambi_roomsim_getNumReceivers(hAmbi));
-    if(SL_num_sources->getValue()!=ambi_roomsim_getNumSources(hAmbi))
-        SL_num_sources->setValue(ambi_roomsim_getNumSources(hAmbi),dontSendNotification);
-    if(SL_num_receivers->getValue()!=ambi_roomsim_getNumReceivers(hAmbi))
-        SL_num_receivers->setValue(ambi_roomsim_getNumReceivers(hAmbi),dontSendNotification);
-    if(CBoutputFormat->getSelectedId()!=ambi_roomsim_getChOrder(hAmbi))
-        CBoutputFormat->setSelectedId(ambi_roomsim_getChOrder(hAmbi), dontSendNotification);
-    if(CBnormalisation->getSelectedId()!=ambi_roomsim_getNormType(hAmbi))
-        CBnormalisation->setSelectedId(ambi_roomsim_getNormType(hAmbi), dontSendNotification);
+    SL_num_sources->setValue(ambi_roomsim_getNumSources(hAmbi),dontSendNotification);
+    SL_num_receivers->setValue(ambi_roomsim_getNumReceivers(hAmbi),dontSendNotification);
+    CBoutputFormat->setSelectedId(ambi_roomsim_getChOrder(hAmbi), dontSendNotification);
+    CBnormalisation->setSelectedId(ambi_roomsim_getNormType(hAmbi), dontSendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
 

@@ -23,10 +23,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
 {
 	array2sh_create(&hA2sh);
     startTimer(TIMER_PROCESSING_RELATED, 80);
@@ -72,6 +83,25 @@ void PluginProcessor::setParameter (int index, float newValue)
                 array2sh_setSensorElev_deg(hA2sh, index/2, newValueScaled);
             }
         }
+    }
+}
+
+bool PluginProcessor::isParameterAutomatable (int index) const
+{
+    switch(index){
+        case k_outputOrder: return false;
+        case k_channelOrder: return true;
+        case k_normType: return true;
+        case k_filterType: return false;
+        case k_maxGain: return false;
+        case k_postGain: return true;
+        case k_speedOfSound: return false;
+        case k_arrayRadius: return false;
+        case k_baffleRadius: return false;
+        case k_arrayType: return false;
+        case k_weightType: return false;
+        case k_numSensors: return false;
+        default: return false;
     }
 }
 

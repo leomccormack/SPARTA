@@ -454,11 +454,24 @@ void PluginEditor::resized()
 {
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == SL_num_beams.get())
     {
+        hVst->beginParameterChangeGesture(k_numBeams);
         beamformer_setNumBeams(hBeam, (int)SL_num_beams->getValue());
+        hVst->endParameterChangeGesture(k_numBeams);
     }
 }
 
@@ -466,21 +479,37 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == CBoutputFormat.get())
     {
+        hVst->beginParameterChangeGesture(k_channelOrder);
         beamformer_setChOrder(hBeam, CBoutputFormat->getSelectedId());
+        hVst->endParameterChangeGesture(k_channelOrder);
     }
     else if (comboBoxThatHasChanged == CBnormalisation.get())
     {
+        hVst->beginParameterChangeGesture(k_normType);
         beamformer_setNormType(hBeam, CBnormalisation->getSelectedId());
+        hVst->endParameterChangeGesture(k_normType);
     }
     else if (comboBoxThatHasChanged == CBorder.get())
     {
+        hVst->beginParameterChangeGesture(k_inputOrder);
         beamformer_setBeamOrder(hBeam, CBorder->getSelectedId());
+        hVst->endParameterChangeGesture(k_inputOrder);
     }
     else if (comboBoxThatHasChanged == CBbeamType.get())
     {
+        hVst->beginParameterChangeGesture(k_beamType);
         beamformer_setBeamType(hBeam, CBbeamType->getSelectedId());
+        hVst->endParameterChangeGesture(k_beamType);
     }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 void PluginEditor::timerCallback()
 {
@@ -489,6 +518,10 @@ void PluginEditor::timerCallback()
     SL_num_beams->setValue(beamformer_getNumBeams(hBeam),dontSendNotification);
     CBoutputFormat->setSelectedId(beamformer_getChOrder(hBeam), dontSendNotification);
     CBnormalisation->setSelectedId(beamformer_getNormType(hBeam), dontSendNotification);
+    CBorder->setSelectedId(beamformer_getBeamOrder(hBeam), dontSendNotification);
+    CBbeamType->setSelectedId(beamformer_getBeamType(hBeam), dontSendNotification);
+    CBoutputFormat->setItemEnabled(CH_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
+    CBnormalisation->setItemEnabled(NORM_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
     CBoutputFormat->setItemEnabled(CH_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
 

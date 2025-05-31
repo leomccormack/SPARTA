@@ -245,6 +245,17 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
     }
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void pannerView::mouseDrag (const juce::MouseEvent& e)
 {
     float room_dims_pixels[3], room_dims_m[3];
@@ -268,15 +279,29 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
             case TOP_VIEW:
                 view_x = 27.0f; view_y = 12.0f;
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
+                
+                hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3+1);
+                hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3);
+                
                 ambi_roomsim_setSourceY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
                 ambi_roomsim_setSourceX(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[0])/scale);
+                
+                hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3+1);
+                hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3);
                 break;
 
             case SIDE_VIEW:
                 view_x = 27.0f; view_y = 240.0f;
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
+                
+                hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3+1);
+                hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3+2);
+                
                 ambi_roomsim_setSourceY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
                 ambi_roomsim_setSourceZ(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[2])/scale);
+                
+                hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3+1);
+                hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3+2);
                 break;
             default: break;
         }
@@ -286,20 +311,45 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
             case TOP_VIEW:
                 view_x = 27.0f; view_y = 12.0f;
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
+                
+                hVst->beginParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3+1);
+                hVst->beginParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3);
+                
                 ambi_roomsim_setReceiverY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
                 ambi_roomsim_setReceiverX(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[0])/scale);
+                
+                hVst->endParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3+1);
+                hVst->endParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3);
                 break;
 
             case SIDE_VIEW:
                 view_x = 27.0f; view_y = 240.0f;
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
+                
+                hVst->beginParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3+1);
+                hVst->beginParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3+2);
+                
                 ambi_roomsim_setReceiverY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
                 ambi_roomsim_setReceiverZ(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[2])/scale);
+                
+                hVst->endParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3+1);
+                hVst->endParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3+1);
                 break;
             default: break;
         }
     }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
 
 void pannerView::mouseUp (const juce::MouseEvent& /*e*/)
 {
