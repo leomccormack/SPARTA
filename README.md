@@ -53,7 +53,9 @@ The [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.stein
 SDKs/VST2_SDK
 ```
 
-By default, **MacOSX, Linux and Windows (x86_64/amd64)** users need to install [Intel oneAPI](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html) (MKL and IPP) and run the **install-safmkl**.sh/.bat and **install-safipp**.sh/.bat scripts found in SDKs/Spatial_Audio_Framework/scripts. Whereas, **Raspberry Pi (ARM)** users instead require OpenBLAS and LAPACKE libraries:
+By default, **MacOS** users require no additional dependencies.
+
+By default, **Linux and Windows (x86_64/amd64)** users need to install [Intel oneAPI](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html) (MKL and IPP) and run the **install-safmkl**.sh/.bat and **install-safipp**.sh/.bat scripts found in SDKs/Spatial_Audio_Framework/scripts. Whereas, **Raspberry Pi (ARM)** users instead require OpenBLAS and LAPACKE libraries:
 ``` 
 sudo apt-get install liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
 ```
@@ -65,7 +67,7 @@ Note, however, that alternative performance libraries may also be used, with mor
 sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x11proto-xext-dev libcurl4-openssl-dev libasound2-dev
 ```
 
-## Building the plug-ins via CMake 
+## Building the plug-ins via CMake (recommended)
 
 The plug-ins may be built with CMake (version 3.15 or higher):
  ```
@@ -82,7 +84,7 @@ cd build
 msbuild ALL_BUILD.vcxproj /p:Configuration=Release /m
 ```
 
-## Building the plug-ins via the included scripts
+## Building the plug-ins via the included scripts (deprecated)
 
 **MacOSX/Linux users** may run the following bash script via the Terminal to build all of the plugins:
 
@@ -119,7 +121,7 @@ The build.plugins.sh script also supports many additional options:
 ./build-plugins.sh _SPARTA_array2sh_ projucer # opens "sparta_array2sh.jucer" with Projucer
 ```
 
-## Building the plug-ins without scripts or CMake
+## Building the plug-ins without scripts or CMake (for development/debugging in an IDE)
 
 You may also manually open each .jucer file with the Projucer App and click "Save Project". This will generate Visual Studio (2017) solution files, Xcode project files, Linux Makefiles (amd64), and Raspberry Pi Linux Makefiles (ARM), which are placed in:
 

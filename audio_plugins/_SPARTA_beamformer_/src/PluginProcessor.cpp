@@ -101,7 +101,7 @@ float PluginProcessor::getParameter (int index)
     /* source direction parameters */
     else{
         index-=k_NumOfParameters;
-        if (!(index % 2))
+        if ((index % 2)==0)
             return (beamformer_getBeamAzi_deg(hBeam, index/2)/360.0f) + 0.5f;
         else
             return (beamformer_getBeamElev_deg(hBeam, (index-1)/2)/180.0f) + 0.5f;
@@ -134,7 +134,7 @@ const String PluginProcessor::getParameterName (int index)
     /* source direction parameters */
     else{
         index-=k_NumOfParameters;
-        if (!(index % 2))
+        if ((index % 2)==0)
             return TRANS("Azim_") + String(index/2 + 1);
         else
             return TRANS("Elev_") + String((index-1)/2 + 1);
@@ -174,7 +174,7 @@ const String PluginProcessor::getParameterText(int index)
     /* source direction parameters */
     else{
         index-=k_NumOfParameters;
-        if (!(index % 2))
+        if ((index % 2)==0)
             return String(beamformer_getBeamAzi_deg(hBeam, index/2));
         else
             return String(beamformer_getBeamElev_deg(hBeam, (index-1)/2));

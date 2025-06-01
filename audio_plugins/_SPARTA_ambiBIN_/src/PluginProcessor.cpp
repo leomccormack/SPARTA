@@ -42,7 +42,7 @@ PluginProcessor::PluginProcessor() :
   
     /* specify here on which UDP port number to receive incoming OSC messages */
     osc_port_ID = DEFAULT_OSC_PORT;
-    osc.connect(osc_port_ID);
+    osc_connected = osc.connect(osc_port_ID);
     /* tell the component to listen for OSC messages */
     osc.addListener(this);
     
@@ -57,27 +57,64 @@ PluginProcessor::~PluginProcessor()
 	ambi_bin_destroy(&hAmbi);
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 {
     /* if rotation angles are sent as an array \ypr[3] */
     if (message.size() == 3 && message.getAddressPattern().toString().compare("/ypr")==0) {
-        if (message[0].isFloat32())
+        if (message[0].isFloat32()){
+            beginParameterChangeGesture(k_yaw);
             ambi_bin_setYaw(hAmbi, message[0].getFloat32());
-        if (message[1].isFloat32())
+            endParameterChangeGesture(k_yaw);
+        }
+        if (message[1].isFloat32()){
+            beginParameterChangeGesture(k_pitch);
             ambi_bin_setPitch(hAmbi, message[1].getFloat32());
-        if (message[2].isFloat32())
+            endParameterChangeGesture(k_pitch);
+        }
+        if (message[2].isFloat32()){
+            beginParameterChangeGesture(k_roll);
             ambi_bin_setRoll(hAmbi, message[2].getFloat32());
+            endParameterChangeGesture(k_roll);
+        }
         return;
     }
     
     /* if rotation angles are sent individually: */
-    if(message.getAddressPattern().toString().compare("/yaw")==0)
+    if(message.getAddressPattern().toString().compare("/yaw")==0){
+        beginParameterChangeGesture(k_yaw);
         ambi_bin_setYaw(hAmbi, message[0].getFloat32());
-    else if(message.getAddressPattern().toString().compare("/pitch")==0)
+        endParameterChangeGesture(k_yaw);
+    }
+    else if(message.getAddressPattern().toString().compare("/pitch")==0){
+        beginParameterChangeGesture(k_pitch);
         ambi_bin_setPitch(hAmbi, message[0].getFloat32());
-    else if(message.getAddressPattern().toString().compare("/roll")==0)
+        endParameterChangeGesture(k_pitch);
+    }
+    else if(message.getAddressPattern().toString().compare("/roll")==0){
+        beginParameterChangeGesture(k_roll);
         ambi_bin_setRoll(hAmbi, message[0].getFloat32());
+        endParameterChangeGesture(k_roll);
+    }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 void PluginProcessor::setParameter (int index, float newValue)
 {
@@ -138,8 +175,8 @@ float PluginProcessor::getParameter (int index)
         case k_enableRotation:        return (float)ambi_bin_getEnableRotation(hAmbi);
         case k_useRollPitchYaw:       return (float)ambi_bin_getRPYflag(hAmbi);
         case k_yaw:                   return (ambi_bin_getYaw(hAmbi)/360.0f) + 0.5f;
-        case k_pitch:                 return (ambi_bin_getPitch(hAmbi)/180.0f) + 0.5f;
-        case k_roll:                  return (ambi_bin_getRoll(hAmbi)/180.0f) + 0.5f;
+        case k_pitch:                 return (ambi_bin_getPitch(hAmbi)/360.0f) + 0.5f;
+        case k_roll:                  return (ambi_bin_getRoll(hAmbi)/360.0f) + 0.5f;
         case k_flipYaw:               return (float)ambi_bin_getFlipYaw(hAmbi);
         case k_flipPitch:             return (float)ambi_bin_getFlipPitch(hAmbi);
         case k_flipRoll:              return (float)ambi_bin_getFlipRoll(hAmbi);
