@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(sparta_head VERSION 1.7.1)
+project(sparta_head VERSION 1.7.2)
 
 # Build everything as "Release" by default
 if (NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
@@ -43,11 +43,11 @@ option(SAF_BUILD_EXAMPLES "Build SAF examples."   ON)
 # Add JUCE, Spatial_Audio_Framework, and VST2_SDK to the project
 add_subdirectory(SDKs) 
 
-
 # Configure SPARTA plugins
 option(BUILD_PLUGIN_FORMAT_VST2 "Build VST2 plugins" ON)
 option(BUILD_PLUGIN_FORMAT_VST3 "Build VST3 plugins" OFF)
 option(BUILD_PLUGIN_FORMAT_AU   "Build AU plugins"   OFF)
 option(BUILD_PLUGIN_FORMAT_LV2  "Build LV2 plugins"  OFF)
 option(BUILD_PLUGIN_FORMAT_AAX  "Build AAX plugins"  OFF)
+option(BUILD_PLUGIN_FORMAT_STANDALONE  "Build standalone versions of the plugins"  OFF)
 add_subdirectory(audio_plugins)

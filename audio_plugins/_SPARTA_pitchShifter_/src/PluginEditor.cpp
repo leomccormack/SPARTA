@@ -28,6 +28,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_pitchShiftFactor.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_pitchShiftFactor.get());
     s_pitchShiftFactor->setRange (0.1, 4, 0.01);
+    s_pitchShiftFactor->setDoubleClickReturnValue(true, 1.0f);
     s_pitchShiftFactor->setSliderStyle (juce::Slider::LinearHorizontal);
     s_pitchShiftFactor->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     s_pitchShiftFactor->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -329,17 +330,38 @@ void PluginEditor::resized()
 	repaint();
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == s_pitchShiftFactor.get())
     {
+        hVst->beginParameterChangeGesture(k_pitchShiftFactor);
         pitch_shifter_setPitchShiftFactor(hPS, (float)s_pitchShiftFactor->getValue());
+        hVst->endParameterChangeGesture(k_pitchShiftFactor);
     }
     else if (sliderThatWasMoved == SL_num_channels.get())
     {
         pitch_shifter_setNumChannels(hPS, (int)SL_num_channels->getValue());
     }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
@@ -363,6 +385,7 @@ void PluginEditor::timerCallback(int timerID)
         case TIMER_GUI_RELATED:
             /* parameters whos values can change internally should be periodically refreshed */
             SL_num_channels->setValue(pitch_shifter_getNCHrequired(hPS));
+            s_pitchShiftFactor->setValue(pitch_shifter_getPitchShiftFactor(hPS), dontSendNotification);
 
             /* Progress bar */
             if(pitch_shifter_getCodecStatus(hPS)==CODEC_STATUS_INITIALISING){

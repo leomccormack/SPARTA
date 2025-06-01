@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-project(sparta_powermap VERSION 1.5.0)
+project(sparta_powermap VERSION 1.5.1)
 message(STATUS "  ${PROJECT_NAME}")
 
 # juce helper function to create a library, which is configured as a JUCE plugin
@@ -19,6 +19,8 @@ juce_add_plugin(${PROJECT_NAME}
     FORMATS                     ${BUILD_PLUGIN_FORMATS}      # ( VST AAX Unity VST3 AU AUv3 Standalone )
     PRODUCT_NAME                "${PROJECT_NAME}"
     LV2URI                      "http://AALTO.${PROJECT_NAME}.${PROJECT_VERSION}"
+    CAMERA_PERMISSION_ENABLED   TRUE
+    CAMERA_PERMISSION_TEXT      "This app requires access to the Camera to support the AcousticCamera option"
 )   
 
 # Generates "JuceHeader.h", and adds its path to the include paths of the target

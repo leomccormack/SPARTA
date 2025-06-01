@@ -162,17 +162,43 @@ void pannerView::mouseDown (const MouseEvent& e)
     }
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void pannerView::mouseDrag (const MouseEvent& e)
 {
     if(sourceIconIsClicked){
         Point<float> point;
         point.setXY((float)e.getPosition().getX()-icon_size/2.0f, (float)e.getPosition().getY()-icon_size/2.0f);
+        
+        hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedSource*2);
+        hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedSource*2+1);
+        
         panner_setSourceAzi_deg(hPan, indexOfClickedSource,
                                    ((width - (point.getX() + icon_size/2.0f))*360.0f)/width-180.0f);
         panner_setSourceElev_deg(hPan, indexOfClickedSource,
                                    ((height - (point.getY() + icon_size/2.0f))*180.0f)/height - 90.0f);
+        
+        hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedSource*2);
+        hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedSource*2+1);
     }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 void pannerView::mouseUp (const MouseEvent& /*e*/)
 {

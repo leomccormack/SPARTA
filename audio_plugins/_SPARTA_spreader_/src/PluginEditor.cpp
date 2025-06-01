@@ -619,10 +619,8 @@ void PluginEditor::timerCallback(int timerID)
 
             /* parameters whos values can change internally should be periodically refreshed */
             sourceCoordsView_handle->setNCH(spreader_getNumSources(hSpr));
-            if(spreader_getUseDefaultHRIRsflag(hSpr)!=TBuseDefaultHRIRs->getToggleState())
-                TBuseDefaultHRIRs->setToggleState(spreader_getUseDefaultHRIRsflag(hSpr), dontSendNotification);
-            if(spreader_getNumSources(hSpr)!=SL_num_sources->getValue())
-                SL_num_sources->setValue(spreader_getNumSources(hSpr),dontSendNotification);
+            TBuseDefaultHRIRs->setToggleState(spreader_getUseDefaultHRIRsflag(hSpr), dontSendNotification);
+            SL_num_sources->setValue(spreader_getNumSources(hSpr),dontSendNotification);
 
             /* Progress bar */
             if(spreader_getCodecStatus(hSpr)==CODEC_STATUS_INITIALISING){

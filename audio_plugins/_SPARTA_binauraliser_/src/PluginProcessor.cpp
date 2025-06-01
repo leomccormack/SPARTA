@@ -58,27 +58,64 @@ PluginProcessor::~PluginProcessor()
 	binauraliser_destroy(&hBin);
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 {
     /* if rotation angles are sent as an array \ypr[3] */
     if (message.size() == 3 && message.getAddressPattern().toString().compare("/ypr")==0) {
-        if (message[0].isFloat32())
+        if (message[0].isFloat32()){
+            beginParameterChangeGesture(k_yaw);
             binauraliser_setYaw(hBin, message[0].getFloat32());
-        if (message[1].isFloat32())
+            endParameterChangeGesture(k_yaw);
+        }
+        if (message[1].isFloat32()){
+            beginParameterChangeGesture(k_pitch);
             binauraliser_setPitch(hBin, message[1].getFloat32());
-        if (message[2].isFloat32())
+            endParameterChangeGesture(k_pitch);
+        }
+        if (message[2].isFloat32()){
+            beginParameterChangeGesture(k_roll);
             binauraliser_setRoll(hBin, message[2].getFloat32());
+            endParameterChangeGesture(k_roll);
+        }
         return;
     }
     
     /* if rotation angles are sent individually: */
-    if(message.getAddressPattern().toString().compare("/yaw")==0)
+    if(message.getAddressPattern().toString().compare("/yaw")==0){
+        beginParameterChangeGesture(k_yaw);
         binauraliser_setYaw(hBin, message[0].getFloat32());
-    else if(message.getAddressPattern().toString().compare("/pitch")==0)
+        endParameterChangeGesture(k_yaw);
+    }
+    else if(message.getAddressPattern().toString().compare("/pitch")==0){
+        beginParameterChangeGesture(k_pitch);
         binauraliser_setPitch(hBin, message[0].getFloat32());
-    else if(message.getAddressPattern().toString().compare("/roll")==0)
+        endParameterChangeGesture(k_pitch);
+    }
+    else if(message.getAddressPattern().toString().compare("/roll")==0){
+        beginParameterChangeGesture(k_roll);
         binauraliser_setRoll(hBin, message[0].getFloat32());
+        endParameterChangeGesture(k_roll);
+    }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 void PluginProcessor::setParameter (int index, float newValue)
 {
@@ -100,7 +137,7 @@ void PluginProcessor::setParameter (int index, float newValue)
     else{
         index-=k_NumOfParameters;
         float newValueScaled;
-        if (!(index % 2)){
+        if ((index % 2)==0){
             newValueScaled = (newValue - 0.5f)*360.0f;
             if (newValueScaled != binauraliser_getSourceAzi_deg(hBin, index/2)){
                 binauraliser_setSourceAzi_deg(hBin, index/2, newValueScaled);
@@ -109,8 +146,8 @@ void PluginProcessor::setParameter (int index, float newValue)
         }
         else{
             newValueScaled = (newValue - 0.5f)*180.0f;
-            if (newValueScaled != binauraliser_getSourceElev_deg(hBin, index/2)){
-                binauraliser_setSourceElev_deg(hBin, index/2, newValueScaled);
+            if (newValueScaled != binauraliser_getSourceElev_deg(hBin, (index-1)/2)){
+                binauraliser_setSourceElev_deg(hBin, (index-1)/2, newValueScaled);
                 refreshWindow = true;
             }
         }
@@ -147,8 +184,8 @@ float PluginProcessor::getParameter (int index)
             case k_enableRotation:  return (float)binauraliser_getEnableRotation(hBin);
             case k_useRollPitchYaw: return (float)binauraliser_getRPYflag(hBin);
             case k_yaw:             return (binauraliser_getYaw(hBin)/360.0f) + 0.5f;
-            case k_pitch:           return (binauraliser_getPitch(hBin)/180.0f) + 0.5f;
-            case k_roll:            return (binauraliser_getRoll(hBin)/180.0f) + 0.5f;
+            case k_pitch:           return (binauraliser_getPitch(hBin)/360.0f) + 0.5f;
+            case k_roll:            return (binauraliser_getRoll(hBin)/360.0f) + 0.5f;
             case k_flipYaw:         return (float)binauraliser_getFlipYaw(hBin);
             case k_flipPitch:       return (float)binauraliser_getFlipPitch(hBin);
             case k_flipRoll:        return (float)binauraliser_getFlipRoll(hBin);
@@ -159,7 +196,7 @@ float PluginProcessor::getParameter (int index)
     /* source direction parameters */
     else{
         index-=k_NumOfParameters;
-        if (!(index % 2))
+        if ((index % 2)==0)
             return (binauraliser_getSourceAzi_deg(hBin, index/2)/360.0f) + 0.5f;
         else
             return (binauraliser_getSourceElev_deg(hBin, (index-1)/2)/180.0f) + 0.5f;

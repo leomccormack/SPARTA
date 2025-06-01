@@ -23,10 +23,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
 {
 	panner_create(&hPan);
     refreshWindow = true;
@@ -44,8 +55,8 @@ void PluginProcessor::setParameter (int index, float newValue)
     if(index < k_NumOfParameters){
         switch (index) {
             case k_yaw:        panner_setYaw(hPan, (newValue-0.5f)*360.0f ); break;
-            case k_pitch:      panner_setPitch(hPan, (newValue - 0.5f)*180.0f); break;
-            case k_roll:       panner_setRoll(hPan, (newValue - 0.5f)*180.0f); break;
+            case k_pitch:      panner_setPitch(hPan, (newValue - 0.5f)*360.0f); break;
+            case k_roll:       panner_setRoll(hPan, (newValue - 0.5f)*360.0f); break;
             case k_flipYaw:    panner_setFlipYaw(hPan, (int)(newValue + 0.5f));  break;
             case k_flipPitch:  panner_setFlipPitch(hPan, (int)(newValue + 0.5f)); break;
             case k_flipRoll:   panner_setFlipRoll(hPan, (int)(newValue + 0.5f)); break;
@@ -59,7 +70,7 @@ void PluginProcessor::setParameter (int index, float newValue)
     else if(index<2*MAX_NUM_INPUTS+k_NumOfParameters){
         index-=k_NumOfParameters;
         float newValueScaled;
-        if (!(index % 2)){
+        if ((index % 2)==0){
             newValueScaled = (newValue - 0.5f)*360.0f;
             if (newValueScaled != panner_getSourceAzi_deg(hPan, index/2)){
                 panner_setSourceAzi_deg(hPan, index/2, newValueScaled);
@@ -69,7 +80,7 @@ void PluginProcessor::setParameter (int index, float newValue)
         else{
             newValueScaled = (newValue - 0.5f)*180.0f;
             if (newValueScaled != panner_getSourceElev_deg(hPan, index/2)){
-                panner_setSourceElev_deg(hPan, index/2, newValueScaled);
+                panner_setSourceElev_deg(hPan, (index-1)/2, newValueScaled);
                 refreshWindow = true;
             }
         }
@@ -78,7 +89,7 @@ void PluginProcessor::setParameter (int index, float newValue)
     else{
         index -= (k_NumOfParameters+2*MAX_NUM_INPUTS);
         float newValueScaled;
-        if (!(index % 2)){
+        if ((index % 2)==0){
             newValueScaled = (newValue - 0.5f)*360.0f;
             if (newValueScaled != panner_getLoudspeakerAzi_deg(hPan, index/2)){
                 panner_setLoudspeakerAzi_deg(hPan, index/2, newValueScaled);
@@ -88,11 +99,33 @@ void PluginProcessor::setParameter (int index, float newValue)
         else{
             newValueScaled = (newValue - 0.5f)*180.0f;
             if (newValueScaled != panner_getLoudspeakerElev_deg(hPan, index/2)){
-                panner_setLoudspeakerElev_deg(hPan, index/2, newValueScaled);
+                panner_setLoudspeakerElev_deg(hPan, (index-1)/2, newValueScaled);
                 refreshWindow = true;
             }
         }
     }
+}
+
+bool PluginProcessor::isParameterAutomatable (int index) const
+{
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_yaw: return true;
+            case k_pitch: return true;
+            case k_roll: return true;
+            case k_flipYaw: return true;
+            case k_flipPitch: return true;
+            case k_flipRoll: return true;
+            case k_spread: return false;
+            case k_roomCoeff: return false;
+            case k_numInputs: return false;
+            case k_numOutputs: return false;
+        }
+    }
+    else if(index<2*MAX_NUM_INPUTS+k_NumOfParameters){
+        return true;
+    }
+    return false;
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
@@ -105,8 +138,8 @@ float PluginProcessor::getParameter (int index)
     if(index < k_NumOfParameters){
         switch (index) {
             case k_yaw:        return (panner_getYaw(hPan)/360.0f) + 0.5f;
-            case k_pitch:      return (panner_getPitch(hPan)/180.0f) + 0.5f;
-            case k_roll:       return (panner_getRoll(hPan)/180.0f) + 0.5f;
+            case k_pitch:      return (panner_getPitch(hPan)/360.0f) + 0.5f;
+            case k_roll:       return (panner_getRoll(hPan)/360.0f) + 0.5f;
             case k_flipYaw:    return (float)panner_getFlipYaw(hPan);
             case k_flipPitch:  return (float)panner_getFlipPitch(hPan);
             case k_flipRoll:   return (float)panner_getFlipRoll(hPan);
@@ -120,7 +153,7 @@ float PluginProcessor::getParameter (int index)
     /* source direction parameters */
     else if(index<2*MAX_NUM_INPUTS+k_NumOfParameters){
         index-=k_NumOfParameters;
-        if (!(index % 2))
+        if ((index % 2)==0)
             return (panner_getSourceAzi_deg(hPan, index/2)/360.0f) + 0.5f;
         else
             return (panner_getSourceElev_deg(hPan, (index-1)/2)/180.0f) + 0.5f;
@@ -128,7 +161,7 @@ float PluginProcessor::getParameter (int index)
     /* loudspeaker direction parameters */
     else{
         index -= (k_NumOfParameters+2*MAX_NUM_INPUTS);
-        if (!(index % 2))
+        if ((index % 2)==0)
             return (panner_getLoudspeakerAzi_deg(hPan, index/2)/360.0f) + 0.5f;
         else
             return (panner_getLoudspeakerElev_deg(hPan, (index-1)/2)/180.0f) + 0.5f;
@@ -166,18 +199,18 @@ const String PluginProcessor::getParameterName (int index)
     /* source direction parameters */
     else if(index<2*MAX_NUM_INPUTS+k_NumOfParameters){
         index-=k_NumOfParameters;
-        if (!(index % 2))
-            return TRANS("SrcAzim_") + String(index/2);
+        if ((index % 2)==0)
+            return TRANS("SrcAzim_") + String(index/2 + 1);
         else
-            return TRANS("SrcElev_") + String((index-1)/2);
+            return TRANS("SrcElev_") + String((index-1)/2 + 1);
     }
     /* loudspeaker direction parameters */
     else{
         index -= (k_NumOfParameters+2*MAX_NUM_INPUTS);
-        if (!(index % 2))
-            return TRANS("LsAzim_") + String(index/2);
+        if ((index % 2)==0)
+            return TRANS("LsAzim_") + String(index/2 + 1);
         else
-            return TRANS("LsElev_") + String((index-1)/2);
+            return TRANS("LsElev_") + String((index-1)/2 + 1);
     }
 }
 
@@ -202,7 +235,7 @@ const String PluginProcessor::getParameterText(int index)
     /* source direction parameters */
     else if(index<2*MAX_NUM_INPUTS+k_NumOfParameters){
         index -= k_NumOfParameters;
-        if (!(index % 2))
+        if ((index % 2)==0)
             return String(panner_getSourceAzi_deg(hPan, index/2));
         else
             return String(panner_getSourceElev_deg(hPan, (index-1)/2));
@@ -210,7 +243,7 @@ const String PluginProcessor::getParameterText(int index)
     /* loudspeaker direction parameters */
     else{
         index -= (k_NumOfParameters+2*MAX_NUM_INPUTS);
-        if (!(index % 2))
+        if ((index % 2)==0)
             return String(panner_getLoudspeakerAzi_deg(hPan, index/2));
         else
             return String(panner_getLoudspeakerElev_deg(hPan, (index-1)/2));

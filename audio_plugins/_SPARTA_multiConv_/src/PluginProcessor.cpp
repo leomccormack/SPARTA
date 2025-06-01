@@ -23,10 +23,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-PluginProcessor::PluginProcessor() : 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
+PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
 {
 	nSampleRate = 48000;
     nHostBlockSize = -1;

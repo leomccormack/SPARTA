@@ -23,10 +23,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
 {
 	nSampleRate = 48000; 
 	pitch_shifter_create(&hPS);
@@ -47,6 +58,17 @@ void PluginProcessor::setParameter (int index, float newValue)
         case k_fftOption:        pitch_shifter_setFFTSizeOption(hPS, (PITCH_SHIFTER_FFTSIZE_OPTIONS)(int)(newValue*(float)(PITCH_SHIFTER_NUM_FFTSIZE_OPTIONS-1) + 1.5f)); break;
 		default: break;
 	}
+}
+
+bool PluginProcessor::isParameterAutomatable (int index) const
+{
+    switch (index) {
+        case k_numChannels: return false;
+        case k_pitchShiftFactor: return true;
+        case k_fftOption: return false;
+        case k_OSampOption: return false;
+        default: return false;
+    }
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)

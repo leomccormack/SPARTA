@@ -832,6 +832,17 @@ void PluginEditor::resized()
 {
 }
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
+#endif
+
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
@@ -867,15 +878,21 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     }
     else if (sliderThatWasMoved == s_yaw.get())
     {
+        hVst->beginParameterChangeGesture(k_yaw);
         panner_setYaw(hPan, (float)s_yaw->getValue());
+        hVst->endParameterChangeGesture(k_yaw);
     }
     else if (sliderThatWasMoved == s_pitch.get())
     {
+        hVst->beginParameterChangeGesture(k_pitch);
         panner_setPitch(hPan, (float)s_pitch->getValue());
+        hVst->endParameterChangeGesture(k_pitch);
     }
     else if (sliderThatWasMoved == s_roll.get())
     {
+        hVst->beginParameterChangeGesture(k_roll);
         panner_setRoll(hPan, (float)s_roll->getValue());
+        hVst->endParameterChangeGesture(k_roll);
     }
 }
 
@@ -951,17 +968,31 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
     else if (buttonThatWasClicked == t_flipYaw.get())
     {
+        hVst->beginParameterChangeGesture(k_flipYaw);
         panner_setFlipYaw(hPan, (int)t_flipYaw->getToggleState());
+        hVst->endParameterChangeGesture(k_flipYaw);
     }
     else if (buttonThatWasClicked == t_flipPitch.get())
     {
+        hVst->beginParameterChangeGesture(k_flipPitch);
         panner_setFlipPitch(hPan, (int)t_flipPitch->getToggleState());
+        hVst->endParameterChangeGesture(k_flipPitch);
     }
     else if (buttonThatWasClicked == t_flipRoll.get())
     {
+        hVst->beginParameterChangeGesture(k_flipRoll);
         panner_setFlipRoll(hPan, (int)t_flipRoll->getToggleState());
+        hVst->endParameterChangeGesture(k_flipRoll);
     }
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
+#endif
 
 void PluginEditor::timerCallback(int timerID)
 {
@@ -979,7 +1010,9 @@ void PluginEditor::timerCallback(int timerID)
             s_yaw->setValue(panner_getYaw(hPan), dontSendNotification);
             s_pitch->setValue(panner_getPitch(hPan), dontSendNotification);
             s_roll->setValue(panner_getRoll(hPan), dontSendNotification);
-
+            t_flipYaw->setToggleState((bool)panner_getFlipYaw(hPan), dontSendNotification);
+            t_flipPitch->setToggleState((bool)panner_getFlipPitch(hPan), dontSendNotification);
+            t_flipRoll->setToggleState((bool)panner_getFlipRoll(hPan), dontSendNotification);
 
             /* Progress bar */
 #if 0

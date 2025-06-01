@@ -23,10 +23,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h" 
 
-PluginProcessor::PluginProcessor() : 
+static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
+    switch(format){
+        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
+        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
+        case juce::AudioProcessor::wrapperType_AAX:
+            return 64;
+        default:
+            return MAX_NUM_CHANNELS;
+    }
+}
+
+PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(MAX_NUM_CHANNELS), true))
+		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
 {
 	spreader_create(&hSpr);
 
@@ -61,21 +72,32 @@ void PluginProcessor::setParameter (int index, float newValue)
                 break;
             case 1:
                 newValueScaled = (newValue - 0.5f)*180.0f;
-                if (newValueScaled != spreader_getSourceElev_deg(hSpr, (int)((float)index/3.0f+0.001f))){
-                    spreader_setSourceElev_deg(hSpr, (int)((float)index/3.0f+0.001f), newValueScaled);
+                if (newValueScaled != spreader_getSourceElev_deg(hSpr, (int)((float)(index-1)/3.0f+0.001f))){
+                    spreader_setSourceElev_deg(hSpr, (int)((float)(index-1)/3.0f+0.001f), newValueScaled);
                     refreshWindow = true;
                 }
                 break;
             case 2:
                 newValueScaled = newValue*360.0f;
-                if (newValueScaled != spreader_getSourceSpread_deg(hSpr, (int)((float)index/3.0f+0.001f))){
-                    spreader_setSourceSpread_deg(hSpr, (int)((float)index/3.0f+0.001f), newValueScaled);
+                if (newValueScaled != spreader_getSourceSpread_deg(hSpr, (int)((float)(index-2)/3.0f+0.001f))){
+                    spreader_setSourceSpread_deg(hSpr, (int)((float)(index-2)/3.0f+0.001f), newValueScaled);
                     refreshWindow = true;
                 }
                 break;
         }
     }
 }
+
+bool PluginProcessor::isParameterAutomatable (int index) const
+{
+    if(index < k_NumOfParameters){
+        switch (index) {
+            case k_numInputs: return false;
+        }
+    }
+    return true;
+}
+
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
@@ -95,8 +117,8 @@ float PluginProcessor::getParameter (int index)
         index-=k_NumOfParameters;
         switch((index % 3)){
             case 0: return (spreader_getSourceAzi_deg(hSpr, (int)((float)index/3.0f+0.001f))/360.0f) + 0.5f;
-            case 1: return (spreader_getSourceElev_deg(hSpr, (int)((float)index/3.0f+0.001f))/180.0f) + 0.5f;
-            case 2: return (spreader_getSourceSpread_deg(hSpr, (int)((float)index/3.0f+0.001f))/360.0f);
+            case 1: return (spreader_getSourceElev_deg(hSpr, (int)((float)(index-1)/3.0f+0.001f))/180.0f) + 0.5f;
+            case 2: return (spreader_getSourceSpread_deg(hSpr, (int)((float)(index-2)/3.0f+0.001f))/360.0f);
             default: return 0.0f;
         }
     }
@@ -125,9 +147,9 @@ const String PluginProcessor::getParameterName (int index)
     else {
         index-=k_NumOfParameters;
         switch((index % 3)){
-            case 0: return TRANS("SrcAzim_") + String((int)((float)index/3.0f+0.001f));
-            case 1: return TRANS("SrcElev_") + String((int)((float)index/3.0f+0.001f));
-            case 2: return TRANS("SrcSpread_") + String((int)((float)index/3.0f+0.001f));
+            case 0: return TRANS("SrcAzim_") + String((int)((float)index/3.0f+0.001f) + 1);
+            case 1: return TRANS("SrcElev_") + String((int)((float)(index-1)/3.0f+0.001f) + 1);
+            case 2: return TRANS("SrcSpread_") + String((int)((float)(index-2)/3.0f+0.001f) + 1);
             default: return "NULL";
         }
     }
@@ -147,8 +169,8 @@ const String PluginProcessor::getParameterText(int index)
         index-=k_NumOfParameters;
         switch((index % 3)){
             case 0: return String(spreader_getSourceAzi_deg(hSpr, (int)((float)index/3.0f+0.001f)));
-            case 1: return String(spreader_getSourceElev_deg(hSpr, (int)((float)index/3.0f+0.001f)));
-            case 2: return String(spreader_getSourceSpread_deg(hSpr, (int)((float)index/3.0f+0.001f)));
+            case 1: return String(spreader_getSourceElev_deg(hSpr, (int)((float)(index-1)/3.0f+0.001f)));
+            case 2: return String(spreader_getSourceSpread_deg(hSpr, (int)((float)(index-2)/3.0f+0.001f)));
             default: return "NULL";
         }
     }
