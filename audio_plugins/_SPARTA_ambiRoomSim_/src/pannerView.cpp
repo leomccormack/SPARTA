@@ -75,7 +75,7 @@ void pannerView::paint (juce::Graphics& g)
         g.drawLine (line_x, view_y, line_x, view_y+room_dims_pixels[0], 1.000f);
         g.setOpacity(0.75f);
         if( (i%2)==0 )
-            g.drawText(String(i), line_x-5, view_y+room_dims_pixels[0], 10, 10, Justification::centred, true);
+            g.drawText(String(i), line_x-5, view_y+room_dims_pixels[0], 12, 10, Justification::centred, true);
     }
     for(int i=0; i<=(int)room_dims_m[0]; i++){
         /* Horizontal lines*/
@@ -84,7 +84,7 @@ void pannerView::paint (juce::Graphics& g)
         g.drawLine (view_x, line_y, view_x+room_dims_pixels[1], line_y, 1.000f);
         g.setOpacity(0.75f);
         if( (i%2)==0 )
-            g.drawText(String(i), view_x+room_dims_pixels[1]+2, line_y-5, 10, 10, Justification::centred, true);
+            g.drawText(String(i), view_x+room_dims_pixels[1]+2, line_y-5, 12, 10, Justification::centred, true);
     }
     g.setFont(12.0f);
     g.drawText("y",  view_x + room_dims_pixels[1]/2.0f-5.0f, view_y+room_dims_pixels[0]+7.0f, 10, 10, Justification::centred, true);
@@ -135,7 +135,7 @@ void pannerView::paint (juce::Graphics& g)
         g.drawLine (line_x, view_y, line_x, view_y+room_dims_pixels[2], 1.000f);
         g.setOpacity(0.75f);
         if( (i%2)==0 )
-            g.drawText(String(i), line_x-5, view_y+room_dims_pixels[2], 10, 10, Justification::centred, true);
+            g.drawText(String(i), line_x-5, view_y+room_dims_pixels[2], 12, 10, Justification::centred, true);
     }
     for(int i=0; i<=(int)room_dims_m[2]; i++){
         /* Horizontal lines*/
@@ -144,7 +144,7 @@ void pannerView::paint (juce::Graphics& g)
         g.drawLine (view_x, line_y, view_x+room_dims_pixels[1], line_y, 1.000f);
         g.setOpacity(0.75f);
         if( (i%2)==0 )
-            g.drawText(String(i), view_x+room_dims_pixels[1]+2, line_y-5, 10, 10, Justification::centred, true);
+            g.drawText(String(i), view_x+room_dims_pixels[1]+2, line_y-5, 12, 10, Justification::centred, true);
     }
     g.setFont(12.0f);
     g.drawText("y",  view_x + room_dims_pixels[1]/2.0f-5.0f, view_y+room_dims_pixels[2]+7.0f, 10, 10, Justification::centred, true);
