@@ -1,0 +1,85 @@
+/*
+ ==============================================================================
+ 
+ This file is part of SPARTA; a suite of spatial audio plug-ins.
+ Copyright (c) 2025 - Janani Fernandez.
+ 
+ SPARTA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ SPARTA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ ==============================================================================
+*/
+
+#include <JuceHeader.h>
+
+class ParameterManager : public juce::AudioProcessorValueTreeState::Listener
+{
+public:
+    ParameterManager(juce::AudioProcessor& processor, juce::AudioProcessorValueTreeState::ParameterLayout layout)
+        : parameters(processor, nullptr, "Parameters", std::move(layout))
+    {
+        for(int i = 0; i < parameters.state.getNumChildren(); i++) {
+            auto paramID = parameters.state.getChild(i).getProperty("id").toString();
+            parameters.addParameterListener(paramID, this);
+        }
+    }
+    ~ParameterManager(){
+        for(int i = 0; i < parameters.state.getNumChildren(); i++) {
+            auto paramID = parameters.state.getChild(i).getProperty("id").toString();
+            parameters.removeParameterListener(paramID, this);
+        }
+    }
+    
+    // Sets
+    void setParameterValue(const juce::String& parameterID, float newValue, bool shouldNotifyHost){
+        auto* param = parameters.getParameter(parameterID);
+        if(shouldNotifyHost)
+            param->setValueNotifyingHost(param->convertTo0to1(newValue));
+        else
+            param->setValue(param->convertTo0to1(newValue));
+    }
+    void setParameterValue(const juce::String& parameterID, double newValue, bool shouldNotifyHost){
+        auto* param = parameters.getParameter(parameterID);
+        if(shouldNotifyHost)
+            param->setValueNotifyingHost(param->convertTo0to1(static_cast<float>(newValue)));
+        else
+            param->setValue(param->convertTo0to1(static_cast<float>(newValue)));
+    }
+    void setParameterValue(const juce::String& parameterID, int newValue, bool shouldNotifyHost){
+        auto* param = parameters.getParameter(parameterID);
+        if(shouldNotifyHost)
+            param->setValueNotifyingHost(param->convertTo0to1(static_cast<float>(newValue)));
+        else
+            param->setValue(param->convertTo0to1(static_cast<float>(newValue)));
+    }
+    void setParameterValue(const juce::String& parameterID, bool newValue, bool shouldNotifyHost){
+        auto* param = parameters.getParameter(parameterID);
+        if(shouldNotifyHost)
+            param->setValueNotifyingHost(param->convertTo0to1(static_cast<float>(newValue)));
+        else
+            param->setValue(param->convertTo0to1(static_cast<float>(newValue)));
+    }
+
+    // Gets
+    float getParameterFloat(const juce::String& parameterID) const {
+        return *parameters.getRawParameterValue(parameterID);
+    }
+    int getParameterInt(const juce::String& parameterID) const {
+        return static_cast<int>(*parameters.getRawParameterValue(parameterID));
+    }
+    int getParameterChoice(const juce::String& parameterID) const {
+        return static_cast<int>(*parameters.getRawParameterValue(parameterID));
+    }
+    
+    juce::AudioProcessorValueTreeState parameters;
+};
