@@ -22,8 +22,8 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter), progressbar(progress), fileChooser ("File", File(), true, false, false,
+PluginEditor::PluginEditor (PluginProcessor& p)
+: AudioProcessorEditor(p), processor(p), progressbar(progress), fileChooser ("File", File(), true, false, false,
       "*.sofa;*.nc;", String(),
       "Load SOFA File")
 {
@@ -156,7 +156,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_yaw->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
     s_yaw->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
     s_yaw->addListener (this);
-
     s_yaw->setBounds (717, 260, 60, 68);
 
     s_pitch.reset (new juce::Slider ("new slider"));
@@ -247,9 +246,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     setSize (920, 362);
 
-    /* handle to pluginProcessor */
-	hVst = ownerFilter;
-    hBin = hVst->getFXHandle();
+    /* handle to object */
+    hBin = processor.getFXHandle();
 
     /* init OpenGL */
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -311,7 +309,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* source coordinate viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (sourceCoordsVP.get());
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_INPUTS, binauraliser_getNumSources(hBin));
+    sourceCoordsView_handle = new inputCoordsView(p, MAX_NUM_INPUTS, binauraliser_getNumSources(hBin));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
@@ -340,11 +338,11 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     t_flipYaw->setToggleState((bool)binauraliser_getFlipYaw(hBin), dontSendNotification);
     t_flipPitch->setToggleState((bool)binauraliser_getFlipPitch(hBin), dontSendNotification);
     t_flipRoll->setToggleState((bool)binauraliser_getFlipRoll(hBin), dontSendNotification);
-    te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
+    te_oscport->setText(String(processor.getOscPortID()), dontSendNotification);
     TBrpyFlag->setToggleState((bool)binauraliser_getRPYflag(hBin), dontSendNotification);
 
     /* create panning window */
-    panWindow.reset (new pannerView(ownerFilter, 492, 246));
+    panWindow.reset (new pannerView(p, 492, 246));
     addAndMakeVisible (panWindow.get());
     panWindow->setBounds (214, 58, 492, 246);
     panWindow->setShowInputs(TB_showInputs->getToggleState());
@@ -384,7 +382,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     pluginDescription->setTooltip(TRANS("A simple HRIR interpolator and convolver. Note that binaural room impulse responses (BRIRs) are not supported!\n"));
 
 	/* Specify screen refresh rate */
-    startTimer(TIMER_GUI_RELATED, 40);
+    startTimer(TIMER_GUI_RELATED, 60);
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -895,13 +893,13 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(binauraliser_getNumSources(hBin)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
-            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+            g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(binauraliser_getNumEars()) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
@@ -917,17 +915,6 @@ void PluginEditor::paint (juce::Graphics& g)
 void PluginEditor::resized()
 {
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
 
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
@@ -946,26 +933,20 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == SL_num_sources.get())
     {
-        binauraliser_setNumSources(hBin, (int)SL_num_sources->getValue());
+        processor.setParameterValue("numSources", SL_num_sources->getValue(), true);
         refreshPanViewWindow = true;
     }
     else if (sliderThatWasMoved == s_yaw.get())
     {
-        hVst->beginParameterChangeGesture(k_yaw);
-        binauraliser_setYaw(hBin, (float)s_yaw->getValue());
-        hVst->endParameterChangeGesture(k_yaw);
+        processor.setParameterValue("yaw", s_yaw->getValue(), true); 
     }
     else if (sliderThatWasMoved == s_pitch.get())
     {
-        hVst->beginParameterChangeGesture(k_pitch);
-        binauraliser_setPitch(hBin, (float)s_pitch->getValue());
-        hVst->endParameterChangeGesture(k_pitch);
+        processor.setParameterValue("pitch", s_pitch->getValue(), true);
     }
     else if (sliderThatWasMoved == s_roll.get())
     {
-        hVst->beginParameterChangeGesture(k_roll);
-        binauraliser_setRoll(hBin, (float)s_roll->getValue());
-        hVst->endParameterChangeGesture(k_roll);
+        processor.setParameterValue("roll", s_roll->getValue(), true);
     }
 }
 
@@ -989,75 +970,57 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == tb_loadJSON.get())
     {
         chooser = std::make_unique<juce::FileChooser> ("Load configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       processor.getLastDir().exists() ? processor.getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
         auto chooserFlags = juce::FileBrowserComponent::openMode
                                   | juce::FileBrowserComponent::canSelectFiles;
         chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
             auto file = fc.getResult();
             if (file != File{}){
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->loadConfiguration (file);
+                processor.setLastDir(file.getParentDirectory());
+                processor.loadConfiguration (file);
             }
         });
     }
     else if (buttonThatWasClicked == tb_saveJSON.get())
     {
         chooser = std::make_unique<juce::FileChooser> ("Save configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       processor.getLastDir().exists() ? processor.getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
         auto chooserFlags = juce::FileBrowserComponent::saveMode;
         chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
             auto file = fc.getResult();
             if (file != File{}) {
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->saveConfigurationToFile (file);
+                processor.setLastDir(file.getParentDirectory());
+                processor.saveConfigurationToFile (file);
             }
         });
     }
     else if (buttonThatWasClicked == t_flipYaw.get())
     {
-        hVst->beginParameterChangeGesture(k_flipYaw);
-        binauraliser_setFlipYaw(hBin, (int)t_flipYaw->getToggleState());
-        hVst->endParameterChangeGesture(k_flipYaw);
+        processor.setParameterValue("flipYaw", t_flipYaw->getToggleState(), true);
     }
     else if (buttonThatWasClicked == t_flipPitch.get())
     {
-        hVst->beginParameterChangeGesture(k_flipPitch);
-        binauraliser_setFlipPitch(hBin, (int)t_flipPitch->getToggleState());
-        hVst->endParameterChangeGesture(k_flipPitch);
+        processor.setParameterValue("flipPitch", t_flipPitch->getToggleState(), true);
     }
     else if (buttonThatWasClicked == t_flipRoll.get())
     {
-        hVst->beginParameterChangeGesture(k_flipRoll);
-        binauraliser_setFlipRoll(hBin, (int)t_flipRoll->getToggleState());
-        hVst->endParameterChangeGesture(k_flipRoll);
+        processor.setParameterValue("flipRoll", t_flipRoll->getToggleState(), true);
     }
     else if (buttonThatWasClicked == TBrpyFlag.get())
     {
-        hVst->beginParameterChangeGesture(k_useRollPitchYaw);
-        binauraliser_setRPYflag(hBin, (int)TBrpyFlag->getToggleState());
-        hVst->endParameterChangeGesture(k_useRollPitchYaw);
+        processor.setParameterValue("useRollPitchYaw", TBrpyFlag->getToggleState(), true);
     }
     else if (buttonThatWasClicked == TBenableRotation.get())
     {
-        hVst->beginParameterChangeGesture(k_enableRotation);
-        binauraliser_setEnableRotation(hBin, (int)TBenableRotation->getToggleState());
-        hVst->endParameterChangeGesture(k_enableRotation);
+        processor.setParameterValue("enableRotation", TBenableRotation->getToggleState(), true);
     }
     else if (buttonThatWasClicked == TBenablePreProc.get())
     {
         binauraliser_setEnableHRIRsDiffuseEQ(hBin, (int)TBenablePreProc->getToggleState());
     }
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
 
 void PluginEditor::timerCallback(int timerID)
 {
@@ -1134,15 +1097,15 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* refresh pan view */
-            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
+            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged() || processor.getRefreshWindow()){
                 panWindow->refreshPanView();
                 sourceCoordsView_handle->setHasASliderChange(false);
                 refreshPanViewWindow = false;
-                hVst->setRefreshWindow(false);
+                processor.setRefreshWindow(false);
             }
 
             /* display warning message, if needed */
-            if ((hVst->getCurrentBlockSize() % binauraliser_getFrameSize()) != 0){
+            if ((processor.getCurrentBlockSize() % binauraliser_getFrameSize()) != 0){
                 currentWarning = k_warning_frameSize;
                 repaint(0,0,getWidth(),32);
             }
@@ -1154,15 +1117,15 @@ void PluginEditor::timerCallback(int timerID)
                 currentWarning = k_warning_mismatch_fs;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumInputs() < binauraliser_getNumSources(hBin))){
+            else if ((processor.getCurrentNumInputs() < binauraliser_getNumSources(hBin))){
                 currentWarning = k_warning_NinputCH;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumOutputs() < binauraliser_getNumEars())){
+            else if ((processor.getCurrentNumOutputs() < binauraliser_getNumEars())){
                 currentWarning = k_warning_NoutputCH;
                 repaint(0,0,getWidth(),32);
             }
-            else if(!hVst->getOscPortConnected() && binauraliser_getEnableRotation(hBin)){
+            else if(!processor.getOscPortConnected() && binauraliser_getEnableRotation(hBin)){
                 currentWarning = k_warning_osc_connection_fail;
                 repaint(0,0,getWidth(),32);
             }
@@ -1172,8 +1135,8 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* check if OSC port has changed */
-            if (hVst->getOscPortID() != te_oscport->getText().getIntValue())
-                hVst->setOscPortID(te_oscport->getText().getIntValue());
+            if (processor.getOscPortID() != te_oscport->getText().getIntValue())
+                processor.setOscPortID(te_oscport->getText().getIntValue());
 
             break;
     }

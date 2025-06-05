@@ -30,7 +30,7 @@
 class pannerView  : public Component
 {
 public:
-    pannerView (PluginProcessor* ownerFilter, int _width, int _height);
+    pannerView (PluginProcessor& p, int _width, int _height);
     ~pannerView() override;
 
     void refreshPanView();
@@ -45,7 +45,7 @@ public:
     void mouseUp (const juce::MouseEvent& e) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hBin;
     int width;
     int height;
