@@ -29,7 +29,7 @@ class inputCoordsView  : public Component,
                          public juce::Slider::Listener
 {
 public:
-    inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH );
+    inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentNCH );
     ~inputCoordsView() override;
 
     void setNCH(int newNCH){
@@ -55,7 +55,7 @@ public:
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hAmbi;
     void refreshCoords();
     std::unique_ptr<Slider>* aziSliders;

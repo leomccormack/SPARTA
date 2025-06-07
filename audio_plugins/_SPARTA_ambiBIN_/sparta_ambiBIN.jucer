@@ -16,6 +16,8 @@
               enableIAA="0" companyCopyright="Aalto" pluginFormats="buildVST"
               jucerFormatVersion="1">
   <MAINGROUP id="imnfnp" name="sparta_ambiBIN">
+    <FILE id="T3c5Jt" name="ParameterManager.h" compile="0" resource="0"
+          file="../resources/ParameterManager.h"/>
     <FILE id="kLM6oQ" name="SPARTALookAndFeel.h" compile="0" resource="0"
           file="../resources/SPARTALookAndFeel.h"/>
     <FILE id="MXgSFV" name="PluginEditor.cpp" compile="1" resource="0"

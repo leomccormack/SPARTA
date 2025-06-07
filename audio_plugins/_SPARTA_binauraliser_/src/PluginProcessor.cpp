@@ -58,10 +58,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
 void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
     if (parameterID == "enableRotation"){
-        binauraliser_setEnableRotation(hBin, newValue);
+        binauraliser_setEnableRotation(hBin, static_cast<int>(newValue+0.5f));
     }
     else if(parameterID == "useRollPitchYaw"){
-        binauraliser_setRPYflag(hBin, newValue);
+        binauraliser_setRPYflag(hBin, static_cast<int>(newValue+0.5f));
     }
     else if(parameterID == "yaw"){
         binauraliser_setYaw(hBin, newValue);
@@ -73,16 +73,16 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
         binauraliser_setRoll(hBin, newValue);
     }
     else if(parameterID == "flipYaw"){
-        binauraliser_setFlipYaw(hBin, newValue);
+        binauraliser_setFlipYaw(hBin, static_cast<int>(newValue+0.5f));
     }
     else if(parameterID == "flipPitch"){
-        binauraliser_setFlipPitch(hBin, newValue);
+        binauraliser_setFlipPitch(hBin, static_cast<int>(newValue+0.5f));
     }
     else if(parameterID == "flipRoll"){
-        binauraliser_setFlipRoll(hBin, newValue);
+        binauraliser_setFlipRoll(hBin, static_cast<int>(newValue+0.5f));
     }
     else if(parameterID == "numSources"){
-        binauraliser_setNumSources(hBin, newValue);
+        binauraliser_setNumSources(hBin, static_cast<int>(newValue));
     }
     for(int i=0; i<MAX_NUM_INPUTS; i++){
         if(parameterID == "azim" + juce::String(i)){
@@ -273,12 +273,14 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
     if(!binauraliser_getUseDefaultHRIRsflag(hBin))
         xmlState->setAttribute("SofaFilePath", String(binauraliser_getSofaFilePath(hBin)));
-    xmlState->setAttribute("JSONFilePath", lastDir.getFullPathName());
     xmlState->setAttribute("INTERP_MODE", binauraliser_getInterpMode(hBin));
     xmlState->setAttribute("HRIRdiffEQ", binauraliser_getEnableHRIRsDiffuseEQ(hBin));
+        
+    /* Other */
+    xmlState->setAttribute("JSONFilePath", lastDir.getFullPathName());
+    xmlState->setAttribute("OSC_PORT", osc_port_ID);
     
     /* Save */
-    xmlState->setAttribute("OSC_PORT", osc_port_ID);
     copyXmlToBinary(*xmlState, destData);
 }
 
@@ -289,22 +291,39 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     if (xmlState != nullptr && xmlState->hasTagName("BINAURALISERPLUGINSETTINGS") && JucePlugin_VersionCode>=0x10701){
         parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
         
-        /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+         /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
         if(xmlState->hasAttribute("SofaFilePath")){
             String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
             const char* new_cstring = (const char*)directory.toUTF8();
             binauraliser_setSofaFilePath(hBin, new_cstring);
         }
-        if(xmlState->hasAttribute("JSONFilePath"))
-            lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+        
         if(xmlState->hasAttribute("INTERP_MODE"))
             binauraliser_setInterpMode(hBin, xmlState->getIntAttribute("INTERP_MODE", 1));
         if(xmlState->hasAttribute("HRIRdiffEQ"))
             binauraliser_setEnableHRIRsDiffuseEQ(hBin, xmlState->getIntAttribute("HRIRdiffEQ", 1));
 
+        /* Other */
+        if(xmlState->hasAttribute("JSONFilePath"))
+            lastDir = xmlState->getStringAttribute("JSONFilePath", "");
         if(xmlState->hasAttribute("OSC_PORT")){
             osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
             osc.connect(osc_port_ID);
+        }
+        
+        /* Update internal state */
+        binauraliser_setEnableRotation(hBin, getParameterInt("enableRotation"));
+        binauraliser_setRPYflag(hBin, getParameterInt("useRollPitchYaw"));
+        binauraliser_setYaw(hBin, getParameterFloat("yaw"));
+        binauraliser_setPitch(hBin, getParameterFloat("pitch"));
+        binauraliser_setRoll(hBin, getParameterFloat("roll"));
+        binauraliser_setFlipYaw(hBin, getParameterInt("flipYaw"));
+        binauraliser_setFlipPitch(hBin, getParameterInt("flipPitch"));
+        binauraliser_setFlipRoll(hBin, getParameterInt("flipRoll"));
+        binauraliser_setNumSources(hBin, getParameterInt("numSources"));
+        for(int i=0; i<MAX_NUM_INPUTS; i++){
+            binauraliser_setSourceAzi_deg(hBin, i, getParameterFloat("azim" + juce::String(i)));
+            binauraliser_setSourceElev_deg(hBin, i, getParameterFloat("elev" + juce::String(i)));
         }
         
         binauraliser_refreshSettings(hBin);
@@ -375,11 +394,11 @@ void PluginProcessor::loadConfiguration (const File& configFile)
                     channelIDs[j]--;
         
         /* update with the new configuration  */
-        binauraliser_setNumSources(hBin, num_srcs);
+        setParameterValue("numSources", num_srcs, true);
         for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it){
             if ( !((*it).getProperty("Imaginary"))){
-                binauraliser_setSourceAzi_deg(hBin, channelIDs[src_idx]-1, (*it).getProperty("Azimuth"));
-                binauraliser_setSourceElev_deg(hBin, channelIDs[src_idx]-1, (*it).getProperty("Elevation"));
+                setParameterValue("azim" + juce::String(channelIDs[src_idx]-1), (float)(*it).getProperty("Azimuth"), true);
+                setParameterValue("elev" + juce::String(channelIDs[src_idx]-1), (float)(*it).getProperty("Elevation"), true);
                 src_idx++;
             }
         }

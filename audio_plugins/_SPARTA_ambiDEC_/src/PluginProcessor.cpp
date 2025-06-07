@@ -34,13 +34,115 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     }
 }
 
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("inputOrder", "InputOrder",
+                                                                  juce::StringArray{"1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("decMethod1", "DecMethod1", juce::StringArray{"SAD","MMD","EPAD","AllRAD"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("decMethod2", "DecMethod2", juce::StringArray{"SAD","MMD","EPAD","AllRAD"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE1", "EnableMaxRE1", false, AudioParameterBoolAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE2", "EnableMaxRE2", false, AudioParameterBoolAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("diffEQ1", "DiffEQ1", juce::StringArray{"AP", "EP"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("diffEQ2", "DiffEQ2", juce::StringArray{"AP","EP"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("transitionFreq", "TransitionFreq", juce::NormalisableRange<float>(500.0f, 2000.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("binauraliseLS", "BinauraliseLS", false, AudioParameterBoolAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numLoudspeakers", "NumLoudspeakers", 1, MAX_NUM_OUTPUTS, 1,
+                                                               AudioParameterIntAttributes().withAutomatable(false)));
+    for(int i=0; i<MAX_NUM_OUTPUTS; i++){
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withAutomatable(false)));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withAutomatable(false)));
+    }
+    
+    return { params.begin(), params.end() };
+}
+
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    if (parameterID == "inputOrder"){
+        ambi_dec_setMasterDecOrder(hAmbi, static_cast<int>(newValue+1.001f));
+        ambi_dec_setDecOrderAllBands(hAmbi, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "channelOrder"){
+        ambi_dec_setChOrder(hAmbi, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "normType"){
+        ambi_dec_setNormType(hAmbi, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "decMethod1"){
+        ambi_dec_setDecMethod(hAmbi, 0, static_cast<AMBI_DEC_DECODING_METHODS>(newValue+1.001f));
+    }
+    else if (parameterID == "decMethod2"){
+        ambi_dec_setDecMethod(hAmbi, 1, static_cast<AMBI_DEC_DECODING_METHODS>(newValue+1.001f));
+    }
+    else if (parameterID == "enableMaxRE1"){
+        ambi_dec_setDecEnableMaxrE(hAmbi, 0, static_cast<int>(newValue+0.5f));
+    }
+    else if (parameterID == "enableMaxRE2"){
+        ambi_dec_setDecEnableMaxrE(hAmbi, 1, static_cast<int>(newValue+0.5f));
+    }
+    else if (parameterID == "diffEQ1"){
+        ambi_dec_setDecNormType(hAmbi, 0, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "diffEQ2"){
+        ambi_dec_setDecNormType(hAmbi, 1, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "transitionFreq"){
+        ambi_dec_setTransitionFreq(hAmbi, newValue);
+    }
+    else if (parameterID == "binauraliseLS"){
+        ambi_dec_setBinauraliseLSflag(hAmbi, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "numLoudspeakers"){
+        ambi_dec_setNumLoudspeakers(hAmbi, static_cast<int>(newValue));
+    }
+    for(int i=0; i<MAX_NUM_OUTPUTS; i++){
+        if(parameterID == "azim" + juce::String(i)){
+            ambi_dec_setLoudspeakerAzi_deg(hAmbi, i, newValue);
+            break;
+        }
+        else if(parameterID == "elev" + juce::String(i)){
+            ambi_dec_setLoudspeakerElev_deg(hAmbi, i, newValue);
+            break;
+        }
+    }
+}
+
 PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    ParameterManager(*this, createParameterLayout())
 {
 	ambi_dec_create(&hAmbi);
-    startTimer(TIMER_PROCESSING_RELATED, 80); 
+    
+    /* Grab defaults */
+    setParameterValue("inputOrder", ambi_dec_getMasterDecOrder(hAmbi)-1, false);
+    setParameterValue("channelOrder", ambi_dec_getChOrder(hAmbi)-1, false);
+    setParameterValue("normType", ambi_dec_getNormType(hAmbi)-1, false);
+    setParameterValue("decMethod1", ambi_dec_getDecMethod(hAmbi, 0)-1, false);
+    setParameterValue("decMethod2", ambi_dec_getDecMethod(hAmbi, 1)-1, false);
+    setParameterValue("enableMaxRE1", ambi_dec_getDecEnableMaxrE(hAmbi, 0), false);
+    setParameterValue("enableMaxRE2", ambi_dec_getDecEnableMaxrE(hAmbi, 1), false);
+    setParameterValue("diffEQ1", ambi_dec_getDecNormType(hAmbi, 0)-1, false);
+    setParameterValue("diffEQ2", ambi_dec_getDecNormType(hAmbi, 1)-1, false);
+    setParameterValue("transitionFreq", ambi_dec_getTransitionFreq(hAmbi), false);
+    setParameterValue("binauraliseLS", ambi_dec_getBinauraliseLSflag(hAmbi), false);
+    setParameterValue("numLoudspeakers", ambi_dec_getNumLoudspeakers(hAmbi), false);
+    for(int i=0; i<MAX_NUM_OUTPUTS; i++){
+        setParameterValue("azim" + juce::String(i), ambi_dec_getLoudspeakerAzi_deg(hAmbi, i), false);
+        setParameterValue("elev" + juce::String(i), ambi_dec_getLoudspeakerElev_deg(hAmbi, i), false);
+    }
+    
+    startTimer(TIMER_PROCESSING_RELATED, 80);
 }
 
 PluginProcessor::~PluginProcessor()
@@ -48,213 +150,13 @@ PluginProcessor::~PluginProcessor()
 	ambi_dec_destroy(&hAmbi);
 }
 
-void PluginProcessor::setParameter (int index, float newValue)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_inputOrder:      ambi_dec_setMasterDecOrder(hAmbi, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f));
-                                    ambi_dec_setDecOrderAllBands(hAmbi, (newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
-            case k_channelOrder:    ambi_dec_setChOrder(hAmbi, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
-            case k_normType:        ambi_dec_setNormType(hAmbi, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
-            case k_numLoudspeakers: ambi_dec_setNumLoudspeakers(hAmbi, (int)(newValue*(float)(MAX_NUM_OUTPUTS)+0.5)); break;
-            case k_decMethod1:      ambi_dec_setDecMethod(hAmbi, 0, (AMBI_DEC_DECODING_METHODS)(int)(newValue*(float)(AMBI_DEC_NUM_DECODING_METHODS-1) + 1.5f)); break;
-            case k_decMethod2:      ambi_dec_setDecMethod(hAmbi, 1, (AMBI_DEC_DECODING_METHODS)(int)(newValue*(float)(AMBI_DEC_NUM_DECODING_METHODS-1) + 1.5f)); break;
-            case k_maxREweight1:    ambi_dec_setDecEnableMaxrE(hAmbi, 0, (int)(newValue+0.5f)); break;
-            case k_maxREweight2:    ambi_dec_setDecEnableMaxrE(hAmbi, 1, (int)(newValue+0.5f)); break;
-            case k_diffEQ1:         ambi_dec_setDecNormType(hAmbi, 0, (int)(newValue+1.5f)); break;
-            case k_diffEQ2:         ambi_dec_setDecNormType(hAmbi, 1, (int)(newValue+1.5f)); break;
-            case k_transitionFreq:  ambi_dec_setTransitionFreq(hAmbi, newValue*(AMBI_DEC_TRANSITION_MAX_VALUE-AMBI_DEC_TRANSITION_MIN_VALUE)+AMBI_DEC_TRANSITION_MIN_VALUE); break;
-            case k_binauraliseLS:   ambi_dec_setBinauraliseLSflag(hAmbi, (int)(newValue+0.5f)); break;
-        }
-    }
-    /* loudspeaker direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        float newValueScaled;
-        if (!(index % 2)){
-            newValueScaled = (newValue - 0.5f)*360.0f;
-            if (newValueScaled != ambi_dec_getLoudspeakerAzi_deg(hAmbi, index/2)){
-                ambi_dec_setLoudspeakerAzi_deg(hAmbi, index/2, newValueScaled);
-            }
-        }
-        else{
-            newValueScaled = (newValue - 0.5f)*180.0f;
-            if (newValueScaled != ambi_dec_getLoudspeakerElev_deg(hAmbi, index/2)){
-                ambi_dec_setLoudspeakerElev_deg(hAmbi, index/2, newValueScaled);
-            }
-        }
-    }
-}
-
-bool PluginProcessor::isParameterAutomatable (int index) const
-{
-    switch (index) {
-        case k_inputOrder: return false;
-        case k_channelOrder: return true;
-        case k_normType: return true;
-        case k_decMethod1: return false;
-        case k_decMethod2: return false;
-        case k_maxREweight1: return false;
-        case k_maxREweight2: return false;
-        case k_diffEQ1: return false;
-        case k_diffEQ2: return false;
-        case k_transitionFreq: return true;
-        case k_binauraliseLS: return false;
-        case k_numLoudspeakers: return false;
-        default: return false;
-    }
-}
-
 void PluginProcessor::setCurrentProgram (int  /*index*/)
 {
-}
-
-float PluginProcessor::getParameter (int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_inputOrder:      return (float)(ambi_dec_getMasterDecOrder(hAmbi)-1)/(float)(MAX_SH_ORDER-1);
-            case k_channelOrder:    return (float)(ambi_dec_getChOrder(hAmbi)-1)/(float)(NUM_CH_ORDERINGS-1);
-            case k_normType:        return (float)(ambi_dec_getNormType(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
-            case k_numLoudspeakers: return (float)(ambi_dec_getNumLoudspeakers(hAmbi))/(float)(MAX_NUM_OUTPUTS);
-            case k_decMethod1:      return (float)(ambi_dec_getDecMethod(hAmbi,0)-1)/(float)(AMBI_DEC_NUM_DECODING_METHODS-1);
-            case k_decMethod2:      return (float)(ambi_dec_getDecMethod(hAmbi,1)-1)/(float)(AMBI_DEC_NUM_DECODING_METHODS-1);
-            case k_maxREweight1:    return (float)(ambi_dec_getDecEnableMaxrE(hAmbi, 0));
-            case k_maxREweight2:    return (float)(ambi_dec_getDecEnableMaxrE(hAmbi, 1));
-            case k_diffEQ1:         return (float)(ambi_dec_getDecNormType(hAmbi, 0)-1);
-            case k_diffEQ2:         return (float)(ambi_dec_getDecNormType(hAmbi, 1)-1);
-            case k_transitionFreq:  return (ambi_dec_getTransitionFreq(hAmbi)-AMBI_DEC_TRANSITION_MIN_VALUE)/(AMBI_DEC_TRANSITION_MAX_VALUE-AMBI_DEC_TRANSITION_MIN_VALUE);
-            case k_binauraliseLS:   return (float)(ambi_dec_getBinauraliseLSflag(hAmbi));
-            default: return 0.0f;
-        }
-    }
-    /* loudspeaker direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        if (!(index % 2))
-            return (ambi_dec_getLoudspeakerAzi_deg(hAmbi, index/2)/360.0f) + 0.5f;
-        else
-            return (ambi_dec_getLoudspeakerElev_deg(hAmbi, (index-1)/2)/180.0f) + 0.5f;
-    }
-}
-
-int PluginProcessor::getNumParameters()
-{
-	return k_NumOfParameters + 2*MAX_NUM_OUTPUTS;
 }
 
 const String PluginProcessor::getName() const
 {
     return JucePlugin_Name;
-}
-
-const String PluginProcessor::getParameterName (int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_inputOrder:      return "order";
-            case k_channelOrder:    return "channel_order";
-            case k_normType:        return "norm_type";
-            case k_numLoudspeakers: return "num_loudspeakers";
-            case k_decMethod1:      return "dec_method_LF";
-            case k_decMethod2:      return "dec_method_HF";
-            case k_maxREweight1:    return "maxre_weight_LF";
-            case k_maxREweight2:    return "maxre_weight_HF";
-            case k_diffEQ1:         return "diffeq_LF";
-            case k_diffEQ2:         return "diffeq_HF";
-            case k_transitionFreq:  return "transition_freq";
-            case k_binauraliseLS:   return "binauralise_ls";
-            default: return "NULL";
-        }
-    }
-    /* loudspeaker direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        if (!(index % 2))
-            return TRANS("Azim_") + String(index/2);
-        else
-            return TRANS("Elev_") + String((index-1)/2);
-    }
-}
-
-const String PluginProcessor::getParameterText(int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_inputOrder: return String(ambi_dec_getMasterDecOrder(hAmbi));
-            case k_channelOrder:
-                switch(ambi_dec_getChOrder(hAmbi)){
-                    case CH_ACN:  return "ACN";
-                    case CH_FUMA: return "FuMa";
-                    default: return "NULL";
-                }
-            case k_normType:
-                switch(ambi_dec_getNormType(hAmbi)){
-                    case NORM_N3D:  return "N3D";
-                    case NORM_SN3D: return "SN3D";
-                    case NORM_FUMA: return "FuMa";
-                    default: return "NULL";
-                }
-                
-            case k_numLoudspeakers:  return String(ambi_dec_getNumLoudspeakers(hAmbi));
-            case k_decMethod1:
-                switch(ambi_dec_getDecMethod(hAmbi,0)){
-                    case DECODING_METHOD_SAD:    return "SAD";
-                    case DECODING_METHOD_MMD:    return "MMD";
-                    case DECODING_METHOD_EPAD:   return "EPAD";
-                    case DECODING_METHOD_ALLRAD: return "AllRAD";
-                    default: return "NULL";
-                }
-            case k_decMethod2:
-                switch(ambi_dec_getDecMethod(hAmbi,1)){
-                    case DECODING_METHOD_SAD:    return "SAD";
-                    case DECODING_METHOD_MMD:    return "MMD";
-                    case DECODING_METHOD_EPAD:   return "EPAD";
-                    case DECODING_METHOD_ALLRAD: return "AllRAD";
-                    default: return "NULL";
-                }
-            case k_maxREweight1: return !ambi_dec_getDecEnableMaxrE(hAmbi, 0) ? "Off" : "On";
-            case k_maxREweight2: return !ambi_dec_getDecEnableMaxrE(hAmbi, 1) ? "Off" : "On";
-            case k_diffEQ1:
-                switch(ambi_dec_getDecNormType(hAmbi,0)){
-                    case AMPLITUDE_PRESERVING: return "AP";
-                    case ENERGY_PRESERVING: return "EP";
-                    default: return "NULL";
-                }
-            case k_diffEQ2:
-                switch(ambi_dec_getDecNormType(hAmbi,1)){
-                    case AMPLITUDE_PRESERVING: return "AP";
-                    case ENERGY_PRESERVING: return "EP";
-                    default: return "NULL";
-                }
-            case k_transitionFreq: return String(ambi_dec_getTransitionFreq(hAmbi)) + " Hz";
-            case k_binauraliseLS:  return !ambi_dec_getBinauraliseLSflag(hAmbi) ? "Off" : "On";
-        
-            default: return "NULL";
-        }
-    }
-    /* loudspeaker direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        if (!(index % 2))
-            return String(ambi_dec_getLoudspeakerAzi_deg(hAmbi, index/2));
-        else
-            return String(ambi_dec_getLoudspeakerElev_deg(hAmbi, (index-1)/2));
-    }
-}
-
-const String PluginProcessor::getInputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-const String PluginProcessor::getOutputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
 }
 
 double PluginProcessor::getTailLengthSeconds() const
@@ -277,18 +179,6 @@ const String PluginProcessor::getProgramName (int /*index*/)
     return String();
 }
 
-
-bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-
 bool PluginProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
@@ -305,11 +195,6 @@ bool PluginProcessor::producesMidi() const
    #else
     return false;
    #endif
-}
-
-bool PluginProcessor::silenceInProducesSilenceOut() const
-{
-    return false;
 }
 
 void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
@@ -360,98 +245,56 @@ bool PluginProcessor::hasEditor() const
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new PluginEditor (this);
+    return new PluginEditor (*this);
 }
 
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-    XmlElement xml("AMBIDECPLUGINSETTINGS");
- 
-    xml.setAttribute("MasterDecOrder", ambi_dec_getMasterDecOrder(hAmbi));
+    juce::ValueTree state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xml(state.createXml());
+    xml->setTagName("AMBIDECPLUGINSETTINGS");
+    
+    /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
     for(int band=0; band<ambi_dec_getNumberOfBands(); band++)
-        xml.setAttribute("DecOrder"+String(band), ambi_dec_getDecOrder(hAmbi, band));
-    for(int i=0; i<ambi_dec_getMaxNumLoudspeakers(); i++){
-        xml.setAttribute("LoudspeakerAziDeg" + String(i), ambi_dec_getLoudspeakerAzi_deg(hAmbi,i));
-        xml.setAttribute("LoudspeakerElevDeg" + String(i), ambi_dec_getLoudspeakerElev_deg(hAmbi,i));
-    }
-    xml.setAttribute("nLoudspeakers", ambi_dec_getNumLoudspeakers(hAmbi));
-    xml.setAttribute("BinauraliseLS", ambi_dec_getBinauraliseLSflag(hAmbi));
-    xml.setAttribute("UseDefaultHRIRset", ambi_dec_getUseDefaultHRIRsflag(hAmbi));
-    xml.setAttribute("Norm", ambi_dec_getNormType(hAmbi));
-    xml.setAttribute("ChOrder", ambi_dec_getChOrder(hAmbi));
-    xml.setAttribute("Dec1method", ambi_dec_getDecMethod(hAmbi, 0));
-    xml.setAttribute("Dec2method", ambi_dec_getDecMethod(hAmbi, 1));
-    xml.setAttribute("Dec1normType", ambi_dec_getDecNormType(hAmbi, 0));
-    xml.setAttribute("Dec2normType", ambi_dec_getDecNormType(hAmbi, 1));
-    xml.setAttribute("Dec1maxrE", ambi_dec_getDecEnableMaxrE(hAmbi, 0));
-    xml.setAttribute("Dec2maxrE", ambi_dec_getDecEnableMaxrE(hAmbi, 1));
-    xml.setAttribute("TransitionFreq", ambi_dec_getTransitionFreq(hAmbi));
-    xml.setAttribute("preProcHRIRs", ambi_dec_getEnableHRIRsPreProc(hAmbi));
-    
-    xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
-    
+        xml->setAttribute("DecOrder"+String(band), ambi_dec_getDecOrder(hAmbi, band));
+    xml->setAttribute("UseDefaultHRIRset", ambi_dec_getUseDefaultHRIRsflag(hAmbi));
+    xml->setAttribute("preProcHRIRs", ambi_dec_getEnableHRIRsPreProc(hAmbi));
     if(!ambi_dec_getUseDefaultHRIRsflag(hAmbi))
-        xml.setAttribute("SofaFilePath", String(ambi_dec_getSofaFilePath(hAmbi)));
-
-    copyXmlToBinary(xml, destData);
+        xml->setAttribute("SofaFilePath", String(ambi_dec_getSofaFilePath(hAmbi)));
+    
+    /* Other */
+    xml->setAttribute("JSONFilePath", lastDir.getFullPathName());
+    
+    /* Save */
+    copyXmlToBinary(*xml, destData);
 }
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-    int i;
-
-    if (xmlState != nullptr) {
-        if (xmlState->hasTagName("AMBIDECPLUGINSETTINGS")) {
-            if(xmlState->hasAttribute("MasterDecOrder"))
-                ambi_dec_setMasterDecOrder(hAmbi, xmlState->getIntAttribute("MasterDecOrder",1));
-            for(int band=0; band<ambi_dec_getNumberOfBands(); band++)
-                if(xmlState->hasAttribute("DecOrder"+String(band)))
-                    ambi_dec_setDecOrder(hAmbi, xmlState->getIntAttribute("DecOrder"+String(band),1), band);
-            for(i=0; i<ambi_dec_getMaxNumLoudspeakers(); i++){
-                if(xmlState->hasAttribute("LoudspeakerAziDeg" + String(i)))
-                    ambi_dec_setLoudspeakerAzi_deg(hAmbi, i, (float)xmlState->getDoubleAttribute("LoudspeakerAziDeg" + String(i), 0.0f));
-                if(xmlState->hasAttribute("LoudspeakerElevDeg" + String(i)))
-                    ambi_dec_setLoudspeakerElev_deg(hAmbi, i, (float)xmlState->getDoubleAttribute("LoudspeakerElevDeg" + String(i), 0.0f));
-            }
-            if(xmlState->hasAttribute("nLoudspeakers"))
-                ambi_dec_setNumLoudspeakers(hAmbi, xmlState->getIntAttribute("nLoudspeakers", 1));
-            if(xmlState->hasAttribute("BinauraliseLS"))
-                ambi_dec_setBinauraliseLSflag(hAmbi, xmlState->getIntAttribute("BinauraliseLS", 1));
-            if(xmlState->hasAttribute("UseDefaultHRIRset"))
-                ambi_dec_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
-            if(xmlState->hasAttribute("Norm"))
-                ambi_dec_setNormType(hAmbi, xmlState->getIntAttribute("Norm", 1));
-            if(xmlState->hasAttribute("ChOrder"))
-                ambi_dec_setChOrder(hAmbi, xmlState->getIntAttribute("ChOrder", 1));
-            if(xmlState->hasAttribute("Dec1method"))
-                ambi_dec_setDecMethod(hAmbi, 0, xmlState->getIntAttribute("Dec1method", 1));
-            if(xmlState->hasAttribute("Dec2method"))
-                ambi_dec_setDecMethod(hAmbi, 1, xmlState->getIntAttribute("Dec2method", 1));
-            if(xmlState->hasAttribute("Dec1normType"))
-                ambi_dec_setDecNormType(hAmbi, 0, xmlState->getIntAttribute("Dec1normType", 1));
-            if(xmlState->hasAttribute("Dec2normType"))
-                ambi_dec_setDecNormType(hAmbi, 1, xmlState->getIntAttribute("Dec2normType", 1));
-            if(xmlState->hasAttribute("Dec1maxrE"))
-                ambi_dec_setDecEnableMaxrE(hAmbi, 0, xmlState->getIntAttribute("Dec1maxrE", 1));
-            if(xmlState->hasAttribute("Dec2maxrE"))
-                ambi_dec_setDecEnableMaxrE(hAmbi, 1, xmlState->getIntAttribute("Dec2maxrE", 1));
-            if(xmlState->hasAttribute("TransitionFreq"))
-                ambi_dec_setTransitionFreq(hAmbi, (float)xmlState->getDoubleAttribute("TransitionFreq", 1e3f));
-            if(xmlState->hasAttribute("preProcHRIRs"))
-                ambi_dec_setEnableHRIRsPreProc(hAmbi, xmlState->getIntAttribute("preProcHRIRs", 1));
-            
-            if(xmlState->hasAttribute("JSONFilePath"))
-                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
-            
-            if(xmlState->hasAttribute("SofaFilePath")){
-                String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
-                const char* new_cstring = (const char*)directory.toUTF8();
-                ambi_dec_setSofaFilePath(hAmbi, new_cstring);
-            }
-            
-            ambi_dec_refreshSettings(hAmbi);
+    /* Load */
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState != nullptr && xmlState->hasTagName("AMBIDECPLUGINSETTINGS") && JucePlugin_VersionCode>=0x10701){
+        parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+        
+        /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+        for(int band=0; band<ambi_dec_getNumberOfBands(); band++)
+            if(xmlState->hasAttribute("DecOrder"+String(band)))
+                ambi_dec_setDecOrder(hAmbi, xmlState->getIntAttribute("DecOrder"+String(band),1), band);
+        if(xmlState->hasAttribute("UseDefaultHRIRset"))
+            ambi_dec_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
+        if(xmlState->hasAttribute("preProcHRIRs"))
+            ambi_dec_setEnableHRIRsPreProc(hAmbi, xmlState->getIntAttribute("preProcHRIRs", 1));
+        if(xmlState->hasAttribute("SofaFilePath")){
+            String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
+            const char* new_cstring = (const char*)directory.toUTF8();
+            ambi_dec_setSofaFilePath(hAmbi, new_cstring);
         }
+        
+        /* Other */
+        if(xmlState->hasAttribute("JSONFilePath"))
+            lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+        
+        ambi_dec_refreshSettings(hAmbi);
     }
 }
 

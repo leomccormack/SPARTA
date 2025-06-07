@@ -921,6 +921,13 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
     {
         binauraliser_setInputConfigPreset(hBin, CBsourceDirsPreset->getSelectedId());
+         
+        processor.setParameterValue("numSources", binauraliser_getNumSources(hBin), true);
+        for(int i=0; i<binauraliser_getNumSources(hBin); i++){
+            processor.setParameterValue("azim" + juce::String(i), binauraliser_getSourceAzi_deg(hBin,i), true);
+            processor.setParameterValue("elev" + juce::String(i), binauraliser_getSourceElev_deg(hBin,i), true);
+        }
+        
         refreshPanViewWindow = true;
     }
     else if (comboBoxThatHasChanged == CBinterpMode.get())

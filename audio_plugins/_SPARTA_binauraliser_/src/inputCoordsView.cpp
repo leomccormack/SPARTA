@@ -47,7 +47,7 @@ inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentN
         /* create and initialise azimuth sliders */
         aziSliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (aziSliders[i].get());
-        aziSliders[i]->setRange (-180.0, 180.0f, 0.01f);
+        aziSliders[i]->setRange (-180.0, 180.0, 0.01);
         aziSliders[i]->setValue(binauraliser_getSourceAzi_deg(hBin, i), dontSendNotification);
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
@@ -57,7 +57,7 @@ inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentN
         /* create and initialise elevation sliders */
         elevSliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (elevSliders[i].get());
-        elevSliders[i]->setRange (-90.0f, 90.0f, 0.01f);
+        elevSliders[i]->setRange (-90.0, 90.0, 0.01);
         elevSliders[i]->setValue(binauraliser_getSourceElev_deg(hBin, i), dontSendNotification);
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);

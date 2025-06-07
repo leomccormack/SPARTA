@@ -41,7 +41,7 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::ComboBox::Listener
 {
 public:
-    PluginEditor (PluginProcessor* ownerFilter);
+    PluginEditor (PluginProcessor& p);
     ~PluginEditor() override;
 
     void paint (juce::Graphics& g) override;
@@ -50,7 +50,7 @@ public:
     void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hAmbi;
     void timerCallback() override;
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL

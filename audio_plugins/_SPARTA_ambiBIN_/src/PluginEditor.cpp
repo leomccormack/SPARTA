@@ -22,8 +22,8 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter), progressbar(progress), fileChooser ("File", File(), true, false, false,
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p), progressbar(progress), fileChooser ("File", File(), true, false, false,
       "*.sofa;*.nc;", String(),
       "Load SOFA File")
 {
@@ -256,8 +256,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     setSize (656, 262);
 
     /* handles */
-	hVst = ownerFilter;
-    hAmbi = hVst->getFXHandle();
+    hAmbi = processor.getFXHandle();
 
     /* init OpenGL */
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -321,7 +320,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     t_flipYaw->setToggleState((bool)ambi_bin_getFlipYaw(hAmbi), dontSendNotification);
     t_flipPitch->setToggleState((bool)ambi_bin_getFlipPitch(hAmbi), dontSendNotification);
     t_flipRoll->setToggleState((bool)ambi_bin_getFlipRoll(hAmbi), dontSendNotification);
-    te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
+    te_oscport->setText(String(processor.getOscPortID()), dontSendNotification);
     TBrpyFlag->setToggleState((bool)ambi_bin_getRPYflag(hAmbi), dontSendNotification);
     CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
@@ -878,13 +877,13 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(ambi_bin_getNSHrequired(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
-            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+            g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(ambi_bin_getNumEars()) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
@@ -901,17 +900,6 @@ void PluginEditor::resized()
 {
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
     if (buttonThatWasClicked == TBuseDefaultHRIRs.get())
@@ -920,25 +908,19 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
     else if (buttonThatWasClicked == TBmaxRE.get())
     {
-        ambi_bin_setEnableMaxRE(hAmbi, (int)TBmaxRE->getToggleState());
+        processor.setParameterValue("enableMaxRE", TBmaxRE->getToggleState(), true);
     }
     else if (buttonThatWasClicked == t_flipPitch.get())
     {
-        hVst->beginParameterChangeGesture(k_flipPitch);
-        ambi_bin_setFlipPitch(hAmbi, (int)t_flipPitch->getToggleState());
-        hVst->endParameterChangeGesture(k_flipPitch);
+        processor.setParameterValue("flipPitch", t_flipPitch->getToggleState(), true);
     }
     else if (buttonThatWasClicked == t_flipRoll.get())
     {
-        hVst->beginParameterChangeGesture(k_flipRoll);
-        ambi_bin_setFlipRoll(hAmbi, (int)t_flipRoll->getToggleState());
-        hVst->endParameterChangeGesture(k_flipRoll);
+        processor.setParameterValue("flipRoll", t_flipRoll->getToggleState(), true);
     }
     else if (buttonThatWasClicked == t_flipYaw.get())
     {
-        hVst->beginParameterChangeGesture(k_flipYaw);
-        ambi_bin_setFlipYaw(hAmbi, (int)t_flipYaw->getToggleState());
-        hVst->endParameterChangeGesture(k_flipYaw);
+        processor.setParameterValue("flipYaw", t_flipYaw->getToggleState(), true);
     }
     else if (buttonThatWasClicked == TBcompEQ.get())
     {
@@ -946,19 +928,15 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
     else if (buttonThatWasClicked == TBrpyFlag.get())
     {
-        hVst->beginParameterChangeGesture(k_useRollPitchYaw);
-        ambi_bin_setRPYflag(hAmbi, (int)TBrpyFlag->getToggleState());
-        hVst->endParameterChangeGesture(k_useRollPitchYaw);
+        processor.setParameterValue("useRollPitchYaw", TBrpyFlag->getToggleState(), true);
     }
     else if (buttonThatWasClicked == TBenableRot.get())
     {
-        hVst->beginParameterChangeGesture(k_enableRotation);
-        ambi_bin_setEnableRotation(hAmbi, (int)TBenableRot->getToggleState());
-        hVst->endParameterChangeGesture(k_enableRotation);
+        processor.setParameterValue("enableRotation", TBenableRot->getToggleState(), true);
     }
     else if (buttonThatWasClicked == TBdiffMatching.get())
     {
-        ambi_bin_setEnableDiffuseMatching(hAmbi, (int)TBdiffMatching->getToggleState());
+        processor.setParameterValue("enableDiffuseMatching", TBdiffMatching->getToggleState(), true);
     }
     else if (buttonThatWasClicked == TBtruncationEQ.get())
     {
@@ -970,23 +948,19 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == CBorderPreset.get())
     {
-        ambi_bin_setInputOrderPreset(hAmbi, (SH_ORDERS)CBorderPreset->getSelectedId());
+        processor.setParameterValue("inputOrder", CBorderPreset->getSelectedId()-1, true);
     }
     else if (comboBoxThatHasChanged == CBchFormat.get())
     {
-        hVst->beginParameterChangeGesture(k_channelOrder);
-        ambi_bin_setChOrder(hAmbi, CBchFormat->getSelectedId());
-        hVst->endParameterChangeGesture(k_channelOrder);
+        processor.setParameterValue("channelOrder", CBchFormat->getSelectedId()-1, true);
     }
     else if (comboBoxThatHasChanged == CBnormScheme.get())
     {
-        hVst->beginParameterChangeGesture(k_normType);
-        ambi_bin_setNormType(hAmbi, CBnormScheme->getSelectedId());
-        hVst->endParameterChangeGesture(k_normType);
+        processor.setParameterValue("normType", CBnormScheme->getSelectedId()-1, true);
     }
     else if (comboBoxThatHasChanged == CBdecoderMethod.get())
     {
-        ambi_bin_setDecodingMethod(hAmbi, (AMBI_BIN_DECODING_METHODS)CBdecoderMethod->getSelectedId());
+        processor.setParameterValue("decMethod", CBdecoderMethod->getSelectedId()-1, true);
     }
     else if (comboBoxThatHasChanged == CBhrirPreProc.get())
     {
@@ -998,31 +972,17 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == s_yaw.get())
     {
-        hVst->beginParameterChangeGesture(k_yaw);
-        ambi_bin_setYaw(hAmbi, (float)s_yaw->getValue());
-        hVst->endParameterChangeGesture(k_yaw);
+        processor.setParameterValue("yaw", s_yaw->getValue(), true);
     }
     else if (sliderThatWasMoved == s_pitch.get())
     {
-        hVst->beginParameterChangeGesture(k_pitch);
-        ambi_bin_setPitch(hAmbi, (float)s_pitch->getValue());
-        hVst->endParameterChangeGesture(k_pitch);
+        processor.setParameterValue("pitch", s_pitch->getValue(), true);
     }
     else if (sliderThatWasMoved == s_roll.get())
     {
-        hVst->beginParameterChangeGesture(k_roll);
-        ambi_bin_setRoll(hAmbi, (float)s_roll->getValue());
-        hVst->endParameterChangeGesture(k_roll);
+        processor.setParameterValue("roll", s_roll->getValue(), true);
     }
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
 
 void PluginEditor::timerCallback(int timerID)
 {
@@ -1114,7 +1074,7 @@ void PluginEditor::timerCallback(int timerID)
                 TBtruncationEQ->setEnabled(false);
 
             /* display warning message, if needed */
-            if ((hVst->getCurrentBlockSize() % ambi_bin_getFrameSize()) != 0){
+            if ((processor.getCurrentBlockSize() % ambi_bin_getFrameSize()) != 0){
                 currentWarning = k_warning_frameSize;
                 repaint(0,0,getWidth(),32);
             }
@@ -1126,15 +1086,15 @@ void PluginEditor::timerCallback(int timerID)
                 currentWarning = k_warning_mismatch_fs;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumInputs() < ambi_bin_getNSHrequired(hAmbi))){
+            else if ((processor.getCurrentNumInputs() < ambi_bin_getNSHrequired(hAmbi))){
                 currentWarning = k_warning_NinputCH;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumOutputs() < ambi_bin_getNumEars())){
+            else if ((processor.getCurrentNumOutputs() < ambi_bin_getNumEars())){
                 currentWarning = k_warning_NoutputCH;
                 repaint(0,0,getWidth(),32);
             }
-            else if(!hVst->getOscPortConnected() && ambi_bin_getEnableRotation(hAmbi)){
+            else if(!processor.getOscPortConnected() && ambi_bin_getEnableRotation(hAmbi)){
                 currentWarning = k_warning_osc_connection_fail;
                 repaint(0,0,getWidth(),32);
             }
@@ -1144,8 +1104,8 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* check if OSC port has changed */
-            if(hVst->getOscPortID() != te_oscport->getText().getIntValue())
-                hVst->setOscPortID(te_oscport->getText().getIntValue());
+            if(processor.getOscPortID() != te_oscport->getText().getIntValue())
+                processor.setOscPortID(te_oscport->getText().getIntValue());
             break;
     }
 }
