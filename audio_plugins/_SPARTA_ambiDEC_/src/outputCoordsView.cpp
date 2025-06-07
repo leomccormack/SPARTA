@@ -25,7 +25,7 @@
 const int sensorEdit_width = 176;
 const int sensorEdit_height = 32;
 
-outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH )
+outputCoordsView::outputCoordsView (PluginProcessor& p, int _maxNCH, int _currentNCH ) : processor(p)
 {
     dummySlider.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (dummySlider.get());
@@ -39,8 +39,7 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
     setSize (176, 400);
 
     setSize (sensorEdit_width, sensorEdit_height*currentNCH);
-    hVst = ownerFilter;
-    hAmbi = hVst->getFXHandle();
+    hAmbi = processor.getFXHandle();
     maxNCH = _maxNCH ;
     currentNCH =_currentNCH;
     aziSliders =  new std::unique_ptr<Slider>[(unsigned long)maxNCH];
@@ -50,24 +49,32 @@ outputCoordsView::outputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, i
         /* create and initialise azimuth sliders */
         aziSliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (aziSliders[i].get());
-        aziSliders[i]->setRange (-360.0, 360.0, 0.001);
-        aziSliders[i]->setValue(ambi_dec_getLoudspeakerAzi_deg(hAmbi, i));
+        aziSliders[i]->setRange (-180.0, 180.0, 0.01);
+        aziSliders[i]->setValue(ambi_dec_getLoudspeakerAzi_deg(hAmbi, i), dontSendNotification);
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
-        aziSliders[i]->setBounds(-25, 8 + i*sensorEdit_height, 96, 16);
+        aziSliders[i]->setBounds(4, 8 + i*sensorEdit_height, 67, 16);
         aziSliders[i]->addListener (this);
         aziSliders[i]->setTooltip("Azimuth angle (in degrees) of loudspeaker No. " + String(i+1));
 
         /* create and initialise elevation sliders */
         elevSliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (elevSliders[i].get());
-        elevSliders[i]->setRange (-180.0, 180.0, 0.001);
-        elevSliders[i]->setValue(ambi_dec_getLoudspeakerElev_deg(hAmbi, i));
+        elevSliders[i]->setRange (-90.0, 90.0, 0.01);
+        elevSliders[i]->setValue(ambi_dec_getLoudspeakerElev_deg(hAmbi, i), dontSendNotification);
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
-        elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 96, 16);
+        elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 67, 16);
         elevSliders[i]->addListener (this);
         elevSliders[i]->setTooltip("Elevation angle (in degrees) of loudspeaker No. " + String(i+1));
+        
+        /* remove slider bit of these sliders */
+        aziSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
+        aziSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+        aziSliders[i]->setSliderSnapsToMousePosition(false);
+        elevSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
+        elevSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+        elevSliders[i]->setSliderSnapsToMousePosition(false);
     }
 
     sliderHasChanged = true;
@@ -145,12 +152,12 @@ void outputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     for(int i=0; i<maxNCH; i++){
         if (sliderThatWasMoved == aziSliders[i].get()) {
-            ambi_dec_setLoudspeakerAzi_deg(hAmbi, i, (float)aziSliders[i]->getValue());
+            processor.setParameterValue("azim" + juce::String(i), aziSliders[i]->getValue(), true);
             break;
         }
         if (sliderThatWasMoved == elevSliders[i].get()) {
-            ambi_dec_setLoudspeakerElev_deg(hAmbi, i, (float)elevSliders[i]->getValue());
-            break;
+            processor.setParameterValue("elev" + juce::String(i), elevSliders[i]->getValue(), true);
+             break;
         }
     }
 
@@ -165,9 +172,7 @@ void outputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 void outputCoordsView::refreshCoords(){
     /* update slider values and limits */
     for( int i=0; i<maxNCH; i++){
-        aziSliders[i]->setRange (-360.0, 360.0, 0.001);
         aziSliders[i]->setValue(ambi_dec_getLoudspeakerAzi_deg(hAmbi, i), dontSendNotification);
-        elevSliders[i]->setRange (-180.0, 180.0, 0.001);
         elevSliders[i]->setValue(ambi_dec_getLoudspeakerElev_deg(hAmbi, i), dontSendNotification);
     }
 }

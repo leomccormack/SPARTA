@@ -30,13 +30,12 @@
 #endif
 
 //==============================================================================
-TFview::TFview (PluginProcessor* ownerFilter, int _width, int _height, float _min_freq, float _max_freq, float _min_dB, float _max_dB)
+TFview::TFview (PluginProcessor& p, int _width, int _height, float _min_freq, float _max_freq, float _min_dB, float _max_dB) : processor(p)
 {
     setSize (470, 220);
 
     /* local pars */
-	hVst = ownerFilter;
-    hAmbi = hVst->getFXHandle();
+    hAmbi = processor.getFXHandle();
     width = _width;
     height = _height;
     min_freq = _min_freq;

@@ -33,12 +33,101 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     }
 }
 
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("inputOrder", "InputOrder",
+                                                                  juce::StringArray{"1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("decMethod", "DecMethod", juce::StringArray{"LS","LS-DiffEQ","SPR","TA","MagLS"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableDiffuseMatching", "EnableDiffuseMatching", false,
+                                                                AudioParameterBoolAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE", "EnableMaxRE", false, AudioParameterBoolAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableRotation", "EnableRotation", false));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("useRollPitchYaw", "UseRollPitchYaw", false));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("yaw", "Yaw", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("pitch", "Pitch", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("roll", "Roll", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("flipYaw", "FlipYaw", false));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("flipPitch", "FlipPitch", false));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("flipRoll", "FlipRoll", false));
+    
+    return { params.begin(), params.end() };
+}
+
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    if (parameterID == "inputOrder"){
+        ambi_bin_setInputOrderPreset(hAmbi, static_cast<SH_ORDERS>(newValue+1.001f));
+    }
+    else if (parameterID == "channelOrder"){
+        ambi_bin_setChOrder(hAmbi, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "normType"){
+        ambi_bin_setNormType(hAmbi, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "decMethod"){
+        ambi_bin_setDecodingMethod(hAmbi, static_cast<AMBI_BIN_DECODING_METHODS>(newValue+1.001f));
+    }
+    else if (parameterID == "enableDiffuseMatching"){
+        ambi_bin_setEnableDiffuseMatching(hAmbi, static_cast<int>(newValue+0.5f));
+    }
+    else if (parameterID == "enableMaxRE"){
+        ambi_bin_setEnableMaxRE(hAmbi, static_cast<int>(newValue+0.5f));
+    }
+    else if (parameterID == "enableRotation"){
+        ambi_bin_setEnableRotation(hAmbi, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "useRollPitchYaw"){
+        ambi_bin_setRPYflag(hAmbi, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "yaw"){
+        ambi_bin_setYaw(hAmbi, newValue);
+    }
+    else if(parameterID == "pitch"){
+        ambi_bin_setPitch(hAmbi, newValue);
+    }
+    else if(parameterID == "roll"){
+        ambi_bin_setRoll(hAmbi, newValue);
+    }
+    else if(parameterID == "flipYaw"){
+        ambi_bin_setFlipYaw(hAmbi, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "flipPitch"){
+        ambi_bin_setFlipPitch(hAmbi, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "flipRoll"){
+        ambi_bin_setFlipRoll(hAmbi, static_cast<int>(newValue+0.5f));
+    }
+}
+
 PluginProcessor::PluginProcessor() :
     AudioProcessor(BusesProperties()
         .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-        .withOutput("Output", AudioChannelSet::discreteChannels(2), true))
+        .withOutput("Output", AudioChannelSet::discreteChannels(2), true)),
+    ParameterManager(*this, createParameterLayout())
 {
 	ambi_bin_create(&hAmbi);
+    
+    /* Grab defaults */
+    setParameterValue("inputOrder", ambi_bin_getInputOrderPreset(hAmbi)-1, false);
+    setParameterValue("channelOrder", ambi_bin_getChOrder(hAmbi)-1, false);
+    setParameterValue("normType", ambi_bin_getNormType(hAmbi)-1, false);
+    setParameterValue("decMethod", ambi_bin_getDecodingMethod(hAmbi)-1, false);
+    setParameterValue("enableDiffuseMatching", ambi_bin_getEnableDiffuseMatching(hAmbi), false);
+    setParameterValue("enableMaxRE", ambi_bin_getEnableMaxRE(hAmbi), false);
+    setParameterValue("enableRotation", ambi_bin_getEnableRotation(hAmbi), false);
+    setParameterValue("useRollPitchYaw", ambi_bin_getRPYflag(hAmbi), false);
+    setParameterValue("yaw", ambi_bin_getYaw(hAmbi), false);
+    setParameterValue("pitch", ambi_bin_getPitch(hAmbi), false);
+    setParameterValue("roll", ambi_bin_getRoll(hAmbi), false);
+    setParameterValue("flipYaw", ambi_bin_getFlipYaw(hAmbi), false);
+    setParameterValue("flipPitch", ambi_bin_getFlipPitch(hAmbi), false);
+    setParameterValue("flipRoll", ambi_bin_getFlipRoll(hAmbi), false);
   
     /* specify here on which UDP port number to receive incoming OSC messages */
     osc_port_ID = DEFAULT_OSC_PORT;
@@ -57,105 +146,31 @@ PluginProcessor::~PluginProcessor()
 	ambi_bin_destroy(&hAmbi);
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 {
     /* if rotation angles are sent as an array \ypr[3] */
     if (message.size() == 3 && message.getAddressPattern().toString().compare("/ypr")==0) {
         if (message[0].isFloat32()){
-            beginParameterChangeGesture(k_yaw);
-            ambi_bin_setYaw(hAmbi, message[0].getFloat32());
-            endParameterChangeGesture(k_yaw);
+            setParameterValue("yaw", message[0].getFloat32(), true);
         }
         if (message[1].isFloat32()){
-            beginParameterChangeGesture(k_pitch);
-            ambi_bin_setPitch(hAmbi, message[1].getFloat32());
-            endParameterChangeGesture(k_pitch);
+            setParameterValue("pitch", message[0].getFloat32(), true);
         }
         if (message[2].isFloat32()){
-            beginParameterChangeGesture(k_roll);
-            ambi_bin_setRoll(hAmbi, message[2].getFloat32());
-            endParameterChangeGesture(k_roll);
+            setParameterValue("roll", message[0].getFloat32(), true);
         }
         return;
     }
     
     /* if rotation angles are sent individually: */
     if(message.getAddressPattern().toString().compare("/yaw")==0){
-        beginParameterChangeGesture(k_yaw);
-        ambi_bin_setYaw(hAmbi, message[0].getFloat32());
-        endParameterChangeGesture(k_yaw);
+        setParameterValue("yaw", message[0].getFloat32(), true);
     }
     else if(message.getAddressPattern().toString().compare("/pitch")==0){
-        beginParameterChangeGesture(k_pitch);
-        ambi_bin_setPitch(hAmbi, message[0].getFloat32());
-        endParameterChangeGesture(k_pitch);
+        setParameterValue("pitch", message[0].getFloat32(), true);
     }
     else if(message.getAddressPattern().toString().compare("/roll")==0){
-        beginParameterChangeGesture(k_roll);
-        ambi_bin_setRoll(hAmbi, message[0].getFloat32());
-        endParameterChangeGesture(k_roll);
-    }
-}
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
-
-void PluginProcessor::setParameter (int index, float newValue)
-{
-    switch (index) {
-        case k_inputOrder:            ambi_bin_setInputOrderPreset(hAmbi, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
-        case k_channelOrder:          ambi_bin_setChOrder(hAmbi, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
-        case k_normType:              ambi_bin_setNormType(hAmbi, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
-        case k_decMethod:             ambi_bin_setDecodingMethod(hAmbi, (AMBI_BIN_DECODING_METHODS)(int)(newValue*(float)(AMBI_BIN_NUM_DECODING_METHODS-1) + 1.5f)); break;
-        case k_enableDiffuseMatching: ambi_bin_setEnableDiffuseMatching(hAmbi, (int)(newValue + 0.5f)); break;
-        case k_enableMaxRE:           ambi_bin_setEnableMaxRE(hAmbi, (int)(newValue + 0.5f)); break;
-        case k_enableRotation:        ambi_bin_setEnableRotation(hAmbi, (int)(newValue + 0.5f)); break;
-        case k_useRollPitchYaw:       ambi_bin_setRPYflag(hAmbi, (int)(newValue + 0.5f)); break;
-        case k_yaw:                   ambi_bin_setYaw(hAmbi, (newValue-0.5f)*360.0f ); break;
-        case k_pitch:                 ambi_bin_setPitch(hAmbi, (newValue - 0.5f)*360.0f); break;
-        case k_roll:                  ambi_bin_setRoll(hAmbi, (newValue - 0.5f)*360.0f); break;
-        case k_flipYaw:               ambi_bin_setFlipYaw(hAmbi, (int)(newValue + 0.5f));  break;
-        case k_flipPitch:             ambi_bin_setFlipPitch(hAmbi, (int)(newValue + 0.5f)); break;
-        case k_flipRoll:              ambi_bin_setFlipRoll(hAmbi, (int)(newValue + 0.5f)); break;
-         
-        default: break;
-    }
-}
-
-bool PluginProcessor::isParameterAutomatable (int index) const
-{
-    switch (index) {
-        case k_inputOrder:            return false;
-        case k_channelOrder:          return true;
-        case k_normType:              return true;
-        case k_decMethod:             return false;
-        case k_enableDiffuseMatching: return false;
-        case k_enableMaxRE:           return false;
-        case k_enableRotation:        return true;
-        case k_useRollPitchYaw:       return true;
-        case k_yaw:                   return true;
-        case k_pitch:                 return true;
-        case k_roll:                  return true;
-        case k_flipYaw:               return true;
-        case k_flipPitch:             return true;
-        case k_flipRoll:              return true;
-        default: return false;
+        setParameterValue("roll", message[0].getFloat32(), true);
     }
 }
 
@@ -163,109 +178,9 @@ void PluginProcessor::setCurrentProgram (int /*index*/)
 {
 }
 
-float PluginProcessor::getParameter (int index)
-{
-    switch (index) {
-        case k_inputOrder:            return (float)(ambi_bin_getInputOrderPreset(hAmbi)-1)/(float)(MAX_SH_ORDER-1);
-        case k_channelOrder:          return (float)(ambi_bin_getChOrder(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
-        case k_normType:              return (float)(ambi_bin_getNormType(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
-        case k_decMethod:             return (float)(ambi_bin_getDecodingMethod(hAmbi)-1)/(float)(AMBI_BIN_NUM_DECODING_METHODS-1);
-        case k_enableDiffuseMatching: return (float)ambi_bin_getEnableDiffuseMatching(hAmbi);
-        case k_enableMaxRE:           return (float)ambi_bin_getEnableMaxRE(hAmbi);
-        case k_enableRotation:        return (float)ambi_bin_getEnableRotation(hAmbi);
-        case k_useRollPitchYaw:       return (float)ambi_bin_getRPYflag(hAmbi);
-        case k_yaw:                   return (ambi_bin_getYaw(hAmbi)/360.0f) + 0.5f;
-        case k_pitch:                 return (ambi_bin_getPitch(hAmbi)/360.0f) + 0.5f;
-        case k_roll:                  return (ambi_bin_getRoll(hAmbi)/360.0f) + 0.5f;
-        case k_flipYaw:               return (float)ambi_bin_getFlipYaw(hAmbi);
-        case k_flipPitch:             return (float)ambi_bin_getFlipPitch(hAmbi);
-        case k_flipRoll:              return (float)ambi_bin_getFlipRoll(hAmbi);
-        
-        default: return 0.0f;
-    }
-}
-
-int PluginProcessor::getNumParameters()
-{
-	return k_NumOfParameters;
-}
-
 const String PluginProcessor::getName() const
 {
     return JucePlugin_Name;
-}
-
-const String PluginProcessor::getParameterName (int index)
-{
-    switch (index) {
-        case k_inputOrder:            return "order";
-        case k_channelOrder:          return "channel_order";
-        case k_normType:              return "norm_type";
-        case k_decMethod:             return "decode_method";
-        case k_enableDiffuseMatching: return "apply_diff_match";
-        case k_enableMaxRE:           return "apply_maxre_weights";
-        case k_enableRotation:        return "enable_rotation";
-        case k_useRollPitchYaw:       return "use_rpy";
-        case k_yaw:                   return "yaw";
-        case k_pitch:                 return "pitch";
-        case k_roll:                  return "roll";
-        case k_flipYaw:               return "flip_yaw";
-        case k_flipPitch:             return "flip_pitch";
-        case k_flipRoll:              return "flip_roll";
-       
-        default: return "NULL";
-    }
-}
-
-const String PluginProcessor::getParameterText(int index)
-{
-    switch (index) {
-        case k_inputOrder: return String(ambi_bin_getInputOrderPreset(hAmbi));
-        case k_channelOrder:
-            switch(ambi_bin_getChOrder(hAmbi)){
-                case CH_ACN:  return "ACN";
-                case CH_FUMA: return "FuMa";
-                default: return "NULL";
-            }
-        case k_normType:
-            switch(ambi_bin_getNormType(hAmbi)){
-                case NORM_N3D:  return "N3D";
-                case NORM_SN3D: return "SN3D";
-                case NORM_FUMA: return "FuMa";
-                default: return "NULL";
-            }
-        case k_decMethod:
-            switch(ambi_bin_getDecodingMethod(hAmbi)){
-                case DECODING_METHOD_LS:       return "LS";
-                case DECODING_METHOD_LSDIFFEQ: return "LS-DiffEQ";
-                case DECODING_METHOD_SPR:      return "SPR";
-                case DECODING_METHOD_TA:       return "TA";
-                case DECODING_METHOD_MAGLS:    return "Mag-LS";
-                default: return "NULL";
-            }
-        case k_enableDiffuseMatching: return !ambi_bin_getEnableDiffuseMatching(hAmbi) ? "Off" : "On";
-        case k_enableMaxRE:           return !ambi_bin_getEnableMaxRE(hAmbi) ? "Off" : "On";
-        case k_enableRotation:        return !ambi_bin_getEnableRotation(hAmbi) ? "Off" : "On";
-        case k_useRollPitchYaw:       return !ambi_bin_getRPYflag(hAmbi) ? "YPR" : "RPY";
-        case k_yaw:                   return String(ambi_bin_getYaw(hAmbi));
-        case k_pitch:                 return String(ambi_bin_getPitch(hAmbi));
-        case k_roll:                  return String(ambi_bin_getRoll(hAmbi));
-        case k_flipYaw:               return !ambi_bin_getFlipYaw(hAmbi) ? "No-Flip" : "Flip";
-        case k_flipPitch:             return !ambi_bin_getFlipPitch(hAmbi) ? "No-Flip" : "Flip";
-        case k_flipRoll:              return !ambi_bin_getFlipRoll(hAmbi) ? "No-Flip" : "Flip";
-            
-        default: return "NULL";
-    }
-}
-
-const String PluginProcessor::getInputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-const String PluginProcessor::getOutputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
 }
 
 double PluginProcessor::getTailLengthSeconds() const
@@ -288,22 +203,6 @@ const String PluginProcessor::getProgramName (int /*index*/)
     return String();
 }
 
-
-bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isBusesLayoutSupported(const BusesLayout& /*layouts*/) const
-{
-    return true;
-}
-
 bool PluginProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
@@ -320,11 +219,6 @@ bool PluginProcessor::producesMidi() const
    #else
     return false;
    #endif
-}
-
-bool PluginProcessor::silenceInProducesSilenceOut() const
-{
-    return false;
 }
 
 void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
@@ -375,97 +269,56 @@ bool PluginProcessor::hasEditor() const
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new PluginEditor (this);
+    return new PluginEditor (*this);
 }
 
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-    XmlElement xml("AMBIBINPLUGINSETTINGS");
+    juce::ValueTree state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xml(state.createXml());
+    xml->setTagName("AMBIBINPLUGINSETTINGS");
     
-    xml.setAttribute("order", ambi_bin_getInputOrderPreset(hAmbi));
-  
-    xml.setAttribute("UseDefaultHRIRset", ambi_bin_getUseDefaultHRIRsflag(hAmbi));
-    xml.setAttribute("Norm", ambi_bin_getNormType(hAmbi));
-    xml.setAttribute("ChOrder", ambi_bin_getChOrder(hAmbi));
-    xml.setAttribute("maxrE", ambi_bin_getEnableMaxRE(hAmbi));
-    xml.setAttribute("diffMatch", ambi_bin_getEnableDiffuseMatching(hAmbi));
-    xml.setAttribute("truncationEQ", ambi_bin_getEnableTruncationEQ(hAmbi));
-    xml.setAttribute("method", ambi_bin_getDecodingMethod(hAmbi));
-    xml.setAttribute("preproc", ambi_bin_getHRIRsPreProc(hAmbi));
-    
-    xml.setAttribute("ENABLEROT", ambi_bin_getEnableRotation(hAmbi));
-    xml.setAttribute("YAW", ambi_bin_getYaw(hAmbi));
-    xml.setAttribute("PITCH", ambi_bin_getPitch(hAmbi));
-    xml.setAttribute("ROLL", ambi_bin_getRoll(hAmbi));
-    xml.setAttribute("FLIP_YAW", ambi_bin_getFlipYaw(hAmbi));
-    xml.setAttribute("FLIP_PITCH", ambi_bin_getFlipPitch(hAmbi));
-    xml.setAttribute("FLIP_ROLL", ambi_bin_getFlipRoll(hAmbi));
-    xml.setAttribute("RPY_FLAG", ambi_bin_getRPYflag(hAmbi));
-    
-    xml.setAttribute("OSC_PORT", osc_port_ID);
-    
+    /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+    xml->setAttribute("UseDefaultHRIRset", ambi_bin_getUseDefaultHRIRsflag(hAmbi));
+    xml->setAttribute("truncationEQ", ambi_bin_getEnableTruncationEQ(hAmbi));
+    xml->setAttribute("preproc", ambi_bin_getHRIRsPreProc(hAmbi));
     if(!ambi_bin_getUseDefaultHRIRsflag(hAmbi))
-        xml.setAttribute("SofaFilePath", String(ambi_bin_getSofaFilePath(hAmbi)));
+        xml->setAttribute("SofaFilePath", String(ambi_bin_getSofaFilePath(hAmbi)));
 
-    copyXmlToBinary(xml, destData);
+    /* Other */
+    xml->setAttribute("OSC_PORT", osc_port_ID);
+    
+    /* Save */
+    copyXmlToBinary(*xml, destData);
 }
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-
-    if (xmlState != nullptr) {
-        if (xmlState->hasTagName("AMBIBINPLUGINSETTINGS")) {
-            
-            if(xmlState->hasAttribute("order"))
-                ambi_bin_setInputOrderPreset(hAmbi, (SH_ORDERS)xmlState->getIntAttribute("order", 2));
-            if(xmlState->hasAttribute("UseDefaultHRIRset"))
-                ambi_bin_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
-            if(xmlState->hasAttribute("Norm"))
-                ambi_bin_setNormType(hAmbi, xmlState->getIntAttribute("Norm", 1));
-            if(xmlState->hasAttribute("ChOrder"))
-                ambi_bin_setChOrder(hAmbi, xmlState->getIntAttribute("ChOrder", 1));
-            if(xmlState->hasAttribute("maxrE"))
-                ambi_bin_setEnableMaxRE(hAmbi,xmlState->getIntAttribute("maxrE", 1));
-            if(xmlState->hasAttribute("diffMatch"))
-                ambi_bin_setEnableDiffuseMatching(hAmbi,xmlState->getIntAttribute("diffMatch", 1));
-            if(xmlState->hasAttribute("truncationEQ"))
-                ambi_bin_setEnableTruncationEQ(hAmbi,xmlState->getIntAttribute("truncationEQ", 1));
-            if(xmlState->hasAttribute("method"))
-                ambi_bin_setDecodingMethod(hAmbi, (AMBI_BIN_DECODING_METHODS)xmlState->getIntAttribute("method", 1));
-            if(xmlState->hasAttribute("preproc"))
-                ambi_bin_setHRIRsPreProc(hAmbi, (AMBI_BIN_PREPROC)xmlState->getIntAttribute("preproc", 1));
-            
-            if(xmlState->hasAttribute("ENABLEROT"))
-                ambi_bin_setEnableRotation(hAmbi, xmlState->getIntAttribute("ENABLEROT", 0));
-            if(xmlState->hasAttribute("YAW"))
-                ambi_bin_setYaw(hAmbi, (float)xmlState->getDoubleAttribute("YAW", 0.0f));
-            if(xmlState->hasAttribute("PITCH"))
-                ambi_bin_setPitch(hAmbi, (float)xmlState->getDoubleAttribute("PITCH", 0.0f));
-            if(xmlState->hasAttribute("ROLL"))
-                ambi_bin_setRoll(hAmbi, (float)xmlState->getDoubleAttribute("ROLL", 0.0f));
-            if(xmlState->hasAttribute("FLIP_YAW"))
-                ambi_bin_setFlipYaw(hAmbi, xmlState->getIntAttribute("FLIP_YAW", 0));
-            if(xmlState->hasAttribute("FLIP_PITCH"))
-                ambi_bin_setFlipPitch(hAmbi, xmlState->getIntAttribute("FLIP_PITCH", 0));
-            if(xmlState->hasAttribute("FLIP_ROLL"))
-                ambi_bin_setFlipRoll(hAmbi, xmlState->getIntAttribute("FLIP_ROLL", 0));
-            if(xmlState->hasAttribute("RPY_FLAG"))
-                ambi_bin_setRPYflag(hAmbi, xmlState->getIntAttribute("RPY_FLAG", 0));
-            
-            if(xmlState->hasAttribute("OSC_PORT")){
-                osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
-                osc.connect(osc_port_ID);
-            }
-            
-            if(xmlState->hasAttribute("SofaFilePath")){
-                String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
-                const char* new_cstring = (const char*)directory.toUTF8();
-                ambi_bin_setSofaFilePath(hAmbi, new_cstring);
-            }
-            
-            ambi_bin_refreshParams(hAmbi);
+    /* Load */
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState != nullptr && xmlState->hasTagName("AMBIBINPLUGINSETTINGS") && JucePlugin_VersionCode>=0x10601){
+        parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+        
+        /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+        if(xmlState->hasAttribute("UseDefaultHRIRset"))
+            ambi_bin_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
+        if(xmlState->hasAttribute("truncationEQ"))
+            ambi_bin_setEnableTruncationEQ(hAmbi,xmlState->getIntAttribute("truncationEQ", 1));
+        if(xmlState->hasAttribute("preproc"))
+            ambi_bin_setHRIRsPreProc(hAmbi, (AMBI_BIN_PREPROC)xmlState->getIntAttribute("preproc", 1));
+        if(xmlState->hasAttribute("SofaFilePath")){
+            String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
+            const char* new_cstring = (const char*)directory.toUTF8();
+            ambi_bin_setSofaFilePath(hAmbi, new_cstring);
         }
+        
+        /* Other */
+        if(xmlState->hasAttribute("OSC_PORT")){
+            osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
+            osc.connect(osc_port_ID);
+        }
+        
+        ambi_bin_refreshParams(hAmbi);
     }
 }
 

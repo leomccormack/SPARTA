@@ -22,8 +22,8 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter)
+PluginEditor::PluginEditor (PluginProcessor& p)
+: AudioProcessorEditor(p), processor(p)
 {
     CBsourceDirsPreset.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBsourceDirsPreset.get());
@@ -95,9 +95,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     setSize (712, 356);
 
-    /* handle to pluginProcessor */
-	hVst = ownerFilter;
-    hAmbi = hVst->getFXHandle();
+    /* handle to DSP object */
+    hAmbi = processor.getFXHandle();
 
     /* init OpenGL */
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -161,7 +160,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* source coordinates viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (sourceCoordsVP.get());
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_CHANNELS, ambi_enc_getNumSources(hAmbi));
+    sourceCoordsView_handle = new inputCoordsView(p, MAX_NUM_CHANNELS, ambi_enc_getNumSources(hAmbi));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
@@ -177,7 +176,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBnormalisation->setItemEnabled(NORM_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
 
     /* create panning window */
-    panWindow.reset (new pannerView(ownerFilter, 480, 240));
+    panWindow.reset (new pannerView(p, 480, 240));
     addAndMakeVisible (panWindow.get());
     panWindow->setBounds (220, 58, 480, 240);
     refreshPanViewWindow = true;
@@ -482,13 +481,13 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(ambi_enc_getNumSources(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
-            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+            g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(ambi_enc_getNSHrequired(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
@@ -500,39 +499,31 @@ void PluginEditor::resized()
 {
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
     {
         ambi_enc_setInputConfigPreset(hAmbi, CBsourceDirsPreset->getSelectedId());
+        
+        processor.setParameterValue("numSources", ambi_enc_getNumSources(hAmbi), true);
+        for(int i=0; i<ambi_enc_getNumSources(hAmbi); i++){
+            processor.setParameterValue("azim" + juce::String(i), ambi_enc_getSourceAzi_deg(hAmbi,i), true);
+            processor.setParameterValue("elev" + juce::String(i), ambi_enc_getSourceElev_deg(hAmbi,i), true);
+        }
+        
         refreshPanViewWindow = true;
     }
     else if (comboBoxThatHasChanged == CBoutputFormat.get())
     {
-        hVst->beginParameterChangeGesture(k_channelOrder);
-        ambi_enc_setChOrder(hAmbi, CBoutputFormat->getSelectedId());
-        hVst->endParameterChangeGesture(k_channelOrder);
+        processor.setParameterValue("channelOrder", CBoutputFormat->getSelectedId()-1, true);
     }
     else if (comboBoxThatHasChanged == CBnormalisation.get())
     {
-        hVst->beginParameterChangeGesture(k_normType);
-        ambi_enc_setNormType(hAmbi, CBnormalisation->getSelectedId());
-        hVst->endParameterChangeGesture(k_normType);
+        processor.setParameterValue("normType", CBnormalisation->getSelectedId()-1, true);
     }
     else if (comboBoxThatHasChanged == CBorder.get())
     {
-        ambi_enc_setOutputOrder(hAmbi, CBorder->getSelectedId());
+        processor.setParameterValue("outputOrder", CBorder->getSelectedId()-1, true);
     }
 }
 
@@ -540,49 +531,38 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == SL_num_sources.get())
     {
-        hVst->beginParameterChangeGesture(k_numSources);
-        ambi_enc_setNumSources(hAmbi, (int)SL_num_sources->getValue());
-        refreshPanViewWindow = true;
-        hVst->endParameterChangeGesture(k_numSources);
+        processor.setParameterValue("numSources", SL_num_sources->getValue(), true);
     }
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
 
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
     if (buttonThatWasClicked == tb_loadJSON.get())
     {
         chooser = std::make_unique<juce::FileChooser> ("Load configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       processor.getLastDir().exists() ? processor.getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
         auto chooserFlags = juce::FileBrowserComponent::openMode
                                   | juce::FileBrowserComponent::canSelectFiles;
         chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
             auto file = fc.getResult();
             if (file != File{}){
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->loadConfiguration (file);
+                processor.setLastDir(file.getParentDirectory());
+                processor.loadConfiguration (file);
             }
         });
     }
     else if (buttonThatWasClicked == tb_saveJSON.get())
     {
         chooser = std::make_unique<juce::FileChooser> ("Save configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       processor.getLastDir().exists() ? processor.getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
         auto chooserFlags = juce::FileBrowserComponent::saveMode;
         chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
             auto file = fc.getResult();
             if (file != File{}) {
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->saveConfigurationToFile (file);
+                processor.setLastDir(file.getParentDirectory());
+                processor.saveConfigurationToFile (file);
             }
         });
     }
@@ -595,29 +575,30 @@ void PluginEditor::timerCallback()
     sourceCoordsView_handle->setNCH(ambi_enc_getNumSources(hAmbi));
     SL_num_sources->setValue(ambi_enc_getNumSources(hAmbi),dontSendNotification);
     CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hAmbi), dontSendNotification);
+    CBorder->setSelectedId(ambi_enc_getOutputOrder(hAmbi), dontSendNotification);
     CBnormalisation->setSelectedId(ambi_enc_getNormType(hAmbi), dontSendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
 
     /* refresh pan view */
     if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) ||
-        sourceCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
+        sourceCoordsView_handle->getHasASliderChanged() || processor.getRefreshWindow()){
         panWindow->refreshPanView();
         refreshPanViewWindow = false;
         sourceCoordsView_handle->setHasASliderChange(false);
-        hVst->setRefreshWindow(false);
+        processor.setRefreshWindow(false);
     }
 
     /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % ambi_enc_getFrameSize()) != 0){
+    if ((processor.getCurrentBlockSize() % ambi_enc_getFrameSize()) != 0){
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < ambi_enc_getNumSources(hAmbi))){
+    else if ((processor.getCurrentNumInputs() < ambi_enc_getNumSources(hAmbi))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumOutputs() < ambi_enc_getNSHrequired(hAmbi))){
+    else if ((processor.getCurrentNumOutputs() < ambi_enc_getNSHrequired(hAmbi))){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }

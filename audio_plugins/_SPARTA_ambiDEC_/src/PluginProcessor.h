@@ -24,6 +24,7 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include <JuceHeader.h>
+#include "../../resources/ParameterManager.h"
 #include "ambi_dec.h"
 #include <thread>
 #define CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS 1
@@ -36,27 +37,10 @@ typedef enum _TIMERS{
     TIMER_GUI_RELATED
 }TIMERS;
 
-/* Parameter tags: for the default VST GUI */
-enum {	 
-    k_inputOrder,
-    k_channelOrder,
-    k_normType,
-    k_decMethod1,
-    k_decMethod2,
-    k_maxREweight1,
-    k_maxREweight2,
-    k_diffEQ1,
-    k_diffEQ2,
-    k_transitionFreq,
-    k_binauraliseLS,
-    k_numLoudspeakers,
-    
-	k_NumOfParameters
-};
-
 class PluginProcessor  : public AudioProcessor,
                          public MultiTimer,
-                         public juce::VST2ClientExtensions
+                         public juce::VST2ClientExtensions,
+                         public ParameterManager
 {
 public:
     /* Get functions */
@@ -91,6 +75,9 @@ private:
     File lastDir;
     ValueTree loudspeakers {"Loudspeakers"};
     
+    juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+    void parameterChanged(const juce::String& parameterID, float newValue) override;
+    
     void timerCallback(int timerID) override
     {
         switch(timerID){
@@ -120,30 +107,22 @@ public:
 
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
-    void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages) override;
-    AudioProcessorEditor* createEditor() override;
+    void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
+    
+    juce::AudioProcessorEditor* createEditor() override;
     bool hasEditor() const override;
-    const String getName() const override;
-    int getNumParameters() override;
-    float getParameter (int index) override;
-    void setParameter (int index, float newValue) override;
-    bool isParameterAutomatable (int index) const override;
-    const String getParameterName (int index) override;
-    const String getParameterText (int index) override;
-    const String getInputChannelName (int channelIndex) const override;
-    const String getOutputChannelName (int channelIndex) const override;
+    const juce::String getName() const override;
     bool acceptsMidi() const override;
     bool producesMidi() const override;
-    bool silenceInProducesSilenceOut() const override;
     double getTailLengthSeconds() const override;
+
     int getNumPrograms() override;
     int getCurrentProgram() override;
-    void setCurrentProgram(int index) override;
-    const String getProgramName(int index) override;
-    bool isInputChannelStereoPair (int index) const override;
-    bool isOutputChannelStereoPair(int index) const override;
-    void changeProgramName(int index, const String& newName) override;
-    void getStateInformation (MemoryBlock& destData) override;
+    void setCurrentProgram (int index) override;
+    const juce::String getProgramName (int index) override;
+    void changeProgramName (int index, const juce::String& newName) override;
+
+    void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:

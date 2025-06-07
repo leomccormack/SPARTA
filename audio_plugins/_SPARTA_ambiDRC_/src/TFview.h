@@ -30,7 +30,7 @@
 class TFview  : public Component
 {
 public:
-    TFview (PluginProcessor* ownerFilter, int _width, int _height, float _min_freq, float _max_freq, float _min_dB, float _max_dB);
+    TFview (PluginProcessor& p, int _width, int _height, float _min_freq, float _max_freq, float _min_dB, float _max_dB);
     ~TFview() override;
 
     void setFreqVector(float* _freqVector, int _numFreqPoints)
@@ -43,7 +43,7 @@ public:
     void resized() override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hAmbi;
 	Rectangle<float> TFtiles[AMBI_DRC_NUM_BANDS][AMBI_DRC_NUM_DISPLAY_TIME_SLOTS];
     int numFreqPoints, width, height, min_freq, max_freq, min_dB, max_dB;

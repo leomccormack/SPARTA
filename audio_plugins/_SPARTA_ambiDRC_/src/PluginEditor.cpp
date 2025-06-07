@@ -26,8 +26,8 @@
 #define M_PI ( 3.14159265358979323846264338327950288f )
 #endif
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter)
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p)
 {
     s_ratio.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_ratio.get());
@@ -91,7 +91,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_outgain.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_outgain.get());
-    s_outgain->setRange (-20, 40, 0.01);
+    s_outgain->setRange (-20, 12, 0.01);
     s_outgain->setDoubleClickReturnValue(true, 0.0f);
     s_outgain->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_outgain->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
@@ -136,7 +136,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_ingain.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_ingain.get());
-    s_ingain->setRange (-20, 40, 0.01);
+    s_ingain->setRange (-20, 12, 0.01);
     s_ingain->setDoubleClickReturnValue(true, 0.0f);
     s_ingain->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_ingain->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
@@ -166,8 +166,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     setSize (550, 440);
 
-	hVst = ownerFilter;
-    hAmbi = hVst->getFXHandle();
+    hAmbi = processor.getFXHandle();
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
     openGLContext.setMultisamplingEnabled(true);
     openGLContext.attachTo(*this);
@@ -178,7 +177,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     setLookAndFeel(&LAF);
 
     /* Init TF view */
-    TFviewIncluded.reset (new TFview(ownerFilter, 430, 220, 100.0f, 20e3f, -60.0f, 0.0f));
+    TFviewIncluded.reset (new TFview(p, 430, 220, 100.0f, 20e3f, -60.0f, 0.0f));
     addAndMakeVisible (TFviewIncluded.get());
     TFviewIncluded->setAlwaysOnTop(true);
     TFviewIncluded->setTopLeftPosition(46, 44);
@@ -211,9 +210,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 	s_ratio->setValue(ambi_drc_getRatio(hAmbi), dontSendNotification);
     s_knee->setRange(AMBI_DRC_KNEE_MIN_VAL, AMBI_DRC_KNEE_MAX_VAL, 0.01);
 	s_knee->setValue(ambi_drc_getKnee(hAmbi), dontSendNotification);
-    s_ingain->setRange(AMBI_DRC_IN_GAIN_MIN_VAL, AMBI_DRC_IN_GAIN_MAX_VAL, 0.01);
 	s_ingain->setValue(ambi_drc_getInGain(hAmbi), dontSendNotification);
-    s_outgain->setRange(AMBI_DRC_OUT_GAIN_MIN_VAL, AMBI_DRC_OUT_GAIN_MAX_VAL, 0.01);
     s_outgain->setValue(ambi_drc_getOutGain(hAmbi), dontSendNotification);
     s_attack->setRange(AMBI_DRC_ATTACK_MIN_VAL, AMBI_DRC_ATTACK_MAX_VAL, 0.01);
 	s_attack->setValue(ambi_drc_getAttack(hAmbi), dontSendNotification);
@@ -798,13 +795,13 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(ambi_drc_getNSHrequired(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
-            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+            g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(ambi_drc_getNSHrequired(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
@@ -848,60 +845,35 @@ void PluginEditor::resized()
 	repaint();
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
 void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == s_ratio.get())
     {
-        hVst->beginParameterChangeGesture(k_ratio);
-        ambi_drc_setRatio(hAmbi, (float)s_ratio->getValue());
-        hVst->endParameterChangeGesture(k_ratio);
+        processor.setParameterValue("ratio", s_ratio->getValue(), true);
     }
     else if (sliderThatWasMoved == s_knee.get())
     {
-        hVst->beginParameterChangeGesture(k_knee);
-        ambi_drc_setKnee(hAmbi, (float)s_knee->getValue());
-        hVst->endParameterChangeGesture(k_knee);
+        processor.setParameterValue("knee", s_knee->getValue(), true);
     }
     else if (sliderThatWasMoved == s_attack.get())
     {
-        hVst->beginParameterChangeGesture(k_attack_ms);
-        ambi_drc_setAttack(hAmbi, (float)s_attack->getValue());
-        hVst->endParameterChangeGesture(k_attack_ms);
+        processor.setParameterValue("attack_ms", s_attack->getValue(), true);
     }
     else if (sliderThatWasMoved == s_release.get())
     {
-        hVst->beginParameterChangeGesture(k_release_ms);
-        ambi_drc_setRelease(hAmbi, (float)s_release->getValue());
-        hVst->endParameterChangeGesture(k_release_ms);
+        processor.setParameterValue("release_ms", s_release->getValue(), true);
     }
     else if (sliderThatWasMoved == s_outgain.get())
     {
-        hVst->beginParameterChangeGesture(k_outGain);
-        ambi_drc_setOutGain(hAmbi, (float)s_outgain->getValue());
-        hVst->endParameterChangeGesture(k_outGain);
+        processor.setParameterValue("outGain", s_outgain->getValue(), true);
     }
     else if (sliderThatWasMoved == s_ingain.get())
     {
-        hVst->beginParameterChangeGesture(k_inGain);
-        ambi_drc_setInGain(hAmbi, (float)s_ingain->getValue());
-        hVst->endParameterChangeGesture(k_inGain);
+        processor.setParameterValue("inGain", s_ingain->getValue(), true);
     }
     else if (sliderThatWasMoved == s_thresh.get())
     {
-        hVst->beginParameterChangeGesture(k_theshold);
-        ambi_drc_setThreshold(hAmbi, (float)s_thresh->getValue());
-        hVst->endParameterChangeGesture(k_theshold);
+        processor.setParameterValue("threshold", s_thresh->getValue(), true);
     }
 }
 
@@ -909,29 +881,17 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == presetCB.get())
     {
-        ambi_drc_setInputPreset(hAmbi, (SH_ORDERS)presetCB->getSelectedId());
+        processor.setParameterValue("inputOrder", presetCB->getSelectedId()-1, true);
     }
     else if (comboBoxThatHasChanged == CHOrderingCB.get())
     {
-        hVst->beginParameterChangeGesture(k_channelOrder);
-        ambi_drc_setChOrder(hAmbi, CHOrderingCB->getSelectedId());
-        hVst->endParameterChangeGesture(k_channelOrder);
+        processor.setParameterValue("channelOrder", CHOrderingCB->getSelectedId()-1, true);
     }
     else if (comboBoxThatHasChanged == normalisationCB.get())
     {
-        hVst->beginParameterChangeGesture(k_normType);
-        ambi_drc_setNormType(hAmbi, normalisationCB->getSelectedId());
-        hVst->endParameterChangeGesture(k_normType);
+        processor.setParameterValue("normType", normalisationCB->getSelectedId()-1, true);
     }
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
 
 void PluginEditor::timerCallback()
 {
@@ -948,14 +908,14 @@ void PluginEditor::timerCallback()
     CHOrderingCB->setItemEnabled(CH_FUMA, ambi_drc_getInputPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
     normalisationCB->setItemEnabled(NORM_FUMA, ambi_drc_getInputPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
 
-    if (hVst->getIsPlaying()) {
+    if (processor.getIsPlaying()) {
         int wIdx = ambi_drc_getGainTFwIdx(hAmbi);
         float linePos = (float)wIdx*((float)TFviewIncluded->getWidth() / (float)AMBI_DRC_NUM_DISPLAY_TIME_SLOTS);
         TFviewIncluded->repaint((int)linePos-10, 0, TFviewIncluded->getWidth(), TFviewIncluded->getHeight());
     }
 
     /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % ambi_drc_getFrameSize()) != 0){
+    if ((processor.getCurrentBlockSize() % ambi_drc_getFrameSize()) != 0){
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
@@ -963,11 +923,11 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < ambi_drc_getNSHrequired(hAmbi))){
+    else if ((processor.getCurrentNumInputs() < ambi_drc_getNSHrequired(hAmbi))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumOutputs() < ambi_drc_getNSHrequired(hAmbi))){
+    else if ((processor.getCurrentNumOutputs() < ambi_drc_getNSHrequired(hAmbi))){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }
