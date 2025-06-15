@@ -38,9 +38,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBsourceDirsPreset->setBounds (88, 66, 112, 20);
 
-    SL_num_sources.reset (new juce::Slider ("new slider"));
+    SL_num_sources = std::make_unique<ParameterSlider>(p.parameters, "numSources");
     addAndMakeVisible (SL_num_sources.get());
-    SL_num_sources->setRange (1, 128, 1);
     SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
@@ -145,10 +144,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     tb_saveJSON->setBounds (174, 40, 34, 14);
 
-    s_yaw.reset (new juce::Slider ("new slider"));
+    s_yaw = std::make_unique<ParameterSlider>(p.parameters, "yaw");
     addAndMakeVisible (s_yaw.get());
-    s_yaw->setRange (-180, 180, 0.01);
-    s_yaw->setDoubleClickReturnValue(true, 0.0f);
     s_yaw->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
     s_yaw->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6e));
@@ -158,10 +155,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     s_yaw->addListener (this);
     s_yaw->setBounds (717, 260, 60, 68);
 
-    s_pitch.reset (new juce::Slider ("new slider"));
+    s_pitch = std::make_unique<ParameterSlider>(p.parameters, "pitch");
     addAndMakeVisible (s_pitch.get());
-    s_pitch->setRange (-180, 180, 0.01);
-    s_pitch->setDoubleClickReturnValue(true, 0.0f);
     s_pitch->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
     s_pitch->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -172,10 +167,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_pitch->setBounds (780, 260, 60, 68);
 
-    s_roll.reset (new juce::Slider ("new slider"));
+    s_roll = std::make_unique<ParameterSlider>(p.parameters, "roll");
     addAndMakeVisible (s_roll.get());
-    s_roll->setRange (-180, 180, 0.01);
-    s_roll->setDoubleClickReturnValue(true, 0.0f);
     s_roll->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
     s_roll->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -186,21 +179,21 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_roll->setBounds (843, 260, 60, 68);
 
-    t_flipYaw.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipYaw = std::make_unique<ParameterToggleButton>(p.parameters, "flipYaw");
     addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (juce::String());
     t_flipYaw->addListener (this);
 
     t_flipYaw->setBounds (749, 329, 23, 24);
 
-    t_flipPitch.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipPitch = std::make_unique<ParameterToggleButton>(p.parameters, "flipPitch");
     addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (juce::String());
     t_flipPitch->addListener (this);
 
     t_flipPitch->setBounds (812, 329, 23, 24);
 
-    t_flipRoll.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipRoll = std::make_unique<ParameterToggleButton>(p.parameters, "flipRoll");
     addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (juce::String());
     t_flipRoll->addListener (this);
@@ -222,14 +215,14 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     te_oscport->setBounds (848, 216, 44, 22);
 
-    TBrpyFlag.reset (new juce::ToggleButton ("new toggle button"));
+    TBrpyFlag = std::make_unique<ParameterToggleButton>(p.parameters, "useRollPitchYaw");
     addAndMakeVisible (TBrpyFlag.get());
     TBrpyFlag->setButtonText (juce::String());
     TBrpyFlag->addListener (this);
 
     TBrpyFlag->setBounds (752, 216, 32, 24);
 
-    TBenableRotation.reset (new juce::ToggleButton ("new toggle button"));
+    TBenableRotation = std::make_unique<ParameterToggleButton>(p.parameters, "enableRotation");
     addAndMakeVisible (TBenableRotation.get());
     TBenableRotation->setButtonText (juce::String());
     TBenableRotation->addListener (this);
@@ -327,19 +320,10 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     /* grab current parameter settings */
     TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
-    SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(false, dontSendNotification);
     CBinterpMode->setSelectedId(binauraliser_getInterpMode(hBin), dontSendNotification);
-    TBenableRotation->setToggleState((bool)binauraliser_getEnableRotation(hBin), dontSendNotification);
-    s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
-    s_pitch->setValue(binauraliser_getPitch(hBin), dontSendNotification);
-    s_roll->setValue(binauraliser_getRoll(hBin), dontSendNotification);
-    t_flipYaw->setToggleState((bool)binauraliser_getFlipYaw(hBin), dontSendNotification);
-    t_flipPitch->setToggleState((bool)binauraliser_getFlipPitch(hBin), dontSendNotification);
-    t_flipRoll->setToggleState((bool)binauraliser_getFlipRoll(hBin), dontSendNotification);
     te_oscport->setText(String(processor.getOscPortID()), dontSendNotification);
-    TBrpyFlag->setToggleState((bool)binauraliser_getRPYflag(hBin), dontSendNotification);
 
     /* create panning window */
     panWindow.reset (new pannerView(p, 492, 246));
@@ -922,12 +906,12 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     {
         binauraliser_setInputConfigPreset(hBin, CBsourceDirsPreset->getSelectedId());
          
-        processor.setParameterValue("numSources", binauraliser_getNumSources(hBin), true);
+        processor.setParameterValue("numSources", binauraliser_getNumSources(hBin));
         for(int i=0; i<binauraliser_getNumSources(hBin); i++){
-            processor.setParameterValue("azim" + juce::String(i), binauraliser_getSourceAzi_deg(hBin,i), true);
-            processor.setParameterValue("elev" + juce::String(i), binauraliser_getSourceElev_deg(hBin,i), true);
+            processor.setParameterValue("azim" + juce::String(i), binauraliser_getSourceAzi_deg(hBin,i));
+            processor.setParameterValue("elev" + juce::String(i), binauraliser_getSourceElev_deg(hBin,i));
         }
-        
+                
         refreshPanViewWindow = true;
     }
     else if (comboBoxThatHasChanged == CBinterpMode.get())
@@ -940,20 +924,12 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == SL_num_sources.get())
     {
-        processor.setParameterValue("numSources", SL_num_sources->getValue(), true);
         refreshPanViewWindow = true;
-    }
-    else if (sliderThatWasMoved == s_yaw.get())
-    {
-        processor.setParameterValue("yaw", s_yaw->getValue(), true); 
-    }
-    else if (sliderThatWasMoved == s_pitch.get())
-    {
-        processor.setParameterValue("pitch", s_pitch->getValue(), true);
-    }
-    else if (sliderThatWasMoved == s_roll.get())
-    {
-        processor.setParameterValue("roll", s_roll->getValue(), true);
+        
+        for(int i=0; i<SL_num_sources->getValue(); i++){
+            processor.setParameterValue("azim" + juce::String(i), binauraliser_getSourceAzi_deg(hBin,i));
+            processor.setParameterValue("elev" + juce::String(i), binauraliser_getSourceElev_deg(hBin,i));
+        }
     }
 }
 
@@ -1003,26 +979,6 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
             }
         });
     }
-    else if (buttonThatWasClicked == t_flipYaw.get())
-    {
-        processor.setParameterValue("flipYaw", t_flipYaw->getToggleState(), true);
-    }
-    else if (buttonThatWasClicked == t_flipPitch.get())
-    {
-        processor.setParameterValue("flipPitch", t_flipPitch->getToggleState(), true);
-    }
-    else if (buttonThatWasClicked == t_flipRoll.get())
-    {
-        processor.setParameterValue("flipRoll", t_flipRoll->getToggleState(), true);
-    }
-    else if (buttonThatWasClicked == TBrpyFlag.get())
-    {
-        processor.setParameterValue("useRollPitchYaw", TBrpyFlag->getToggleState(), true);
-    }
-    else if (buttonThatWasClicked == TBenableRotation.get())
-    {
-        processor.setParameterValue("enableRotation", TBenableRotation->getToggleState(), true);
-    }
     else if (buttonThatWasClicked == TBenablePreProc.get())
     {
         binauraliser_setEnableHRIRsDiffuseEQ(hBin, (int)TBenablePreProc->getToggleState());
@@ -1048,15 +1004,6 @@ void PluginEditor::timerCallback(int timerID)
             sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
             TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
             TBenablePreProc->setToggleState(binauraliser_getEnableHRIRsDiffuseEQ(hBin), dontSendNotification);
-            SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
-            TBenableRotation->setToggleState((bool)binauraliser_getEnableRotation(hBin), dontSendNotification);
-            s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
-            s_pitch->setValue(binauraliser_getPitch(hBin), dontSendNotification);
-            s_roll->setValue(binauraliser_getRoll(hBin), dontSendNotification);
-            t_flipYaw->setToggleState((bool)binauraliser_getFlipYaw(hBin), dontSendNotification);
-            t_flipPitch->setToggleState((bool)binauraliser_getFlipPitch(hBin), dontSendNotification);
-            t_flipRoll->setToggleState((bool)binauraliser_getFlipRoll(hBin), dontSendNotification);
-            TBrpyFlag->setToggleState((bool)binauraliser_getRPYflag(hBin), dontSendNotification);
 
             /* Progress bar */
             if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
@@ -1104,9 +1051,8 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* refresh pan view */
-            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged() || processor.getRefreshWindow()){
+            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || processor.getRefreshWindow()){
                 panWindow->refreshPanView();
-                sourceCoordsView_handle->setHasASliderChange(false);
                 refreshPanViewWindow = false;
                 processor.setRefreshWindow(false);
             }

@@ -85,26 +85,26 @@ private:
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
     std::unique_ptr<juce::ToggleButton> TBuseDefaultHRIRs;
-    std::unique_ptr<juce::ComboBox> CBorderPreset;
-    std::unique_ptr<juce::ComboBox> CBchFormat;
-    std::unique_ptr<juce::ComboBox> CBnormScheme;
-    std::unique_ptr<juce::ToggleButton> TBmaxRE;
-    std::unique_ptr<juce::Slider> s_yaw;
-    std::unique_ptr<juce::Slider> s_pitch;
-    std::unique_ptr<juce::Slider> s_roll;
+    std::unique_ptr<ParameterComboBox> CBorderPreset;
+    std::unique_ptr<ParameterComboBox> CBchFormat;
+    std::unique_ptr<ParameterComboBox> CBnormScheme;
+    std::unique_ptr<ParameterToggleButton> TBmaxRE;
+    std::unique_ptr<ParameterSlider> s_yaw;
+    std::unique_ptr<ParameterSlider> s_pitch;
+    std::unique_ptr<ParameterSlider> s_roll;
     std::unique_ptr<juce::TextEditor> te_oscport;
     std::unique_ptr<juce::Label> label_N_dirs;
     std::unique_ptr<juce::Label> label_HRIR_len;
     std::unique_ptr<juce::Label> label_HRIR_fs;
     std::unique_ptr<juce::Label> label_DAW_fs;
-    std::unique_ptr<juce::ToggleButton> t_flipPitch;
-    std::unique_ptr<juce::ToggleButton> t_flipRoll;
-    std::unique_ptr<juce::ToggleButton> t_flipYaw;
+    std::unique_ptr<ParameterToggleButton> t_flipPitch;
+    std::unique_ptr<ParameterToggleButton> t_flipRoll;
+    std::unique_ptr<ParameterToggleButton> t_flipYaw;
     std::unique_ptr<juce::ToggleButton> TBcompEQ;
-    std::unique_ptr<juce::ToggleButton> TBrpyFlag;
-    std::unique_ptr<juce::ToggleButton> TBenableRot;
-    std::unique_ptr<juce::ComboBox> CBdecoderMethod;
-    std::unique_ptr<juce::ToggleButton> TBdiffMatching;
+    std::unique_ptr<ParameterToggleButton> TBrpyFlag;
+    std::unique_ptr<ParameterToggleButton> TBenableRot;
+    std::unique_ptr<ParameterComboBox> CBdecoderMethod;
+    std::unique_ptr<ParameterToggleButton> TBdiffMatching;
     std::unique_ptr<juce::ToggleButton> TBtruncationEQ;
     std::unique_ptr<juce::ComboBox> CBhrirPreProc;
 

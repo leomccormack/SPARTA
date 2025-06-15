@@ -107,18 +107,18 @@ PluginProcessor::PluginProcessor() :
 	binauraliser_create(&hBin);
     
     /* Grab defaults */
-    setParameterValue("enableRotation", binauraliser_getEnableRotation(hBin), false);
-    setParameterValue("useRollPitchYaw", binauraliser_getRPYflag(hBin), false);
-    setParameterValue("yaw", binauraliser_getYaw(hBin), false);
-    setParameterValue("pitch", binauraliser_getPitch(hBin), false);
-    setParameterValue("roll", binauraliser_getRoll(hBin), false);
-    setParameterValue("flipYaw", binauraliser_getFlipYaw(hBin), false);
-    setParameterValue("flipPitch", binauraliser_getFlipPitch(hBin), false);
-    setParameterValue("flipRoll", binauraliser_getFlipRoll(hBin), false);
-    setParameterValue("numSources", binauraliser_getNumSources(hBin), false);
+    setParameterValue("enableRotation", binauraliser_getEnableRotation(hBin));
+    setParameterValue("useRollPitchYaw", binauraliser_getRPYflag(hBin));
+    setParameterValue("yaw", binauraliser_getYaw(hBin));
+    setParameterValue("pitch", binauraliser_getPitch(hBin));
+    setParameterValue("roll", binauraliser_getRoll(hBin));
+    setParameterValue("flipYaw", binauraliser_getFlipYaw(hBin));
+    setParameterValue("flipPitch", binauraliser_getFlipPitch(hBin));
+    setParameterValue("flipRoll", binauraliser_getFlipRoll(hBin));
+    setParameterValue("numSources", binauraliser_getNumSources(hBin));
     for(int i=0; i<MAX_NUM_INPUTS; i++){
-        setParameterValue("azim" + juce::String(i), binauraliser_getSourceAzi_deg(hBin, i), false);
-        setParameterValue("elev" + juce::String(i), binauraliser_getSourceElev_deg(hBin, i), false);
+        setParameterValue("azim" + juce::String(i), binauraliser_getSourceAzi_deg(hBin, i));
+        setParameterValue("elev" + juce::String(i), binauraliser_getSourceElev_deg(hBin, i));
     }
     
     /* specify here on which UDP port number to receive incoming OSC messages */
@@ -143,26 +143,26 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
     /* if rotation angles are sent as an array \ypr[3] */
     if (message.size() == 3 && message.getAddressPattern().toString().compare("/ypr")==0) {
         if (message[0].isFloat32()){
-            setParameterValue("yaw", message[0].getFloat32(), true);
+            setParameterValue("yaw", message[0].getFloat32());
         }
         if (message[1].isFloat32()){
-            setParameterValue("pitch", message[1].getFloat32(), true);
+            setParameterValue("pitch", message[1].getFloat32());
         }
         if (message[2].isFloat32()){
-            setParameterValue("roll", message[2].getFloat32(), true);
+            setParameterValue("roll", message[2].getFloat32());
         }
         return;
     }
     
     /* if rotation angles are sent individually: */
     if(message.getAddressPattern().toString().compare("/yaw")==0){
-        setParameterValue("yaw", message[0].getFloat32(), true);
+        setParameterValue("yaw", message[0].getFloat32());
     }
     else if(message.getAddressPattern().toString().compare("/pitch")==0){
-        setParameterValue("pitch", message[0].getFloat32(), true);
+        setParameterValue("pitch", message[0].getFloat32());
     }
     else if(message.getAddressPattern().toString().compare("/roll")==0){
-        setParameterValue("roll", message[0].getFloat32(), true);
+        setParameterValue("roll", message[0].getFloat32());
     }
 }
 
@@ -311,21 +311,6 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             osc.connect(osc_port_ID);
         }
         
-        /* Update internal state */
-        binauraliser_setEnableRotation(hBin, getParameterInt("enableRotation"));
-        binauraliser_setRPYflag(hBin, getParameterInt("useRollPitchYaw"));
-        binauraliser_setYaw(hBin, getParameterFloat("yaw"));
-        binauraliser_setPitch(hBin, getParameterFloat("pitch"));
-        binauraliser_setRoll(hBin, getParameterFloat("roll"));
-        binauraliser_setFlipYaw(hBin, getParameterInt("flipYaw"));
-        binauraliser_setFlipPitch(hBin, getParameterInt("flipPitch"));
-        binauraliser_setFlipRoll(hBin, getParameterInt("flipRoll"));
-        binauraliser_setNumSources(hBin, getParameterInt("numSources"));
-        for(int i=0; i<MAX_NUM_INPUTS; i++){
-            binauraliser_setSourceAzi_deg(hBin, i, getParameterFloat("azim" + juce::String(i)));
-            binauraliser_setSourceElev_deg(hBin, i, getParameterFloat("elev" + juce::String(i)));
-        }
-        
         binauraliser_refreshSettings(hBin);
     }
 }
@@ -394,11 +379,13 @@ void PluginProcessor::loadConfiguration (const File& configFile)
                     channelIDs[j]--;
         
         /* update with the new configuration  */
-        setParameterValue("numSources", num_srcs, true);
+        setParameterValue("numSources", num_srcs);
         for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it){
             if ( !((*it).getProperty("Imaginary"))){
-                setParameterValue("azim" + juce::String(channelIDs[src_idx]-1), (float)(*it).getProperty("Azimuth"), true);
-                setParameterValue("elev" + juce::String(channelIDs[src_idx]-1), (float)(*it).getProperty("Elevation"), true);
+                float azimValue = (float)(*it).getProperty("Azimuth");
+                float elevValue = (float)(*it).getProperty("Elevation");
+                setParameterValue("azim" + juce::String(channelIDs[src_idx]-1), azimValue);
+                setParameterValue("elev" + juce::String(channelIDs[src_idx]-1), elevValue);
                 src_idx++;
             }
         }

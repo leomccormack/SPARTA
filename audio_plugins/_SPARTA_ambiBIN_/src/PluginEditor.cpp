@@ -34,7 +34,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     TBuseDefaultHRIRs->setBounds (613, 60, 27, 24);
 
-    CBorderPreset.reset (new juce::ComboBox ("new combo box"));
+    CBorderPreset = std::make_unique<ParameterComboBox>(p.parameters, "inputOrder");
     addAndMakeVisible (CBorderPreset.get());
     CBorderPreset->setEditableText (false);
     CBorderPreset->setJustificationType (juce::Justification::centredLeft);
@@ -44,7 +44,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBorderPreset->setBounds (136, 63, 104, 18);
 
-    CBchFormat.reset (new juce::ComboBox ("new combo box"));
+    CBchFormat = std::make_unique<ParameterComboBox>(p.parameters, "channelOrder");
     addAndMakeVisible (CBchFormat.get());
     CBchFormat->setEditableText (false);
     CBchFormat->setJustificationType (juce::Justification::centredLeft);
@@ -54,7 +54,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBchFormat->setBounds (88, 116, 72, 18);
 
-    CBnormScheme.reset (new juce::ComboBox ("new combo box"));
+    CBnormScheme = std::make_unique<ParameterComboBox>(p.parameters, "normType");
     addAndMakeVisible (CBnormScheme.get());
     CBnormScheme->setEditableText (false);
     CBnormScheme->setJustificationType (juce::Justification::centredLeft);
@@ -64,17 +64,15 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBnormScheme->setBounds (164, 116, 76, 18);
 
-    TBmaxRE.reset (new juce::ToggleButton ("new toggle button"));
+    TBmaxRE = std::make_unique<ParameterToggleButton>(p.parameters, "enableMaxRE");
     addAndMakeVisible (TBmaxRE.get());
     TBmaxRE->setButtonText (juce::String());
     TBmaxRE->addListener (this);
 
     TBmaxRE->setBounds (411, 60, 22, 24);
 
-    s_yaw.reset (new juce::Slider ("new slider"));
+    s_yaw = std::make_unique<ParameterSlider>(p.parameters, "yaw");
     addAndMakeVisible (s_yaw.get());
-    s_yaw->setRange (-180, 180, 0.01);
-    s_yaw->setDoubleClickReturnValue(true, 0.0f);
     s_yaw->setSliderStyle (juce::Slider::LinearHorizontal);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxAbove, false, 80, 20);
     s_yaw->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -85,10 +83,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_yaw->setBounds (80, 171, 120, 38);
 
-    s_pitch.reset (new juce::Slider ("new slider"));
+    s_pitch = std::make_unique<ParameterSlider>(p.parameters, "pitch");
     addAndMakeVisible (s_pitch.get());
-    s_pitch->setRange (-180, 180, 0.01);
-    s_pitch->setDoubleClickReturnValue(true, 0.0f);
     s_pitch->setSliderStyle (juce::Slider::LinearVertical);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
     s_pitch->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -99,10 +95,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_pitch->setBounds (208, 137, 96, 112);
 
-    s_roll.reset (new juce::Slider ("new slider"));
+    s_roll = std::make_unique<ParameterSlider>(p.parameters, "roll");
     addAndMakeVisible (s_roll.get());
-    s_roll->setRange (-180, 180, 0.01);
-    s_roll->setDoubleClickReturnValue(true, 0.0f);
     s_roll->setSliderStyle (juce::Slider::LinearVertical);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
     s_roll->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -177,21 +171,21 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     label_DAW_fs->setBounds (536, 217, 96, 24);
 
-    t_flipPitch.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipPitch = std::make_unique<ParameterToggleButton>(p.parameters, "flipPitch");
     addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (juce::String());
     t_flipPitch->addListener (this);
 
     t_flipPitch->setBounds (260, 209, 23, 24);
 
-    t_flipRoll.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipRoll = std::make_unique<ParameterToggleButton>(p.parameters, "flipRoll");
     addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (juce::String());
     t_flipRoll->addListener (this);
 
     t_flipRoll->setBounds (376, 209, 23, 24);
 
-    t_flipYaw.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipYaw = std::make_unique<ParameterToggleButton>(p.parameters, "flipYaw");
     addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (juce::String());
     t_flipYaw->addListener (this);
@@ -205,21 +199,21 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     TBcompEQ->setBounds (656, -16, 32, 24);
 
-    TBrpyFlag.reset (new juce::ToggleButton ("new toggle button"));
+    TBrpyFlag = std::make_unique<ParameterToggleButton>(p.parameters, "useRollPitchYaw");
     addAndMakeVisible (TBrpyFlag.get());
     TBrpyFlag->setButtonText (juce::String());
     TBrpyFlag->addListener (this);
 
     TBrpyFlag->setBounds (59, 187, 24, 24);
 
-    TBenableRot.reset (new juce::ToggleButton ("new toggle button"));
+    TBenableRot = std::make_unique<ParameterToggleButton>(p.parameters, "enableRotation");
     addAndMakeVisible (TBenableRot.get());
     TBenableRot->setButtonText (juce::String());
     TBenableRot->addListener (this);
 
     TBenableRot->setBounds (59, 165, 24, 24);
 
-    CBdecoderMethod.reset (new juce::ComboBox ("new combo box"));
+    CBdecoderMethod = std::make_unique<ParameterComboBox>(p.parameters, "decMethod");
     addAndMakeVisible (CBdecoderMethod.get());
     CBdecoderMethod->setEditableText (false);
     CBdecoderMethod->setJustificationType (juce::Justification::centredLeft);
@@ -229,7 +223,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBdecoderMethod->setBounds (88, 90, 152, 18);
 
-    TBdiffMatching.reset (new juce::ToggleButton ("new toggle button"));
+    TBdiffMatching = std::make_unique<ParameterToggleButton>(p.parameters, "enableDiffuseMatching");
     addAndMakeVisible (TBdiffMatching.get());
     TBdiffMatching->setButtonText (juce::String());
     TBdiffMatching->addListener (this);
@@ -269,26 +263,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     setLookAndFeel(&LAF);
 
     /* add options to combo boxes */
-    CBorderPreset->addItem (TRANS("1st order"), SH_ORDER_FIRST);
-    CBorderPreset->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
-    CBorderPreset->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
-    CBorderPreset->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
-    CBorderPreset->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
-    CBorderPreset->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
-    CBorderPreset->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
-    CBorderPreset->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
-    CBorderPreset->addItem (TRANS("9th order"), SH_ORDER_NINTH);
-    CBorderPreset->addItem (TRANS("10th order"), SH_ORDER_TENTH);
-    CBdecoderMethod->addItem(TRANS("Least-Squares (LS)"), DECODING_METHOD_LS);
-    CBdecoderMethod->addItem(TRANS("LS with Ambi-Diff-EQ"), DECODING_METHOD_LSDIFFEQ);
-    CBdecoderMethod->addItem(TRANS("Spatial Resampling (SPR)"), DECODING_METHOD_SPR);
-    CBdecoderMethod->addItem(TRANS("Time-alignment (TA)"), DECODING_METHOD_TA);
-    CBdecoderMethod->addItem(TRANS("Magnitude-LS"), DECODING_METHOD_MAGLS);
-    CBchFormat->addItem (TRANS("ACN"), CH_ACN);
-    CBchFormat->addItem (TRANS("FuMa"), CH_FUMA);
-    CBnormScheme->addItem (TRANS("N3D"), NORM_N3D);
-    CBnormScheme->addItem (TRANS("SN3D"), NORM_SN3D);
-    CBnormScheme->addItem (TRANS("FuMa"), NORM_FUMA);
     CBhrirPreProc->addItem (TRANS("Off"), HRIR_PREPROC_OFF);
     CBhrirPreProc->addItem (TRANS("Diffuse-field EQ"), HRIR_PREPROC_EQ);
     CBhrirPreProc->addItem (TRANS("Phase Simplification"), HRIR_PREPROC_PHASE);
@@ -305,23 +279,9 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     progressbar.ProgressBar::setAlwaysOnTop(true);
 
     /* grab current parameter settings */
-    CBdecoderMethod->setSelectedId(ambi_bin_getDecodingMethod(hAmbi), dontSendNotification);
     TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
-    CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), dontSendNotification);
-    CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), dontSendNotification);
-    CBorderPreset->setSelectedId(ambi_bin_getInputOrderPreset(hAmbi), dontSendNotification);
-    TBmaxRE->setToggleState(ambi_bin_getEnableMaxRE(hAmbi), dontSendNotification);
-    TBdiffMatching->setToggleState(ambi_bin_getEnableDiffuseMatching(hAmbi), dontSendNotification);
     TBtruncationEQ->setToggleState(ambi_bin_getEnableTruncationEQ(hAmbi), dontSendNotification);
-    TBenableRot->setToggleState(ambi_bin_getEnableRotation(hAmbi), dontSendNotification);
-    s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
-    s_pitch->setValue(ambi_bin_getPitch(hAmbi), dontSendNotification);
-    s_roll->setValue(ambi_bin_getRoll(hAmbi), dontSendNotification);
-    t_flipYaw->setToggleState((bool)ambi_bin_getFlipYaw(hAmbi), dontSendNotification);
-    t_flipPitch->setToggleState((bool)ambi_bin_getFlipPitch(hAmbi), dontSendNotification);
-    t_flipRoll->setToggleState((bool)ambi_bin_getFlipRoll(hAmbi), dontSendNotification);
     te_oscport->setText(String(processor.getOscPortID()), dontSendNotification);
-    TBrpyFlag->setToggleState((bool)ambi_bin_getRPYflag(hAmbi), dontSendNotification);
     CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
 
@@ -906,37 +866,9 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     {
         ambi_bin_setUseDefaultHRIRsflag(hAmbi, (int)TBuseDefaultHRIRs->getToggleState());
     }
-    else if (buttonThatWasClicked == TBmaxRE.get())
-    {
-        processor.setParameterValue("enableMaxRE", TBmaxRE->getToggleState(), true);
-    }
-    else if (buttonThatWasClicked == t_flipPitch.get())
-    {
-        processor.setParameterValue("flipPitch", t_flipPitch->getToggleState(), true);
-    }
-    else if (buttonThatWasClicked == t_flipRoll.get())
-    {
-        processor.setParameterValue("flipRoll", t_flipRoll->getToggleState(), true);
-    }
-    else if (buttonThatWasClicked == t_flipYaw.get())
-    {
-        processor.setParameterValue("flipYaw", t_flipYaw->getToggleState(), true);
-    }
     else if (buttonThatWasClicked == TBcompEQ.get())
     {
         // TODO: is this supposed to link to something?
-    }
-    else if (buttonThatWasClicked == TBrpyFlag.get())
-    {
-        processor.setParameterValue("useRollPitchYaw", TBrpyFlag->getToggleState(), true);
-    }
-    else if (buttonThatWasClicked == TBenableRot.get())
-    {
-        processor.setParameterValue("enableRotation", TBenableRot->getToggleState(), true);
-    }
-    else if (buttonThatWasClicked == TBdiffMatching.get())
-    {
-        processor.setParameterValue("enableDiffuseMatching", TBdiffMatching->getToggleState(), true);
     }
     else if (buttonThatWasClicked == TBtruncationEQ.get())
     {
@@ -946,42 +878,14 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
-    if (comboBoxThatHasChanged == CBorderPreset.get())
-    {
-        processor.setParameterValue("inputOrder", CBorderPreset->getSelectedId()-1, true);
-    }
-    else if (comboBoxThatHasChanged == CBchFormat.get())
-    {
-        processor.setParameterValue("channelOrder", CBchFormat->getSelectedId()-1, true);
-    }
-    else if (comboBoxThatHasChanged == CBnormScheme.get())
-    {
-        processor.setParameterValue("normType", CBnormScheme->getSelectedId()-1, true);
-    }
-    else if (comboBoxThatHasChanged == CBdecoderMethod.get())
-    {
-        processor.setParameterValue("decMethod", CBdecoderMethod->getSelectedId()-1, true);
-    }
-    else if (comboBoxThatHasChanged == CBhrirPreProc.get())
+    if (comboBoxThatHasChanged == CBhrirPreProc.get())
     {
         ambi_bin_setHRIRsPreProc(hAmbi, (AMBI_BIN_PREPROC)CBhrirPreProc->getSelectedId());
     }
 }
 
-void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+void PluginEditor::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
-    if (sliderThatWasMoved == s_yaw.get())
-    {
-        processor.setParameterValue("yaw", s_yaw->getValue(), true);
-    }
-    else if (sliderThatWasMoved == s_pitch.get())
-    {
-        processor.setParameterValue("pitch", s_pitch->getValue(), true);
-    }
-    else if (sliderThatWasMoved == s_roll.get())
-    {
-        processor.setParameterValue("roll", s_roll->getValue(), true);
-    }
 }
 
 void PluginEditor::timerCallback(int timerID)
@@ -995,16 +899,8 @@ void PluginEditor::timerCallback(int timerID)
             /* parameters whos values can change internally should be periodically refreshed */
             TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
             CBhrirPreProc->setSelectedId(ambi_bin_getHRIRsPreProc(hAmbi), dontSendNotification);
-            TBenableRot->setToggleState(ambi_bin_getEnableRotation(hAmbi), dontSendNotification);
-            s_yaw->setValue(ambi_bin_getYaw(hAmbi), dontSendNotification);
-            s_pitch->setValue(ambi_bin_getPitch(hAmbi), dontSendNotification);
-            s_roll->setValue(ambi_bin_getRoll(hAmbi), dontSendNotification);
             CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), dontSendNotification);
             CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), dontSendNotification);
-            t_flipYaw->setToggleState((bool)ambi_bin_getFlipYaw(hAmbi), dontSendNotification);
-            t_flipPitch->setToggleState((bool)ambi_bin_getFlipPitch(hAmbi), dontSendNotification);
-            t_flipRoll->setToggleState((bool)ambi_bin_getFlipRoll(hAmbi), dontSendNotification);
-            TBrpyFlag->setToggleState((bool)ambi_bin_getRPYflag(hAmbi), dontSendNotification);
             label_N_dirs->setText(String(ambi_bin_getNDirs(hAmbi)), dontSendNotification);
             label_HRIR_len->setText(String(ambi_bin_getHRIRlength(hAmbi)), dontSendNotification);
             label_HRIR_fs->setText(String(ambi_bin_getHRIRsamplerate(hAmbi)), dontSendNotification);

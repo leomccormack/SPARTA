@@ -181,8 +181,8 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
         Point<float> point;
         point.setXY((float)e.getPosition().getX()-icon_size/2.0f, (float)e.getPosition().getY()-icon_size/2.0f);
         
-        processor.setParameterValue("azim" + juce::String(indexOfClickedSource), ((width - (point.getX() + icon_size/2.0f))*360.0f)/width - 180.0f, true);
-        processor.setParameterValue("elev" + juce::String(indexOfClickedSource), ((height - (point.getY() + icon_size/2.0f))*180.0f)/height - 90.0f, true);
+        processor.setParameterValue("azim" + juce::String(indexOfClickedSource), ((width - (point.getX() + icon_size/2.0f))*360.0f)/width - 180.0f);
+        processor.setParameterValue("elev" + juce::String(indexOfClickedSource), ((height - (point.getY() + icon_size/2.0f))*180.0f)/height - 90.0f);
     }
 }
 
