@@ -38,11 +38,12 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
     params.push_back(std::make_unique<juce::AudioParameterChoice>("inputOrder", "InputOrder",
-                                                                  juce::StringArray{"1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th"}, 0,
+                                                                  juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
-    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
-    params.push_back(std::make_unique<juce::AudioParameterChoice>("decMethod", "DecMethod", juce::StringArray{"LS","LS-DiffEQ","SPR","TA","MagLS"}, 0,
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 1));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("decMethod", "DecMethod",
+                                                                  juce::StringArray{"Least-Squares (LS)","LS with Ambi-Diff-EQ","Spatial Resampling (SPR)","Time-alignment (TA)","Magnitude-LS"}, 4,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterBool>("enableDiffuseMatching", "EnableDiffuseMatching", false,
                                                                 AudioParameterBoolAttributes().withAutomatable(false)));
@@ -114,20 +115,20 @@ PluginProcessor::PluginProcessor() :
 	ambi_bin_create(&hAmbi);
     
     /* Grab defaults */
-    setParameterValue("inputOrder", ambi_bin_getInputOrderPreset(hAmbi)-1, false);
-    setParameterValue("channelOrder", ambi_bin_getChOrder(hAmbi)-1, false);
-    setParameterValue("normType", ambi_bin_getNormType(hAmbi)-1, false);
-    setParameterValue("decMethod", ambi_bin_getDecodingMethod(hAmbi)-1, false);
-    setParameterValue("enableDiffuseMatching", ambi_bin_getEnableDiffuseMatching(hAmbi), false);
-    setParameterValue("enableMaxRE", ambi_bin_getEnableMaxRE(hAmbi), false);
-    setParameterValue("enableRotation", ambi_bin_getEnableRotation(hAmbi), false);
-    setParameterValue("useRollPitchYaw", ambi_bin_getRPYflag(hAmbi), false);
-    setParameterValue("yaw", ambi_bin_getYaw(hAmbi), false);
-    setParameterValue("pitch", ambi_bin_getPitch(hAmbi), false);
-    setParameterValue("roll", ambi_bin_getRoll(hAmbi), false);
-    setParameterValue("flipYaw", ambi_bin_getFlipYaw(hAmbi), false);
-    setParameterValue("flipPitch", ambi_bin_getFlipPitch(hAmbi), false);
-    setParameterValue("flipRoll", ambi_bin_getFlipRoll(hAmbi), false);
+    setParameterValue("inputOrder", ambi_bin_getInputOrderPreset(hAmbi)-1);
+    setParameterValue("channelOrder", ambi_bin_getChOrder(hAmbi)-1);
+    setParameterValue("normType", ambi_bin_getNormType(hAmbi)-1);
+    setParameterValue("decMethod", ambi_bin_getDecodingMethod(hAmbi)-1);
+    setParameterValue("enableDiffuseMatching", ambi_bin_getEnableDiffuseMatching(hAmbi));
+    setParameterValue("enableMaxRE", ambi_bin_getEnableMaxRE(hAmbi));
+    setParameterValue("enableRotation", ambi_bin_getEnableRotation(hAmbi));
+    setParameterValue("useRollPitchYaw", ambi_bin_getRPYflag(hAmbi));
+    setParameterValue("yaw", ambi_bin_getYaw(hAmbi));
+    setParameterValue("pitch", ambi_bin_getPitch(hAmbi));
+    setParameterValue("roll", ambi_bin_getRoll(hAmbi));
+    setParameterValue("flipYaw", ambi_bin_getFlipYaw(hAmbi));
+    setParameterValue("flipPitch", ambi_bin_getFlipPitch(hAmbi));
+    setParameterValue("flipRoll", ambi_bin_getFlipRoll(hAmbi));
   
     /* specify here on which UDP port number to receive incoming OSC messages */
     osc_port_ID = DEFAULT_OSC_PORT;
@@ -151,26 +152,26 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
     /* if rotation angles are sent as an array \ypr[3] */
     if (message.size() == 3 && message.getAddressPattern().toString().compare("/ypr")==0) {
         if (message[0].isFloat32()){
-            setParameterValue("yaw", message[0].getFloat32(), true);
+            setParameterValue("yaw", message[0].getFloat32());
         }
         if (message[1].isFloat32()){
-            setParameterValue("pitch", message[0].getFloat32(), true);
+            setParameterValue("pitch", message[0].getFloat32());
         }
         if (message[2].isFloat32()){
-            setParameterValue("roll", message[0].getFloat32(), true);
+            setParameterValue("roll", message[0].getFloat32());
         }
         return;
     }
     
     /* if rotation angles are sent individually: */
     if(message.getAddressPattern().toString().compare("/yaw")==0){
-        setParameterValue("yaw", message[0].getFloat32(), true);
+        setParameterValue("yaw", message[0].getFloat32());
     }
     else if(message.getAddressPattern().toString().compare("/pitch")==0){
-        setParameterValue("pitch", message[0].getFloat32(), true);
+        setParameterValue("pitch", message[0].getFloat32());
     }
     else if(message.getAddressPattern().toString().compare("/roll")==0){
-        setParameterValue("roll", message[0].getFloat32(), true);
+        setParameterValue("roll", message[0].getFloat32());
     }
 }
 

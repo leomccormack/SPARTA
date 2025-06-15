@@ -41,33 +41,21 @@ public:
     }
     
     // Sets
-    void setParameterValue(const juce::String& parameterID, float newValue, bool shouldNotifyHost){
+    void setParameterValue(const juce::String& parameterID, float newValue){
         auto* param = parameters.getParameter(parameterID);
-        if(shouldNotifyHost)
-            param->setValueNotifyingHost(param->convertTo0to1(newValue));
-        else
-            param->setValue(param->convertTo0to1(newValue));
+        param->setValueNotifyingHost(param->convertTo0to1(newValue));
     }
-    void setParameterValue(const juce::String& parameterID, double newValue, bool shouldNotifyHost){
+    void setParameterValue(const juce::String& parameterID, double newValue){
         auto* param = parameters.getParameter(parameterID);
-        if(shouldNotifyHost)
-            param->setValueNotifyingHost(param->convertTo0to1(static_cast<float>(newValue)));
-        else
-            param->setValue(param->convertTo0to1(static_cast<float>(newValue)));
+        param->setValueNotifyingHost(param->convertTo0to1(static_cast<float>(newValue)));
     }
-    void setParameterValue(const juce::String& parameterID, int newValue, bool shouldNotifyHost){
+    void setParameterValue(const juce::String& parameterID, int newValue){
         auto* param = parameters.getParameter(parameterID);
-        if(shouldNotifyHost)
-            param->setValueNotifyingHost(param->convertTo0to1(static_cast<float>(newValue)));
-        else
-            param->setValue(param->convertTo0to1(static_cast<float>(newValue)));
+        param->setValueNotifyingHost(param->convertTo0to1(static_cast<float>(newValue)));
     }
-    void setParameterValue(const juce::String& parameterID, bool newValue, bool shouldNotifyHost){
+    void setParameterValue(const juce::String& parameterID, bool newValue){
         auto* param = parameters.getParameter(parameterID);
-        if(shouldNotifyHost)
-            param->setValueNotifyingHost(param->convertTo0to1(static_cast<float>(newValue)));
-        else
-            param->setValue(param->convertTo0to1(static_cast<float>(newValue)));
+        param->setValueNotifyingHost(param->convertTo0to1(static_cast<float>(newValue)));
     }
 
     // Gets
@@ -82,4 +70,39 @@ public:
     }
     
     juce::AudioProcessorValueTreeState parameters;
+};
+
+
+class ParameterSlider : public juce::Slider
+{
+public:
+    ParameterSlider(juce::AudioProcessorValueTreeState& parameters, const juce::String& paramID)
+        : attachment(parameters, paramID, *this) {}
+private:
+    juce::AudioProcessorValueTreeState::SliderAttachment attachment;
+};
+
+class ParameterComboBox : public juce::ComboBox
+{
+public:
+    ParameterComboBox(juce::AudioProcessorValueTreeState& parameters, const juce::String& paramID) {
+        if (auto* param = dynamic_cast<juce::AudioParameterChoice*>(parameters.getParameter(paramID))) {
+            const auto& choices = param->choices;
+            for (int i = 0; i < choices.size(); i++)
+                addItem(choices[i], i + 1);
+            setSelectedId(param->getIndex() + 1, juce::dontSendNotification);
+        }
+        attachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(parameters, paramID, *this);
+    }
+private:
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> attachment;
+};
+
+class ParameterToggleButton : public juce::ToggleButton
+{
+public:
+    ParameterToggleButton(juce::AudioProcessorValueTreeState& parameters, const juce::String& paramID)
+        : attachment(parameters, paramID, *this) {}
+private:
+    juce::AudioProcessorValueTreeState::ButtonAttachment attachment;
 };
