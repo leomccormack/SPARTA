@@ -50,7 +50,7 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::Button::Listener
 {
 public:
-    PluginEditor (PluginProcessor* ownerFilter);
+    PluginEditor (PluginProcessor& p);
     ~PluginEditor() override;
 
     void paint (juce::Graphics& g) override;
@@ -60,7 +60,7 @@ public:
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hA2sh;
     void timerCallback(int timerID) override;
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -82,7 +82,6 @@ private:
     DISP_WINDOW dispID;
 
     bool needScreenRefreshFLAG;
-    bool showDegreesInstead;
 
     /* json file loading/saving */
     std::unique_ptr<juce::FileChooser> chooser;
@@ -96,23 +95,22 @@ private:
     HyperlinkButton publicationLink { "(Related Publication)", { "https://leomccormack.github.io/sparta-site/docs/help/related-publications/mccormack2018real.pdf" } };
 
     std::unique_ptr<juce::ComboBox> presetCB;
-    std::unique_ptr<juce::ComboBox> arrayTypeCB;
-    std::unique_ptr<juce::Slider> QSlider;
-    std::unique_ptr<juce::Slider> rSlider;
-    std::unique_ptr<juce::Slider> RSlider;
-    std::unique_ptr<juce::Slider> cSlider;
-    std::unique_ptr<juce::ComboBox> weightTypeCB;
-    std::unique_ptr<juce::ComboBox> filterTypeCB;
-    std::unique_ptr<juce::Slider> regAmountSlider;
-    std::unique_ptr<juce::ComboBox> CHOrderingCB;
-    std::unique_ptr<juce::ComboBox> normalisationCB;
-    std::unique_ptr<juce::Slider> gainSlider;
-    std::unique_ptr<juce::ToggleButton> degRadTB;
+    std::unique_ptr<ComboBoxWithAttachment> arrayTypeCB;
+    std::unique_ptr<SliderWithAttachment> QSlider;
+    std::unique_ptr<SliderWithAttachment> rSlider;
+    std::unique_ptr<SliderWithAttachment> RSlider;
+    std::unique_ptr<SliderWithAttachment> cSlider;
+    std::unique_ptr<ComboBoxWithAttachment> weightTypeCB;
+    std::unique_ptr<ComboBoxWithAttachment> filterTypeCB;
+    std::unique_ptr<SliderWithAttachment> regAmountSlider;
+    std::unique_ptr<ComboBoxWithAttachment> CHOrderingCB;
+    std::unique_ptr<ComboBoxWithAttachment> normalisationCB;
+    std::unique_ptr<SliderWithAttachment> gainSlider;
     std::unique_ptr<juce::TextButton> textButton;
     std::unique_ptr<juce::ComboBox> dispWindow;
     std::unique_ptr<juce::TextButton> tb_loadJSON;
     std::unique_ptr<juce::TextButton> tb_saveJSON;
-    std::unique_ptr<juce::ComboBox> CBencodingOrder;
+    std::unique_ptr<ComboBoxWithAttachment> CBencodingOrder;
     std::unique_ptr<juce::ToggleButton> applyDiffEQ;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)

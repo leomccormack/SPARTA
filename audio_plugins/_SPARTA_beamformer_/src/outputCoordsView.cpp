@@ -25,62 +25,46 @@
 const int sensorEdit_width = 176;
 const int sensorEdit_height = 32;
 
-inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH )
+inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentNCH ) : processor(p)
 {
-    dummySlider.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (dummySlider.get());
-    dummySlider->setRange (0.01, 0.3, 0.001);
-    dummySlider->setSliderStyle (juce::Slider::LinearHorizontal);
-    dummySlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 70, 20);
-    dummySlider->addListener (this);
-
-    dummySlider->setBounds (-176, 144, 96, 16);
-
     setSize (sensorEdit_width, sensorEdit_height*currentNCH);
-    hVst = ownerFilter;
-    hBeam = hVst->getFXHandle();
+    hBeam = processor.getFXHandle();
     maxNCH = _maxNCH ;
     currentNCH =_currentNCH;
-    aziSliders =  new std::unique_ptr<Slider>[(unsigned long)maxNCH];
-    elevSliders =  new std::unique_ptr<Slider>[(unsigned long)maxNCH];
+    aziSliders.resize(maxNCH);
+    elevSliders.resize(maxNCH);
 
     for( int i=0; i<maxNCH; i++){
         /* create and initialise azimuth sliders */
-        aziSliders[i].reset (new Slider ("new slider"));
+        aziSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "azim" + juce::String(i));
         addAndMakeVisible (aziSliders[i].get());
-        aziSliders[i]->setRange (-360.0, 360.0, 0.001);
-        aziSliders[i]->setValue(beamformer_getBeamAzi_deg(hBeam, i));
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
-        aziSliders[i]->setBounds(-25, 8 + i*sensorEdit_height, 96, 16);
+        aziSliders[i]->setBounds(4, 8 + i*sensorEdit_height, 67, 16);
         aziSliders[i]->addListener (this);
 
         /* create and initialise elevation sliders */
-        elevSliders[i].reset (new Slider ("new slider"));
+        elevSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "elev" + juce::String(i));
         addAndMakeVisible (elevSliders[i].get());
-        elevSliders[i]->setRange (-180.0, 180.0, 0.001);
-        elevSliders[i]->setValue(beamformer_getBeamElev_deg(hBeam, i));
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
-        elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 96, 16);
+        elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 67, 16);
         elevSliders[i]->addListener (this);
+        
+        /* remove slider bit of these sliders */
+        aziSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
+        aziSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+        aziSliders[i]->setSliderSnapsToMousePosition(false);
+        elevSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
+        elevSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+        elevSliders[i]->setSliderSnapsToMousePosition(false);
     }
 
-    sliderHasChanged = true;
-    refreshCoords();
     resized();
 }
 
 inputCoordsView::~inputCoordsView()
 {
-    dummySlider = nullptr;
-
-    for( int i=0; i<maxNCH; i++){
-        aziSliders[i] = nullptr;
-        elevSliders[i] = nullptr;
-    }
-    delete [] aziSliders;
-    delete [] elevSliders;
 }
 
 void inputCoordsView::paint (juce::Graphics& g)
@@ -136,33 +120,6 @@ void inputCoordsView::resized()
     repaint();
 }
 
-void inputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+void inputCoordsView::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
-    for(int i=0; i<maxNCH; i++){
-        if (sliderThatWasMoved == aziSliders[i].get()) {
-            beamformer_setBeamAzi_deg(hBeam, i, (float)aziSliders[i]->getValue());
-            break;
-        }
-        if (sliderThatWasMoved == elevSliders[i].get()) {
-            beamformer_setBeamElev_deg(hBeam, i, (float)elevSliders[i]->getValue());
-            break;
-        }
-    }
-
-    if (sliderThatWasMoved == dummySlider.get())
-    {
-    }
-
-    sliderHasChanged = true;
 }
-
-void inputCoordsView::refreshCoords(){
-    /* update slider values and limits */
-    for( int i=0; i<maxNCH; i++){
-        aziSliders[i]->setRange (-360.0, 360.0, 0.001);
-        aziSliders[i]->setValue(beamformer_getBeamAzi_deg(hBeam, i), dontSendNotification);
-        elevSliders[i]->setRange (-180.0, 180.0, 0.001);
-        elevSliders[i]->setValue(beamformer_getBeamElev_deg(hBeam, i), dontSendNotification);
-    }
-}
-

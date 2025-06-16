@@ -24,12 +24,11 @@
 
 const float icon_size = 8.0f;
 
-pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
+pannerView::pannerView (PluginProcessor& p, int _width, int _height) : processor(p)
 {
     setSize (480, 240);
 
-    hVst = ownerFilter;
-    hBeam = hVst->getFXHandle();
+    hBeam = processor.getFXHandle();
     width = _width;
     height = _height;
 
@@ -141,43 +140,15 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
     }
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
 void pannerView::mouseDrag (const juce::MouseEvent& e)
 {
     if(beamIconIsClicked){
         Point<float> point;
         point.setXY((float)e.getPosition().getX()-icon_size/2.0f, (float)e.getPosition().getY()-icon_size/2.0f);
-        
-        hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedBeam*2);
-        hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedBeam*2+1);
-        
-        beamformer_setBeamAzi_deg(hBeam, indexOfClickedBeam,
-                                   ((width - (point.getX() + icon_size/2.0f))*360.0f)/width-180.0f);
-        beamformer_setBeamElev_deg(hBeam, indexOfClickedBeam,
-                                   ((height - (point.getY() + icon_size/2.0f))*180.0f)/height - 90.0f);
-        
-        hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedBeam*2);
-        hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedBeam*2+1);
+        processor.setParameterValue("azim" + juce::String(indexOfClickedBeam), ((width - (point.getX() + icon_size/2.0f))*360.0f)/width - 180.0f);
+        processor.setParameterValue("elev" + juce::String(indexOfClickedBeam), ((height - (point.getY() + icon_size/2.0f))*180.0f)/height - 90.0f);
     }
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
 
 void pannerView::mouseUp (const juce::MouseEvent& /*e*/)
 {

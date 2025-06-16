@@ -29,10 +29,8 @@
 PluginEditor::PluginEditor (PluginProcessor& p)
     : AudioProcessorEditor(p), processor(p)
 {
-    s_ratio.reset (new juce::Slider ("new slider"));
+    s_ratio = std::make_unique<SliderWithAttachment>(p.parameters, "ratio");
     addAndMakeVisible (s_ratio.get());
-    s_ratio->setRange (1, 30, 0.01);
-    s_ratio->setDoubleClickReturnValue(true, 8.0f);
     s_ratio->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_ratio->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_ratio->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -44,10 +42,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_ratio->setBounds (168, 364, 64, 64);
 
-    s_knee.reset (new juce::Slider ("new slider"));
+    s_knee = std::make_unique<SliderWithAttachment>(p.parameters, "knee");
     addAndMakeVisible (s_knee.get());
-    s_knee->setRange (0, 10, 0.01);
-    s_knee->setDoubleClickReturnValue(true, 0.0f);
     s_knee->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_knee->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_knee->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -59,10 +55,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_knee->setBounds (240, 364, 64, 64);
 
-    s_attack.reset (new juce::Slider ("new slider"));
+    s_attack = std::make_unique<SliderWithAttachment>(p.parameters, "attack_ms");
     addAndMakeVisible (s_attack.get());
-    s_attack->setRange (10, 200, 0.01);
-    s_attack->setDoubleClickReturnValue(true, 50.0f);
     s_attack->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attack->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_attack->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -74,10 +68,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_attack->setBounds (319, 364, 64, 64);
 
-    s_release.reset (new juce::Slider ("new slider"));
+    s_release = std::make_unique<SliderWithAttachment>(p.parameters, "release_ms");
     addAndMakeVisible (s_release.get());
-    s_release->setRange (50, 1000, 0.01);
-    s_release->setDoubleClickReturnValue(true, 100.0f);
     s_release->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_release->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_release->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -89,10 +81,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_release->setBounds (391, 364, 64, 64);
 
-    s_outgain.reset (new juce::Slider ("new slider"));
+    s_outgain = std::make_unique<SliderWithAttachment>(p.parameters, "outGain");
     addAndMakeVisible (s_outgain.get());
-    s_outgain->setRange (-20, 12, 0.01);
-    s_outgain->setDoubleClickReturnValue(true, 0.0f);
     s_outgain->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_outgain->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_outgain->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -104,7 +94,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_outgain->setBounds (468, 364, 64, 64);
 
-    presetCB.reset (new juce::ComboBox ("new combo box"));
+    presetCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (presetCB.get());
     presetCB->setEditableText (false);
     presetCB->setJustificationType (juce::Justification::centredLeft);
@@ -114,7 +104,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     presetCB->setBounds (72, 296, 120, 16);
 
-    CHOrderingCB.reset (new juce::ComboBox ("new combo box"));
+    CHOrderingCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CHOrderingCB.get());
     CHOrderingCB->setEditableText (false);
     CHOrderingCB->setJustificationType (juce::Justification::centredLeft);
@@ -124,7 +114,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CHOrderingCB->setBounds (288, 296, 80, 16);
 
-    normalisationCB.reset (new juce::ComboBox ("new combo box"));
+    normalisationCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (normalisationCB.get());
     normalisationCB->setEditableText (false);
     normalisationCB->setJustificationType (juce::Justification::centredLeft);
@@ -134,10 +124,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     normalisationCB->setBounds (440, 296, 88, 16);
 
-    s_ingain.reset (new juce::Slider ("new slider"));
+    s_ingain = std::make_unique<SliderWithAttachment>(p.parameters, "inGain");
     addAndMakeVisible (s_ingain.get());
-    s_ingain->setRange (-20, 12, 0.01);
-    s_ingain->setDoubleClickReturnValue(true, 0.0f);
     s_ingain->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_ingain->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_ingain->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -149,10 +137,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_ingain->setBounds (16, 364, 64, 64);
 
-    s_thresh.reset (new juce::Slider ("new slider"));
+    s_thresh = std::make_unique<SliderWithAttachment>(p.parameters, "threshold");
     addAndMakeVisible (s_thresh.get());
-    s_thresh->setRange (-60, 0, 0.01);
-    s_thresh->setDoubleClickReturnValue(true, 0.0f);
     s_thresh->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_thresh->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     s_thresh->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
@@ -186,39 +172,9 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     float* freqVector = ambi_drc_getFreqVector(hAmbi, &numFreqPoints);
     TFviewIncluded->setFreqVector(freqVector, numFreqPoints);
 
-    /* add options to drop down boxes */
-    normalisationCB->addItem (TRANS("N3D"), NORM_N3D);
-    normalisationCB->addItem (TRANS("SN3D"), NORM_SN3D);
-    normalisationCB->addItem (TRANS("FuMa"), NORM_FUMA);
-    CHOrderingCB->addItem (TRANS("ACN"), CH_ACN);
-    CHOrderingCB->addItem (TRANS("FuMa"), CH_FUMA);
-    presetCB->addItem(TRANS("1st order"), SH_ORDER_FIRST);
-    presetCB->addItem(TRANS("2nd order"), SH_ORDER_SECOND);
-    presetCB->addItem(TRANS("3rd order"), SH_ORDER_THIRD);
-    presetCB->addItem(TRANS("4th order"), SH_ORDER_FOURTH);
-    presetCB->addItem(TRANS("5th order"), SH_ORDER_FIFTH);
-    presetCB->addItem(TRANS("6th order"), SH_ORDER_SIXTH);
-    presetCB->addItem(TRANS("7th order"), SH_ORDER_SEVENTH);
-    presetCB->addItem(TRANS("8th order"), SH_ORDER_EIGHTH);
-    presetCB->addItem(TRANS("9th order"), SH_ORDER_NINTH);
-    presetCB->addItem(TRANS("10th order"), SH_ORDER_TENTH);
-
 	/* fetch current configuration */
-    s_thresh->setRange(AMBI_DRC_THRESHOLD_MIN_VAL, AMBI_DRC_THRESHOLD_MAX_VAL, 0.01);
-	s_thresh->setValue(ambi_drc_getThreshold(hAmbi), dontSendNotification);
-    s_ratio->setRange(AMBI_DRC_RATIO_MIN_VAL, AMBI_DRC_RATIO_MAX_VAL, 0.01);
-	s_ratio->setValue(ambi_drc_getRatio(hAmbi), dontSendNotification);
-    s_knee->setRange(AMBI_DRC_KNEE_MIN_VAL, AMBI_DRC_KNEE_MAX_VAL, 0.01);
-	s_knee->setValue(ambi_drc_getKnee(hAmbi), dontSendNotification);
-	s_ingain->setValue(ambi_drc_getInGain(hAmbi), dontSendNotification);
-    s_outgain->setValue(ambi_drc_getOutGain(hAmbi), dontSendNotification);
-    s_attack->setRange(AMBI_DRC_ATTACK_MIN_VAL, AMBI_DRC_ATTACK_MAX_VAL, 0.01);
-	s_attack->setValue(ambi_drc_getAttack(hAmbi), dontSendNotification);
-    s_release->setRange(AMBI_DRC_RELEASE_MIN_VAL, AMBI_DRC_RELEASE_MAX_VAL, 0.01);
-	s_release->setValue(ambi_drc_getRelease(hAmbi), dontSendNotification);
     CHOrderingCB->setSelectedId(ambi_drc_getChOrder(hAmbi), dontSendNotification);
     normalisationCB->setSelectedId(ambi_drc_getNormType(hAmbi), dontSendNotification);
-    presetCB->setSelectedId(ambi_drc_getInputPreset(hAmbi), dontSendNotification);
     CHOrderingCB->setItemEnabled(CH_FUMA, ambi_drc_getInputPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
     normalisationCB->setItemEnabled(NORM_FUMA, ambi_drc_getInputPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
 
@@ -845,66 +801,19 @@ void PluginEditor::resized()
 	repaint();
 }
 
-void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+void PluginEditor::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
-    if (sliderThatWasMoved == s_ratio.get())
-    {
-        processor.setParameterValue("ratio", s_ratio->getValue(), true);
-    }
-    else if (sliderThatWasMoved == s_knee.get())
-    {
-        processor.setParameterValue("knee", s_knee->getValue(), true);
-    }
-    else if (sliderThatWasMoved == s_attack.get())
-    {
-        processor.setParameterValue("attack_ms", s_attack->getValue(), true);
-    }
-    else if (sliderThatWasMoved == s_release.get())
-    {
-        processor.setParameterValue("release_ms", s_release->getValue(), true);
-    }
-    else if (sliderThatWasMoved == s_outgain.get())
-    {
-        processor.setParameterValue("outGain", s_outgain->getValue(), true);
-    }
-    else if (sliderThatWasMoved == s_ingain.get())
-    {
-        processor.setParameterValue("inGain", s_ingain->getValue(), true);
-    }
-    else if (sliderThatWasMoved == s_thresh.get())
-    {
-        processor.setParameterValue("threshold", s_thresh->getValue(), true);
-    }
 }
 
-void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
+void PluginEditor::comboBoxChanged (juce::ComboBox* /*comboBoxThatHasChanged*/)
 {
-    if (comboBoxThatHasChanged == presetCB.get())
-    {
-        processor.setParameterValue("inputOrder", presetCB->getSelectedId()-1, true);
-    }
-    else if (comboBoxThatHasChanged == CHOrderingCB.get())
-    {
-        processor.setParameterValue("channelOrder", CHOrderingCB->getSelectedId()-1, true);
-    }
-    else if (comboBoxThatHasChanged == normalisationCB.get())
-    {
-        processor.setParameterValue("normType", normalisationCB->getSelectedId()-1, true);
-    }
 }
 
 void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
-    s_thresh->setValue(ambi_drc_getThreshold(hAmbi), dontSendNotification);
-    s_ratio->setValue(ambi_drc_getRatio(hAmbi), dontSendNotification);
-    s_knee->setValue(ambi_drc_getKnee(hAmbi), dontSendNotification);
-    s_ingain->setValue(ambi_drc_getInGain(hAmbi), dontSendNotification);
-    s_outgain->setValue(ambi_drc_getOutGain(hAmbi), dontSendNotification);
-    s_attack->setValue(ambi_drc_getAttack(hAmbi), dontSendNotification);
-    s_release->setValue(ambi_drc_getRelease(hAmbi), dontSendNotification);
-    CHOrderingCB->setSelectedId(ambi_drc_getChOrder(hAmbi), dontSendNotification);
-    normalisationCB->setSelectedId(ambi_drc_getNormType(hAmbi), dontSendNotification);
+    CHOrderingCB->setSelectedId(ambi_drc_getChOrder(hAmbi), sendNotification);
+    normalisationCB->setSelectedId(ambi_drc_getNormType(hAmbi), sendNotification);
     CHOrderingCB->setItemEnabled(CH_FUMA, ambi_drc_getInputPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
     normalisationCB->setItemEnabled(NORM_FUMA, ambi_drc_getInputPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
 

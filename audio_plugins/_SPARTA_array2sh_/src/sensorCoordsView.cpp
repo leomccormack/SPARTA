@@ -25,74 +25,38 @@
 const int sensorEdit_width = 176;
 const int sensorEdit_height = 32;
 
-sensorCoordsView::sensorCoordsView (PluginProcessor* ownerFilter, int _maxQ, int _currentQ, bool _useDegreesInstead)
+sensorCoordsView::sensorCoordsView (PluginProcessor& p, int _maxQ, int _currentQ) : processor(p)
 {
-    dummySlider.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (dummySlider.get());
-    dummySlider->setRange (0.01, 0.3, 0.001);
-    dummySlider->setSliderStyle (juce::Slider::LinearHorizontal);
-    dummySlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 70, 20);
-    dummySlider->addListener (this);
-
-    dummySlider->setBounds (-176, 144, 96, 16);
-
     setSize (sensorEdit_width, sensorEdit_height*_currentQ);
-    hVst = ownerFilter;
-    hA2sh = hVst->getFXHandle();
+    hA2sh = processor.getFXHandle();
     maxQ = _maxQ;
     currentQ =_currentQ;
-    useDegreesInstead =  _useDegreesInstead;
-    aziSliders =  new std::unique_ptr<Slider>[(unsigned long)maxQ];
-    elevSliders =  new std::unique_ptr<Slider>[(unsigned long)maxQ];
+    aziSliders.resize(maxQ);
+    elevSliders.resize(maxQ);
 
     for( int i=0; i<maxQ; i++){
         /* create and initialise azimuth sliders */
-        aziSliders[i].reset (new Slider ("new slider"));
+        aziSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "azim" + juce::String(i));
         addAndMakeVisible (aziSliders[i].get());
-        if(useDegreesInstead){
-            aziSliders[i]->setRange (-360.0*2, 360.0*2, 0.001);
-            aziSliders[i]->setValue(array2sh_getSensorAzi_deg(hA2sh, i));
-        }
-        else{
-            aziSliders[i]->setRange (-2.0*M_PI*2, 2.0*M_PI*2, 0.00001);
-            aziSliders[i]->setValue(array2sh_getSensorAzi_rad(hA2sh, i));
-        }
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
         aziSliders[i]->setBounds(-25, 8 + i*sensorEdit_height, 96, 16);
         aziSliders[i]->addListener (this);
 
         /* create and initialise elevation sliders */
-        elevSliders[i].reset (new Slider ("new slider"));
+        elevSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "elev" + juce::String(i));
         addAndMakeVisible (elevSliders[i].get());
-        if(useDegreesInstead){
-            elevSliders[i]->setRange (-180.0*2, 180.0*2, 0.001);
-            elevSliders[i]->setValue(array2sh_getSensorElev_deg(hA2sh, i));
-        }
-        else {
-            elevSliders[i]->setRange (-M_PI*2, M_PI*2, 0.00001);
-            elevSliders[i]->setValue(array2sh_getSensorElev_rad(hA2sh, i));
-        }
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
         elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 96, 16);
         elevSliders[i]->addListener (this);
     }
 
-    refreshCoords();
     resized();
 }
 
 sensorCoordsView::~sensorCoordsView()
 {
-    dummySlider = nullptr;
-
-    for( int i=0; i<maxQ; i++){
-        aziSliders[i] = nullptr;
-        elevSliders[i] = nullptr;
-    }
-    delete [] aziSliders;
-    delete [] elevSliders;
 }
 
 void sensorCoordsView::paint (juce::Graphics& g)
@@ -148,50 +112,6 @@ void sensorCoordsView::resized()
     repaint();
 }
 
-void sensorCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+void sensorCoordsView::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
-    for(int i=0; i<maxQ; i++){
-        if (sliderThatWasMoved == aziSliders[i].get()) {
-            if(useDegreesInstead)
-                array2sh_setSensorAzi_deg(hA2sh, i, (float)aziSliders[i]->getValue());
-            else
-                array2sh_setSensorAzi_rad(hA2sh, i, (float)aziSliders[i]->getValue());
-            break;
-        }
-        if (sliderThatWasMoved == elevSliders[i].get()) {
-            if(useDegreesInstead)
-                array2sh_setSensorElev_deg(hA2sh, i, (float)elevSliders[i]->getValue());
-            else
-                array2sh_setSensorElev_rad(hA2sh, i, (float)elevSliders[i]->getValue());
-            break;
-        }
-    }
-
-    if (sliderThatWasMoved == dummySlider.get())
-    {
-    }
-}
-
-void sensorCoordsView::refreshCoords(){
-    /* update slider values and limits */
-    for( int i=0; i<maxQ; i++){
-        if(useDegreesInstead){
-            aziSliders[i]->setRange (-360.0*2, 360.0*2, 0.001);
-            aziSliders[i]->setValue(array2sh_getSensorAzi_deg(hA2sh, i), dontSendNotification);
-            elevSliders[i]->setRange (-180.0*2, 180.0*2, 0.001);
-            elevSliders[i]->setValue(array2sh_getSensorElev_deg(hA2sh, i), dontSendNotification);
-        }
-        else{
-            aziSliders[i]->setRange (-2.0*M_PI*2, 2.0*M_PI*2, 0.00001);
-            aziSliders[i]->setValue(array2sh_getSensorAzi_rad(hA2sh, i), dontSendNotification);
-            elevSliders[i]->setRange (-M_PI*2, M_PI*2, 0.00001);
-            elevSliders[i]->setValue(array2sh_getSensorElev_rad(hA2sh, i), dontSendNotification);
-        }
-    }
-}
-
-void sensorCoordsView::setUseDegreesInstead(bool newState)
-{
-    useDegreesInstead = newState;
-    refreshCoords();
 }

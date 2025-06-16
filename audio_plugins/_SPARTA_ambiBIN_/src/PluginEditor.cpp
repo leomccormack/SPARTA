@@ -34,7 +34,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     TBuseDefaultHRIRs->setBounds (613, 60, 27, 24);
 
-    CBorderPreset = std::make_unique<ParameterComboBox>(p.parameters, "inputOrder");
+    CBorderPreset = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (CBorderPreset.get());
     CBorderPreset->setEditableText (false);
     CBorderPreset->setJustificationType (juce::Justification::centredLeft);
@@ -44,7 +44,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBorderPreset->setBounds (136, 63, 104, 18);
 
-    CBchFormat = std::make_unique<ParameterComboBox>(p.parameters, "channelOrder");
+    CBchFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBchFormat.get());
     CBchFormat->setEditableText (false);
     CBchFormat->setJustificationType (juce::Justification::centredLeft);
@@ -54,7 +54,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBchFormat->setBounds (88, 116, 72, 18);
 
-    CBnormScheme = std::make_unique<ParameterComboBox>(p.parameters, "normType");
+    CBnormScheme = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnormScheme.get());
     CBnormScheme->setEditableText (false);
     CBnormScheme->setJustificationType (juce::Justification::centredLeft);
@@ -64,14 +64,14 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBnormScheme->setBounds (164, 116, 76, 18);
 
-    TBmaxRE = std::make_unique<ParameterToggleButton>(p.parameters, "enableMaxRE");
+    TBmaxRE = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableMaxRE");
     addAndMakeVisible (TBmaxRE.get());
     TBmaxRE->setButtonText (juce::String());
     TBmaxRE->addListener (this);
 
     TBmaxRE->setBounds (411, 60, 22, 24);
 
-    s_yaw = std::make_unique<ParameterSlider>(p.parameters, "yaw");
+    s_yaw = std::make_unique<SliderWithAttachment>(p.parameters, "yaw");
     addAndMakeVisible (s_yaw.get());
     s_yaw->setSliderStyle (juce::Slider::LinearHorizontal);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxAbove, false, 80, 20);
@@ -83,7 +83,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_yaw->setBounds (80, 171, 120, 38);
 
-    s_pitch = std::make_unique<ParameterSlider>(p.parameters, "pitch");
+    s_pitch = std::make_unique<SliderWithAttachment>(p.parameters, "pitch");
     addAndMakeVisible (s_pitch.get());
     s_pitch->setSliderStyle (juce::Slider::LinearVertical);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
@@ -95,7 +95,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_pitch->setBounds (208, 137, 96, 112);
 
-    s_roll = std::make_unique<ParameterSlider>(p.parameters, "roll");
+    s_roll = std::make_unique<SliderWithAttachment>(p.parameters, "roll");
     addAndMakeVisible (s_roll.get());
     s_roll->setSliderStyle (juce::Slider::LinearVertical);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
@@ -171,21 +171,21 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     label_DAW_fs->setBounds (536, 217, 96, 24);
 
-    t_flipPitch = std::make_unique<ParameterToggleButton>(p.parameters, "flipPitch");
+    t_flipPitch = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipPitch");
     addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (juce::String());
     t_flipPitch->addListener (this);
 
     t_flipPitch->setBounds (260, 209, 23, 24);
 
-    t_flipRoll = std::make_unique<ParameterToggleButton>(p.parameters, "flipRoll");
+    t_flipRoll = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipRoll");
     addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (juce::String());
     t_flipRoll->addListener (this);
 
     t_flipRoll->setBounds (376, 209, 23, 24);
 
-    t_flipYaw = std::make_unique<ParameterToggleButton>(p.parameters, "flipYaw");
+    t_flipYaw = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipYaw");
     addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (juce::String());
     t_flipYaw->addListener (this);
@@ -199,21 +199,21 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     TBcompEQ->setBounds (656, -16, 32, 24);
 
-    TBrpyFlag = std::make_unique<ParameterToggleButton>(p.parameters, "useRollPitchYaw");
+    TBrpyFlag = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "useRollPitchYaw");
     addAndMakeVisible (TBrpyFlag.get());
     TBrpyFlag->setButtonText (juce::String());
     TBrpyFlag->addListener (this);
 
     TBrpyFlag->setBounds (59, 187, 24, 24);
 
-    TBenableRot = std::make_unique<ParameterToggleButton>(p.parameters, "enableRotation");
+    TBenableRot = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableRotation");
     addAndMakeVisible (TBenableRot.get());
     TBenableRot->setButtonText (juce::String());
     TBenableRot->addListener (this);
 
     TBenableRot->setBounds (59, 165, 24, 24);
 
-    CBdecoderMethod = std::make_unique<ParameterComboBox>(p.parameters, "decMethod");
+    CBdecoderMethod = std::make_unique<ComboBoxWithAttachment>(p.parameters, "decMethod");
     addAndMakeVisible (CBdecoderMethod.get());
     CBdecoderMethod->setEditableText (false);
     CBdecoderMethod->setJustificationType (juce::Justification::centredLeft);
@@ -223,7 +223,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBdecoderMethod->setBounds (88, 90, 152, 18);
 
-    TBdiffMatching = std::make_unique<ParameterToggleButton>(p.parameters, "enableDiffuseMatching");
+    TBdiffMatching = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableDiffuseMatching");
     addAndMakeVisible (TBdiffMatching.get());
     TBdiffMatching->setButtonText (juce::String());
     TBdiffMatching->addListener (this);
@@ -899,8 +899,8 @@ void PluginEditor::timerCallback(int timerID)
             /* parameters whos values can change internally should be periodically refreshed */
             TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
             CBhrirPreProc->setSelectedId(ambi_bin_getHRIRsPreProc(hAmbi), dontSendNotification);
-            CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), dontSendNotification);
-            CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), dontSendNotification);
+            CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), sendNotification);
+            CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), sendNotification);
             label_N_dirs->setText(String(ambi_bin_getNDirs(hAmbi)), dontSendNotification);
             label_HRIR_len->setText(String(ambi_bin_getHRIRlength(hAmbi)), dontSendNotification);
             label_HRIR_fs->setText(String(ambi_bin_getHRIRsamplerate(hAmbi)), dontSendNotification);

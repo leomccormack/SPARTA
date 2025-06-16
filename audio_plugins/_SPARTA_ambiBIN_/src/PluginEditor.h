@@ -85,26 +85,26 @@ private:
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
     std::unique_ptr<juce::ToggleButton> TBuseDefaultHRIRs;
-    std::unique_ptr<ParameterComboBox> CBorderPreset;
-    std::unique_ptr<ParameterComboBox> CBchFormat;
-    std::unique_ptr<ParameterComboBox> CBnormScheme;
-    std::unique_ptr<ParameterToggleButton> TBmaxRE;
-    std::unique_ptr<ParameterSlider> s_yaw;
-    std::unique_ptr<ParameterSlider> s_pitch;
-    std::unique_ptr<ParameterSlider> s_roll;
+    std::unique_ptr<ComboBoxWithAttachment> CBorderPreset;
+    std::unique_ptr<ComboBoxWithAttachment> CBchFormat;
+    std::unique_ptr<ComboBoxWithAttachment> CBnormScheme;
+    std::unique_ptr<ToggleButtonWithAttachment> TBmaxRE;
+    std::unique_ptr<SliderWithAttachment> s_yaw;
+    std::unique_ptr<SliderWithAttachment> s_pitch;
+    std::unique_ptr<SliderWithAttachment> s_roll;
     std::unique_ptr<juce::TextEditor> te_oscport;
     std::unique_ptr<juce::Label> label_N_dirs;
     std::unique_ptr<juce::Label> label_HRIR_len;
     std::unique_ptr<juce::Label> label_HRIR_fs;
     std::unique_ptr<juce::Label> label_DAW_fs;
-    std::unique_ptr<ParameterToggleButton> t_flipPitch;
-    std::unique_ptr<ParameterToggleButton> t_flipRoll;
-    std::unique_ptr<ParameterToggleButton> t_flipYaw;
+    std::unique_ptr<ToggleButtonWithAttachment> t_flipPitch;
+    std::unique_ptr<ToggleButtonWithAttachment> t_flipRoll;
+    std::unique_ptr<ToggleButtonWithAttachment> t_flipYaw;
     std::unique_ptr<juce::ToggleButton> TBcompEQ;
-    std::unique_ptr<ParameterToggleButton> TBrpyFlag;
-    std::unique_ptr<ParameterToggleButton> TBenableRot;
-    std::unique_ptr<ParameterComboBox> CBdecoderMethod;
-    std::unique_ptr<ParameterToggleButton> TBdiffMatching;
+    std::unique_ptr<ToggleButtonWithAttachment> TBrpyFlag;
+    std::unique_ptr<ToggleButtonWithAttachment> TBenableRot;
+    std::unique_ptr<ComboBoxWithAttachment> CBdecoderMethod;
+    std::unique_ptr<ToggleButtonWithAttachment> TBdiffMatching;
     std::unique_ptr<juce::ToggleButton> TBtruncationEQ;
     std::unique_ptr<juce::ComboBox> CBhrirPreProc;
 

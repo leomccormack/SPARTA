@@ -13,27 +13,12 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     }
 }
 
-//enum {
-//    /* For the default VST GUI */
-//    k_inputOrder,
-//    k_channelOrder,
-//    k_normType,
-//    k_theshold,
-//    k_ratio,
-//    k_knee,
-//    k_inGain,
-//    k_outGain,
-//    k_attack_ms,
-//    k_release_ms,
-//    k_NumOfParameters
-//};
-
 juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
     params.push_back(std::make_unique<juce::AudioParameterChoice>("inputOrder", "InputOrder",
-                                                                  juce::StringArray{"1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th"}, 0,
+                                                                  juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
@@ -82,6 +67,20 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
     }
 }
 
+void PluginProcessor::setParameterValuesUsingInternalState()
+{
+    setParameterValue("inputOrder", ambi_drc_getInputPreset(hAmbi)-1);
+    setParameterValue("channelOrder", ambi_drc_getChOrder(hAmbi)-1);
+    setParameterValue("normType", ambi_drc_getNormType(hAmbi)-1);
+    setParameterValue("threshold", ambi_drc_getThreshold(hAmbi));
+    setParameterValue("ratio", ambi_drc_getRatio(hAmbi));
+    setParameterValue("knee", ambi_drc_getKnee(hAmbi));
+    setParameterValue("inGain", ambi_drc_getInGain(hAmbi));
+    setParameterValue("outGain", ambi_drc_getOutGain(hAmbi));
+    setParameterValue("attack_ms", ambi_drc_getAttack(hAmbi));
+    setParameterValue("release_ms", ambi_drc_getRelease(hAmbi));
+}
+
 PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
@@ -92,16 +91,7 @@ PluginProcessor::PluginProcessor() :
 	ambi_drc_create(&hAmbi);
     
     /* Grab defaults */
-    setParameterValue("inputOrder", ambi_drc_getInputPreset(hAmbi)-1, false);
-    setParameterValue("channelOrder", ambi_drc_getChOrder(hAmbi)-1, false);
-    setParameterValue("normType", ambi_drc_getNormType(hAmbi)-1, false);
-    setParameterValue("threshold", ambi_drc_getThreshold(hAmbi), false);
-    setParameterValue("ratio", ambi_drc_getRatio(hAmbi), false);
-    setParameterValue("knee", ambi_drc_getKnee(hAmbi), false);
-    setParameterValue("inGain", ambi_drc_getInGain(hAmbi), false);
-    setParameterValue("outGain", ambi_drc_getOutGain(hAmbi), false);
-    setParameterValue("attack_ms", ambi_drc_getAttack(hAmbi), false);
-    setParameterValue("release_ms", ambi_drc_getRelease(hAmbi), false);
+    setParameterValuesUsingInternalState();
 }
 
 PluginProcessor::~PluginProcessor()
@@ -231,8 +221,35 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-    if (xmlState != nullptr && xmlState->hasTagName("AMBIDRCPLUGINSETTINGS") && JucePlugin_VersionCode>=0x10301){
-        parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+    if (xmlState != nullptr && xmlState->hasTagName("AMBIDRCPLUGINSETTINGS")){
+        if(JucePlugin_VersionCode<0x10301){
+            /* pull attributes */
+            if(xmlState->hasAttribute("THRESHOLD"))
+                ambi_drc_setThreshold(hAmbi, (float)xmlState->getDoubleAttribute("THRESHOLD", 0.0f));
+            if(xmlState->hasAttribute("RATIO"))
+                ambi_drc_setRatio(hAmbi, (float)xmlState->getDoubleAttribute("RATIO", 1.0f));
+            if(xmlState->hasAttribute("KNEE"))
+                ambi_drc_setKnee(hAmbi, (float)xmlState->getDoubleAttribute("KNEE", 0.0f));
+            if(xmlState->hasAttribute("INGAIN"))
+                ambi_drc_setInGain(hAmbi, (float)xmlState->getDoubleAttribute("INGAIN", 0.0f));
+            if(xmlState->hasAttribute("OUTGAIN"))
+                ambi_drc_setOutGain(hAmbi, (float)xmlState->getDoubleAttribute("OUTGAIN", 0.0f));
+            if(xmlState->hasAttribute("ATTACK"))
+                ambi_drc_setAttack(hAmbi, (float)xmlState->getDoubleAttribute("ATTACK", 50.0f));
+            if(xmlState->hasAttribute("RELEASE"))
+                ambi_drc_setRelease(hAmbi, (float)xmlState->getDoubleAttribute("RELEASE", 100.0f));
+            if(xmlState->hasAttribute("NORM"))
+                ambi_drc_setNormType(hAmbi, xmlState->getIntAttribute("NORM", 1));
+            if(xmlState->hasAttribute("CHORDER"))
+                ambi_drc_setChOrder(hAmbi, xmlState->getIntAttribute("CHORDER", 1));
+            if(xmlState->hasAttribute("PRESET"))
+                ambi_drc_setInputPreset(hAmbi, (SH_ORDERS)xmlState->getIntAttribute("PRESET", 1));
+            
+            setParameterValuesUsingInternalState();
+        }
+        else{
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+        }
         
         ambi_drc_refreshSettings(hAmbi);
     }

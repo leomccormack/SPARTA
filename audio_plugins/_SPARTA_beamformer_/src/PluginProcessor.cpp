@@ -34,12 +34,80 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     }
 }
 
-PluginProcessor::PluginProcessor() : 
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("inputOrder", "InputOrder",
+                                                                  juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 1));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("beamType", "BeamType", juce::StringArray{"Cardioid", "Hyper-Card", "Max-EV"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numBeams", "NumBeams", 1, MAX_NUM_OUTPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
+    for(int i=0; i<MAX_NUM_OUTPUTS; i++){
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f));
+    }
+    
+    return { params.begin(), params.end() };
+}
+
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    if (parameterID == "inputOrder"){
+        beamformer_setBeamOrder(hBeam, static_cast<SH_ORDERS>(newValue+1.001f));
+    }
+    else if (parameterID == "channelOrder"){
+        beamformer_setChOrder(hBeam, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "normType"){
+        beamformer_setNormType(hBeam, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "beamType"){
+        beamformer_setBeamType(hBeam, static_cast<int>(newValue+1.001f));
+    }
+    else if(parameterID == "numBeams"){
+        beamformer_setNumBeams(hBeam, static_cast<int>(newValue));
+        setRefreshWindow(true);
+    }
+    for(int i=0; i<MAX_NUM_OUTPUTS; i++){
+        if(parameterID == "azim" + juce::String(i)){
+            beamformer_setBeamAzi_deg(hBeam, i, newValue);
+            setRefreshWindow(true);
+            break;
+        }
+        else if(parameterID == "elev" + juce::String(i)){
+            beamformer_setBeamElev_deg(hBeam, i, newValue);
+            setRefreshWindow(true);
+            break;
+        }
+    }
+}
+
+void PluginProcessor::setParameterValuesUsingInternalState()
+{
+    setParameterValue("inputOrder", beamformer_getBeamOrder(hBeam)-1);
+    setParameterValue("channelOrder", beamformer_getChOrder(hBeam)-1);
+    setParameterValue("normType", beamformer_getNormType(hBeam)-1);
+    setParameterValue("beamType", beamformer_getBeamType(hBeam)-1);
+    setParameterValue("numBeams", beamformer_getNumBeams(hBeam));
+    for(int i=0; i<MAX_NUM_OUTPUTS; i++){
+        setParameterValue("azim" + juce::String(i), beamformer_getBeamAzi_deg(hBeam, i));
+        setParameterValue("elev" + juce::String(i), beamformer_getBeamElev_deg(hBeam, i));
+    }
+}
+
+PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    ParameterManager(*this, createParameterLayout())
 {
 	beamformer_create(&hBeam);
+    
+    /* Grab defaults */
+    setParameterValuesUsingInternalState();
     refreshWindow = true;
 }
 
@@ -48,147 +116,13 @@ PluginProcessor::~PluginProcessor()
 	beamformer_destroy(&hBeam);
 }
 
-void PluginProcessor::setParameter (int index, float newValue)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_inputOrder:   beamformer_setBeamOrder(hBeam, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
-            case k_channelOrder: beamformer_setChOrder(hBeam, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
-            case k_normType:     beamformer_setNormType(hBeam, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
-            case k_beamType:     beamformer_setBeamType(hBeam, (STATIC_BEAM_TYPES)(int)(newValue*(float)(NUM_STATIC_BEAM_TYPES-1) + 1.5f)); break;
-            case k_numBeams:     beamformer_setNumBeams(hBeam, (int)(newValue*(float)(MAX_NUM_OUTPUTS)+0.5)); break;
-        }
-    }
-    /* source direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        float newValueScaled;
-        if (!(index % 2)){
-            newValueScaled = (newValue - 0.5f)*360.0f;
-            if (newValueScaled != beamformer_getBeamAzi_deg(hBeam, index/2)){
-                beamformer_setBeamAzi_deg(hBeam, index/2, newValueScaled);
-                refreshWindow = true;
-            }
-        }
-        else{
-            newValueScaled = (newValue - 0.5f)*180.0f;
-            if (newValueScaled != beamformer_getBeamElev_deg(hBeam, index/2)){
-                beamformer_setBeamElev_deg(hBeam, index/2, newValueScaled);
-                refreshWindow = true;
-            }
-        }
-    }
-}
-
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
-}
-
-float PluginProcessor::getParameter (int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_inputOrder:   return (float)(beamformer_getBeamOrder(hBeam)-1)/(float)(MAX_SH_ORDER-1);
-            case k_channelOrder: return (float)(beamformer_getChOrder(hBeam)-1)/(float)(NUM_CH_ORDERINGS-1);
-            case k_normType:     return (float)(beamformer_getNormType(hBeam)-1)/(float)(NUM_NORM_TYPES-1);
-            case k_beamType:     return (float)(beamformer_getBeamType(hBeam)-1)/(float)(NUM_STATIC_BEAM_TYPES-1);
-            case k_numBeams:     return (float)(beamformer_getNumBeams(hBeam))/(float)(MAX_NUM_OUTPUTS);
-            default: return 0.0f;
-        }
-    }
-    /* source direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        if ((index % 2)==0)
-            return (beamformer_getBeamAzi_deg(hBeam, index/2)/360.0f) + 0.5f;
-        else
-            return (beamformer_getBeamElev_deg(hBeam, (index-1)/2)/180.0f) + 0.5f;
-    }
-}
-
-int PluginProcessor::getNumParameters()
-{
-	return k_NumOfParameters + 2*MAX_NUM_OUTPUTS;
 }
 
 const String PluginProcessor::getName() const
 {
     return JucePlugin_Name;
-}
-
-const String PluginProcessor::getParameterName (int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_inputOrder:   return "order";
-            case k_channelOrder: return "channel_order";
-            case k_normType:     return "norm_type";
-            case k_beamType:     return "beam_type";
-            case k_numBeams:     return "num_beams";
-            default: return "NULL";
-        }
-    }
-    /* source direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        if ((index % 2)==0)
-            return TRANS("Azim_") + String(index/2 + 1);
-        else
-            return TRANS("Elev_") + String((index-1)/2 + 1);
-    }
-}
-
-const String PluginProcessor::getParameterText(int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_inputOrder: return String(beamformer_getBeamOrder(hBeam));
-            case k_channelOrder:
-                switch(beamformer_getChOrder(hBeam)){
-                    case CH_ACN:  return "ACN";
-                    case CH_FUMA: return "FuMa";
-                    default: return "NULL";
-                }
-            case k_normType:
-                switch(beamformer_getNormType(hBeam)){
-                    case NORM_N3D:  return "N3D";
-                    case NORM_SN3D: return "SN3D";
-                    case NORM_FUMA: return "FuMa";
-                    default: return "NULL";
-                }
-            case k_beamType:
-                switch(beamformer_getBeamType(hBeam)){
-                    case STATIC_BEAM_TYPE_HYPERCARDIOID: return "Hyper-Card";
-                    case STATIC_BEAM_TYPE_CARDIOID:      return "Cardioid";
-                    case STATIC_BEAM_TYPE_MAX_EV:        return "Max-EV";
-                    default: return "NULL";
-                }
-            case k_numBeams: return String(beamformer_getNumBeams(hBeam));
-            default: return "NULL";
-        }
-    }
-    /* source direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        if ((index % 2)==0)
-            return String(beamformer_getBeamAzi_deg(hBeam, index/2));
-        else
-            return String(beamformer_getBeamElev_deg(hBeam, (index-1)/2));
-    }
-}
-
-const String PluginProcessor::getInputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-const String PluginProcessor::getOutputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
 }
 
 double PluginProcessor::getTailLengthSeconds() const
@@ -211,18 +145,6 @@ const String PluginProcessor::getProgramName (int /*index*/)
     return String();
 }
 
-
-bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-
 bool PluginProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
@@ -239,11 +161,6 @@ bool PluginProcessor::producesMidi() const
    #else
     return false;
    #endif
-}
-
-bool PluginProcessor::silenceInProducesSilenceOut() const
-{
-    return false;
 }
 
 void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
@@ -294,31 +211,25 @@ bool PluginProcessor::hasEditor() const
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new PluginEditor (this);
+    return new PluginEditor (*this);
 }
 
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-    XmlElement xml("BEAMFORMERPLUGINSETTINGS");
-    for(int i=0; i<beamformer_getMaxNumBeams(); i++){
-        xml.setAttribute("BeamAziDeg" + String(i), beamformer_getBeamAzi_deg(hBeam,i));
-        xml.setAttribute("BeamElevDeg" + String(i), beamformer_getBeamElev_deg(hBeam,i));
-    }
-    xml.setAttribute("NORM", beamformer_getNormType(hBeam));
-    xml.setAttribute("CHORDER", beamformer_getChOrder(hBeam));
-    xml.setAttribute("beamOrder", beamformer_getBeamOrder(hBeam));
-    xml.setAttribute("nBeams", beamformer_getNumBeams(hBeam));
-    xml.setAttribute("beamType", beamformer_getBeamType(hBeam));
+    juce::ValueTree state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xml(state.createXml());
+    xml->setTagName("BEAMFORMERPLUGINSETTINGS");
     
-    copyXmlToBinary(xml, destData);
+    /* Save */
+    copyXmlToBinary(*xml, destData);
 }
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-
-    if (xmlState != nullptr) {
-        if (xmlState->hasTagName("BEAMFORMERPLUGINSETTINGS")) {
+    /* Load */
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState != nullptr && xmlState->hasTagName("BEAMFORMERPLUGINSETTINGS")){
+        if(JucePlugin_VersionCode<0x10201){
             for(int i=0; i<beamformer_getMaxNumBeams(); i++){
                 if(xmlState->hasAttribute("BeamAziDeg" + String(i)))
                     beamformer_setBeamAzi_deg(hBeam, i, (float)xmlState->getDoubleAttribute("BeamAziDeg" + String(i), 0.0f));
@@ -337,8 +248,13 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if(xmlState->hasAttribute("beamType"))
                 beamformer_setBeamType(hBeam, xmlState->getIntAttribute("beamType", 1));
             
-            beamformer_refreshSettings(hBeam);
+            setParameterValuesUsingInternalState();
         }
+        else{
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+        }
+        
+        beamformer_refreshSettings(hBeam);
     }
 }
 

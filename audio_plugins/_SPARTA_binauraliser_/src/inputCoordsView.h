@@ -47,8 +47,8 @@ public:
 private:
     PluginProcessor& processor;
     void* hBin;
-    std::vector<std::unique_ptr<ParameterSlider>> aziSliders;
-    std::vector<std::unique_ptr<ParameterSlider>> elevSliders;
+    std::vector<std::unique_ptr<SliderWithAttachment>> aziSliders;
+    std::vector<std::unique_ptr<SliderWithAttachment>> elevSliders;
     int maxNCH, currentNCH;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (inputCoordsView)

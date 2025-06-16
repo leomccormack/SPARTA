@@ -39,7 +39,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
     params.push_back(std::make_unique<juce::AudioParameterChoice>("inputOrder", "InputOrder",
-                                                                  juce::StringArray{"1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th"}, 0,
+                                                                  juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
@@ -53,7 +53,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("diffEQ2", "DiffEQ2", juce::StringArray{"AP","EP"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("transitionFreq", "TransitionFreq", juce::NormalisableRange<float>(500.0f, 2000.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("transitionFreq", "TransitionFreq", juce::NormalisableRange<float>(500.0f, 2000.0f, 0.01f), 800.0f));
     params.push_back(std::make_unique<juce::AudioParameterBool>("binauraliseLS", "BinauraliseLS", false, AudioParameterBoolAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numLoudspeakers", "NumLoudspeakers", 1, MAX_NUM_OUTPUTS, 1,
                                                                AudioParameterIntAttributes().withAutomatable(false)));
@@ -116,6 +116,26 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
     }
 }
 
+void PluginProcessor::setParameterValuesUsingInternalState()
+{
+    setParameterValue("inputOrder", ambi_dec_getMasterDecOrder(hAmbi)-1);
+    setParameterValue("channelOrder", ambi_dec_getChOrder(hAmbi)-1);
+    setParameterValue("normType", ambi_dec_getNormType(hAmbi)-1);
+    setParameterValue("decMethod1", ambi_dec_getDecMethod(hAmbi, 0)-1);
+    setParameterValue("decMethod2", ambi_dec_getDecMethod(hAmbi, 1)-1);
+    setParameterValue("enableMaxRE1", ambi_dec_getDecEnableMaxrE(hAmbi, 0));
+    setParameterValue("enableMaxRE2", ambi_dec_getDecEnableMaxrE(hAmbi, 1));
+    setParameterValue("diffEQ1", ambi_dec_getDecNormType(hAmbi, 0)-1);
+    setParameterValue("diffEQ2", ambi_dec_getDecNormType(hAmbi, 1)-1);
+    setParameterValue("transitionFreq", ambi_dec_getTransitionFreq(hAmbi));
+    setParameterValue("binauraliseLS", ambi_dec_getBinauraliseLSflag(hAmbi));
+    setParameterValue("numLoudspeakers", ambi_dec_getNumLoudspeakers(hAmbi));
+    for(int i=0; i<MAX_NUM_OUTPUTS; i++){
+        setParameterValue("azim" + juce::String(i), ambi_dec_getLoudspeakerAzi_deg(hAmbi, i));
+        setParameterValue("elev" + juce::String(i), ambi_dec_getLoudspeakerElev_deg(hAmbi, i));
+    }
+}
+
 PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
@@ -125,22 +145,7 @@ PluginProcessor::PluginProcessor() :
 	ambi_dec_create(&hAmbi);
     
     /* Grab defaults */
-    setParameterValue("inputOrder", ambi_dec_getMasterDecOrder(hAmbi)-1, false);
-    setParameterValue("channelOrder", ambi_dec_getChOrder(hAmbi)-1, false);
-    setParameterValue("normType", ambi_dec_getNormType(hAmbi)-1, false);
-    setParameterValue("decMethod1", ambi_dec_getDecMethod(hAmbi, 0)-1, false);
-    setParameterValue("decMethod2", ambi_dec_getDecMethod(hAmbi, 1)-1, false);
-    setParameterValue("enableMaxRE1", ambi_dec_getDecEnableMaxrE(hAmbi, 0), false);
-    setParameterValue("enableMaxRE2", ambi_dec_getDecEnableMaxrE(hAmbi, 1), false);
-    setParameterValue("diffEQ1", ambi_dec_getDecNormType(hAmbi, 0)-1, false);
-    setParameterValue("diffEQ2", ambi_dec_getDecNormType(hAmbi, 1)-1, false);
-    setParameterValue("transitionFreq", ambi_dec_getTransitionFreq(hAmbi), false);
-    setParameterValue("binauraliseLS", ambi_dec_getBinauraliseLSflag(hAmbi), false);
-    setParameterValue("numLoudspeakers", ambi_dec_getNumLoudspeakers(hAmbi), false);
-    for(int i=0; i<MAX_NUM_OUTPUTS; i++){
-        setParameterValue("azim" + juce::String(i), ambi_dec_getLoudspeakerAzi_deg(hAmbi, i), false);
-        setParameterValue("elev" + juce::String(i), ambi_dec_getLoudspeakerElev_deg(hAmbi, i), false);
-    }
+    setParameterValuesUsingInternalState();
     
     startTimer(TIMER_PROCESSING_RELATED, 80);
 }
@@ -273,26 +278,78 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-    if (xmlState != nullptr && xmlState->hasTagName("AMBIDECPLUGINSETTINGS") && JucePlugin_VersionCode>=0x10701){
-        parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
-        
-        /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-        for(int band=0; band<ambi_dec_getNumberOfBands(); band++)
-            if(xmlState->hasAttribute("DecOrder"+String(band)))
-                ambi_dec_setDecOrder(hAmbi, xmlState->getIntAttribute("DecOrder"+String(band),1), band);
-        if(xmlState->hasAttribute("UseDefaultHRIRset"))
-            ambi_dec_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
-        if(xmlState->hasAttribute("preProcHRIRs"))
-            ambi_dec_setEnableHRIRsPreProc(hAmbi, xmlState->getIntAttribute("preProcHRIRs", 1));
-        if(xmlState->hasAttribute("SofaFilePath")){
-            String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
-            const char* new_cstring = (const char*)directory.toUTF8();
-            ambi_dec_setSofaFilePath(hAmbi, new_cstring);
+    if (xmlState != nullptr && xmlState->hasTagName("AMBIDECPLUGINSETTINGS")){
+        if(JucePlugin_VersionCode<0x10701){
+            if(xmlState->hasAttribute("MasterDecOrder"))
+                ambi_dec_setMasterDecOrder(hAmbi, xmlState->getIntAttribute("MasterDecOrder",1));
+            for(int band=0; band<ambi_dec_getNumberOfBands(); band++)
+                if(xmlState->hasAttribute("DecOrder"+String(band)))
+                    ambi_dec_setDecOrder(hAmbi, xmlState->getIntAttribute("DecOrder"+String(band),1), band);
+            for(int i=0; i<ambi_dec_getMaxNumLoudspeakers(); i++){
+                if(xmlState->hasAttribute("LoudspeakerAziDeg" + String(i)))
+                    ambi_dec_setLoudspeakerAzi_deg(hAmbi, i, (float)xmlState->getDoubleAttribute("LoudspeakerAziDeg" + String(i), 0.0f));
+                if(xmlState->hasAttribute("LoudspeakerElevDeg" + String(i)))
+                    ambi_dec_setLoudspeakerElev_deg(hAmbi, i, (float)xmlState->getDoubleAttribute("LoudspeakerElevDeg" + String(i), 0.0f));
+            }
+            if(xmlState->hasAttribute("nLoudspeakers"))
+                ambi_dec_setNumLoudspeakers(hAmbi, xmlState->getIntAttribute("nLoudspeakers", 1));
+            if(xmlState->hasAttribute("BinauraliseLS"))
+                ambi_dec_setBinauraliseLSflag(hAmbi, xmlState->getIntAttribute("BinauraliseLS", 1));
+            if(xmlState->hasAttribute("UseDefaultHRIRset"))
+                ambi_dec_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
+            if(xmlState->hasAttribute("Norm"))
+                ambi_dec_setNormType(hAmbi, xmlState->getIntAttribute("Norm", 1));
+            if(xmlState->hasAttribute("ChOrder"))
+                ambi_dec_setChOrder(hAmbi, xmlState->getIntAttribute("ChOrder", 1));
+            if(xmlState->hasAttribute("Dec1method"))
+                ambi_dec_setDecMethod(hAmbi, 0, xmlState->getIntAttribute("Dec1method", 1));
+            if(xmlState->hasAttribute("Dec2method"))
+                ambi_dec_setDecMethod(hAmbi, 1, xmlState->getIntAttribute("Dec2method", 1));
+            if(xmlState->hasAttribute("Dec1normType"))
+                ambi_dec_setDecNormType(hAmbi, 0, xmlState->getIntAttribute("Dec1normType", 1));
+            if(xmlState->hasAttribute("Dec2normType"))
+                ambi_dec_setDecNormType(hAmbi, 1, xmlState->getIntAttribute("Dec2normType", 1));
+            if(xmlState->hasAttribute("Dec1maxrE"))
+                ambi_dec_setDecEnableMaxrE(hAmbi, 0, xmlState->getIntAttribute("Dec1maxrE", 1));
+            if(xmlState->hasAttribute("Dec2maxrE"))
+                ambi_dec_setDecEnableMaxrE(hAmbi, 1, xmlState->getIntAttribute("Dec2maxrE", 1));
+            if(xmlState->hasAttribute("TransitionFreq"))
+                ambi_dec_setTransitionFreq(hAmbi, (float)xmlState->getDoubleAttribute("TransitionFreq", 1e3f));
+            if(xmlState->hasAttribute("preProcHRIRs"))
+                ambi_dec_setEnableHRIRsPreProc(hAmbi, xmlState->getIntAttribute("preProcHRIRs", 1));
+            
+            if(xmlState->hasAttribute("JSONFilePath"))
+                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            
+            if(xmlState->hasAttribute("SofaFilePath")){
+                String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
+                const char* new_cstring = (const char*)directory.toUTF8();
+                ambi_dec_setSofaFilePath(hAmbi, new_cstring);
+            }
+            
+            setParameterValuesUsingInternalState();
         }
-        
-        /* Other */
-        if(xmlState->hasAttribute("JSONFilePath"))
-            lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+        else{
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+            for(int band=0; band<ambi_dec_getNumberOfBands(); band++)
+                if(xmlState->hasAttribute("DecOrder"+String(band)))
+                    ambi_dec_setDecOrder(hAmbi, xmlState->getIntAttribute("DecOrder"+String(band),1), band);
+            if(xmlState->hasAttribute("UseDefaultHRIRset"))
+                ambi_dec_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
+            if(xmlState->hasAttribute("preProcHRIRs"))
+                ambi_dec_setEnableHRIRsPreProc(hAmbi, xmlState->getIntAttribute("preProcHRIRs", 1));
+            if(xmlState->hasAttribute("SofaFilePath")){
+                String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
+                const char* new_cstring = (const char*)directory.toUTF8();
+                ambi_dec_setSofaFilePath(hAmbi, new_cstring);
+            }
+            
+            /* Other */
+            if(xmlState->hasAttribute("JSONFilePath"))
+                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+        }
         
         ambi_dec_refreshSettings(hAmbi);
     }
@@ -363,13 +420,15 @@ void PluginProcessor::loadConfiguration (const File& configFile)
                     channelIDs[j]--;
         
         /* update with the new configuration  */
-        ambi_dec_setNumLoudspeakers(hAmbi, num_ls);
+        setParameterValue("numLoudspeakers", num_ls);
         for (ValueTree::Iterator it = loudspeakers.begin() ; it != loudspeakers.end(); ++it){
             if ( !((*it).getProperty("Imaginary"))){
-                ambi_dec_setLoudspeakerAzi_deg(hAmbi, channelIDs[ls_idx]-1, (*it).getProperty("Azimuth"));
-                ambi_dec_setLoudspeakerElev_deg(hAmbi, channelIDs[ls_idx]-1, (*it).getProperty("Elevation"));
+                float azimValue = (float)(*it).getProperty("Azimuth");
+                float elevValue = (float)(*it).getProperty("Elevation");
+                setParameterValue("azim" + juce::String(channelIDs[ls_idx]-1), azimValue);
+                setParameterValue("elev" + juce::String(channelIDs[ls_idx]-1), elevValue);
                 ls_idx++;
             }
         }
-    } 
+    }
 }

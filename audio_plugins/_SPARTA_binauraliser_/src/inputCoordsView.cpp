@@ -36,18 +36,16 @@ inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentN
 
     for( int i=0; i<maxNCH; i++){
         /* create and initialise azimuth sliders */
-        aziSliders[i] = std::make_unique<ParameterSlider>(p.parameters, "azim" + juce::String(i));
+        aziSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "azim" + juce::String(i));
         addAndMakeVisible (aziSliders[i].get());
-        aziSliders[i]->setValue(binauraliser_getSourceAzi_deg(hBin, i), dontSendNotification);
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
         aziSliders[i]->setBounds(4, 8 + i*sensorEdit_height, 67, 16);
         aziSliders[i]->addListener (this);
 
         /* create and initialise elevation sliders */
-        elevSliders[i] = std::make_unique<ParameterSlider>(p.parameters, "elev" + juce::String(i));
+        elevSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "elev" + juce::String(i));
         addAndMakeVisible (elevSliders[i].get());
-        elevSliders[i]->setValue(binauraliser_getSourceElev_deg(hBin, i), dontSendNotification);
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
         elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 67, 16);

@@ -106,15 +106,8 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
     }
 }
 
-PluginProcessor::PluginProcessor() :
-    AudioProcessor(BusesProperties()
-        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-        .withOutput("Output", AudioChannelSet::discreteChannels(2), true)),
-    ParameterManager(*this, createParameterLayout())
+void PluginProcessor::setParameterValuesUsingInternalState()
 {
-	ambi_bin_create(&hAmbi);
-    
-    /* Grab defaults */
     setParameterValue("inputOrder", ambi_bin_getInputOrderPreset(hAmbi)-1);
     setParameterValue("channelOrder", ambi_bin_getChOrder(hAmbi)-1);
     setParameterValue("normType", ambi_bin_getNormType(hAmbi)-1);
@@ -129,6 +122,18 @@ PluginProcessor::PluginProcessor() :
     setParameterValue("flipYaw", ambi_bin_getFlipYaw(hAmbi));
     setParameterValue("flipPitch", ambi_bin_getFlipPitch(hAmbi));
     setParameterValue("flipRoll", ambi_bin_getFlipRoll(hAmbi));
+}
+
+PluginProcessor::PluginProcessor() :
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(2), true)),
+    ParameterManager(*this, createParameterLayout())
+{
+	ambi_bin_create(&hAmbi);
+    
+    /* Grab defaults */
+    setParameterValuesUsingInternalState();
   
     /* specify here on which UDP port number to receive incoming OSC messages */
     osc_port_ID = DEFAULT_OSC_PORT;
@@ -297,26 +302,78 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-    if (xmlState != nullptr && xmlState->hasTagName("AMBIBINPLUGINSETTINGS") && JucePlugin_VersionCode>=0x10601){
-        parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
-        
-        /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-        if(xmlState->hasAttribute("UseDefaultHRIRset"))
-            ambi_bin_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
-        if(xmlState->hasAttribute("truncationEQ"))
-            ambi_bin_setEnableTruncationEQ(hAmbi,xmlState->getIntAttribute("truncationEQ", 1));
-        if(xmlState->hasAttribute("preproc"))
-            ambi_bin_setHRIRsPreProc(hAmbi, (AMBI_BIN_PREPROC)xmlState->getIntAttribute("preproc", 1));
-        if(xmlState->hasAttribute("SofaFilePath")){
-            String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
-            const char* new_cstring = (const char*)directory.toUTF8();
-            ambi_bin_setSofaFilePath(hAmbi, new_cstring);
+    if (xmlState != nullptr && xmlState->hasTagName("AMBIBINPLUGINSETTINGS")){
+        if(JucePlugin_VersionCode<0x10601){
+            if(xmlState->hasAttribute("order"))
+                ambi_bin_setInputOrderPreset(hAmbi, (SH_ORDERS)xmlState->getIntAttribute("order", 2));
+            if(xmlState->hasAttribute("UseDefaultHRIRset"))
+                ambi_bin_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
+            if(xmlState->hasAttribute("Norm"))
+                ambi_bin_setNormType(hAmbi, xmlState->getIntAttribute("Norm", 1));
+            if(xmlState->hasAttribute("ChOrder"))
+                ambi_bin_setChOrder(hAmbi, xmlState->getIntAttribute("ChOrder", 1));
+            if(xmlState->hasAttribute("maxrE"))
+                ambi_bin_setEnableMaxRE(hAmbi,xmlState->getIntAttribute("maxrE", 1));
+            if(xmlState->hasAttribute("diffMatch"))
+                ambi_bin_setEnableDiffuseMatching(hAmbi,xmlState->getIntAttribute("diffMatch", 1));
+            if(xmlState->hasAttribute("truncationEQ"))
+                ambi_bin_setEnableTruncationEQ(hAmbi,xmlState->getIntAttribute("truncationEQ", 1));
+            if(xmlState->hasAttribute("method"))
+                ambi_bin_setDecodingMethod(hAmbi, (AMBI_BIN_DECODING_METHODS)xmlState->getIntAttribute("method", 1));
+            if(xmlState->hasAttribute("preproc"))
+                ambi_bin_setHRIRsPreProc(hAmbi, (AMBI_BIN_PREPROC)xmlState->getIntAttribute("preproc", 1));
+            
+            if(xmlState->hasAttribute("ENABLEROT"))
+                ambi_bin_setEnableRotation(hAmbi, xmlState->getIntAttribute("ENABLEROT", 0));
+            if(xmlState->hasAttribute("YAW"))
+                ambi_bin_setYaw(hAmbi, (float)xmlState->getDoubleAttribute("YAW", 0.0f));
+            if(xmlState->hasAttribute("PITCH"))
+                ambi_bin_setPitch(hAmbi, (float)xmlState->getDoubleAttribute("PITCH", 0.0f));
+            if(xmlState->hasAttribute("ROLL"))
+                ambi_bin_setRoll(hAmbi, (float)xmlState->getDoubleAttribute("ROLL", 0.0f));
+            if(xmlState->hasAttribute("FLIP_YAW"))
+                ambi_bin_setFlipYaw(hAmbi, xmlState->getIntAttribute("FLIP_YAW", 0));
+            if(xmlState->hasAttribute("FLIP_PITCH"))
+                ambi_bin_setFlipPitch(hAmbi, xmlState->getIntAttribute("FLIP_PITCH", 0));
+            if(xmlState->hasAttribute("FLIP_ROLL"))
+                ambi_bin_setFlipRoll(hAmbi, xmlState->getIntAttribute("FLIP_ROLL", 0));
+            if(xmlState->hasAttribute("RPY_FLAG"))
+                ambi_bin_setRPYflag(hAmbi, xmlState->getIntAttribute("RPY_FLAG", 0));
+            
+            if(xmlState->hasAttribute("OSC_PORT")){
+                osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
+                osc.connect(osc_port_ID);
+            }
+            
+            if(xmlState->hasAttribute("SofaFilePath")){
+                String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
+                const char* new_cstring = (const char*)directory.toUTF8();
+                ambi_bin_setSofaFilePath(hAmbi, new_cstring);
+            }
+            
+            setParameterValuesUsingInternalState();
         }
-        
-        /* Other */
-        if(xmlState->hasAttribute("OSC_PORT")){
-            osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
-            osc.connect(osc_port_ID);
+        else{
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+            if(xmlState->hasAttribute("UseDefaultHRIRset"))
+                ambi_bin_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
+            if(xmlState->hasAttribute("truncationEQ"))
+                ambi_bin_setEnableTruncationEQ(hAmbi,xmlState->getIntAttribute("truncationEQ", 1));
+            if(xmlState->hasAttribute("preproc"))
+                ambi_bin_setHRIRsPreProc(hAmbi, (AMBI_BIN_PREPROC)xmlState->getIntAttribute("preproc", 1));
+            if(xmlState->hasAttribute("SofaFilePath")){
+                String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
+                const char* new_cstring = (const char*)directory.toUTF8();
+                ambi_bin_setSofaFilePath(hAmbi, new_cstring);
+            }
+            
+            /* Other */
+            if(xmlState->hasAttribute("OSC_PORT")){
+                osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
+                osc.connect(osc_port_ID);
+            }
         }
         
         ambi_bin_refreshParams(hAmbi);
