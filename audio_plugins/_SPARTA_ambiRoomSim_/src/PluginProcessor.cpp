@@ -34,12 +34,117 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     }
 }
 
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("outputOrder", "OutputOrder",
+                                                                  juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 1));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numSources", "NumSources", 1, ROOM_SIM_MAX_NUM_SOURCES, 1,
+                                                               AudioParameterIntAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numReceivers", "NumReceivers", 1, ROOM_SIM_MAX_NUM_RECEIVERS, 1,
+                                                               AudioParameterIntAttributes().withAutomatable(false)));
+    for(int i=0; i<ROOM_SIM_MAX_NUM_SOURCES; i++){
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceX" + juce::String(i), "SourceX_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceY" + juce::String(i), "SourceY_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceZ" + juce::String(i), "SourceZ_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 6.0f, 0.01f), 0.0f));
+    }
+    
+    for(int i=0; i<ROOM_SIM_MAX_NUM_RECEIVERS; i++){
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("receiverX" + juce::String(i), "ReceiverX_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("receiverY" + juce::String(i), "ReceiverY_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("receiverZ" + juce::String(i), "ReceiverZ_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 6.0f, 0.01f), 0.0f));
+    }
+
+    return { params.begin(), params.end() };
+}
+
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    if (parameterID == "outputOrder"){
+        ambi_roomsim_setOutputOrder(hAmbi, static_cast<SH_ORDERS>(newValue+1.001f));
+    }
+    else if (parameterID == "channelOrder"){
+        ambi_roomsim_setChOrder(hAmbi, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "normType"){
+        ambi_roomsim_setNormType(hAmbi, static_cast<int>(newValue+1.001f));
+    }
+    else if(parameterID == "numSources"){
+        ambi_roomsim_setNumSources(hAmbi, static_cast<int>(newValue));
+    }
+    else if(parameterID == "numReceivers"){
+        ambi_roomsim_setNumReceivers(hAmbi, static_cast<int>(newValue));
+    }
+    for(int i=0; i<ROOM_SIM_MAX_NUM_SOURCES; i++){
+        if(parameterID == "sourceX" + juce::String(i)){
+            ambi_roomsim_setSourceX(hAmbi, i, newValue);
+            setRefreshWindow(true);
+            return;
+        }
+        else if(parameterID == "sourceY" + juce::String(i)){
+            ambi_roomsim_setSourceY(hAmbi, i, newValue);
+            setRefreshWindow(true);
+            return;
+        }
+        else if(parameterID == "sourceZ" + juce::String(i)){
+            ambi_roomsim_setSourceZ(hAmbi, i, newValue);
+            setRefreshWindow(true);
+            return;
+        }
+    }
+    for(int i=0; i<ROOM_SIM_MAX_NUM_RECEIVERS; i++){
+        if(parameterID == "receiverX" + juce::String(i)){
+            ambi_roomsim_setReceiverX(hAmbi, i, newValue);
+            setRefreshWindow(true);
+            return;
+        }
+        else if(parameterID == "receiverY" + juce::String(i)){
+            ambi_roomsim_setReceiverY(hAmbi, i, newValue);
+            setRefreshWindow(true);
+            return;
+        }
+        else if(parameterID == "receiverZ" + juce::String(i)){
+            ambi_roomsim_setReceiverZ(hAmbi, i, newValue);
+            setRefreshWindow(true);
+            return;
+        }
+    }
+}
+
+void PluginProcessor::setParameterValuesUsingInternalState()
+{
+    setParameterValue("outputOrder", ambi_roomsim_getOutputOrder(hAmbi)-1);
+    setParameterValue("channelOrder", ambi_roomsim_getChOrder(hAmbi)-1);
+    setParameterValue("normType", ambi_roomsim_getNormType(hAmbi)-1);
+    setParameterValue("numSources", ambi_roomsim_getNumSources(hAmbi));
+    setParameterValue("numReceivers", ambi_roomsim_getNumReceivers(hAmbi));
+    for(int i=0; i<ROOM_SIM_MAX_NUM_SOURCES; i++){
+        setParameterValue("sourceX" + juce::String(i), ambi_roomsim_getSourceX(hAmbi, i));
+        setParameterValue("sourceY" + juce::String(i), ambi_roomsim_getSourceY(hAmbi, i));
+        setParameterValue("sourceZ" + juce::String(i), ambi_roomsim_getSourceZ(hAmbi, i));
+    }
+    for(int i=0; i<ROOM_SIM_MAX_NUM_RECEIVERS; i++){
+        setParameterValue("receiverX" + juce::String(i), ambi_roomsim_getReceiverX(hAmbi, i));
+        setParameterValue("receiverY" + juce::String(i), ambi_roomsim_getReceiverY(hAmbi, i));
+        setParameterValue("receiverZ" + juce::String(i), ambi_roomsim_getReceiverZ(hAmbi, i));
+    }
+}
+
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    ParameterManager(*this, createParameterLayout())
 {
 	ambi_roomsim_create(&hAmbi);
+    
+    /* Grab defaults */
+    setParameterValuesUsingInternalState();
+    
     refreshWindow = true;
 }
 
@@ -48,228 +153,13 @@ PluginProcessor::~PluginProcessor()
 	ambi_roomsim_destroy(&hAmbi);
 }
 
-void PluginProcessor::setParameter (int index, float newValue)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_outputOrder:   ambi_roomsim_setOutputOrder(hAmbi, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
-            case k_channelOrder:  ambi_roomsim_setChOrder(hAmbi, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
-            case k_normType:      ambi_roomsim_setNormType(hAmbi, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
-            case k_numSources:    ambi_roomsim_setNumSources(hAmbi, (int)(newValue*(float)(ROOM_SIM_MAX_NUM_SOURCES)+0.5)); break;
-            case k_numReceivers:  ambi_roomsim_setNumReceivers(hAmbi, (int)(newValue*(float)(ROOM_SIM_MAX_NUM_RECEIVERS)+0.5)); break;
-        }
-    }
-    /* source position parameters */
-    else if(index<3*ROOM_SIM_MAX_NUM_SOURCES+k_NumOfParameters){
-        index-=k_NumOfParameters;
-        float newValueScaled;
-        switch((index % 3)){
-            case 0:
-                newValueScaled = newValue * ambi_roomsim_getRoomDimX(hAmbi);
-                if (newValueScaled != ambi_roomsim_getSourceX(hAmbi, (int)((float)index/3.0f+0.001f))){
-                    ambi_roomsim_setSourceX(hAmbi, (int)((float)index/3.0f+0.001f), newValueScaled);
-                    refreshWindow = true;
-                }
-                break;
-            case 1:
-                newValueScaled = newValue * ambi_roomsim_getRoomDimY(hAmbi);
-                if (newValueScaled != ambi_roomsim_getSourceY(hAmbi, (int)((float)index/3.0f+0.001f))){
-                    ambi_roomsim_setSourceY(hAmbi, (int)((float)index/3.0f+0.001f), newValueScaled);
-                    refreshWindow = true;
-                }
-                break;
-            case 2:
-                newValueScaled = newValue * ambi_roomsim_getRoomDimZ(hAmbi);
-                if (newValueScaled != ambi_roomsim_getSourceZ(hAmbi, (int)((float)index/3.0f+0.001f))){
-                    ambi_roomsim_setSourceZ(hAmbi, (int)((float)index/3.0f+0.001f), newValueScaled);
-                    refreshWindow = true;
-                }
-                break;
-        }
-    }
-    /* Receiver position parameters */
-    else{
-        index-= (k_NumOfParameters+3*ROOM_SIM_MAX_NUM_SOURCES);
-        float newValueScaled;
-        switch((index % 3)){
-            case 0:
-                newValueScaled = newValue * ambi_roomsim_getRoomDimX(hAmbi);
-                if (newValueScaled != ambi_roomsim_getReceiverX(hAmbi, (int)((float)index/3.0f+0.001f))){
-                    ambi_roomsim_setReceiverX(hAmbi, (int)((float)index/3.0f+0.001f), newValueScaled);
-                    refreshWindow = true;
-                }
-                break;
-            case 1:
-                newValueScaled = newValue * ambi_roomsim_getRoomDimY(hAmbi);
-                if (newValueScaled != ambi_roomsim_getReceiverY(hAmbi, (int)((float)index/3.0f+0.001f))){
-                    ambi_roomsim_setReceiverY(hAmbi, (int)((float)index/3.0f+0.001f), newValueScaled);
-                    refreshWindow = true;
-                }
-                break;
-            case 2:
-                newValueScaled = newValue * ambi_roomsim_getRoomDimZ(hAmbi);
-                if (newValueScaled != ambi_roomsim_getReceiverZ(hAmbi, (int)((float)index/3.0f+0.001f))){
-                    ambi_roomsim_setReceiverZ(hAmbi, (int)((float)index/3.0f+0.001f), newValueScaled);
-                    refreshWindow = true;
-                }
-                break;
-        }
-    }
-}
-
-bool PluginProcessor::isParameterAutomatable (int index) const
-{
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_outputOrder: return false;
-            case k_channelOrder: return true;
-            case k_normType: return true;
-            case k_numSources: return false;
-            case k_numReceivers: return false;
-        }
-    }
-    return true;
-}
-
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
-}
-
-float PluginProcessor::getParameter (int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_outputOrder:   return (float)(ambi_roomsim_getOutputOrder(hAmbi)-1)/(float)(MAX_SH_ORDER-1);
-            case k_channelOrder:  return (float)(ambi_roomsim_getChOrder(hAmbi)-1)/(float)(NUM_CH_ORDERINGS-1);
-            case k_normType:      return (float)(ambi_roomsim_getNormType(hAmbi)-1)/(float)(NUM_NORM_TYPES-1);
-            case k_numSources:    return (float)(ambi_roomsim_getNumSources(hAmbi))/(float)(ROOM_SIM_MAX_NUM_SOURCES);
-            case k_numReceivers:  return (float)(ambi_roomsim_getNumReceivers(hAmbi))/(float)(ROOM_SIM_MAX_NUM_RECEIVERS);
-            default: return 0.0f;
-        }
-    }
-    /* source position parameters */
-    else if(index<3*ROOM_SIM_MAX_NUM_SOURCES+k_NumOfParameters){
-        index-=k_NumOfParameters;
-        switch((index % 3)){
-            case 0: return ambi_roomsim_getSourceX(hAmbi, (int)((float)index/3.0f+0.001f))/ambi_roomsim_getRoomDimX(hAmbi);
-            case 1: return ambi_roomsim_getSourceY(hAmbi, (int)((float)index/3.0f+0.001f))/ambi_roomsim_getRoomDimY(hAmbi);
-            case 2: return ambi_roomsim_getSourceZ(hAmbi, (int)((float)index/3.0f+0.001f))/ambi_roomsim_getRoomDimZ(hAmbi);
-            default: return 0.0f;
-        }
-    }
-    /* Receiver position parameters */
-    else{
-        index-= (k_NumOfParameters+3*ROOM_SIM_MAX_NUM_SOURCES);
-        switch((index % 3)){
-            case 0: return ambi_roomsim_getReceiverX(hAmbi, (int)((float)index/3.0f+0.001f))/ambi_roomsim_getRoomDimX(hAmbi);
-            case 1: return ambi_roomsim_getReceiverY(hAmbi, (int)((float)index/3.0f+0.001f))/ambi_roomsim_getRoomDimY(hAmbi);
-            case 2: return ambi_roomsim_getReceiverZ(hAmbi, (int)((float)index/3.0f+0.001f))/ambi_roomsim_getRoomDimZ(hAmbi);
-            default: return 0.0f;
-        }
-    }
-}
-
-int PluginProcessor::getNumParameters()
-{
-    return k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + 3*ROOM_SIM_MAX_NUM_RECEIVERS;
 }
 
 const String PluginProcessor::getName() const
 {
     return JucePlugin_Name;
-}
-
-const String PluginProcessor::getParameterName (int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_outputOrder:  return "order";
-            case k_channelOrder: return "channel_order";
-            case k_normType:     return "norm_type";
-            case k_numSources:   return "num_sources";
-            case k_numReceivers: return "num_receivers";
-            default: return "NULL";
-        }
-    }
-    /* source position parameters */
-    else if(index<3*ROOM_SIM_MAX_NUM_SOURCES+k_NumOfParameters){
-        index-=k_NumOfParameters;
-        switch((index % 3)){
-            case 0: return TRANS("SourceX_") + String((int)((float)index/3.0f+0.001f) + 1);
-            case 1: return TRANS("SourceY_") + String((int)((float)index/3.0f+0.001f) + 1);
-            case 2: return TRANS("SourceZ_") + String((int)((float)index/3.0f+0.001f) + 1);
-            default: return "NULL";
-        }
-    }
-    /* Receiver position parameters */
-    else{
-        index-= (k_NumOfParameters+3*ROOM_SIM_MAX_NUM_SOURCES);
-        switch((index % 3)){
-            case 0: return TRANS("ReceiverX_") + String((int)((float)index/3.0f+0.001f) + 1);
-            case 1: return TRANS("ReceiverY_") + String((int)((float)index/3.0f+0.001f) + 1);
-            case 2: return TRANS("ReceiverZ_") + String((int)((float)index/3.0f+0.001f) + 1);
-            default: return "NULL";
-        }
-    }
-}
-
-const String PluginProcessor::getParameterText(int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_outputOrder: return String(ambi_roomsim_getOutputOrder(hAmbi));
-            case k_channelOrder:
-                switch(ambi_roomsim_getChOrder(hAmbi)){
-                    case CH_ACN:  return "ACN";
-                    case CH_FUMA: return "FuMa";
-                    default: return "NULL";
-                }
-            case k_normType:
-                switch(ambi_roomsim_getNormType(hAmbi)){
-                    case NORM_N3D:  return "N3D";
-                    case NORM_SN3D: return "SN3D";
-                    case NORM_FUMA: return "FuMa";
-                    default: return "NULL";
-                }
-            case k_numSources: return String(ambi_roomsim_getNumSources(hAmbi));
-            case k_numReceivers: return String(ambi_roomsim_getNumReceivers(hAmbi));
-            default: return "NULL";
-        }
-    }
-    /* source position parameters */
-    else if(index<3*ROOM_SIM_MAX_NUM_SOURCES+k_NumOfParameters){
-        index-=k_NumOfParameters;
-        switch((index % 3)){
-            case 0: return String(ambi_roomsim_getSourceX(hAmbi, (int)((float)index/3.0f+0.001f)));
-            case 1: return String(ambi_roomsim_getSourceY(hAmbi, (int)((float)index/3.0f+0.001f)));
-            case 2: return String(ambi_roomsim_getSourceZ(hAmbi, (int)((float)index/3.0f+0.001f)));
-            default: return "NULL";
-        }
-    }
-    /* Receiver position parameters */
-    else{
-        index-= (k_NumOfParameters+3*ROOM_SIM_MAX_NUM_SOURCES);
-        switch((index % 3)){
-            case 0: return String(ambi_roomsim_getReceiverX(hAmbi, (int)((float)index/3.0f+0.001f)));
-            case 1: return String(ambi_roomsim_getReceiverY(hAmbi, (int)((float)index/3.0f+0.001f)));
-            case 2: return String(ambi_roomsim_getReceiverZ(hAmbi, (int)((float)index/3.0f+0.001f)));
-            default: return "NULL";
-        }
-    } 
-}
-
-const String PluginProcessor::getInputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-const String PluginProcessor::getOutputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
 }
 
 double PluginProcessor::getTailLengthSeconds() const
@@ -292,18 +182,6 @@ const String PluginProcessor::getProgramName (int /*index*/)
     return String();
 }
 
-
-bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-
 bool PluginProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
@@ -320,11 +198,6 @@ bool PluginProcessor::producesMidi() const
    #else
     return false;
    #endif
-}
-
-bool PluginProcessor::silenceInProducesSilenceOut() const
-{
-    return false;
 }
 
 void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
@@ -375,43 +248,33 @@ bool PluginProcessor::hasEditor() const
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new PluginEditor (this);
+    return new PluginEditor (*this);
 }
 
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-    XmlElement xml("AMBIROOMSIMPLUGINSETTINGS");
-    for(int i=0; i<ambi_roomsim_getMaxNumSources(); i++){
-        xml.setAttribute("SourceX" + String(i), ambi_roomsim_getSourceX(hAmbi,i));
-        xml.setAttribute("SourceY" + String(i), ambi_roomsim_getSourceY(hAmbi,i));
-        xml.setAttribute("SourceZ" + String(i), ambi_roomsim_getSourceZ(hAmbi,i));
-    }
-    for(int i=0; i<ambi_roomsim_getMaxNumReceivers(); i++){
-        xml.setAttribute("ReceiverX" + String(i), ambi_roomsim_getReceiverX(hAmbi,i));
-        xml.setAttribute("ReceiverY" + String(i), ambi_roomsim_getReceiverY(hAmbi,i));
-        xml.setAttribute("ReceiverZ" + String(i), ambi_roomsim_getReceiverZ(hAmbi,i));
-    }
+    juce::ValueTree state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
+    xmlState->setTagName("AMBIROOMSIMPLUGINSETTINGS");
+    
+    /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
     for(int i=0; i<3; i++)
         for(int j=0; j<2; j++)
-            xml.setAttribute("wallAbsCoeff" + String(i) + "_" + String(j), ambi_roomsim_getWallAbsCoeff(hAmbi, i, j));
-    xml.setAttribute("RoomX", ambi_roomsim_getRoomDimX(hAmbi));
-    xml.setAttribute("RoomY", ambi_roomsim_getRoomDimY(hAmbi));
-    xml.setAttribute("RoomZ", ambi_roomsim_getRoomDimZ(hAmbi)); 
-    xml.setAttribute("NORM", ambi_roomsim_getNormType(hAmbi));
-    xml.setAttribute("CHORDER", ambi_roomsim_getChOrder(hAmbi));
-    xml.setAttribute("OUT_ORDER", ambi_roomsim_getOutputOrder(hAmbi));
-    xml.setAttribute("nSources", ambi_roomsim_getNumSources(hAmbi));
-    xml.setAttribute("nReceivers", ambi_roomsim_getNumReceivers(hAmbi));
+            xmlState->setAttribute("wallAbsCoeff" + String(i) + "_" + String(j), ambi_roomsim_getWallAbsCoeff(hAmbi, i, j));
+    xmlState->setAttribute("RoomX", ambi_roomsim_getRoomDimX(hAmbi));
+    xmlState->setAttribute("RoomY", ambi_roomsim_getRoomDimY(hAmbi));
+    xmlState->setAttribute("RoomZ", ambi_roomsim_getRoomDimZ(hAmbi));
 
-    copyXmlToBinary(xml, destData);
+    /* Save */
+    copyXmlToBinary(*xmlState, destData);
 }
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-
-    if (xmlState != nullptr) {
-        if (xmlState->hasTagName("AMBIROOMSIMPLUGINSETTINGS")) {
+    /* Load */
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState != nullptr && xmlState->hasTagName("AMBIROOMSIMPLUGINSETTINGS")){
+        if(JucePlugin_VersionCode<0x10101){
             for(int i=0; i<ambi_roomsim_getMaxNumSources(); i++){
                 if(xmlState->hasAttribute("SourceX" + String(i)))
                     ambi_roomsim_setSourceX(hAmbi, i, (float)xmlState->getDoubleAttribute("SourceX" + String(i), 0.0f));
@@ -442,7 +305,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 ambi_roomsim_setNumSources(hAmbi, xmlState->getIntAttribute("nSources", 1));
             if(xmlState->hasAttribute("nReceivers"))
                 ambi_roomsim_setNumReceivers(hAmbi, xmlState->getIntAttribute("nReceivers", 1));
-
+            
             if(xmlState->hasAttribute("NORM"))
                 ambi_roomsim_setNormType(hAmbi, xmlState->getIntAttribute("NORM", 1));
             if(xmlState->hasAttribute("CHORDER"))
@@ -450,8 +313,25 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if(xmlState->hasAttribute("OUT_ORDER"))
                 ambi_roomsim_setOutputOrder(hAmbi, xmlState->getIntAttribute("OUT_ORDER", 1));
             
-            ambi_roomsim_refreshParams(hAmbi);
+            setParameterValuesUsingInternalState();
         }
+        else{
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+            for(int i=0; i<3; i++)
+                for(int j=0; j<2; j++)
+                    if(xmlState->hasAttribute("wallAbsCoeff" + String(i) + "_" + String(j)))
+                        ambi_roomsim_setWallAbsCoeff(hAmbi, i, j, (float)xmlState->getDoubleAttribute("wallAbsCoeff" + String(i) + "_" + String(j), 0.0f));
+            if(xmlState->hasAttribute("RoomX"))
+                ambi_roomsim_setRoomDimX(hAmbi, (float)xmlState->getDoubleAttribute("RoomX", 0.0f));
+            if(xmlState->hasAttribute("RoomY"))
+                ambi_roomsim_setRoomDimY(hAmbi, (float)xmlState->getDoubleAttribute("RoomY", 0.0f));
+            if(xmlState->hasAttribute("RoomZ"))
+                ambi_roomsim_setRoomDimZ(hAmbi, (float)xmlState->getDoubleAttribute("RoomZ", 0.0f));
+        }
+    
+        ambi_roomsim_refreshParams(hAmbi);
     }
 }
 

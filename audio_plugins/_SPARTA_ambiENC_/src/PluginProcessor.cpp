@@ -39,7 +39,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
     params.push_back(std::make_unique<juce::AudioParameterChoice>("outputOrder", "OutputOrder",
-                                                                  juce::StringArray{"1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th"}, 0));
+                                                                  juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numSources", "NumSources", 1, MAX_NUM_INPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
@@ -79,6 +79,18 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
     }
 }
 
+void PluginProcessor::setParameterValuesUsingInternalState()
+{
+    setParameterValue("outputOrder", ambi_enc_getOutputOrder(hAmbi)-1);
+    setParameterValue("channelOrder", ambi_enc_getChOrder(hAmbi)-1);
+    setParameterValue("normType", ambi_enc_getNormType(hAmbi)-1);
+    setParameterValue("numSources", ambi_enc_getNumSources(hAmbi));
+    for(int i=0; i<MAX_NUM_INPUTS; i++){
+        setParameterValue("azim" + juce::String(i), ambi_enc_getSourceAzi_deg(hAmbi, i));
+        setParameterValue("elev" + juce::String(i), ambi_enc_getSourceElev_deg(hAmbi, i));
+    }
+}
+
 PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
@@ -89,14 +101,7 @@ PluginProcessor::PluginProcessor() :
     refreshWindow = true;
     
     /* Grab defaults */
-    setParameterValue("outputOrder", ambi_enc_getOutputOrder(hAmbi)-1, false);
-    setParameterValue("channelOrder", ambi_enc_getChOrder(hAmbi)-1, false);
-    setParameterValue("normType", ambi_enc_getNormType(hAmbi)-1, false);
-    setParameterValue("numSources", ambi_enc_getNumSources(hAmbi), false);
-    for(int i=0; i<MAX_NUM_INPUTS; i++){
-        setParameterValue("azim" + juce::String(i), ambi_enc_getSourceAzi_deg(hAmbi, i), false);
-        setParameterValue("elev" + juce::String(i), ambi_enc_getSourceElev_deg(hAmbi, i), false);
-    }
+    setParameterValuesUsingInternalState();
 }
 
 PluginProcessor::~PluginProcessor()
@@ -219,12 +224,36 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-    if (xmlState != nullptr && xmlState->hasTagName("AMBIENCPLUGINSETTINGS") && JucePlugin_VersionCode>=0x10401){
-        parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
-        
-        /* Other */
-        if(xmlState->hasAttribute("JSONFilePath"))
-            lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+    if (xmlState != nullptr && xmlState->hasTagName("AMBIENCPLUGINSETTINGS")){
+        if(JucePlugin_VersionCode<0x10401){
+            for(int i=0; i<ambi_enc_getMaxNumSources(); i++){
+                if(xmlState->hasAttribute("SourceAziDeg" + String(i)))
+                    ambi_enc_setSourceAzi_deg(hAmbi, i, (float)xmlState->getDoubleAttribute("SourceAziDeg" + String(i), 0.0f));
+                if(xmlState->hasAttribute("SourceElevDeg" + String(i)))
+                    ambi_enc_setSourceElev_deg(hAmbi, i, (float)xmlState->getDoubleAttribute("SourceElevDeg" + String(i), 0.0f));
+            }
+            if(xmlState->hasAttribute("nSources"))
+                ambi_enc_setNumSources(hAmbi, xmlState->getIntAttribute("nSources", 1));
+            
+            if(xmlState->hasAttribute("JSONFilePath"))
+                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            
+            if(xmlState->hasAttribute("NORM"))
+                ambi_enc_setNormType(hAmbi, xmlState->getIntAttribute("NORM", 1));
+            if(xmlState->hasAttribute("CHORDER"))
+                ambi_enc_setChOrder(hAmbi, xmlState->getIntAttribute("CHORDER", 1));
+            if(xmlState->hasAttribute("OUT_ORDER"))
+                ambi_enc_setOutputOrder(hAmbi, xmlState->getIntAttribute("OUT_ORDER", 1));
+            
+            setParameterValuesUsingInternalState();
+        }
+        else {
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* Other */
+            if(xmlState->hasAttribute("JSONFilePath"))
+                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+        }
         
         ambi_enc_refreshParams(hAmbi);
     }
@@ -292,14 +321,17 @@ void PluginProcessor::loadConfiguration (const File& configFile)
                     channelIDs[j]--;
         
         /* update with the new configuration  */
-        ambi_enc_setNumSources(hAmbi, num_srcs);
+        setParameterValue("numSources", num_srcs);
         for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it){
             if ( !((*it).getProperty("Imaginary"))){
-                ambi_enc_setSourceAzi_deg(hAmbi, channelIDs[src_idx]-1, (*it).getProperty("Azimuth"));
-                ambi_enc_setSourceElev_deg(hAmbi, channelIDs[src_idx]-1, (*it).getProperty("Elevation"));
+                float azimValue = (float)(*it).getProperty("Azimuth");
+                float elevValue = (float)(*it).getProperty("Elevation");
+                setParameterValue("azim" + juce::String(channelIDs[src_idx]-1), azimValue);
+                setParameterValue("elev" + juce::String(channelIDs[src_idx]-1), elevValue);
                 src_idx++;
             }
         }
+        
         refreshWindow=true;
     }
 }

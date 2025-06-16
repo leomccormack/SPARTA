@@ -69,16 +69,16 @@ private:
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */ 
 
-    std::unique_ptr<juce::Slider> s_ratio;
-    std::unique_ptr<juce::Slider> s_knee;
-    std::unique_ptr<juce::Slider> s_attack;
-    std::unique_ptr<juce::Slider> s_release;
-    std::unique_ptr<juce::Slider> s_outgain;
-    std::unique_ptr<juce::ComboBox> presetCB;
-    std::unique_ptr<juce::ComboBox> CHOrderingCB;
-    std::unique_ptr<juce::ComboBox> normalisationCB;
-    std::unique_ptr<juce::Slider> s_ingain;
-    std::unique_ptr<juce::Slider> s_thresh;
+    std::unique_ptr<SliderWithAttachment> s_ratio;
+    std::unique_ptr<SliderWithAttachment> s_knee;
+    std::unique_ptr<SliderWithAttachment> s_attack;
+    std::unique_ptr<SliderWithAttachment> s_release;
+    std::unique_ptr<SliderWithAttachment> s_outgain;
+    std::unique_ptr<ComboBoxWithAttachment> presetCB;
+    std::unique_ptr<ComboBoxWithAttachment> CHOrderingCB;
+    std::unique_ptr<ComboBoxWithAttachment> normalisationCB;
+    std::unique_ptr<SliderWithAttachment> s_ingain;
+    std::unique_ptr<SliderWithAttachment> s_thresh;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

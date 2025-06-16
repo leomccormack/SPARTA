@@ -73,19 +73,19 @@ public:
 };
 
 
-class ParameterSlider : public juce::Slider
+class SliderWithAttachment : public juce::Slider
 {
 public:
-    ParameterSlider(juce::AudioProcessorValueTreeState& parameters, const juce::String& paramID)
+    SliderWithAttachment(juce::AudioProcessorValueTreeState& parameters, const juce::String& paramID)
         : attachment(parameters, paramID, *this) {}
 private:
     juce::AudioProcessorValueTreeState::SliderAttachment attachment;
 };
 
-class ParameterComboBox : public juce::ComboBox
+class ComboBoxWithAttachment : public juce::ComboBox
 {
 public:
-    ParameterComboBox(juce::AudioProcessorValueTreeState& parameters, const juce::String& paramID) {
+    ComboBoxWithAttachment(juce::AudioProcessorValueTreeState& parameters, const juce::String& paramID) {
         if (auto* param = dynamic_cast<juce::AudioParameterChoice*>(parameters.getParameter(paramID))) {
             const auto& choices = param->choices;
             for (int i = 0; i < choices.size(); i++)
@@ -98,10 +98,10 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> attachment;
 };
 
-class ParameterToggleButton : public juce::ToggleButton
+class ToggleButtonWithAttachment : public juce::ToggleButton
 {
 public:
-    ParameterToggleButton(juce::AudioProcessorValueTreeState& parameters, const juce::String& paramID)
+    ToggleButtonWithAttachment(juce::AudioProcessorValueTreeState& parameters, const juce::String& paramID)
         : attachment(parameters, paramID, *this) {}
 private:
     juce::AudioProcessorValueTreeState::ButtonAttachment attachment;

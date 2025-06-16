@@ -95,23 +95,23 @@ private:
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
     std::unique_ptr<juce::ComboBox> CBoutputDirsPreset;
-    std::unique_ptr<juce::Slider> SL_num_loudspeakers;
+    std::unique_ptr<SliderWithAttachment> SL_num_loudspeakers;
     std::unique_ptr<juce::ToggleButton> TBuseDefaultHRIRs;
     std::unique_ptr<juce::ComboBox> CBsourcePreset;
-    std::unique_ptr<juce::ComboBox> CBchFormat;
-    std::unique_ptr<juce::ComboBox> CBnormScheme;
-    std::unique_ptr<juce::Slider> SL_transitionFreq;
-    std::unique_ptr<juce::ComboBox> CBdec1method;
-    std::unique_ptr<juce::ComboBox> CBdec2method;
-    std::unique_ptr<juce::ToggleButton> TBdec1EnableMaxrE;
-    std::unique_ptr<juce::ToggleButton> TBdec2EnableMaxrE;
-    std::unique_ptr<juce::ComboBox> CBdec1normtype;
-    std::unique_ptr<juce::ToggleButton> TBBinauraliseLS;
-    std::unique_ptr<juce::ComboBox> CBdec2normtype;
+    std::unique_ptr<ComboBoxWithAttachment> CBchFormat;
+    std::unique_ptr<ComboBoxWithAttachment> CBnormScheme;
+    std::unique_ptr<SliderWithAttachment> SL_transitionFreq;
+    std::unique_ptr<ComboBoxWithAttachment> CBdec1method;
+    std::unique_ptr<ComboBoxWithAttachment> CBdec2method;
+    std::unique_ptr<ToggleButtonWithAttachment> TBdec1EnableMaxrE;
+    std::unique_ptr<ToggleButtonWithAttachment> TBdec2EnableMaxrE;
+    std::unique_ptr<ComboBoxWithAttachment> CBdec1normtype;
+    std::unique_ptr<ToggleButtonWithAttachment> TBBinauraliseLS;
+    std::unique_ptr<ComboBoxWithAttachment> CBdec2normtype;
     std::unique_ptr<juce::Slider> s_decOrder;
     std::unique_ptr<juce::TextButton> tb_loadJSON;
     std::unique_ptr<juce::TextButton> tb_saveJSON;
-    std::unique_ptr<juce::ComboBox> CBmasterOrder;
+    std::unique_ptr<ComboBoxWithAttachment> CBmasterOrder;
     std::unique_ptr<juce::ToggleButton> TBenablePreProc;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)

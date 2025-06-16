@@ -22,8 +22,8 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter) , progressbar(progress)
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p), progressbar(progress)
 {
     presetCB.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (presetCB.get());
@@ -36,39 +36,34 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     presetCB->setBounds (88, 64, 120, 16);
 
-    arrayTypeCB.reset (new juce::ComboBox ("new combo box"));
+    arrayTypeCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "arrayType");
     addAndMakeVisible (arrayTypeCB.get());
     arrayTypeCB->setEditableText (false);
     arrayTypeCB->setJustificationType (juce::Justification::centredLeft);
     arrayTypeCB->setTextWhenNothingSelected (TRANS ("Spherical"));
     arrayTypeCB->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
-    arrayTypeCB->addItem (TRANS ("Spherical"), 1);
-    arrayTypeCB->addItem (TRANS ("Cylindrical"), 2);
     arrayTypeCB->addListener (this);
 
     arrayTypeCB->setBounds (368, 378, 120, 16);
 
-    QSlider.reset (new juce::Slider ("new slider"));
+    QSlider = std::make_unique<SliderWithAttachment>(p.parameters, "numSensors");
     addAndMakeVisible (QSlider.get());
-    QSlider->setRange (4, 128, 1);
     QSlider->setSliderStyle (juce::Slider::LinearHorizontal);
     QSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
     QSlider->addListener (this);
 
     QSlider->setBounds (156, 97, 52, 20);
 
-    rSlider.reset (new juce::Slider ("new slider"));
+    rSlider = std::make_unique<SliderWithAttachment>(p.parameters, "arrayRadius");
     addAndMakeVisible (rSlider.get());
-    rSlider->setRange (1, 400, 0.01);
     rSlider->setSliderStyle (juce::Slider::LinearHorizontal);
     rSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
     rSlider->addListener (this);
 
     rSlider->setBounds (156, 129, 52, 20);
 
-    RSlider.reset (new juce::Slider ("new slider"));
+    RSlider = std::make_unique<SliderWithAttachment>(p.parameters, "baffleRadius");
     addAndMakeVisible (RSlider.get());
-    RSlider->setRange (1, 400, 0.01);
     RSlider->setSliderStyle (juce::Slider::LinearHorizontal);
     RSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
     RSlider->setColour (juce::Slider::trackColourId, juce::Colour (0xff181f22));
@@ -77,16 +72,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     RSlider->setBounds (156, 161, 52, 20);
 
-    cSlider.reset (new juce::Slider ("new slider"));
+    cSlider = std::make_unique<SliderWithAttachment>(p.parameters, "speedOfSound");
     addAndMakeVisible (cSlider.get());
-    cSlider->setRange (200, 2000, 0.01);
     cSlider->setSliderStyle (juce::Slider::LinearHorizontal);
     cSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     cSlider->addListener (this);
 
     cSlider->setBounds (408, 346, 80, 16);
 
-    weightTypeCB.reset (new juce::ComboBox ("new combo box"));
+    weightTypeCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "weightType");
     addAndMakeVisible (weightTypeCB.get());
     weightTypeCB->setEditableText (false);
     weightTypeCB->setJustificationType (juce::Justification::centredLeft);
@@ -96,7 +90,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     weightTypeCB->setBounds (368, 410, 120, 16);
 
-    filterTypeCB.reset (new juce::ComboBox ("new combo box"));
+    filterTypeCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "filterType");
     addAndMakeVisible (filterTypeCB.get());
     filterTypeCB->setEditableText (false);
     filterTypeCB->setJustificationType (juce::Justification::centredLeft);
@@ -106,7 +100,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     filterTypeCB->setBounds (640, 276, 128, 16);
 
-    regAmountSlider.reset (new juce::Slider ("new slider"));
+    regAmountSlider = std::make_unique<SliderWithAttachment>(p.parameters, "maxGain");
     addAndMakeVisible (regAmountSlider.get());
     regAmountSlider->setRange (0, 80, 0.01);
     regAmountSlider->setSliderStyle (juce::Slider::LinearHorizontal);
@@ -117,33 +111,28 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     regAmountSlider->setBounds (640, 308, 128, 16);
 
-    CHOrderingCB.reset (new juce::ComboBox ("new combo box"));
+    CHOrderingCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CHOrderingCB.get());
     CHOrderingCB->setEditableText (false);
     CHOrderingCB->setJustificationType (juce::Justification::centredLeft);
     CHOrderingCB->setTextWhenNothingSelected (TRANS ("ACN"));
     CHOrderingCB->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
-    CHOrderingCB->addSeparator();
-    CHOrderingCB->addSeparator();
     CHOrderingCB->addListener (this);
 
     CHOrderingCB->setBounds (640, 377, 128, 16);
 
-    normalisationCB.reset (new juce::ComboBox ("new combo box"));
+    normalisationCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (normalisationCB.get());
     normalisationCB->setEditableText (false);
     normalisationCB->setJustificationType (juce::Justification::centredLeft);
     normalisationCB->setTextWhenNothingSelected (TRANS ("N3D"));
     normalisationCB->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
-    normalisationCB->addSeparator();
-    normalisationCB->addSeparator();
     normalisationCB->addListener (this);
 
     normalisationCB->setBounds (640, 409, 128, 16);
 
-    gainSlider.reset (new juce::Slider ("new slider"));
+    gainSlider = std::make_unique<SliderWithAttachment>(p.parameters, "postGain");
     addAndMakeVisible (gainSlider.get());
-    gainSlider->setRange (-60, 60, 0.01);
     gainSlider->setSliderStyle (juce::Slider::LinearHorizontal);
     gainSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     gainSlider->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -151,13 +140,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     gainSlider->addListener (this);
 
     gainSlider->setBounds (640, 341, 128, 16);
-
-    degRadTB.reset (new juce::ToggleButton ("new toggle button"));
-    addAndMakeVisible (degRadTB.get());
-    degRadTB->setButtonText (juce::String());
-    degRadTB->addListener (this);
-
-    degRadTB->setBounds (186, 198, 23, 24);
 
     textButton.reset (new juce::TextButton ("new button"));
     addAndMakeVisible (textButton.get());
@@ -199,7 +181,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     tb_saveJSON->setBounds (182, 39, 34, 14);
 
-    CBencodingOrder.reset (new juce::ComboBox ("new combo box"));
+    CBencodingOrder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "outputOrder");
     addAndMakeVisible (CBencodingOrder.get());
     CBencodingOrder->setEditableText (false);
     CBencodingOrder->setJustificationType (juce::Justification::centredLeft);
@@ -218,9 +200,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     setSize (800, 450);
 
-    /* handles */
-	hVst = ownerFilter;
-    hA2sh = hVst->getFXHandle();
+    /* handle to object */
+    hA2sh = processor.getFXHandle();
 
     /* init OpenGL */
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -265,18 +246,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     dispID = SHOW_EQ;
     needScreenRefreshFLAG = true;
 
-    /* add master decoding order options */
-    CBencodingOrder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
-    CBencodingOrder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
-    CBencodingOrder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
-    CBencodingOrder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
-    CBencodingOrder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
-    CBencodingOrder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
-    CBencodingOrder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
-    CBencodingOrder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
-    CBencodingOrder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
-    CBencodingOrder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
-
     /* pass handles to data required for eq and analysis displays */
     int numFreqPoints, numCurves;
     float* freqVector = array2sh_getFreqVector(hA2sh, &numFreqPoints);
@@ -289,29 +258,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     dataHandle = array2sh_getLevelDifference_Handle(hA2sh, &numCurves, &numFreqPoints);
     ldiffviewIncluded->setSolidCurves_Handle(freqVector, dataHandle, numFreqPoints, numCurves);
 
-    /* add filter options */
-    filterTypeCB->addItem (TRANS("Soft-Limiting"), FILTER_SOFT_LIM);
-    filterTypeCB->addItem (TRANS("Tikhonov"), FILTER_TIKHONOV);
-    filterTypeCB->addItem (TRANS("Z-Style"), FILTER_Z_STYLE);
-    filterTypeCB->addItem (TRANS("Z-Style (max_rE)"), FILTER_Z_STYLE_MAXRE);
-    filterTypeCB->setSelectedId(array2sh_getFilterType(hA2sh), dontSendNotification);
-
-    /* add weight options */
-    weightTypeCB->addItem (TRANS("Rigid-omni"), WEIGHT_RIGID_OMNI);
-    weightTypeCB->addItem (TRANS("Rigid-cardioid"), WEIGHT_RIGID_CARD);
-    weightTypeCB->addItem (TRANS("Rigid-dipole"), WEIGHT_RIGID_DIPOLE);
-    weightTypeCB->addItem (TRANS("Open-omni"), WEIGHT_OPEN_OMNI);
-    weightTypeCB->addItem (TRANS("Open-cardioid"), WEIGHT_OPEN_CARD);
-    weightTypeCB->addItem (TRANS("Open-dipole"), WEIGHT_OPEN_DIPOLE);
-    weightTypeCB->setSelectedId(array2sh_getWeightType(hA2sh), dontSendNotification);
-
-    /* add channel format and norm scheme options */
-    CHOrderingCB->addItem (TRANS("ACN"), CH_ACN);
-    CHOrderingCB->addItem (TRANS("FuMa"), CH_FUMA);
-    normalisationCB->addItem (TRANS("N3D"), NORM_N3D);
-    normalisationCB->addItem (TRANS("SN3D"), NORM_SN3D);
-    normalisationCB->addItem (TRANS("FuMa"), NORM_FUMA);
-
     /* Hide decoding orders that are unsuitable for number of sensors */
     for(int i=1; i<=MAX_SH_ORDER; i++)
         CBencodingOrder->setItemEnabled(i, (i+1)*(i+1) <= array2sh_getNumSensors(hA2sh) ? true : false);
@@ -320,7 +266,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //addAndMakeVisible (sensorCoordsVP = new Viewport ("new viewport"));
     sensorCoordsVP.reset(new Viewport ("new viewport"));
     addAndMakeVisible (sensorCoordsVP.get());
-    sensorCoordsView_handle = new sensorCoordsView(ownerFilter, MAX_NUM_CHANNELS, array2sh_getNumSensors(hA2sh), showDegreesInstead);
+    sensorCoordsView_handle = new sensorCoordsView(p, MAX_NUM_CHANNELS, array2sh_getNumSensors(hA2sh));
     sensorCoordsVP->setViewedComponent (sensorCoordsView_handle);
     sensorCoordsVP->setScrollBarsShown (true, false);
     sensorCoordsVP->setAlwaysOnTop(true);
@@ -356,24 +302,22 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
 
     /* grab current parameter settings */
-    CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);
-    arrayTypeCB->setSelectedId(array2sh_getArrayType(hA2sh), dontSendNotification);
-    QSlider->setRange(array2sh_getMinNumSensors(hA2sh), array2sh_getMaxNumSensors(), 1);
-    QSlider->setValue(array2sh_getNumSensors(hA2sh), dontSendNotification);
-    rSlider->setRange(ARRAY2SH_ARRAY_RADIUS_MIN_VALUE, ARRAY2SH_ARRAY_RADIUS_MAX_VALUE, 0.01f);
-    rSlider->setValue(array2sh_getr(hA2sh)*1e3f, dontSendNotification);
-    RSlider->setRange(ARRAY2SH_BAFFLE_RADIUS_MIN_VALUE, ARRAY2SH_BAFFLE_RADIUS_MAX_VALUE, 0.01f);
-    RSlider->setValue(array2sh_getR(hA2sh)*1e3f, dontSendNotification);
-    cSlider->setRange(ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE, ARRAY2SH_SPEED_OF_SOUND_MAX_VALUE, 0.01f);
-    cSlider->setValue(array2sh_getc(hA2sh), dontSendNotification);
-    regAmountSlider->setRange(ARRAY2SH_MAX_GAIN_MIN_VALUE, ARRAY2SH_MAX_GAIN_MAX_VALUE, 0.01f);
-    regAmountSlider->setValue(array2sh_getRegPar(hA2sh), dontSendNotification);
+//    CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);
+//    arrayTypeCB->setSelectedId(array2sh_getArrayType(hA2sh), dontSendNotification);
+//    QSlider->setRange(array2sh_getMinNumSensors(hA2sh), array2sh_getMaxNumSensors(), 1);
+//    QSlider->setValue(array2sh_getNumSensors(hA2sh), dontSendNotification);
+//    rSlider->setRange(ARRAY2SH_ARRAY_RADIUS_MIN_VALUE, ARRAY2SH_ARRAY_RADIUS_MAX_VALUE, 0.01f);
+//    rSlider->setValue(array2sh_getr(hA2sh)*1e3f, dontSendNotification);
+//    RSlider->setRange(ARRAY2SH_BAFFLE_RADIUS_MIN_VALUE, ARRAY2SH_BAFFLE_RADIUS_MAX_VALUE, 0.01f);
+//    RSlider->setValue(array2sh_getR(hA2sh)*1e3f, dontSendNotification);
+//    cSlider->setRange(ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE, ARRAY2SH_SPEED_OF_SOUND_MAX_VALUE, 0.01f);
+//    cSlider->setValue(array2sh_getc(hA2sh), dontSendNotification);
+//    regAmountSlider->setRange(ARRAY2SH_MAX_GAIN_MIN_VALUE, ARRAY2SH_MAX_GAIN_MAX_VALUE, 0.01f);
+//    regAmountSlider->setValue(array2sh_getRegPar(hA2sh), dontSendNotification);
     CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), dontSendNotification);
     normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), dontSendNotification);
-    gainSlider->setRange(ARRAY2SH_POST_GAIN_MIN_VALUE, ARRAY2SH_POST_GAIN_MAX_VALUE, 0.01f);
-    gainSlider->setValue(array2sh_getGain(hA2sh), dontSendNotification);
-    showDegreesInstead = false;
-    degRadTB->setToggleState(showDegreesInstead, dontSendNotification);
+//    gainSlider->setRange(ARRAY2SH_POST_GAIN_MIN_VALUE, ARRAY2SH_POST_GAIN_MAX_VALUE, 0.01f);
+//    gainSlider->setValue(array2sh_getGain(hA2sh), dontSendNotification);
     CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
     normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
     applyDiffEQ->setToggleState((bool)array2sh_getDiffEQpastAliasing(hA2sh), dontSendNotification);
@@ -391,7 +335,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     normalisationCB->setTooltip("Ambisonic normalisation scheme (Note that AmbiX: ACN/SN3D).");
     tb_loadJSON->setTooltip("Loads microphone array sensor directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     tb_saveJSON->setTooltip("Saves the current microphone array sensor directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
-    degRadTB->setTooltip("If 'ticked', the sensor directions are given in degrees [azi, elev] convention. If not 'ticked', they are in radians. Note that we follow the right-hand-rule when specifying directions in SPARTA (i.e., positive azimuths are looking left, and positive elevations are looking up)");
     textButton->setTooltip("Anlyses the performance of the currently configured microphone array, based on established objective metrics. The plug-in first simulates the microphone array and applies the current encoding matrix to it, subsequently comparing the resulting patterns with ideal spherical harmonics.");
     dispWindow->setTooltip("Switches between the different display options. \n\nFilters: order-dependent equalisation curves, which are applied to eliminate the effect of the sphere. \n\nCorr: The spatial correlation is derived by comparing the patterns of the array responses with the patterns of ideal spherical harmonics, where '1' means they are perfect, and '0' completely uncorrelated; the spatial aliasing frequency can therefore be observed for each order, as the point where the spatial correlation tends towards 0. \n\nLdiff: The level difference is the mean level difference over all directions (diffuse level difference) between the ideal and simulated components. One can observe that higher permitted amplification limits [Max Gain (dB)] will result in noisier signals; however, this will also result in a wider frequency range of useful spherical harmonic components at each order.");
     applyDiffEQ->setTooltip("Applies diffuse-field equalisation past the theoretical spatial aliasing frequency of the currently configured microphone array. This may help reduce any 'harshness' perceived at the high frequencies after decoding, since this will flatten any gain boosting happening up there.");
@@ -430,7 +373,6 @@ PluginEditor::~PluginEditor()
     CHOrderingCB = nullptr;
     normalisationCB = nullptr;
     gainSlider = nullptr;
-    degRadTB = nullptr;
     textButton = nullptr;
     dispWindow = nullptr;
     tb_loadJSON = nullptr;
@@ -976,13 +918,13 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(array2sh_getNumSensors(hA2sh)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
-            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+            g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(array2sh_getNSHrequired(hA2sh)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
@@ -993,17 +935,6 @@ void PluginEditor::paint (juce::Graphics& g)
 void PluginEditor::resized()
 {
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
 
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
@@ -1029,35 +960,26 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 
         /* update view windows */
         sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));
+        
+        processor.setParameterValue("numSensors", array2sh_getNumSensors(hA2sh));
+        for(int i=0; i<array2sh_getNumSensors(hA2sh); i++){
+            processor.setParameterValue("azim" + juce::String(i), array2sh_getSensorAzi_deg(hA2sh,i));
+            processor.setParameterValue("elev" + juce::String(i), array2sh_getSensorElev_deg(hA2sh,i));
+        }
 
         needScreenRefreshFLAG = true;
     }
     else if (comboBoxThatHasChanged == arrayTypeCB.get())
     {
-        array2sh_setArrayType(hA2sh, arrayTypeCB->getSelectedId());
         needScreenRefreshFLAG = true;
     }
     else if (comboBoxThatHasChanged == weightTypeCB.get())
     {
-        array2sh_setWeightType(hA2sh, weightTypeCB->getSelectedId());
         needScreenRefreshFLAG = true;
     }
     else if (comboBoxThatHasChanged == filterTypeCB.get())
     {
-        array2sh_setFilterType(hA2sh, filterTypeCB->getSelectedId());
         needScreenRefreshFLAG = true;
-    }
-    else if (comboBoxThatHasChanged == CHOrderingCB.get())
-    {
-        hVst->beginParameterChangeGesture(k_channelOrder);
-        array2sh_setChOrder(hA2sh, CHOrderingCB->getSelectedId());
-        hVst->endParameterChangeGesture(k_channelOrder);
-    }
-    else if (comboBoxThatHasChanged == normalisationCB.get())
-    {
-        hVst->beginParameterChangeGesture(k_normType);
-        array2sh_setNormType(hA2sh, normalisationCB->getSelectedId());
-        hVst->endParameterChangeGesture(k_normType);
     }
     else if (comboBoxThatHasChanged == dispWindow.get())
     {
@@ -1066,8 +988,6 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     }
     else if (comboBoxThatHasChanged == CBencodingOrder.get())
     {
-        int newOrder = CBencodingOrder->getSelectedId();
-        array2sh_setEncodingOrder(hA2sh, newOrder);
         needScreenRefreshFLAG = true;
     }
 
@@ -1087,18 +1007,14 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == QSlider.get())
     {
-        if(array2sh_getMinNumSensors(hA2sh)<= (int)QSlider->getValue())
-            array2sh_setNumSensors(hA2sh, (int)QSlider->getValue());
         needScreenRefreshFLAG = true;
     }
     else if (sliderThatWasMoved == rSlider.get())
     {
-        array2sh_setr(hA2sh, (float)rSlider->getValue()/1e3f);
         needScreenRefreshFLAG = true;
     }
     else if (sliderThatWasMoved == RSlider.get())
     {
-        array2sh_setR(hA2sh, (float)RSlider->getValue()/1e3f);
         bool changerToo = (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_OMNI) ||
             (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_CARD) ||
             (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_DIPOLE) ? true : false; /* is it a rigid array? */
@@ -1110,59 +1026,46 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     }
     else if (sliderThatWasMoved == cSlider.get())
     {
-        array2sh_setc(hA2sh, (float)cSlider->getValue());
         needScreenRefreshFLAG = true;
     }
     else if (sliderThatWasMoved == regAmountSlider.get())
     {
-        array2sh_setRegPar(hA2sh, (float)regAmountSlider->getValue());
         needScreenRefreshFLAG = true;
-    }
-    else if (sliderThatWasMoved == gainSlider.get())
-    {
-        hVst->beginParameterChangeGesture(k_postGain);
-        array2sh_setGain(hA2sh, (float)gainSlider->getValue());
-        hVst->endParameterChangeGesture(k_postGain);
     }
 }
 
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
-    if (buttonThatWasClicked == degRadTB.get())
-    {
-        showDegreesInstead = degRadTB->getToggleState();
-        sensorCoordsView_handle->setUseDegreesInstead(showDegreesInstead);
-    }
-    else if (buttonThatWasClicked == textButton.get())
+    if (buttonThatWasClicked == textButton.get())
     {
         array2sh_setRequestEncoderEvalFLAG(hA2sh, 1);
     }
     else if (buttonThatWasClicked == tb_loadJSON.get())
     {
         chooser = std::make_unique<juce::FileChooser> ("Load configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       processor.getLastDir().exists() ? processor.getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
         auto chooserFlags = juce::FileBrowserComponent::openMode
                                   | juce::FileBrowserComponent::canSelectFiles;
         chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
             auto file = fc.getResult();
             if (file != File{}){
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->loadConfiguration (file);
+                processor.setLastDir(file.getParentDirectory());
+                processor.loadConfiguration (file);
             }
         });
     }
     else if (buttonThatWasClicked == tb_saveJSON.get())
     {
         chooser = std::make_unique<juce::FileChooser> ("Save configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       processor.getLastDir().exists() ? processor.getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
         auto chooserFlags = juce::FileBrowserComponent::saveMode;
         chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
             auto file = fc.getResult();
             if (file != File{}) {
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->saveConfigurationToFile (file);
+                processor.setLastDir(file.getParentDirectory());
+                processor.saveConfigurationToFile (file);
             }
         });
     }
@@ -1172,14 +1075,6 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         needScreenRefreshFLAG = true;
     }
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
 
 void PluginEditor::timerCallback(int timerID)
 {
@@ -1192,13 +1087,9 @@ void PluginEditor::timerCallback(int timerID)
             /* parameters whos values can change internally should be periodically refreshed */
             int curOrder = CBencodingOrder->getSelectedId();
             QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
-            RSlider->setValue(array2sh_getR(hA2sh)*1e3f, dontSendNotification);
-            CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);
-            QSlider->setValue(array2sh_getNumSensors(hA2sh), dontSendNotification);
             sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));
-            gainSlider->setValue(array2sh_getGain(hA2sh), dontSendNotification);
-            CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), dontSendNotification);
-            normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), dontSendNotification);
+            CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), sendNotification);
+            normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), sendNotification);
             CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
             normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
 
@@ -1319,7 +1210,7 @@ void PluginEditor::timerCallback(int timerID)
                 CBencodingOrder->setItemEnabled(i, (i+1)*(i+1) <= array2sh_getNumSensors(hA2sh) ? true : false);
 
             /* display warning message, if needed */
-            if ((hVst->getCurrentBlockSize() % array2sh_getFrameSize()) != 0){
+            if ((processor.getCurrentBlockSize() % array2sh_getFrameSize()) != 0){
                 currentWarning = k_warning_frameSize;
                 repaint(0,0,getWidth(),32);
             }
@@ -1327,11 +1218,11 @@ void PluginEditor::timerCallback(int timerID)
                 currentWarning = k_warning_supported_fs;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumInputs() < array2sh_getNumSensors(hA2sh))){
+            else if ((processor.getCurrentNumInputs() < array2sh_getNumSensors(hA2sh))){
                 currentWarning = k_warning_NinputCH;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumOutputs() < array2sh_getNSHrequired(hA2sh))){
+            else if ((processor.getCurrentNumOutputs() < array2sh_getNSHrequired(hA2sh))){
                 currentWarning = k_warning_NoutputCH;
                 repaint(0,0,getWidth(),32);
             }

@@ -38,7 +38,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBsourceDirsPreset->setBounds (88, 66, 112, 20);
 
-    SL_num_sources = std::make_unique<ParameterSlider>(p.parameters, "numSources");
+    SL_num_sources = std::make_unique<SliderWithAttachment>(p.parameters, "numSources");
     addAndMakeVisible (SL_num_sources.get());
     SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
@@ -144,7 +144,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     tb_saveJSON->setBounds (174, 40, 34, 14);
 
-    s_yaw = std::make_unique<ParameterSlider>(p.parameters, "yaw");
+    s_yaw = std::make_unique<SliderWithAttachment>(p.parameters, "yaw");
     addAndMakeVisible (s_yaw.get());
     s_yaw->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
@@ -155,7 +155,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     s_yaw->addListener (this);
     s_yaw->setBounds (717, 260, 60, 68);
 
-    s_pitch = std::make_unique<ParameterSlider>(p.parameters, "pitch");
+    s_pitch = std::make_unique<SliderWithAttachment>(p.parameters, "pitch");
     addAndMakeVisible (s_pitch.get());
     s_pitch->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
@@ -167,7 +167,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_pitch->setBounds (780, 260, 60, 68);
 
-    s_roll = std::make_unique<ParameterSlider>(p.parameters, "roll");
+    s_roll = std::make_unique<SliderWithAttachment>(p.parameters, "roll");
     addAndMakeVisible (s_roll.get());
     s_roll->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
@@ -179,21 +179,21 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_roll->setBounds (843, 260, 60, 68);
 
-    t_flipYaw = std::make_unique<ParameterToggleButton>(p.parameters, "flipYaw");
+    t_flipYaw = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipYaw");
     addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (juce::String());
     t_flipYaw->addListener (this);
 
     t_flipYaw->setBounds (749, 329, 23, 24);
 
-    t_flipPitch = std::make_unique<ParameterToggleButton>(p.parameters, "flipPitch");
+    t_flipPitch = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipPitch");
     addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (juce::String());
     t_flipPitch->addListener (this);
 
     t_flipPitch->setBounds (812, 329, 23, 24);
 
-    t_flipRoll = std::make_unique<ParameterToggleButton>(p.parameters, "flipRoll");
+    t_flipRoll = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipRoll");
     addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (juce::String());
     t_flipRoll->addListener (this);
@@ -215,14 +215,14 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     te_oscport->setBounds (848, 216, 44, 22);
 
-    TBrpyFlag = std::make_unique<ParameterToggleButton>(p.parameters, "useRollPitchYaw");
+    TBrpyFlag = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "useRollPitchYaw");
     addAndMakeVisible (TBrpyFlag.get());
     TBrpyFlag->setButtonText (juce::String());
     TBrpyFlag->addListener (this);
 
     TBrpyFlag->setBounds (752, 216, 32, 24);
 
-    TBenableRotation = std::make_unique<ParameterToggleButton>(p.parameters, "enableRotation");
+    TBenableRotation = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableRotation");
     addAndMakeVisible (TBenableRotation.get());
     TBenableRotation->setButtonText (juce::String());
     TBenableRotation->addListener (this);

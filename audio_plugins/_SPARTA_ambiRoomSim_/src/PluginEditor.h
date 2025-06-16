@@ -43,7 +43,7 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::Button::Listener
 {
 public:
-    PluginEditor (PluginProcessor* ownerFilter);
+    PluginEditor (PluginProcessor& p);
     ~PluginEditor() override;
 
     void timerCallback() override;
@@ -55,7 +55,7 @@ public:
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hAmbi;
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
@@ -84,11 +84,11 @@ private:
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
-    std::unique_ptr<juce::Slider> SL_num_sources;
-    std::unique_ptr<juce::ComboBox> CBoutputFormat;
-    std::unique_ptr<juce::ComboBox> CBnormalisation;
-    std::unique_ptr<juce::ComboBox> CBorder;
-    std::unique_ptr<juce::Slider> SL_num_receivers;
+    std::unique_ptr<SliderWithAttachment> SL_num_sources;
+    std::unique_ptr<ComboBoxWithAttachment> CBoutputFormat;
+    std::unique_ptr<ComboBoxWithAttachment> CBnormalisation;
+    std::unique_ptr<ComboBoxWithAttachment> CBorder;
+    std::unique_ptr<SliderWithAttachment> SL_num_receivers;
     std::unique_ptr<juce::Slider> SL_max_reflection_order;
     std::unique_ptr<juce::Slider> s_attenCoeff_pX;
     std::unique_ptr<juce::Slider> s_attenCoeff_nX;

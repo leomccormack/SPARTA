@@ -291,7 +291,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     if (xmlState != nullptr && xmlState->hasTagName("BINAURALISERPLUGINSETTINGS") && JucePlugin_VersionCode>=0x10701){
         parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
         
-         /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+        /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
         if(xmlState->hasAttribute("SofaFilePath")){
             String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
             const char* new_cstring = (const char*)directory.toUTF8();

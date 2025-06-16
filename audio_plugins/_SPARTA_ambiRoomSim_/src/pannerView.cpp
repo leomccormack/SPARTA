@@ -26,11 +26,11 @@ const float iconWidth = 8.0f;
 const float iconRadius = iconWidth/2.0f;
 const float room_pixels = 200;
 
-pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
+pannerView::pannerView (PluginProcessor& p, int _width, int _height) : processor(p)
 {
     setSize(_width, _height);
-    hVst = ownerFilter;
-    hAmbi = hVst->getFXHandle();
+    
+    hAmbi = processor.getFXHandle();
     width = _width;
     height = _height;
     topOrSideView = TOP_VIEW; /* default */
@@ -245,17 +245,6 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
     }
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
 void pannerView::mouseDrag (const juce::MouseEvent& e)
 {
     float room_dims_pixels[3], room_dims_m[3];
@@ -279,29 +268,15 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
             case TOP_VIEW:
                 view_x = 27.0f; view_y = 12.0f;
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-                
-                hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3+1);
-                hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3);
-                
-                ambi_roomsim_setSourceY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
-                ambi_roomsim_setSourceX(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[0])/scale);
-                
-                hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3+1);
-                hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3);
+                processor.setParameterValue("sourceY" + juce::String(indexOfClickedIcon), -(point.getX() - view_x - room_dims_pixels[1])/scale);
+                processor.setParameterValue("sourceX" + juce::String(indexOfClickedIcon), -(point.getY() - view_y - room_dims_pixels[0])/scale);
                 break;
 
             case SIDE_VIEW:
                 view_x = 27.0f; view_y = 240.0f;
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-                
-                hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3+1);
-                hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3+2);
-                
-                ambi_roomsim_setSourceY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
-                ambi_roomsim_setSourceZ(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[2])/scale);
-                
-                hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3+1);
-                hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedIcon*3+2);
+                processor.setParameterValue("sourceY" + juce::String(indexOfClickedIcon), -(point.getX() - view_x - room_dims_pixels[1])/scale);
+                processor.setParameterValue("sourceZ" + juce::String(indexOfClickedIcon), -(point.getY() - view_y - room_dims_pixels[2])/scale);
                 break;
             default: break;
         }
@@ -311,45 +286,20 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
             case TOP_VIEW:
                 view_x = 27.0f; view_y = 12.0f;
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-                
-                hVst->beginParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3+1);
-                hVst->beginParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3);
-                
-                ambi_roomsim_setReceiverY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
-                ambi_roomsim_setReceiverX(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[0])/scale);
-                
-                hVst->endParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3+1);
-                hVst->endParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3);
+                processor.setParameterValue("receiverY" + juce::String(indexOfClickedIcon), -(point.getX() - view_x - room_dims_pixels[1])/scale);
+                processor.setParameterValue("receiverX" + juce::String(indexOfClickedIcon), -(point.getY() - view_y - room_dims_pixels[0])/scale);
                 break;
 
             case SIDE_VIEW:
                 view_x = 27.0f; view_y = 240.0f;
                 point.setXY((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2);
-                
-                hVst->beginParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3+1);
-                hVst->beginParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3+2);
-                
-                ambi_roomsim_setReceiverY(hAmbi, indexOfClickedIcon, -(point.getX() - view_x - room_dims_pixels[1])/scale);
-                ambi_roomsim_setReceiverZ(hAmbi, indexOfClickedIcon, -(point.getY() - view_y - room_dims_pixels[2])/scale);
-                
-                hVst->endParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3+1);
-                hVst->endParameterChangeGesture(k_NumOfParameters + 3*ROOM_SIM_MAX_NUM_SOURCES + indexOfClickedIcon*3+1);
+                processor.setParameterValue("receiverY" + juce::String(indexOfClickedIcon), -(point.getX() - view_x - room_dims_pixels[1])/scale);
+                processor.setParameterValue("receiverZ" + juce::String(indexOfClickedIcon), -(point.getY() - view_y - room_dims_pixels[2])/scale);
                 break;
             default: break;
         }
     }
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
 
 void pannerView::mouseUp (const juce::MouseEvent& /*e*/)
 {

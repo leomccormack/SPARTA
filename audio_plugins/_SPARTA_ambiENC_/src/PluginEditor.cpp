@@ -35,16 +35,15 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBsourceDirsPreset->setBounds (88, 96, 112, 20);
 
-    SL_num_sources.reset (new juce::Slider ("new slider"));
+    SL_num_sources = std::make_unique<SliderWithAttachment>(p.parameters, "numSources");
     addAndMakeVisible (SL_num_sources.get());
-    SL_num_sources->setRange (1, 128, 1);
     SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
 
     SL_num_sources->setBounds (152, 126, 48, 20);
 
-    CBoutputFormat.reset (new juce::ComboBox ("new combo box"));
+    CBoutputFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (juce::Justification::centredLeft);
@@ -54,7 +53,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBoutputFormat->setBounds (343, 316, 112, 20);
 
-    CBnormalisation.reset (new juce::ComboBox ("new combo box"));
+    CBnormalisation = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnormalisation.get());
     CBnormalisation->setEditableText (false);
     CBnormalisation->setJustificationType (juce::Justification::centredLeft);
@@ -64,7 +63,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBnormalisation->setBounds (578, 316, 112, 20);
 
-    CBorder.reset (new juce::ComboBox ("new combo box"));
+    CBorder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "outputOrder");
     addAndMakeVisible (CBorder.get());
     CBorder->setEditableText (false);
     CBorder->setJustificationType (juce::Justification::centredLeft);
@@ -141,21 +140,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBsourceDirsPreset->addItem (TRANS("SphCov (25)"), SOURCE_CONFIG_PRESET_SPH_COV_25);
     CBsourceDirsPreset->addItem (TRANS("SphCov (49)"), SOURCE_CONFIG_PRESET_SPH_COV_49);
     CBsourceDirsPreset->addItem (TRANS("SphCov (64)"), SOURCE_CONFIG_PRESET_SPH_COV_64);
-    CBorder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
-    CBorder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
-    CBorder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
-    CBorder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
-    CBorder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
-    CBorder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
-    CBorder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
-    CBorder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
-    CBorder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
-    CBorder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
-    CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
-    CBoutputFormat->addItem (TRANS("FuMa"), CH_FUMA);
-    CBnormalisation->addItem (TRANS("N3D"), NORM_N3D);
-    CBnormalisation->addItem (TRANS("SN3D"), NORM_SN3D);
-    CBnormalisation->addItem (TRANS("FuMa"), NORM_FUMA);
 
     /* source coordinates viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
@@ -168,10 +152,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     sourceCoordsView_handle->setNCH(ambi_enc_getNumSources(hAmbi));
 
     /* grab current parameter settings */
-    SL_num_sources->setValue(ambi_enc_getNumSources(hAmbi),dontSendNotification);
-    CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hAmbi), dontSendNotification);
-    CBorder->setSelectedId(ambi_enc_getOutputOrder(hAmbi), dontSendNotification);
-    CBnormalisation->setSelectedId(ambi_enc_getNormType(hAmbi), dontSendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
 
@@ -505,25 +485,13 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     {
         ambi_enc_setInputConfigPreset(hAmbi, CBsourceDirsPreset->getSelectedId());
         
-        processor.setParameterValue("numSources", ambi_enc_getNumSources(hAmbi), true);
+        processor.setParameterValue("numSources", ambi_enc_getNumSources(hAmbi));
         for(int i=0; i<ambi_enc_getNumSources(hAmbi); i++){
-            processor.setParameterValue("azim" + juce::String(i), ambi_enc_getSourceAzi_deg(hAmbi,i), true);
-            processor.setParameterValue("elev" + juce::String(i), ambi_enc_getSourceElev_deg(hAmbi,i), true);
+            processor.setParameterValue("azim" + juce::String(i), ambi_enc_getSourceAzi_deg(hAmbi,i));
+            processor.setParameterValue("elev" + juce::String(i), ambi_enc_getSourceElev_deg(hAmbi,i));
         }
         
         refreshPanViewWindow = true;
-    }
-    else if (comboBoxThatHasChanged == CBoutputFormat.get())
-    {
-        processor.setParameterValue("channelOrder", CBoutputFormat->getSelectedId()-1, true);
-    }
-    else if (comboBoxThatHasChanged == CBnormalisation.get())
-    {
-        processor.setParameterValue("normType", CBnormalisation->getSelectedId()-1, true);
-    }
-    else if (comboBoxThatHasChanged == CBorder.get())
-    {
-        processor.setParameterValue("outputOrder", CBorder->getSelectedId()-1, true);
     }
 }
 
@@ -531,7 +499,10 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == SL_num_sources.get())
     {
-        processor.setParameterValue("numSources", SL_num_sources->getValue(), true);
+        for(int i=0; i<SL_num_sources->getValue(); i++){
+            processor.setParameterValue("azim" + juce::String(i), ambi_enc_getSourceAzi_deg(hAmbi,i));
+            processor.setParameterValue("elev" + juce::String(i), ambi_enc_getSourceElev_deg(hAmbi,i));
+        }
     }
 }
 
@@ -573,19 +544,15 @@ void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
     sourceCoordsView_handle->setNCH(ambi_enc_getNumSources(hAmbi));
-    SL_num_sources->setValue(ambi_enc_getNumSources(hAmbi),dontSendNotification);
     CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hAmbi), dontSendNotification);
-    CBorder->setSelectedId(ambi_enc_getOutputOrder(hAmbi), dontSendNotification);
-    CBnormalisation->setSelectedId(ambi_enc_getNormType(hAmbi), dontSendNotification);
+    CBnormalisation->setSelectedId(ambi_enc_getNormType(hAmbi), sendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
 
     /* refresh pan view */
-    if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) ||
-        sourceCoordsView_handle->getHasASliderChanged() || processor.getRefreshWindow()){
+    if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || processor.getRefreshWindow()){
         panWindow->refreshPanView();
         refreshPanViewWindow = false;
-        sourceCoordsView_handle->setHasASliderChange(false);
         processor.setRefreshWindow(false);
     }
 

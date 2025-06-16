@@ -84,10 +84,10 @@ private:
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
     std::unique_ptr<juce::ComboBox> CBsourceDirsPreset;
-    std::unique_ptr<juce::Slider> SL_num_sources;
-    std::unique_ptr<juce::ComboBox> CBoutputFormat;
-    std::unique_ptr<juce::ComboBox> CBnormalisation;
-    std::unique_ptr<juce::ComboBox> CBorder;
+    std::unique_ptr<SliderWithAttachment> SL_num_sources;
+    std::unique_ptr<ComboBoxWithAttachment> CBoutputFormat;
+    std::unique_ptr<ComboBoxWithAttachment> CBnormalisation;
+    std::unique_ptr<ComboBoxWithAttachment> CBorder;
     std::unique_ptr<juce::TextButton> tb_loadJSON;
     std::unique_ptr<juce::TextButton> tb_saveJSON;
 

@@ -22,19 +22,18 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter)
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p)
 {
-    SL_num_sources.reset (new juce::Slider ("new slider"));
+    SL_num_sources = std::make_unique<SliderWithAttachment>(p.parameters, "numSources");
     addAndMakeVisible (SL_num_sources.get());
-    SL_num_sources->setRange (1, 16, 1);
     SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
 
     SL_num_sources->setBounds (173, 303, 48, 20);
 
-    CBoutputFormat.reset (new juce::ComboBox ("new combo box"));
+    CBoutputFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (juce::Justification::centredLeft);
@@ -44,7 +43,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBoutputFormat->setBounds (316, 247, 76, 20);
 
-    CBnormalisation.reset (new juce::ComboBox ("new combo box"));
+    CBnormalisation = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnormalisation.get());
     CBnormalisation->setEditableText (false);
     CBnormalisation->setJustificationType (juce::Justification::centredLeft);
@@ -54,7 +53,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBnormalisation->setBounds (398, 247, 76, 20);
 
-    CBorder.reset (new juce::ComboBox ("new combo box"));
+    CBorder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "outputOrder");
     addAndMakeVisible (CBorder.get());
     CBorder->setEditableText (false);
     CBorder->setJustificationType (juce::Justification::centredLeft);
@@ -64,9 +63,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBorder->setBounds (156, 247, 92, 20);
 
-    SL_num_receivers.reset (new juce::Slider ("new slider"));
+    SL_num_receivers = std::make_unique<SliderWithAttachment>(p.parameters, "numReceivers");
     addAndMakeVisible (SL_num_receivers.get());
-    SL_num_receivers->setRange (1, 16, 1);
     SL_num_receivers->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_receivers->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_receivers->addListener (this);
@@ -208,9 +206,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     setSize (780, 500);
 
-    /* handle to pluginProcessor */
-	hVst = ownerFilter;
-    hAmbi = hVst->getFXHandle();
+    /* handle to object */
+    hAmbi = processor.getFXHandle();
 
     /* init OpenGL */
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -233,27 +230,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_max_reflection_order->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
     SL_max_reflection_order->setSliderSnapsToMousePosition(false);
 
-    /* add combo box options */
-    CBorder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
-    CBorder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
-    CBorder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
-    CBorder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
-    CBorder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
-    CBorder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
-    CBorder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
-    CBorder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
-    CBorder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
-    CBorder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
-    CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
-    CBoutputFormat->addItem (TRANS("FuMa"), CH_FUMA);
-    CBnormalisation->addItem (TRANS("N3D"), NORM_N3D);
-    CBnormalisation->addItem (TRANS("SN3D"), NORM_SN3D);
-    CBnormalisation->addItem (TRANS("FuMa"), NORM_FUMA);
-
     /* source coordinates viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (sourceCoordsVP.get());
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, ROOM_SIM_MAX_NUM_SOURCES, ambi_roomsim_getNumSources(hAmbi));
+    sourceCoordsView_handle = new inputCoordsView(p, ROOM_SIM_MAX_NUM_SOURCES, ambi_roomsim_getNumSources(hAmbi));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
@@ -263,7 +243,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* source coordinates viewport */
     receiverCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (receiverCoordsVP.get());
-    receiverCoordsView_handle = new outputCoordsView(ownerFilter, ROOM_SIM_MAX_NUM_RECEIVERS, ambi_roomsim_getNumReceivers(hAmbi));
+    receiverCoordsView_handle = new outputCoordsView(p, ROOM_SIM_MAX_NUM_RECEIVERS, ambi_roomsim_getNumReceivers(hAmbi));
     receiverCoordsVP->setViewedComponent (receiverCoordsView_handle);
     receiverCoordsVP->setScrollBarsShown (true, false);
     receiverCoordsVP->setAlwaysOnTop(true);
@@ -271,10 +251,11 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     receiverCoordsView_handle->setNCH(ambi_roomsim_getNumReceivers(hAmbi));
 
     /* grab current parameter settings */
-    SL_num_sources->setValue(ambi_roomsim_getNumSources(hAmbi),dontSendNotification);
-    SL_num_receivers->setValue(ambi_roomsim_getNumReceivers(hAmbi),dontSendNotification);
+//    SL_num_sources->setValue(ambi_roomsim_getNumSources(hAmbi),dontSendNotification);
+//    SL_num_receivers->setValue(ambi_roomsim_getNumReceivers(hAmbi),dontSendNotification);
+    //    CBorder->setSelectedId(ambi_roomsim_getOutputOrder(hAmbi), dontSendNotification);
+
     CBoutputFormat->setSelectedId(ambi_roomsim_getChOrder(hAmbi), dontSendNotification);
-    CBorder->setSelectedId(ambi_roomsim_getOutputOrder(hAmbi), dontSendNotification);
     CBnormalisation->setSelectedId(ambi_roomsim_getNormType(hAmbi), dontSendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
@@ -291,7 +272,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_max_reflection_order->setValue(ambi_roomsim_getMaxReflectionOrder(hAmbi), dontSendNotification);
 
     /* create panning window */
-    panWindow.reset (new pannerView(ownerFilter, 600, 600));
+    panWindow.reset (new pannerView(p, 600, 600));
     addAndMakeVisible (panWindow.get());
     panWindow->setBounds (490, 58, 600, 600);
     refreshPanViewWindow = true;
@@ -814,13 +795,13 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(ambi_roomsim_getNumSources(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
-            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+            g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(ambi_roomsim_getNSHrequired(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
@@ -887,44 +868,9 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     }
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
-void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
+void PluginEditor::comboBoxChanged (juce::ComboBox* /*comboBoxThatHasChanged*/)
 {
-    if (comboBoxThatHasChanged == CBoutputFormat.get())
-    {
-        ambi_roomsim_setChOrder(hAmbi, CBoutputFormat->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CBnormalisation.get())
-    {
-        hVst->beginParameterChangeGesture(k_normType);
-        ambi_roomsim_setNormType(hAmbi, CBnormalisation->getSelectedId());
-        hVst->endParameterChangeGesture(k_normType);
-    }
-    else if (comboBoxThatHasChanged == CBorder.get())
-    {
-        hVst->beginParameterChangeGesture(k_channelOrder);
-        ambi_roomsim_setOutputOrder(hAmbi, CBorder->getSelectedId());
-        hVst->endParameterChangeGesture(k_channelOrder);
-    }
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
 
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
@@ -939,33 +885,33 @@ void PluginEditor::timerCallback()
     /* parameters whos values can change internally should be periodically refreshed */
     sourceCoordsView_handle->setNCH(ambi_roomsim_getNumSources(hAmbi));
     receiverCoordsView_handle->setNCH(ambi_roomsim_getNumReceivers(hAmbi));
-    SL_num_sources->setValue(ambi_roomsim_getNumSources(hAmbi),dontSendNotification);
-    SL_num_receivers->setValue(ambi_roomsim_getNumReceivers(hAmbi),dontSendNotification);
-    CBoutputFormat->setSelectedId(ambi_roomsim_getChOrder(hAmbi), dontSendNotification);
-    CBnormalisation->setSelectedId(ambi_roomsim_getNormType(hAmbi), dontSendNotification);
+//    SL_num_sources->setValue(ambi_roomsim_getNumSources(hAmbi),dontSendNotification);
+//    SL_num_receivers->setValue(ambi_roomsim_getNumReceivers(hAmbi),dontSendNotification);
+    CBoutputFormat->setSelectedId(ambi_roomsim_getChOrder(hAmbi), sendNotification);
+    CBnormalisation->setSelectedId(ambi_roomsim_getNormType(hAmbi), sendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
 
     /* refresh pan view */
 //    if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) ||
-//        sourceCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
+//        sourceCoordsView_handle->getHasASliderChanged() || processor.getRefreshWindow()){
 //        panWindow->refreshPanView();
 //        refreshPanViewWindow = false;
 //        sourceCoordsView_handle->setHasASliderChange(false);
-//        hVst->setRefreshWindow(false);
+//        processor.setRefreshWindow(false);
 //    }
     panWindow->refreshPanView();
 
     /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % ambi_roomsim_getFrameSize()) != 0){
+    if ((processor.getCurrentBlockSize() % ambi_roomsim_getFrameSize()) != 0){
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < ambi_roomsim_getNumSources(hAmbi))){
+    else if ((processor.getCurrentNumInputs() < ambi_roomsim_getNumSources(hAmbi))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumOutputs() < ambi_roomsim_getNSHrequired(hAmbi))){
+    else if ((processor.getCurrentNumOutputs() < ambi_roomsim_getNSHrequired(hAmbi))){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }

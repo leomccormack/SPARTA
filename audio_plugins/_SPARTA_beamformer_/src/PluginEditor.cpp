@@ -22,19 +22,18 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter)
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p)
 {
-    SL_num_beams.reset (new juce::Slider ("new slider"));
+    SL_num_beams = std::make_unique<SliderWithAttachment>(p.parameters, "numBeams");
     addAndMakeVisible (SL_num_beams.get());
-    SL_num_beams->setRange (1, 128, 1);
     SL_num_beams->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_beams->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_beams->addListener (this);
 
     SL_num_beams->setBounds (640, 96, 48, 20);
 
-    CBoutputFormat.reset (new juce::ComboBox ("new combo box"));
+    CBoutputFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (juce::Justification::centredLeft);
@@ -44,7 +43,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBoutputFormat->setBounds (133, 316, 112, 20);
 
-    CBnormalisation.reset (new juce::ComboBox ("new combo box"));
+    CBnormalisation = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnormalisation.get());
     CBnormalisation->setEditableText (false);
     CBnormalisation->setJustificationType (juce::Justification::centredLeft);
@@ -54,7 +53,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBnormalisation->setBounds (368, 316, 112, 20);
 
-    CBorder.reset (new juce::ComboBox ("new combo box"));
+    CBorder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (CBorder.get());
     CBorder->setEditableText (false);
     CBorder->setJustificationType (juce::Justification::centredLeft);
@@ -64,7 +63,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBorder->setBounds (578, 64, 112, 20);
 
-    CBbeamType.reset (new juce::ComboBox ("new combo box"));
+    CBbeamType = std::make_unique<ComboBoxWithAttachment>(p.parameters, "beamType");
     addAndMakeVisible (CBbeamType.get());
     CBbeamType->setEditableText (false);
     CBbeamType->setJustificationType (juce::Justification::centredLeft);
@@ -76,9 +75,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     setSize (708, 356);
 
-    /* handle to pluginProcessor */
-	hVst = ownerFilter;
-    hBeam = hVst->getFXHandle();
+    /* handle */
+    hBeam = processor.getFXHandle();
 
     /* init OpenGL */
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -95,30 +93,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_beams->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
     SL_num_beams->setSliderSnapsToMousePosition(false);
 
-    /* add combobox options */
-    CBorder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
-    CBorder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
-    CBorder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
-    CBorder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
-    CBorder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
-    CBorder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
-    CBorder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
-    CBorder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
-    CBorder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
-    CBorder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
-    CBbeamType->addItem(TRANS("Cardioid"), STATIC_BEAM_TYPE_CARDIOID);
-    CBbeamType->addItem(TRANS("HyperCard"), STATIC_BEAM_TYPE_HYPERCARDIOID);
-    CBbeamType->addItem(TRANS("MaxEV"), STATIC_BEAM_TYPE_MAX_EV);
-    CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
-    CBoutputFormat->addItem (TRANS("FuMa"), CH_FUMA);
-    CBnormalisation->addItem (TRANS("N3D"), NORM_N3D);
-    CBnormalisation->addItem (TRANS("SN3D"), NORM_SN3D);
-    CBnormalisation->addItem (TRANS("FuMa"), NORM_FUMA);
-
     /* source coordinates viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (sourceCoordsVP.get());
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_CHANNELS, beamformer_getNumBeams(hBeam));
+    sourceCoordsView_handle = new inputCoordsView(p, MAX_NUM_CHANNELS, beamformer_getNumBeams(hBeam));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
@@ -126,16 +104,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     sourceCoordsView_handle->setNCH(beamformer_getNumBeams(hBeam));
 
     /* grab current parameter settings */
-    SL_num_beams->setValue(beamformer_getNumBeams(hBeam),dontSendNotification);
     CBoutputFormat->setSelectedId(beamformer_getChOrder(hBeam), dontSendNotification);
     CBnormalisation->setSelectedId(beamformer_getNormType(hBeam), dontSendNotification);
-    CBorder->setSelectedId(beamformer_getBeamOrder(hBeam), dontSendNotification);
-    CBbeamType->setSelectedId(beamformer_getBeamType(hBeam), dontSendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
 
     /* create panning window */
-    panWindow.reset (new pannerView(ownerFilter, 480, 240));
+    panWindow.reset (new pannerView(p, 480, 240));
     addAndMakeVisible (panWindow.get());
     panWindow->setBounds (12, 58, 480, 240);
     refreshPanViewWindow = true;
@@ -436,13 +411,13 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(beamformer_getNumBeams(hBeam)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
-            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+            g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(beamformer_getNSHrequired(hBeam)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
@@ -454,96 +429,40 @@ void PluginEditor::resized()
 {
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
-void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+void PluginEditor::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
-    if (sliderThatWasMoved == SL_num_beams.get())
-    {
-        hVst->beginParameterChangeGesture(k_numBeams);
-        beamformer_setNumBeams(hBeam, (int)SL_num_beams->getValue());
-        hVst->endParameterChangeGesture(k_numBeams);
-    }
 }
 
-void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
+void PluginEditor::comboBoxChanged (juce::ComboBox* /*comboBoxThatHasChanged*/)
 {
-    if (comboBoxThatHasChanged == CBoutputFormat.get())
-    {
-        hVst->beginParameterChangeGesture(k_channelOrder);
-        beamformer_setChOrder(hBeam, CBoutputFormat->getSelectedId());
-        hVst->endParameterChangeGesture(k_channelOrder);
-    }
-    else if (comboBoxThatHasChanged == CBnormalisation.get())
-    {
-        hVst->beginParameterChangeGesture(k_normType);
-        beamformer_setNormType(hBeam, CBnormalisation->getSelectedId());
-        hVst->endParameterChangeGesture(k_normType);
-    }
-    else if (comboBoxThatHasChanged == CBorder.get())
-    {
-        hVst->beginParameterChangeGesture(k_inputOrder);
-        beamformer_setBeamOrder(hBeam, CBorder->getSelectedId());
-        hVst->endParameterChangeGesture(k_inputOrder);
-    }
-    else if (comboBoxThatHasChanged == CBbeamType.get())
-    {
-        hVst->beginParameterChangeGesture(k_beamType);
-        beamformer_setBeamType(hBeam, CBbeamType->getSelectedId());
-        hVst->endParameterChangeGesture(k_beamType);
-    }
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
 
 void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
     sourceCoordsView_handle->setNCH(beamformer_getNumBeams(hBeam));
-    SL_num_beams->setValue(beamformer_getNumBeams(hBeam),dontSendNotification);
-    CBoutputFormat->setSelectedId(beamformer_getChOrder(hBeam), dontSendNotification);
-    CBnormalisation->setSelectedId(beamformer_getNormType(hBeam), dontSendNotification);
-    CBorder->setSelectedId(beamformer_getBeamOrder(hBeam), dontSendNotification);
-    CBbeamType->setSelectedId(beamformer_getBeamType(hBeam), dontSendNotification);
-    CBoutputFormat->setItemEnabled(CH_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
-    CBnormalisation->setItemEnabled(NORM_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
+    CBoutputFormat->setSelectedId(beamformer_getChOrder(hBeam), sendNotification);
+    CBnormalisation->setSelectedId(beamformer_getNormType(hBeam), sendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, beamformer_getBeamOrder(hBeam)==SH_ORDER_FIRST ? true : false);
 
     /* refresh pan view */
-    if((refreshPanViewWindow == true) || (panWindow->getBeamIconIsClicked()) ||
-        sourceCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
+    if((refreshPanViewWindow == true) || (panWindow->getBeamIconIsClicked()) || processor.getRefreshWindow()){
         panWindow->refreshPanView();
         refreshPanViewWindow = false;
-        sourceCoordsView_handle->setHasASliderChange(false);
-        hVst->setRefreshWindow(false);
+        processor.setRefreshWindow(false);
     }
 
     /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % beamformer_getFrameSize()) != 0){
+    if ((processor.getCurrentBlockSize() % beamformer_getFrameSize()) != 0){
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < beamformer_getNumBeams(hBeam))){
+    else if ((processor.getCurrentNumInputs() < beamformer_getNumBeams(hBeam))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumOutputs() < beamformer_getNSHrequired(hBeam))){
+    else if ((processor.getCurrentNumOutputs() < beamformer_getNSHrequired(hBeam))){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }
