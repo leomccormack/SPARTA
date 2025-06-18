@@ -98,15 +98,8 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
     }
 }
 
-PluginProcessor::PluginProcessor() :
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(2), true)),
-    ParameterManager(*this, createParameterLayout())
+void PluginProcessor::setParameterValuesUsingInternalState()
 {
-	binauraliser_create(&hBin);
-    
-    /* Grab defaults */
     setParameterValue("enableRotation", binauraliser_getEnableRotation(hBin));
     setParameterValue("useRollPitchYaw", binauraliser_getRPYflag(hBin));
     setParameterValue("yaw", binauraliser_getYaw(hBin));
@@ -120,6 +113,18 @@ PluginProcessor::PluginProcessor() :
         setParameterValue("azim" + juce::String(i), binauraliser_getSourceAzi_deg(hBin, i));
         setParameterValue("elev" + juce::String(i), binauraliser_getSourceElev_deg(hBin, i));
     }
+}
+
+PluginProcessor::PluginProcessor() :
+	AudioProcessor(BusesProperties()
+		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+	    .withOutput("Output", AudioChannelSet::discreteChannels(2), true)),
+    ParameterManager(*this, createParameterLayout())
+{
+	binauraliser_create(&hBin);
+    
+    /* Grab defaults */
+    setParameterValuesUsingInternalState();
     
     /* specify here on which UDP port number to receive incoming OSC messages */
     osc_port_ID = DEFAULT_OSC_PORT;
@@ -269,6 +274,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     juce::ValueTree state = parameters.copyState();
     std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
     xmlState->setTagName("BINAURALISERPLUGINSETTINGS");
+    xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10701
     
     /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
     if(!binauraliser_getUseDefaultHRIRsflag(hBin))
@@ -288,27 +294,76 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-    if (xmlState != nullptr && xmlState->hasTagName("BINAURALISERPLUGINSETTINGS") && JucePlugin_VersionCode>=0x10701){
-        parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
-        
-        /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-        if(xmlState->hasAttribute("SofaFilePath")){
-            String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
-            const char* new_cstring = (const char*)directory.toUTF8();
-            binauraliser_setSofaFilePath(hBin, new_cstring);
-        }
-        
-        if(xmlState->hasAttribute("INTERP_MODE"))
-            binauraliser_setInterpMode(hBin, xmlState->getIntAttribute("INTERP_MODE", 1));
-        if(xmlState->hasAttribute("HRIRdiffEQ"))
-            binauraliser_setEnableHRIRsDiffuseEQ(hBin, xmlState->getIntAttribute("HRIRdiffEQ", 1));
+    if (xmlState != nullptr && xmlState->hasTagName("BINAURALISERPLUGINSETTINGS")){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10701
+            for(int i=0; i<binauraliser_getMaxNumSources(); i++){
+                if(xmlState->hasAttribute("SourceAziDeg" + String(i)))
+                    binauraliser_setSourceAzi_deg(hBin, i, (float)xmlState->getDoubleAttribute("SourceAziDeg" + String(i), 0.0f));
+                if(xmlState->hasAttribute("SourceElevDeg" + String(i)))
+                    binauraliser_setSourceElev_deg(hBin, i, (float)xmlState->getDoubleAttribute("SourceElevDeg" + String(i), 0.0f));
+            }
+            if(xmlState->hasAttribute("nSources"))
+               binauraliser_setNumSources(hBin, xmlState->getIntAttribute("nSources", 1));
+            
+            if(xmlState->hasAttribute("SofaFilePath")){
+                String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
+                const char* new_cstring = (const char*)directory.toUTF8();
+                binauraliser_setSofaFilePath(hBin, new_cstring);
+            }
+            
+            if(xmlState->hasAttribute("JSONFilePath"))
+                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            
+            if(xmlState->hasAttribute("INTERP_MODE"))
+                binauraliser_setInterpMode(hBin, xmlState->getIntAttribute("INTERP_MODE", 1));
+            if(xmlState->hasAttribute("ENABLE_ROT"))
+                binauraliser_setEnableRotation(hBin, xmlState->getIntAttribute("ENABLE_ROT", 0));
+            if(xmlState->hasAttribute("YAW"))
+                binauraliser_setYaw(hBin, (float)xmlState->getDoubleAttribute("YAW", 0.0f));
+            if(xmlState->hasAttribute("PITCH"))
+                binauraliser_setPitch(hBin, (float)xmlState->getDoubleAttribute("PITCH", 0.0f));
+            if(xmlState->hasAttribute("ROLL"))
+                binauraliser_setRoll(hBin, (float)xmlState->getDoubleAttribute("ROLL", 0.0f));
+            if(xmlState->hasAttribute("FLIP_YAW"))
+                binauraliser_setFlipYaw(hBin, xmlState->getIntAttribute("FLIP_YAW", 0));
+            if(xmlState->hasAttribute("FLIP_PITCH"))
+                binauraliser_setFlipPitch(hBin, xmlState->getIntAttribute("FLIP_PITCH", 0));
+            if(xmlState->hasAttribute("FLIP_ROLL"))
+                binauraliser_setFlipRoll(hBin, xmlState->getIntAttribute("FLIP_ROLL", 0));
+            if(xmlState->hasAttribute("RPY_FLAG"))
+                binauraliser_setRPYflag(hBin, xmlState->getIntAttribute("RPY_FLAG", 0));
+            if(xmlState->hasAttribute("HRIRdiffEQ"))
+                binauraliser_setEnableHRIRsDiffuseEQ(hBin, xmlState->getIntAttribute("HRIRdiffEQ", 1));
 
-        /* Other */
-        if(xmlState->hasAttribute("JSONFilePath"))
-            lastDir = xmlState->getStringAttribute("JSONFilePath", "");
-        if(xmlState->hasAttribute("OSC_PORT")){
-            osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
-            osc.connect(osc_port_ID);
+            if(xmlState->hasAttribute("OSC_PORT")){
+                osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
+                osc.connect(osc_port_ID);
+            }
+            
+            setParameterValuesUsingInternalState();
+        }
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10701){
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+            if(xmlState->hasAttribute("SofaFilePath")){
+                String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
+                const char* new_cstring = (const char*)directory.toUTF8();
+                binauraliser_setSofaFilePath(hBin, new_cstring);
+            }
+            
+            if(xmlState->hasAttribute("INTERP_MODE"))
+                binauraliser_setInterpMode(hBin, xmlState->getIntAttribute("INTERP_MODE", 1));
+            if(xmlState->hasAttribute("HRIRdiffEQ"))
+                binauraliser_setEnableHRIRsDiffuseEQ(hBin, xmlState->getIntAttribute("HRIRdiffEQ", 1));
+            
+            /* Other */
+            if(xmlState->hasAttribute("JSONFilePath"))
+                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            if(xmlState->hasAttribute("OSC_PORT")){
+                osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
+                osc.connect(osc_port_ID);
+            }
         }
         
         binauraliser_refreshSettings(hBin);

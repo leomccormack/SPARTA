@@ -256,6 +256,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     juce::ValueTree state = parameters.copyState();
     std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
     xmlState->setTagName("AMBIROOMSIMPLUGINSETTINGS");
+    xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10101
     
     /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
     for(int i=0; i<3; i++)
@@ -274,7 +275,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if (xmlState != nullptr && xmlState->hasTagName("AMBIROOMSIMPLUGINSETTINGS")){
-        if(JucePlugin_VersionCode<0x10101){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10101
             for(int i=0; i<ambi_roomsim_getMaxNumSources(); i++){
                 if(xmlState->hasAttribute("SourceX" + String(i)))
                     ambi_roomsim_setSourceX(hAmbi, i, (float)xmlState->getDoubleAttribute("SourceX" + String(i), 0.0f));
@@ -315,7 +316,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             
             setParameterValuesUsingInternalState();
         }
-        else{
+        else if (xmlState->getIntAttribute("VersionCode")>=0x10101){
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
             
             /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */

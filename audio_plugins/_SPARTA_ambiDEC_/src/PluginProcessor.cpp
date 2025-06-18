@@ -258,6 +258,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     juce::ValueTree state = parameters.copyState();
     std::unique_ptr<juce::XmlElement> xml(state.createXml());
     xml->setTagName("AMBIDECPLUGINSETTINGS");
+    xml->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10701
     
     /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
     for(int band=0; band<ambi_dec_getNumberOfBands(); band++)
@@ -279,7 +280,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if (xmlState != nullptr && xmlState->hasTagName("AMBIDECPLUGINSETTINGS")){
-        if(JucePlugin_VersionCode<0x10701){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10701
             if(xmlState->hasAttribute("MasterDecOrder"))
                 ambi_dec_setMasterDecOrder(hAmbi, xmlState->getIntAttribute("MasterDecOrder",1));
             for(int band=0; band<ambi_dec_getNumberOfBands(); band++)
@@ -329,7 +330,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             
             setParameterValuesUsingInternalState();
         }
-        else{
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10701){
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
             
             /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */

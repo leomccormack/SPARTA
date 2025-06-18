@@ -22,12 +22,11 @@
 
 #include "pannerView.h"
 
-pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
+pannerView::pannerView (PluginProcessor& p, int _width, int _height) : processor(p)
 {
     setSize (492, 246);
 
-    hVst = ownerFilter;
-    hBin = hVst->getFXHandle();
+    hBin = processor.getFXHandle();
     width = _width;
     height = _height;
     halfWidth = width / 2.0f;
@@ -38,7 +37,7 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     icon_radius_hrir = icon_diam_src / 2.0f;
     ffThresh = binauraliserNF_getFarfieldThresh_m(hBin);
     // distance range of a source (closest -> farthest)
-    distRange = NormalisableRange<float>(binauraliserNF_getNearfieldLimit_m(hBin), hVst->upperDistRange, 0, 0.5f);
+    distRange = NormalisableRange<float>(binauraliserNF_getNearfieldLimit_m(hBin), processor.upperDistRange, 0, 0.5f);
     // pixel radius corresponding to a 45 degree spread: height/4
     iconGrowFac = NormalisableRange<float>(1.0f, (height / 4.0f) / (icon_radius_src * 3.0f));
 
@@ -180,43 +179,16 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
     }
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
 void pannerView::mouseDrag (const juce::MouseEvent& e)
 {
     if(sourceIconIsClicked){
         Point<float> point;
         point.setXY((float)e.getPosition().getX()-icon_radius_src, (float)e.getPosition().getY()-icon_radius_src);
         
-        hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedSource*3);
-        hVst->beginParameterChangeGesture(k_NumOfParameters + indexOfClickedSource*3+1);
-        
-        binauraliser_setSourceAzi_deg(hBin, indexOfClickedSource,
-                                   ((width - (point.getX() + icon_radius_src)) * 360.0f) / width - 180.0f);
-        binauraliser_setSourceElev_deg(hBin, indexOfClickedSource,
-                                   ((height - (point.getY() + icon_radius_src)) * 180.0f) / height - 90.0f);
-        
-        hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedSource*3);
-        hVst->endParameterChangeGesture(k_NumOfParameters + indexOfClickedSource*3+1);
+        processor.setParameterValue("azim" + juce::String(indexOfClickedSource), ((width - (point.getX() + icon_radius_src)) * 360.0f) / width - 180.0f);
+        processor.setParameterValue("elev" + juce::String(indexOfClickedSource), ((height - (point.getY() + icon_radius_src)) * 180.0f) / height - 90.0f);
     }
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
 
 void pannerView::mouseUp (const juce::MouseEvent& e)
 {

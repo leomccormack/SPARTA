@@ -25,35 +25,23 @@
 const int sensorEdit_width = 176;
 const int sensorEdit_height = 32;
 
-inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH )
+inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentNCH ) : processor(p)
 {
-    dummySlider.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (dummySlider.get());
-    dummySlider->setRange (0.01, 0.3, 0.001);
-    dummySlider->setSliderStyle (juce::Slider::LinearHorizontal);
-    dummySlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 70, 20);
-    dummySlider->addListener (this);
-
-    dummySlider->setBounds (-176, 144, 96, 16);
-
     setSize (sensorEdit_width, sensorEdit_height*currentNCH);
-    hVst = ownerFilter;
-    hBin = hVst->getFXHandle();
+    hBin = processor.getFXHandle();
     maxNCH = _maxNCH ;
     currentNCH =_currentNCH;
-    aziSliders = new std::unique_ptr<Slider>[(unsigned long)maxNCH];
-    elevSliders = new std::unique_ptr<Slider>[(unsigned long)maxNCH];
-    distSliders = new std::unique_ptr<Slider>[(unsigned long)maxNCH];
-
+    aziSliders.resize(maxNCH);
+    elevSliders.resize(maxNCH);
+    distSliders.resize(maxNCH);
+    
     int left = 15, tbw = 45, tbh = 20, tbhpad = 6; // text box layout dimensions
     int tbvpad = (sensorEdit_height - tbh) / 2;
     for( int i=0; i<maxNCH; i++){
         /* create and initialise azimuth sliders */
-        aziSliders[i].reset (new Slider ("new slider"));
+        aziSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "azim" + juce::String(i));
         aziSliders[i]->setTooltip("Source azimuth: 0 degrees is forward, 90 degrees is left, -90 degrees right.");
         addAndMakeVisible (aziSliders[i].get());
-        aziSliders[i]->setRange (-360.0, 360.0, 0.1); // overwritten by refreshCoords() below
-        aziSliders[i]->setValue(binauraliser_getSourceAzi_deg(hBin, i));
         aziSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical); // vertical drag slider as number box
         aziSliders[i]->setSliderSnapsToMousePosition(false);
         aziSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
@@ -63,12 +51,9 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         aziSliders[i]->setNumDecimalPlacesToDisplay (1);
 
         /* create and initialise elevation sliders */
-        elevSliders[i].reset (new Slider ("new slider"));
+        elevSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "elev" + juce::String(i));
         elevSliders[i]->setTooltip("Source elevation: 90 degrees is above, -90 degree is below.");
         addAndMakeVisible (elevSliders[i].get());
-        elevSliders[i]->setRange (-180.0, 180.0, 0.1);
-        elevSliders[i]->setNumDecimalPlacesToDisplay (1);
-        elevSliders[i]->setValue(binauraliser_getSourceElev_deg(hBin, i));
         elevSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
         elevSliders[i]->setSliderSnapsToMousePosition(false);
         elevSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
@@ -77,13 +62,10 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         elevSliders[i]->addListener (this);
 
         /* create and initialise distance sliders */
-        distSliders[i].reset (new Slider ("new slider"));
+        distSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "dist" + juce::String(i));
         distSliders[i]->setTooltip("Distance from the center of the head (m). Filters disengage when maximally far (approx > 3 m).");
         addAndMakeVisible (distSliders[i].get());
-        distSliders[i]->setRange (binauraliserNF_getNearfieldLimit_m(hBin), hVst->upperDistRange, 0.001);
-        distSliders[i]->setNumDecimalPlacesToDisplay (2);
         distSliders[i]->setSkewFactor (0.5, false);
-        distSliders[i]->setValue(binauraliserNF_getSourceDist_m(hBin, i));
         distSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
         distSliders[i]->setSliderSnapsToMousePosition(false);
         distSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
@@ -92,25 +74,12 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         distSliders[i]->addListener (this);
     }
 
-    sliderHasChanged = true;
-
 	/* Get and display current settings */
-	refreshCoords();
 	resized();
 }
 
 inputCoordsView::~inputCoordsView()
 {
-    dummySlider = nullptr;
-
-    for( int i=0; i<maxNCH; i++){
-        aziSliders[i] = nullptr;
-        elevSliders[i] = nullptr;
-        distSliders[i] = nullptr;
-    }
-    delete [] aziSliders;
-    delete [] elevSliders;
-    delete [] distSliders;
 }
 
 void inputCoordsView::paint (juce::Graphics& g)
@@ -162,40 +131,6 @@ void inputCoordsView::resized()
     repaint();
 }
 
-void inputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+void inputCoordsView::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
-    for(int i=0; i<maxNCH; i++){
-        if (sliderThatWasMoved == aziSliders[i].get()) {
-            binauraliser_setSourceAzi_deg(hBin, i, (float)aziSliders[i]->getValue());
-            break;
-        }
-        if (sliderThatWasMoved == elevSliders[i].get()) {
-            binauraliser_setSourceElev_deg(hBin, i, (float)elevSliders[i]->getValue());
-            break;
-        }
-        if (sliderThatWasMoved == distSliders[i].get()) {
-            binauraliserNF_setSourceDist_m(hBin, i, (float)distSliders[i]->getValue());
-            break;
-        }
-    }
-
-    if (sliderThatWasMoved == dummySlider.get())
-    {
-    }
-    
-    sliderHasChanged = true;
-}
-
-void inputCoordsView::refreshCoords(){
-    /* update slider values and limits */
-    for( int i=0; i<maxNCH; i++){
-        aziSliders[i]->setRange (-360.0, 360.0, 0.1); // TODO: this range doens't conform to binauraliser_setSourceAzi_deg, so UI bugs out beyond +/-180 when dragging (but value OK on mouseup)
-        aziSliders[i]->setValue(binauraliser_getSourceAzi_deg(hBin, i), dontSendNotification);
-
-        elevSliders[i]->setRange (-180.0, 180.0, 0.1);
-        elevSliders[i]->setValue (binauraliser_getSourceElev_deg(hBin, i), dontSendNotification);
-
-        distSliders[i]->setRange (binauraliserNF_getNearfieldLimit_m(hBin), hVst->upperDistRange, 0.01);
-        distSliders[i]->setValue (binauraliserNF_getSourceDist_m(hBin, i), dontSendNotification);
-    }
 }

@@ -283,6 +283,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     juce::ValueTree state = parameters.copyState();
     std::unique_ptr<juce::XmlElement> xml(state.createXml());
     xml->setTagName("AMBIBINPLUGINSETTINGS");
+    xml->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10601
     
     /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
     xml->setAttribute("UseDefaultHRIRset", ambi_bin_getUseDefaultHRIRsflag(hAmbi));
@@ -303,7 +304,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if (xmlState != nullptr && xmlState->hasTagName("AMBIBINPLUGINSETTINGS")){
-        if(JucePlugin_VersionCode<0x10601){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10601
             if(xmlState->hasAttribute("order"))
                 ambi_bin_setInputOrderPreset(hAmbi, (SH_ORDERS)xmlState->getIntAttribute("order", 2));
             if(xmlState->hasAttribute("UseDefaultHRIRset"))
@@ -353,7 +354,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             
             setParameterValuesUsingInternalState();
         }
-        else{
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10601){
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
             
             /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */

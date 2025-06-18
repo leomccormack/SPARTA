@@ -15,6 +15,8 @@
               splashScreenColour="Dark" buildStandalone="0" enableIAA="0" companyCopyright="Aalto"
               pluginFormats="buildVST" jucerFormatVersion="1">
   <MAINGROUP id="imnfnp" name="sparta_binauraliser_nf">
+    <FILE id="ZXRVdb" name="ParameterManager.h" compile="0" resource="0"
+          file="../resources/ParameterManager.h"/>
     <FILE id="UwaAVc" name="ConfigurationHelper.h" compile="0" resource="0"
           file="../resources/ConfigurationHelper.h"/>
     <FILE id="oGTRTG" name="SPARTALookAndFeel.h" compile="0" resource="0"

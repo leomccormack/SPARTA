@@ -261,6 +261,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     juce::ValueTree state = parameters.copyState();
     std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
     xmlState->setTagName("ARRAY2SHPLUGINSETTINGS");
+    xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10701
     
     /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
     xmlState->setAttribute("enableDiffPastAliasing", array2sh_getDiffEQpastAliasing(hA2sh));
@@ -277,7 +278,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if (xmlState != nullptr && xmlState->hasTagName("ARRAY2SHPLUGINSETTINGS")){
-        if(JucePlugin_VersionCode<0x10701){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10701
             for(int i=0; i<array2sh_getMaxNumSensors(); i++){
                 if(xmlState->hasAttribute("AziRad" + String(i)))
                     array2sh_setSensorAzi_rad(hA2sh, i, (float)xmlState->getDoubleAttribute("AziRad" + String(i), 0.0f));
@@ -318,7 +319,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             
             setParameterValuesUsingInternalState();
         }
-        else{
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10701){
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
             
             /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */

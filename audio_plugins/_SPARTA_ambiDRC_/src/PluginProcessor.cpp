@@ -212,6 +212,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     juce::ValueTree state = parameters.copyState();
     std::unique_ptr<juce::XmlElement> xml(state.createXml());
     xml->setTagName("AMBIDRCPLUGINSETTINGS");
+    xml->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10301
     
     /* Save */
     copyXmlToBinary(*xml, destData);
@@ -222,7 +223,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if (xmlState != nullptr && xmlState->hasTagName("AMBIDRCPLUGINSETTINGS")){
-        if(JucePlugin_VersionCode<0x10301){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10301
             /* pull attributes */
             if(xmlState->hasAttribute("THRESHOLD"))
                 ambi_drc_setThreshold(hAmbi, (float)xmlState->getDoubleAttribute("THRESHOLD", 0.0f));
@@ -247,7 +248,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             
             setParameterValuesUsingInternalState();
         }
-        else{
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10301){
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
         }
         

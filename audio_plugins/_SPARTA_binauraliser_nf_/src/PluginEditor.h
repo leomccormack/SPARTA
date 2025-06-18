@@ -46,7 +46,7 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::Button::Listener
 {
 public:
-    PluginEditor (PluginProcessor* ownerFilter);
+    PluginEditor (PluginProcessor& p);
     ~PluginEditor() override;
 
     void paint (juce::Graphics& g) override;
@@ -56,7 +56,7 @@ public:
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hBin;
     void timerCallback(int timerID) override;
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -97,7 +97,7 @@ private:
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
     std::unique_ptr<juce::ComboBox> CBsourceDirsPreset;
-    std::unique_ptr<juce::Slider> SL_num_sources;
+    std::unique_ptr<SliderWithAttachment> SL_num_sources;
     std::unique_ptr<juce::Label> label_N_dirs;
     std::unique_ptr<juce::Label> label_HRIR_fs;
     std::unique_ptr<juce::ToggleButton> TBuseDefaultHRIRs;
@@ -108,15 +108,15 @@ private:
     std::unique_ptr<juce::ComboBox> CBinterpMode;
     std::unique_ptr<juce::TextButton> tb_loadJSON;
     std::unique_ptr<juce::TextButton> tb_saveJSON;
-    std::unique_ptr<juce::Slider> s_yaw;
-    std::unique_ptr<juce::Slider> s_pitch;
-    std::unique_ptr<juce::Slider> s_roll;
-    std::unique_ptr<juce::ToggleButton> t_flipYaw;
-    std::unique_ptr<juce::ToggleButton> t_flipPitch;
-    std::unique_ptr<juce::ToggleButton> t_flipRoll;
+    std::unique_ptr<SliderWithAttachment> s_yaw;
+    std::unique_ptr<SliderWithAttachment> s_pitch;
+    std::unique_ptr<SliderWithAttachment> s_roll;
+    std::unique_ptr<ToggleButtonWithAttachment> t_flipYaw;
+    std::unique_ptr<ToggleButtonWithAttachment> t_flipPitch;
+    std::unique_ptr<ToggleButtonWithAttachment> t_flipRoll;
     std::unique_ptr<juce::TextEditor> te_oscport;
-    std::unique_ptr<juce::ToggleButton> TBrpyFlag;
-    std::unique_ptr<juce::ToggleButton> TBenableRotation;
+    std::unique_ptr<ToggleButtonWithAttachment> TBrpyFlag;
+    std::unique_ptr<ToggleButtonWithAttachment> TBenableRotation;
     std::unique_ptr<juce::ToggleButton> TBenablePreProc;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
