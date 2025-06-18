@@ -925,11 +925,6 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == SL_num_sources.get())
     {
         refreshPanViewWindow = true;
-        
-        for(int i=0; i<SL_num_sources->getValue(); i++){
-            processor.setParameterValue("azim" + juce::String(i), binauraliser_getSourceAzi_deg(hBin,i));
-            processor.setParameterValue("elev" + juce::String(i), binauraliser_getSourceElev_deg(hBin,i));
-        }
     }
 }
 

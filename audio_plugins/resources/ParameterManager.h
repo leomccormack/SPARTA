@@ -68,7 +68,7 @@ public:
     int getParameterChoice(const juce::String& parameterID) const {
         return static_cast<int>(*parameters.getRawParameterValue(parameterID));
     }
-    
+
     juce::AudioProcessorValueTreeState parameters;
 };
 

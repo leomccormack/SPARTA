@@ -212,7 +212,8 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     juce::ValueTree state = parameters.copyState();
     std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
     xmlState->setTagName("AMBIENCPLUGINSETTINGS");
-    
+    xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10401
+
     /* Other */
     xmlState->setAttribute("JSONFilePath", lastDir.getFullPathName());
 
@@ -225,7 +226,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if (xmlState != nullptr && xmlState->hasTagName("AMBIENCPLUGINSETTINGS")){
-        if(JucePlugin_VersionCode<0x10401){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10401
             for(int i=0; i<ambi_enc_getMaxNumSources(); i++){
                 if(xmlState->hasAttribute("SourceAziDeg" + String(i)))
                     ambi_enc_setSourceAzi_deg(hAmbi, i, (float)xmlState->getDoubleAttribute("SourceAziDeg" + String(i), 0.0f));
@@ -247,7 +248,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             
             setParameterValuesUsingInternalState();
         }
-        else {
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10401){
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
             
             /* Other */

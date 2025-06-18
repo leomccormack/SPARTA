@@ -219,6 +219,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     juce::ValueTree state = parameters.copyState();
     std::unique_ptr<juce::XmlElement> xml(state.createXml());
     xml->setTagName("BEAMFORMERPLUGINSETTINGS");
+    xml->setAttribute("VersionCode", JucePlugin_VersionCode);
     
     /* Save */
     copyXmlToBinary(*xml, destData);
@@ -229,7 +230,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if (xmlState != nullptr && xmlState->hasTagName("BEAMFORMERPLUGINSETTINGS")){
-        if(JucePlugin_VersionCode<0x10201){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10201
             for(int i=0; i<beamformer_getMaxNumBeams(); i++){
                 if(xmlState->hasAttribute("BeamAziDeg" + String(i)))
                     beamformer_setBeamAzi_deg(hBeam, i, (float)xmlState->getDoubleAttribute("BeamAziDeg" + String(i), 0.0f));
@@ -250,7 +251,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             
             setParameterValuesUsingInternalState();
         }
-        else{
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10201){
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
         }
         

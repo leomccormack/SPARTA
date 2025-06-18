@@ -34,12 +34,104 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     }
 }
 
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableRotation", "EnableRotation", false));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("useRollPitchYaw", "UseRollPitchYaw", false));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("yaw", "Yaw", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("pitch", "Pitch", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("roll", "Roll", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("flipYaw", "FlipYaw", false));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("flipPitch", "FlipPitch", false));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("flipRoll", "FlipRoll", false));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numSources", "NumSources", 1, MAX_NUM_INPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
+    for(int i=0; i<MAX_NUM_INPUTS; i++){
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("dist" + juce::String(i), "Dist_" + juce::String(i+1), juce::NormalisableRange<float>(0.15f, 3.25f, 0.01f), 0.0f)); // ranges based on internal constants found in binauraliser_nf.c
+    }
+    
+    return { params.begin(), params.end() };
+}
+
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    if (parameterID == "enableRotation"){
+        binauraliser_setEnableRotation(hBin, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "useRollPitchYaw"){
+        binauraliser_setRPYflag(hBin, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "yaw"){
+        binauraliser_setYaw(hBin, newValue);
+    }
+    else if(parameterID == "pitch"){
+        binauraliser_setPitch(hBin, newValue);
+    }
+    else if(parameterID == "roll"){
+        binauraliser_setRoll(hBin, newValue);
+    }
+    else if(parameterID == "flipYaw"){
+        binauraliser_setFlipYaw(hBin, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "flipPitch"){
+        binauraliser_setFlipPitch(hBin, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "flipRoll"){
+        binauraliser_setFlipRoll(hBin, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "numSources"){
+        binauraliser_setNumSources(hBin, static_cast<int>(newValue));
+    }
+    for(int i=0; i<MAX_NUM_INPUTS; i++){
+        if(parameterID == "azim" + juce::String(i)){
+            binauraliser_setSourceAzi_deg(hBin, i, newValue);
+            setRefreshWindow(true);
+            break;
+        }
+        else if(parameterID == "elev" + juce::String(i)){
+            binauraliser_setSourceElev_deg(hBin, i, newValue);
+            setRefreshWindow(true);
+            break;
+        }
+        else if(parameterID == "dist" + juce::String(i)){
+            binauraliserNF_setSourceDist_m(hBin, i, newValue);
+            setRefreshWindow(true);
+            break;
+        }
+    }
+}
+
+void PluginProcessor::setParameterValuesUsingInternalState()
+{
+    setParameterValue("enableRotation", binauraliser_getEnableRotation(hBin));
+    setParameterValue("useRollPitchYaw", binauraliser_getRPYflag(hBin));
+    setParameterValue("yaw", binauraliser_getYaw(hBin));
+    setParameterValue("pitch", binauraliser_getPitch(hBin));
+    setParameterValue("roll", binauraliser_getRoll(hBin));
+    setParameterValue("flipYaw", binauraliser_getFlipYaw(hBin));
+    setParameterValue("flipPitch", binauraliser_getFlipPitch(hBin));
+    setParameterValue("flipRoll", binauraliser_getFlipRoll(hBin));
+    setParameterValue("numSources", binauraliser_getNumSources(hBin));
+    for(int i=0; i<MAX_NUM_INPUTS; i++){
+        setParameterValue("azim" + juce::String(i), binauraliser_getSourceAzi_deg(hBin, i));
+        setParameterValue("elev" + juce::String(i), binauraliser_getSourceElev_deg(hBin, i));
+        setParameterValue("dist" + juce::String(i), binauraliserNF_getSourceDist_m(hBin, i));
+    }
+}
+
 PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(2), true))
+	    .withOutput("Output", AudioChannelSet::discreteChannels(2), true)),
+    ParameterManager(*this, createParameterLayout())
 {
 	binauraliserNF_create(&hBin);
+    
+    /* Grab defaults */
+    setParameterValuesUsingInternalState();
     
     /* specify here on which UDP port number to receive incoming OSC messages */
     osc_port_ID = DEFAULT_OSC_PORT;
@@ -63,243 +155,41 @@ PluginProcessor::~PluginProcessor()
 	binauraliserNF_destroy(&hBin);
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
 {
     /* if rotation angles are sent as an array \ypr[3] */
     if (message.size() == 3 && message.getAddressPattern().toString().compare("/ypr")==0) {
         if (message[0].isFloat32()){
-            beginParameterChangeGesture(k_yaw);
-            binauraliser_setYaw(hBin, message[0].getFloat32());
-            endParameterChangeGesture(k_yaw);
+            setParameterValue("yaw", message[0].getFloat32());
         }
         if (message[1].isFloat32()){
-            beginParameterChangeGesture(k_pitch);
-            binauraliser_setPitch(hBin, message[1].getFloat32());
-            endParameterChangeGesture(k_pitch);
+            setParameterValue("pitch", message[1].getFloat32());
         }
         if (message[2].isFloat32()){
-            beginParameterChangeGesture(k_roll);
-            binauraliser_setRoll(hBin, message[2].getFloat32());
-            endParameterChangeGesture(k_roll);
+            setParameterValue("roll", message[2].getFloat32());
         }
         return;
     }
     
     /* if rotation angles are sent individually: */
     if(message.getAddressPattern().toString().compare("/yaw")==0){
-        beginParameterChangeGesture(k_yaw);
-        binauraliser_setYaw(hBin, message[0].getFloat32());
-        endParameterChangeGesture(k_yaw);
+        setParameterValue("yaw", message[0].getFloat32());
     }
     else if(message.getAddressPattern().toString().compare("/pitch")==0){
-        beginParameterChangeGesture(k_pitch);
-        binauraliser_setPitch(hBin, message[0].getFloat32());
-        endParameterChangeGesture(k_pitch);
+        setParameterValue("pitch", message[0].getFloat32());
     }
     else if(message.getAddressPattern().toString().compare("/roll")==0){
-        beginParameterChangeGesture(k_roll);
-        binauraliser_setRoll(hBin, message[0].getFloat32());
-        endParameterChangeGesture(k_roll);
+        setParameterValue("roll", message[0].getFloat32());
     }
-}
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
-
-void PluginProcessor::setParameter (int index, float newValue)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_enableRotation:  binauraliser_setEnableRotation(hBin, (int)(newValue + 0.5f)); break;
-            case k_useRollPitchYaw: binauraliser_setRPYflag(hBin, (int)(newValue + 0.5f)); break;
-            case k_yaw:             binauraliser_setYaw(hBin, (newValue - 0.5f) * 360.0f); break;
-            case k_pitch:           binauraliser_setPitch(hBin, (newValue - 0.5f) * 360.0f); break;
-            case k_roll:            binauraliser_setRoll(hBin, (newValue - 0.5f) * 360.0f); break;
-            case k_flipYaw:         binauraliser_setFlipYaw(hBin, (int)(newValue + 0.5f));  break;
-            case k_flipPitch:       binauraliser_setFlipPitch(hBin, (int)(newValue + 0.5f)); break;
-            case k_flipRoll:        binauraliser_setFlipRoll(hBin, (int)(newValue + 0.5f)); break;
-            case k_numInputs:       binauraliser_setNumSources(hBin, (int)(newValue*(float)(MAX_NUM_INPUTS) + 0.5)); break;
-        }
-    }
-    /* source direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        float newValueScaled;
-        switch (index % 3) {
-            case 0:
-                newValueScaled = (newValue - 0.5f) * 360.0f;
-                /* optim TBD: this changed-value check happens twice (in
-                 * binauraliser_setSourceAzi_deg), same for the following checks...
-                 * Setters could return a valueUpdated bool on successful update, e.g.
-                 *   refreshWindow = binauraliser_setSourceAzi_deg(hBin, index/3, newValueScaled);
-                 */
-                if (newValueScaled != binauraliser_getSourceAzi_deg(hBin, index/3)){
-                    binauraliser_setSourceAzi_deg(hBin, index/3, newValueScaled);
-                    refreshWindow = true;
-                }
-                break;
-            case 1:
-                newValueScaled = (newValue - 0.5f) * 180.0f;
-                if (newValueScaled != binauraliser_getSourceElev_deg(hBin, index/3)){
-                    binauraliser_setSourceElev_deg(hBin, (index-1)/3, newValueScaled);
-                    refreshWindow = true;
-                }
-                break;
-            case 2:
-                newValueScaled = newValue * (ffThresh - nfThresh) + nfThresh;
-                if (newValueScaled != binauraliserNF_getSourceDist_m(hBin, index/3)){
-                    binauraliserNF_setSourceDist_m(hBin, (index-2)/3, newValueScaled);
-                    refreshWindow = true;
-                }
-                break;
-            }
-    }
-}
-
-bool PluginProcessor::isParameterAutomatable (int index) const
-{
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_enableRotation: return true;
-            case k_useRollPitchYaw: return true;
-            case k_yaw: return true;
-            case k_pitch: return true;
-            case k_roll: return true;
-            case k_flipYaw: return true;
-            case k_flipPitch: return true;
-            case k_flipRoll: return true;
-            case k_numInputs: return false;
-        }
-    }
-    return true;
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
 }
 
-float PluginProcessor::getParameter (int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_enableRotation:  return (float)binauraliser_getEnableRotation(hBin);
-            case k_useRollPitchYaw: return (float)binauraliser_getRPYflag(hBin);
-            case k_yaw:             return (binauraliser_getYaw(hBin)/360.0f) + 0.5f;
-            case k_pitch:           return (binauraliser_getPitch(hBin)/360.0f) + 0.5f;
-            case k_roll:            return (binauraliser_getRoll(hBin)/360.0f) + 0.5f;
-            case k_flipYaw:         return (float)binauraliser_getFlipYaw(hBin);
-            case k_flipPitch:       return (float)binauraliser_getFlipPitch(hBin);
-            case k_flipRoll:        return (float)binauraliser_getFlipRoll(hBin);
-            case k_numInputs:       return (float)(binauraliser_getNumSources(hBin))/(float)(MAX_NUM_INPUTS);
-            default: return 0.0f;
-        }
-    }
-    /* source direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        switch (index % 3) {
-            case 0:  return (binauraliser_getSourceAzi_deg(hBin, index/3) / 360.0f) + 0.5f;
-            case 1:  return (binauraliser_getSourceElev_deg(hBin, (index-1)/3) / 180.0f) + 0.5f;
-            case 2:  return (binauraliserNF_getSourceDist_m(hBin, (index-2)/3) - nfThresh) / (ffThresh - nfThresh);
-            default: return 0.0f;
-        }
-    }
-}
-
-int PluginProcessor::getNumParameters()
-{
-	return k_NumOfParameters + 3*MAX_NUM_INPUTS;
-}
-
 const String PluginProcessor::getName() const
 {
     return JucePlugin_Name;
-}
-
-const String PluginProcessor::getParameterName (int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_enableRotation:  return "enable_rotation";
-            case k_useRollPitchYaw: return "use_rpy";
-            case k_yaw:             return "yaw";
-            case k_pitch:           return "pitch";
-            case k_roll:            return "roll";
-            case k_flipYaw:         return "flip_yaw";
-            case k_flipPitch:       return "flip_pitch";
-            case k_flipRoll:        return "flip_roll";
-            case k_numInputs:       return "num_sources";
-            default: return "NULL";
-        }
-    }
-    /* source direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        switch (index % 3) {
-           case 0:  return TRANS("Azim_") + String(index/3 + 1);
-           case 1:  return TRANS("Elev_") + String((index-1)/3 + 1);
-           case 2:  return TRANS("Dist_") + String((index-2)/3 + 1);
-           default: return "NULL";
-        }
-    }
-}
-
-const String PluginProcessor::getParameterText(int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_enableRotation:  return !binauraliser_getEnableRotation(hBin) ? "Off" : "On";
-            case k_useRollPitchYaw: return !binauraliser_getRPYflag(hBin) ? "YPR" : "RPY";
-            case k_yaw:             return String(binauraliser_getYaw(hBin));
-            case k_pitch:           return String(binauraliser_getPitch(hBin));
-            case k_roll:            return String(binauraliser_getRoll(hBin));
-            case k_flipYaw:         return !binauraliser_getFlipYaw(hBin) ? "No-Flip" : "Flip";
-            case k_flipPitch:       return !binauraliser_getFlipPitch(hBin) ? "No-Flip" : "Flip";
-            case k_flipRoll:        return !binauraliser_getFlipRoll(hBin) ? "No-Flip" : "Flip";
-            case k_numInputs:       return String(binauraliser_getNumSources(hBin));
-            default: return "NULL";
-        }
-    }
-    /* source direction parameters */
-    else{
-        index-=k_NumOfParameters;
-        switch (index % 3) {
-            case 0:  return String(binauraliser_getSourceAzi_deg(hBin, index/3));
-            case 1:  return String(binauraliser_getSourceElev_deg(hBin, (index-1)/3));
-            case 2:  return String(binauraliserNF_getSourceDist_m(hBin, (index-2)/3));
-            default: return "NULL";
-        }
-    }
-}
-
-const String PluginProcessor::getInputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-const String PluginProcessor::getOutputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
 }
 
 double PluginProcessor::getTailLengthSeconds() const
@@ -322,18 +212,6 @@ const String PluginProcessor::getProgramName (int /*index*/)
     return String(); 
 }
 
-
-bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-
 bool PluginProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
@@ -350,11 +228,6 @@ bool PluginProcessor::producesMidi() const
    #else
     return false;
    #endif
-}
-
-bool PluginProcessor::silenceInProducesSilenceOut() const
-{
-    return false;
 }
 
 void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
@@ -405,45 +278,37 @@ bool PluginProcessor::hasEditor() const
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new PluginEditor (this);
+    return new PluginEditor (*this);
 }
 
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-    XmlElement xml("BINAURALISERNFPLUGINSETTINGS");
-    for(int i=0; i<binauraliser_getMaxNumSources(); i++){
-        xml.setAttribute("SourceAziDeg" + String(i), binauraliser_getSourceAzi_deg(hBin,i));
-        xml.setAttribute("SourceElevDeg" + String(i), binauraliser_getSourceElev_deg(hBin,i));
-        xml.setAttribute("SourceDistMeter" + String(i), binauraliserNF_getSourceDist_m(hBin,i));
-    }
-    xml.setAttribute("nSources", binauraliser_getNumSources(hBin));
+    juce::ValueTree state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
+    xmlState->setTagName("BINAURALISERNFPLUGINSETTINGS");
+    xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x201
     
+    /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
     if(!binauraliser_getUseDefaultHRIRsflag(hBin))
-        xml.setAttribute("SofaFilePath", String(binauraliser_getSofaFilePath(hBin)));
+        xmlState->setAttribute("SofaFilePath", String(binauraliser_getSofaFilePath(hBin)));
+    xmlState->setAttribute("INTERP_MODE", binauraliser_getInterpMode(hBin));
+    xmlState->setAttribute("HRIRdiffEQ", binauraliser_getEnableHRIRsDiffuseEQ(hBin));
+        
+    /* Other */
+    xmlState->setAttribute("JSONFilePath", lastDir.getFullPathName());
+    xmlState->setAttribute("OSC_PORT", osc_port_ID);
     
-    xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
-    
-    xml.setAttribute("INTERP_MODE", binauraliser_getInterpMode(hBin));
-    xml.setAttribute("ENABLE_ROT", binauraliser_getEnableRotation(hBin));
-    xml.setAttribute("YAW", binauraliser_getYaw(hBin));
-    xml.setAttribute("PITCH", binauraliser_getPitch(hBin));
-    xml.setAttribute("ROLL", binauraliser_getRoll(hBin));
-    xml.setAttribute("FLIP_YAW", binauraliser_getFlipYaw(hBin));
-    xml.setAttribute("FLIP_PITCH", binauraliser_getFlipPitch(hBin));
-    xml.setAttribute("FLIP_ROLL", binauraliser_getFlipRoll(hBin));
-    xml.setAttribute("RPY_FLAG", binauraliser_getRPYflag(hBin));
-    xml.setAttribute("HRIRdiffEQ", binauraliser_getEnableHRIRsDiffuseEQ(hBin));
-    xml.setAttribute("OSC_PORT", osc_port_ID);
-    
-    copyXmlToBinary(xml, destData);
+    /* Save */
+    copyXmlToBinary(*xmlState, destData);
 }
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     
-    if (xmlState != nullptr) {
-        if (xmlState->hasTagName("BINAURALISERNFPLUGINSETTINGS")) {
+    /* Load */
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState != nullptr && xmlState->hasTagName("BINAURALISERNFPLUGINSETTINGS")){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x201
             for(int i=0; i<binauraliser_getMaxNumSources(); i++){
                 if(xmlState->hasAttribute("SourceAziDeg" + String(i)))
                     binauraliser_setSourceAzi_deg(hBin, i, (float)xmlState->getDoubleAttribute("SourceAziDeg" + String(i), 0.0f));
@@ -453,7 +318,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                     binauraliserNF_setSourceDist_m(hBin, i, (float)xmlState->getDoubleAttribute("SourceDistMeter" + String(i), upperDistRange)); // default source distance is far field (no near field filtering)
             }
             if(xmlState->hasAttribute("nSources"))
-               binauraliser_setNumSources(hBin, xmlState->getIntAttribute("nSources", 1)); 
+                binauraliser_setNumSources(hBin, xmlState->getIntAttribute("nSources", 1));
             
             if(xmlState->hasAttribute("SofaFilePath")){
                 String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
@@ -484,14 +349,39 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 binauraliser_setRPYflag(hBin, xmlState->getIntAttribute("RPY_FLAG", 0));
             if(xmlState->hasAttribute("HRIRdiffEQ"))
                 binauraliser_setEnableHRIRsDiffuseEQ(hBin, xmlState->getIntAttribute("HRIRdiffEQ", 1));
-
+            
             if(xmlState->hasAttribute("OSC_PORT")){
                 osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
                 osc.connect(osc_port_ID);
             }
             
-            binauraliser_refreshSettings(hBin);
+            setParameterValuesUsingInternalState();
         }
+        else if(xmlState->getIntAttribute("VersionCode")>=0x201){
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+            if(xmlState->hasAttribute("SofaFilePath")){
+                String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
+                const char* new_cstring = (const char*)directory.toUTF8();
+                binauraliser_setSofaFilePath(hBin, new_cstring);
+            }
+            
+            if(xmlState->hasAttribute("INTERP_MODE"))
+                binauraliser_setInterpMode(hBin, xmlState->getIntAttribute("INTERP_MODE", 1));
+            if(xmlState->hasAttribute("HRIRdiffEQ"))
+                binauraliser_setEnableHRIRsDiffuseEQ(hBin, xmlState->getIntAttribute("HRIRdiffEQ", 1));
+            
+            /* Other */
+            if(xmlState->hasAttribute("JSONFilePath"))
+                lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            if(xmlState->hasAttribute("OSC_PORT")){
+                osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
+                osc.connect(osc_port_ID);
+            }
+        }
+
+        binauraliser_refreshSettings(hBin);
     }
 }
 
@@ -560,15 +450,19 @@ void PluginProcessor::loadConfiguration (const File& configFile)
                     channelIDs[j]--;
         
         /* update with the new configuration  */
-        binauraliser_setNumSources(hBin, num_srcs);
+        setParameterValue("numSources", num_srcs);
         for (ValueTree::Iterator it = sources.begin() ; it != sources.end(); ++it){
             if ( !((*it).getProperty("Imaginary"))){
-                binauraliser_setSourceAzi_deg(hBin, channelIDs[src_idx]-1, (*it).getProperty("Azimuth"));
-                binauraliser_setSourceElev_deg(hBin, channelIDs[src_idx]-1, (*it).getProperty("Elevation"));
-                binauraliserNF_setSourceDist_m(hBin, channelIDs[src_idx]-1, (*it).getProperty("Radius"));
+                float azimValue = (float)(*it).getProperty("Azimuth");
+                float elevValue = (float)(*it).getProperty("Elevation");
+                float distValue = (float)(*it).getProperty("Radius");
+                setParameterValue("azim" + juce::String(channelIDs[src_idx]-1), azimValue);
+                setParameterValue("elev" + juce::String(channelIDs[src_idx]-1), elevValue);
+                setParameterValue("dist" + juce::String(channelIDs[src_idx]-1), distValue);
                 src_idx++;
             }
         }
+        
         refreshWindow = true;
     }
 }

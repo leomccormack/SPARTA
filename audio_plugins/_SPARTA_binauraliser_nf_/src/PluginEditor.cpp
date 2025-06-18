@@ -22,8 +22,8 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter), progressbar(progress), fileChooser ("File", File(), true, false, false,
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p), progressbar(progress), fileChooser ("File", File(), true, false, false,
       "*.sofa;*.nc;", String(),
       "Load SOFA File")
 {
@@ -38,9 +38,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBsourceDirsPreset->setBounds (88, 66, 112, 20);
 
-    SL_num_sources.reset (new juce::Slider ("new slider"));
+    SL_num_sources = std::make_unique<SliderWithAttachment>(p.parameters, "numSources");
     addAndMakeVisible (SL_num_sources.get());
-    SL_num_sources->setRange (1, 128, 1);
     SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
@@ -145,10 +144,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     tb_saveJSON->setBounds (174, 40, 34, 14);
 
-    s_yaw.reset (new juce::Slider ("new slider"));
+    s_yaw = std::make_unique<SliderWithAttachment>(p.parameters, "yaw");
     addAndMakeVisible (s_yaw.get());
-    s_yaw->setRange (-180, 180, 0.01);
-    s_yaw->setDoubleClickReturnValue(true, 0.0f);
     s_yaw->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
     s_yaw->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6e));
@@ -159,10 +156,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_yaw->setBounds (717, 260, 60, 68);
 
-    s_pitch.reset (new juce::Slider ("new slider"));
+    s_pitch = std::make_unique<SliderWithAttachment>(p.parameters, "pitch");
     addAndMakeVisible (s_pitch.get());
-    s_pitch->setRange (-180, 180, 0.01);
-    s_pitch->setDoubleClickReturnValue(true, 0.0f);
     s_pitch->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
     s_pitch->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -173,10 +168,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_pitch->setBounds (780, 260, 60, 68);
 
-    s_roll.reset (new juce::Slider ("new slider"));
+    s_roll = std::make_unique<SliderWithAttachment>(p.parameters, "roll");
     addAndMakeVisible (s_roll.get());
-    s_roll->setRange (-180, 180, 0.01);
-    s_roll->setDoubleClickReturnValue(true, 0.0f);
     s_roll->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
     s_roll->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -187,21 +180,21 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_roll->setBounds (843, 260, 60, 68);
 
-    t_flipYaw.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipYaw = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipYaw");
     addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (juce::String());
     t_flipYaw->addListener (this);
 
     t_flipYaw->setBounds (749, 329, 23, 24);
 
-    t_flipPitch.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipPitch = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipPitch");
     addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (juce::String());
     t_flipPitch->addListener (this);
 
     t_flipPitch->setBounds (812, 329, 23, 24);
 
-    t_flipRoll.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipRoll = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipRoll");
     addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (juce::String());
     t_flipRoll->addListener (this);
@@ -223,14 +216,14 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     te_oscport->setBounds (848, 216, 44, 22);
 
-    TBrpyFlag.reset (new juce::ToggleButton ("new toggle button"));
+    TBrpyFlag = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "useRollPitchYaw");
     addAndMakeVisible (TBrpyFlag.get());
     TBrpyFlag->setButtonText (juce::String());
     TBrpyFlag->addListener (this);
 
     TBrpyFlag->setBounds (752, 216, 32, 24);
 
-    TBenableRotation.reset (new juce::ToggleButton ("new toggle button"));
+    TBenableRotation = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableRotation");
     addAndMakeVisible (TBenableRotation.get());
     TBenableRotation->setButtonText (juce::String());
     TBenableRotation->addListener (this);
@@ -247,9 +240,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     setSize (920, 362);
 
-    /* handle to pluginProcessor */
-	hVst = ownerFilter;
-    hBin = hVst->getFXHandle();
+    /* handle to object */
+    hBin = processor.getFXHandle();
 
     /* init OpenGL */
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -311,7 +303,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* source coordinate viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (sourceCoordsVP.get());
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_INPUTS, binauraliser_getNumSources(hBin));
+    sourceCoordsView_handle = new inputCoordsView(p, MAX_NUM_INPUTS, binauraliser_getNumSources(hBin));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
@@ -329,22 +321,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* grab current parameter settings */
     TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
-    SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(false, dontSendNotification);
     CBinterpMode->setSelectedId(binauraliser_getInterpMode(hBin), dontSendNotification);
-    TBenableRotation->setToggleState((bool)binauraliser_getEnableRotation(hBin), dontSendNotification);
-    s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
-    s_pitch->setValue(binauraliser_getPitch(hBin), dontSendNotification);
-    s_roll->setValue(binauraliser_getRoll(hBin), dontSendNotification);
-    t_flipYaw->setToggleState((bool)binauraliser_getFlipYaw(hBin), dontSendNotification);
-    t_flipPitch->setToggleState((bool)binauraliser_getFlipPitch(hBin), dontSendNotification);
-    t_flipRoll->setToggleState((bool)binauraliser_getFlipRoll(hBin), dontSendNotification);
-    te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
-    TBrpyFlag->setToggleState((bool)binauraliser_getRPYflag(hBin), dontSendNotification);
+    te_oscport->setText(String(processor.getOscPortID()), dontSendNotification);
 
     /* create panning window */
-    panWindow.reset (new pannerView(ownerFilter, 492, 246));
+    panWindow.reset (new pannerView(p, 492, 246));
     addAndMakeVisible (panWindow.get());
     panWindow->setBounds (214, 58, 492, 246);
     panWindow->setShowInputs(TB_showInputs->getToggleState());
@@ -905,13 +888,13 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(binauraliser_getNumSources(hBin)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
-            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+            g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(binauraliser_getNumEars()) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
@@ -928,22 +911,19 @@ void PluginEditor::resized()
 {
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
     {
         binauraliserNF_setInputConfigPreset(hBin, CBsourceDirsPreset->getSelectedId());
+        
+        processor.setParameterValue("numSources", binauraliser_getNumSources(hBin));
+        for(int i=0; i<binauraliser_getNumSources(hBin); i++){
+            processor.setParameterValue("azim" + juce::String(i), binauraliser_getSourceAzi_deg(hBin,i));
+            processor.setParameterValue("elev" + juce::String(i), binauraliser_getSourceElev_deg(hBin,i));
+            processor.setParameterValue("dist" + juce::String(i), binauraliserNF_getSourceDist_m(hBin,i));
+        }
+        
         refreshPanViewWindow = true;
     }
     else if (comboBoxThatHasChanged == CBinterpMode.get())
@@ -956,26 +936,7 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == SL_num_sources.get())
     {
-        binauraliser_setNumSources(hBin, (int)SL_num_sources->getValue());
         refreshPanViewWindow = true;
-    }
-    else if (sliderThatWasMoved == s_yaw.get())
-    {
-        hVst->beginParameterChangeGesture(k_yaw);
-        binauraliser_setYaw(hBin, (float)s_yaw->getValue());
-        hVst->endParameterChangeGesture(k_yaw);
-    }
-    else if (sliderThatWasMoved == s_pitch.get())
-    {
-        hVst->beginParameterChangeGesture(k_pitch);
-        binauraliser_setPitch(hBin, (float)s_pitch->getValue());
-        hVst->endParameterChangeGesture(k_pitch);
-    }
-    else if (sliderThatWasMoved == s_roll.get())
-    {
-        hVst->beginParameterChangeGesture(k_roll);
-        binauraliser_setRoll(hBin, (float)s_roll->getValue());
-        hVst->endParameterChangeGesture(k_roll);
     }
 }
 
@@ -999,75 +960,37 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == tb_loadJSON.get())
     {
         chooser = std::make_unique<juce::FileChooser> ("Load configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       processor.getLastDir().exists() ? processor.getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
         auto chooserFlags = juce::FileBrowserComponent::openMode
                                   | juce::FileBrowserComponent::canSelectFiles;
         chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
             auto file = fc.getResult();
             if (file != File{}){
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->loadConfiguration (file);
+                processor.setLastDir(file.getParentDirectory());
+                processor.loadConfiguration (file);
             }
         });
     }
     else if (buttonThatWasClicked == tb_saveJSON.get())
     {
         chooser = std::make_unique<juce::FileChooser> ("Save configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       processor.getLastDir().exists() ? processor.getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
         auto chooserFlags = juce::FileBrowserComponent::saveMode;
         chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
             auto file = fc.getResult();
             if (file != File{}) {
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->saveConfigurationToFile (file);
+                processor.setLastDir(file.getParentDirectory());
+                processor.saveConfigurationToFile (file);
             }
         });
-    }
-    else if (buttonThatWasClicked == t_flipYaw.get())
-    {
-        hVst->beginParameterChangeGesture(k_flipYaw);
-        binauraliser_setFlipYaw(hBin, (int)t_flipYaw->getToggleState());
-        hVst->endParameterChangeGesture(k_flipYaw);
-    }
-    else if (buttonThatWasClicked == t_flipPitch.get())
-    {
-        hVst->beginParameterChangeGesture(k_flipPitch);
-        binauraliser_setFlipPitch(hBin, (int)t_flipPitch->getToggleState());
-        hVst->endParameterChangeGesture(k_flipPitch);
-    }
-    else if (buttonThatWasClicked == t_flipRoll.get())
-    {
-        hVst->beginParameterChangeGesture(k_flipRoll);
-        binauraliser_setFlipRoll(hBin, (int)t_flipRoll->getToggleState());
-        hVst->endParameterChangeGesture(k_flipRoll);
-    }
-    else if (buttonThatWasClicked == TBrpyFlag.get())
-    {
-        hVst->beginParameterChangeGesture(k_useRollPitchYaw);
-        binauraliser_setRPYflag(hBin, (int)TBrpyFlag->getToggleState());
-        hVst->endParameterChangeGesture(k_useRollPitchYaw);
-    }
-    else if (buttonThatWasClicked == TBenableRotation.get())
-    {
-        hVst->beginParameterChangeGesture(k_enableRotation);
-        binauraliser_setEnableRotation(hBin, (int)TBenableRotation->getToggleState());
-        hVst->endParameterChangeGesture(k_enableRotation);
     }
     else if (buttonThatWasClicked == TBenablePreProc.get())
     {
         binauraliser_setEnableHRIRsDiffuseEQ(hBin, (int)TBenablePreProc->getToggleState());
     }
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
 
 void PluginEditor::timerCallback(int timerID)
 {
@@ -1088,15 +1011,6 @@ void PluginEditor::timerCallback(int timerID)
             sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
             TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
             TBenablePreProc->setToggleState(binauraliser_getEnableHRIRsDiffuseEQ(hBin), dontSendNotification);
-            SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
-            TBenableRotation->setToggleState((bool)binauraliser_getEnableRotation(hBin), dontSendNotification);
-            s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
-            s_pitch->setValue(binauraliser_getPitch(hBin), dontSendNotification);
-            s_roll->setValue(binauraliser_getRoll(hBin), dontSendNotification);
-            t_flipYaw->setToggleState((bool)binauraliser_getFlipYaw(hBin), dontSendNotification);
-            t_flipPitch->setToggleState((bool)binauraliser_getFlipPitch(hBin), dontSendNotification);
-            t_flipRoll->setToggleState((bool)binauraliser_getFlipRoll(hBin), dontSendNotification);
-            TBrpyFlag->setToggleState((bool)binauraliser_getRPYflag(hBin), dontSendNotification);
 
             /* Progress bar */
             if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
@@ -1144,15 +1058,14 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* refresh pan view */
-            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
+            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || processor.getRefreshWindow()){
                 panWindow->refreshPanView();
-                sourceCoordsView_handle->setHasASliderChange(false);
                 refreshPanViewWindow = false;
-                hVst->setRefreshWindow(false);
+                processor.setRefreshWindow(false);
             }
 
             /* display warning message, if needed */
-            if ((hVst->getCurrentBlockSize() % binauraliser_getFrameSize()) != 0){
+            if ((processor.getCurrentBlockSize() % binauraliser_getFrameSize()) != 0){
                 currentWarning = k_warning_frameSize;
                 repaint(0,0,getWidth(),32);
             }
@@ -1164,15 +1077,15 @@ void PluginEditor::timerCallback(int timerID)
                 currentWarning = k_warning_mismatch_fs;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumInputs() < binauraliser_getNumSources(hBin))){
+            else if ((processor.getCurrentNumInputs() < binauraliser_getNumSources(hBin))){
                 currentWarning = k_warning_NinputCH;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumOutputs() < binauraliser_getNumEars())){
+            else if ((processor.getCurrentNumOutputs() < binauraliser_getNumEars())){
                 currentWarning = k_warning_NoutputCH;
                 repaint(0,0,getWidth(),32);
             }
-            else if(!hVst->getOscPortConnected() && binauraliser_getEnableRotation(hBin)){
+            else if(!processor.getOscPortConnected() && binauraliser_getEnableRotation(hBin)){
                 currentWarning = k_warning_osc_connection_fail;
                 repaint(0,0,getWidth(),32);
             }
@@ -1182,8 +1095,8 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* check if OSC port has changed */
-            if (hVst->getOscPortID() != te_oscport->getText().getIntValue())
-                hVst->setOscPortID(te_oscport->getText().getIntValue());
+            if (processor.getOscPortID() != te_oscport->getText().getIntValue())
+                processor.setOscPortID(te_oscport->getText().getIntValue());
 
             break;
     }
