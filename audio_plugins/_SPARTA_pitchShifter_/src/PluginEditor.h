@@ -37,7 +37,7 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::ComboBox::Listener
 {
 public:
-    PluginEditor (PluginProcessor* ownerFilter);
+    PluginEditor (PluginProcessor& p);
     ~PluginEditor() override;
 
     void paint (juce::Graphics& g) override;
@@ -46,7 +46,7 @@ public:
     void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hPS;
     void timerCallback(int timerID) override;
     double progress = 0.0;
@@ -62,10 +62,10 @@ private:
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
-    std::unique_ptr<juce::Slider> s_pitchShiftFactor;
-    std::unique_ptr<juce::Slider> SL_num_channels;
-    std::unique_ptr<juce::ComboBox> CBfftsize;
-    std::unique_ptr<juce::ComboBox> CBoversampling;
+    std::unique_ptr<SliderWithAttachment> s_pitchShiftFactor;
+    std::unique_ptr<SliderWithAttachment> SL_num_channels;
+    std::unique_ptr<ComboBoxWithAttachment> CBfftsize;
+    std::unique_ptr<ComboBoxWithAttachment> CBoversampling;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

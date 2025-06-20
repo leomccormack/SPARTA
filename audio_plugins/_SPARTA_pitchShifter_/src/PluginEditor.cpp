@@ -22,13 +22,11 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter),progressbar(progress)
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p), progressbar(progress)
 {
-    s_pitchShiftFactor.reset (new juce::Slider ("new slider"));
+    s_pitchShiftFactor = std::make_unique<SliderWithAttachment>(p.parameters, "pitchShiftFactor");
     addAndMakeVisible (s_pitchShiftFactor.get());
-    s_pitchShiftFactor->setRange (0.1, 4, 0.01);
-    s_pitchShiftFactor->setDoubleClickReturnValue(true, 1.0f);
     s_pitchShiftFactor->setSliderStyle (juce::Slider::LinearHorizontal);
     s_pitchShiftFactor->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     s_pitchShiftFactor->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -39,39 +37,35 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_pitchShiftFactor->setBounds (360, 40, 120, 32);
 
-    SL_num_channels.reset (new juce::Slider ("new slider"));
+    SL_num_channels = std::make_unique<SliderWithAttachment>(p.parameters, "numChannels");
     addAndMakeVisible (SL_num_channels.get());
-    SL_num_channels->setRange (1, 128, 1);
     SL_num_channels->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_channels->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_channels->addListener (this);
 
     SL_num_channels->setBounds (163, 47, 48, 20);
 
-    CBfftsize.reset (new juce::ComboBox ("new combo box"));
+    CBfftsize  = std::make_unique<ComboBoxWithAttachment>(p.parameters, "fftOption");
     addAndMakeVisible (CBfftsize.get());
     CBfftsize->setEditableText (false);
     CBfftsize->setJustificationType (juce::Justification::centredLeft);
     CBfftsize->setTextWhenNothingSelected (juce::String());
-    CBfftsize->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBfftsize->addListener (this);
 
     CBfftsize->setBounds (98, 78, 112, 19);
 
-    CBoversampling.reset (new juce::ComboBox ("new combo box"));
+    CBoversampling = std::make_unique<ComboBoxWithAttachment>(p.parameters, "oSampOption");
     addAndMakeVisible (CBoversampling.get());
     CBoversampling->setEditableText (false);
     CBoversampling->setJustificationType (juce::Justification::centredLeft);
     CBoversampling->setTextWhenNothingSelected (juce::String());
-    CBoversampling->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBoversampling->addListener (this);
 
     CBoversampling->setBounds (361, 78, 112, 19);
 
     setSize (500, 112);
 
-	hVst = ownerFilter;
-    hPS = hVst->getFXHandle();
+    hPS = processor.getFXHandle();
 
     /* Look and Feel */
     LAF.setDefaultColours();
@@ -81,26 +75,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_channels->setColour(Slider::trackColourId, Colours::transparentBlack);
     SL_num_channels->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
     SL_num_channels->setSliderSnapsToMousePosition(false);
-
-    /* add combo box options */
-    CBfftsize->addItem(TRANS("512"),   PITCH_SHIFTER_FFTSIZE_512);
-    CBfftsize->addItem(TRANS("1024"),  PITCH_SHIFTER_FFTSIZE_1024);
-    CBfftsize->addItem(TRANS("2048"),  PITCH_SHIFTER_FFTSIZE_2048);
-    CBfftsize->addItem(TRANS("4096"),  PITCH_SHIFTER_FFTSIZE_4096);
-    CBfftsize->addItem(TRANS("8192"),  PITCH_SHIFTER_FFTSIZE_8192);
-    CBfftsize->addItem(TRANS("16384"), PITCH_SHIFTER_FFTSIZE_16384);
-    CBoversampling->addItem(TRANS("2"),  PITCH_SHIFTER_OSAMP_2);
-    CBoversampling->addItem(TRANS("4"),  PITCH_SHIFTER_OSAMP_4);
-    CBoversampling->addItem(TRANS("8"),  PITCH_SHIFTER_OSAMP_8);
-    CBoversampling->addItem(TRANS("16"), PITCH_SHIFTER_OSAMP_16);
-    CBoversampling->addItem(TRANS("32"), PITCH_SHIFTER_OSAMP_32);
-
-	/* fetch current configuration */
-    SL_num_channels->setValue(pitch_shifter_getNCHrequired(hPS));
-    s_pitchShiftFactor->setRange(PITCH_SHIFTER_MIN_SHIFT_FACTOR, PITCH_SHIFTER_MAX_SHIFT_FACTOR, 0.01f);
-	s_pitchShiftFactor->setValue(pitch_shifter_getPitchShiftFactor(hPS), dontSendNotification);
-    CBfftsize->setSelectedId((int)pitch_shifter_getFFTSizeOption(hPS), dontSendNotification);
-    CBoversampling->setSelectedId((int)pitch_shifter_getOSampOption(hPS), dontSendNotification);
 
     /* tooltips */
     s_pitchShiftFactor->setTooltip("Pitch shift factor, 1: no change, 0.5: down one octave, 2: up one octave");
@@ -317,7 +291,7 @@ void PluginEditor::paint (juce::Graphics& g)
         case k_warning_none:
             break;
         case k_warning_NCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(pitch_shifter_getNCHrequired(hPS)) + TRANS(")"),
                        getBounds().getWidth()-225, 6, 530, 11,
                        Justification::centredLeft, true);
@@ -330,49 +304,12 @@ void PluginEditor::resized()
 	repaint();
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
-void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+void PluginEditor::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
-    if (sliderThatWasMoved == s_pitchShiftFactor.get())
-    {
-        hVst->beginParameterChangeGesture(k_pitchShiftFactor);
-        pitch_shifter_setPitchShiftFactor(hPS, (float)s_pitchShiftFactor->getValue());
-        hVst->endParameterChangeGesture(k_pitchShiftFactor);
-    }
-    else if (sliderThatWasMoved == SL_num_channels.get())
-    {
-        pitch_shifter_setNumChannels(hPS, (int)SL_num_channels->getValue());
-    }
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
-
-void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
+void PluginEditor::comboBoxChanged (juce::ComboBox* /*comboBoxThatHasChanged*/)
 {
-    if (comboBoxThatHasChanged == CBfftsize.get())
-    {
-        pitch_shifter_setFFTSizeOption(hPS, (PITCH_SHIFTER_FFTSIZE_OPTIONS)CBfftsize->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CBoversampling.get())
-    {
-        pitch_shifter_setOSampOption(hPS, (PITCH_SHIFTER_OSAMP_OPTIONS)CBoversampling->getSelectedId());
-    }
 }
 
 void PluginEditor::timerCallback(int timerID)
@@ -384,8 +321,6 @@ void PluginEditor::timerCallback(int timerID)
 
         case TIMER_GUI_RELATED:
             /* parameters whos values can change internally should be periodically refreshed */
-            SL_num_channels->setValue(pitch_shifter_getNCHrequired(hPS));
-            s_pitchShiftFactor->setValue(pitch_shifter_getPitchShiftFactor(hPS), dontSendNotification);
 
             /* Progress bar */
             if(pitch_shifter_getCodecStatus(hPS)==CODEC_STATUS_INITIALISING){
@@ -399,7 +334,7 @@ void PluginEditor::timerCallback(int timerID)
                 removeChildComponent(&progressbar);
 
             /* display warning message, if needed */
-            if ((hVst->getCurrentNumInputs() < pitch_shifter_getNCHrequired(hPS))){
+            if ((processor.getCurrentNumInputs() < pitch_shifter_getNCHrequired(hPS))){
                 currentWarning = k_warning_NCH;
                 repaint(0,0,getWidth(),32);
             }

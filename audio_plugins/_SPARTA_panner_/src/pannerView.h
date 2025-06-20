@@ -28,7 +28,7 @@
 class pannerView  : public Component
 {
 public:
-    pannerView (PluginProcessor* ownerFilter, int _width, int _height);
+    pannerView (PluginProcessor& p, int _width, int _height);
     ~pannerView();
 
     void refreshPanView();
@@ -43,7 +43,7 @@ public:
     void mouseUp (const MouseEvent& e) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hPan;
     int width;
     int height;

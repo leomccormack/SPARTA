@@ -44,7 +44,7 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::Button::Listener
 {
 public:
-    PluginEditor (PluginProcessor* ownerFilter);
+    PluginEditor (PluginProcessor& p);
     ~PluginEditor() override;
 
     void paint (juce::Graphics& g) override;
@@ -54,7 +54,7 @@ public:
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hPan;
     void timerCallback(int timerID) override;
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -90,23 +90,23 @@ private:
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
     std::unique_ptr<juce::ComboBox> CBsourceDirsPreset;
-    std::unique_ptr<juce::Slider> SL_num_sources;
+    std::unique_ptr<SliderWithAttachment> SL_num_sources;
     std::unique_ptr<juce::ToggleButton> TB_showInputs;
     std::unique_ptr<juce::ToggleButton> TB_showOutputs;
-    std::unique_ptr<juce::Slider> SL_pValue;
+    std::unique_ptr<SliderWithAttachment> SL_pValue;
     std::unique_ptr<juce::ComboBox> CBsLoudspeakerDirsPreset;
-    std::unique_ptr<juce::Slider> SL_num_loudspeakers;
+    std::unique_ptr<SliderWithAttachment> SL_num_loudspeakers;
     std::unique_ptr<juce::TextButton> tb_loadJSON_src;
     std::unique_ptr<juce::TextButton> tb_saveJSON_src;
     std::unique_ptr<juce::TextButton> tb_loadJSON_ls;
     std::unique_ptr<juce::TextButton> tb_saveJSON_ls;
-    std::unique_ptr<juce::Slider> SL_spread;
-    std::unique_ptr<juce::Slider> s_yaw;
-    std::unique_ptr<juce::ToggleButton> t_flipYaw;
-    std::unique_ptr<juce::ToggleButton> t_flipPitch;
-    std::unique_ptr<juce::ToggleButton> t_flipRoll;
-    std::unique_ptr<juce::Slider> s_pitch;
-    std::unique_ptr<juce::Slider> s_roll;
+    std::unique_ptr<SliderWithAttachment> SL_spread;
+    std::unique_ptr<SliderWithAttachment> s_yaw;
+    std::unique_ptr<SliderWithAttachment> s_pitch;
+    std::unique_ptr<SliderWithAttachment> s_roll;
+    std::unique_ptr<ToggleButtonWithAttachment> t_flipYaw;
+    std::unique_ptr<ToggleButtonWithAttachment> t_flipPitch;
+    std::unique_ptr<ToggleButtonWithAttachment> t_flipRoll;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

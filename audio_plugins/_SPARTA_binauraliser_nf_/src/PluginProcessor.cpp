@@ -304,7 +304,6 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if (xmlState != nullptr && xmlState->hasTagName("BINAURALISERNFPLUGINSETTINGS")){

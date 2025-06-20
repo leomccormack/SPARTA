@@ -34,13 +34,53 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     }
 }
 
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numChannels", "NumChannels", 1, MAX_NUM_INPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("pitchShiftFactor", "PitchShiftFactor", juce::NormalisableRange<float>(PITCH_SHIFTER_MIN_SHIFT_FACTOR, PITCH_SHIFTER_MAX_SHIFT_FACTOR, 0.01f), 1.0f));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("fftOption", "FFTOption", juce::StringArray{"512", "1024", "2048", "4096", "8192", "16384"}, 1, AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("oSampOption", "OSampOption", juce::StringArray{"2", "4", "8", "16", "32"}, 1, AudioParameterChoiceAttributes().withAutomatable(false)));
+    
+    return { params.begin(), params.end() };
+}
+
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    if(parameterID == "numChannels"){
+        pitch_shifter_setNumChannels(hPS, static_cast<int>(newValue));
+    }
+    else if(parameterID == "pitchShiftFactor"){
+        pitch_shifter_setPitchShiftFactor(hPS, newValue);
+    }
+    else if(parameterID == "fftOption"){
+        pitch_shifter_setFFTSizeOption(hPS, static_cast<PITCH_SHIFTER_FFTSIZE_OPTIONS>(newValue+1.001f));
+    }
+    else if(parameterID == "oSampOption"){
+        pitch_shifter_setOSampOption(hPS, static_cast<PITCH_SHIFTER_OSAMP_OPTIONS>(newValue+1.001f));
+    }
+}
+
+void PluginProcessor::setParameterValuesUsingInternalState()
+{
+    setParameterValue("numChannels", pitch_shifter_getNCHrequired(hPS));
+    setParameterValue("pitchShiftFactor", pitch_shifter_getPitchShiftFactor(hPS));
+    setParameterValue("fftOption", pitch_shifter_getFFTSizeOption(hPS));
+    setParameterValue("oSampOption", pitch_shifter_getOSampOption(hPS));
+}
+
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    ParameterManager(*this, createParameterLayout())
 {
 	nSampleRate = 48000; 
 	pitch_shifter_create(&hPS);
+    
+    /* Grab defaults */
+    setParameterValuesUsingInternalState();
+    
     startTimer(TIMER_PROCESSING_RELATED, 80);
 }
 
@@ -49,100 +89,13 @@ PluginProcessor::~PluginProcessor()
 	pitch_shifter_destroy(&hPS);
 }
 
-void PluginProcessor::setParameter (int index, float newValue)
-{
-	switch (index) {
-        case k_numChannels:      pitch_shifter_setNumChannels(hPS, (int)(newValue*(float)(MAX_NUM_CHANNELS-1) + 1.5f)); break;
-        case k_pitchShiftFactor: pitch_shifter_setPitchShiftFactor(hPS, newValue * (PITCH_SHIFTER_MAX_SHIFT_FACTOR - PITCH_SHIFTER_MIN_SHIFT_FACTOR) + PITCH_SHIFTER_MIN_SHIFT_FACTOR); break;
-        case k_OSampOption:      pitch_shifter_setOSampOption(hPS, (PITCH_SHIFTER_OSAMP_OPTIONS)(int)(newValue*(float)(PITCH_SHIFTER_NUM_OSAMP_OPTIONS-1) + 1.5f)); break;
-        case k_fftOption:        pitch_shifter_setFFTSizeOption(hPS, (PITCH_SHIFTER_FFTSIZE_OPTIONS)(int)(newValue*(float)(PITCH_SHIFTER_NUM_FFTSIZE_OPTIONS-1) + 1.5f)); break;
-		default: break;
-	}
-}
-
-bool PluginProcessor::isParameterAutomatable (int index) const
-{
-    switch (index) {
-        case k_numChannels: return false;
-        case k_pitchShiftFactor: return true;
-        case k_fftOption: return false;
-        case k_OSampOption: return false;
-        default: return false;
-    }
-}
-
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
-}
-
-float PluginProcessor::getParameter (int index)
-{
-    switch (index) {
-        case k_numChannels:      return (float)(pitch_shifter_getNCHrequired(hPS)-1)/(float)(MAX_NUM_CHANNELS-1);
-        case k_OSampOption:      return (float)(pitch_shifter_getOSampOption(hPS)-1)/(float)(PITCH_SHIFTER_NUM_OSAMP_OPTIONS-1);
-        case k_fftOption:        return (float)(pitch_shifter_getFFTSizeOption(hPS)-1)/(float)(PITCH_SHIFTER_NUM_FFTSIZE_OPTIONS-1);
-        case k_pitchShiftFactor: return (float)(pitch_shifter_getPitchShiftFactor(hPS) - PITCH_SHIFTER_MIN_SHIFT_FACTOR)/(PITCH_SHIFTER_MAX_SHIFT_FACTOR - PITCH_SHIFTER_MIN_SHIFT_FACTOR);
-		default: return 0.0f;
-	}
-}
-
-int PluginProcessor::getNumParameters()
-{
-	return k_NumOfParameters;
 }
 
 const String PluginProcessor::getName() const
 {
     return JucePlugin_Name;
-}
-
-const String PluginProcessor::getParameterName (int index)
-{
-    switch (index){
-        case k_numChannels:      return "N Channels";
-        case k_fftOption:        return "FFTSize";
-        case k_OSampOption:      return "OverSamp";
-        case k_pitchShiftFactor: return "pitchShift";
-		default: return "NULL";
-	}
-}
-
-const String PluginProcessor::getParameterText(int index)
-{
-    switch (index) {
-        case k_numChannels:      return String(pitch_shifter_getNCHrequired(hPS));
-        case k_pitchShiftFactor: return String(pitch_shifter_getPitchShiftFactor(hPS));
-        case k_OSampOption:
-            switch(pitch_shifter_getOSampOption(hPS)){
-                case PITCH_SHIFTER_OSAMP_2:   return "2";
-                case PITCH_SHIFTER_OSAMP_4:   return "4";
-                case PITCH_SHIFTER_OSAMP_8:   return "8";
-                case PITCH_SHIFTER_OSAMP_16:  return "16";
-                case PITCH_SHIFTER_OSAMP_32:  return "32";
-                default: return "NULL";
-            }
-        case k_fftOption:
-            switch(pitch_shifter_getFFTSizeOption(hPS)){
-                case PITCH_SHIFTER_FFTSIZE_512:   return "512";
-                case PITCH_SHIFTER_FFTSIZE_1024:  return "1024";
-                case PITCH_SHIFTER_FFTSIZE_2048:  return "2048";
-                case PITCH_SHIFTER_FFTSIZE_4096:  return "4096";
-                case PITCH_SHIFTER_FFTSIZE_8192:  return "8192";
-                case PITCH_SHIFTER_FFTSIZE_16384: return "16384";
-                default: return "NULL";
-            }
-        default: return "NULL";
-    }
-}
-
-const String PluginProcessor::getInputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-const String PluginProcessor::getOutputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
 }
 
 double PluginProcessor::getTailLengthSeconds() const
@@ -165,18 +118,6 @@ const String PluginProcessor::getProgramName (int /*index*/)
     return String();
 }
 
-
-bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-
 bool PluginProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
@@ -193,11 +134,6 @@ bool PluginProcessor::producesMidi() const
    #else
     return false;
    #endif
-}
-
-bool PluginProcessor::silenceInProducesSilenceOut() const
-{
-    return false;
 }
 
 void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
@@ -236,30 +172,26 @@ bool PluginProcessor::hasEditor() const
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new PluginEditor (this);
+    return new PluginEditor (*this);
 }
 
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-	/* Create an outer XML element.. */ 
-	XmlElement xml("PITCHSHIFTERAUDIOPLUGINSETTINGS");
- 
-	xml.setAttribute("PITCHSHIFTFACTOR", pitch_shifter_getPitchShiftFactor(hPS));
-    xml.setAttribute("NCHANNELS", pitch_shifter_getNCHrequired(hPS));
-    xml.setAttribute("OSAMP", (int)pitch_shifter_getOSampOption(hPS));
-    xml.setAttribute("FFTSIZE", (int)pitch_shifter_getFFTSizeOption(hPS));
+    juce::ValueTree state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
+    xmlState->setTagName("PITCHSHIFTERAUDIOPLUGINSETTINGS");
+    xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10101
     
-	copyXmlToBinary(xml, destData);
+    /* Save */
+    copyXmlToBinary(*xmlState, destData);
 }
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-	/* This getXmlFromBinary() function retrieves XML from the binary blob */
-    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-
-	if (xmlState != nullptr) {
-		/* make sure that it's actually the correct XML object */
-		if (xmlState->hasTagName("PITCHSHIFTERAUDIOPLUGINSETTINGS")) {
+    /* Load */
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState != nullptr && xmlState->hasTagName("PITCHSHIFTERAUDIOPLUGINSETTINGS")){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10101
             if(xmlState->hasAttribute("PITCHSHIFTFACTOR"))
                 pitch_shifter_setPitchShiftFactor(hPS, (float)xmlState->getDoubleAttribute("PITCHSHIFTFACTOR", 1.0f));
             if(xmlState->hasAttribute("NCHANNELS"))
@@ -268,10 +200,15 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 pitch_shifter_setOSampOption(hPS, (PITCH_SHIFTER_OSAMP_OPTIONS)xmlState->getIntAttribute("OSAMP", PITCH_SHIFTER_OSAMP_16));
             if(xmlState->hasAttribute("FFTSIZE"))
                 pitch_shifter_setFFTSizeOption(hPS, (PITCH_SHIFTER_FFTSIZE_OPTIONS)xmlState->getIntAttribute("FFTSIZE", PITCH_SHIFTER_FFTSIZE_8192));
-
-            pitch_shifter_refreshParams(hPS);
+            
+            setParameterValuesUsingInternalState();
         }
-	}
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10101){
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+        }
+        
+        pitch_shifter_refreshParams(hPS);
+    }
 }
 
 // This creates new instances of the plugin..

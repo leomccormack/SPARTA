@@ -16,6 +16,8 @@
               enableIAA="0" companyCopyright="Aalto" pluginFormats="buildVST"
               jucerFormatVersion="1">
   <MAINGROUP id="imnfnp" name="sparta_dirass">
+    <FILE id="wgW3Lo" name="ParameterManager.h" compile="0" resource="0"
+          file="../resources/ParameterManager.h"/>
     <FILE id="OpxoU0" name="SPARTALookAndFeel.h" compile="0" resource="0"
           file="../resources/SPARTALookAndFeel.h"/>
     <FILE id="oWOjKT" name="overlay.cpp" compile="1" resource="0" file="src/overlay.cpp"/>
