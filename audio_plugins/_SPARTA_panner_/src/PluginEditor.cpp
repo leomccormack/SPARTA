@@ -22,8 +22,8 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter), progressbar(progress)
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p), progressbar(progress)
 {
     CBsourceDirsPreset.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBsourceDirsPreset.get());
@@ -35,9 +35,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBsourceDirsPreset->setBounds (88, 66, 112, 20);
 
-    SL_num_sources.reset (new juce::Slider ("new slider"));
+    SL_num_sources = std::make_unique<SliderWithAttachment>(p.parameters, "numInputs");
     addAndMakeVisible (SL_num_sources.get());
-    SL_num_sources->setRange (1, 128, 1);
     SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
@@ -58,9 +57,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     TB_showOutputs->setBounds (672, 349, 24, 24);
 
-    SL_pValue.reset (new juce::Slider ("new slider"));
+    SL_pValue = std::make_unique<SliderWithAttachment>(p.parameters, "roomCoeff");
     addAndMakeVisible (SL_pValue.get());
-    SL_pValue->setRange (0, 1, 0.01);
     SL_pValue->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_pValue->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
     SL_pValue->addListener (this);
@@ -77,9 +75,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBsLoudspeakerDirsPreset->setBounds (788, 66, 112, 20);
 
-    SL_num_loudspeakers.reset (new juce::Slider ("new slider"));
+    SL_num_loudspeakers = std::make_unique<SliderWithAttachment>(p.parameters, "numOutputs");
     addAndMakeVisible (SL_num_loudspeakers.get());
-    SL_num_loudspeakers->setRange (2, 128, 1);
     SL_num_loudspeakers->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_loudspeakers->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_loudspeakers->addListener (this);
@@ -124,18 +121,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     tb_saveJSON_ls->setBounds (746, 41, 34, 14);
 
-    SL_spread.reset (new juce::Slider ("new slider"));
+    SL_spread = std::make_unique<SliderWithAttachment>(p.parameters, "spread");
     addAndMakeVisible (SL_spread.get());
-    SL_spread->setRange (0, 90, 1);
     SL_spread->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_spread->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
     SL_spread->addListener (this);
 
     SL_spread->setBounds (309, 319, 48, 18);
 
-    s_yaw.reset (new juce::Slider ("new slider"));
+    s_yaw = std::make_unique<SliderWithAttachment>(p.parameters, "yaw");
     addAndMakeVisible (s_yaw.get());
-    s_yaw->setRange (-180, 180, 0.01);
     s_yaw->setSliderStyle (juce::Slider::LinearBar);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 14);
     s_yaw->setColour (juce::Slider::trackColourId, juce::Colour (0xff25637e));
@@ -145,30 +140,29 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_yaw->setBounds (373, 333, 63, 18);
 
-    t_flipYaw.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipYaw = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipYaw");
     addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (juce::String());
     t_flipYaw->addListener (this);
 
     t_flipYaw->setBounds (406, 352, 23, 24);
 
-    t_flipPitch.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipPitch = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipPitch");
     addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (juce::String());
     t_flipPitch->addListener (this);
 
     t_flipPitch->setBounds (473, 352, 23, 24);
 
-    t_flipRoll.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipRoll = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipRoll");
     addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (juce::String());
     t_flipRoll->addListener (this);
 
     t_flipRoll->setBounds (538, 352, 23, 24);
 
-    s_pitch.reset (new juce::Slider ("new slider"));
+    s_pitch = std::make_unique<SliderWithAttachment>(p.parameters, "pitch");
     addAndMakeVisible (s_pitch.get());
-    s_pitch->setRange (-90, 90, 0.01);
     s_pitch->setSliderStyle (juce::Slider::LinearBar);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 14);
     s_pitch->setColour (juce::Slider::trackColourId, juce::Colour (0xff25637e));
@@ -178,9 +172,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_pitch->setBounds (440, 333, 63, 18);
 
-    s_roll.reset (new juce::Slider ("new slider"));
+    s_roll = std::make_unique<SliderWithAttachment>(p.parameters, "roll");
     addAndMakeVisible (s_roll.get());
-    s_roll->setRange (-90, 90, 0.01);
     s_roll->setSliderStyle (juce::Slider::LinearBar);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 14);
     s_roll->setColour (juce::Slider::trackColourId, juce::Colour (0xff25637e));
@@ -192,9 +185,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     setSize (920, 386);
 
-    /* handle to pluginProcessor */
-	hVst = ownerFilter;
-    hPan = hVst->getFXHandle();
+    /* handle to object */
+    hPan = processor.getFXHandle();
 
     /* init OpenGL */
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -289,7 +281,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* source coordinates viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (sourceCoordsVP.get());
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_INPUTS, panner_getNumSources(hPan));
+    sourceCoordsView_handle = new inputCoordsView(p, MAX_NUM_INPUTS, panner_getNumSources(hPan));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
@@ -299,7 +291,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* loudspeaker coordinates viewport */
     loudspeakerCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (loudspeakerCoordsVP.get());
-    loudspeakerCoordsView_handle = new outputCoordsView(ownerFilter, MAX_NUM_OUTPUTS, panner_getNumLoudspeakers(hPan));
+    loudspeakerCoordsView_handle = new outputCoordsView(p, MAX_NUM_OUTPUTS, panner_getNumLoudspeakers(hPan));
     loudspeakerCoordsVP->setViewedComponent (loudspeakerCoordsView_handle);
     loudspeakerCoordsVP->setScrollBarsShown (true, false);
     loudspeakerCoordsVP->setAlwaysOnTop(true);
@@ -307,21 +299,11 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     loudspeakerCoordsView_handle->setNCH(panner_getNumLoudspeakers(hPan));
 
     /* grab current parameter settings */
-    SL_num_sources->setValue(panner_getNumSources(hPan),dontSendNotification);
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(true, dontSendNotification);
-    SL_pValue->setValue(panner_getDTT(hPan), dontSendNotification);
-    SL_spread->setRange(PANNER_SPREAD_MIN_VALUE, PANNER_SPREAD_MAX_VALUE, 0.01f);
-    SL_spread->setValue(panner_getSpread(hPan), dontSendNotification);
-    s_yaw->setValue(panner_getYaw(hPan), dontSendNotification);
-    s_pitch->setValue(panner_getPitch(hPan), dontSendNotification);
-    s_roll->setValue(panner_getRoll(hPan), dontSendNotification);
-    t_flipYaw->setToggleState((bool)panner_getFlipYaw(hPan), dontSendNotification);
-    t_flipPitch->setToggleState((bool)panner_getFlipPitch(hPan), dontSendNotification);
-    t_flipRoll->setToggleState((bool)panner_getFlipRoll(hPan), dontSendNotification);
 
     /* create panning window */
-    panWindow.reset (new pannerView(ownerFilter, 480, 240));
+    panWindow.reset (new pannerView(p, 480, 240));
     addAndMakeVisible (panWindow.get());
     panWindow->setBounds (220, 58, 480, 240);
     panWindow->setShowInputs(TB_showInputs->getToggleState());
@@ -814,13 +796,13 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(panner_getNumSources(hPan)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
-            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+            g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(panner_getNumLoudspeakers(hPan)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
@@ -832,27 +814,30 @@ void PluginEditor::resized()
 {
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == CBsourceDirsPreset.get())
     {
         panner_setInputConfigPreset(hPan, CBsourceDirsPreset->getSelectedId());
+        
+        processor.setParameterValue("numInputs", panner_getNumSources(hPan));
+        for(int i=0; i<panner_getNumSources(hPan); i++){
+            processor.setParameterValue("srcAzim" + juce::String(i), panner_getSourceAzi_deg(hPan,i));
+            processor.setParameterValue("srcElev" + juce::String(i), panner_getSourceElev_deg(hPan,i));
+        }
+        
         refreshPanViewWindow = true;
     }
     else if (comboBoxThatHasChanged == CBsLoudspeakerDirsPreset.get())
     {
         panner_setOutputConfigPreset(hPan, CBsLoudspeakerDirsPreset->getSelectedId());
+        
+        processor.setParameterValue("numOutputs", panner_getNumLoudspeakers(hPan));
+        for(int i=0; i<panner_getNumLoudspeakers(hPan); i++){
+            processor.setParameterValue("lsAzim" + juce::String(i), panner_getLoudspeakerAzi_deg(hPan,i));
+            processor.setParameterValue("lsElev" + juce::String(i), panner_getLoudspeakerElev_deg(hPan,i));
+        }
+        
         refreshPanViewWindow = true;
     }
 }
@@ -861,38 +846,11 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == SL_num_sources.get())
     {
-        panner_setNumSources(hPan, (int)SL_num_sources->getValue());
         refreshPanViewWindow = true;
-    }
-    else if (sliderThatWasMoved == SL_pValue.get())
-    {
-        panner_setDTT(hPan, (float)SL_pValue->getValue());
     }
     else if (sliderThatWasMoved == SL_num_loudspeakers.get())
     {
-        panner_setNumLoudspeakers(hPan, (int)SL_num_loudspeakers->getValue());
-    }
-    else if (sliderThatWasMoved == SL_spread.get())
-    {
-        panner_setSpread(hPan, (float)SL_spread->getValue());
-    }
-    else if (sliderThatWasMoved == s_yaw.get())
-    {
-        hVst->beginParameterChangeGesture(k_yaw);
-        panner_setYaw(hPan, (float)s_yaw->getValue());
-        hVst->endParameterChangeGesture(k_yaw);
-    }
-    else if (sliderThatWasMoved == s_pitch.get())
-    {
-        hVst->beginParameterChangeGesture(k_pitch);
-        panner_setPitch(hPan, (float)s_pitch->getValue());
-        hVst->endParameterChangeGesture(k_pitch);
-    }
-    else if (sliderThatWasMoved == s_roll.get())
-    {
-        hVst->beginParameterChangeGesture(k_roll);
-        panner_setRoll(hPan, (float)s_roll->getValue());
-        hVst->endParameterChangeGesture(k_roll);
+        refreshPanViewWindow = true;
     }
 }
 
@@ -911,88 +869,62 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == tb_loadJSON_src.get())
     {
         chooser = std::make_unique<juce::FileChooser> ("Load configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       processor.getLastDir().exists() ? processor.getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
         auto chooserFlags = juce::FileBrowserComponent::openMode
                                   | juce::FileBrowserComponent::canSelectFiles;
         chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
             auto file = fc.getResult();
             if (file != File{}){
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->loadConfiguration (file,0);
+                processor.setLastDir(file.getParentDirectory());
+                processor.loadConfiguration (file,0);
             }
         });
     }
     else if (buttonThatWasClicked == tb_saveJSON_src.get())
     {
         chooser = std::make_unique<juce::FileChooser> ("Save configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       processor.getLastDir().exists() ? processor.getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
         auto chooserFlags = juce::FileBrowserComponent::saveMode;
         chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
             auto file = fc.getResult();
             if (file != File{}) {
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->saveConfigurationToFile (file,0);
+                processor.setLastDir(file.getParentDirectory());
+                processor.saveConfigurationToFile (file,0);
             }
         });
     }
     else if (buttonThatWasClicked == tb_loadJSON_ls.get())
     {
         chooser = std::make_unique<juce::FileChooser> ("Load configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       processor.getLastDir().exists() ? processor.getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
         auto chooserFlags = juce::FileBrowserComponent::openMode
                                   | juce::FileBrowserComponent::canSelectFiles;
         chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
             auto file = fc.getResult();
             if (file != File{}){
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->loadConfiguration (file,1);
+                processor.setLastDir(file.getParentDirectory());
+                processor.loadConfiguration (file,1);
             }
         });
     }
     else if (buttonThatWasClicked == tb_saveJSON_ls.get())
     {
         chooser = std::make_unique<juce::FileChooser> ("Save configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
+                                                       processor.getLastDir().exists() ? processor.getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
                                                        "*.json");
         auto chooserFlags = juce::FileBrowserComponent::saveMode;
         chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
             auto file = fc.getResult();
             if (file != File{}) {
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->saveConfigurationToFile (file,1);
+                processor.setLastDir(file.getParentDirectory());
+                processor.saveConfigurationToFile (file,1);
             }
         });
     }
-    else if (buttonThatWasClicked == t_flipYaw.get())
-    {
-        hVst->beginParameterChangeGesture(k_flipYaw);
-        panner_setFlipYaw(hPan, (int)t_flipYaw->getToggleState());
-        hVst->endParameterChangeGesture(k_flipYaw);
-    }
-    else if (buttonThatWasClicked == t_flipPitch.get())
-    {
-        hVst->beginParameterChangeGesture(k_flipPitch);
-        panner_setFlipPitch(hPan, (int)t_flipPitch->getToggleState());
-        hVst->endParameterChangeGesture(k_flipPitch);
-    }
-    else if (buttonThatWasClicked == t_flipRoll.get())
-    {
-        hVst->beginParameterChangeGesture(k_flipRoll);
-        panner_setFlipRoll(hPan, (int)t_flipRoll->getToggleState());
-        hVst->endParameterChangeGesture(k_flipRoll);
-    }
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
 
 void PluginEditor::timerCallback(int timerID)
 {
@@ -1005,14 +937,6 @@ void PluginEditor::timerCallback(int timerID)
             /* refresh parameters that can change internally */
             sourceCoordsView_handle->setNCH(panner_getNumSources(hPan));
             loudspeakerCoordsView_handle->setNCH(panner_getNumLoudspeakers(hPan));
-            SL_num_sources->setValue(panner_getNumSources(hPan),dontSendNotification);
-            SL_num_loudspeakers->setValue(panner_getNumLoudspeakers(hPan),dontSendNotification);
-            s_yaw->setValue(panner_getYaw(hPan), dontSendNotification);
-            s_pitch->setValue(panner_getPitch(hPan), dontSendNotification);
-            s_roll->setValue(panner_getRoll(hPan), dontSendNotification);
-            t_flipYaw->setToggleState((bool)panner_getFlipYaw(hPan), dontSendNotification);
-            t_flipPitch->setToggleState((bool)panner_getFlipPitch(hPan), dontSendNotification);
-            t_flipRoll->setToggleState((bool)panner_getFlipRoll(hPan), dontSendNotification);
 
             /* Progress bar */
 #if 0
@@ -1049,7 +973,7 @@ void PluginEditor::timerCallback(int timerID)
                     loudspeakerCoordsVP->setEnabled(false);
             }
             else{
-                if(hVst->getIsPlaying())
+                if(processor.getIsPlaying())
                     SL_spread->setEnabled(false);
                 else if(!SL_spread->isEnabled())
                     SL_spread->setEnabled(true);
@@ -1061,7 +985,7 @@ void PluginEditor::timerCallback(int timerID)
                     SL_pValue->setEnabled(true);
                 if(!CBsLoudspeakerDirsPreset->isEnabled())
                     CBsLoudspeakerDirsPreset->setEnabled(true);
-                if(hVst->getIsPlaying())
+                if(processor.getIsPlaying())
                     SL_num_loudspeakers->setEnabled(false);
                 else if(!SL_num_loudspeakers->isEnabled())
                     SL_num_loudspeakers->setEnabled(true);
@@ -1074,17 +998,14 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* refresh pan view */
-            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) ||
-               sourceCoordsView_handle->getHasASliderChanged() || loudspeakerCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
+            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || processor.getRefreshWindow()){
                 panWindow->refreshPanView();
                 refreshPanViewWindow = false;
-                sourceCoordsView_handle->setHasASliderChange(false);
-                loudspeakerCoordsView_handle->setHasASliderChange(false);
-                hVst->setRefreshWindow(false);
+                processor.setRefreshWindow(false);
             }
 
             /* display warning message, if needed */
-            if ((hVst->getCurrentBlockSize() % panner_getFrameSize()) != 0){
+            if ((processor.getCurrentBlockSize() % panner_getFrameSize()) != 0){
                 currentWarning = k_warning_frameSize;
                 repaint(0,0,getWidth(),32);
             }
@@ -1092,11 +1013,11 @@ void PluginEditor::timerCallback(int timerID)
                 currentWarning = k_warning_supported_fs;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumInputs() < panner_getNumSources(hPan))){
+            else if ((processor.getCurrentNumInputs() < panner_getNumSources(hPan))){
                 currentWarning = k_warning_NinputCH;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumOutputs() < panner_getNumLoudspeakers(hPan))){
+            else if ((processor.getCurrentNumOutputs() < panner_getNumLoudspeakers(hPan))){
                 currentWarning = k_warning_NoutputCH;
                 repaint(0,0,getWidth(),32);
             }

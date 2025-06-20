@@ -35,7 +35,7 @@
 class overlay  : public Component
 {
 public:
-    overlay (PluginProcessor* ownerFilter);
+    overlay (PluginProcessor& p);
     ~overlay();
 
     void refreshPowerMap(float* _dirs_deg, float* _pmap, int _nDirs, int _pmapWidth, int _hfov, float _aspectRatio );

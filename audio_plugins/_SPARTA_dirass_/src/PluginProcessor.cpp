@@ -34,12 +34,31 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     }
 }
 
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+
+    return { params.begin(), params.end() };
+}
+
+void PluginProcessor::parameterChanged(const juce::String& /*parameterID*/, float /*newValue*/)
+{
+}
+
+void PluginProcessor::setParameterValuesUsingInternalState()
+{
+}
+
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    ParameterManager(*this, createParameterLayout())
 {
     dirass_create(&hDir);
+    
+    /* Grab defaults */
+    setParameterValuesUsingInternalState();
 
     isPlaying = false;
     
@@ -55,57 +74,13 @@ PluginProcessor::~PluginProcessor()
     dirass_destroy(&hDir);
 }
 
-void PluginProcessor::setParameter (int index, float /*newValue*/)
-{
-	switch (index)
-	{
-		default: break;
-	}
-}
-
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
-}
-
-float PluginProcessor::getParameter (int index)
-{
-    switch (index)
-	{
-		default: return 0.0f;
-	}
-}
-
-int PluginProcessor::getNumParameters()
-{
-	return k_NumOfParameters;
 }
 
 const String PluginProcessor::getName() const
 {
     return JucePlugin_Name;
-}
-
-const String PluginProcessor::getParameterName (int index)
-{
-    switch (index)
-	{
-		default: return "NULL";
-	}
-}
-
-const String PluginProcessor::getParameterText(int index)
-{
-	return String(getParameter(index), 1);    
-}
-
-const String PluginProcessor::getInputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-const String PluginProcessor::getOutputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
 }
 
 double PluginProcessor::getTailLengthSeconds() const
@@ -128,18 +103,6 @@ const String PluginProcessor::getProgramName (int /*index*/)
     return String();
 }
 
-
-bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-
 bool PluginProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
@@ -156,11 +119,6 @@ bool PluginProcessor::producesMidi() const
    #else
     return false;
    #endif
-}
-
-bool PluginProcessor::silenceInProducesSilenceOut() const
-{
-    return false;
 }
 
 void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
@@ -216,40 +174,47 @@ bool PluginProcessor::hasEditor() const
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new PluginEditor (this);
+    return new PluginEditor (*this);
 }
 
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
- 	XmlElement xml("DIRASSAUDIOPLUGINSETTINGS");
- 
-    xml.setAttribute("beamType", dirass_getBeamType(hDir));
-    xml.setAttribute("InputOrder", dirass_getInputOrder(hDir));
-    xml.setAttribute("GridOption", dirass_getDisplayGridOption(hDir));
-    xml.setAttribute("UpscaleOrder", dirass_getUpscaleOrder(hDir));
-    xml.setAttribute("DirASSmode", dirass_getDiRAssMode(hDir));
-    xml.setAttribute("MinFreq", dirass_getMinFreq(hDir));
-    xml.setAttribute("MaxFreq", dirass_getMaxFreq(hDir));
-    xml.setAttribute("CHorder", dirass_getChOrder(hDir));
-    xml.setAttribute("Norm", dirass_getNormType(hDir));
-    xml.setAttribute("FOVoption", dirass_getDispFOV(hDir));
-    xml.setAttribute("ARoption", dirass_getAspectRatio(hDir));
-    xml.setAttribute("MapAvg", dirass_getMapAvgCoeff(hDir));
-    xml.setAttribute("DispWidth", dirass_getDispWidth(hDir));
-    xml.setAttribute("cameraID", cameraID);
-    xml.setAttribute("flipLR", flipLR);
-    xml.setAttribute("flipUD", flipUD);
-    xml.setAttribute("greyScale", greyScale);
+    juce::ValueTree state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
+    xmlState->setTagName("DIRASSAUDIOPLUGINSETTINGS");
+    xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10201
     
-	copyXmlToBinary(xml, destData);
+    /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+    xmlState->setAttribute("beamType", dirass_getBeamType(hDir));
+    xmlState->setAttribute("InputOrder", dirass_getInputOrder(hDir));
+    xmlState->setAttribute("GridOption", dirass_getDisplayGridOption(hDir));
+    xmlState->setAttribute("UpscaleOrder", dirass_getUpscaleOrder(hDir));
+    xmlState->setAttribute("DirASSmode", dirass_getDiRAssMode(hDir));
+    xmlState->setAttribute("MinFreq", dirass_getMinFreq(hDir));
+    xmlState->setAttribute("MaxFreq", dirass_getMaxFreq(hDir));
+    xmlState->setAttribute("CHorder", dirass_getChOrder(hDir));
+    xmlState->setAttribute("Norm", dirass_getNormType(hDir));
+    xmlState->setAttribute("FOVoption", dirass_getDispFOV(hDir));
+    xmlState->setAttribute("ARoption", dirass_getAspectRatio(hDir));
+    xmlState->setAttribute("MapAvg", dirass_getMapAvgCoeff(hDir));
+    xmlState->setAttribute("DispWidth", dirass_getDispWidth(hDir));
+    
+    /* Other */
+    xmlState->setAttribute("cameraID", cameraID);
+    xmlState->setAttribute("flipLR", flipLR);
+    xmlState->setAttribute("flipUD", flipUD);
+    xmlState->setAttribute("greyScale", greyScale);
+    
+    /* Save */
+    copyXmlToBinary(*xmlState, destData);
 }
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-
-    if (xmlState != nullptr) {
-        if (xmlState->hasTagName("DIRASSAUDIOPLUGINSETTINGS")) { 
+    /* Load */
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState != nullptr && xmlState->hasTagName("DIRASSAUDIOPLUGINSETTINGS")){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10201
             if(xmlState->hasAttribute("beamType"))
                 dirass_setBeamType(hDir, xmlState->getIntAttribute("beamType", 1));
             if(xmlState->hasAttribute("InputOrder"))
@@ -276,6 +241,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 dirass_setMapAvgCoeff(hDir, (float)xmlState->getDoubleAttribute("MapAvg", 0.5f));
             if(xmlState->hasAttribute("DispWidth"))
                 dirass_setDispWidth(hDir, (float)xmlState->getDoubleAttribute("DispWidth", 120));
+            
             if(xmlState->hasAttribute("cameraID"))
                 cameraID = (int)xmlState->getIntAttribute("cameraID", 1);
             if(xmlState->hasAttribute("flipLR"))
@@ -284,10 +250,53 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 flipUD = (bool)xmlState->getIntAttribute("flipUD", 0);
             if(xmlState->hasAttribute("greyScale"))
                 greyScale = (bool)xmlState->getIntAttribute("greyScale", 1);
-                
-			dirass_refreshSettings(hDir);
+            
+            setParameterValuesUsingInternalState();
         }
-    }
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10201){
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+            if(xmlState->hasAttribute("beamType"))
+                dirass_setBeamType(hDir, xmlState->getIntAttribute("beamType", 1));
+            if(xmlState->hasAttribute("InputOrder"))
+                dirass_setInputOrder(hDir, xmlState->getIntAttribute("InputOrder", 1));
+            if(xmlState->hasAttribute("GridOption"))
+                dirass_setDisplayGridOption(hDir, xmlState->getIntAttribute("GridOption", 1));
+            if(xmlState->hasAttribute("UpscaleOrder"))
+                dirass_setUpscaleOrder(hDir, xmlState->getIntAttribute("UpscaleOrder", 1));
+            if(xmlState->hasAttribute("DirASSmode"))
+                dirass_setDiRAssMode(hDir, xmlState->getIntAttribute("DirASSmode", 1));
+            if(xmlState->hasAttribute("MinFreq"))
+                dirass_setMinFreq(hDir, (float)xmlState->getDoubleAttribute("MinFreq", 100.0f));
+            if(xmlState->hasAttribute("MaxFreq"))
+                dirass_setMaxFreq(hDir, (float)xmlState->getDoubleAttribute("MaxFreq", 20e3f));
+            if(xmlState->hasAttribute("CHorder"))
+                dirass_setChOrder(hDir, xmlState->getIntAttribute("CHorder", 1));
+            if(xmlState->hasAttribute("Norm"))
+                dirass_setNormType(hDir, xmlState->getIntAttribute("Norm", 1));
+            if(xmlState->hasAttribute("FOVoption"))
+                dirass_setDispFOV(hDir, xmlState->getIntAttribute("FOVoption", 1));
+            if(xmlState->hasAttribute("ARoption"))
+                dirass_setAspectRatio(hDir, xmlState->getIntAttribute("ARoption", 1));
+            if(xmlState->hasAttribute("MapAvg"))
+                dirass_setMapAvgCoeff(hDir, (float)xmlState->getDoubleAttribute("MapAvg", 0.5f));
+            if(xmlState->hasAttribute("DispWidth"))
+                dirass_setDispWidth(hDir, (float)xmlState->getDoubleAttribute("DispWidth", 120));
+            
+            /* Other */
+            if(xmlState->hasAttribute("cameraID"))
+                cameraID = (int)xmlState->getIntAttribute("cameraID", 1);
+            if(xmlState->hasAttribute("flipLR"))
+                flipLR = (bool)xmlState->getIntAttribute("flipLR", 0);
+            if(xmlState->hasAttribute("flipUD"))
+                flipUD = (bool)xmlState->getIntAttribute("flipUD", 0);
+            if(xmlState->hasAttribute("greyScale"))
+                greyScale = (bool)xmlState->getIntAttribute("greyScale", 1);
+        }
+        
+        dirass_refreshSettings(hDir);
+    } 
 }
 
 // This creates new instances of the plugin..

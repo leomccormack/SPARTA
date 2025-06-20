@@ -22,21 +22,19 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter), progressbar(progress)
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p), progressbar(progress)
 {
-    SL_nChannels.reset (new juce::Slider ("new slider"));
+    SL_nChannels = std::make_unique<SliderWithAttachment>(p.parameters, "numChannels");
     addAndMakeVisible (SL_nChannels.get());
-    SL_nChannels->setRange (1, 128, 1);
     SL_nChannels->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_nChannels->setTextBoxStyle (juce::Slider::TextBoxLeft, false, 80, 20);
     SL_nChannels->addListener (this);
 
     SL_nChannels->setBounds (171, 50, 65, 16);
 
-    SL_decorAmount.reset (new juce::Slider ("new slider"));
+    SL_decorAmount = std::make_unique<SliderWithAttachment>(p.parameters, "decorrelation");
     addAndMakeVisible (SL_decorAmount.get());
-    SL_decorAmount->setRange (0, 1, 0.01);
     SL_decorAmount->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_decorAmount->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
     SL_decorAmount->addListener (this);
@@ -60,8 +58,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     setSize (440, 110);
 
     /* handles */
-	hVst = ownerFilter;
-    hDecor = hVst->getFXHandle();
+    hDecor = processor.getFXHandle();
 
     /* remove slider bit of these sliders */
     SL_nChannels->setColour(Slider::trackColourId, Colours::transparentBlack);
@@ -86,8 +83,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
 
     /* grab current parameter settings */
-    SL_nChannels->setValue(decorrelator_getNumberOfChannels(hDecor), dontSendNotification);
-    SL_decorAmount->setValue(decorrelator_getDecorrelationAmount(hDecor), dontSendNotification);
     tb_compLevel->setToggleState((bool)decorrelator_getLevelCompensationFlag(hDecor), dontSendNotification);
     tb_bypassTransients->setToggleState((bool)decorrelator_getTransientBypassFlag(hDecor), dontSendNotification);
 
@@ -293,13 +288,13 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(decorrelator_getNumberOfChannels(hDecor)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
-            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+            g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(decorrelator_getNumberOfChannels(hDecor)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
@@ -311,38 +306,10 @@ void PluginEditor::resized()
 {
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
-void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+void PluginEditor::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
-    if (sliderThatWasMoved == SL_nChannels.get())
-    {
-        decorrelator_setNumberOfChannels(hDecor, (int)SL_nChannels->getValue());
-    }
-    else if (sliderThatWasMoved == SL_decorAmount.get())
-    {
-        hVst->beginParameterChangeGesture(k_decorrelation);
-        decorrelator_setDecorrelationAmount(hDecor, (float)SL_decorAmount->getValue());
-        hVst->endParameterChangeGesture(k_decorrelation);
-    }
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
 
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
@@ -379,7 +346,7 @@ void PluginEditor::timerCallback(int timerID)
                 removeChildComponent(&progressbar);
 
             /* display warning message, if needed */
-            if ((hVst->getCurrentBlockSize() % decorrelator_getFrameSize()) != 0){
+            if ((processor.getCurrentBlockSize() % decorrelator_getFrameSize()) != 0){
                 currentWarning = k_warning_frameSize;
                 repaint(0,0,getWidth(),32);
             }
@@ -387,11 +354,11 @@ void PluginEditor::timerCallback(int timerID)
                 currentWarning = k_warning_supported_fs;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumInputs() < decorrelator_getNumberOfChannels(hDecor))){
+            else if ((processor.getCurrentNumInputs() < decorrelator_getNumberOfChannels(hDecor))){
                 currentWarning = k_warning_NinputCH;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumOutputs() < decorrelator_getNumberOfChannels(hDecor))){
+            else if ((processor.getCurrentNumOutputs() < decorrelator_getNumberOfChannels(hDecor))){
                 currentWarning = k_warning_NoutputCH;
                 repaint(0,0,getWidth(),32);
             }

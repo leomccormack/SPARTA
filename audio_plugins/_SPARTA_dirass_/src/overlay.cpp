@@ -64,7 +64,7 @@ const Colour mapColourTable[114] = {
     Colour::fromRGB(254, 252, 5), Colour::fromRGB(253, 255, 5)
 };
 
-overlay::overlay (PluginProcessor* /*ownerFilter*/)
+overlay::overlay (PluginProcessor& /*p*/)
 {
     setSize (600, 400);
 

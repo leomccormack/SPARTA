@@ -34,13 +34,43 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     }
 }
 
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("decorrelation", "Decorrelation", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numChannels", "NumChannels", 1, MAX_NUM_INPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
+    
+    return { params.begin(), params.end() };
+}
+
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    if(parameterID == "decorrelation"){
+        decorrelator_setDecorrelationAmount(hDecor, newValue);
+    }
+    else if(parameterID == "numChannels"){
+        decorrelator_setNumberOfChannels(hDecor, static_cast<int>(newValue));
+    }
+}
+
+void PluginProcessor::setParameterValuesUsingInternalState()
+{
+    setParameterValue("decorrelation", decorrelator_getDecorrelationAmount(hDecor));
+    setParameterValue("numChannels", decorrelator_getNumberOfChannels(hDecor));
+}
+
 PluginProcessor::PluginProcessor() :
     AudioProcessor(BusesProperties()
         .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
+        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    ParameterManager(*this, createParameterLayout())
 {
 	decorrelator_create(&hDecor);
-    startTimer(TIMER_PROCESSING_RELATED, 40); 
+    
+    /* Grab defaults */
+    setParameterValuesUsingInternalState();
+    
+    startTimer(TIMER_PROCESSING_RELATED, 40);
 }
 
 PluginProcessor::~PluginProcessor()
@@ -48,76 +78,14 @@ PluginProcessor::~PluginProcessor()
 	decorrelator_destroy(&hDecor);
 }
 
-void PluginProcessor::setParameter (int index, float newValue)
-{
-    switch (index) {
-        case k_nChannels:  decorrelator_setNumberOfChannels(hDecor, (int)(newValue*(float)(MAX_NUM_CHANNELS-1) + 1.5f)); break;
-        case k_decorrelation: decorrelator_setDecorrelationAmount(hDecor, newValue); break;
-        default: break;
-    }
-}
-
-bool PluginProcessor::isParameterAutomatable (int index) const
-{
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_nChannels: return false;
-            case k_decorrelation: return true;
-        }
-    }
-    return true;
-}
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
 }
 
-float PluginProcessor::getParameter (int index)
-{
-    switch (index) {
-        case k_nChannels:   return (float)(decorrelator_getNumberOfChannels(hDecor)-1)/(float)(MAX_NUM_CHANNELS-1);
-        case k_decorrelation: return decorrelator_getDecorrelationAmount(hDecor);
-        default: return 0.0f;
-    }
-}
-
-int PluginProcessor::getNumParameters()
-{
-	return k_NumOfParameters;
-}
-
 const String PluginProcessor::getName() const
 {
     return JucePlugin_Name;
-}
-
-const String PluginProcessor::getParameterName (int index)
-{
-    switch (index) {
-        case k_nChannels:            return "order";
-        case k_decorrelation:        return "decorrelation";
-       
-        default: return "NULL";
-    }
-}
-
-const String PluginProcessor::getParameterText(int index)
-{
-    switch (index) {
-        case k_nChannels: return String(decorrelator_getNumberOfChannels(hDecor));
-        case k_decorrelation: return String(decorrelator_getDecorrelationAmount(hDecor));
-        default: return "NULL";
-    }
-}
-
-const String PluginProcessor::getInputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-const String PluginProcessor::getOutputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
 }
 
 double PluginProcessor::getTailLengthSeconds() const
@@ -140,22 +108,6 @@ const String PluginProcessor::getProgramName (int /*index*/)
     return String();
 }
 
-
-bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isBusesLayoutSupported(const BusesLayout& /*layouts*/) const
-{
-    return true;
-}
-
 bool PluginProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
@@ -172,11 +124,6 @@ bool PluginProcessor::producesMidi() const
    #else
     return false;
    #endif
-}
-
-bool PluginProcessor::silenceInProducesSilenceOut() const
-{
-    return false;
 }
 
 void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
@@ -227,27 +174,31 @@ bool PluginProcessor::hasEditor() const
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new PluginEditor (this);
+    return new PluginEditor (*this);
 }
+
 
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-    XmlElement xml("DECORRELATORPLUGINSETTINGS");
+    juce::ValueTree state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
+    xmlState->setTagName("DECORRELATORPLUGINSETTINGS");
+    xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10102
     
-    xml.setAttribute("NCHANNELS", decorrelator_getNumberOfChannels(hDecor));
-    xml.setAttribute("DECOR_AMOUNT", decorrelator_getDecorrelationAmount(hDecor));
-    xml.setAttribute("ENERGY_COMP", decorrelator_getLevelCompensationFlag(hDecor));
-    xml.setAttribute("BYPASS_TRANSIENTS", decorrelator_getTransientBypassFlag(hDecor));
-    copyXmlToBinary(xml, destData);
+    /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+    xmlState->setAttribute("ENERGY_COMP", decorrelator_getLevelCompensationFlag(hDecor));
+    xmlState->setAttribute("BYPASS_TRANSIENTS", decorrelator_getTransientBypassFlag(hDecor));
+    
+    /* Save */
+    copyXmlToBinary(*xmlState, destData);
 }
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-
-    if (xmlState != nullptr) {
-        if (xmlState->hasTagName("DECORRELATORPLUGINSETTINGS")) {
-            
+    /* Load */
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState != nullptr && xmlState->hasTagName("BINAURALISERNFPLUGINSETTINGS")){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10102
             if(xmlState->hasAttribute("NCHANNELS"))
                 decorrelator_setNumberOfChannels(hDecor, xmlState->getIntAttribute("NCHANNELS", 2));
             if(xmlState->hasAttribute("DECOR_AMOUNT"))
@@ -257,8 +208,20 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if(xmlState->hasAttribute("BYPASS_TRANSIENTS"))
                 decorrelator_setTransientBypassFlag(hDecor, xmlState->getIntAttribute("BYPASS_TRANSIENTS", 2));
             
-            decorrelator_refreshParams(hDecor);
+            setParameterValuesUsingInternalState();
         }
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10102){
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+            if(xmlState->hasAttribute("ENERGY_COMP"))
+                decorrelator_setLevelCompensationFlag(hDecor, xmlState->getIntAttribute("ENERGY_COMP", 2));
+            if(xmlState->hasAttribute("BYPASS_TRANSIENTS"))
+                decorrelator_setTransientBypassFlag(hDecor, xmlState->getIntAttribute("BYPASS_TRANSIENTS", 2));
+            
+        }
+        
+        decorrelator_refreshParams(hDecor);
     }
 }
 

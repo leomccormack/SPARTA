@@ -34,10 +34,26 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     }
 }
 
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    
+    return { params.begin(), params.end() };
+}
+
+void PluginProcessor::parameterChanged(const juce::String& /*parameterID*/, float /*newValue*/)
+{
+}
+
+void PluginProcessor::setParameterValuesUsingInternalState()
+{
+}
+
 PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    ParameterManager(*this, createParameterLayout())
 {
 	nSampleRate = 48000;
     nHostBlockSize = -1;
@@ -45,6 +61,9 @@ PluginProcessor::PluginProcessor() :
     durationInSeconds = 0.0f; 
     lastWavDirectory = TRANS("no_file");
 	matrixconv_create(&hMCnv);
+    
+    /* Grab defaults */
+    setParameterValuesUsingInternalState();
 }
 
 PluginProcessor::~PluginProcessor()
@@ -52,56 +71,13 @@ PluginProcessor::~PluginProcessor()
 	matrixconv_destroy(&hMCnv);
 }
 
-void PluginProcessor::setParameter (int index, float /*newValue*/)
-{
-	switch (index) {
-		default: break;
-	}
-}
-
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
-}
-
-float PluginProcessor::getParameter (int index)
-{
-    switch (index) {
-		default: return 0.0f;
-	}
-}
-
-int PluginProcessor::getNumParameters()
-{
-	return k_NumOfParameters;
 }
 
 const String PluginProcessor::getName() const
 {
     return JucePlugin_Name;
-}
-
-const String PluginProcessor::getParameterName (int index)
-{
-    switch (index){
-		default: return "NULL";
-	}
-}
-
-const String PluginProcessor::getParameterText(int index)
-{
-    switch (index) {
-        default: return "NULL";
-    }
-}
-
-const String PluginProcessor::getInputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-const String PluginProcessor::getOutputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
 }
 
 double PluginProcessor::getTailLengthSeconds() const
@@ -124,18 +100,6 @@ const String PluginProcessor::getProgramName (int /*index*/)
     return String();
 }
 
-
-bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-
 bool PluginProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
@@ -152,11 +116,6 @@ bool PluginProcessor::producesMidi() const
    #else
     return false;
    #endif
-}
-
-bool PluginProcessor::silenceInProducesSilenceOut() const
-{
-    return false;
 }
 
 void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
@@ -196,30 +155,48 @@ bool PluginProcessor::hasEditor() const
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new PluginEditor (this);
+    return new PluginEditor (*this);
 }
 
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-	/* Create an outer XML element.. */ 
-	XmlElement xml("MATRIXCONVAUDIOPLUGINSETTINGS");
-    xml.setAttribute("LastWavFilePath", lastWavDirectory);
-    xml.setAttribute("usePartitionedConv", matrixconv_getEnablePart(hMCnv));
-    xml.setAttribute("numInputChannels", matrixconv_getNumInputChannels(hMCnv));
-	copyXmlToBinary(xml, destData);
+    juce::ValueTree state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
+    xmlState->setTagName("MATRIXCONVAUDIOPLUGINSETTINGS");
+    xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10101
+    
+    /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+    xmlState->setAttribute("usePartitionedConv", matrixconv_getEnablePart(hMCnv));
+    xmlState->setAttribute("numInputChannels", matrixconv_getNumInputChannels(hMCnv));
+        
+    /* Other */
+    xmlState->setAttribute("LastWavFilePath", lastWavDirectory);
+    
+    /* Save */
+    copyXmlToBinary(*xmlState, destData);
 }
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-	/* This getXmlFromBinary() function retrieves XML from the binary blob */
-    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-
-	if (xmlState != nullptr) {
-		/* make sure that it's actually the correct XML object */
-		if (xmlState->hasTagName("MATRIXCONVAUDIOPLUGINSETTINGS")) {
- 
+    /* Load */
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState != nullptr && xmlState->hasTagName("MATRIXCONVAUDIOPLUGINSETTINGS")){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10101
             if(xmlState->hasAttribute("LastWavFilePath"))
-                lastWavDirectory = xmlState->getStringAttribute("LastWavFilePath", "no_file"); 
+                lastWavDirectory = xmlState->getStringAttribute("LastWavFilePath", "no_file");
+            if(xmlState->hasAttribute("usePartitionedConv"))
+                matrixconv_setEnablePart(hMCnv, xmlState->getIntAttribute("usePartitionedConv", 1));
+            if(xmlState->hasAttribute("numInputChannels"))
+                matrixconv_setNumInputChannels(hMCnv, xmlState->getIntAttribute("numInputChannels", 1));
+
+            if(lastWavDirectory!="no_file")
+                loadWavFile();
+            
+            setParameterValuesUsingInternalState();
+        }
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10101){
+            if(xmlState->hasAttribute("LastWavFilePath"))
+                lastWavDirectory = xmlState->getStringAttribute("LastWavFilePath", "no_file");
             if(xmlState->hasAttribute("usePartitionedConv"))
                 matrixconv_setEnablePart(hMCnv, xmlState->getIntAttribute("usePartitionedConv", 1));
             if(xmlState->hasAttribute("numInputChannels"))
@@ -228,7 +205,9 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             if(lastWavDirectory!="no_file")
                 loadWavFile();
         }
-	}
+
+        //matrixconv_refreshParams(hMCnv);
+    }
 }
 
 // This creates new instances of the plugin..

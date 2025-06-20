@@ -29,35 +29,27 @@ class inputCoordsView  : public Component,
                          public juce::Slider::Listener
 {
 public:
-    inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH );
+    inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentNCH );
     ~inputCoordsView() override;
 
     void setNCH(int newNCH){
 		newNCH = newNCH > MAX_NUM_INPUTS ? MAX_NUM_INPUTS : newNCH;
-        refreshCoords();
 		if (newNCH != currentNCH) {
 			currentNCH = newNCH;
 			resized();
-			sliderHasChanged = true;
 		}
     }
-    bool getHasASliderChanged(){ return sliderHasChanged; }
-    void setHasASliderChange(bool newState){  sliderHasChanged = newState; }
 
     void paint (juce::Graphics& g) override;
     void resized() override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hPan;
-    void refreshCoords();
-    std::unique_ptr<Slider>* aziSliders;
-    std::unique_ptr<Slider>* elevSliders;
+    std::vector<std::unique_ptr<SliderWithAttachment>> aziSliders;
+    std::vector<std::unique_ptr<SliderWithAttachment>> elevSliders;
     int maxNCH, currentNCH;
-    bool sliderHasChanged;
-
-    std::unique_ptr<juce::Slider> dummySlider;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (inputCoordsView)
 };

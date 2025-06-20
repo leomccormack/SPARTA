@@ -22,8 +22,8 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter), fileChooser ("File", File(), true, false, false,
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p), fileChooser ("File", File(), true, false, false,
       "*.wav;", String(),
       "Load .wav File Here")
 {
@@ -141,8 +141,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     setSize (530, 184);
 
-	hVst = ownerFilter;
-    hMC = hVst->getFXHandle();
+    hMC = processor.getFXHandle();
 
     /* Look and Feel */
     LAF.setDefaultColours();
@@ -157,8 +156,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
     fileChooser.setBounds (16, 72, 268, 20);
-    if(hVst->getWavDirectory() != TRANS("no_file"))
-        fileChooser.setCurrentFile(hVst->getWavDirectory(), true);
+    if(processor.getWavDirectory() != TRANS("no_file"))
+        fileChooser.setCurrentFile(processor.getWavDirectory(), true);
 
 	/* fetch current configuration */
     TBenablePartConv->setToggleState((bool)matrixconv_getEnablePart(hMC), dontSendNotification);

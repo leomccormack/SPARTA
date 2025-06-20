@@ -40,7 +40,7 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::Button::Listener
 {
 public:
-    PluginEditor (PluginProcessor* ownerFilter);
+    PluginEditor (PluginProcessor& p);
     ~PluginEditor() override;
 
     void paint (juce::Graphics& g) override;
@@ -49,7 +49,7 @@ public:
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hDecor;
     void timerCallback(int timerID) override;
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -69,8 +69,8 @@ private:
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
-    std::unique_ptr<juce::Slider> SL_nChannels;
-    std::unique_ptr<juce::Slider> SL_decorAmount;
+    std::unique_ptr<SliderWithAttachment> SL_nChannels;
+    std::unique_ptr<SliderWithAttachment> SL_decorAmount;
     std::unique_ptr<juce::ToggleButton> tb_compLevel;
     std::unique_ptr<juce::ToggleButton> tb_bypassTransients;
 
