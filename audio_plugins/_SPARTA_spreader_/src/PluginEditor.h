@@ -46,7 +46,7 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::ComboBox::Listener
 {
 public:
-    PluginEditor (PluginProcessor* ownerFilter);
+    PluginEditor (PluginProcessor& p);
     ~PluginEditor() override;
 
     void paint (juce::Graphics& g) override;
@@ -56,7 +56,7 @@ public:
     void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hSpr;
     void timerCallback(int timerID) override;
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -94,7 +94,7 @@ private:
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
     HyperlinkButton publicationLink { "(Related Publication)", { "https://leomccormack.github.io/sparta-site/docs/help/related-publications/mccormack2021rendering.pdf" } };
 
-    std::unique_ptr<juce::Slider> SL_num_sources;
+    std::unique_ptr<SliderWithAttachment> SL_num_sources;
     std::unique_ptr<juce::Label> label_N_dirs;
     std::unique_ptr<juce::Label> label_HRIR_fs;
     std::unique_ptr<juce::ToggleButton> TBuseDefaultHRIRs;

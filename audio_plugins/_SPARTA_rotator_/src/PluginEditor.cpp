@@ -22,13 +22,11 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter)
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p)
 {
-    s_yaw.reset (new juce::Slider ("new slider"));
+    s_yaw = std::make_unique<SliderWithAttachment>(p.parameters, "yaw");
     addAndMakeVisible (s_yaw.get());
-    s_yaw->setRange (-180, 180, 0.01);
-    s_yaw->setDoubleClickReturnValue(true, 0.0f);
     s_yaw->setSliderStyle (juce::Slider::LinearHorizontal);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxAbove, false, 80, 20);
     s_yaw->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -39,10 +37,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_yaw->setBounds (176, 80, 120, 32);
 
-    s_pitch.reset (new juce::Slider ("new slider"));
+    s_pitch = std::make_unique<SliderWithAttachment>(p.parameters, "pitch");
     addAndMakeVisible (s_pitch.get());
-    s_pitch->setRange (-180, 180, 0.01);
-    s_pitch->setDoubleClickReturnValue(true, 0.0f);
     s_pitch->setSliderStyle (juce::Slider::LinearVertical);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
     s_pitch->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -53,10 +49,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     
     s_pitch->setBounds (304, 40, 96, 112);
 
-    s_roll.reset (new juce::Slider ("new slider"));
+    s_roll = std::make_unique<SliderWithAttachment>(p.parameters, "roll");
     addAndMakeVisible (s_roll.get());
-    s_roll->setRange (-180, 180, 0.01);
-    s_roll->setDoubleClickReturnValue(true, 0.0f);
     s_roll->setSliderStyle (juce::Slider::LinearVertical);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
     s_roll->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -67,21 +61,21 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     s_roll->setBounds (416, 40, 96, 112);
 
-    t_flipYaw.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipYaw = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipYaw");
     addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (juce::String());
     t_flipYaw->addListener (this);
 
     t_flipYaw->setBounds (225, 112, 23, 24);
 
-    t_flipPitch.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipPitch = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipPitch");
     addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (juce::String());
     t_flipPitch->addListener (this);
 
     t_flipPitch->setBounds (356, 112, 23, 24);
 
-    t_flipRoll.reset (new juce::ToggleButton ("new toggle button"));
+    t_flipRoll = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipRoll");
     addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (juce::String());
     t_flipRoll->addListener (this);
@@ -103,7 +97,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     te_oscport->setBounds (66, 128, 42, 22);
 
-    CBoutputFormat.reset (new juce::ComboBox ("new combo box"));
+    CBoutputFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (juce::Justification::centredLeft);
@@ -113,17 +107,15 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBoutputFormat->setBounds (94, 78, 76, 20);
 
-    CBnorm.reset (new juce::ComboBox ("new combo box"));
+    CBnorm = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnorm.get());
     CBnorm->setEditableText (false);
     CBnorm->setJustificationType (juce::Justification::centredLeft);
-    CBnorm->setTextWhenNothingSelected (TRANS("N3D"));
-    CBnorm->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBnorm->addListener (this);
 
     CBnorm->setBounds (94, 105, 76, 20);
 
-    CBorder.reset (new juce::ComboBox ("new combo box"));
+    CBorder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (CBorder.get());
     CBorder->setEditableText (false);
     CBorder->setJustificationType (juce::Justification::centredLeft);
@@ -133,7 +125,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     CBorder->setBounds (65, 46, 106, 20);
 
-    TBrpyFlag.reset (new juce::ToggleButton ("new toggle button"));
+    TBrpyFlag = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "useRollPitchYaw");
     addAndMakeVisible (TBrpyFlag.get());
     TBrpyFlag->setButtonText (juce::String());
     TBrpyFlag->addListener (this);
@@ -142,42 +134,16 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     setSize (530, 160);
 
-	hVst = ownerFilter;
-    hRot = hVst->getFXHandle();
+    hRot = processor.getFXHandle();
 
     /* Look and Feel */
     LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
-    /* add combo box options */
-    CBorder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
-    CBorder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
-    CBorder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
-    CBorder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
-    CBorder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
-    CBorder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
-    CBorder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
-    CBorder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
-    CBorder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
-    CBorder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
-    CBoutputFormat->addItem (TRANS("ACN"), CH_ACN);
-    CBoutputFormat->addItem (TRANS("FuMa"), CH_FUMA);
-    CBnorm->addItem (TRANS("N3D"), NORM_N3D);
-    CBnorm->addItem (TRANS("SN3D"), NORM_SN3D);
-    CBnorm->addItem (TRANS("FuMa"), NORM_FUMA);
-
 	/* fetch current configuration */
-	s_yaw->setValue(rotator_getYaw(hRot), dontSendNotification);
-    s_pitch->setValue(rotator_getPitch(hRot), dontSendNotification);
-    s_roll->setValue(rotator_getRoll(hRot), dontSendNotification);
-    t_flipYaw->setToggleState((bool)rotator_getFlipYaw(hRot), dontSendNotification);
-    t_flipPitch->setToggleState((bool)rotator_getFlipPitch(hRot), dontSendNotification);
-    t_flipRoll->setToggleState((bool)rotator_getFlipRoll(hRot), dontSendNotification);
     CBnorm->setSelectedId(rotator_getNormType(hRot), dontSendNotification);
     CBoutputFormat->setSelectedId(rotator_getChOrder(hRot), dontSendNotification);
-    CBorder->setSelectedId(rotator_getOrder(hRot), dontSendNotification);
-    te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
-    TBrpyFlag->setToggleState((bool)rotator_getRPYflag(hRot), dontSendNotification);
+    te_oscport->setText(String(processor.getOscPortID()), dontSendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, rotator_getOrder(hRot)==SH_ORDER_FIRST ? true : false);
     CBnorm->setItemEnabled(NORM_FUMA, rotator_getOrder(hRot)==SH_ORDER_FIRST ? true : false);
 
@@ -527,13 +493,13 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(rotator_getNSHrequired(hRot)) + TRANS(")"),
                        getBounds().getWidth()-225, 6, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
-            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+            g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(rotator_getNSHrequired(hRot)) + TRANS(")"),
                        getBounds().getWidth()-225, 6, 530, 11,
                        Justification::centredLeft, true);
@@ -551,128 +517,40 @@ void PluginEditor::resized()
 	repaint();
 }
 
-#if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(push)
-    #pragma warning(disable: 4996)  // MSVC ignore deprecated functions
-#endif
-
-void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+void PluginEditor::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
-    if (sliderThatWasMoved == s_yaw.get())
-    {
-        hVst->beginParameterChangeGesture(k_yaw);
-        rotator_setYaw(hRot, (float)s_yaw->getValue());
-        hVst->endParameterChangeGesture(k_yaw);
-    }
-    else if (sliderThatWasMoved == s_pitch.get())
-    {
-        hVst->beginParameterChangeGesture(k_pitch);
-        rotator_setPitch(hRot, (float)s_pitch->getValue());
-        hVst->endParameterChangeGesture(k_pitch);
-    }
-    else if (sliderThatWasMoved == s_roll.get())
-    {
-        hVst->beginParameterChangeGesture(k_roll);
-        rotator_setRoll(hRot, (float)s_roll->getValue());
-        hVst->endParameterChangeGesture(k_roll);
-    }
 }
 
-void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
+void PluginEditor::buttonClicked (juce::Button* /*buttonThatWasClicked*/)
 {
-    if (buttonThatWasClicked == t_flipYaw.get())
-    {
-        hVst->beginParameterChangeGesture(k_flipYaw);
-        rotator_setFlipYaw(hRot, (int)t_flipYaw->getToggleState());
-        hVst->endParameterChangeGesture(k_flipYaw);
-    }
-    else if (buttonThatWasClicked == t_flipPitch.get())
-    {
-        hVst->beginParameterChangeGesture(k_flipPitch);
-        rotator_setFlipPitch(hRot, (int)t_flipPitch->getToggleState());
-        hVst->endParameterChangeGesture(k_flipPitch);
-    }
-    else if (buttonThatWasClicked == t_flipRoll.get())
-    {
-        hVst->beginParameterChangeGesture(k_flipRoll);
-        rotator_setFlipRoll(hRot, (int)t_flipRoll->getToggleState());
-        hVst->endParameterChangeGesture(k_flipRoll);
-    }
-    else if (buttonThatWasClicked == TBrpyFlag.get())
-    {
-        hVst->beginParameterChangeGesture(k_useRollPitchYaw);
-        rotator_setRPYflag(hRot, (int)TBrpyFlag->getToggleState());
-        hVst->endParameterChangeGesture(k_useRollPitchYaw);
-    }
 }
 
-void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
+void PluginEditor::comboBoxChanged (juce::ComboBox* /*comboBoxThatHasChanged*/)
 {
-    if (comboBoxThatHasChanged == CBoutputFormat.get())
-    {
-        hVst->beginParameterChangeGesture(k_channelOrder);
-        rotator_setChOrder(hRot, CBoutputFormat->getSelectedId());
-        hVst->endParameterChangeGesture(k_channelOrder);
-    }
-    else if (comboBoxThatHasChanged == CBnorm.get())
-    {
-        hVst->beginParameterChangeGesture(k_normType);
-        rotator_setNormType(hRot, CBnorm->getSelectedId());
-        hVst->endParameterChangeGesture(k_normType);
-    }
-    else if (comboBoxThatHasChanged == CBorder.get())
-    {
-        hVst->beginParameterChangeGesture(k_inputOrder);
-        rotator_setOrder(hRot, CBorder->getSelectedId());
-        hVst->endParameterChangeGesture(k_inputOrder);
-    }
 }
-
-#if defined(__clang__)
-    #pragma clang diagnostic pop
-#elif defined(__GNUC__)
-    #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
-    #pragma warning(pop)
-#endif
 
 void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
-    s_yaw->setValue(rotator_getYaw(hRot), dontSendNotification);
-    s_pitch->setValue(rotator_getPitch(hRot), dontSendNotification);
-    s_roll->setValue(rotator_getRoll(hRot), dontSendNotification);
-    t_flipYaw->setToggleState((bool)rotator_getFlipYaw(hRot), dontSendNotification);
-    t_flipPitch->setToggleState((bool)rotator_getFlipPitch(hRot), dontSendNotification);
-    t_flipRoll->setToggleState((bool)rotator_getFlipRoll(hRot), dontSendNotification);
-    CBnorm->setSelectedId(rotator_getNormType(hRot), dontSendNotification);
-    CBoutputFormat->setSelectedId(rotator_getChOrder(hRot), dontSendNotification);
-    CBorder->setSelectedId(rotator_getOrder(hRot), dontSendNotification);
-    TBrpyFlag->setToggleState((bool)rotator_getRPYflag(hRot), dontSendNotification);
-
+    CBnorm->setSelectedId(rotator_getNormType(hRot), sendNotification);
+    CBoutputFormat->setSelectedId(rotator_getChOrder(hRot), sendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, rotator_getOrder(hRot)==SH_ORDER_FIRST ? true : false);
     CBnorm->setItemEnabled(NORM_FUMA, rotator_getOrder(hRot)==SH_ORDER_FIRST ? true : false);
 
     /* display warning message, if needed */
-    if ((hVst->getCurrentBlockSize() % rotator_getFrameSize()) != 0){
+    if ((processor.getCurrentBlockSize() % rotator_getFrameSize()) != 0){
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumInputs() < rotator_getNSHrequired(hRot))){
+    else if ((processor.getCurrentNumInputs() < rotator_getNSHrequired(hRot))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((hVst->getCurrentNumOutputs() < rotator_getNSHrequired(hRot))){
+    else if ((processor.getCurrentNumOutputs() < rotator_getNSHrequired(hRot))){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if(!hVst->getOscPortConnected()){
+    else if(!processor.getOscPortConnected()){
         currentWarning = k_warning_osc_connection_fail;
         repaint(0,0,getWidth(),32);
     }
@@ -682,6 +560,6 @@ void PluginEditor::timerCallback()
     }
 
     /* check if OSC port has changed */
-    if(hVst->getOscPortID() != te_oscport->getText().getIntValue())
-        hVst->setOscPortID(te_oscport->getText().getIntValue());
+    if(processor.getOscPortID() != te_oscport->getText().getIntValue())
+        processor.setOscPortID(te_oscport->getText().getIntValue());
 }

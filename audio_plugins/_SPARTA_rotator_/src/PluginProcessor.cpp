@@ -34,13 +34,109 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     }
 }
 
-PluginProcessor::PluginProcessor() : 
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("inputOrder", "InputOrder",
+                                                                  juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 1));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("useRollPitchYaw", "UseRollPitchYaw", false));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("yaw", "Yaw", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("pitch", "Pitch", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("roll", "Roll", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("qw", "Qw", juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("qx", "Qx", juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("qy", "Qy", juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("qz", "Qz", juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("flipYaw", "FlipYaw", false));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("flipPitch", "FlipPitch", false));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("flipRoll", "FlipRoll", false));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("flipQuaternion", "FlipQuaternion", false));
+    
+    return { params.begin(), params.end() };
+}
+
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    if (parameterID == "inputOrder"){
+        rotator_setOrder(hRot, static_cast<SH_ORDERS>(newValue+1.001f));
+    }
+    else if (parameterID == "channelOrder"){
+        rotator_setChOrder(hRot, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "normType"){
+        rotator_setNormType(hRot, static_cast<int>(newValue+1.001f));
+    }
+    else if(parameterID == "useRollPitchYaw"){
+        rotator_setRPYflag(hRot, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "yaw"){
+        rotator_setYaw(hRot, newValue);
+    }
+    else if(parameterID == "pitch"){
+        rotator_setPitch(hRot, newValue);
+    }
+    else if(parameterID == "roll"){
+        rotator_setRoll(hRot, newValue);
+    }
+    else if(parameterID == "qw"){
+        rotator_setQuaternionW(hRot, newValue);
+    }
+    else if(parameterID == "qx"){
+        rotator_setQuaternionX(hRot, newValue);
+    }
+    else if(parameterID == "qy"){
+        rotator_setQuaternionY(hRot, newValue);
+    }
+    else if(parameterID == "qz"){
+        rotator_setQuaternionZ(hRot, newValue);
+    }
+    else if(parameterID == "flipYaw"){
+        rotator_setFlipYaw(hRot, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "flipPitch"){
+        rotator_setFlipPitch(hRot, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "flipRoll"){
+        rotator_setFlipRoll(hRot, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "flipQuaternion"){
+        rotator_setFlipQuaternion(hRot, static_cast<int>(newValue+0.5f));
+    }
+}
+
+void PluginProcessor::setParameterValuesUsingInternalState()
+{
+    setParameterValue("inputOrder", rotator_getOrder(hRot)-1);
+    setParameterValue("channelOrder", rotator_getChOrder(hRot)-1);
+    setParameterValue("normType", rotator_getNormType(hRot)-1);
+    setParameterValue("useRollPitchYaw", rotator_getRPYflag(hRot));
+    setParameterValue("yaw", rotator_getYaw(hRot));
+    setParameterValue("pitch", rotator_getPitch(hRot));
+    setParameterValue("roll", rotator_getRoll(hRot));
+    setParameterValue("qw", rotator_getQuaternionW(hRot));
+    setParameterValue("qx", rotator_getQuaternionX(hRot));
+    setParameterValue("qy", rotator_getQuaternionY(hRot));
+    setParameterValue("qz", rotator_getQuaternionZ(hRot));
+    setParameterValue("flipYaw", rotator_getFlipYaw(hRot));
+    setParameterValue("flipPitch", rotator_getFlipPitch(hRot));
+    setParameterValue("flipRoll", rotator_getFlipRoll(hRot));
+    setParameterValue("flipQuaternion", rotator_getFlipQuaternion(hRot));
+}
+
+PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    ParameterManager(*this, createParameterLayout())
 {
 	nSampleRate = 48000;
 	rotator_create(&hRot);
+    
+    /* Grab defaults */
+    setParameterValuesUsingInternalState();
 
     /* specify here on which UDP port number to receive incoming OSC messages */
     osc_port_ID = DEFAULT_OSC_PORT;
@@ -62,163 +158,49 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
     /* if Euler rotation angles are sent as an array \ypr[3] */
     if (message.size() == 3 && message.getAddressPattern().toString().compare("/ypr")==0) {
         if (message[0].isFloat32())
-            rotator_setYaw(hRot, message[0].getFloat32());
+            setParameterValue("yaw", message[0].getFloat32());
         if (message[1].isFloat32())
-            rotator_setPitch(hRot, message[1].getFloat32());
+            setParameterValue("pitch", message[1].getFloat32());
         if (message[2].isFloat32())
-            rotator_setRoll(hRot, message[2].getFloat32());
+            setParameterValue("roll", message[2].getFloat32());
         return;
     }
     /* if Quaternion values are sent as an array \quaternion[4] */
     if (message.size() == 4 && message.getAddressPattern().toString().compare("/quaternion")==0) {
         if (message[0].isFloat32())
-            rotator_setQuaternionW(hRot, message[0].getFloat32());
+            setParameterValue("qw", message[0].getFloat32());
         if (message[1].isFloat32())
-            rotator_setQuaternionX(hRot, message[1].getFloat32());
+            setParameterValue("qx", message[1].getFloat32());
         if (message[2].isFloat32())
-            rotator_setQuaternionY(hRot, message[2].getFloat32());
+            setParameterValue("qy", message[2].getFloat32());
         if (message[3].isFloat32())
-            rotator_setQuaternionZ(hRot, message[3].getFloat32());
+            setParameterValue("qz", message[3].getFloat32());
         return;
     }
     /* if values are sent individually: */
     if(message.getAddressPattern().toString().compare("/yaw")==0)
-        rotator_setYaw(hRot, message[0].getFloat32());
+        setParameterValue("yaw", message[0].getFloat32());
     else if(message.getAddressPattern().toString().compare("/pitch")==0)
-        rotator_setPitch(hRot, message[0].getFloat32());
+        setParameterValue("pitch", message[0].getFloat32());
     else if(message.getAddressPattern().toString().compare("/roll")==0)
-        rotator_setRoll(hRot, message[0].getFloat32());
+        setParameterValue("roll", message[0].getFloat32());
     else if(message.getAddressPattern().toString().compare("/qw")==0)
-        rotator_setQuaternionW(hRot, message[0].getFloat32());
+        setParameterValue("qw", message[0].getFloat32());
     else if(message.getAddressPattern().toString().compare("/qx")==0)
-        rotator_setQuaternionX(hRot, message[0].getFloat32());
+        setParameterValue("qx", message[0].getFloat32());
     else if(message.getAddressPattern().toString().compare("/qy")==0)
-        rotator_setQuaternionY(hRot, message[0].getFloat32());
+        setParameterValue("qy", message[0].getFloat32());
     else if(message.getAddressPattern().toString().compare("/qz")==0)
-        rotator_setQuaternionZ(hRot, message[0].getFloat32());
-}
-
-void PluginProcessor::setParameter (int index, float newValue)
-{
-	switch (index) {
-        case k_inputOrder:      rotator_setOrder(hRot, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
-        case k_channelOrder:    rotator_setChOrder(hRot, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
-        case k_normType:        rotator_setNormType(hRot, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
-        case k_useRollPitchYaw: rotator_setRPYflag(hRot, (int)(newValue + 0.5f)); break;
-        case k_yaw:             rotator_setYaw(hRot, (newValue-0.5f)*360.0f ); break;
-        case k_pitch:           rotator_setPitch(hRot, (newValue - 0.5f)*360.0f); break;
-        case k_roll:            rotator_setRoll(hRot, (newValue - 0.5f)*360.0f); break;
-        case k_qw:              rotator_setQuaternionW(hRot, (newValue - 0.5f)*2.0f); break;
-        case k_qx:              rotator_setQuaternionX(hRot, (newValue - 0.5f)*2.0f); break;
-        case k_qy:              rotator_setQuaternionY(hRot, (newValue - 0.5f)*2.0f); break;
-        case k_qz:              rotator_setQuaternionZ(hRot, (newValue - 0.5f)*2.0f); break;
-        case k_flipYaw:         rotator_setFlipYaw(hRot, (int)(newValue + 0.5f)); break;
-        case k_flipPitch:       rotator_setFlipPitch(hRot, (int)(newValue + 0.5f)); break;
-        case k_flipRoll:        rotator_setFlipRoll(hRot, (int)(newValue + 0.5f)); break;
-        case k_flipQuaternion:  rotator_setFlipQuaternion(hRot, (int)(newValue + 0.5f)); break;
-		default: break;
-	}
+        setParameterValue("qz", message[0].getFloat32());
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
 }
 
-float PluginProcessor::getParameter (int index)
-{
-    switch (index) {
-        case k_inputOrder:      return (float)(rotator_getOrder(hRot)-1)/(float)(MAX_SH_ORDER-1);
-        case k_channelOrder:    return (float)(rotator_getChOrder(hRot)-1)/(float)(NUM_CH_ORDERINGS-1);
-        case k_normType:        return (float)(rotator_getNormType(hRot)-1)/(float)(NUM_NORM_TYPES-1);
-        case k_useRollPitchYaw: return (float)rotator_getRPYflag(hRot);
-        case k_yaw:             return (rotator_getYaw(hRot)/360.0f) + 0.5f;
-        case k_pitch:           return (rotator_getPitch(hRot)/360.0f) + 0.5f;
-        case k_roll:            return (rotator_getRoll(hRot)/360.0f) + 0.5f;
-        case k_qw:              return (rotator_getQuaternionW(hRot)/2.0f) + 0.5f;
-        case k_qx:              return (rotator_getQuaternionX(hRot)/2.0f) + 0.5f;
-        case k_qy:              return (rotator_getQuaternionY(hRot)/2.0f) + 0.5f;
-        case k_qz:              return (rotator_getQuaternionZ(hRot)/2.0f) + 0.5f;
-        case k_flipYaw:         return (float)rotator_getFlipYaw(hRot);
-        case k_flipPitch:       return (float)rotator_getFlipPitch(hRot);
-        case k_flipRoll:        return (float)rotator_getFlipRoll(hRot);
-        case k_flipQuaternion:  return (float)rotator_getFlipQuaternion(hRot);
-		default: return 0.0f;
-	}
-}
-
-int PluginProcessor::getNumParameters()
-{
-	return k_NumOfParameters;
-}
-
 const String PluginProcessor::getName() const
 {
     return JucePlugin_Name;
-}
-
-const String PluginProcessor::getParameterName (int index)
-{
-    switch (index){
-        case k_inputOrder:      return "order";
-        case k_channelOrder:    return "channel_order";
-        case k_normType:        return "norm_type";
-        case k_useRollPitchYaw: return "use_rpy";
-        case k_yaw:             return "yaw";
-        case k_pitch:           return "pitch";
-        case k_roll:            return "roll";
-        case k_qw:              return "quaternion_w";
-        case k_qx:              return "quaternion_x";
-        case k_qy:              return "quaternion_y";
-        case k_qz:              return "quaternion_z";
-        case k_flipYaw:         return "flip_yaw";
-        case k_flipPitch:       return "flip_pitch";
-        case k_flipRoll:        return "flip_roll";
-        case k_flipQuaternion:  return "flip_quaternion";
-		default: return "NULL";
-	}
-}
-
-const String PluginProcessor::getParameterText(int index)
-{
-    switch (index) {
-        case k_inputOrder: return String(rotator_getOrder(hRot));
-        case k_channelOrder:
-            switch(rotator_getChOrder(hRot)){
-                case CH_ACN:  return "ACN";
-                case CH_FUMA: return "FuMa";
-                default: return "NULL";
-            }
-        case k_normType:
-            switch(rotator_getNormType(hRot)){
-                case NORM_N3D:  return "N3D";
-                case NORM_SN3D: return "SN3D";
-                case NORM_FUMA: return "FuMa";
-                default: return "NULL";
-            }
-        case k_useRollPitchYaw: return !rotator_getRPYflag(hRot) ? "YPR" : "RPY";
-        case k_yaw:             return String(rotator_getYaw(hRot));
-        case k_pitch:           return String(rotator_getPitch(hRot));
-        case k_roll:            return String(rotator_getRoll(hRot));
-        case k_qw:              return String(rotator_getQuaternionW(hRot));
-        case k_qx:              return String(rotator_getQuaternionX(hRot));
-        case k_qy:              return String(rotator_getQuaternionY(hRot));
-        case k_qz:              return String(rotator_getQuaternionZ(hRot));
-        case k_flipYaw:         return !rotator_getFlipYaw(hRot) ? "No-Flip" : "Flip";
-        case k_flipPitch:       return !rotator_getFlipPitch(hRot) ? "No-Flip" : "Flip";
-        case k_flipRoll:        return !rotator_getFlipRoll(hRot) ? "No-Flip" : "Flip";
-        case k_flipQuaternion:  return !rotator_getFlipQuaternion(hRot) ? "No-Flip" : "Flip";
-        default: return "NULL";
-    }
-}
-
-const String PluginProcessor::getInputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-const String PluginProcessor::getOutputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
 }
 
 double PluginProcessor::getTailLengthSeconds() const
@@ -241,18 +223,6 @@ const String PluginProcessor::getProgramName (int /*index*/)
     return String();
 }
 
-
-bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-
 bool PluginProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
@@ -269,11 +239,6 @@ bool PluginProcessor::producesMidi() const
    #else
     return false;
    #endif
-}
-
-bool PluginProcessor::silenceInProducesSilenceOut() const
-{
-    return false;
 }
 
 void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
@@ -323,41 +288,29 @@ bool PluginProcessor::hasEditor() const
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new PluginEditor (this);
+    return new PluginEditor (*this);
 }
 
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-	/* Create an outer XML element.. */ 
-	XmlElement xml("ROTATORAUDIOPLUGINSETTINGS");
- 
-	xml.setAttribute("YAW", rotator_getYaw(hRot));
-	xml.setAttribute("PITCH", rotator_getPitch(hRot));
-	xml.setAttribute("ROLL", rotator_getRoll(hRot));
+    juce::ValueTree state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xml(state.createXml());
+    xml->setTagName("ROTATORAUDIOPLUGINSETTINGS");
+    xml->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10301
     
-    xml.setAttribute("FLIP_YAW", rotator_getFlipYaw(hRot));
-    xml.setAttribute("FLIP_PITCH", rotator_getFlipPitch(hRot));
-    xml.setAttribute("FLIP_ROLL", rotator_getFlipRoll(hRot));
-    xml.setAttribute("RPY_FLAG", rotator_getRPYflag(hRot));
+    /* Other */
+    xml->setAttribute("OSC_PORT", osc_port_ID);
     
-    xml.setAttribute("OSC_PORT", osc_port_ID);
-    
-    xml.setAttribute("NORM", rotator_getNormType(hRot));
-    xml.setAttribute("CHORDER", rotator_getChOrder(hRot));
-    
-    xml.setAttribute("ORDER", rotator_getOrder(hRot));
-    
-	copyXmlToBinary(xml, destData);
+    /* Save */
+    copyXmlToBinary(*xml, destData);
 }
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-	/* This getXmlFromBinary() function retrieves XML from the binary blob */
-    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-
-	if (xmlState != nullptr) {
-		/* make sure that it's actually the correct XML object */
-		if (xmlState->hasTagName("ROTATORAUDIOPLUGINSETTINGS")) {
+    /* Load */
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState != nullptr && xmlState->hasTagName("ROTATORAUDIOPLUGINSETTINGS")){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10301
             if(xmlState->hasAttribute("YAW"))
                 rotator_setYaw(hRot, (float)xmlState->getDoubleAttribute("YAW", 0.0f));
             if(xmlState->hasAttribute("PITCH"))
@@ -386,8 +339,19 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             
             if(xmlState->hasAttribute("ORDER"))
                 rotator_setOrder(hRot, xmlState->getIntAttribute("ORDER", 1));
+            
+            setParameterValuesUsingInternalState();
         }
-	}
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10301){
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* other */
+            if(xmlState->hasAttribute("OSC_PORT")){
+                osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
+                osc.connect(osc_port_ID);
+            }
+        }
+    }
 }
 
 // This creates new instances of the plugin..

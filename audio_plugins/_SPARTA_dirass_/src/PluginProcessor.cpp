@@ -150,7 +150,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     /* check whether the playhead is moving */
     playHead = getPlayHead();
     if(playHead!=NULL)
-        isPlaying = playHead->getCurrentPosition(currentPosition) == true ? currentPosition.isPlaying : false;
+        isPlaying = playHead->getPosition()->getIsPlaying();
     else
         isPlaying = false;
 

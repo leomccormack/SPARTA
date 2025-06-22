@@ -41,7 +41,7 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::ComboBox::Listener
 {
 public:
-    PluginEditor (PluginProcessor* ownerFilter);
+    PluginEditor (PluginProcessor& p);
     ~PluginEditor() override;
 
     void paint (juce::Graphics& g) override;
@@ -51,7 +51,7 @@ public:
     void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hRot;
     void timerCallback() override;
 
@@ -65,17 +65,17 @@ private:
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
-    std::unique_ptr<juce::Slider> s_yaw;
-    std::unique_ptr<juce::Slider> s_pitch;
-    std::unique_ptr<juce::Slider> s_roll;
-    std::unique_ptr<juce::ToggleButton> t_flipYaw;
-    std::unique_ptr<juce::ToggleButton> t_flipPitch;
-    std::unique_ptr<juce::ToggleButton> t_flipRoll;
+    std::unique_ptr<SliderWithAttachment> s_yaw;
+    std::unique_ptr<SliderWithAttachment> s_pitch;
+    std::unique_ptr<SliderWithAttachment> s_roll;
+    std::unique_ptr<ToggleButtonWithAttachment> t_flipYaw;
+    std::unique_ptr<ToggleButtonWithAttachment> t_flipPitch;
+    std::unique_ptr<ToggleButtonWithAttachment> t_flipRoll;
     std::unique_ptr<juce::TextEditor> te_oscport;
-    std::unique_ptr<juce::ComboBox> CBoutputFormat;
-    std::unique_ptr<juce::ComboBox> CBnorm;
-    std::unique_ptr<juce::ComboBox> CBorder;
-    std::unique_ptr<juce::ToggleButton> TBrpyFlag;
+    std::unique_ptr<ComboBoxWithAttachment> CBoutputFormat;
+    std::unique_ptr<ComboBoxWithAttachment> CBnorm;
+    std::unique_ptr<ComboBoxWithAttachment> CBorder;
+    std::unique_ptr<ToggleButtonWithAttachment> TBrpyFlag;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

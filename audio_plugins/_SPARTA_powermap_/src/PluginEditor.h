@@ -48,7 +48,7 @@ class PluginEditor  : public AudioProcessorEditor,
                       public juce::Button::Listener
 {
 public:
-    PluginEditor (PluginProcessor* ownerFilter);
+    PluginEditor (PluginProcessor& p);
     ~PluginEditor() override;
 
     void paint (juce::Graphics& g) override;
@@ -58,7 +58,7 @@ public:
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hPm;
     void timerCallback(int timerID) override;
     double progress = 0.0;

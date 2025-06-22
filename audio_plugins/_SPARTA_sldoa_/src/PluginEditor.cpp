@@ -22,8 +22,8 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter), progressbar(progress)
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p), progressbar(progress)
 {
     avgSlider.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (avgSlider.get());
@@ -142,8 +142,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     setSize (634, 514);
 
     /* handles */
-    hVst = ownerFilter;
-    hSld = hVst->getFXHandle();
+    hSld = processor.getFXHandle();
 
     /* init OpenGL */
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -165,19 +164,19 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* overlay */
     previewArea.setBounds(13, 59, 608, 303);
-    overlayIncluded.reset (new overlay(ownerFilter));
+    overlayIncluded.reset (new overlay(p));
     addAndMakeVisible (overlayIncluded.get());
     overlayIncluded->setAlwaysOnTop(true);
     overlayIncluded->setBounds(previewArea);
 
     /* Camera support */
     updateCameraList();
-    CB_webcam->setSelectedId (hVst->getCameraID(), dontSendNotification);
+    CB_webcam->setSelectedId (processor.getCameraID(), dontSendNotification);
     CB_webcam->onChange = [this] { cameraChanged(); };
     addAndMakeVisible (lastSnapshot);
-    TB_greyScale->setToggleState(hVst->getGreyScale(), dontSendNotification);
-    TB_flipLR->setToggleState(hVst->getFlipLR(), dontSendNotification);
-    TB_flipUD->setToggleState(hVst->getFlipUD(), dontSendNotification);
+    TB_greyScale->setToggleState(processor.getGreyScale(), dontSendNotification);
+    TB_flipLR->setToggleState(processor.getFlipLR(), dontSendNotification);
+    TB_flipUD->setToggleState(processor.getFlipUD(), dontSendNotification);
 
     /* create 2d Slider for the decoding order parameter */
     int nPoints;
@@ -646,7 +645,7 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(sldoa_getNSHrequired(hSld)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
@@ -718,7 +717,7 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     }
     else if (comboBoxThatHasChanged == CB_webcam.get())
     {
-        hVst->setCameraID(CB_webcam->getSelectedId());
+        processor.setCameraID(CB_webcam->getSelectedId());
         cameraChanged();
         if(CB_webcam->getSelectedId()==1){
             incomingImage.clear(previewArea);
@@ -731,15 +730,15 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
     if (buttonThatWasClicked == TB_greyScale.get())
     {
-        hVst->setGreyScale(TB_greyScale->getToggleState());
+        processor.setGreyScale(TB_greyScale->getToggleState());
     }
     else if (buttonThatWasClicked == TB_flipUD.get())
     {
-        hVst->setFlipUD(TB_flipUD->getToggleState());
+        processor.setFlipUD(TB_flipUD->getToggleState());
     }
     else if (buttonThatWasClicked == TB_flipLR.get())
     {
-        hVst->setFlipLR(TB_flipLR->getToggleState());
+        processor.setFlipLR(TB_flipLR->getToggleState());
     }
 }
 
@@ -800,7 +799,7 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* refresh overlay */
-            if ((overlayIncluded != nullptr) && (hVst->getIsPlaying()))
+            if ((overlayIncluded != nullptr) && (processor.getIsPlaying()))
                 overlayIncluded->repaint();
             if (anaOrder2dSlider->getRefreshValuesFLAG())
                 anaOrder2dSlider->repaint();
@@ -813,7 +812,7 @@ void PluginEditor::timerCallback(int timerID)
                 currentWarning = k_warning_supported_fs;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumInputs() < sldoa_getNSHrequired(hSld))){
+            else if ((processor.getCurrentNumInputs() < sldoa_getNSHrequired(hSld))){
                 currentWarning = k_warning_NinputCH;
                 repaint(0,0,getWidth(),32);
             }

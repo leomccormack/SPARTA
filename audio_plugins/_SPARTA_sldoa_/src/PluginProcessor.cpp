@@ -34,20 +34,39 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     }
 }
 
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+
+    return { params.begin(), params.end() };
+}
+
+void PluginProcessor::parameterChanged(const juce::String& /*parameterID*/, float /*newValue*/)
+{
+}
+
+void PluginProcessor::setParameterValuesUsingInternalState()
+{
+}
+
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    ParameterManager(*this, createParameterLayout())
 {
 	nSampleRate = 48000;
 	sldoa_create(&hSld);
-    startTimer(TIMER_PROCESSING_RELATED, 40);
     isPlaying = false;
+    
+    /* Grab defaults */
+    setParameterValuesUsingInternalState();
     
     /* camera default settings */
     cameraID = 1;
     flipLR = flipUD = false;
-    greyScale = true; 
+    greyScale = true;
+    startTimer(TIMER_PROCESSING_RELATED, 40);
 }
 
 PluginProcessor::~PluginProcessor()
@@ -55,57 +74,13 @@ PluginProcessor::~PluginProcessor()
 	sldoa_destroy(&hSld);
 }
 
-void PluginProcessor::setParameter (int index, float /*newValue*/)
-{
-	switch (index)
-	{
-		default: break;
-	}
-}
-
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
-}
-
-float PluginProcessor::getParameter (int index)
-{
-    switch (index)
-	{
-		default: return 0.0f;
-	}
-}
-
-int PluginProcessor::getNumParameters()
-{
-	return k_NumOfParameters;
 }
 
 const String PluginProcessor::getName() const
 {
     return JucePlugin_Name;
-}
-
-const String PluginProcessor::getParameterName (int index)
-{
-    switch (index)
-	{
-		default: return "NULL";
-	}
-}
-
-const String PluginProcessor::getParameterText(int index)
-{
-	return String(getParameter(index), 1);    
-}
-
-const String PluginProcessor::getInputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-const String PluginProcessor::getOutputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
 }
 
 double PluginProcessor::getTailLengthSeconds() const
@@ -128,16 +103,6 @@ const String PluginProcessor::getProgramName (int /*index*/)
     return String();
 }
 
-bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
 bool PluginProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
@@ -154,11 +119,6 @@ bool PluginProcessor::producesMidi() const
    #else
     return false;
    #endif
-}
-
-bool PluginProcessor::silenceInProducesSilenceOut() const
-{
-    return false;
 }
 
 void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
@@ -190,7 +150,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     /* check whether the playhead is moving */
     playHead = getPlayHead();
     if(playHead!=NULL)
-        isPlaying = playHead->getCurrentPosition(currentPosition) == true ? currentPosition.isPlaying : false;
+        isPlaying = playHead->getPosition()->getIsPlaying();
     else
         isPlaying = false;
 
@@ -214,38 +174,42 @@ bool PluginProcessor::hasEditor() const
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new PluginEditor (this);
+    return new PluginEditor (*this);
 }
 
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-	XmlElement xml("SLDOAAUDIOPLUGINSETTINGS");
-
-	/* add attributes */
-    xml.setAttribute("MasterOrder", sldoa_getMasterOrder(hSld));
-    xml.setAttribute("MaxFreq", sldoa_getMaxFreq(hSld));
-    xml.setAttribute("MinFreq", sldoa_getMinFreq(hSld));
-    xml.setAttribute("Avg", sldoa_getAvg(hSld));
+    juce::ValueTree state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
+    xmlState->setTagName("SLDOAAUDIOPLUGINSETTINGS");
+    xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10501
+    
+    /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+    xmlState->setAttribute("MasterOrder", sldoa_getMasterOrder(hSld));
+    xmlState->setAttribute("MaxFreq", sldoa_getMaxFreq(hSld));
+    xmlState->setAttribute("MinFreq", sldoa_getMinFreq(hSld));
+    xmlState->setAttribute("Avg", sldoa_getAvg(hSld));
     for(int i=0; i<sldoa_getNumberOfBands(); i++)
-        xml.setAttribute("AnaOrder" + String(i), sldoa_getAnaOrder(hSld, i));
-    xml.setAttribute("ChOrder", (int)sldoa_getChOrder(hSld));
-    xml.setAttribute("Norm", (int)sldoa_getNormType(hSld));
+        xmlState->setAttribute("AnaOrder" + String(i), sldoa_getAnaOrder(hSld, i));
+    xmlState->setAttribute("ChOrder", (int)sldoa_getChOrder(hSld));
+    xmlState->setAttribute("Norm", (int)sldoa_getNormType(hSld));
     
-    xml.setAttribute("cameraID", cameraID);
-    xml.setAttribute("flipLR", flipLR);
-    xml.setAttribute("flipUD", flipUD);
-    xml.setAttribute("greyScale", greyScale);
+    /* Other */
+    xmlState->setAttribute("cameraID", cameraID);
+    xmlState->setAttribute("flipLR", flipLR);
+    xmlState->setAttribute("flipUD", flipUD);
+    xmlState->setAttribute("greyScale", greyScale);
     
-	copyXmlToBinary(xml, destData);
+    /* Save */
+    copyXmlToBinary(*xmlState, destData);
 }
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-
-    if (xmlState != nullptr) {
-        /* make sure that it's actually the correct type of XML object */
-        if (xmlState->hasTagName("SLDOAAUDIOPLUGINSETTINGS")) {
+    /* Load */
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState != nullptr && xmlState->hasTagName("SLDOAAUDIOPLUGINSETTINGS")){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10501
             /* pull attributes */
             if(xmlState->hasAttribute("MasterOrder"))
                 sldoa_setMasterOrder(hSld, xmlState->getIntAttribute("MasterOrder", 1));
@@ -272,7 +236,42 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 flipUD = (bool)xmlState->getIntAttribute("flipUD", 0);
             if(xmlState->hasAttribute("greyScale"))
                 greyScale = (bool)xmlState->getIntAttribute("greyScale", 1);
+            
+            setParameterValuesUsingInternalState();
         }
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10501){
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* pull attributes */
+            if(xmlState->hasAttribute("MasterOrder"))
+                sldoa_setMasterOrder(hSld, xmlState->getIntAttribute("MasterOrder", 1));
+            if(xmlState->hasAttribute("MaxFreq"))
+                sldoa_setMaxFreq(hSld, (float)xmlState->getDoubleAttribute("MaxFreq", 5000.0));
+            if(xmlState->hasAttribute("MinFreq"))
+                sldoa_setMinFreq(hSld, (float)xmlState->getDoubleAttribute("MinFreq", 500.0));
+            if(xmlState->hasAttribute("Avg"))
+                sldoa_setAvg(hSld, (float)xmlState->getDoubleAttribute("Avg", 100.0));
+            for(int i=0; i<sldoa_getNumberOfBands(); i++){
+                if(xmlState->hasAttribute("AnaOrder"+String(i)))
+                    sldoa_setAnaOrder(hSld, xmlState->getIntAttribute("AnaOrder"+String(i), 1), i);
+            }
+            if(xmlState->hasAttribute("ChOrder"))
+                sldoa_setChOrder(hSld, xmlState->getIntAttribute("ChOrder", 1));
+            if(xmlState->hasAttribute("Norm"))
+                sldoa_setNormType(hSld, xmlState->getIntAttribute("Norm", 1));
+            
+            /* Other */
+            if(xmlState->hasAttribute("cameraID"))
+                cameraID = (int)xmlState->getIntAttribute("cameraID", 1);
+            if(xmlState->hasAttribute("flipLR"))
+                flipLR = (bool)xmlState->getIntAttribute("flipLR", 0);
+            if(xmlState->hasAttribute("flipUD"))
+                flipUD = (bool)xmlState->getIntAttribute("flipUD", 0);
+            if(xmlState->hasAttribute("greyScale"))
+                greyScale = (bool)xmlState->getIntAttribute("greyScale", 1);
+        }
+        
+        sldoa_refreshSettings(hSld);
     }
 }
 
