@@ -22,14 +22,13 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter), progressbar(progress), fileChooser ("File", File(), true, false, false,
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p), progressbar(progress), fileChooser ("File", File(), true, false, false,
       "*.sofa;*.nc;", String(),
       "Load SOFA File")
 {
-    SL_num_sources.reset (new juce::Slider ("new slider"));
+    SL_num_sources = std::make_unique<SliderWithAttachment>(p.parameters, "numInputs");
     addAndMakeVisible (SL_num_sources.get());
-    SL_num_sources->setRange (1, 8, 1);
     SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
@@ -124,9 +123,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     setSize (920, 316);
 
-    /* handle to pluginProcessor */
-	hVst = ownerFilter;
-    hSpr = hVst->getFXHandle();
+    /* handle to object */
+    hSpr = processor.getFXHandle();
 
     /* init OpenGL */
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -153,7 +151,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* source coordinate viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (sourceCoordsVP.get());
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, SPREADER_MAX_NUM_SOURCES, spreader_getNumSources(hSpr));
+    sourceCoordsView_handle = new inputCoordsView(p, SPREADER_MAX_NUM_SOURCES, spreader_getNumSources(hSpr));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
@@ -171,7 +169,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* grab current parameter settings */
     TBuseDefaultHRIRs->setToggleState(spreader_getUseDefaultHRIRsflag(hSpr), dontSendNotification);
-    SL_num_sources->setValue(spreader_getNumSources(hSpr),dontSendNotification);
     CBmode->addItem(TRANS("Basic"), SPREADER_MODE_NAIVE);
     CBmode->addItem(TRANS("EVD"), SPREADER_MODE_EVD);
     CBmode->addItem(TRANS("OM"), SPREADER_MODE_OM);
@@ -179,7 +176,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_avgCoeff->setValue(spreader_getAveragingCoeff(hSpr), dontSendNotification);
 
     /* create panning window */
-    panWindow.reset (new pannerView(ownerFilter, 492, 246));
+    panWindow.reset (new pannerView(p, 492, 246));
     addAndMakeVisible (panWindow.get());
     panWindow->setBounds (214, 58, 492, 246);
     panWindow->setShowInputs(true);
@@ -553,13 +550,13 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(spreader_getNumSources(hSpr)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
-            g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
+            g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(spreader_getNumOutputs(hSpr)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
@@ -575,7 +572,6 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == SL_num_sources.get())
     {
-        spreader_setNumSources(hSpr, (int)SL_num_sources->getValue());
         refreshPanViewWindow = true;
     }
     else if (sliderThatWasMoved == SL_avgCoeff.get())
@@ -620,7 +616,6 @@ void PluginEditor::timerCallback(int timerID)
             /* parameters whos values can change internally should be periodically refreshed */
             sourceCoordsView_handle->setNCH(spreader_getNumSources(hSpr));
             TBuseDefaultHRIRs->setToggleState(spreader_getUseDefaultHRIRsflag(hSpr), dontSendNotification);
-            SL_num_sources->setValue(spreader_getNumSources(hSpr),dontSendNotification);
 
             /* Progress bar */
             if(spreader_getCodecStatus(hSpr)==CODEC_STATUS_INITIALISING){
@@ -656,15 +651,14 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* refresh pan view */
-            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
+            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || processor.getRefreshWindow()){
                 panWindow->refreshPanView();
-                sourceCoordsView_handle->setHasASliderChange(false);
                 refreshPanViewWindow = false;
-                hVst->setRefreshWindow(false);
+                processor.setRefreshWindow(false);
             }
 
             /* display warning message, if needed */
-            if ((hVst->getCurrentBlockSize() % spreader_getFrameSize()) != 0){
+            if ((processor.getCurrentBlockSize() % spreader_getFrameSize()) != 0){
                 currentWarning = k_warning_frameSize;
                 repaint(0,0,getWidth(),32);
             }
@@ -676,11 +670,11 @@ void PluginEditor::timerCallback(int timerID)
                 currentWarning = k_warning_mismatch_fs;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumInputs() < spreader_getNumSources(hSpr))){
+            else if ((processor.getCurrentNumInputs() < spreader_getNumSources(hSpr))){
                 currentWarning = k_warning_NinputCH;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumOutputs() < spreader_getNumOutputs(hSpr))){
+            else if ((processor.getCurrentNumOutputs() < spreader_getNumOutputs(hSpr))){
                 currentWarning = k_warning_NoutputCH;
                 repaint(0,0,getWidth(),32);
             }

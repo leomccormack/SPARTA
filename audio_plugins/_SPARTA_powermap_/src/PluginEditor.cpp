@@ -22,8 +22,8 @@
 
 #include "PluginEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
-    : AudioProcessorEditor(ownerFilter), progressbar(progress)
+PluginEditor::PluginEditor (PluginProcessor& p)
+    : AudioProcessorEditor(p), processor(p), progressbar(progress)
 {
     CBpmap_method.reset (new juce::ComboBox (juce::String()));
     addAndMakeVisible (CBpmap_method.get());
@@ -191,9 +191,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     setSize (672, 652);
 
-    /* handle for pluginProcessor */
-	hVst = ownerFilter;
-    hPm = hVst->getFXHandle();
+    /* handle for object */
+    hPm = processor.getFXHandle();
 
     /* OpenGL init */
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
@@ -267,7 +266,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* Overlay */
     previewArea.setBounds(13, 60, 646, 323);
 	lastSnapshot.setBounds(previewArea);
-    overlayIncluded.reset (new overlay(ownerFilter));
+    overlayIncluded.reset (new overlay(p));
     addAndMakeVisible (overlayIncluded.get());
     overlayIncluded->setAlwaysOnTop(true);
     overlayIncluded->setBounds(previewArea);
@@ -281,12 +280,12 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* Camera support */
     updateCameraList();
-    CB_webcam->setSelectedId (hVst->getCameraID(), dontSendNotification);
+    CB_webcam->setSelectedId (processor.getCameraID(), dontSendNotification);
     CB_webcam->onChange = [this] { cameraChanged(); };
     addAndMakeVisible (lastSnapshot);
-    TB_greyScale->setToggleState(hVst->getGreyScale(), dontSendNotification);
-    TB_flipLR->setToggleState(hVst->getFlipLR(), dontSendNotification);
-    TB_flipUD->setToggleState(hVst->getFlipUD(), dontSendNotification);
+    TB_greyScale->setToggleState(processor.getGreyScale(), dontSendNotification);
+    TB_flipLR->setToggleState(processor.getFlipLR(), dontSendNotification);
+    TB_flipUD->setToggleState(processor.getFlipUD(), dontSendNotification);
 
     /* fetch current configuration */
     CBmasterOrder->setSelectedId(powermap_getMasterOrder(hPm), dontSendNotification);
@@ -880,7 +879,7 @@ void PluginEditor::paint (juce::Graphics& g)
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(powermap_getNSHrequired(hPm)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
@@ -944,7 +943,7 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     }
     else if (comboBoxThatHasChanged == CB_webcam.get())
     {
-        hVst->setCameraID(CB_webcam->getSelectedId());
+        processor.setCameraID(CB_webcam->getSelectedId());
         cameraChanged();
         if(CB_webcam->getSelectedId()==1){
             incomingImage.clear(previewArea);
@@ -983,15 +982,15 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
     if (buttonThatWasClicked == TB_greyScale.get())
     {
-        hVst->setGreyScale(TB_greyScale->getToggleState());
+        processor.setGreyScale(TB_greyScale->getToggleState());
     }
     else if (buttonThatWasClicked == TB_flipUD.get())
     {
-        hVst->setFlipUD(TB_flipUD->getToggleState());
+        processor.setFlipUD(TB_flipUD->getToggleState());
     }
     else if (buttonThatWasClicked == TB_flipLR.get())
     {
-        hVst->setFlipLR(TB_flipLR->getToggleState());
+        processor.setFlipLR(TB_flipLR->getToggleState());
     }
 }
 
@@ -1063,7 +1062,7 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* refresh the powermap display */
-            if ((overlayIncluded != nullptr) && (hVst->getIsPlaying())) {
+            if ((overlayIncluded != nullptr) && (processor.getIsPlaying())) {
                 float* dirs_deg, *pmap;
                 int nDirs, pmapReady, pmapWidth, hfov, aspectRatio;
                 pmapReady = powermap_getPmap(hPm, &dirs_deg, &pmap, &nDirs, &pmapWidth, &hfov, &aspectRatio);
@@ -1091,7 +1090,7 @@ void PluginEditor::timerCallback(int timerID)
                 currentWarning = k_warning_supported_fs;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumInputs() < powermap_getNSHrequired(hPm))){
+            else if ((processor.getCurrentNumInputs() < powermap_getNSHrequired(hPm))){
                 currentWarning = k_warning_NinputCH;
                 repaint(0,0,getWidth(),32);
             }

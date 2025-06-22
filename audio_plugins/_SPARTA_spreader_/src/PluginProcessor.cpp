@@ -34,10 +34,60 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     }
 }
 
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numInputs", "NumInputs", 1, SPREADER_MAX_NUM_SOURCES, 1, AudioParameterIntAttributes().withAutomatable(false)));
+    for(int i=0; i<SPREADER_MAX_NUM_SOURCES; i++){
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("spread" + juce::String(i), "Spread_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 360.0f, 0.01f), 0.0f));
+    }
+    
+    return { params.begin(), params.end() };
+}
+
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    if(parameterID == "numInputs"){
+        spreader_setNumSources(hSpr, static_cast<int>(newValue));
+    }
+    for(int i=0; i<SPREADER_MAX_NUM_SOURCES; i++){
+        if(parameterID == "azim" + juce::String(i)){
+            spreader_setSourceAzi_deg(hSpr, i, newValue);
+            setRefreshWindow(true);
+            break;
+        }
+        else if(parameterID == "elev" + juce::String(i)){
+            spreader_setSourceElev_deg(hSpr, i, newValue);
+            setRefreshWindow(true);
+            break;
+        }
+        else if(parameterID == "spread" + juce::String(i)){
+            spreader_setSourceSpread_deg(hSpr, i, newValue);
+            setRefreshWindow(true);
+            break;
+        }
+    }
+}
+
+void PluginProcessor::setParameterValuesUsingInternalState()
+{
+    setParameterValue("numInputs", spreader_getNumSources(hSpr));
+    for(int i=0; i<SPREADER_MAX_NUM_SOURCES; i++){
+        setParameterValue("azim" + juce::String(i), spreader_getSourceAzi_deg(hSpr, i));
+        setParameterValue("elev" + juce::String(i), spreader_getSourceElev_deg(hSpr, i));
+        setParameterValue("spread" + juce::String(i), spreader_getSourceSpread_deg(hSpr, i));
+    }
+}
+
+
 PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true))
+	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    ParameterManager(*this, createParameterLayout())
 {
 	spreader_create(&hSpr);
 
@@ -48,142 +98,18 @@ PluginProcessor::PluginProcessor() :
 PluginProcessor::~PluginProcessor()
 {
 	spreader_destroy(&hSpr);
+    
+    /* Grab defaults */
+    setParameterValuesUsingInternalState();
 }
-
-void PluginProcessor::setParameter (int index, float newValue)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_numInputs:       spreader_setNumSources(hSpr, (int)(newValue*(float)(SPREADER_MAX_NUM_SOURCES)+0.5)); break;
-        }
-    }
-    /* source direction and spread parameters */
-    else{
-        index-=k_NumOfParameters;
-        float newValueScaled;
-        switch((index % 3)){
-            case 0:
-                newValueScaled = (newValue - 0.5f)*360.0f;
-                if (newValueScaled != spreader_getSourceAzi_deg(hSpr, (int)((float)index/3.0f+0.001f))){
-                    spreader_setSourceAzi_deg(hSpr, (int)((float)index/3.0f+0.001f), newValueScaled);
-                    refreshWindow = true;
-                }
-                break;
-            case 1:
-                newValueScaled = (newValue - 0.5f)*180.0f;
-                if (newValueScaled != spreader_getSourceElev_deg(hSpr, (int)((float)(index-1)/3.0f+0.001f))){
-                    spreader_setSourceElev_deg(hSpr, (int)((float)(index-1)/3.0f+0.001f), newValueScaled);
-                    refreshWindow = true;
-                }
-                break;
-            case 2:
-                newValueScaled = newValue*360.0f;
-                if (newValueScaled != spreader_getSourceSpread_deg(hSpr, (int)((float)(index-2)/3.0f+0.001f))){
-                    spreader_setSourceSpread_deg(hSpr, (int)((float)(index-2)/3.0f+0.001f), newValueScaled);
-                    refreshWindow = true;
-                }
-                break;
-        }
-    }
-}
-
-bool PluginProcessor::isParameterAutomatable (int index) const
-{
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_numInputs: return false;
-        }
-    }
-    return true;
-}
-
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
 }
 
-float PluginProcessor::getParameter (int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_numInputs:       return (float)(spreader_getNumSources(hSpr))/(float)(SPREADER_MAX_NUM_SOURCES);
-            default: return 0.0f;
-        }
-    }
-    /* source direction and spread parameters */
-    else {
-        index-=k_NumOfParameters;
-        switch((index % 3)){
-            case 0: return (spreader_getSourceAzi_deg(hSpr, (int)((float)index/3.0f+0.001f))/360.0f) + 0.5f;
-            case 1: return (spreader_getSourceElev_deg(hSpr, (int)((float)(index-1)/3.0f+0.001f))/180.0f) + 0.5f;
-            case 2: return (spreader_getSourceSpread_deg(hSpr, (int)((float)(index-2)/3.0f+0.001f))/360.0f);
-            default: return 0.0f;
-        }
-    }
-}
-
-int PluginProcessor::getNumParameters()
-{
-	return k_NumOfParameters + 3*SPREADER_MAX_NUM_SOURCES;
-}
-
 const String PluginProcessor::getName() const
 {
     return JucePlugin_Name;
-}
-
-const String PluginProcessor::getParameterName (int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) {
-            case k_numInputs:       return "num_sources";
-            default: return "NULL";
-        }
-    }
-    /* source direction and spread parameters */
-    else {
-        index-=k_NumOfParameters;
-        switch((index % 3)){
-            case 0: return TRANS("SrcAzim_") + String((int)((float)index/3.0f+0.001f) + 1);
-            case 1: return TRANS("SrcElev_") + String((int)((float)(index-1)/3.0f+0.001f) + 1);
-            case 2: return TRANS("SrcSpread_") + String((int)((float)(index-2)/3.0f+0.001f) + 1);
-            default: return "NULL";
-        }
-    }
-}
-
-const String PluginProcessor::getParameterText(int index)
-{
-    /* standard parameters */
-    if(index < k_NumOfParameters){
-        switch (index) { 
-            case k_numInputs:       return String(spreader_getNumSources(hSpr));
-            default: return "NULL";
-        }
-    }
-    /* source direction and spread parameters */
-    else {
-        index-=k_NumOfParameters;
-        switch((index % 3)){
-            case 0: return String(spreader_getSourceAzi_deg(hSpr, (int)((float)index/3.0f+0.001f)));
-            case 1: return String(spreader_getSourceElev_deg(hSpr, (int)((float)(index-1)/3.0f+0.001f)));
-            case 2: return String(spreader_getSourceSpread_deg(hSpr, (int)((float)(index-2)/3.0f+0.001f)));
-            default: return "NULL";
-        }
-    }
-}
-
-const String PluginProcessor::getInputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-const String PluginProcessor::getOutputChannelName (int channelIndex) const
-{
-    return String (channelIndex + 1);
 }
 
 double PluginProcessor::getTailLengthSeconds() const
@@ -206,18 +132,6 @@ const String PluginProcessor::getProgramName (int /*index*/)
     return String(); 
 }
 
-
-bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-
 bool PluginProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
@@ -234,11 +148,6 @@ bool PluginProcessor::producesMidi() const
    #else
     return false;
    #endif
-}
-
-bool PluginProcessor::silenceInProducesSilenceOut() const
-{
-    return false;
 }
 
 void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
@@ -290,34 +199,34 @@ bool PluginProcessor::hasEditor() const
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new PluginEditor (this);
+    return new PluginEditor (*this);
 }
 
 //==============================================================================
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
-    XmlElement xml("SPREADERPLUGINSETTINGS");
-    for(int i=0; i<spreader_getMaxNumSources(); i++){
-        xml.setAttribute("SourceAziDeg" + String(i), spreader_getSourceAzi_deg(hSpr,i));
-        xml.setAttribute("SourceElevDeg" + String(i), spreader_getSourceElev_deg(hSpr,i));
-        xml.setAttribute("SourceSpreadDeg" + String(i), spreader_getSourceSpread_deg(hSpr,i));
-    }
-    xml.setAttribute("nSources", spreader_getNumSources(hSpr));
-    xml.setAttribute("procMode", spreader_getSpreadingMode(hSpr));
-    xml.setAttribute("avgCoeff", spreader_getAveragingCoeff(hSpr));
+    juce::ValueTree state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
+    xmlState->setTagName("SPREADERPLUGINSETTINGS");
+    xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10101
+    
+    /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+    xmlState->setAttribute("procMode", spreader_getSpreadingMode(hSpr));
+    xmlState->setAttribute("avgCoeff", spreader_getAveragingCoeff(hSpr));
 
     if(!spreader_getUseDefaultHRIRsflag(hSpr))
-        xml.setAttribute("SofaFilePath", String(spreader_getSofaFilePath(hSpr)));
-
-    copyXmlToBinary(xml, destData);
+        xmlState->setAttribute("SofaFilePath", String(spreader_getSofaFilePath(hSpr)));
+    
+    /* Save */
+    copyXmlToBinary(*xmlState, destData);
 }
 
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-
-    if (xmlState != nullptr) {
-        if (xmlState->hasTagName("SPREADERPLUGINSETTINGS")) {
+    /* Load */
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState != nullptr && xmlState->hasTagName("SPREADERPLUGINSETTINGS")){
+        if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10101
             for(int i=0; i<spreader_getMaxNumSources(); i++){
                 if(xmlState->hasAttribute("SourceAziDeg" + String(i)))
                     spreader_setSourceAzi_deg(hSpr, i, (float)xmlState->getDoubleAttribute("SourceAziDeg" + String(i), 0.0f));
@@ -338,9 +247,26 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 const char* new_cstring = (const char*)directory.toUTF8();
                 spreader_setSofaFilePath(hSpr, new_cstring);
             }
-
-            spreader_refreshSettings(hSpr);
+            
+            setParameterValuesUsingInternalState();
         }
+        else if(xmlState->getIntAttribute("VersionCode")>=0x10101){
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
+            if(xmlState->hasAttribute("procMode"))
+                spreader_setSpreadingMode(hSpr, xmlState->getIntAttribute("procMode", 1));
+            if(xmlState->hasAttribute("avgCoeff"))
+                spreader_setAveragingCoeff(hSpr, xmlState->getDoubleAttribute("avgCoeff", 0.5f));
+
+            if(xmlState->hasAttribute("SofaFilePath")){
+                String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
+                const char* new_cstring = (const char*)directory.toUTF8();
+                spreader_setSofaFilePath(hSpr, new_cstring);
+            }
+        }
+        
+        spreader_refreshSettings(hSpr);
     }
 }
 

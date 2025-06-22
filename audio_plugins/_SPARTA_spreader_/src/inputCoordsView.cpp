@@ -25,32 +25,20 @@
 const int sensorEdit_width = 176;
 const int sensorEdit_height = 32;
 
-inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int _currentNCH )
+inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentNCH ) : processor(p)
 {
-    dummySlider.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (dummySlider.get());
-    dummySlider->setRange (0.01, 0.3, 0.001);
-    dummySlider->setSliderStyle (juce::Slider::LinearHorizontal);
-    dummySlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 70, 20);
-    dummySlider->addListener (this);
-
-    dummySlider->setBounds (-176, 144, 96, 16);
-
     setSize (sensorEdit_width, sensorEdit_height*currentNCH);
-    hVst = ownerFilter;
-    hSpr = hVst->getFXHandle();
+    hSpr = processor.getFXHandle();
     maxNCH = _maxNCH ;
     currentNCH =_currentNCH;
-    aziSliders =  new std::unique_ptr<Slider>[(unsigned long)maxNCH];
-    elevSliders =  new std::unique_ptr<Slider>[(unsigned long)maxNCH];
-    spreadSliders =  new std::unique_ptr<Slider>[(unsigned long)maxNCH];
+    aziSliders.resize(maxNCH);
+    elevSliders.resize(maxNCH);
+    spreadSliders.resize(maxNCH);
 
     for( int i=0; i<maxNCH; i++){
         /* create and initialise azimuth sliders */
-        aziSliders[i].reset (new Slider ("new slider"));
+        aziSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "azim" + juce::String(i));
         addAndMakeVisible (aziSliders[i].get());
-        aziSliders[i]->setRange (-360.0, 360.0, 0.1);
-        aziSliders[i]->setValue(spreader_getSourceAzi_deg(hSpr, i));
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 48, 20);
         aziSliders[i]->setBounds(22, 8 + i*sensorEdit_height, 48, 16);
         aziSliders[i]->addListener (this);
@@ -59,10 +47,8 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         aziSliders[i]->setSliderSnapsToMousePosition(false);
 
         /* create and initialise elevation sliders */
-        elevSliders[i].reset (new Slider ("new slider"));
+        elevSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "elev" + juce::String(i));
         addAndMakeVisible (elevSliders[i].get());
-        elevSliders[i]->setRange (-180.0, 180.0, 0.1);
-        elevSliders[i]->setValue(spreader_getSourceElev_deg(hSpr, i));
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 48, 20);
         elevSliders[i]->setBounds(73, 8 + i*sensorEdit_height, 48, 16);
         elevSliders[i]->addListener (this);
@@ -71,10 +57,8 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         elevSliders[i]->setSliderSnapsToMousePosition(false);
 
         /* create and initialise spreading sliders */
-        spreadSliders[i].reset (new Slider ("new slider"));
+        spreadSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "spread" + juce::String(i));
         addAndMakeVisible (spreadSliders[i].get());
-        spreadSliders[i]->setRange (0.0, 360.0, 0.1);
-        spreadSliders[i]->setValue(spreader_getSourceElev_deg(hSpr, i));
         spreadSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 48, 20);
         spreadSliders[i]->setBounds(124, 8 + i*sensorEdit_height, 48, 16);
         spreadSliders[i]->addListener (this);
@@ -82,25 +66,13 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         spreadSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
         spreadSliders[i]->setSliderSnapsToMousePosition(false);
     }
-    sliderHasChanged = true;
 
 	/* Get and display current settings */
-	refreshCoords();
 	resized();
 }
 
 inputCoordsView::~inputCoordsView()
 {
-    dummySlider = nullptr;
-
-    for( int i=0; i<maxNCH; i++){
-        aziSliders[i] = nullptr;
-        elevSliders[i] = nullptr;
-        spreadSliders[i] = nullptr;
-    }
-    delete [] aziSliders;
-    delete [] elevSliders;
-    delete [] spreadSliders;
 }
 
 void inputCoordsView::paint (juce::Graphics& g)
@@ -156,39 +128,6 @@ void inputCoordsView::resized()
     repaint();
 }
 
-void inputCoordsView::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+void inputCoordsView::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
-    for(int i=0; i<maxNCH; i++){
-        if (sliderThatWasMoved == aziSliders[i].get()) {
-            spreader_setSourceAzi_deg(hSpr, i, (float)aziSliders[i]->getValue());
-            break;
-        }
-        if (sliderThatWasMoved == elevSliders[i].get()) {
-            spreader_setSourceElev_deg(hSpr, i, (float)elevSliders[i]->getValue());
-            break;
-        }
-        if (sliderThatWasMoved == spreadSliders[i].get()) {
-            spreader_setSourceSpread_deg(hSpr, i, (float)spreadSliders[i]->getValue());
-            break;
-        }
-    }
-
-    if (sliderThatWasMoved == dummySlider.get())
-    {
-    }
-
-    sliderHasChanged = true;
 }
-
-void inputCoordsView::refreshCoords(){
-    /* update slider values and limits */
-    for( int i=0; i<maxNCH; i++){
-        aziSliders[i]->setRange (-360.0, 360.0, 0.1);
-        aziSliders[i]->setValue(spreader_getSourceAzi_deg(hSpr, i), dontSendNotification);
-        elevSliders[i]->setRange (-180.0, 180.0, 0.1);
-        elevSliders[i]->setValue(spreader_getSourceElev_deg(hSpr, i), dontSendNotification);
-        spreadSliders[i]->setRange (0.0, 360.0, 0.1);
-        spreadSliders[i]->setValue(spreader_getSourceSpread_deg(hSpr, i), dontSendNotification);
-    }
-}
-

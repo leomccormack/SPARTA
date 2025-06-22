@@ -37,7 +37,7 @@
 class overlay  : public Component
 {
 public:
-    overlay (PluginProcessor* ownerFilter);
+    overlay (PluginProcessor& p);
     ~overlay();
 
     void paint (Graphics& g) override;
@@ -46,7 +46,7 @@ public:
     void mouseDrag (const MouseEvent& e) override;
 
 private:
-    PluginProcessor* hVst;
+    PluginProcessor& processor;
     void* hSld;
     Rectangle<int> localBounds;
     bool hasFinishedDrawing;

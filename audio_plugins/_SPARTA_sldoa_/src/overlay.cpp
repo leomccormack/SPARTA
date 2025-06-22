@@ -46,12 +46,11 @@ static Colour getColour_val(float val)
         return Colour::fromRGB(0, 62, 229);
 }
 
-overlay::overlay (PluginProcessor* ownerFilter)
+overlay::overlay (PluginProcessor& p) : processor(p)
 {
     setSize (600, 400);
 
-    hVst = ownerFilter;
-    hSld = hVst->getFXHandle();
+    hSld = processor.getFXHandle();
     hasFinishedDrawing = true;
 }
 
