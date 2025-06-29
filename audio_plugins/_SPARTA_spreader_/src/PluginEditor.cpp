@@ -90,12 +90,10 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     label_N_CH->setBounds (848, 183, 51, 20);
 
-    CBmode.reset (new juce::ComboBox ("new combo box"));
+    CBmode = std::make_unique<ComboBoxWithAttachment>(p.parameters, "procMode");
     addAndMakeVisible (CBmode.get());
     CBmode->setEditableText (false);
     CBmode->setJustificationType (juce::Justification::centredLeft);
-    CBmode->setTextWhenNothingSelected (juce::String());
-    CBmode->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBmode->addListener (this);
 
     CBmode->setBounds (816, 125, 86, 20);
@@ -112,9 +110,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     label_IR_length->setBounds (848, 231, 51, 20);
 
-    SL_avgCoeff.reset (new juce::Slider ("new slider"));
+    SL_avgCoeff = std::make_unique<SliderWithAttachment>(p.parameters, "avgCoeff");
     addAndMakeVisible (SL_avgCoeff.get());
-    SL_avgCoeff->setRange (0, 1, 0.01);
     SL_avgCoeff->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_avgCoeff->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
     SL_avgCoeff->addListener (this);
@@ -169,11 +166,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     /* grab current parameter settings */
     TBuseDefaultHRIRs->setToggleState(spreader_getUseDefaultHRIRsflag(hSpr), dontSendNotification);
-    CBmode->addItem(TRANS("Basic"), SPREADER_MODE_NAIVE);
-    CBmode->addItem(TRANS("EVD"), SPREADER_MODE_EVD);
-    CBmode->addItem(TRANS("OM"), SPREADER_MODE_OM);
-    CBmode->setSelectedId(spreader_getSpreadingMode(hSpr), dontSendNotification);
-    SL_avgCoeff->setValue(spreader_getAveragingCoeff(hSpr), dontSendNotification);
 
     /* create panning window */
     panWindow.reset (new pannerView(p, 492, 246));
@@ -574,10 +566,6 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     {
         refreshPanViewWindow = true;
     }
-    else if (sliderThatWasMoved == SL_avgCoeff.get())
-    {
-        spreader_setAveragingCoeff(hSpr, SL_avgCoeff->getValue());
-    }
 }
 
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
@@ -589,12 +577,8 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
 }
 
-void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
+void PluginEditor::comboBoxChanged (juce::ComboBox* /*comboBoxThatHasChanged*/)
 {
-    if (comboBoxThatHasChanged == CBmode.get())
-    {
-        spreader_setSpreadingMode(hSpr, (int)CBmode->getSelectedId());
-    }
 }
 
 void PluginEditor::timerCallback(int timerID)

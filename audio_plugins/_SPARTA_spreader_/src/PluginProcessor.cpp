@@ -38,6 +38,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
 
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("procMode", "ProcMode",
+                                                                  juce::StringArray{"Basic","OM","EVD"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("avgCoeff", "AvgCoeff", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numInputs", "NumInputs", 1, SPREADER_MAX_NUM_SOURCES, 1, AudioParameterIntAttributes().withAutomatable(false)));
     for(int i=0; i<SPREADER_MAX_NUM_SOURCES; i++){
         params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
@@ -50,7 +54,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
 
 void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
-    if(parameterID == "numInputs"){
+    if (parameterID == "procMode"){
+        spreader_setSpreadingMode(hSpr, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "avgCoeff"){
+        spreader_setAveragingCoeff(hSpr, newValue);
+    }
+    else if(parameterID == "numInputs"){
         spreader_setNumSources(hSpr, static_cast<int>(newValue));
     }
     for(int i=0; i<SPREADER_MAX_NUM_SOURCES; i++){
@@ -74,6 +84,8 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
 
 void PluginProcessor::setParameterValuesUsingInternalState()
 {
+    setParameterValue("procMode", spreader_getSpreadingMode(hSpr)-1);
+    setParameterValue("avgCoeff", spreader_getAveragingCoeff(hSpr));
     setParameterValue("numInputs", spreader_getNumSources(hSpr));
     for(int i=0; i<SPREADER_MAX_NUM_SOURCES; i++){
         setParameterValue("azim" + juce::String(i), spreader_getSourceAzi_deg(hSpr, i));
@@ -90,6 +102,9 @@ PluginProcessor::PluginProcessor() :
     ParameterManager(*this, createParameterLayout())
 {
 	spreader_create(&hSpr);
+    
+    /* Grab defaults */
+    setParameterValuesUsingInternalState();
 
     refreshWindow = true;
     startTimer(TIMER_PROCESSING_RELATED, 80);
@@ -98,9 +113,6 @@ PluginProcessor::PluginProcessor() :
 PluginProcessor::~PluginProcessor()
 {
 	spreader_destroy(&hSpr);
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
@@ -213,9 +225,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10101
     
     /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-    xmlState->setAttribute("procMode", spreader_getSpreadingMode(hSpr));
-    xmlState->setAttribute("avgCoeff", spreader_getAveragingCoeff(hSpr));
-
+    xmlState->setAttribute("UseDefaultHRIRset", spreader_getUseDefaultHRIRsflag(hSpr));
     if(!spreader_getUseDefaultHRIRsflag(hSpr))
         xmlState->setAttribute("SofaFilePath", String(spreader_getSofaFilePath(hSpr)));
     
@@ -256,11 +266,8 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
             
             /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-            if(xmlState->hasAttribute("procMode"))
-                spreader_setSpreadingMode(hSpr, xmlState->getIntAttribute("procMode", 1));
-            if(xmlState->hasAttribute("avgCoeff"))
-                spreader_setAveragingCoeff(hSpr, xmlState->getDoubleAttribute("avgCoeff", 0.5f));
-
+            if(xmlState->hasAttribute("UseDefaultHRIRset"))
+                spreader_setUseDefaultHRIRsflag(hSpr, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
             if(xmlState->hasAttribute("SofaFilePath")){
                 String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
                 const char* new_cstring = (const char*)directory.toUTF8();

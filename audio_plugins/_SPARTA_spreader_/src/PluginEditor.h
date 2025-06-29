@@ -100,9 +100,9 @@ private:
     std::unique_ptr<juce::ToggleButton> TBuseDefaultHRIRs;
     std::unique_ptr<juce::Label> label_DAW_fs;
     std::unique_ptr<juce::Label> label_N_CH;
-    std::unique_ptr<juce::ComboBox> CBmode;
+    std::unique_ptr<ComboBoxWithAttachment> CBmode;
     std::unique_ptr<juce::Label> label_IR_length;
-    std::unique_ptr<juce::Slider> SL_avgCoeff;
+    std::unique_ptr<SliderWithAttachment> SL_avgCoeff;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

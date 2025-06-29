@@ -25,12 +25,10 @@
 PluginEditor::PluginEditor (PluginProcessor& p)
     : AudioProcessorEditor(p), processor(p), progressbar(progress)
 {
-    CBpmap_method.reset (new juce::ComboBox (juce::String()));
+    CBpmap_method = std::make_unique<ComboBoxWithAttachment>(p.parameters, "powermapMode");
     addAndMakeVisible (CBpmap_method.get());
     CBpmap_method->setEditableText (false);
     CBpmap_method->setJustificationType (juce::Justification::centredLeft);
-    CBpmap_method->setTextWhenNothingSelected (TRANS("Default"));
-    CBpmap_method->setTextWhenNoChoicesAvailable (juce::String());
     CBpmap_method->addListener (this);
 
     CBpmap_method->setBounds (106, 512, 112, 20);
@@ -45,22 +43,18 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBsourcePreset->setBounds (106, 439, 112, 20);
 
-    CBchFormat.reset (new juce::ComboBox ("new combo box"));
+    CBchFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBchFormat.get());
     CBchFormat->setEditableText (false);
     CBchFormat->setJustificationType (juce::Justification::centredLeft);
-    CBchFormat->setTextWhenNothingSelected (TRANS("ACN"));
-    CBchFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBchFormat->addListener (this);
 
     CBchFormat->setBounds (80, 472, 66, 20);
 
-    CBnormScheme.reset (new juce::ComboBox ("new combo box"));
+    CBnormScheme = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnormScheme.get());
     CBnormScheme->setEditableText (false);
     CBnormScheme->setJustificationType (juce::Justification::centredLeft);
-    CBnormScheme->setTextWhenNothingSelected (TRANS("N3D"));
-    CBnormScheme->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBnormScheme->addListener (this);
 
     CBnormScheme->setBounds (151, 472, 67, 20);
@@ -91,9 +85,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_pmapEQ->setBounds (608, 448, 40, 80);
 
-    s_covAvg.reset (new juce::Slider ("new slider"));
+    s_covAvg = std::make_unique<SliderWithAttachment>(p.parameters, "covAvgCoeff");
     addAndMakeVisible (s_covAvg.get());
-    s_covAvg->setRange (0, 1, 0.01);
     s_covAvg->setSliderStyle (juce::Slider::LinearHorizontal);
     s_covAvg->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
     s_covAvg->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -104,9 +97,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_covAvg->setBounds (106, 608, 112, 24);
 
-    s_Nsources.reset (new juce::Slider ("new slider"));
+    s_Nsources = std::make_unique<SliderWithAttachment>(p.parameters, "numSources");
     addAndMakeVisible (s_Nsources.get());
-    s_Nsources->setRange (1, 8, 1);
     s_Nsources->setSliderStyle (juce::Slider::LinearHorizontal);
     s_Nsources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
     s_Nsources->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
@@ -115,29 +107,24 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_Nsources->setBounds (168, 546, 50, 20);
 
-    CB_hfov.reset (new juce::ComboBox (juce::String()));
+    CB_hfov = std::make_unique<ComboBoxWithAttachment>(p.parameters, "FOVoption");
     addAndMakeVisible (CB_hfov.get());
     CB_hfov->setEditableText (false);
     CB_hfov->setJustificationType (juce::Justification::centredLeft);
-    CB_hfov->setTextWhenNothingSelected (TRANS("Default"));
-    CB_hfov->setTextWhenNoChoicesAvailable (juce::String());
     CB_hfov->addListener (this);
 
     CB_hfov->setBounds (357, 406, 96, 20);
 
-    CB_aspectRatio.reset (new juce::ComboBox (juce::String()));
+    CB_aspectRatio = std::make_unique<ComboBoxWithAttachment>(p.parameters, "ARoption");
     addAndMakeVisible (CB_aspectRatio.get());
     CB_aspectRatio->setEditableText (false);
     CB_aspectRatio->setJustificationType (juce::Justification::centredLeft);
-    CB_aspectRatio->setTextWhenNothingSelected (TRANS("Default"));
-    CB_aspectRatio->setTextWhenNoChoicesAvailable (juce::String());
     CB_aspectRatio->addListener (this);
 
     CB_aspectRatio->setBounds (557, 406, 96, 20);
 
-    s_pmapAvg.reset (new juce::Slider ("new slider"));
+    s_pmapAvg = std::make_unique<SliderWithAttachment>(p.parameters, "mapAvg");
     addAndMakeVisible (s_pmapAvg.get());
-    s_pmapAvg->setRange (0, 1, 0.01);
     s_pmapAvg->setSliderStyle (juce::Slider::LinearHorizontal);
     s_pmapAvg->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
     s_pmapAvg->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -148,12 +135,10 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_pmapAvg->setBounds (106, 576, 112, 24);
 
-    CBmasterOrder.reset (new juce::ComboBox ("new combo box"));
+    CBmasterOrder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (CBmasterOrder.get());
     CBmasterOrder->setEditableText (false);
     CBmasterOrder->setJustificationType (juce::Justification::centredLeft);
-    CBmasterOrder->setTextWhenNothingSelected (TRANS("Default"));
-    CBmasterOrder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBmasterOrder->addListener (this);
 
     CBmasterOrder->setBounds (106, 407, 112, 20);
@@ -227,41 +212,17 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     powermap_getPowermapEQHandle(hPm, &pX_vector, &pY_values, &nPoints);
     pmapEQ2dSlider->setDataHandles(pX_vector, pY_values, nPoints);
 
-    /* add master analysis order options */
-    CBmasterOrder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
-    CBmasterOrder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
-    CBmasterOrder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
-    CBmasterOrder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
-    CBmasterOrder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
-    CBmasterOrder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
-    CBmasterOrder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
-    CBmasterOrder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
-    CBmasterOrder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
-    CBmasterOrder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
-
-    /* Add powermap options */
-    CBpmap_method->addItem (TRANS("PWD"), PM_MODE_PWD);
-    CBpmap_method->addItem (TRANS("MVDR"), PM_MODE_MVDR);
-    CBpmap_method->addItem (TRANS("CroPaC LCMV"), PM_MODE_CROPAC_LCMV);
-    CBpmap_method->addItem (TRANS("MUSIC"), PM_MODE_MUSIC);
-    CBpmap_method->addItem (TRANS("log(MUSIC)"), PM_MODE_MUSIC_LOG);
-    CBpmap_method->addItem (TRANS("MinNorm"), PM_MODE_MINNORM);
-    CBpmap_method->addItem (TRANS("log(MinNorm)"), PM_MODE_MINNORM_LOG);
-
     /* Add microphone preset options */
     CBsourcePreset->addItem(TRANS("Ideal SH"), MIC_PRESET_IDEAL);
     CBsourcePreset->addItem(TRANS("Zylia"), MIC_PRESET_ZYLIA);
     CBsourcePreset->addItem(TRANS("Eigenmike"), MIC_PRESET_EIGENMIKE32);
     CBsourcePreset->addItem(TRANS("DTU mic"), MIC_PRESET_DTU_MIC);
-
-    /* Add the remaining options */
-    CBchFormat->addItem(TRANS("ACN"), CH_ACN);
-    CBchFormat->addItem(TRANS("FuMa"), CH_FUMA);
-    CBnormScheme->addItem(TRANS("N3D"), NORM_N3D);
-    CBnormScheme->addItem(TRANS("SN3D"), NORM_SN3D);
-    CBnormScheme->addItem(TRANS("FuMa"), NORM_FUMA);
-    CB_hfov->addItem(TRANS("360"), HFOV_360);
-    CB_aspectRatio->addItem(TRANS("2:1"), ASPECT_RATIO_2_1);
+    
+    CB_hfov->setItemEnabled(HFOV_180, false);
+    CB_hfov->setItemEnabled(HFOV_90, false);
+    CB_hfov->setItemEnabled(HFOV_60, false);
+    CB_aspectRatio->setItemEnabled(ASPECT_RATIO_4_3, false);
+    CB_aspectRatio->setItemEnabled(ASPECT_RATIO_16_9, false);
 
     /* Overlay */
     previewArea.setBounds(13, 60, 646, 323);
@@ -288,21 +249,15 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     TB_flipUD->setToggleState(processor.getFlipUD(), dontSendNotification);
 
     /* fetch current configuration */
-    CBmasterOrder->setSelectedId(powermap_getMasterOrder(hPm), dontSendNotification);
-    CBpmap_method->setSelectedId(powermap_getPowermapMode(hPm), dontSendNotification);
-    s_covAvg->setValue(powermap_getCovAvgCoeff(hPm), dontSendNotification);
-    s_pmapEQ->setValue(powermap_getPowermapEQAllBands(hPm), dontSendNotification);
+    s_pmapEQ->setValue(powermap_getPowermapEQAllBands(hPm));
     s_anaOrder->setRange(1, powermap_getMasterOrder(hPm)+0.1f, 1);
     s_anaOrder->setValue(powermap_getAnaOrderAllBands(hPm), dontSendNotification);
-    CBchFormat->setSelectedId(powermap_getChOrder(hPm), dontSendNotification);
-    CBnormScheme->setSelectedId(powermap_getNormType(hPm), dontSendNotification);
+    CBchFormat->setSelectedId(powermap_getChOrder(hPm), sendNotification);
+    CBnormScheme->setSelectedId(powermap_getNormType(hPm), sendNotification);
     s_Nsources->setRange(1, (int)((float)powermap_getNSHrequired(hPm)/2.0f), 1);
-    s_Nsources->setValue(powermap_getNumSources(hPm), dontSendNotification);
+    s_Nsources->setValue(powermap_getNumSources(hPm), sendNotification);
     s_Nsources->setEnabled((powermap_getPowermapMode(hPm)==PM_MODE_MINNORM ||
                             powermap_getPowermapMode(hPm)==PM_MODE_MUSIC) ? true : false);
-    CB_hfov->setSelectedId(powermap_getDispFOV(hPm), dontSendNotification);
-    CB_aspectRatio->setSelectedId(powermap_getAspectRatio(hPm), dontSendNotification);
-    s_pmapAvg->setValue(powermap_getPowermapAvgCoeff(hPm), dontSendNotification);
     resolutionHasChanged = false;
     CBchFormat->setItemEnabled(CH_FUMA, powermap_getMasterOrder(hPm)==SH_ORDER_FIRST ? true : false);
     CBnormScheme->setItemEnabled(NORM_FUMA, powermap_getMasterOrder(hPm)==SH_ORDER_FIRST ? true : false);
@@ -906,7 +861,6 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == CBpmap_method.get())
     {
-        powermap_setPowermapMode(hPm, CBpmap_method->getSelectedId());
         s_Nsources->setEnabled((powermap_getPowermapMode(hPm)==PM_MODE_MINNORM ||
                                 powermap_getPowermapMode(hPm)==PM_MODE_MUSIC) ? true : false);
     }
@@ -916,25 +870,8 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 		anaOrder2dSlider->setRefreshValuesFLAG(true);
 		pmapEQ2dSlider->setRefreshValuesFLAG(true);
     }
-    else if (comboBoxThatHasChanged == CBchFormat.get())
-    {
-        powermap_setChOrder(hPm, CBchFormat->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CBnormScheme.get())
-    {
-        powermap_setNormType(hPm, CBnormScheme->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CB_hfov.get())
-    {
-        powermap_setDispFOV(hPm, CB_hfov->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CB_aspectRatio.get())
-    {
-        powermap_setAspectRatio(hPm, CB_aspectRatio->getSelectedId());
-    }
     else if (comboBoxThatHasChanged == CBmasterOrder.get())
     {
-        powermap_setMasterOrder(hPm, CBmasterOrder->getSelectedId());
         anaOrder2dSlider->setYrange(1, CBmasterOrder->getSelectedId());
         anaOrder2dSlider->setRefreshValuesFLAG(true);
         s_anaOrder->setRange(1, CBmasterOrder->getSelectedId(), 1);
@@ -964,18 +901,6 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
         powermap_setPowermapEQAllBands(hPm, (s_pmapEQ->getValue()));
 		pmapEQ2dSlider->setRefreshValuesFLAG(true);
     }
-    else if (sliderThatWasMoved == s_covAvg.get())
-    {
-        powermap_setCovAvgCoeff(hPm, (float)s_covAvg->getValue());
-    }
-    else if (sliderThatWasMoved == s_Nsources.get())
-    {
-        powermap_setNumSources(hPm, (int)(s_Nsources->getValue()+0.5));
-    }
-    else if (sliderThatWasMoved == s_pmapAvg.get())
-    {
-        powermap_setPowermapAvgCoeff(hPm, (float)s_pmapAvg->getValue());
-    }
 }
 
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
@@ -1003,8 +928,8 @@ void PluginEditor::timerCallback(int timerID)
 
         case TIMER_GUI_RELATED:
             /* parameters whos values can change internally should be periodically refreshed */
-            CBchFormat->setSelectedId(powermap_getChOrder(hPm), dontSendNotification);
-            CBnormScheme->setSelectedId(powermap_getNormType(hPm), dontSendNotification);
+            CBchFormat->setSelectedId(powermap_getChOrder(hPm), sendNotification);
+            CBnormScheme->setSelectedId(powermap_getNormType(hPm), sendNotification);
             CBchFormat->setItemEnabled(CH_FUMA, powermap_getMasterOrder(hPm)==SH_ORDER_FIRST ? true : false);
             CBnormScheme->setItemEnabled(NORM_FUMA, powermap_getMasterOrder(hPm)==SH_ORDER_FIRST ? true : false);
 

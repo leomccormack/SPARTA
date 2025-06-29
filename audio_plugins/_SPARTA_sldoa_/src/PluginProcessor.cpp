@@ -38,15 +38,52 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
 
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("inputOrder", "InputOrder",
+                                                                  juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("minFreq", "MinFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("Hz")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("maxFreq", "MaxFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("Hz")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("mapAvg", "MapAvg", juce::NormalisableRange<float>(0.0f, 2000.0f, 0.1f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("ms")));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
+    
     return { params.begin(), params.end() };
 }
 
-void PluginProcessor::parameterChanged(const juce::String& /*parameterID*/, float /*newValue*/)
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
+    if (parameterID == "inputOrder"){
+        sldoa_setMasterOrder(hSld, static_cast<int>(newValue+1.001f));
+        sldoa_setAnaOrderAllBands(hSld, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "minFreq"){
+        sldoa_setMinFreq(hSld, newValue);
+    }
+    else if (parameterID == "maxFreq"){
+        sldoa_setMaxFreq(hSld, newValue);
+    }
+    else if (parameterID == "mapAvg"){
+        sldoa_setAvg(hSld, newValue);
+    }
+    else if (parameterID == "channelOrder"){
+        sldoa_setChOrder(hSld, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "normType"){
+        sldoa_setNormType(hSld, static_cast<int>(newValue+1.001f));
+    }
 }
 
 void PluginProcessor::setParameterValuesUsingInternalState()
 {
+    setParameterValue("inputOrder", sldoa_getMasterOrder(hSld)-1);
+    setParameterValue("minFreq", sldoa_getMinFreq(hSld));
+    setParameterValue("maxFreq", sldoa_getMaxFreq(hSld));
+    setParameterValue("mapAvg", sldoa_getAvg(hSld));
+    setParameterValue("channelOrder", sldoa_getChOrder(hSld)-1);
+    setParameterValue("normType", sldoa_getNormType(hSld)-1);
 }
 
 PluginProcessor::PluginProcessor() : 
@@ -187,14 +224,8 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10501
     
     /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-    xmlState->setAttribute("MasterOrder", sldoa_getMasterOrder(hSld));
-    xmlState->setAttribute("MaxFreq", sldoa_getMaxFreq(hSld));
-    xmlState->setAttribute("MinFreq", sldoa_getMinFreq(hSld));
-    xmlState->setAttribute("Avg", sldoa_getAvg(hSld));
     for(int i=0; i<sldoa_getNumberOfBands(); i++)
         xmlState->setAttribute("AnaOrder" + String(i), sldoa_getAnaOrder(hSld, i));
-    xmlState->setAttribute("ChOrder", (int)sldoa_getChOrder(hSld));
-    xmlState->setAttribute("Norm", (int)sldoa_getNormType(hSld));
     
     /* Other */
     xmlState->setAttribute("cameraID", cameraID);
@@ -245,22 +276,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
             
             /* pull attributes */
-            if(xmlState->hasAttribute("MasterOrder"))
-                sldoa_setMasterOrder(hSld, xmlState->getIntAttribute("MasterOrder", 1));
-            if(xmlState->hasAttribute("MaxFreq"))
-                sldoa_setMaxFreq(hSld, (float)xmlState->getDoubleAttribute("MaxFreq", 5000.0));
-            if(xmlState->hasAttribute("MinFreq"))
-                sldoa_setMinFreq(hSld, (float)xmlState->getDoubleAttribute("MinFreq", 500.0));
-            if(xmlState->hasAttribute("Avg"))
-                sldoa_setAvg(hSld, (float)xmlState->getDoubleAttribute("Avg", 100.0));
             for(int i=0; i<sldoa_getNumberOfBands(); i++){
                 if(xmlState->hasAttribute("AnaOrder"+String(i)))
                     sldoa_setAnaOrder(hSld, xmlState->getIntAttribute("AnaOrder"+String(i), 1), i);
             }
-            if(xmlState->hasAttribute("ChOrder"))
-                sldoa_setChOrder(hSld, xmlState->getIntAttribute("ChOrder", 1));
-            if(xmlState->hasAttribute("Norm"))
-                sldoa_setNormType(hSld, xmlState->getIntAttribute("Norm", 1));
             
             /* Other */
             if(xmlState->hasAttribute("cameraID"))

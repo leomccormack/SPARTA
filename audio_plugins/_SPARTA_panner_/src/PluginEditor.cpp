@@ -939,11 +939,11 @@ void PluginEditor::timerCallback(int timerID)
             loudspeakerCoordsView_handle->setNCH(panner_getNumLoudspeakers(hPan));
 
             /* Progress bar */
-#if 0
+#if 1
             if(panner_getCodecStatus(hPan)==CODEC_STATUS_INITIALISING){
                 addAndMakeVisible(progressbar);
                 progress = (double)panner_getProgressBar0_1(hPan);
-                char text[PANNER_PROGRESSBARTEXT_CHAR_LENGTH];
+                char text[PROGRESSBARTEXT_CHAR_LENGTH];
                 panner_getProgressBarText(hPan, (char*)text);
                 progressbar.setTextToDisplay(String(text));
             }

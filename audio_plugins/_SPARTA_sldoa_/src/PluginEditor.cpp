@@ -25,9 +25,8 @@
 PluginEditor::PluginEditor (PluginProcessor& p)
     : AudioProcessorEditor(p), processor(p), progressbar(progress)
 {
-    avgSlider.reset (new juce::Slider ("new slider"));
+    avgSlider = std::make_unique<SliderWithAttachment>(p.parameters, "mapAvg");
     addAndMakeVisible (avgSlider.get());
-    avgSlider->setRange (0, 2000, 0.1);
     avgSlider->setSliderStyle (juce::Slider::LinearHorizontal);
     avgSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
     avgSlider->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -36,22 +35,18 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     avgSlider->setBounds (80, 473, 118, 24);
 
-    CB_CHorder.reset (new juce::ComboBox ("new combo box"));
+    CB_CHorder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CB_CHorder.get());
     CB_CHorder->setEditableText (false);
     CB_CHorder->setJustificationType (juce::Justification::centredLeft);
-    CB_CHorder->setTextWhenNothingSelected (TRANS ("ACN"));
-    CB_CHorder->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CB_CHorder->addListener (this);
 
     CB_CHorder->setBounds (66, 447, 64, 18);
 
-    CB_Norm.reset (new juce::ComboBox ("new combo box"));
+    CB_Norm = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CB_Norm.get());
     CB_Norm->setEditableText (false);
     CB_Norm->setJustificationType (juce::Justification::centredLeft);
-    CB_Norm->setTextWhenNothingSelected (TRANS ("N3D"));
-    CB_Norm->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CB_Norm->addListener (this);
 
     CB_Norm->setBounds (131, 447, 68, 18);
@@ -80,30 +75,26 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBinputTypePreset->setBounds (96, 417, 103, 18);
 
-    s_minFreq.reset (new juce::Slider ("new slider"));
+    s_minFreq = std::make_unique<SliderWithAttachment>(p.parameters, "minFreq");
     addAndMakeVisible (s_minFreq.get());
-    s_minFreq->setRange (0, 24000, 1);
     s_minFreq->setSliderStyle (juce::Slider::LinearHorizontal);
     s_minFreq->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
     s_minFreq->addListener (this);
 
     s_minFreq->setBounds (352, 382, 56, 20);
 
-    s_maxFreq.reset (new juce::Slider ("new slider"));
+    s_maxFreq = std::make_unique<SliderWithAttachment>(p.parameters, "maxFreq");
     addAndMakeVisible (s_maxFreq.get());
-    s_maxFreq->setRange (0, 24000, 1);
     s_maxFreq->setSliderStyle (juce::Slider::LinearHorizontal);
     s_maxFreq->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
     s_maxFreq->addListener (this);
 
     s_maxFreq->setBounds (560, 382, 56, 20);
 
-    CBmasterOrder.reset (new juce::ComboBox ("new combo box"));
+    CBmasterOrder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (CBmasterOrder.get());
     CBmasterOrder->setEditableText (false);
     CBmasterOrder->setJustificationType (juce::Justification::centredLeft);
-    CBmasterOrder->setTextWhenNothingSelected (TRANS ("Default"));
-    CBmasterOrder->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBmasterOrder->addListener (this);
 
     CBmasterOrder->setBounds (96, 382, 103, 18);
@@ -189,25 +180,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     sldoa_getAnaOrderHandle(hSld, &pX_vector, &pY_values_int, &nPoints);
     anaOrder2dSlider->setDataHandlesInt(pX_vector, pY_values_int, nPoints);
 
-    /* add master analysis order options */
-    CBmasterOrder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
-    CBmasterOrder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
-    CBmasterOrder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
-    CBmasterOrder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
-    CBmasterOrder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
-    CBmasterOrder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
-    CBmasterOrder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
-    CBmasterOrder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
-    CBmasterOrder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
-    CBmasterOrder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
-
-    /* add ambisonic convention options */
-    CB_CHorder->addItem(TRANS("ACN"), CH_ACN);
-    CB_CHorder->addItem(TRANS("FuMa"), CH_FUMA);
-    CB_Norm->addItem(TRANS("N3D"), NORM_N3D);
-    CB_Norm->addItem(TRANS("SN3D"), NORM_SN3D);
-    CB_Norm->addItem(TRANS("FuMa"), NORM_FUMA);
-
     /* add microphone preset options */
     CBinputTypePreset->addItem(TRANS("Zylia"), MIC_PRESET_ZYLIA);
     CBinputTypePreset->addItem(TRANS("Eigenmike"), MIC_PRESET_EIGENMIKE32);
@@ -221,18 +193,12 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
 
 	/* fetch current configuration */
-    CBmasterOrder->setSelectedId(sldoa_getMasterOrder(hSld), dontSendNotification);
-    avgSlider->setValue((float)sldoa_getAvg(hSld), dontSendNotification);
-    CB_CHorder->setSelectedId(sldoa_getChOrder(hSld), dontSendNotification);
-    CB_Norm->setSelectedId(sldoa_getNormType(hSld), dontSendNotification);
+    CB_CHorder->setSelectedId(sldoa_getChOrder(hSld), sendNotification);
+    CB_Norm->setSelectedId(sldoa_getNormType(hSld), sendNotification);
     slider_anaOrder->setRange(1, sldoa_getMasterOrder(hSld), 1);
     slider_anaOrder->setValue(sldoa_getAnaOrderAllBands(hSld), dontSendNotification);
-    s_minFreq->setRange(0.0f, sldoa_getSamplingRate(hSld)/2.0f, 1.0f);
-    s_maxFreq->setRange(0.0f, sldoa_getSamplingRate(hSld)/2.0f, 1.0f);
     s_minFreq->setSkewFactor(0.5f);
     s_maxFreq->setSkewFactor(0.5f);
-    s_minFreq->setValue(sldoa_getMinFreq(hSld));
-    s_maxFreq->setValue(sldoa_getMaxFreq(hSld));
     CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
     CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
 
@@ -670,43 +636,22 @@ void PluginEditor::resized()
 
 void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
-    if (sliderThatWasMoved == avgSlider.get())
-    {
-        sldoa_setAvg(hSld, (float)avgSlider->getValue());
-    }
-    else if (sliderThatWasMoved == slider_anaOrder.get())
+    if (sliderThatWasMoved == slider_anaOrder.get())
     {
         sldoa_setAnaOrderAllBands(hSld, (int)(slider_anaOrder->getValue()+0.5));
         anaOrder2dSlider->setRefreshValuesFLAG(true);
-    }
-    else if (sliderThatWasMoved == s_minFreq.get())
-    {
-        sldoa_setMinFreq(hSld, (float)s_minFreq->getValue());
-    }
-    else if (sliderThatWasMoved == s_maxFreq.get())
-    {
-        sldoa_setMaxFreq(hSld, (float)s_maxFreq->getValue());
     }
 }
 
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
-    if (comboBoxThatHasChanged == CB_CHorder.get())
-    {
-        sldoa_setChOrder(hSld, CB_CHorder->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CB_Norm.get())
-    {
-        sldoa_setNormType(hSld, CB_Norm->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CBinputTypePreset.get())
+    if (comboBoxThatHasChanged == CBinputTypePreset.get())
     {
         sldoa_setSourcePreset(hSld, CBinputTypePreset->getSelectedId());
         anaOrder2dSlider->setRefreshValuesFLAG(true);
     }
     else if (comboBoxThatHasChanged == CBmasterOrder.get())
     {
-        sldoa_setMasterOrder(hSld, CBmasterOrder->getSelectedId());
         CBinputTypePreset->setSelectedId(1);
         anaOrder2dSlider->setYrange(1, CBmasterOrder->getSelectedId());
         sldoa_setAnaOrderAllBands(hSld, CBmasterOrder->getSelectedId());
@@ -755,6 +700,7 @@ void PluginEditor::timerCallback(int timerID)
             CB_Norm->setSelectedId(sldoa_getNormType(hSld), dontSendNotification);
             CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
             CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
+            s_maxFreq->setValue(sldoa_getMaxFreq(hSld), sendNotification);
 
             /* take webcam picture */
             if(CB_webcam->getSelectedId()>1){
@@ -803,9 +749,6 @@ void PluginEditor::timerCallback(int timerID)
                 overlayIncluded->repaint();
             if (anaOrder2dSlider->getRefreshValuesFLAG())
                 anaOrder2dSlider->repaint();
-
-            s_minFreq->setValue(sldoa_getMinFreq(hSld));
-            s_maxFreq->setValue(sldoa_getMaxFreq(hSld));
 
             /* display warning message, if needed */
             if ( !((sldoa_getSamplingRate(hSld) == 44.1e3) || (sldoa_getSamplingRate(hSld) == 48e3)) ){
