@@ -71,8 +71,8 @@ private:
 
     std::unique_ptr<SliderWithAttachment> SL_nChannels;
     std::unique_ptr<SliderWithAttachment> SL_decorAmount;
-    std::unique_ptr<juce::ToggleButton> tb_compLevel;
-    std::unique_ptr<juce::ToggleButton> tb_bypassTransients;
+    std::unique_ptr<ToggleButtonWithAttachment> tb_compLevel;
+    std::unique_ptr<ToggleButtonWithAttachment> tb_bypassTransients;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

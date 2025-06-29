@@ -112,7 +112,7 @@ private:
     std::unique_ptr<juce::TextButton> tb_loadJSON;
     std::unique_ptr<juce::TextButton> tb_saveJSON;
     std::unique_ptr<ComboBoxWithAttachment> CBmasterOrder;
-    std::unique_ptr<juce::ToggleButton> TBenablePreProc;
+    std::unique_ptr<ToggleButtonWithAttachment> TBenablePreProc;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

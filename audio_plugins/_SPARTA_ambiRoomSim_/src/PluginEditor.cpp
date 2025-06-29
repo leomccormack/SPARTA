@@ -37,8 +37,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (juce::Justification::centredLeft);
-    CBoutputFormat->setTextWhenNothingSelected (TRANS ("ACN"));
-    CBoutputFormat->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBoutputFormat->addListener (this);
 
     CBoutputFormat->setBounds (316, 247, 76, 20);
@@ -47,8 +45,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (CBnormalisation.get());
     CBnormalisation->setEditableText (false);
     CBnormalisation->setJustificationType (juce::Justification::centredLeft);
-    CBnormalisation->setTextWhenNothingSelected (TRANS ("N3D"));
-    CBnormalisation->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBnormalisation->addListener (this);
 
     CBnormalisation->setBounds (398, 247, 76, 20);
@@ -57,8 +53,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (CBorder.get());
     CBorder->setEditableText (false);
     CBorder->setJustificationType (juce::Justification::centredLeft);
-    CBorder->setTextWhenNothingSelected (juce::String());
-    CBorder->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBorder->addListener (this);
 
     CBorder->setBounds (156, 247, 92, 20);
@@ -71,18 +65,16 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     SL_num_receivers->setBounds (416, 303, 48, 20);
 
-    SL_max_reflection_order.reset (new juce::Slider ("new slider"));
+    SL_max_reflection_order = std::make_unique<SliderWithAttachment>(p.parameters, "maxReflectionOrder");
     addAndMakeVisible (SL_max_reflection_order.get());
-    SL_max_reflection_order->setRange (0, 7, 1);
     SL_max_reflection_order->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_max_reflection_order->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_max_reflection_order->addListener (this);
 
     SL_max_reflection_order->setBounds (181, 102, 48, 20);
-
-    s_attenCoeff_pX.reset (new juce::Slider ("new slider"));
+    
+    s_attenCoeff_pX = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_pX");
     addAndMakeVisible (s_attenCoeff_pX.get());
-    s_attenCoeff_pX->setRange (0, 1, 0.01);
     s_attenCoeff_pX->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attenCoeff_pX->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
     s_attenCoeff_pX->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -93,9 +85,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_attenCoeff_pX->setBounds (256, 82, 60, 60);
 
-    s_attenCoeff_nX.reset (new juce::Slider ("new slider"));
+    s_attenCoeff_nX = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_nX");
     addAndMakeVisible (s_attenCoeff_nX.get());
-    s_attenCoeff_nX->setRange (0, 1, 0.01);
     s_attenCoeff_nX->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attenCoeff_nX->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
     s_attenCoeff_nX->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -106,9 +97,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_attenCoeff_nX->setBounds (256, 148, 60, 60);
 
-    s_attenCoeff_nY.reset (new juce::Slider ("new slider"));
+    s_attenCoeff_nY = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_nY");
     addAndMakeVisible (s_attenCoeff_nY.get());
-    s_attenCoeff_nY->setRange (0, 1, 0.01);
     s_attenCoeff_nY->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attenCoeff_nY->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
     s_attenCoeff_nY->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -119,9 +109,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_attenCoeff_nY->setBounds (332, 148, 60, 60);
 
-    s_attenCoeff_nZ.reset (new juce::Slider ("new slider"));
+    s_attenCoeff_nZ = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_nZ");
     addAndMakeVisible (s_attenCoeff_nZ.get());
-    s_attenCoeff_nZ->setRange (0, 1, 0.01);
     s_attenCoeff_nZ->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attenCoeff_nZ->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
     s_attenCoeff_nZ->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -132,9 +121,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_attenCoeff_nZ->setBounds (408, 148, 60, 60);
 
-    s_attenCoeff_pZ.reset (new juce::Slider ("new slider"));
+    s_attenCoeff_pZ = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_pZ");
     addAndMakeVisible (s_attenCoeff_pZ.get());
-    s_attenCoeff_pZ->setRange (0, 1, 0.01);
     s_attenCoeff_pZ->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attenCoeff_pZ->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
     s_attenCoeff_pZ->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -145,9 +133,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_attenCoeff_pZ->setBounds (408, 82, 60, 60);
 
-    s_attenCoeff_pY.reset (new juce::Slider ("new slider"));
+    s_attenCoeff_pY = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_pY");
     addAndMakeVisible (s_attenCoeff_pY.get());
-    s_attenCoeff_pY->setRange (0, 1, 0.01);
     s_attenCoeff_pY->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attenCoeff_pY->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
     s_attenCoeff_pY->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -158,9 +145,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_attenCoeff_pY->setBounds (332, 82, 60, 60);
 
-    s_roomLenZ.reset (new juce::Slider ("new slider"));
+    s_roomLenZ = std::make_unique<SliderWithAttachment>(p.parameters, "roomZ");
     addAndMakeVisible (s_roomLenZ.get());
-    s_roomLenZ->setRange (0.5, 6, 0.01);
     s_roomLenZ->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roomLenZ->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
     s_roomLenZ->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -171,9 +157,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_roomLenZ->setBounds (170, 148, 60, 60);
 
-    s_roomLenY.reset (new juce::Slider ("new slider"));
+    s_roomLenY = std::make_unique<SliderWithAttachment>(p.parameters, "roomY");
     addAndMakeVisible (s_roomLenY.get());
-    s_roomLenY->setRange (0.5, 20, 0.01);
     s_roomLenY->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roomLenY->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
     s_roomLenY->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -184,9 +169,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_roomLenY->setBounds (96, 148, 60, 60);
 
-    s_roomLenX.reset (new juce::Slider ("new slider"));
+    s_roomLenX = std::make_unique<SliderWithAttachment>(p.parameters, "roomX");
     addAndMakeVisible (s_roomLenX.get());
-    s_roomLenX->setRange (0.5, 20, 0.01);
     s_roomLenX->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roomLenX->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
     s_roomLenX->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
@@ -197,7 +181,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     s_roomLenX->setBounds (21, 148, 60, 60);
 
-    TB_enableIMS.reset (new juce::ToggleButton ("new toggle button"));
+    TB_enableIMS = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableReflections");
     addAndMakeVisible (TB_enableIMS.get());
     TB_enableIMS->setButtonText (juce::String());
     TB_enableIMS->addListener (this);
@@ -251,25 +235,10 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     receiverCoordsView_handle->setNCH(ambi_roomsim_getNumReceivers(hAmbi));
 
     /* grab current parameter settings */
-//    SL_num_sources->setValue(ambi_roomsim_getNumSources(hAmbi),dontSendNotification);
-//    SL_num_receivers->setValue(ambi_roomsim_getNumReceivers(hAmbi),dontSendNotification);
-    //    CBorder->setSelectedId(ambi_roomsim_getOutputOrder(hAmbi), dontSendNotification);
-
-    CBoutputFormat->setSelectedId(ambi_roomsim_getChOrder(hAmbi), dontSendNotification);
-    CBnormalisation->setSelectedId(ambi_roomsim_getNormType(hAmbi), dontSendNotification);
+    CBoutputFormat->setSelectedId(ambi_roomsim_getChOrder(hAmbi), sendNotification);
+    CBnormalisation->setSelectedId(ambi_roomsim_getNormType(hAmbi), sendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
-    s_roomLenX->setValue(ambi_roomsim_getRoomDimX(hAmbi), dontSendNotification);
-    s_roomLenY->setValue(ambi_roomsim_getRoomDimY(hAmbi), dontSendNotification);
-    s_roomLenZ->setValue(ambi_roomsim_getRoomDimZ(hAmbi), dontSendNotification);
-    s_attenCoeff_pX->setValue(ambi_roomsim_getWallAbsCoeff(hAmbi, 0, 0), dontSendNotification);
-    s_attenCoeff_nX->setValue(ambi_roomsim_getWallAbsCoeff(hAmbi, 0, 1), dontSendNotification);
-    s_attenCoeff_pY->setValue(ambi_roomsim_getWallAbsCoeff(hAmbi, 1, 0), dontSendNotification);
-    s_attenCoeff_nY->setValue(ambi_roomsim_getWallAbsCoeff(hAmbi, 1, 1), dontSendNotification);
-    s_attenCoeff_pZ->setValue(ambi_roomsim_getWallAbsCoeff(hAmbi, 2, 0), dontSendNotification);
-    s_attenCoeff_nZ->setValue(ambi_roomsim_getWallAbsCoeff(hAmbi, 2, 1), dontSendNotification);
-    TB_enableIMS->setToggleState((bool)ambi_roomsim_getEnableIMSflag(hAmbi), dontSendNotification);
-    SL_max_reflection_order->setValue(ambi_roomsim_getMaxReflectionOrder(hAmbi), dontSendNotification);
 
     /* create panning window */
     panWindow.reset (new pannerView(p, 600, 600));
@@ -818,53 +787,11 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
     if (sliderThatWasMoved == SL_num_sources.get())
     {
-        ambi_roomsim_setNumSources(hAmbi, (int)SL_num_sources->getValue());
         refreshPanViewWindow = true;
     }
     else if (sliderThatWasMoved == SL_num_receivers.get())
     {
-        ambi_roomsim_setNumReceivers(hAmbi, (int)SL_num_receivers->getValue());
         refreshPanViewWindow = true;
-    }
-    else if (sliderThatWasMoved == SL_max_reflection_order.get())
-    {
-        ambi_roomsim_setMaxReflectionOrder(hAmbi, (int)SL_max_reflection_order->getValue());
-    }
-    else if (sliderThatWasMoved == s_attenCoeff_pX.get())
-    {
-        ambi_roomsim_setWallAbsCoeff(hAmbi, 0, 0, s_attenCoeff_pX->getValue());
-    }
-    else if (sliderThatWasMoved == s_attenCoeff_nX.get())
-    {
-        ambi_roomsim_setWallAbsCoeff(hAmbi, 0, 1, s_attenCoeff_nX->getValue());
-    }
-    else if (sliderThatWasMoved == s_attenCoeff_nY.get())
-    {
-        ambi_roomsim_setWallAbsCoeff(hAmbi, 1, 1, s_attenCoeff_nY->getValue());
-    }
-    else if (sliderThatWasMoved == s_attenCoeff_nZ.get())
-    {
-        ambi_roomsim_setWallAbsCoeff(hAmbi, 2, 1, s_attenCoeff_nZ->getValue());
-    }
-    else if (sliderThatWasMoved == s_attenCoeff_pZ.get())
-    {
-        ambi_roomsim_setWallAbsCoeff(hAmbi, 2, 0, s_attenCoeff_pZ->getValue());
-    }
-    else if (sliderThatWasMoved == s_attenCoeff_pY.get())
-    {
-        ambi_roomsim_setWallAbsCoeff(hAmbi, 1, 0, s_attenCoeff_pY->getValue());
-    }
-    else if (sliderThatWasMoved == s_roomLenZ.get())
-    {
-        ambi_roomsim_setRoomDimZ(hAmbi, (float)s_roomLenZ->getValue());
-    }
-    else if (sliderThatWasMoved == s_roomLenY.get())
-    {
-        ambi_roomsim_setRoomDimY(hAmbi, (float)s_roomLenY->getValue());
-    }
-    else if (sliderThatWasMoved == s_roomLenX.get())
-    {
-        ambi_roomsim_setRoomDimX(hAmbi, (float)s_roomLenX->getValue());
     }
 }
 
@@ -872,12 +799,8 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* /*comboBoxThatHasChanged*/)
 {
 }
 
-void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
+void PluginEditor::buttonClicked (juce::Button* /*buttonThatWasClicked*/)
 {
-    if (buttonThatWasClicked == TB_enableIMS.get())
-    {
-        ambi_roomsim_setEnableIMSflag(hAmbi, (int)TB_enableIMS->getToggleState());
-    }
 }
 
 void PluginEditor::timerCallback()
@@ -885,8 +808,6 @@ void PluginEditor::timerCallback()
     /* parameters whos values can change internally should be periodically refreshed */
     sourceCoordsView_handle->setNCH(ambi_roomsim_getNumSources(hAmbi));
     receiverCoordsView_handle->setNCH(ambi_roomsim_getNumReceivers(hAmbi));
-//    SL_num_sources->setValue(ambi_roomsim_getNumSources(hAmbi),dontSendNotification);
-//    SL_num_receivers->setValue(ambi_roomsim_getNumReceivers(hAmbi),dontSendNotification);
     CBoutputFormat->setSelectedId(ambi_roomsim_getChOrder(hAmbi), sendNotification);
     CBnormalisation->setSelectedId(ambi_roomsim_getNormType(hAmbi), sendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);

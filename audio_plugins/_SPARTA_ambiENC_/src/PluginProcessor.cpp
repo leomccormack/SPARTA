@@ -44,8 +44,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numSources", "NumSources", 1, MAX_NUM_INPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
     for(int i=0; i<MAX_NUM_INPUTS; i++){
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
     }
     
     return { params.begin(), params.end() };
@@ -177,6 +177,8 @@ void PluginProcessor::releaseResources()
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
+    ScopedNoDenormals noDenormals;
+    
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), 256);

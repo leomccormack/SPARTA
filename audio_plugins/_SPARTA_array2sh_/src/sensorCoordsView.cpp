@@ -40,7 +40,7 @@ sensorCoordsView::sensorCoordsView (PluginProcessor& p, int _maxQ, int _currentQ
         addAndMakeVisible (aziSliders[i].get());
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
-        aziSliders[i]->setBounds(-25, 8 + i*sensorEdit_height, 96, 16);
+        aziSliders[i]->setBounds(4, 8 + i*sensorEdit_height, 67, 16);
         aziSliders[i]->addListener (this);
 
         /* create and initialise elevation sliders */
@@ -48,8 +48,16 @@ sensorCoordsView::sensorCoordsView (PluginProcessor& p, int _maxQ, int _currentQ
         addAndMakeVisible (elevSliders[i].get());
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
-        elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 96, 16);
+        elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 67, 16);
         elevSliders[i]->addListener (this);
+        
+        /* remove slider bit of these sliders */
+        aziSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
+        aziSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+        aziSliders[i]->setSliderSnapsToMousePosition(false);
+        elevSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
+        elevSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+        elevSliders[i]->setSliderSnapsToMousePosition(false);
     }
 
     resized();

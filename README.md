@@ -67,7 +67,7 @@ Note, however, that alternative performance libraries may also be used, with mor
 sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x11proto-xext-dev libcurl4-openssl-dev libasound2-dev
 ```
 
-## Building the plug-ins via CMake (recommended)
+## Building the plug-ins via CMake (**recommended**)
 
 The plug-ins may be built with CMake (version 3.15 or higher):
  ```
@@ -84,7 +84,7 @@ cd build
 msbuild ALL_BUILD.vcxproj /p:Configuration=Release /m
 ```
 
-## Building the plug-ins via the included scripts (deprecated)
+## Building the plug-ins via the included scripts (**deprecated**)
 
 **MacOSX/Linux users** may run the following bash script via the Terminal to build all of the plugins:
 

@@ -47,19 +47,22 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("decMethod2", "DecMethod2", juce::StringArray{"SAD","MMD","EPAD","AllRAD"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE1", "EnableMaxRE1", false, AudioParameterBoolAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE2", "EnableMaxRE2", false, AudioParameterBoolAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE1", "EnableMaxRE1", false));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE2", "EnableMaxRE2", false));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("diffEQ1", "DiffEQ1", juce::StringArray{"AP", "EP"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("diffEQ2", "DiffEQ2", juce::StringArray{"AP","EP"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("transitionFreq", "TransitionFreq", juce::NormalisableRange<float>(500.0f, 2000.0f, 0.01f), 800.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("transitionFreq", "TransitionFreq", juce::NormalisableRange<float>(500.0f, 2000.0f, 0.01f), 800.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("Hz")));
     params.push_back(std::make_unique<juce::AudioParameterBool>("binauraliseLS", "BinauraliseLS", false, AudioParameterBoolAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterInt>("numLoudspeakers", "NumLoudspeakers", 1, MAX_NUM_OUTPUTS, 1,
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enablePreProcHRIRs", "EnableDiffuseFieldEQ", false,
+                                                                AudioParameterBoolAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numLoudspeakers", "NumLoudspeakers", 4, MAX_NUM_OUTPUTS, 1,
                                                                AudioParameterIntAttributes().withAutomatable(false)));
     for(int i=0; i<MAX_NUM_OUTPUTS; i++){
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withAutomatable(false)));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withAutomatable(false)));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withAutomatable(false).withLabel(juce::String::fromUTF8(u8"°"))));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withAutomatable(false).withLabel(juce::String::fromUTF8(u8"°"))));
     }
     
     return { params.begin(), params.end() };
@@ -101,6 +104,9 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
     else if (parameterID == "binauraliseLS"){
         ambi_dec_setBinauraliseLSflag(hAmbi, static_cast<int>(newValue+0.5f));
     }
+    else if (parameterID == "enablePreProcHRIRs"){
+        ambi_dec_setEnableHRIRsPreProc(hAmbi, static_cast<int>(newValue+0.5f));
+    }
     else if(parameterID == "numLoudspeakers"){
         ambi_dec_setNumLoudspeakers(hAmbi, static_cast<int>(newValue));
     }
@@ -129,6 +135,7 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("diffEQ2", ambi_dec_getDecNormType(hAmbi, 1)-1);
     setParameterValue("transitionFreq", ambi_dec_getTransitionFreq(hAmbi));
     setParameterValue("binauraliseLS", ambi_dec_getBinauraliseLSflag(hAmbi));
+    setParameterValue("enablePreProcHRIRs", ambi_dec_getEnableHRIRsPreProc(hAmbi));
     setParameterValue("numLoudspeakers", ambi_dec_getNumLoudspeakers(hAmbi));
     for(int i=0; i<MAX_NUM_OUTPUTS; i++){
         setParameterValue("azim" + juce::String(i), ambi_dec_getLoudspeakerAzi_deg(hAmbi, i));
@@ -223,6 +230,8 @@ void PluginProcessor::releaseResources()
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
+    ScopedNoDenormals noDenormals;
+    
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), 256);
@@ -339,8 +348,6 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                     ambi_dec_setDecOrder(hAmbi, xmlState->getIntAttribute("DecOrder"+String(band),1), band);
             if(xmlState->hasAttribute("UseDefaultHRIRset"))
                 ambi_dec_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
-            if(xmlState->hasAttribute("preProcHRIRs"))
-                ambi_dec_setEnableHRIRsPreProc(hAmbi, xmlState->getIntAttribute("preProcHRIRs", 1));
             if(xmlState->hasAttribute("SofaFilePath")){
                 String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
                 const char* new_cstring = (const char*)directory.toUTF8();

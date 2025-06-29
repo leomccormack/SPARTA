@@ -261,6 +261,8 @@ void PluginProcessor::releaseResources()
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
+    ScopedNoDenormals noDenormals;
+    
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), 256);

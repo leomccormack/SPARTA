@@ -105,7 +105,7 @@ private:
     std::unique_ptr<juce::ToggleButton> TB_showInputs;
     std::unique_ptr<juce::ToggleButton> TB_showOutputs;
     std::unique_ptr<juce::Label> label_N_Tri;
-    std::unique_ptr<juce::ComboBox> CBinterpMode;
+    std::unique_ptr<ComboBoxWithAttachment> CBinterpMode;
     std::unique_ptr<juce::TextButton> tb_loadJSON;
     std::unique_ptr<juce::TextButton> tb_saveJSON;
     std::unique_ptr<SliderWithAttachment> s_yaw;
@@ -117,7 +117,7 @@ private:
     std::unique_ptr<juce::TextEditor> te_oscport;
     std::unique_ptr<ToggleButtonWithAttachment> TBrpyFlag;
     std::unique_ptr<ToggleButtonWithAttachment> TBenableRotation;
-    std::unique_ptr<juce::ToggleButton> TBenablePreProc;
+    std::unique_ptr<ToggleButtonWithAttachment> TBenablePreProc;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

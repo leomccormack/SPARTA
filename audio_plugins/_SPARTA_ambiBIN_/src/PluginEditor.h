@@ -100,13 +100,12 @@ private:
     std::unique_ptr<ToggleButtonWithAttachment> t_flipPitch;
     std::unique_ptr<ToggleButtonWithAttachment> t_flipRoll;
     std::unique_ptr<ToggleButtonWithAttachment> t_flipYaw;
-    std::unique_ptr<juce::ToggleButton> TBcompEQ;
     std::unique_ptr<ToggleButtonWithAttachment> TBrpyFlag;
     std::unique_ptr<ToggleButtonWithAttachment> TBenableRot;
     std::unique_ptr<ComboBoxWithAttachment> CBdecoderMethod;
     std::unique_ptr<ToggleButtonWithAttachment> TBdiffMatching;
-    std::unique_ptr<juce::ToggleButton> TBtruncationEQ;
-    std::unique_ptr<juce::ComboBox> CBhrirPreProc;
+    std::unique_ptr<ToggleButtonWithAttachment> TBtruncationEQ;
+    std::unique_ptr<ComboBoxWithAttachment> CBhrirPreProc;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

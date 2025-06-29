@@ -191,7 +191,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     CBencodingOrder->setBounds (368, 274, 120, 20);
 
-    applyDiffEQ.reset (new juce::ToggleButton ("new toggle button"));
+    applyDiffEQ = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableDiffEQ");
     addAndMakeVisible (applyDiffEQ.get());
     applyDiffEQ->setButtonText (juce::String());
     applyDiffEQ->addListener (this);
@@ -302,25 +302,14 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
 
     /* grab current parameter settings */
-//    CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);
-//    arrayTypeCB->setSelectedId(array2sh_getArrayType(hA2sh), dontSendNotification);
-//    QSlider->setRange(array2sh_getMinNumSensors(hA2sh), array2sh_getMaxNumSensors(), 1);
-//    QSlider->setValue(array2sh_getNumSensors(hA2sh), dontSendNotification);
-//    rSlider->setRange(ARRAY2SH_ARRAY_RADIUS_MIN_VALUE, ARRAY2SH_ARRAY_RADIUS_MAX_VALUE, 0.01f);
-//    rSlider->setValue(array2sh_getr(hA2sh)*1e3f, dontSendNotification);
-//    RSlider->setRange(ARRAY2SH_BAFFLE_RADIUS_MIN_VALUE, ARRAY2SH_BAFFLE_RADIUS_MAX_VALUE, 0.01f);
-//    RSlider->setValue(array2sh_getR(hA2sh)*1e3f, dontSendNotification);
-//    cSlider->setRange(ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE, ARRAY2SH_SPEED_OF_SOUND_MAX_VALUE, 0.01f);
-//    cSlider->setValue(array2sh_getc(hA2sh), dontSendNotification);
-//    regAmountSlider->setRange(ARRAY2SH_MAX_GAIN_MIN_VALUE, ARRAY2SH_MAX_GAIN_MAX_VALUE, 0.01f);
-//    regAmountSlider->setValue(array2sh_getRegPar(hA2sh), dontSendNotification);
-    CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), dontSendNotification);
-    normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), dontSendNotification);
-//    gainSlider->setRange(ARRAY2SH_POST_GAIN_MIN_VALUE, ARRAY2SH_POST_GAIN_MAX_VALUE, 0.01f);
-//    gainSlider->setValue(array2sh_getGain(hA2sh), dontSendNotification);
+    int curOrder = CBencodingOrder->getSelectedId();
+    QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
+    QSlider->setValue(array2sh_getNumSensors(hA2sh), sendNotification);
+    RSlider->setValue(array2sh_getR(hA2sh)*1e3f, sendNotification);
+    CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), sendNotification);
+    normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), sendNotification);
     CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
     normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
-    applyDiffEQ->setToggleState((bool)array2sh_getDiffEQpastAliasing(hA2sh), dontSendNotification);
 
     /* tooltips */
     CBencodingOrder->setTooltip("Encoding order. Note that the plug-in will require at least (order+1)^2 microphone array signals as input.");
@@ -943,20 +932,17 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
         array2sh_setPreset(hA2sh, (ARRAY2SH_MICROPHONE_ARRAY_PRESETS)presetCB->getSelectedId());
 
         /* grab current parameter settings */
-        arrayTypeCB->setSelectedId(array2sh_getArrayType(hA2sh), dontSendNotification);
-        CBencodingOrder->setSelectedId(array2sh_getEncodingOrder(hA2sh), dontSendNotification);
+        processor.setParameterValue("outputOrder", array2sh_getEncodingOrder(hA2sh)-1);
         int curOrder = CBencodingOrder->getSelectedId();
         QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
-        QSlider->setValue(array2sh_getNumSensors(hA2sh), dontSendNotification);
-        rSlider->setValue(array2sh_getr(hA2sh)*1e3f, dontSendNotification);
-        RSlider->setValue(array2sh_getR(hA2sh)*1e3f, dontSendNotification);
-        cSlider->setValue(array2sh_getc(hA2sh), dontSendNotification);
-        weightTypeCB->setSelectedId(array2sh_getWeightType(hA2sh), dontSendNotification);
-        filterTypeCB->setSelectedId(array2sh_getFilterType(hA2sh), dontSendNotification);
-        regAmountSlider->setValue(array2sh_getRegPar(hA2sh), dontSendNotification);
-        CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), dontSendNotification);
-        normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), dontSendNotification);
-        gainSlider->setValue(array2sh_getGain(hA2sh), dontSendNotification);
+        
+        processor.setParameterValue("arrayRadius", array2sh_getr(hA2sh)*1e3f);
+        processor.setParameterValue("baffleRadius", array2sh_getR(hA2sh)*1e3f);
+        processor.setParameterValue("speedOfSound", array2sh_getc(hA2sh));
+        processor.setParameterValue("weightType", array2sh_getWeightType(hA2sh)-1);
+        processor.setParameterValue("arrayType", array2sh_getArrayType(hA2sh)-1);
+        CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), sendNotification);
+        normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), sendNotification);
 
         /* update view windows */
         sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));
@@ -1019,8 +1005,7 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
             (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_CARD) ||
             (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_DIPOLE) ? true : false; /* is it a rigid array? */
         if(changerToo){
-            array2sh_setr(hA2sh, (float)RSlider->getValue()/1e3f);
-            rSlider->setValue(RSlider->getValue(), dontSendNotification);
+            processor.setParameterValue("arrayRadius", (float)RSlider->getValue());
         }
         needScreenRefreshFLAG = true;
     }
@@ -1071,7 +1056,6 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
     else if (buttonThatWasClicked == applyDiffEQ.get())
     {
-        array2sh_setDiffEQpastAliasing(hA2sh, (int)applyDiffEQ->getToggleState());
         needScreenRefreshFLAG = true;
     }
 }
@@ -1087,6 +1071,9 @@ void PluginEditor::timerCallback(int timerID)
             /* parameters whos values can change internally should be periodically refreshed */
             int curOrder = CBencodingOrder->getSelectedId();
             QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
+            QSlider->setValue(array2sh_getNumSensors(hA2sh), sendNotification);
+            RSlider->setValue(array2sh_getR(hA2sh)*1e3f, sendNotification);
+            weightTypeCB->setSelectedId(array2sh_getWeightType(hA2sh), sendNotification);
             sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));
             CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), sendNotification);
             normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), sendNotification);
@@ -1100,6 +1087,7 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* disable certain sliders if evaluation is ongoing */
+            bool RshouldBeEnabled = array2sh_getWeightType(hA2sh) > WEIGHT_RIGID_DIPOLE ? false : true; /* is it a rigid array? */
             if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_EVALUATING){
                 if(presetCB->isEnabled())
                     presetCB->setEnabled(false);
@@ -1109,7 +1097,7 @@ void PluginEditor::timerCallback(int timerID)
                     QSlider->setEnabled(false);
                 if(rSlider->isEnabled())
                     rSlider->setEnabled(false);
-                if(RSlider->isEnabled())
+                if(RSlider->isEnabled() || !RshouldBeEnabled)
                    RSlider->setEnabled(false);
                 if(cSlider->isEnabled())
                     cSlider->setEnabled(false);
@@ -1137,7 +1125,7 @@ void PluginEditor::timerCallback(int timerID)
                     QSlider->setEnabled(true);
                 if(!rSlider->isEnabled())
                     rSlider->setEnabled(true);
-                if(!RSlider->isEnabled())
+                if(!RSlider->isEnabled() && RshouldBeEnabled)
                     RSlider->setEnabled(true);
                 if(!cSlider->isEnabled())
                     cSlider->setEnabled(true);
