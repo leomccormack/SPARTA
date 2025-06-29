@@ -38,15 +38,70 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
 
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("inputOrder", "InputOrder",
+                                                                  juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("powermapMode", "PowermapMode",
+                                                                  juce::StringArray{"PWD","MVDR","CroPaC LCMV","MUSIC","log(MUSIC)","MinNorm","log(MinNorm)"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("covAvgCoeff", "CovAvgCoeff", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numSources", "NumSources", 1, MAX_NUM_SH_SIGNALS/2, 1, AudioParameterIntAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("FOVoption", "FOV",
+                                                                  juce::StringArray{"360","180","90","60"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("ARoption", "AspectRatio",
+                                                                  juce::StringArray{"2:1","16:9","4:3"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("mapAvg", "MapAvg", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
+    
     return { params.begin(), params.end() };
 }
 
-void PluginProcessor::parameterChanged(const juce::String& /*parameterID*/, float /*newValue*/)
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
+    if (parameterID == "inputOrder"){
+        powermap_setMasterOrder(hPm, static_cast<int>(newValue+1.001f));
+        powermap_setAnaOrderAllBands(hPm, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "powermapMode"){
+        powermap_setPowermapMode(hPm, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "covAvgCoeff"){
+        powermap_setCovAvgCoeff(hPm, newValue);
+    }
+    else if (parameterID == "channelOrder"){
+        powermap_setChOrder(hPm, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "normType"){
+        powermap_setNormType(hPm, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "numSources"){
+        powermap_setNumSources(hPm, static_cast<int>(newValue));
+    }
+    else if (parameterID == "FOVoption"){
+        powermap_setDispFOV(hPm, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "ARoption"){
+        powermap_setAspectRatio(hPm, static_cast<int>(newValue+1.001f));
+    }
+    else if (parameterID == "mapAvg"){
+        powermap_setPowermapAvgCoeff(hPm, newValue);
+    }
 }
 
 void PluginProcessor::setParameterValuesUsingInternalState()
 {
+    setParameterValue("inputOrder", powermap_getMasterOrder(hPm)-1);
+    setParameterValue("powermapMode", powermap_getPowermapMode(hPm)-1);
+    setParameterValue("covAvgCoeff", powermap_getCovAvgCoeff(hPm));
+    setParameterValue("channelOrder", powermap_getChOrder(hPm)-1);
+    setParameterValue("normType", powermap_getNormType(hPm)-1);
+    setParameterValue("numSources", powermap_getNumSources(hPm));
+    setParameterValue("FOVoption", powermap_getDispFOV(hPm)-1);
+    setParameterValue("ARoption", powermap_getAspectRatio(hPm)-1);
+    setParameterValue("mapAvg", powermap_getPowermapAvgCoeff(hPm));
 }
 
 PluginProcessor::PluginProcessor() :
@@ -184,19 +239,10 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10501
     
     /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-    xmlState->setAttribute("masterOrder", powermap_getMasterOrder(hPm));
-    xmlState->setAttribute("powermapMode", powermap_getPowermapMode(hPm));
-    xmlState->setAttribute("covAvgCoeff", powermap_getCovAvgCoeff(hPm));
     for(int i=0; i<powermap_getNumberOfBands(); i++){
         xmlState->setAttribute("powermapEQ"+String(i), powermap_getPowermapEQ(hPm, i));
         xmlState->setAttribute("anaOrder"+String(i), powermap_getAnaOrder(hPm, i));
     }
-    xmlState->setAttribute("chOrder", powermap_getChOrder(hPm));
-    xmlState->setAttribute("normType", powermap_getNormType(hPm));
-    xmlState->setAttribute("numSources", powermap_getNumSources(hPm));
-    xmlState->setAttribute("dispFov", powermap_getDispFOV(hPm));
-    xmlState->setAttribute("aspectRatio", powermap_getAspectRatio(hPm));
-    xmlState->setAttribute("powermapAvgCoeff", powermap_getPowermapAvgCoeff(hPm));
     
     /* Other */
     xmlState->setAttribute("cameraID", cameraID);
@@ -255,30 +301,12 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
             
             /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-            if(xmlState->hasAttribute("masterOrder"))
-                powermap_setMasterOrder(hPm, xmlState->getIntAttribute("masterOrder", 1));
-            if(xmlState->hasAttribute("powermapMode"))
-                powermap_setPowermapMode(hPm, xmlState->getIntAttribute("powermapMode", 1));
-            if(xmlState->hasAttribute("covAvgCoeff"))
-                powermap_setCovAvgCoeff(hPm, (float)xmlState->getDoubleAttribute("covAvgCoeff", 0.5f));
             for(int i=0; i<powermap_getNumberOfBands(); i++){
                 if(xmlState->hasAttribute("powermapEQ"+String(i)))
                     powermap_setPowermapEQ(hPm, (float)xmlState->getDoubleAttribute("powermapEQ"+String(i), 0.5f), i);
                 if(xmlState->hasAttribute("anaOrder"+String(i)))
                     powermap_setAnaOrder(hPm, xmlState->getIntAttribute("anaOrder"+String(i), 1), i);
             }
-            if(xmlState->hasAttribute("chOrder"))
-                powermap_setChOrder(hPm, xmlState->getIntAttribute("chOrder", 1));
-            if(xmlState->hasAttribute("normType"))
-                powermap_setNormType(hPm, xmlState->getIntAttribute("normType", 1));
-            if(xmlState->hasAttribute("numSources"))
-                powermap_setNumSources(hPm, xmlState->getIntAttribute("numSources", 1));
-            if(xmlState->hasAttribute("dispFov"))
-                powermap_setDispFOV(hPm, xmlState->getIntAttribute("dispFov", 1));
-            if(xmlState->hasAttribute("aspectRatio"))
-                powermap_setAspectRatio(hPm, xmlState->getIntAttribute("aspectRatio", 1));
-            if(xmlState->hasAttribute("powermapAvgCoeff"))
-                powermap_setPowermapAvgCoeff(hPm, (float)xmlState->getDoubleAttribute("powermapAvgCoeff", 0.5f));
             
             /* Other */
             if(xmlState->hasAttribute("cameraID"))

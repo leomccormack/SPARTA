@@ -489,24 +489,24 @@ void PluginEditor::paint (juce::Graphics& g)
             break;
         case k_warning_frameSize:
             g.drawText(TRANS("Set frame size to multiple of ") + String(rotator_getFrameSize()),
-                       getBounds().getWidth()-225, 16, 530, 11,
+                       getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(rotator_getNSHrequired(hRot)) + TRANS(")"),
-                       getBounds().getWidth()-225, 6, 530, 11,
+                       getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(rotator_getNSHrequired(hRot)) + TRANS(")"),
-                       getBounds().getWidth()-225, 6, 530, 11,
+                       getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_osc_connection_fail:
             g.drawText(TRANS("OSC failed to connect, or port is already taken"),
-                       getBounds().getWidth()-225, 6, 530, 11,
+                       getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
     }

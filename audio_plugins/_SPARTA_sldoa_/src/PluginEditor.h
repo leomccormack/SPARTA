@@ -98,14 +98,14 @@ private:
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
     HyperlinkButton publicationLink { "(Related Publication)", { "https://leomccormack.github.io/sparta-site/docs/help/related-publications/mccormack2019applications.pdf" } };
 
-    std::unique_ptr<juce::Slider> avgSlider;
-    std::unique_ptr<juce::ComboBox> CB_CHorder;
-    std::unique_ptr<juce::ComboBox> CB_Norm;
+    std::unique_ptr<SliderWithAttachment> avgSlider;
+    std::unique_ptr<ComboBoxWithAttachment> CB_CHorder;
+    std::unique_ptr<ComboBoxWithAttachment> CB_Norm;
     std::unique_ptr<juce::Slider> slider_anaOrder;
     std::unique_ptr<juce::ComboBox> CBinputTypePreset;
-    std::unique_ptr<juce::Slider> s_minFreq;
-    std::unique_ptr<juce::Slider> s_maxFreq;
-    std::unique_ptr<juce::ComboBox> CBmasterOrder;
+    std::unique_ptr<SliderWithAttachment> s_minFreq;
+    std::unique_ptr<SliderWithAttachment> s_maxFreq;
+    std::unique_ptr<ComboBoxWithAttachment> CBmasterOrder;
     std::unique_ptr<juce::ComboBox> CB_webcam;
     std::unique_ptr<juce::ToggleButton> TB_greyScale;
     std::unique_ptr<juce::ToggleButton> TB_flipUD;
