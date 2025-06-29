@@ -43,14 +43,29 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 1));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableReflections", "EnableReflections", true));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("maxReflectionOrder", "MaxReflectionOrder", 0, 7, 1,
+                                                               AudioParameterIntAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_pX", "WallAbsCoeff (x+)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_nX", "WallAbsCoeff (x-)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_pY", "WallAbsCoeff (y+)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_nY", "WallAbsCoeff (y-)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_pZ", "WallAbsCoeff (z+)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_nZ", "WallAbsCoeff (z-)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("roomX", "RoomWidth (x)", juce::NormalisableRange<float>(0.5f, 20.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("m")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("roomY", "RoomDepth (y)", juce::NormalisableRange<float>(0.5f, 20.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("m")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("roomZ", "RoomHeight (z)", juce::NormalisableRange<float>(0.5f, 6.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("m")));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numSources", "NumSources", 1, ROOM_SIM_MAX_NUM_SOURCES, 1,
                                                                AudioParameterIntAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numReceivers", "NumReceivers", 1, ROOM_SIM_MAX_NUM_RECEIVERS, 1,
                                                                AudioParameterIntAttributes().withAutomatable(false)));
     for(int i=0; i<ROOM_SIM_MAX_NUM_SOURCES; i++){
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceX" + juce::String(i), "SourceX_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), 0.0f));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceY" + juce::String(i), "SourceY_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), 0.0f));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceZ" + juce::String(i), "SourceZ_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 6.0f, 0.01f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceX" + juce::String(i), "SourceX_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel("m")));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceY" + juce::String(i), "SourceY_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel("m")));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceZ" + juce::String(i), "SourceZ_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 6.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel("m")));
     }
     
     for(int i=0; i<ROOM_SIM_MAX_NUM_RECEIVERS; i++){
@@ -73,6 +88,39 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
     else if (parameterID == "normType"){
         ambi_roomsim_setNormType(hAmbi, static_cast<int>(newValue+1.001f));
     }
+    else if(parameterID == "enableReflections"){
+        ambi_roomsim_setEnableIMSflag(hAmbi, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "maxReflectionOrder"){
+        ambi_roomsim_setMaxReflectionOrder(hAmbi, static_cast<int>(newValue));
+    }
+    else if(parameterID == "wallAbsCoeff_pX"){
+        ambi_roomsim_setWallAbsCoeff(hAmbi, 0, 0, newValue);
+    }
+    else if(parameterID == "wallAbsCoeff_nX"){
+        ambi_roomsim_setWallAbsCoeff(hAmbi, 0, 1, newValue);
+    }
+    else if(parameterID == "wallAbsCoeff_pY"){
+        ambi_roomsim_setWallAbsCoeff(hAmbi, 1, 0, newValue);
+    }
+    else if(parameterID == "wallAbsCoeff_nY"){
+        ambi_roomsim_setWallAbsCoeff(hAmbi, 1, 1, newValue);
+    }
+    else if(parameterID == "wallAbsCoeff_pZ"){
+        ambi_roomsim_setWallAbsCoeff(hAmbi, 2, 0, newValue);
+    }
+    else if(parameterID == "wallAbsCoeff_nZ"){
+        ambi_roomsim_setWallAbsCoeff(hAmbi, 2, 1, newValue);
+    }
+    else if(parameterID == "roomX"){
+        ambi_roomsim_setRoomDimX(hAmbi, newValue);
+    }
+    else if(parameterID == "roomY"){
+        ambi_roomsim_setRoomDimY(hAmbi, newValue);
+    }
+    else if(parameterID == "roomZ"){
+        ambi_roomsim_setRoomDimZ(hAmbi, newValue);
+    } 
     else if(parameterID == "numSources"){
         ambi_roomsim_setNumSources(hAmbi, static_cast<int>(newValue));
     }
@@ -120,6 +168,17 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("outputOrder", ambi_roomsim_getOutputOrder(hAmbi)-1);
     setParameterValue("channelOrder", ambi_roomsim_getChOrder(hAmbi)-1);
     setParameterValue("normType", ambi_roomsim_getNormType(hAmbi)-1);
+    setParameterValue("enableReflections", ambi_roomsim_getEnableIMSflag(hAmbi));
+    setParameterValue("maxReflectionOrder", ambi_roomsim_getMaxReflectionOrder(hAmbi));
+    setParameterValue("wallAbsCoeff_pX", ambi_roomsim_getWallAbsCoeff(hAmbi, 0, 0));
+    setParameterValue("wallAbsCoeff_nX", ambi_roomsim_getWallAbsCoeff(hAmbi, 0, 1));
+    setParameterValue("wallAbsCoeff_pY", ambi_roomsim_getWallAbsCoeff(hAmbi, 1, 0));
+    setParameterValue("wallAbsCoeff_nY", ambi_roomsim_getWallAbsCoeff(hAmbi, 1, 1));
+    setParameterValue("wallAbsCoeff_pZ", ambi_roomsim_getWallAbsCoeff(hAmbi, 2, 0));
+    setParameterValue("wallAbsCoeff_nZ", ambi_roomsim_getWallAbsCoeff(hAmbi, 2, 1));
+    setParameterValue("roomX", ambi_roomsim_getRoomDimX(hAmbi));
+    setParameterValue("roomY", ambi_roomsim_getRoomDimY(hAmbi));
+    setParameterValue("roomZ", ambi_roomsim_getRoomDimZ(hAmbi));
     setParameterValue("numSources", ambi_roomsim_getNumSources(hAmbi));
     setParameterValue("numReceivers", ambi_roomsim_getNumReceivers(hAmbi));
     for(int i=0; i<ROOM_SIM_MAX_NUM_SOURCES; i++){
@@ -221,6 +280,8 @@ void PluginProcessor::releaseResources()
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
+    ScopedNoDenormals noDenormals;
+    
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), 256);
@@ -258,14 +319,6 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xmlState->setTagName("AMBIROOMSIMPLUGINSETTINGS");
     xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10101
     
-    /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-    for(int i=0; i<3; i++)
-        for(int j=0; j<2; j++)
-            xmlState->setAttribute("wallAbsCoeff" + String(i) + "_" + String(j), ambi_roomsim_getWallAbsCoeff(hAmbi, i, j));
-    xmlState->setAttribute("RoomX", ambi_roomsim_getRoomDimX(hAmbi));
-    xmlState->setAttribute("RoomY", ambi_roomsim_getRoomDimY(hAmbi));
-    xmlState->setAttribute("RoomZ", ambi_roomsim_getRoomDimZ(hAmbi));
-
     /* Save */
     copyXmlToBinary(*xmlState, destData);
 }
@@ -318,18 +371,6 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
         }
         else if (xmlState->getIntAttribute("VersionCode")>=0x10101){
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
-            
-            /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-            for(int i=0; i<3; i++)
-                for(int j=0; j<2; j++)
-                    if(xmlState->hasAttribute("wallAbsCoeff" + String(i) + "_" + String(j)))
-                        ambi_roomsim_setWallAbsCoeff(hAmbi, i, j, (float)xmlState->getDoubleAttribute("wallAbsCoeff" + String(i) + "_" + String(j), 0.0f));
-            if(xmlState->hasAttribute("RoomX"))
-                ambi_roomsim_setRoomDimX(hAmbi, (float)xmlState->getDoubleAttribute("RoomX", 0.0f));
-            if(xmlState->hasAttribute("RoomY"))
-                ambi_roomsim_setRoomDimY(hAmbi, (float)xmlState->getDoubleAttribute("RoomY", 0.0f));
-            if(xmlState->hasAttribute("RoomZ"))
-                ambi_roomsim_setRoomDimZ(hAmbi, (float)xmlState->getDoubleAttribute("RoomZ", 0.0f));
         }
     
         ambi_roomsim_refreshParams(hAmbi);

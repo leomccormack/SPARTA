@@ -47,22 +47,29 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
                                                                   juce::StringArray{"Soft-Limiting","Tikhonov","Z-style","Z-style (max_rE)"}, 1,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("maxGain", "MaxGain",
-                                                                 juce::NormalisableRange<float>(ARRAY2SH_MAX_GAIN_MIN_VALUE, ARRAY2SH_MAX_GAIN_MAX_VALUE, 0.01f), 0.0f));
+                                                                 juce::NormalisableRange<float>(ARRAY2SH_MAX_GAIN_MIN_VALUE, ARRAY2SH_MAX_GAIN_MAX_VALUE, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("dB")));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("postGain", "PostGain",
-                                                                 juce::NormalisableRange<float>(ARRAY2SH_POST_GAIN_MIN_VALUE, ARRAY2SH_POST_GAIN_MAX_VALUE, 0.01f), 0.0f));
+                                                                 juce::NormalisableRange<float>(ARRAY2SH_POST_GAIN_MIN_VALUE, ARRAY2SH_POST_GAIN_MAX_VALUE, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("dB")));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("speedOfSound", "SpeedOfSound",
-                                                                 juce::NormalisableRange<float>(ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE, ARRAY2SH_SPEED_OF_SOUND_MAX_VALUE, 0.01f), 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("arrayRadius", "ArrayRadius", juce::NormalisableRange<float>(1.0f, 400.0f, 0.01f), 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("baffleRadius", "BaffleRadius", juce::NormalisableRange<float>(1.0f, 400.0f, 0.01f), 0.0f));
+                                                                 juce::NormalisableRange<float>(ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE, ARRAY2SH_SPEED_OF_SOUND_MAX_VALUE, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("m/s")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("arrayRadius", "ArrayRadius", juce::NormalisableRange<float>(1.0f, 400.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("mm")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("baffleRadius", "BaffleRadius", juce::NormalisableRange<float>(1.0f, 400.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("mm")));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("arrayType", "ArrayType", juce::StringArray{"Spherical","Cylindrical"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("weightType", "WeightType",
                                                                   juce::StringArray{"Rigid-Omni","Rigid-Card","Rigid-Dipole","Open-Omni","Open-Card","Open-Dipole"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableDiffEQ", "EnableDiffEQ", true,
+                                                                AudioParameterBoolAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numSensors", "NumSensors", 4, MAX_NUM_INPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
     for(int i=0; i<MAX_NUM_INPUTS; i++){
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-360.0f, 360.0f, 0.01f), 0.0f));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-360.0f, 360.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
     }
     
     return { params.begin(), params.end() };
@@ -103,6 +110,9 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
     else if (parameterID == "weightType"){
         array2sh_setWeightType(hA2sh, static_cast<int>(newValue+1.001f));
     }
+    else if (parameterID == "enableDiffEQ"){
+        array2sh_setDiffEQpastAliasing(hA2sh, static_cast<int>(newValue+0.5f));
+    }
     else if(parameterID == "numSensors"){
         array2sh_setNumSensors(hA2sh, static_cast<int>(newValue));
     }
@@ -131,6 +141,7 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("baffleRadius", array2sh_getR(hA2sh)*1000.0f);
     setParameterValue("arrayType", array2sh_getArrayType(hA2sh)-1);
     setParameterValue("weightType", array2sh_getWeightType(hA2sh)-1);
+    setParameterValue("enableDiffEQ", array2sh_getDiffEQpastAliasing(hA2sh));
     setParameterValue("numSensors", array2sh_getNumSensors(hA2sh));
     for(int i=0; i<MAX_NUM_INPUTS; i++){
         setParameterValue("azim" + juce::String(i), array2sh_getSensorAzi_deg(hA2sh, i));
@@ -226,6 +237,8 @@ void PluginProcessor::releaseResources()
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
+    ScopedNoDenormals noDenormals;
+    
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), 256);
@@ -262,10 +275,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
     xmlState->setTagName("ARRAY2SHPLUGINSETTINGS");
     xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10701
-    
-    /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-    xmlState->setAttribute("enableDiffPastAliasing", array2sh_getDiffEQpastAliasing(hA2sh));
-    
+
     /* Other */
     xmlState->setAttribute("JSONFilePath", lastDir.getFullPathName());
     
@@ -321,10 +331,6 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
         }
         else if(xmlState->getIntAttribute("VersionCode")>=0x10701){
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
-            
-            /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-            if(xmlState->hasAttribute("enableDiffPastAliasing"))
-                array2sh_setDiffEQpastAliasing(hA2sh, xmlState->getIntAttribute("enableDiffPastAliasing", 0));
             
             /* Other */
             if(xmlState->hasAttribute("JSONFilePath"))
@@ -397,6 +403,7 @@ void PluginProcessor::loadConfiguration (const File& configFile)
                     channelIDs[j]--;
         
         /* update with the new configuration  */
+        setParameterValue("outputOrder",  (int)(sqrt((double)num_sensors)-0.999) - 1);
         setParameterValue("numSensors", num_sensors);
         for (ValueTree::Iterator it = sensors.begin() ; it != sensors.end(); ++it){
             if ( !((*it).getProperty("Imaginary"))){

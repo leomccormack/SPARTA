@@ -27,9 +27,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
       "*.wav;", String(),
       "Load .wav File")
 {
-    TBenablePartConv.reset (new juce::ToggleButton ("new toggle button"));
+    TBenablePartConv = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enablePartitionedConv");
     addAndMakeVisible (TBenablePartConv.get());
-    TBenablePartConv->setButtonText (juce::String());
     TBenablePartConv->addListener (this);
 
     TBenablePartConv->setBounds (261, 121, 26, 26);
@@ -94,9 +93,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     label_filterfs->setBounds (451, 99, 60, 20);
 
-    SL_num_inputs.reset (new juce::Slider ("new slider"));
+    SL_num_inputs = std::make_unique<SliderWithAttachment>(p.parameters, "numInputChannels");
     addAndMakeVisible (SL_num_inputs.get());
-    SL_num_inputs->setRange (1, 128, 1);
     SL_num_inputs->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_inputs->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_num_inputs->addListener (this);
@@ -124,8 +122,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
         fileChooser.setCurrentFile(processor.getWavDirectory(), true);
 
 	/* fetch current configuration */
-    TBenablePartConv->setToggleState((bool)multiconv_getEnablePart(hMC), dontSendNotification);
-    SL_num_inputs->setValue(multiconv_getNumChannels(hMC), dontSendNotification);
     label_NFilters->setJustificationType (Justification::centred);
 
     /* tooltips */
@@ -397,20 +393,12 @@ void PluginEditor::resized()
 	repaint();
 }
 
-void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
+void PluginEditor::buttonClicked (juce::Button* /*buttonThatWasClicked*/)
 {
-    if (buttonThatWasClicked == TBenablePartConv.get())
-    {
-        multiconv_setEnablePart(hMC, (int)TBenablePartConv->getToggleState());
-    }
 }
 
-void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+void PluginEditor::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
-    if (sliderThatWasMoved == SL_num_inputs.get())
-    {
-        multiconv_setNumChannels(hMC, (int)SL_num_inputs->getValue());
-    }
 }
 
 void PluginEditor::timerCallback()

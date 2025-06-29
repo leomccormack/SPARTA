@@ -25,59 +25,48 @@
 PluginEditor::PluginEditor (PluginProcessor& p)
     : AudioProcessorEditor(p), processor(p), progressbar(progress)
 {
-    CBbeamType.reset (new juce::ComboBox (juce::String()));
+    CBbeamType = std::make_unique<ComboBoxWithAttachment>(p.parameters, "beamType");
     addAndMakeVisible (CBbeamType.get());
     CBbeamType->setEditableText (false);
     CBbeamType->setJustificationType (juce::Justification::centredLeft);
-    CBbeamType->setTextWhenNothingSelected (TRANS("Default"));
-    CBbeamType->setTextWhenNoChoicesAvailable (juce::String());
     CBbeamType->addListener (this);
 
     CBbeamType->setBounds (121, 440, 112, 18);
 
-    CBchFormat.reset (new juce::ComboBox ("new combo box"));
+    CBchFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBchFormat.get());
     CBchFormat->setEditableText (false);
     CBchFormat->setJustificationType (juce::Justification::centredLeft);
-    CBchFormat->setTextWhenNothingSelected (TRANS("ACN"));
-    CBchFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBchFormat->addListener (this);
 
     CBchFormat->setBounds (90, 504, 66, 18);
 
-    CBnormScheme.reset (new juce::ComboBox ("new combo box"));
+    CBnormScheme = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnormScheme.get());
     CBnormScheme->setEditableText (false);
     CBnormScheme->setJustificationType (juce::Justification::centredLeft);
-    CBnormScheme->setTextWhenNothingSelected (TRANS("N3D"));
-    CBnormScheme->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBnormScheme->addListener (this);
 
     CBnormScheme->setBounds (161, 504, 71, 18);
 
-    CB_hfov.reset (new juce::ComboBox (juce::String()));
+    CB_hfov = std::make_unique<ComboBoxWithAttachment>(p.parameters, "FOVoption");
     addAndMakeVisible (CB_hfov.get());
     CB_hfov->setEditableText (false);
     CB_hfov->setJustificationType (juce::Justification::centredLeft);
-    CB_hfov->setTextWhenNothingSelected (TRANS("360"));
-    CB_hfov->setTextWhenNoChoicesAvailable (juce::String());
     CB_hfov->addListener (this);
 
     CB_hfov->setBounds (584, 406, 66, 18);
 
-    CB_aspectRatio.reset (new juce::ComboBox (juce::String()));
+    CB_aspectRatio = std::make_unique<ComboBoxWithAttachment>(p.parameters, "ARoption");
     addAndMakeVisible (CB_aspectRatio.get());
     CB_aspectRatio->setEditableText (false);
     CB_aspectRatio->setJustificationType (juce::Justification::centredLeft);
-    CB_aspectRatio->setTextWhenNothingSelected (TRANS("2:1"));
-    CB_aspectRatio->setTextWhenNoChoicesAvailable (juce::String());
     CB_aspectRatio->addListener (this);
 
     CB_aspectRatio->setBounds (584, 438, 66, 18);
 
-    SLmapAvg.reset (new juce::Slider ("new slider"));
+    SLmapAvg = std::make_unique<SliderWithAttachment>(p.parameters, "mapAvg");
     addAndMakeVisible (SLmapAvg.get());
-    SLmapAvg->setRange (0, 1, 0.01);
     SLmapAvg->setSliderStyle (juce::Slider::LinearHorizontal);
     SLmapAvg->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
     SLmapAvg->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
@@ -88,67 +77,56 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     SLmapAvg->setBounds (349, 468, 104, 24);
 
-    CBinputOrder.reset (new juce::ComboBox ("new combo box"));
+    CBinputOrder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (CBinputOrder.get());
     CBinputOrder->setEditableText (false);
     CBinputOrder->setJustificationType (juce::Justification::centredLeft);
-    CBinputOrder->setTextWhenNothingSelected (TRANS("Default"));
-    CBinputOrder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBinputOrder->addListener (this);
 
     CBinputOrder->setBounds (121, 403, 112, 18);
 
-    s_minFreq.reset (new juce::Slider ("new slider"));
+    s_minFreq = std::make_unique<SliderWithAttachment>(p.parameters, "minFreq");
     addAndMakeVisible (s_minFreq.get());
-    s_minFreq->setRange (0, 24000, 1);
     s_minFreq->setSliderStyle (juce::Slider::LinearHorizontal);
     s_minFreq->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
     s_minFreq->addListener (this);
 
     s_minFreq->setBounds (592, 469, 58, 24);
 
-    s_maxFreq.reset (new juce::Slider ("new slider"));
+    s_maxFreq = std::make_unique<SliderWithAttachment>(p.parameters, "maxFreq");
     addAndMakeVisible (s_maxFreq.get());
-    s_maxFreq->setRange (0, 24000, 1);
     s_maxFreq->setSliderStyle (juce::Slider::LinearHorizontal);
     s_maxFreq->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
     s_maxFreq->addListener (this);
 
     s_maxFreq->setBounds (592, 500, 58, 24);
 
-    CBgridOption.reset (new juce::ComboBox (juce::String()));
+    CBgridOption = std::make_unique<ComboBoxWithAttachment>(p.parameters, "gridOption");
     addAndMakeVisible (CBgridOption.get());
     CBgridOption->setEditableText (false);
     CBgridOption->setJustificationType (juce::Justification::centredLeft);
-    CBgridOption->setTextWhenNothingSelected (TRANS("Default"));
-    CBgridOption->setTextWhenNoChoicesAvailable (juce::String());
     CBgridOption->addListener (this);
 
     CBgridOption->setBounds (121, 472, 112, 18);
 
-    CBupscaleOrder.reset (new juce::ComboBox ("new combo box"));
+    CBupscaleOrder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "upscaleOrder");
     addAndMakeVisible (CBupscaleOrder.get());
     CBupscaleOrder->setEditableText (false);
     CBupscaleOrder->setJustificationType (juce::Justification::centredLeft);
-    CBupscaleOrder->setTextWhenNothingSelected (TRANS("Default"));
-    CBupscaleOrder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBupscaleOrder->addListener (this);
 
     CBupscaleOrder->setBounds (354, 440, 99, 18);
 
-    CBdirassMode.reset (new juce::ComboBox ("new combo box"));
+    CBdirassMode = std::make_unique<ComboBoxWithAttachment>(p.parameters, "DirASSmode");
     addAndMakeVisible (CBdirassMode.get());
     CBdirassMode->setEditableText (false);
     CBdirassMode->setJustificationType (juce::Justification::centredLeft);
-    CBdirassMode->setTextWhenNothingSelected (TRANS("Default"));
-    CBdirassMode->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBdirassMode->addListener (this);
 
     CBdirassMode->setBounds (354, 403, 99, 18);
 
-    s_interpWidth.reset (new juce::Slider ("new slider"));
+    s_interpWidth = std::make_unique<SliderWithAttachment>(p.parameters, "dispWidth");
     addAndMakeVisible (s_interpWidth.get());
-    s_interpWidth->setRange (64, 256, 1);
     s_interpWidth->setSliderStyle (juce::Slider::LinearHorizontal);
     s_interpWidth->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
     s_interpWidth->addListener (this);
@@ -212,78 +190,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     s_interpWidth->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
     //s_interpWidth->setSliderSnapsToMousePosition(false);
 
-    /* add input order options */
-    CBinputOrder->addItem (TRANS("1st order"), SH_ORDER_FIRST);
-    CBinputOrder->addItem (TRANS("2nd order"), SH_ORDER_SECOND);
-    CBinputOrder->addItem (TRANS("3rd order"), SH_ORDER_THIRD);
-    CBinputOrder->addItem (TRANS("4th order"), SH_ORDER_FOURTH);
-    CBinputOrder->addItem (TRANS("5th order"), SH_ORDER_FIFTH);
-    CBinputOrder->addItem (TRANS("6th order"), SH_ORDER_SIXTH);
-    CBinputOrder->addItem (TRANS("7th order"), SH_ORDER_SEVENTH);
-    CBinputOrder->addItem (TRANS("8th order"), SH_ORDER_EIGHTH);
-    CBinputOrder->addItem (TRANS("9th order"), SH_ORDER_NINTH);
-    CBinputOrder->addItem (TRANS("10th order"), SH_ORDER_TENTH);
-
-    /* add upscale order options */
-    CBupscaleOrder->addItem (TRANS("1st order"), UPSCALE_ORDER_FIRST);
-    CBupscaleOrder->addItem (TRANS("2nd order"), UPSCALE_ORDER_SECOND);
-    CBupscaleOrder->addItem (TRANS("3rd order"), UPSCALE_ORDER_THIRD);
-    CBupscaleOrder->addItem (TRANS("4th order"), UPSCALE_ORDER_FOURTH);
-    CBupscaleOrder->addItem (TRANS("5th order"), UPSCALE_ORDER_FIFTH);
-    CBupscaleOrder->addItem (TRANS("6th order"), UPSCALE_ORDER_SIXTH);
-    CBupscaleOrder->addItem (TRANS("7th order"), UPSCALE_ORDER_SEVENTH);
-    CBupscaleOrder->addItem (TRANS("8th order"), UPSCALE_ORDER_EIGHTH);
-    CBupscaleOrder->addItem (TRANS("9th order"), UPSCALE_ORDER_NINTH);
-    CBupscaleOrder->addItem (TRANS("10th order"), UPSCALE_ORDER_TENTH);
-    CBupscaleOrder->addItem (TRANS("11th order"), UPSCALE_ORDER_ELEVENTH);
-    CBupscaleOrder->addItem (TRANS("12th order"), UPSCALE_ORDER_TWELFTH);
-    CBupscaleOrder->addItem (TRANS("13th order"), UPSCALE_ORDER_THIRTEENTH);
-    CBupscaleOrder->addItem (TRANS("14th order"), UPSCALE_ORDER_FOURTEENTH);
-    CBupscaleOrder->addItem (TRANS("15th order"), UPSCALE_ORDER_FIFTEENTH);
-    CBupscaleOrder->addItem (TRANS("16th order"), UPSCALE_ORDER_SIXTHTEENTH);
-    CBupscaleOrder->addItem (TRANS("17th order"), UPSCALE_ORDER_SEVENTEENTH);
-    CBupscaleOrder->addItem (TRANS("18th order"), UPSCALE_ORDER_EIGHTEENTH);
-    CBupscaleOrder->addItem (TRANS("19th order"), UPSCALE_ORDER_NINETEENTH);
-    CBupscaleOrder->addItem (TRANS("20th order"), UPSCALE_ORDER_TWENTIETH);
-
-    /* Add beam options */
-    CBbeamType->addItem (TRANS("Cardioid"), STATIC_BEAM_TYPE_CARDIOID);
-    CBbeamType->addItem (TRANS("Hyper-Cardioid"), STATIC_BEAM_TYPE_HYPERCARDIOID);
-    CBbeamType->addItem (TRANS("Max-EV"), STATIC_BEAM_TYPE_MAX_EV);
-
-    /* Add processing options */
-    CBdirassMode->addItem (TRANS("Off"), REASS_MODE_OFF);
-    CBdirassMode->addItem (TRANS("Upscale"), REASS_UPSCALE);
-    CBdirassMode->addItem (TRANS("Nearest"), REASS_NEAREST);
-
-    /* Add grid options */
-    CBgridOption->addItem (TRANS("T-design: 6"), T_DESIGN_3);
-    CBgridOption->addItem (TRANS("T-design: 12"), T_DESIGN_4);
-    CBgridOption->addItem (TRANS("T-design: 24"), T_DESIGN_6);
-    CBgridOption->addItem (TRANS("T-design: 48"), T_DESIGN_9);
-    CBgridOption->addItem (TRANS("T-design: 94"), T_DESIGN_13);
-    CBgridOption->addItem (TRANS("T-design: 180"), T_DESIGN_18);
-    CBgridOption->addItem (TRANS("G-sphere: 362"), GRID_GEOSPHERE_6);
-    CBgridOption->addItem (TRANS("T-design: 480"), T_DESIGN_30);
-    CBgridOption->addItem (TRANS("G-sphere: 642"), GRID_GEOSPHERE_8);
-    CBgridOption->addItem (TRANS("G-sphere: 812"), GRID_GEOSPHERE_9);
-    CBgridOption->addItem (TRANS("G-sphere: 1002"), GRID_GEOSPHERE_10);
-    CBgridOption->addItem (TRANS("G-sphere: 1442"), GRID_GEOSPHERE_12);
-
-    /* Add remaining options */
-    CBchFormat->addItem(TRANS("ACN"), CH_ACN);
-    CBchFormat->addItem(TRANS("FuMa"), CH_FUMA);
-    CBnormScheme->addItem(TRANS("N3D"), NORM_N3D);
-    CBnormScheme->addItem(TRANS("SN3D"), NORM_SN3D);
-    CBnormScheme->addItem(TRANS("FuMa"), NORM_FUMA);
-    CB_hfov->addItem(TRANS("360"), HFOV_360);
-    CB_hfov->addItem(TRANS("180"), HFOV_180);
-    CB_hfov->addItem(TRANS("90"), HFOV_90);
-    CB_hfov->addItem(TRANS("60"), HFOV_60);
-    CB_aspectRatio->addItem(TRANS("2:1"), ASPECT_RATIO_2_1);
-    CB_aspectRatio->addItem(TRANS("16:9"), ASPECT_RATIO_16_9);
-    CB_aspectRatio->addItem(TRANS("4:3"), ASPECT_RATIO_4_3);
-
     /* Overlay */
     previewArea.setBounds(13, 59, 646, 323);
     overlayIncluded.reset (new overlay(p));
@@ -308,23 +214,12 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
 
     /* fetch current configuration */
-    CBinputOrder->setSelectedId(dirass_getInputOrder(hDir), dontSendNotification);
-    CBbeamType->setSelectedId(dirass_getBeamType(hDir), dontSendNotification);
-    CBgridOption->setSelectedId(dirass_getDisplayGridOption(hDir), dontSendNotification);
-    CBupscaleOrder->setSelectedId(dirass_getUpscaleOrder(hDir), dontSendNotification);
-    CBdirassMode->setSelectedId(dirass_getDiRAssMode(hDir), dontSendNotification);
-    s_minFreq->setValue((double)dirass_getMinFreq(hDir), dontSendNotification);
-    s_maxFreq->setValue((double)dirass_getMaxFreq(hDir), dontSendNotification);
-    CBchFormat->setSelectedId(dirass_getChOrder(hDir), dontSendNotification);
-    CBnormScheme->setSelectedId(dirass_getNormType(hDir), dontSendNotification);
-    CB_hfov->setSelectedId(dirass_getDispFOV(hDir), dontSendNotification);
-    CB_aspectRatio->setSelectedId(dirass_getAspectRatio(hDir), dontSendNotification);
-    SLmapAvg->setValue(dirass_getMapAvgCoeff(hDir), dontSendNotification);
-    s_interpWidth->setValue(dirass_getDispWidth(hDir), dontSendNotification);
-    CBupscaleOrder->setEnabled(dirass_getDiRAssMode(hDir) == REASS_UPSCALE ? true : false);
+    CBchFormat->setSelectedId(dirass_getChOrder(hDir), sendNotification);
+    CBnormScheme->setSelectedId(dirass_getNormType(hDir), sendNotification);
     resolutionHasChanged = false;
     CBchFormat->setItemEnabled(CH_FUMA, dirass_getInputOrder(hDir)==SH_ORDER_FIRST ? true : false);
     CBnormScheme->setItemEnabled(NORM_FUMA, dirass_getInputOrder(hDir)==SH_ORDER_FIRST ? true : false);
+    CBupscaleOrder->setEnabled(dirass_getDiRAssMode(hDir) == REASS_UPSCALE ? true : false);
 
     /* tooltips */
     CBinputOrder->setTooltip("Analysis order. Note that the plug-in will require (order+1)^2 Ambisonic (spherical harmonic) signals as input.");
@@ -741,41 +636,8 @@ void PluginEditor::resized()
 
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
-    if (comboBoxThatHasChanged == CBbeamType.get())
+    if (comboBoxThatHasChanged == CBdirassMode.get())
     {
-        dirass_setBeamType(hDir, CBbeamType->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CBchFormat.get())
-    {
-        dirass_setChOrder(hDir, CBchFormat->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CBnormScheme.get())
-    {
-        dirass_setNormType(hDir, CBnormScheme->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CB_hfov.get())
-    {
-        dirass_setDispFOV(hDir, CB_hfov->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CB_aspectRatio.get())
-    {
-        dirass_setAspectRatio(hDir, CB_aspectRatio->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CBinputOrder.get())
-    {
-        dirass_setInputOrder(hDir, CBinputOrder->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CBgridOption.get())
-    {
-        dirass_setDisplayGridOption(hDir, CBgridOption->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CBupscaleOrder.get())
-    {
-        dirass_setUpscaleOrder(hDir, CBupscaleOrder->getSelectedId());
-    }
-    else if (comboBoxThatHasChanged == CBdirassMode.get())
-    {
-        dirass_setDiRAssMode(hDir, CBdirassMode->getSelectedId());
         CBupscaleOrder->setEnabled(dirass_getDiRAssMode(hDir) == REASS_UPSCALE ? true : false);
     }
     else if (comboBoxThatHasChanged == CB_webcam.get())
@@ -789,24 +651,8 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     }
 }
 
-void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+void PluginEditor::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
-    if (sliderThatWasMoved == SLmapAvg.get())
-    {
-        dirass_setMapAvgCoeff(hDir, (float)SLmapAvg->getValue());
-    }
-    else if (sliderThatWasMoved == s_minFreq.get())
-    {
-        dirass_setMinFreq(hDir, (float)s_minFreq->getValue());
-    }
-    else if (sliderThatWasMoved == s_maxFreq.get())
-    {
-        dirass_setMaxFreq(hDir, (float)s_maxFreq->getValue());
-    }
-    else if (sliderThatWasMoved == s_interpWidth.get())
-    {
-        dirass_setDispWidth(hDir, (int)s_interpWidth->getValue());
-    }
 }
 
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
@@ -834,10 +680,8 @@ void PluginEditor::timerCallback(int timerID)
 
         case TIMER_GUI_RELATED:
             /* parameters whos values can change internally should be periodically refreshed */
-            if(CBchFormat->getSelectedId()!=dirass_getChOrder(hDir))
-                CBchFormat->setSelectedId(dirass_getChOrder(hDir), dontSendNotification);
-            if(CBnormScheme->getSelectedId()!=dirass_getNormType(hDir))
-                CBnormScheme->setSelectedId(dirass_getNormType(hDir), dontSendNotification);
+            CBchFormat->setSelectedId(dirass_getChOrder(hDir), sendNotification);
+            CBnormScheme->setSelectedId(dirass_getNormType(hDir), sendNotification);
             CBchFormat->setItemEnabled(CH_FUMA, dirass_getInputOrder(hDir)==SH_ORDER_FIRST ? true : false);
             CBnormScheme->setItemEnabled(NORM_FUMA, dirass_getInputOrder(hDir)==SH_ORDER_FIRST ? true : false);
             CBgridOption->setEnabled(processor.getIsPlaying() ? false : true);

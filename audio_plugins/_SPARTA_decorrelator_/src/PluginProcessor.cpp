@@ -39,6 +39,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     params.push_back(std::make_unique<juce::AudioParameterFloat>("decorrelation", "Decorrelation", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numChannels", "NumChannels", 1, MAX_NUM_INPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("energyComp", "EnergyCompensation", false));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("bypassTransients", "BypassTransients", false));
     
     return { params.begin(), params.end() };
 }
@@ -51,12 +53,20 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
     else if(parameterID == "numChannels"){
         decorrelator_setNumberOfChannels(hDecor, static_cast<int>(newValue));
     }
+    else if(parameterID == "energyComp"){
+        decorrelator_setLevelCompensationFlag(hDecor, static_cast<int>(newValue+0.5f));
+    }
+    else if(parameterID == "bypassTransients"){
+        decorrelator_setTransientBypassFlag(hDecor, static_cast<int>(newValue+0.5f));
+    }
 }
 
 void PluginProcessor::setParameterValuesUsingInternalState()
 {
     setParameterValue("decorrelation", decorrelator_getDecorrelationAmount(hDecor));
     setParameterValue("numChannels", decorrelator_getNumberOfChannels(hDecor));
+    setParameterValue("energyComp", decorrelator_getLevelCompensationFlag(hDecor));
+    setParameterValue("bypassTransients", decorrelator_getTransientBypassFlag(hDecor));
 }
 
 PluginProcessor::PluginProcessor() :
@@ -147,6 +157,8 @@ void PluginProcessor::releaseResources()
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
+    ScopedNoDenormals noDenormals;
+    
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), 256);
@@ -185,10 +197,6 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     xmlState->setTagName("DECORRELATORPLUGINSETTINGS");
     xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10102
     
-    /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-    xmlState->setAttribute("ENERGY_COMP", decorrelator_getLevelCompensationFlag(hDecor));
-    xmlState->setAttribute("BYPASS_TRANSIENTS", decorrelator_getTransientBypassFlag(hDecor));
-    
     /* Save */
     copyXmlToBinary(*xmlState, destData);
 }
@@ -212,12 +220,6 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
         }
         else if(xmlState->getIntAttribute("VersionCode")>=0x10102){
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
-            
-            /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
-            if(xmlState->hasAttribute("ENERGY_COMP"))
-                decorrelator_setLevelCompensationFlag(hDecor, xmlState->getIntAttribute("ENERGY_COMP", 2));
-            if(xmlState->hasAttribute("BYPASS_TRANSIENTS"))
-                decorrelator_setTransientBypassFlag(hDecor, xmlState->getIntAttribute("BYPASS_TRANSIENTS", 2));
             
         }
         

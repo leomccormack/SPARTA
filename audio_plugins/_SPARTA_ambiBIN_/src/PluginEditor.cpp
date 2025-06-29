@@ -38,8 +38,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (CBorderPreset.get());
     CBorderPreset->setEditableText (false);
     CBorderPreset->setJustificationType (juce::Justification::centredLeft);
-    CBorderPreset->setTextWhenNothingSelected (TRANS ("Default"));
-    CBorderPreset->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBorderPreset->addListener (this);
 
     CBorderPreset->setBounds (136, 63, 104, 18);
@@ -48,8 +46,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (CBchFormat.get());
     CBchFormat->setEditableText (false);
     CBchFormat->setJustificationType (juce::Justification::centredLeft);
-    CBchFormat->setTextWhenNothingSelected (TRANS ("ACN"));
-    CBchFormat->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBchFormat->addListener (this);
 
     CBchFormat->setBounds (88, 116, 72, 18);
@@ -58,8 +54,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (CBnormScheme.get());
     CBnormScheme->setEditableText (false);
     CBnormScheme->setJustificationType (juce::Justification::centredLeft);
-    CBnormScheme->setTextWhenNothingSelected (TRANS ("N3D"));
-    CBnormScheme->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBnormScheme->addListener (this);
 
     CBnormScheme->setBounds (164, 116, 76, 18);
@@ -192,13 +186,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     t_flipYaw->setBounds (128, 209, 23, 24);
 
-    TBcompEQ.reset (new juce::ToggleButton ("new toggle button"));
-    addAndMakeVisible (TBcompEQ.get());
-    TBcompEQ->setButtonText (juce::String());
-    TBcompEQ->addListener (this);
-
-    TBcompEQ->setBounds (656, -16, 32, 24);
-
     TBrpyFlag = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "useRollPitchYaw");
     addAndMakeVisible (TBrpyFlag.get());
     TBrpyFlag->setButtonText (juce::String());
@@ -217,8 +204,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (CBdecoderMethod.get());
     CBdecoderMethod->setEditableText (false);
     CBdecoderMethod->setJustificationType (juce::Justification::centredLeft);
-    CBdecoderMethod->setTextWhenNothingSelected (TRANS ("Default"));
-    CBdecoderMethod->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBdecoderMethod->addListener (this);
 
     CBdecoderMethod->setBounds (88, 90, 152, 18);
@@ -230,19 +215,17 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     TBdiffMatching->setBounds (411, 87, 22, 24);
 
-    TBtruncationEQ.reset (new juce::ToggleButton ("new toggle button"));
+    TBtruncationEQ = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableTruncationEQ");
     addAndMakeVisible (TBtruncationEQ.get());
     TBtruncationEQ->setButtonText (juce::String());
     TBtruncationEQ->addListener (this);
 
     TBtruncationEQ->setBounds (411, 113, 22, 24);
 
-    CBhrirPreProc.reset (new juce::ComboBox ("Hrir Pre-Processing"));
+    CBhrirPreProc = std::make_unique<ComboBoxWithAttachment>(p.parameters, "hrirPreproc");
     addAndMakeVisible (CBhrirPreProc.get());
     CBhrirPreProc->setEditableText (false);
     CBhrirPreProc->setJustificationType (juce::Justification::centredLeft);
-    CBhrirPreProc->setTextWhenNothingSelected (TRANS ("Please Select"));
-    CBhrirPreProc->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBhrirPreProc->addListener (this);
 
     CBhrirPreProc->setBounds (520, 113, 113, 18);
@@ -262,12 +245,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
-    /* add options to combo boxes */
-    CBhrirPreProc->addItem (TRANS("Off"), HRIR_PREPROC_OFF);
-    CBhrirPreProc->addItem (TRANS("Diffuse-field EQ"), HRIR_PREPROC_EQ);
-    CBhrirPreProc->addItem (TRANS("Phase Simplification"), HRIR_PREPROC_PHASE);
-    CBhrirPreProc->addItem (TRANS("EQ & Phase"), HRIR_PREPROC_ALL);
-
     /* file loader */
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
@@ -280,7 +257,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     /* grab current parameter settings */
     TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
-    TBtruncationEQ->setToggleState(ambi_bin_getEnableTruncationEQ(hAmbi), dontSendNotification);
     te_oscport->setText(String(processor.getOscPortID()), dontSendNotification);
     CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
@@ -343,7 +319,6 @@ PluginEditor::~PluginEditor()
     t_flipPitch = nullptr;
     t_flipRoll = nullptr;
     t_flipYaw = nullptr;
-    TBcompEQ = nullptr;
     TBrpyFlag = nullptr;
     TBenableRot = nullptr;
     CBdecoderMethod = nullptr;
@@ -866,22 +841,10 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     {
         ambi_bin_setUseDefaultHRIRsflag(hAmbi, (int)TBuseDefaultHRIRs->getToggleState());
     }
-    else if (buttonThatWasClicked == TBcompEQ.get())
-    {
-        // TODO: is this supposed to link to something?
-    }
-    else if (buttonThatWasClicked == TBtruncationEQ.get())
-    {
-        ambi_bin_setEnableTruncationEQ(hAmbi, (int)TBtruncationEQ->getToggleState());
-    }
 }
 
-void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
+void PluginEditor::comboBoxChanged (juce::ComboBox* /*comboBoxThatHasChanged*/)
 {
-    if (comboBoxThatHasChanged == CBhrirPreProc.get())
-    {
-        ambi_bin_setHRIRsPreProc(hAmbi, (AMBI_BIN_PREPROC)CBhrirPreProc->getSelectedId());
-    }
 }
 
 void PluginEditor::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
@@ -898,7 +861,6 @@ void PluginEditor::timerCallback(int timerID)
         case TIMER_GUI_RELATED:
             /* parameters whos values can change internally should be periodically refreshed */
             TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
-            CBhrirPreProc->setSelectedId(ambi_bin_getHRIRsPreProc(hAmbi), dontSendNotification);
             CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), sendNotification);
             CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), sendNotification);
             label_N_dirs->setText(String(ambi_bin_getNDirs(hAmbi)), dontSendNotification);
@@ -927,8 +889,6 @@ void PluginEditor::timerCallback(int timerID)
                     CBorderPreset->setEnabled(false);
                 if(TBmaxRE->isEnabled())
                     TBmaxRE->setEnabled(false);
-                if(TBcompEQ->isEnabled())
-                    TBcompEQ->setEnabled(false);
                 if(CBdecoderMethod->isEnabled())
                     CBdecoderMethod->setEnabled(false);
                 if(TBdiffMatching->isEnabled())
@@ -947,8 +907,6 @@ void PluginEditor::timerCallback(int timerID)
                     CBorderPreset->setEnabled(true);
                 if(!TBmaxRE->isEnabled())
                     TBmaxRE->setEnabled(true);
-                if(!TBcompEQ->isEnabled())
-                    TBcompEQ->setEnabled(true);
                 if(!CBdecoderMethod->isEnabled())
                     CBdecoderMethod->setEnabled(true);
                 if(!TBdiffMatching->isEnabled())

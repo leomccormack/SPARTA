@@ -111,7 +111,7 @@ private:
     std::unique_ptr<juce::TextButton> tb_loadJSON;
     std::unique_ptr<juce::TextButton> tb_saveJSON;
     std::unique_ptr<ComboBoxWithAttachment> CBencodingOrder;
-    std::unique_ptr<juce::ToggleButton> applyDiffEQ;
+    std::unique_ptr<ToggleButtonWithAttachment> applyDiffEQ;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

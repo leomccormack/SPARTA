@@ -440,6 +440,8 @@ void PluginProcessor::releaseResources()
 
 void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& /*midiMessages*/)
 {
+    ScopedNoDenormals noDenormals;
+    
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(jmin(getTotalNumInputChannels(), buffer.getNumChannels()), 256);
     nNumOutputs = jmin(jmin(getTotalNumOutputChannels(), buffer.getNumChannels()), 256);

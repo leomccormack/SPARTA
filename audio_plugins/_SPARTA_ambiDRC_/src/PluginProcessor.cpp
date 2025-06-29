@@ -22,13 +22,20 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("threshold", "Threshold", juce::NormalisableRange<float>(-60.0f, 0.0f, 0.01f), 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("ratio", "Ratio", juce::NormalisableRange<float>(1.0f, 30.0f, 0.01f), 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("knee", "Knee", juce::NormalisableRange<float>(0.0f, 10.0f, 0.01f), 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("inGain", "InGain", juce::NormalisableRange<float>(-20.0f, 12.0f, 0.01f), 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("outGain", "OutGain", juce::NormalisableRange<float>(-20.0f, 12.0f, 0.01f), 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("attack_ms", "Attack_ms", juce::NormalisableRange<float>(10.0f, 200.0f, 0.01f), 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("release_ms", "Release_ms", juce::NormalisableRange<float>(50.0f, 1000.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("threshold", "Threshold", juce::NormalisableRange<float>(-60.0f, 0.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("dB")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("ratio", "Ratio", juce::NormalisableRange<float>(1.0f, 30.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(": 1.00")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("knee", "Knee", juce::NormalisableRange<float>(0.0f, 10.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("dB")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("inGain", "InGain", juce::NormalisableRange<float>(-20.0f, 12.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("dB")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("outGain", "OutGain", juce::NormalisableRange<float>(-20.0f, 12.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("dB")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("attack_ms", "Attack", juce::NormalisableRange<float>(10.0f, 200.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("ms")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("release_ms", "Release", juce::NormalisableRange<float>(50.0f, 1000.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel("ms")));
     
     return { params.begin(), params.end() };
 }
@@ -169,6 +176,8 @@ void PluginProcessor::releaseResources()
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
+    ScopedNoDenormals noDenormals;
+    
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), 256);
@@ -179,7 +188,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     /* check whether the playhead is moving */
     playHead = getPlayHead();
     if(playHead!=nullptr)
-        isPlaying = playHead->getCurrentPosition(currentPosition) == true ? currentPosition.isPlaying : false;
+        isPlaying = playHead->getPosition()->getIsPlaying();
     else
         isPlaying = false;
 

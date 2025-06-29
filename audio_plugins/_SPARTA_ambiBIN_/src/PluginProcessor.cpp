@@ -45,14 +45,22 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     params.push_back(std::make_unique<juce::AudioParameterChoice>("decMethod", "DecMethod",
                                                                   juce::StringArray{"Least-Squares (LS)","LS with Ambi-Diff-EQ","Spatial Resampling (SPR)","Time-alignment (TA)","Magnitude-LS"}, 4,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableTruncationEQ", "EnableTruncationEQ", false,
+                                                                AudioParameterBoolAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("hrirPreproc", "HRIRPreproc",
+                                                                  juce::StringArray{"Off","Diffuse-field EQ","Phase Simplification","EQ & Phase"}, 1,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterBool>("enableDiffuseMatching", "EnableDiffuseMatching", false,
                                                                 AudioParameterBoolAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE", "EnableMaxRE", false, AudioParameterBoolAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterBool>("enableRotation", "EnableRotation", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("useRollPitchYaw", "UseRollPitchYaw", false));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("yaw", "Yaw", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("pitch", "Pitch", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("roll", "Roll", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("yaw", "Yaw", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("pitch", "Pitch", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("roll", "Roll", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipYaw", "FlipYaw", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipPitch", "FlipPitch", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipRoll", "FlipRoll", false));
@@ -73,6 +81,12 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
     }
     else if (parameterID == "decMethod"){
         ambi_bin_setDecodingMethod(hAmbi, static_cast<AMBI_BIN_DECODING_METHODS>(newValue+1.001f));
+    }
+    else if (parameterID == "enableTruncationEQ"){
+        ambi_bin_setEnableTruncationEQ(hAmbi, static_cast<int>(newValue+0.5f));
+    }
+    else if (parameterID == "hrirPreproc"){
+        ambi_bin_setHRIRsPreProc(hAmbi, static_cast<AMBI_BIN_PREPROC>(newValue+1.001f));
     }
     else if (parameterID == "enableDiffuseMatching"){
         ambi_bin_setEnableDiffuseMatching(hAmbi, static_cast<int>(newValue+0.5f));
@@ -112,6 +126,8 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("channelOrder", ambi_bin_getChOrder(hAmbi)-1);
     setParameterValue("normType", ambi_bin_getNormType(hAmbi)-1);
     setParameterValue("decMethod", ambi_bin_getDecodingMethod(hAmbi)-1);
+    setParameterValue("enableTruncationEQ", ambi_bin_getEnableTruncationEQ(hAmbi));
+    setParameterValue("hrirPreproc", ambi_bin_getHRIRsPreProc(hAmbi)-1);
     setParameterValue("enableDiffuseMatching", ambi_bin_getEnableDiffuseMatching(hAmbi));
     setParameterValue("enableMaxRE", ambi_bin_getEnableMaxRE(hAmbi));
     setParameterValue("enableRotation", ambi_bin_getEnableRotation(hAmbi));
@@ -248,6 +264,8 @@ void PluginProcessor::releaseResources()
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
+    ScopedNoDenormals noDenormals;
+    
     int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), 256);
@@ -287,8 +305,6 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     
     /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
     xml->setAttribute("UseDefaultHRIRset", ambi_bin_getUseDefaultHRIRsflag(hAmbi));
-    xml->setAttribute("truncationEQ", ambi_bin_getEnableTruncationEQ(hAmbi));
-    xml->setAttribute("preproc", ambi_bin_getHRIRsPreProc(hAmbi));
     if(!ambi_bin_getUseDefaultHRIRsflag(hAmbi))
         xml->setAttribute("SofaFilePath", String(ambi_bin_getSofaFilePath(hAmbi)));
 
@@ -360,10 +376,6 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
             if(xmlState->hasAttribute("UseDefaultHRIRset"))
                 ambi_bin_setUseDefaultHRIRsflag(hAmbi, xmlState->getIntAttribute("UseDefaultHRIRset", 1));
-            if(xmlState->hasAttribute("truncationEQ"))
-                ambi_bin_setEnableTruncationEQ(hAmbi,xmlState->getIntAttribute("truncationEQ", 1));
-            if(xmlState->hasAttribute("preproc"))
-                ambi_bin_setHRIRsPreProc(hAmbi, (AMBI_BIN_PREPROC)xmlState->getIntAttribute("preproc", 1));
             if(xmlState->hasAttribute("SofaFilePath")){
                 String directory = xmlState->getStringAttribute("SofaFilePath", "no_file");
                 const char* new_cstring = (const char*)directory.toUTF8();

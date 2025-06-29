@@ -95,19 +95,19 @@ private:
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
     HyperlinkButton publicationLink { "(Related Publication)", { "https://leomccormack.github.io/sparta-site/docs/help/related-publications/mccormack2019applications.pdf" } };
 
-    std::unique_ptr<juce::ComboBox> CBbeamType;
-    std::unique_ptr<juce::ComboBox> CBchFormat;
-    std::unique_ptr<juce::ComboBox> CBnormScheme;
-    std::unique_ptr<juce::ComboBox> CB_hfov;
-    std::unique_ptr<juce::ComboBox> CB_aspectRatio;
-    std::unique_ptr<juce::Slider> SLmapAvg;
-    std::unique_ptr<juce::ComboBox> CBinputOrder;
-    std::unique_ptr<juce::Slider> s_minFreq;
-    std::unique_ptr<juce::Slider> s_maxFreq;
-    std::unique_ptr<juce::ComboBox> CBgridOption;
-    std::unique_ptr<juce::ComboBox> CBupscaleOrder;
-    std::unique_ptr<juce::ComboBox> CBdirassMode;
-    std::unique_ptr<juce::Slider> s_interpWidth;
+    std::unique_ptr<ComboBoxWithAttachment> CBbeamType;
+    std::unique_ptr<ComboBoxWithAttachment> CBchFormat;
+    std::unique_ptr<ComboBoxWithAttachment> CBnormScheme;
+    std::unique_ptr<ComboBoxWithAttachment> CB_hfov;
+    std::unique_ptr<ComboBoxWithAttachment> CB_aspectRatio;
+    std::unique_ptr<SliderWithAttachment> SLmapAvg;
+    std::unique_ptr<ComboBoxWithAttachment> CBinputOrder;
+    std::unique_ptr<SliderWithAttachment> s_minFreq;
+    std::unique_ptr<SliderWithAttachment> s_maxFreq;
+    std::unique_ptr<ComboBoxWithAttachment> CBgridOption;
+    std::unique_ptr<ComboBoxWithAttachment> CBupscaleOrder;
+    std::unique_ptr<ComboBoxWithAttachment> CBdirassMode;
+    std::unique_ptr<SliderWithAttachment> s_interpWidth;
     std::unique_ptr<juce::ComboBox> CB_webcam;
     std::unique_ptr<juce::ToggleButton> TB_greyScale;
     std::unique_ptr<juce::ToggleButton> TB_flipUD;

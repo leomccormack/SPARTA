@@ -74,13 +74,13 @@ private:
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
 
-    std::unique_ptr<juce::ToggleButton> TBenablePartConv;
+    std::unique_ptr<ToggleButtonWithAttachment> TBenablePartConv;
     std::unique_ptr<juce::Label> label_hostBlockSize;
     std::unique_ptr<juce::Label> label_NFilters;
     std::unique_ptr<juce::Label> label_filterLength;
     std::unique_ptr<juce::Label> label_hostfs;
     std::unique_ptr<juce::Label> label_filterfs;
-    std::unique_ptr<juce::Slider> SL_num_inputs;
+    std::unique_ptr<SliderWithAttachment> SL_num_inputs;
     std::unique_ptr<juce::Label> label_MatrixNInputs;
     std::unique_ptr<juce::Label> label_MatrixNoutputs;
     std::unique_ptr<juce::Label> label_NOutputs;

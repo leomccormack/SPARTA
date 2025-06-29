@@ -503,6 +503,8 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
             processor.setParameterValue("azim" + juce::String(i), ambi_enc_getSourceAzi_deg(hAmbi,i));
             processor.setParameterValue("elev" + juce::String(i), ambi_enc_getSourceElev_deg(hAmbi,i));
         }
+        
+        refreshPanViewWindow = true;
     }
 }
 

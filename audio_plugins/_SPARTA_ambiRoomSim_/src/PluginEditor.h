@@ -89,17 +89,17 @@ private:
     std::unique_ptr<ComboBoxWithAttachment> CBnormalisation;
     std::unique_ptr<ComboBoxWithAttachment> CBorder;
     std::unique_ptr<SliderWithAttachment> SL_num_receivers;
-    std::unique_ptr<juce::Slider> SL_max_reflection_order;
-    std::unique_ptr<juce::Slider> s_attenCoeff_pX;
-    std::unique_ptr<juce::Slider> s_attenCoeff_nX;
-    std::unique_ptr<juce::Slider> s_attenCoeff_nY;
-    std::unique_ptr<juce::Slider> s_attenCoeff_nZ;
-    std::unique_ptr<juce::Slider> s_attenCoeff_pZ;
-    std::unique_ptr<juce::Slider> s_attenCoeff_pY;
-    std::unique_ptr<juce::Slider> s_roomLenZ;
-    std::unique_ptr<juce::Slider> s_roomLenY;
-    std::unique_ptr<juce::Slider> s_roomLenX;
-    std::unique_ptr<juce::ToggleButton> TB_enableIMS;
+    std::unique_ptr<SliderWithAttachment> SL_max_reflection_order;
+    std::unique_ptr<SliderWithAttachment> s_attenCoeff_pX;
+    std::unique_ptr<SliderWithAttachment> s_attenCoeff_nX;
+    std::unique_ptr<SliderWithAttachment> s_attenCoeff_nY;
+    std::unique_ptr<SliderWithAttachment> s_attenCoeff_nZ;
+    std::unique_ptr<SliderWithAttachment> s_attenCoeff_pZ;
+    std::unique_ptr<SliderWithAttachment> s_attenCoeff_pY;
+    std::unique_ptr<SliderWithAttachment> s_roomLenZ;
+    std::unique_ptr<SliderWithAttachment> s_roomLenY;
+    std::unique_ptr<SliderWithAttachment> s_roomLenX;
+    std::unique_ptr<ToggleButtonWithAttachment> TB_enableIMS;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

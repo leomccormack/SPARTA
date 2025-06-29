@@ -41,14 +41,14 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     SL_decorAmount->setBounds (128, 73, 108, 18);
 
-    tb_compLevel.reset (new juce::ToggleButton ("new toggle button"));
+    tb_compLevel = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "energyComp");
     addAndMakeVisible (tb_compLevel.get());
     tb_compLevel->setButtonText (juce::String());
     tb_compLevel->addListener (this);
 
     tb_compLevel->setBounds (393, 47, 23, 24);
 
-    tb_bypassTransients.reset (new juce::ToggleButton ("new toggle button"));
+    tb_bypassTransients = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "bypassTransients");
     addAndMakeVisible (tb_bypassTransients.get());
     tb_bypassTransients->setButtonText (juce::String());
     tb_bypassTransients->addListener (this);
@@ -81,10 +81,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     progressbar.ProgressBar::setAlwaysOnTop(true);
     progressbar.setColour(ProgressBar::backgroundColourId, Colours::gold);
     progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
-
-    /* grab current parameter settings */
-    tb_compLevel->setToggleState((bool)decorrelator_getLevelCompensationFlag(hDecor), dontSendNotification);
-    tb_bypassTransients->setToggleState((bool)decorrelator_getTransientBypassFlag(hDecor), dontSendNotification);
 
     /* tooltips */
     SL_nChannels->setTooltip("Number of input/output channels to decorrelate");
@@ -279,24 +275,24 @@ void PluginEditor::paint (juce::Graphics& g)
             break;
         case k_warning_frameSize:
             g.drawText(TRANS("Set frame size to multiple of ") + String(decorrelator_getFrameSize()),
-                       getBounds().getWidth()-225, 16, 530, 11,
+                       getBounds().getWidth()-225, 4, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_supported_fs:
             g.drawText(TRANS("Sample rate (") + String(decorrelator_getDAWsamplerate(hDecor)) + TRANS(") is unsupported"),
-                       getBounds().getWidth()-225, 16, 530, 11,
+                       getBounds().getWidth()-225, 4, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(decorrelator_getNumberOfChannels(hDecor)) + TRANS(")"),
-                       getBounds().getWidth()-225, 16, 530, 11,
+                       getBounds().getWidth()-225, 4, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(decorrelator_getNumberOfChannels(hDecor)) + TRANS(")"),
-                       getBounds().getWidth()-225, 16, 530, 11,
+                       getBounds().getWidth()-225, 4, 530, 11,
                        Justification::centredLeft, true);
             break;
     }
@@ -311,16 +307,8 @@ void PluginEditor::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 }
 
 
-void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
+void PluginEditor::buttonClicked (juce::Button* /*buttonThatWasClicked*/)
 {
-    if (buttonThatWasClicked == tb_compLevel.get())
-    {
-        decorrelator_setLevelCompensationFlag(hDecor, (int)tb_compLevel->getToggleState());
-    }
-    else if (buttonThatWasClicked == tb_bypassTransients.get())
-    {
-        decorrelator_setTransientBypassFlag(hDecor, (int)tb_bypassTransients->getToggleState());
-    }
 }
 
 void PluginEditor::timerCallback(int timerID)
@@ -331,9 +319,6 @@ void PluginEditor::timerCallback(int timerID)
             break;
 
         case TIMER_GUI_RELATED:
-            /* parameters whos values can change internally should be periodically refreshed */
-            SL_decorAmount->setValue(decorrelator_getDecorrelationAmount(hDecor), dontSendNotification);
-
             /* Progress bar */
             if(decorrelator_getCodecStatus(hDecor)==CODEC_STATUS_INITIALISING){
                 addAndMakeVisible(progressbar);

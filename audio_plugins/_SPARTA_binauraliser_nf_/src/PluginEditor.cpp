@@ -115,12 +115,10 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     label_N_Tri->setBounds (853, 140, 51, 20);
 
-    CBinterpMode.reset (new juce::ComboBox ("new combo box"));
+    CBinterpMode = std::make_unique<ComboBoxWithAttachment>(p.parameters, "interpMode");
     addAndMakeVisible (CBinterpMode.get());
     CBinterpMode->setEditableText (false);
     CBinterpMode->setJustificationType (juce::Justification::centredLeft);
-    CBinterpMode->setTextWhenNothingSelected (juce::String());
-    CBinterpMode->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBinterpMode->addListener (this);
 
     CBinterpMode->setBounds (328, 324, 112, 20);
@@ -230,7 +228,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     TBenableRotation->setBounds (832, 191, 32, 24);
 
-    TBenablePreProc.reset (new juce::ToggleButton ("new toggle button"));
+    TBenablePreProc = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableDiffuseEQ");
     addAndMakeVisible (TBenablePreProc.get());
     TBenablePreProc->setTooltip (TRANS ("Enable HRIR Pre-Processing"));
     TBenablePreProc->setButtonText (juce::String());
@@ -257,10 +255,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     SL_num_sources->setColour(Slider::trackColourId, Colours::transparentBlack);
     SL_num_sources->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
     SL_num_sources->setSliderSnapsToMousePosition(false);
-
-    /* interp modes */
-    CBinterpMode->addItem(TRANS("Triangular"), INTERP_TRI);
-    CBinterpMode->addItem(TRANS("Triangular (PS)"), INTERP_TRI_PS);
 
     /* add source preset options */
     CBsourceDirsPreset->addItem (TRANS("Mono"), SOURCE_CONFIG_PRESET_MONO);
@@ -323,7 +317,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(false, dontSendNotification);
-    CBinterpMode->setSelectedId(binauraliser_getInterpMode(hBin), dontSendNotification);
     te_oscport->setText(String(processor.getOscPortID()), dontSendNotification);
 
     /* create panning window */
@@ -926,10 +919,6 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
         
         refreshPanViewWindow = true;
     }
-    else if (comboBoxThatHasChanged == CBinterpMode.get())
-    {
-        binauraliser_setInterpMode(hBin, CBinterpMode->getSelectedId());
-    }
 }
 
 void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
@@ -986,10 +975,6 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
             }
         });
     }
-    else if (buttonThatWasClicked == TBenablePreProc.get())
-    {
-        binauraliser_setEnableHRIRsDiffuseEQ(hBin, (int)TBenablePreProc->getToggleState());
-    }
 }
 
 void PluginEditor::timerCallback(int timerID)
@@ -1010,7 +995,6 @@ void PluginEditor::timerCallback(int timerID)
             /* parameters whos values can change internally should be periodically refreshed */
             sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
             TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
-            TBenablePreProc->setToggleState(binauraliser_getEnableHRIRsDiffuseEQ(hBin), dontSendNotification);
 
             /* Progress bar */
             if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
