@@ -57,7 +57,7 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
 void PluginProcessor::setParameterValuesUsingInternalState()
 {
     setParameterValue("enablePartitionedConv", multiconv_getEnablePart(hMCnv));
-    setParameterValue("numInputChannels", multiconv_getNumChannels(hMCnv));
+    setParameterValue("numChannels", multiconv_getNumChannels(hMCnv));
 }
 
 PluginProcessor::PluginProcessor() :
