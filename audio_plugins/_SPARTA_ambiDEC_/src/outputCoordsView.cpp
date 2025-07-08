@@ -42,8 +42,7 @@ outputCoordsView::outputCoordsView (PluginProcessor& p, int _maxNCH, int _curren
         addAndMakeVisible (aziSliders[i].get());
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
-        aziSliders[i]->setBounds(4, 8 + i*sensorEdit_height, 67, 16);
-        aziSliders[i]->addListener (this);
+        aziSliders[i]->setBounds(4, 6 + i*sensorEdit_height, 67, 20);
         aziSliders[i]->setTooltip("Azimuth angle (in degrees) of loudspeaker No. " + String(i+1));
 
         /* create and initialise elevation sliders */
@@ -51,8 +50,7 @@ outputCoordsView::outputCoordsView (PluginProcessor& p, int _maxNCH, int _curren
         addAndMakeVisible (elevSliders[i].get());
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
-        elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 67, 16);
-        elevSliders[i]->addListener (this);
+        elevSliders[i]->setBounds(105, 6 + i*sensorEdit_height, 67, 20);
         elevSliders[i]->setTooltip("Elevation angle (in degrees) of loudspeaker No. " + String(i+1));
         
         /* remove slider bit of these sliders */

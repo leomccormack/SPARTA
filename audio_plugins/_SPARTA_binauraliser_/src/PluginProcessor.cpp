@@ -43,11 +43,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     params.push_back(std::make_unique<juce::AudioParameterBool>("enableDiffuseEQ", "EnableDiffuseEQ", true, AudioParameterBoolAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterBool>("enableRotation", "EnableRotation", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("useRollPitchYaw", "UseRollPitchYaw", false));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("yaw", "Yaw", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("yaw", "Yaw", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.1f), 0.0f,
                                                                  AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("pitch", "Pitch", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("pitch", "Pitch", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.1f), 0.0f,
                                                                  AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("roll", "Roll", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("roll", "Roll", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.1f), 0.0f,
                                                                  AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipYaw", "FlipYaw", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipPitch", "FlipPitch", false));
@@ -128,6 +128,25 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     for(int i=0; i<MAX_NUM_INPUTS; i++){
         setParameterValue("azim" + juce::String(i), binauraliser_getSourceAzi_deg(hBin, i));
         setParameterValue("elev" + juce::String(i), binauraliser_getSourceElev_deg(hBin, i));
+    }
+}
+
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    binauraliser_setInterpMode(hBin, getParameterChoice("interpMode")+1);
+    binauraliser_setEnableHRIRsDiffuseEQ(hBin, getParameterBool("enableDiffuseEQ"));
+    binauraliser_setEnableRotation(hBin, getParameterBool("enableRotation"));
+    binauraliser_setRPYflag(hBin, getParameterBool("useRollPitchYaw"));
+    binauraliser_setYaw(hBin, getParameterFloat("yaw"));
+    binauraliser_setPitch(hBin, getParameterFloat("pitch"));
+    binauraliser_setRoll(hBin, getParameterFloat("roll"));
+    binauraliser_setFlipYaw(hBin, getParameterBool("flipYaw"));
+    binauraliser_setFlipPitch(hBin, getParameterBool("flipPitch"));
+    binauraliser_setFlipRoll(hBin, getParameterBool("flipRoll"));
+    binauraliser_setNumSources(hBin, getParameterInt("numSources"));
+    for(int i=0; i<MAX_NUM_INPUTS; i++){
+        binauraliser_setSourceAzi_deg(hBin, i, getParameterFloat("azim" + juce::String(i)));
+        binauraliser_setSourceElev_deg(hBin, i, getParameterFloat("elev" + juce::String(i)));
     }
 }
 
@@ -378,6 +397,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
                 osc.connect(osc_port_ID);
             }
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
         
         binauraliser_refreshSettings(hBin);
@@ -446,6 +469,13 @@ void PluginProcessor::loadConfiguration (const File& configFile)
             for(int j=0; j<num_srcs+num_virtual_srcs; j++)
                 if( channelIDs[j] > virtual_channelIDs[i]-i )
                     channelIDs[j]--;
+        
+        /* Making sure that the internal coordinates above the current numSources (i.e. numSources+1:maxNumSources) are up to date in "parameters" too */
+        /* This is because JUCE won't invoke parameterChanged() if the values are the same in the parameter list */
+        for(int i=binauraliser_getNumSources(hBin); i<num_srcs; i++){
+            setParameterValue("azim" + juce::String(i), binauraliser_getSourceAzi_deg(hBin, i));
+            setParameterValue("elev" + juce::String(i), binauraliser_getSourceElev_deg(hBin, i));
+        }
         
         /* update with the new configuration  */
         setParameterValue("numSources", num_srcs);

@@ -100,6 +100,19 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     }
 }
 
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    beamformer_setBeamOrder(hBeam, getParameterChoice("inputOrder")+1);
+    beamformer_setChOrder(hBeam, getParameterChoice("channelOrder")+1);
+    beamformer_setNormType(hBeam, getParameterChoice("normType")+1);
+    beamformer_setBeamType(hBeam, getParameterChoice("beamType")+1);
+    beamformer_setNumBeams(hBeam, getParameterInt("numBeams"));
+    for(int i=0; i<MAX_NUM_OUTPUTS; i++){
+        beamformer_setBeamAzi_deg(hBeam, i, getParameterFloat("azim" + juce::String(i)));
+        beamformer_setBeamElev_deg(hBeam, i, getParameterFloat("elev" + juce::String(i)));
+    }
+}
+
 PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
@@ -257,6 +270,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
         }
         else if(xmlState->getIntAttribute("VersionCode")>=0x10201){
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
         
         beamformer_refreshSettings(hBeam);

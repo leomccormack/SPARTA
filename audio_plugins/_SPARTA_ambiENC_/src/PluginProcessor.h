@@ -82,7 +82,8 @@ private:
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void parameterChanged(const juce::String& parameterID, float newValue) override;
     void setParameterValuesUsingInternalState();
-    
+    void setInternalStateUsingParameterValues();
+
     /***************************************************************************\
                                     JUCE Functions
     \***************************************************************************/

@@ -1,266 +1,383 @@
+#pragma once
 
-/* Based on one of the lookAndFeel examples from JUCE/examples/GUI */
-struct SPARTALookAndFeel    : public LookAndFeel_V4
+class SPARTALookAndFeel : public juce::LookAndFeel_V4
 {
-    void setDefaultColours(){
-        setColourScheme(getDarkColourScheme());
-
-        /* Buttons */
-        setColour(TextButton::buttonOnColourId, Colours::lightgrey);
-        setColour(TextButton::textColourOnId, Colours::white);
-        setColour(TextButton::textColourOffId, Colours::white);
-
-        /* Slider */
-        setColour(Slider::rotarySliderFillColourId, Colour (0xff315b6d));
-        setColour(Slider::trackColourId, Colours::lightgrey);
-        setColour(Slider::backgroundColourId, Colour (0xff315b6d));
-        setColour(Slider::textBoxTextColourId, juce::Colours::white);
-        setColour(Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-        setColour(Slider::textBoxHighlightColourId, Colours::darkgrey);
-
-        /* Labels */
-        setColour(Label::textColourId, Colours::white);
-        setColour(Label::backgroundWhenEditingColourId, Colours::darkgrey);
-        setColour(Label::textWhenEditingColourId, Colours::black);
-
-        /* Progressbars */
-        setColour(ProgressBar::backgroundColourId, Colours::gold);
-        setColour(ProgressBar::foregroundColourId, Colours::white);
-
-        /* Combo Boxes */
-    }
-
-    void drawRoundThumb (Graphics& g, float x, float y, float diameter, Colour colour, float outlineThickness)
-    {
-        auto halfThickness = outlineThickness * 0.5f;
-
-        Path p;
-        p.addEllipse (x + halfThickness,
-                      y + halfThickness,
-                      diameter - outlineThickness,
-                      diameter - outlineThickness);
-
-        DropShadow (Colours::black, 1, {}).drawForPath (g, p);
-
-        g.setColour (colour);
-        g.fillPath (p);
-
-        g.setColour (colour.brighter());
-        g.strokePath (p, PathStrokeType (outlineThickness));
-    }
-
-    void drawButtonBackground (Graphics& g, Button& button, const Colour& backgroundColour,
-                               bool isMouseOverButton, bool isButtonDown) override
-    {
-        auto baseColour = backgroundColour.withMultipliedSaturation (button.hasKeyboardFocus (true) ? 1.3f : 0.9f)
-                                          .withMultipliedAlpha      (button.isEnabled() ? 0.9f : 0.5f);
-
-        if (isButtonDown || isMouseOverButton)
-            baseColour = baseColour.contrasting (isButtonDown ? 0.2f : 0.1f);
-
-        auto flatOnLeft   = button.isConnectedOnLeft();
-        auto flatOnRight  = button.isConnectedOnRight();
-        auto flatOnTop    = button.isConnectedOnTop();
-        auto flatOnBottom = button.isConnectedOnBottom();
-
-        auto width  = (float) button.getWidth()  - 1.0f;
-        auto height = (float) button.getHeight() - 1.0f;
-
-        if (width > 0 && height > 0)
-        {
-            auto cornerSize = jmin (15.0f, jmin (width, height) * 0.45f);
-            auto lineThickness = cornerSize    * 0.1f;
-            auto halfThickness = lineThickness * 0.5f;
-
-            Path outline;
-            outline.addRoundedRectangle (0.5f + halfThickness, 0.5f + halfThickness, width - lineThickness, height - lineThickness,
-                                         cornerSize, cornerSize,
-                                         ! (flatOnLeft  || flatOnTop),
-                                         ! (flatOnRight || flatOnTop),
-                                         ! (flatOnLeft  || flatOnBottom),
-                                         ! (flatOnRight || flatOnBottom));
-
-            auto outlineColour = button.findColour (button.getToggleState() ? TextButton::textColourOnId
-                                                                            : TextButton::textColourOffId);
-
-            g.setColour (baseColour);
-            g.fillPath (outline);
-
-            if (! button.getToggleState())
-            {
-                g.setColour (outlineColour);
-                g.strokePath (outline, PathStrokeType (lineThickness));
-            }
-        }
-    }
-
-    void drawTickBox (Graphics& g, Component& component,
-                      float x, float y, float w, float h,
-                      bool ticked,
-                      bool isEnabled,
-                      bool isMouseOverButton,
-                      bool isButtonDown) override
-    {
-        auto boxSize = w * 0.85f;
-
-        auto isDownOrDragging = component.isEnabled() && (component.isMouseOverOrDragging() || component.isMouseButtonDown());
-
-        auto colour = component.findColour (TextButton::buttonColourId)
-                               .withMultipliedSaturation ((component.hasKeyboardFocus (false) || isDownOrDragging) ? 1.6f : 0.9f)
-                               .withMultipliedAlpha (component.isEnabled() ? 1.4f : 0.8f);
-
-        drawRoundThumb (g, x, y + (h - boxSize) * 0.5f, boxSize, colour,
-                        isEnabled ? ((isButtonDown || isMouseOverButton) ? 2.2f : 1.4f) : 1.1f);
-
-        if (ticked)
-        {
-            g.setColour (isEnabled ? findColour (TextButton::buttonOnColourId) : Colours::grey);
-
-            auto scale = 9.0f;
-            auto trans = AffineTransform::scale (w / scale, h / scale).translated (x - 3.4f, y + 1.0f);
-
-            g.fillPath (LookAndFeel_V4::getTickShape (7.1f), trans);
-        }
-    }
-
-    void drawLinearSliderThumb (Graphics& g, int x, int y, int width, int height,
-                                float sliderPos, float minSliderPos, float maxSliderPos,
-                                const Slider::SliderStyle style, Slider& slider) override
-    {
-        auto sliderRadius = (float) 6.5f;//(getSliderThumbRadius (slider) - 2);
-
-        auto isDownOrDragging = slider.isEnabled() && (slider.isMouseOverOrDragging() || slider.isMouseButtonDown());
-
-        auto knobColour = slider.findColour (Slider::thumbColourId)
-                                .withMultipliedSaturation ((slider.hasKeyboardFocus (false) || isDownOrDragging) ? 1.3f : 0.9f)
-                                .withMultipliedAlpha (slider.isEnabled() ? 1.0f : 0.7f);
-
-        if (style == Slider::LinearHorizontal || style == Slider::LinearVertical)
-        {
-            float kx, ky;
-
-            if (style == Slider::LinearVertical)
-            {
-                kx = (float) x + (float) width * 0.5f;
-                ky = sliderPos;
-            }
-            else
-            {
-                kx = sliderPos;
-                ky = (float) y + (float) height * 0.5f;
-            }
-
-            auto outlineThickness = slider.isEnabled() ? 0.8f : 0.3f;
-
-            drawRoundThumb (g,
-                            kx - sliderRadius,
-                            ky - sliderRadius,
-                            sliderRadius * 2.0f,
-                            knobColour, outlineThickness);
-        }
-        else
-        {
-            LookAndFeel_V2::drawLinearSliderThumb (g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, slider);
-        }
-    }
+public:
+    // Color Palette
+    Colour colourBackground = Colour(70, 75, 85);
+    Colour colourAccent = Colour(70, 180, 220);
+    Colour colourThumb  = Colour(140, 190, 225);
+    Colour colourOutline = Colour(200, 240, 255);
 
     void drawLinearSlider (Graphics& g, int x, int y, int width, int height,
-                           float sliderPos, float minSliderPos, float maxSliderPos,
+                           float sliderPos, float /*minSliderPos*/, float /*maxSliderPos*/,
                            const Slider::SliderStyle style, Slider& slider) override
     {
-        //g.fillAll (slider.findColour (Slider::backgroundColourId));
-        g.fillAll (Colour::fromRGBA(0.0f,0.0f,0.0f,0.0f));
+        const bool isHovered = slider.isMouseOverOrDragging();
+        auto active = isHovered ? colourAccent.darker(0.1f): colourAccent.darker(0.3f);
 
-        if (style == Slider::LinearBar || style == Slider::LinearBarVertical)
+        if (style == Slider::LinearHorizontal)
         {
-            Path p;
+            float trackHeight = 6.0f;
+            float centerY = y + height * 0.5f;
+            Rectangle<float> track (x, centerY - trackHeight * 0.5f, width, trackHeight);
+            g.setColour(colourBackground);
+            g.fillRoundedRectangle(track, 3.0f);
 
-            if (style == Slider::LinearBarVertical)
-                p.addRectangle ((float) x, sliderPos, (float) width, 1.0f + (float) height - sliderPos);
-            else
-                p.addRectangle ((float) x, (float) y, sliderPos - (float) x, (float) height);
+            Rectangle<float> fill (x, centerY - trackHeight * 0.5f, sliderPos - x, trackHeight);
+            g.setColour(active);
+            g.fillRoundedRectangle(fill, 3.0f);
 
-            auto baseColour = slider.findColour (Slider::rotarySliderFillColourId)
-                                    .withMultipliedSaturation (slider.isEnabled() ? 1.0f : 0.5f)
-                                    .withMultipliedAlpha (0.8f);
-
-            g.setColour (baseColour);
-            g.fillPath (p);
-
-            auto lineThickness = jmin (15.0f, (float) jmin (width, height) * 0.45f) * 0.1f;
-            g.drawRect (slider.getLocalBounds().toFloat(), lineThickness);
+            float r = isHovered ? 8.0f : 7.0f;
+            g.setColour(colourThumb.darker(0.2f));
+            g.fillEllipse(sliderPos - r, centerY - r, r * 2, r * 2);
+            g.setColour(colourOutline.darker(0.3f));
+            g.drawEllipse(sliderPos - r, centerY - r, r * 2, r * 2, 1.0f);
+            if (isHovered)
+            {
+                g.setColour(active.withAlpha(0.55f));
+                g.drawEllipse(sliderPos - r - 2, centerY - r - 2, (r + 2) * 2, (r + 2) * 2, 1.0f);
+            }
         }
-        else
+        else if (style == Slider::LinearVertical)
         {
-            drawLinearSliderBackground (g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, slider);
-            drawLinearSliderThumb      (g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, slider);
+            float trackWidth = 6.0f;
+            float centerX = x + width * 0.5f;
+            Rectangle<float> track (centerX - trackWidth * 0.5f, y, trackWidth, height);
+            g.setColour(colourBackground);
+            g.fillRoundedRectangle(track, 3.0f);
+
+            float r = isHovered ? 8.0f : 7.0f;
+            Rectangle<float> fill(centerX - trackWidth * 0.5f, sliderPos, trackWidth, y + height -sliderPos);
+            g.setColour(active);
+            g.fillRoundedRectangle(fill, 3.0f);
+
+            g.setColour(colourThumb.darker(0.2f));
+            g.fillEllipse(centerX - r, sliderPos - r, r * 2, r * 2);
+            g.setColour(colourOutline.darker(0.3f));
+            g.drawEllipse(centerX - r, sliderPos - r, r * 2, r * 2, 1.0f);
+            if (isHovered)
+            {
+                g.setColour(active.withAlpha(0.55f));
+                g.drawEllipse(centerX - r - 2, sliderPos - r - 2, (r + 2) * 2, (r + 2) * 2, 1.0f);
+            }
         }
     }
 
-    void drawLinearSliderBackground (Graphics& g, int x, int y, int width, int height,
-                                     float /*sliderPos*/,
-                                     float /*minSliderPos*/,
-                                     float /*maxSliderPos*/,
-                                     const Slider::SliderStyle /*style*/, Slider& slider) override
+    void drawRotarySlider (juce::Graphics& g, int x, int y, int width, int height,
+                           float /*sliderPos*/, float rotaryStartAngle, float rotaryEndAngle,
+                           juce::Slider& slider) override
     {
-        auto sliderRadius = (float)5.0f;// getSliderThumbRadius (slider) - 5.0f;
-        Path on, off;
+        const auto range = slider.getRange();
+        const double currentValue = slider.getValue();
+        const double defaultValue = slider.getDoubleClickReturnValue();
 
-        if (slider.isHorizontal())
+        auto normalize = [&range](double v)
         {
-            auto iy = (float) y + (float) height * 0.5f - sliderRadius * 0.5f;
-            Rectangle<float> r ((float) x - sliderRadius * 0.5f, iy, (float) width + sliderRadius, sliderRadius);
-            auto onW = r.getWidth() * ((float) slider.valueToProportionOfLength (slider.getValue()));
+            return (v - range.getStart()) / range.getLength();
+        };
 
-            on.addRectangle (r.removeFromLeft (onW));
-            off.addRectangle (r);
-        }
-        else
+        const float normCurrent = juce::jlimit(0.0, 1.0, normalize(currentValue));
+        const float normDefault = juce::jlimit(0.0, 1.0, normalize(defaultValue));
+
+        const float angleCurrent = rotaryStartAngle + normCurrent * (rotaryEndAngle - rotaryStartAngle);
+        const float angleDefault = rotaryStartAngle + normDefault * (rotaryEndAngle - rotaryStartAngle);
+
+        const float radius = juce::jmin(width, height) / 2.0f - 6.0f;
+        const float centerX = x + width * 0.5f;
+        const float centerY = y + height * 0.5f;
+        const bool isHovered = slider.isMouseOverOrDragging();
+
+        // Arc from default to current
+        if (std::abs(currentValue - defaultValue) > 1e-4)
         {
-            auto ix = (float) x + (float) width * 0.5f - sliderRadius * 0.5f;
-            Rectangle<float> r (ix, (float) y - sliderRadius * 0.5f, sliderRadius, (float) height + sliderRadius);
-            auto value = slider.getValue();
-            auto onH = r.getHeight() * ((float) slider.valueToProportionOfLength (value));
+            juce::Path arc;
+            float arcRadius = radius + 4.0f;
 
-            on.addRectangle (r.removeFromBottom (onH));
-            off.addRectangle (r);
+            float startAngle = angleDefault;
+            float endAngle   = angleCurrent;
+
+            if (endAngle < startAngle)
+                std::swap(startAngle, endAngle);
+
+            juce::Rectangle<float> arcBounds(centerX - arcRadius, centerY - arcRadius,
+                                             arcRadius * 2.0f, arcRadius * 2.0f);
+
+            arc.addArc(arcBounds.getX(), arcBounds.getY(),
+                       arcBounds.getWidth(), arcBounds.getHeight(),
+                       startAngle, endAngle, true);
+
+            g.setColour(isHovered ? colourAccent.withAlpha(0.6f) : colourOutline.withAlpha(0.4f));
+            g.strokePath(arc, juce::PathStrokeType(isHovered ? 2.5f : 1.7f));
+        }
+        
+        juce::Colour activeColour = isHovered ? colourAccent : colourOutline;
+
+        // face
+        g.setColour(colourBackground.darker(0.8f));
+        g.fillEllipse(centerX - radius, centerY - radius, radius * 2.0f, radius * 2.0f);
+
+        g.setColour(activeColour);
+        g.drawEllipse(centerX - radius, centerY - radius, radius * 2.0f, radius * 2.0f,
+                      isHovered ? 2.0f : 1.0f);
+
+        float centerRadius = radius * 0.2f;
+        g.setColour(activeColour);
+        g.fillEllipse(centerX - centerRadius, centerY - centerRadius,
+                      centerRadius * 2.0f, centerRadius * 2.0f);
+
+        float pointerLength = radius - 2.0f;
+        float pointerThickness = 2.0f;
+
+        juce::Path pointer;
+        pointer.startNewSubPath(0.0f, 0.0f);
+        pointer.lineTo(0.0f, -pointerLength);
+
+        g.setColour(activeColour);
+        g.strokePath(pointer, juce::PathStrokeType(pointerThickness),
+                     juce::AffineTransform::rotation(angleCurrent).translated(centerX, centerY));
+
+    }
+    
+    void drawToggleButton (Graphics& g, ToggleButton& button, bool isHovered, bool /*isPressed*/) override
+    {
+        auto bounds = button.getLocalBounds().toFloat().reduced(4.0f);
+
+        // Make it a square based on the shortest dimension
+        float size = jmin(bounds.getWidth(), bounds.getHeight());
+        float paddingX = (bounds.getWidth() - size) * 0.5f;
+        float paddingY = (bounds.getHeight() - size) * 0.5f;
+        Rectangle<float> squareBounds = bounds.withTrimmedLeft(paddingX)
+                                              .withTrimmedRight(paddingX)
+                                              .withTrimmedTop(paddingY)
+                                              .withTrimmedBottom(paddingY);
+
+        float cornerSize = 6.0f;
+        Colour fill = colourBackground.darker(0.8f);
+        Colour outline = colourOutline.withAlpha(0.75f);
+
+        if (button.getToggleState() && isHovered){
+            fill = colourAccent.darker(0.70f);
+            outline = colourAccent.brighter(0.65f);
+        }
+        else if (button.getToggleState()){
+            fill = colourAccent.darker(0.45f);
+            outline = colourAccent.brighter(0.2f);
+        }
+        else if (isHovered){
+            fill = colourBackground.darker(0.3f);
+            outline = colourOutline;
         }
 
-        g.setColour (slider.findColour (Slider::rotarySliderFillColourId));
-        g.fillPath (on);
+        g.setColour(fill);
+        g.fillRoundedRectangle(squareBounds, cornerSize);
+        g.setColour(outline);
+        g.drawRoundedRectangle(squareBounds, cornerSize, 1.2f);
 
-        g.setColour (Colour (0xff5c5d5e));//slider.findColour (Slider::trackColourId));
-        g.fillPath (off);
+        // Draw tick if toggled
+        if (button.getToggleState())
+        {
+            Path tick = getTickShape(7.1f);
+            RectanglePlacement placement (RectanglePlacement::centred);
+            g.setColour(colourThumb.brighter(0.5f));
+            g.fillPath(tick, placement.getTransformToFit(tick.getBounds(), squareBounds.reduced(3.0f)));
+        }
     }
 
-    void drawRotarySlider (Graphics& g, int x, int y, int width, int height, float sliderPos,
-                           float rotaryStartAngle, float rotaryEndAngle, Slider& slider) override
+    void drawComboBox (juce::Graphics& g, int width, int height, bool /*isButtonDown*/,
+                       int buttonX, int buttonY, int buttonW, int buttonH, juce::ComboBox& box) override
     {
-        auto radius = (float) jmin (width / 2, height / 2) - 2.0f;
-        auto centreX = (float) x + (float) width  * 0.5f;
-        auto centreY = (float) y + (float) height * 0.5f;
-        auto rx = centreX - radius;
-        auto ry = centreY - radius;
-        auto rw = radius * 2.0f;
-        auto angle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
-        auto isMouseOver = slider.isMouseOverOrDragging() && slider.isEnabled();
+        bool isActive = box.isPopupActive();
 
-        if (slider.isEnabled())
-            g.setColour (slider.findColour (Slider::trackColourId).withAlpha (isMouseOver ? 1.0f : 0.8f));
-        else
-            g.setColour (Colour (0x80808080));
+        auto background = colourBackground.darker(0.8f);
 
+        auto outline = isActive ? colourAccent
+                                 : colourOutline.withAlpha(0.75f);
+
+        g.setColour(background);
+        g.fillRoundedRectangle(0.0f, 0.0f, (float)width, (float)height, 4.0f);
+
+        g.setColour(outline);
+        g.drawRoundedRectangle(0.5f, 0.5f, (float)width - 1.0f, (float)height - 1.0f, 4.0f, 1.0f);
+
+        // Dropdown arrow
+        juce::Path arrow;
+        float cx = (float)(buttonX + buttonW * 0.5f);
+        float cy = (float)(buttonY + buttonH * 0.5f);
+        float chevronSize = 5.0f;
+
+        arrow.startNewSubPath(cx - chevronSize, cy - 2.0f);
+        arrow.lineTo(cx, cy + 2.5f);
+        arrow.lineTo(cx + chevronSize, cy - 2.0f);
+
+        // Actual arrow fill
+        g.setColour(outline);
+        g.strokePath(arrow, juce::PathStrokeType(1.8f));
+    }
+    
+    void drawPopupMenuItemWithOptions(Graphics& g, const Rectangle<int>& area,
+                                      bool isHighlighted, const PopupMenu::Item& item,
+                                      const PopupMenu::Options&) override
+    {
+        if (item.isSeparator)
         {
-            Path filledArc;
-            filledArc.addPieSegment (rx, ry, rw, rw, rotaryStartAngle, angle, 0.0);
-            g.fillPath (filledArc);
+            g.setColour(colourOutline.withAlpha(0.3f));
+            g.drawLine(area.getX() + 4.0f, area.getCentreY(), area.getRight() - 4.0f, area.getCentreY());
+            return;
         }
 
+        Colour textCol = item.colour.isTransparent() ? colourThumb : item.colour;
+
+        if (!item.isEnabled)
+            textCol = textCol.withAlpha(0.4f);
+
+        if (item.isTicked && isHighlighted)
         {
-            auto lineThickness = jmin (15.0f, (float) jmin (width, height) * 0.45f) * 0.1f;
-            Path outlineArc;
-            outlineArc.addPieSegment (rx, ry, rw, rw, rotaryStartAngle, rotaryEndAngle, 0.0); 
-            g.strokePath (outlineArc, PathStrokeType (lineThickness));
+            g.setColour(colourAccent.withAlpha(0.2f));
+            g.fillRect(area);
+            textCol = Colours::white;
         }
+        else if (isHighlighted)
+        {
+            g.setColour(colourAccent.withAlpha(0.2f));
+            g.fillRect(area);
+            textCol = colourAccent;
+        }
+        else if (item.isTicked)
+        {
+            g.setColour(colourAccent.withAlpha(0.1f));
+            g.fillRect(area);
+            textCol = Colours::white;
+        }
+
+        g.setColour(textCol);
+        g.setFont(14.0f);
+        g.drawText(item.text, area.reduced(4), Justification::centredLeft, true);
+    }
+    
+    void drawPopupMenuBackground (juce::Graphics& g, int width, int height) override
+    {
+        float cornerRadius = 3.0f;
+        auto area = juce::Rectangle<float>(0, 0, width, height).reduced(1,1);
+        
+        g.fillAll (juce::Colours::black);
+
+        juce::ColourGradient gradient (colourBackground.darker(0.4f), 0, 0,
+                                       colourBackground.darker(0.98f), 0, (float)height, false);
+        g.setGradientFill(gradient);
+        g.fillRoundedRectangle(area, cornerRadius);
+
+        g.setColour(colourAccent);
+        g.drawRoundedRectangle(area, cornerRadius, 1.0f);
+    }
+
+    void drawButtonBackground (juce::Graphics& g, juce::Button& button,
+                               const juce::Colour& /*backgroundColour*/,
+                               bool isHovered, bool isPressed) override
+    {
+        auto bounds = button.getLocalBounds().reduced(1, 1).toFloat();
+        float cornerSize = 3.0f;
+
+        juce::Colour fill = colourBackground.darker(0.8f);
+        juce::Colour outline = colourOutline.withAlpha(0.75f);
+
+        if (isPressed)
+        {
+            fill = colourAccent.darker(0.2f);
+            outline = colourAccent;
+        }
+        else if (isHovered)
+        {
+            fill = colourAccent.withAlpha(0.3f);
+            outline = colourAccent.brighter(0.2f);
+        }
+
+        auto connected = button.getConnectedEdgeFlags();
+        bool curveTopLeft     = !(connected & juce::Button::ConnectedOnLeft || connected & juce::Button::ConnectedOnTop);
+        bool curveTopRight    = !(connected & juce::Button::ConnectedOnRight || connected & juce::Button::ConnectedOnTop);
+        bool curveBottomLeft  = !(connected & juce::Button::ConnectedOnLeft || connected & juce::Button::ConnectedOnBottom);
+        bool curveBottomRight = !(connected & juce::Button::ConnectedOnRight || connected & juce::Button::ConnectedOnBottom);
+
+        juce::Path path;
+        path.addRoundedRectangle(bounds.getX(), bounds.getY(),
+                                 bounds.getWidth(), bounds.getHeight(),
+                                 cornerSize, cornerSize,
+                                 curveTopLeft, curveTopRight,
+                                 curveBottomLeft, curveBottomRight);
+
+        g.setColour(fill);
+        g.fillPath(path);
+
+        g.setColour(outline);
+        g.strokePath(path, juce::PathStrokeType(1.2f));
+    }
+    
+    void drawLabel (Graphics& g, Label& label) override
+    {
+        // Skip styling for labels that belong to ComboBoxes
+        if (auto* combo = dynamic_cast<ComboBox*>(label.getParentComponent())) {
+            LookAndFeel_V4::drawLabel(g, label);
+            return;
+        }
+        
+        bool isLinearBarVertical = false;
+        if (auto* slider = dynamic_cast<Slider*>(label.getParentComponent())) {
+            auto style = slider->getSliderStyle();
+            if (style == Slider::LinearBarVertical) {
+                isLinearBarVertical = true;
+            }
+        }
+        
+        float cornerSize = 3.0f;
+
+        g.setColour(colourBackground.darker(0.8f));
+        g.fillRoundedRectangle(label.getLocalBounds().reduced(1, 1).toFloat(), cornerSize);
+
+        if(!(label.isBeingEdited() && isLinearBarVertical)){
+            g.setColour(Colours::white);
+            g.setFont(getLabelFont(label));
+            g.drawText(label.getText(), label.getLocalBounds().reduced(3),
+                       label.getJustificationType(), true);
+        }
+
+        g.setColour(label.isBeingEdited() ? colourAccent
+                                          : colourOutline.withAlpha(0.75f));
+        g.drawRoundedRectangle(label.getLocalBounds().reduced(1, 1).toFloat(), cornerSize, 1.0f);
+    }
+
+    void drawProgressBar (Graphics& g, ProgressBar& /*bar*/,
+                          int width, int height, double progress,
+                          const String& textToShow) override
+    {
+        auto bounds = Rectangle<float>(0, 0, (float)width, (float)height).reduced(1.0f);
+        float cornerSize = 3.0f;
+
+        g.setColour(colourBackground.darker(0.7f));
+        g.fillRoundedRectangle(bounds, cornerSize);
+
+        g.setColour(colourAccent);
+        auto filled = bounds.withWidth((float)width * (float)progress);
+        g.fillRoundedRectangle(filled, cornerSize);
+
+        if (!textToShow.isEmpty())
+        {
+            g.setColour(Colours::black);
+            g.setFont(15.0f);
+            g.drawText(textToShow, bounds.toNearestInt(), Justification::centred);
+        }
+
+        g.setColour(colourOutline.withAlpha(0.7f));
+        g.drawRoundedRectangle(bounds, cornerSize, 2.0f);
+    }
+    
+    void drawTextEditorOutline (Graphics& g, int width, int height, TextEditor& editor) override
+    {
+        auto bounds = Rectangle<float>(0, 0, (float)width, (float)height).reduced(0.5f);
+        float cornerSize = 3.0f;
+
+        Colour outlineCol = editor.hasKeyboardFocus(true) ? colourAccent
+                                                          : colourOutline.withAlpha(0.6f);
+        g.setColour(outlineCol);
+        g.drawRoundedRectangle(bounds, cornerSize, 1.4f);
     }
 };

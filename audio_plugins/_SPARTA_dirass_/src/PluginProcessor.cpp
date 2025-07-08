@@ -55,9 +55,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
                                                                   juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order","11th order","12th order","13th order","14th order","15th order","16th order","17th order","18th order","19th order","20th order"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("minFreq", "MinFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("Hz")));
+                                                                 AudioParameterFloatAttributes().withLabel(" Hz")));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("maxFreq", "MaxFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("Hz")));
+                                                                 AudioParameterFloatAttributes().withLabel(" Hz")));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("FOVoption", "FOV",
@@ -66,7 +66,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     params.push_back(std::make_unique<juce::AudioParameterChoice>("ARoption", "AspectRatio",
                                                                   juce::StringArray{"2:1","16:9","4:3"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("mapAvg", "MapAvg", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("mapAvg", "MapAvg", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.2f));
     params.push_back(std::make_unique<juce::AudioParameterInt>("dispWidth", "DispWidth", 64, 256, 1, AudioParameterIntAttributes().withAutomatable(false)));
 
     return { params.begin(), params.end() };
@@ -130,6 +130,23 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("ARoption", dirass_getAspectRatio(hDir)-1);
     setParameterValue("mapAvg", dirass_getMapAvgCoeff(hDir));
     setParameterValue("dispWidth", dirass_getDispWidth(hDir));
+}
+
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    dirass_setInputOrder(hDir, getParameterChoice("inputOrder")+1);
+    dirass_setDiRAssMode(hDir, getParameterChoice("DirASSmode")+1);
+    dirass_setBeamType(hDir, getParameterChoice("beamType")+1);
+    dirass_setDisplayGridOption(hDir, getParameterChoice("gridOption")+1);
+    dirass_setUpscaleOrder(hDir, getParameterChoice("upscaleOrder")+1);
+    dirass_setMinFreq(hDir, getParameterFloat("minFreq"));
+    dirass_setMaxFreq(hDir, getParameterFloat("maxFreq"));
+    dirass_setChOrder(hDir, getParameterChoice("channelOrder")+1);
+    dirass_setNormType(hDir, getParameterChoice("normType")+1);
+    dirass_setDispFOV(hDir, getParameterChoice("FOVoption")+1);
+    dirass_setAspectRatio(hDir, getParameterChoice("ARoption")+1);
+    dirass_setMapAvgCoeff(hDir, getParameterFloat("mapAvg"));
+    dirass_setDispWidth(hDir, getParameterInt("dispWidth"));
 }
 
 PluginProcessor::PluginProcessor() : 
@@ -335,6 +352,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 flipUD = (bool)xmlState->getIntAttribute("flipUD", 0);
             if(xmlState->hasAttribute("greyScale"))
                 greyScale = (bool)xmlState->getIntAttribute("greyScale", 1);
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
         
         dirass_refreshSettings(hDir);

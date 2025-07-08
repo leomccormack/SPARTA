@@ -53,8 +53,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("diffEQ2", "DiffEQ2", juce::StringArray{"AP","EP"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("transitionFreq", "TransitionFreq", juce::NormalisableRange<float>(500.0f, 2000.0f, 0.01f), 800.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("Hz")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("transitionFreq", "TransitionFreq", juce::NormalisableRange<float>(500.0f, 2000.0f, 1.0f), 800.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(" Hz")));
     params.push_back(std::make_unique<juce::AudioParameterBool>("binauraliseLS", "BinauraliseLS", false, AudioParameterBoolAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterBool>("enablePreProcHRIRs", "EnableDiffuseFieldEQ", false,
                                                                 AudioParameterBoolAttributes().withAutomatable(false)));
@@ -140,6 +140,27 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     for(int i=0; i<MAX_NUM_OUTPUTS; i++){
         setParameterValue("azim" + juce::String(i), ambi_dec_getLoudspeakerAzi_deg(hAmbi, i));
         setParameterValue("elev" + juce::String(i), ambi_dec_getLoudspeakerElev_deg(hAmbi, i));
+    }
+}
+
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    ambi_dec_setMasterDecOrder(hAmbi, getParameterChoice("inputOrder")+1);
+    ambi_dec_setChOrder(hAmbi, getParameterChoice("channelOrder")+1);
+    ambi_dec_setNormType(hAmbi, getParameterChoice("normType")+1);
+    ambi_dec_setDecMethod(hAmbi, 0, getParameterChoice("decMethod1")+1);
+    ambi_dec_setDecMethod(hAmbi, 1, getParameterChoice("decMethod2")+1);
+    ambi_dec_setDecEnableMaxrE(hAmbi, 0, getParameterBool("enableMaxRE1"));
+    ambi_dec_setDecEnableMaxrE(hAmbi, 1, getParameterBool("enableMaxRE2"));
+    ambi_dec_setDecNormType(hAmbi, 0, getParameterChoice("diffEQ1")+1);
+    ambi_dec_setDecNormType(hAmbi, 1, getParameterChoice("diffEQ2")+1);
+    ambi_dec_setTransitionFreq(hAmbi, getParameterFloat("transitionFreq"));
+    ambi_dec_setBinauraliseLSflag(hAmbi, getParameterBool("binauraliseLS"));
+    ambi_dec_setEnableHRIRsPreProc(hAmbi, getParameterBool("enablePreProcHRIRs"));
+    ambi_dec_setNumLoudspeakers(hAmbi, getParameterInt("numLoudspeakers"));
+    for(int i=0; i<MAX_NUM_OUTPUTS; i++){
+        ambi_dec_setLoudspeakerAzi_deg(hAmbi, i, getParameterFloat("azim" + juce::String(i)));
+        ambi_dec_setLoudspeakerElev_deg(hAmbi, i, getParameterFloat("elev" + juce::String(i)));
     }
 }
 
@@ -357,6 +378,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             /* Other */
             if(xmlState->hasAttribute("JSONFilePath"))
                 lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
         
         ambi_dec_refreshSettings(hAmbi);
@@ -426,6 +451,13 @@ void PluginProcessor::loadConfiguration (const File& configFile)
             for(int j=0; j<num_ls+num_virtual_ls; j++)
                 if( channelIDs[j] > virtual_channelIDs[i]-i )
                     channelIDs[j]--;
+        
+        /* Making sure that the internal coordinates above the current numLoudspeakers (i.e. numLoudspeakers+1:maxNumLoudspeakers) are up to date in "parameters" too */
+        /* This is because JUCE won't invoke parameterChanged() if the values are the same in the parameter list */
+        for(int i=ambi_dec_getNumLoudspeakers(hAmbi); i<num_ls; i++){
+            setParameterValue("azim" + juce::String(i), ambi_dec_getLoudspeakerAzi_deg(hAmbi, i));
+            setParameterValue("elev" + juce::String(i), ambi_dec_getLoudspeakerElev_deg(hAmbi, i));
+        }
         
         /* update with the new configuration  */
         setParameterValue("numLoudspeakers", num_ls);

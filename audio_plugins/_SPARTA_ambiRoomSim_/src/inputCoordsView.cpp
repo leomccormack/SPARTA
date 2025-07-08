@@ -40,8 +40,7 @@ inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentN
         xSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "sourceX" + juce::String(i));
         addAndMakeVisible (xSliders[i].get());
         xSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 58, 20);
-        xSliders[i]->setBounds(24, 8 + i*sensorEdit_height, 58, 16);
-        xSliders[i]->addListener (this);
+        xSliders[i]->setBounds(24, 6 + i*sensorEdit_height, 58, 20);
         xSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
         xSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
         xSliders[i]->setSliderSnapsToMousePosition(false);
@@ -50,8 +49,7 @@ inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentN
         ySliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "sourceY" + juce::String(i));
         addAndMakeVisible (ySliders[i].get());
         ySliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 58, 20);
-        ySliders[i]->setBounds(86, 8 + i*sensorEdit_height, 58, 16);
-        ySliders[i]->addListener (this);
+        ySliders[i]->setBounds(86, 6 + i*sensorEdit_height, 58, 20);
         ySliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
         ySliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
         ySliders[i]->setSliderSnapsToMousePosition(false);
@@ -60,8 +58,7 @@ inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentN
         zSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "sourceZ" + juce::String(i));
         addAndMakeVisible (zSliders[i].get());
         zSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 58, 20);
-        zSliders[i]->setBounds(148, 8 + i*sensorEdit_height, 58, 16);
-        zSliders[i]->addListener (this);
+        zSliders[i]->setBounds(148, 6 + i*sensorEdit_height, 58, 20);
         zSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
         zSliders[i]->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
         zSliders[i]->setSliderSnapsToMousePosition(false);

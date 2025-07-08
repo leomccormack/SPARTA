@@ -10,10 +10,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_hostBlockSize->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_hostBlockSize->setJustificationType (juce::Justification::centredLeft);
     label_hostBlockSize->setEditable (false, false, false);
-    label_hostBlockSize->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_hostBlockSize->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_hostBlockSize->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_hostBlockSize->setBounds (136, 95, 60, 20);
 
     label_filterLength.reset (new juce::Label ("new label",
@@ -22,10 +18,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_filterLength->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_filterLength->setJustificationType (juce::Justification::centredLeft);
     label_filterLength->setEditable (false, false, false);
-    label_filterLength->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_filterLength->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_filterLength->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_filterLength->setBounds (333, 95, 60, 20);
 
     label_hostfs.reset (new juce::Label ("new label",
@@ -34,10 +26,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_hostfs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_hostfs->setJustificationType (juce::Justification::centredLeft);
     label_hostfs->setEditable (false, false, false);
-    label_hostfs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_hostfs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_hostfs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_hostfs->setBounds (333, 139, 60, 20);
 
     label_filterfs.reset (new juce::Label ("new label",
@@ -46,10 +34,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_filterfs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_filterfs->setJustificationType (juce::Justification::centredLeft);
     label_filterfs->setEditable (false, false, false);
-    label_filterfs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_filterfs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_filterfs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_filterfs->setBounds (333, 117, 60, 20);
 
     label_NOutputs.reset (new juce::Label ("new label",
@@ -58,10 +42,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_NOutputs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_NOutputs->setJustificationType (juce::Justification::centredLeft);
     label_NOutputs->setEditable (false, false, false);
-    label_NOutputs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_NOutputs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_NOutputs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_NOutputs->setBounds (136, 117, 60, 20);
 
     label_nIRpositions.reset (new juce::Label ("new label",
@@ -70,10 +50,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_nIRpositions->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_nIRpositions->setJustificationType (juce::Justification::centredLeft);
     label_nIRpositions->setEditable (false, false, false);
-    label_nIRpositions->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_nIRpositions->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_nIRpositions->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_nIRpositions->setBounds (136, 139, 60, 20);
 
     label_sofaErrorState.reset (new juce::Label ("new label",
@@ -82,9 +58,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_sofaErrorState->setFont (juce::FontOptions (11.00f, juce::Font::plain).withStyle ("Regular"));
     label_sofaErrorState->setJustificationType (juce::Justification::centredLeft);
     label_sofaErrorState->setEditable (false, false, false);
-    label_sofaErrorState->setColour (juce::TextEditor::textColourId, juce::Colours::white);
-    label_sofaErrorState->setBorderSize (juce::BorderSize<int> (0));
-
     label_sofaErrorState->setBounds (10, 35, 264, 11);
 
     SL_source_y.reset (new juce::Slider ("new slider"));
@@ -93,7 +66,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_source_y->setSliderStyle (juce::Slider::LinearBarVertical);
     SL_source_y->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_source_y->addListener (this);
-
     SL_source_y->setBounds (200, 200, 48, 20);
 
     SL_source_z.reset (new juce::Slider ("new slider"));
@@ -102,7 +74,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_source_z->setSliderStyle (juce::Slider::LinearBarVertical);
     SL_source_z->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_source_z->addListener (this);
-
     SL_source_z->setBounds (256, 200, 48, 20);
 
     SL_source_x.reset (new juce::Slider ("new slider"));
@@ -111,7 +82,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_source_x->setSliderStyle (juce::Slider::LinearBarVertical);
     SL_source_x->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_source_x->addListener (this);
-
     SL_source_x->setBounds (144, 200, 48, 20);
 
     SL_receiver_x.reset (new juce::Slider ("new slider"));
@@ -120,7 +90,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_receiver_x->setSliderStyle (juce::Slider::LinearBarVertical);
     SL_receiver_x->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_receiver_x->addListener (this);
-
     SL_receiver_x->setBounds (144, 284, 48, 20);
 
     SL_receiver_y.reset (new juce::Slider ("new slider"));
@@ -129,7 +98,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_receiver_y->setSliderStyle (juce::Slider::LinearBarVertical);
     SL_receiver_y->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_receiver_y->addListener (this);
-
     SL_receiver_y->setBounds (200, 284, 48, 20);
 
     SL_receiver_z.reset (new juce::Slider ("new slider"));
@@ -138,7 +106,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_receiver_z->setSliderStyle (juce::Slider::LinearBarVertical);
     SL_receiver_z->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     SL_receiver_z->addListener (this);
-
     SL_receiver_z->setBounds (256, 284, 48, 20);
 
     label_receiverIdx.reset (new juce::Label ("new label",
@@ -147,10 +114,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_receiverIdx->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_receiverIdx->setJustificationType (juce::Justification::centredLeft);
     label_receiverIdx->setEditable (false, false, false);
-    label_receiverIdx->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_receiverIdx->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_receiverIdx->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_receiverIdx->setBounds (200, 308, 48, 20);
 
     te_oscport.reset (new juce::TextEditor ("new text editor"));
@@ -161,11 +124,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_oscport->setScrollbarsShown (true);
     te_oscport->setCaretVisible (true);
     te_oscport->setPopupMenuEnabled (true);
-    te_oscport->setColour (juce::TextEditor::textColourId, juce::Colours::white);
-    te_oscport->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
-    te_oscport->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
     te_oscport->setText (TRANS ("9000"));
-
     te_oscport->setBounds (344, 296, 42, 22);
 
     CBviewMode.reset (new juce::ComboBox ("new combo box"));
@@ -175,7 +134,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBviewMode->setTextWhenNothingSelected (juce::String());
     CBviewMode->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBviewMode->addListener (this);
-
     CBviewMode->setBounds (755, 38, 92, 16);
 
     s_yaw.reset (new juce::Slider ("new slider"));
@@ -183,12 +141,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_yaw->setRange (-180, 180, 0.01);
     s_yaw->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
-    s_yaw->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6e));
-    s_yaw->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_yaw->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_yaw->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
     s_yaw->addListener (this);
-
     s_yaw->setBounds (200, 396, 60, 68);
 
     s_pitch.reset (new juce::Slider ("new slider"));
@@ -196,12 +149,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_pitch->setRange (-180, 180, 0.01);
     s_pitch->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
-    s_pitch->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
-    s_pitch->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_pitch->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_pitch->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
     s_pitch->addListener (this);
-
     s_pitch->setBounds (263, 396, 60, 68);
 
     s_roll.reset (new juce::Slider ("new slider"));
@@ -209,42 +157,32 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     s_roll->setRange (-180, 180, 0.01);
     s_roll->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
-    s_roll->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
-    s_roll->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_roll->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_roll->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
     s_roll->addListener (this);
-
     s_roll->setBounds (326, 396, 60, 68);
 
     t_flipYaw.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (juce::String());
     t_flipYaw->addListener (this);
-
     t_flipYaw->setBounds (232, 465, 23, 24);
 
     t_flipPitch.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (juce::String());
     t_flipPitch->addListener (this);
-
     t_flipPitch->setBounds (295, 465, 23, 24);
 
     t_flipRoll.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (juce::String());
     t_flipRoll->addListener (this);
-
     t_flipRoll->setBounds (358, 465, 23, 24);
 
     TBenableRotation.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBenableRotation.get());
     TBenableRotation->setButtonText (juce::String());
     TBenableRotation->addListener (this);
-
     TBenableRotation->setBounds (85, 402, 32, 24);
-
 
     setSize (860, 502);
 
@@ -253,8 +191,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     hRot = hVst->getFXHandle_rot();
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
+    label_sofaErrorState->setLookAndFeel(&defaultLAF);
+    label_sofaErrorState->setColour (juce::TextEditor::textColourId, juce::Colours::white);
+    label_sofaErrorState->setBorderSize (juce::BorderSize<int> (0));
 
     /* remove slider bit of these sliders */
     SL_source_x->setColour(Slider::trackColourId, Colours::transparentBlack);
@@ -274,7 +214,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_source_x->setEnabled(false);
     SL_source_y->setEnabled(false);
     SL_source_z->setEnabled(false);
-
 
 	/* fetch current configuration *///////////////////////////////////////////////////////////////////////////////////
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);

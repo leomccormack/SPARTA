@@ -140,6 +140,26 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("flipRoll", ambi_bin_getFlipRoll(hAmbi));
 }
 
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    ambi_bin_setInputOrderPreset(hAmbi, static_cast<SH_ORDERS>(getParameterChoice("inputOrder")+1));
+    ambi_bin_setChOrder(hAmbi, getParameterChoice("channelOrder")+1);
+    ambi_bin_setNormType(hAmbi, getParameterChoice("normType")+1);
+    ambi_bin_setDecodingMethod(hAmbi, static_cast<AMBI_BIN_DECODING_METHODS>(getParameterChoice("decMethod")+1));
+    ambi_bin_setEnableTruncationEQ(hAmbi, getParameterBool("enableTruncationEQ"));
+    ambi_bin_setHRIRsPreProc(hAmbi, static_cast<AMBI_BIN_PREPROC>(getParameterChoice("hrirPreproc")+1));
+    ambi_bin_setEnableDiffuseMatching(hAmbi, getParameterBool("enableDiffuseMatching"));
+    ambi_bin_setEnableMaxRE(hAmbi, getParameterBool("enableMaxRE"));
+    ambi_bin_setEnableRotation(hAmbi, getParameterBool("enableRotation"));
+    ambi_bin_setRPYflag(hAmbi, getParameterBool("useRollPitchYaw"));
+    ambi_bin_setYaw(hAmbi, getParameterFloat("yaw"));
+    ambi_bin_setPitch(hAmbi, getParameterFloat("pitch"));
+    ambi_bin_setRoll(hAmbi, getParameterFloat("roll"));
+    ambi_bin_setFlipYaw(hAmbi, getParameterBool("flipYaw"));
+    ambi_bin_setFlipPitch(hAmbi, getParameterBool("flipPitch"));
+    ambi_bin_setFlipRoll(hAmbi, getParameterBool("flipRoll"));
+}
+
 PluginProcessor::PluginProcessor() :
     AudioProcessor(BusesProperties()
         .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
@@ -387,6 +407,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
                 osc.connect(osc_port_ID);
             }
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
         
         ambi_bin_refreshParams(hAmbi);

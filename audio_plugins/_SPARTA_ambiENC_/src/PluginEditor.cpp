@@ -30,9 +30,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBsourceDirsPreset->setEditableText (false);
     CBsourceDirsPreset->setJustificationType (juce::Justification::centredLeft);
     CBsourceDirsPreset->setTextWhenNothingSelected (juce::String());
-    CBsourceDirsPreset->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBsourceDirsPreset->addListener (this);
-
     CBsourceDirsPreset->setBounds (88, 96, 112, 20);
 
     SL_num_sources = std::make_unique<SliderWithAttachment>(p.parameters, "numSources");
@@ -40,37 +38,24 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
-
     SL_num_sources->setBounds (152, 126, 48, 20);
 
     CBoutputFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (juce::Justification::centredLeft);
-    CBoutputFormat->setTextWhenNothingSelected (TRANS ("ACN"));
-    CBoutputFormat->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
-    CBoutputFormat->addListener (this);
-
     CBoutputFormat->setBounds (343, 316, 112, 20);
 
     CBnormalisation = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnormalisation.get());
     CBnormalisation->setEditableText (false);
     CBnormalisation->setJustificationType (juce::Justification::centredLeft);
-    CBnormalisation->setTextWhenNothingSelected (TRANS ("N3D"));
-    CBnormalisation->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
-    CBnormalisation->addListener (this);
-
     CBnormalisation->setBounds (578, 316, 112, 20);
 
     CBorder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "outputOrder");
     addAndMakeVisible (CBorder.get());
     CBorder->setEditableText (false);
     CBorder->setJustificationType (juce::Justification::centredLeft);
-    CBorder->setTextWhenNothingSelected (juce::String());
-    CBorder->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
-    CBorder->addListener (this);
-
     CBorder->setBounds (88, 64, 112, 20);
 
     tb_loadJSON.reset (new juce::TextButton ("new button"));
@@ -78,8 +63,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     tb_loadJSON->setButtonText (TRANS ("Import"));
     tb_loadJSON->setConnectedEdges (juce::Button::ConnectedOnRight);
     tb_loadJSON->addListener (this);
-    tb_loadJSON->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff14889e));
-
     tb_loadJSON->setBounds (140, 40, 34, 14);
 
     tb_saveJSON.reset (new juce::TextButton ("new button"));
@@ -87,9 +70,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     tb_saveJSON->setButtonText (TRANS ("Export"));
     tb_saveJSON->setConnectedEdges (juce::Button::ConnectedOnLeft);
     tb_saveJSON->addListener (this);
-    tb_saveJSON->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff224d97));
-    tb_saveJSON->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xff181f9a));
-
     tb_saveJSON->setBounds (174, 40, 34, 14);
 
     setSize (712, 356);
@@ -104,7 +84,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 #endif
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* remove slider bit of these sliders */

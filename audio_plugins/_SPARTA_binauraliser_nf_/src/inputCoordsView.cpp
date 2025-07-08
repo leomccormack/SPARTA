@@ -47,7 +47,6 @@ inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentN
         aziSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
         aziSliders[i]->setColour(Slider::rotarySliderFillColourId, Colours::transparentBlack); // hide slider value fill
         aziSliders[i]->setBounds(left+tbhpad, tbvpad + i*sensorEdit_height, tbw, tbh);
-        aziSliders[i]->addListener (this);
         aziSliders[i]->setNumDecimalPlacesToDisplay (1);
 
         /* create and initialise elevation sliders */
@@ -59,7 +58,6 @@ inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentN
         elevSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
         elevSliders[i]->setColour(Slider::rotarySliderFillColourId, Colours::transparentBlack);
         elevSliders[i]->setBounds(left+tbhpad+tbw+tbhpad, tbvpad + i*sensorEdit_height, tbw, tbh);
-        elevSliders[i]->addListener (this);
 
         /* create and initialise distance sliders */
         distSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "dist" + juce::String(i));
@@ -71,7 +69,6 @@ inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentN
         distSliders[i]->setColour(Slider::trackColourId, Colours::transparentBlack);
         distSliders[i]->setColour(Slider::rotarySliderFillColourId , Colours::transparentBlack);
         distSliders[i]->setBounds(left+tbhpad+tbw+tbhpad+tbw+tbhpad, tbvpad + i*sensorEdit_height, tbw, tbh);
-        distSliders[i]->addListener (this);
     }
 
 	/* Get and display current settings */

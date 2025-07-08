@@ -22,20 +22,20 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("threshold", "Threshold", juce::NormalisableRange<float>(-60.0f, 0.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("dB")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("ratio", "Ratio", juce::NormalisableRange<float>(1.0f, 30.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel(": 1.00")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("knee", "Knee", juce::NormalisableRange<float>(0.0f, 10.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("dB")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("inGain", "InGain", juce::NormalisableRange<float>(-20.0f, 12.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("dB")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("outGain", "OutGain", juce::NormalisableRange<float>(-20.0f, 12.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("dB")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("attack_ms", "Attack", juce::NormalisableRange<float>(10.0f, 200.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("ms")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("release_ms", "Release", juce::NormalisableRange<float>(50.0f, 1000.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("ms")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("threshold", "Threshold", juce::NormalisableRange<float>(-60.0f, 6.0f, 0.1f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(" dB")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("ratio", "Ratio", juce::NormalisableRange<float>(1.0f, 30.0f, 0.1f), 8.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(":1")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("knee", "Knee", juce::NormalisableRange<float>(0.0f, 10.0f, 0.1f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(" dB")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("inGain", "InGain", juce::NormalisableRange<float>(-20.0f, 12.0f, 0.1f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(" dB")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("outGain", "OutGain", juce::NormalisableRange<float>(-20.0f, 12.0f, 0.1f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(" dB")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("attack_ms", "Attack", juce::NormalisableRange<float>(10.0f, 200.0f, 1.0f), 50.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(" ms")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("release_ms", "Release", juce::NormalisableRange<float>(50.0f, 1000.0f, 1.0f), 100.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(" ms")));
     
     return { params.begin(), params.end() };
 }
@@ -86,6 +86,20 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("outGain", ambi_drc_getOutGain(hAmbi));
     setParameterValue("attack_ms", ambi_drc_getAttack(hAmbi));
     setParameterValue("release_ms", ambi_drc_getRelease(hAmbi));
+}
+
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    ambi_drc_setInputPreset(hAmbi, static_cast<SH_ORDERS>(getParameterChoice("inputOrder")+1));
+    ambi_drc_setChOrder(hAmbi, getParameterChoice("channelOrder")+1);
+    ambi_drc_setNormType(hAmbi, getParameterChoice("normType")+1);
+    ambi_drc_setThreshold(hAmbi, getParameterFloat("threshold"));
+    ambi_drc_setRatio(hAmbi, getParameterFloat("ratio"));
+    ambi_drc_setKnee(hAmbi, getParameterFloat("knee"));
+    ambi_drc_setInGain(hAmbi, getParameterFloat("inGain"));
+    ambi_drc_setOutGain(hAmbi, getParameterFloat("outGain"));
+    ambi_drc_setAttack(hAmbi, getParameterFloat("attack_ms"));
+    ambi_drc_setRelease(hAmbi, getParameterFloat("release_ms"));
 }
 
 PluginProcessor::PluginProcessor() :
@@ -259,6 +273,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
         }
         else if(xmlState->getIntAttribute("VersionCode")>=0x10301){
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
         
         ambi_drc_refreshSettings(hAmbi);
