@@ -31,26 +31,21 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (CBoutputDirsPreset.get());
     CBoutputDirsPreset->setEditableText (false);
     CBoutputDirsPreset->setJustificationType (juce::Justification::centredLeft);
-    CBoutputDirsPreset->setTextWhenNothingSelected (TRANS ("Default"));
-    CBoutputDirsPreset->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
-    CBoutputDirsPreset->addItem (TRANS ("Default"), 1);
+    //CBoutputDirsPreset->setTextWhenNothingSelected (TRANS ("Default"));
+    //CBoutputDirsPreset->addItem (TRANS ("Default"), 1);
     CBoutputDirsPreset->addListener (this);
-
     CBoutputDirsPreset->setBounds (520, 64, 112, 20);
 
     SL_num_loudspeakers = std::make_unique<SliderWithAttachment>(p.parameters, "numLoudspeakers");
     addAndMakeVisible (SL_num_loudspeakers.get());
     SL_num_loudspeakers->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_loudspeakers->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
-    SL_num_loudspeakers->addListener (this);
-
     SL_num_loudspeakers->setBounds (592, 92, 40, 20);
 
     TBuseDefaultHRIRs.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBuseDefaultHRIRs.get());
     TBuseDefaultHRIRs->setButtonText (juce::String());
     TBuseDefaultHRIRs->addListener (this);
-
     TBuseDefaultHRIRs->setBounds (409, 91, 24, 24);
 
     CBsourcePreset.reset (new juce::ComboBox ("new combo box"));
@@ -58,26 +53,20 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBsourcePreset->setEditableText (false);
     CBsourcePreset->setJustificationType (juce::Justification::centredLeft);
     CBsourcePreset->setTextWhenNothingSelected (TRANS ("Default"));
-    CBsourcePreset->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBsourcePreset->addItem (TRANS ("Ideal SH"), 1);
     CBsourcePreset->addListener (this);
-
     CBsourcePreset->setBounds (99, 96, 118, 20);
 
     CBchFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBchFormat.get());
     CBchFormat->setEditableText (false);
     CBchFormat->setJustificationType (juce::Justification::centredLeft);
-    CBchFormat->addListener (this);
-
     CBchFormat->setBounds (129, 120, 88, 20);
 
     CBnormScheme = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnormScheme.get());
     CBnormScheme->setEditableText (false);
     CBnormScheme->setJustificationType (juce::Justification::centredLeft);
-    CBnormScheme->addListener (this);
-
     CBnormScheme->setBounds (129, 144, 88, 20);
 
     SL_transitionFreq = std::make_unique<SliderWithAttachment>(p.parameters, "transitionFreq");
@@ -85,63 +74,45 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     SL_transitionFreq->setRange (500, 2000, 0.1);
     SL_transitionFreq->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_transitionFreq->setTextBoxStyle (juce::Slider::TextBoxAbove, false, 60, 20);
-    SL_transitionFreq->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    SL_transitionFreq->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    SL_transitionFreq->addListener (this);
-
     SL_transitionFreq->setBounds (168, 305, 112, 40);
 
     CBdec1method = std::make_unique<ComboBoxWithAttachment>(p.parameters, "decMethod1");
     addAndMakeVisible (CBdec1method.get());
     CBdec1method->setEditableText (false);
     CBdec1method->setJustificationType (juce::Justification::centredLeft);
-    CBdec1method->addListener (this);
-
     CBdec1method->setBounds (24, 297, 116, 20);
 
     CBdec2method = std::make_unique<ComboBoxWithAttachment>(p.parameters, "decMethod2");
     addAndMakeVisible (CBdec2method.get());
     CBdec2method->setEditableText (false);
     CBdec2method->setJustificationType (juce::Justification::centredLeft);
-    CBdec2method->addListener (this);
-
     CBdec2method->setBounds (308, 297, 116, 20);
 
     TBdec1EnableMaxrE = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableMaxRE1");
     addAndMakeVisible (TBdec1EnableMaxrE.get());
     TBdec1EnableMaxrE->setButtonText (juce::String());
-    TBdec1EnableMaxrE->addListener (this);
-
     TBdec1EnableMaxrE->setBounds (120, 321, 32, 24);
 
     TBdec2EnableMaxrE = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableMaxRE2");
     addAndMakeVisible (TBdec2EnableMaxrE.get());
     TBdec2EnableMaxrE->setButtonText (juce::String());
-    TBdec2EnableMaxrE->addListener (this);
-
     TBdec2EnableMaxrE->setBounds (404, 321, 32, 24);
 
     CBdec1normtype = std::make_unique<ComboBoxWithAttachment>(p.parameters, "diffEQ1");
     addAndMakeVisible (CBdec1normtype.get());
     CBdec1normtype->setEditableText (false);
     CBdec1normtype->setJustificationType (juce::Justification::centredLeft);
-    CBdec1normtype->addListener (this);
-
     CBdec1normtype->setBounds (24, 323, 52, 20);
 
     TBBinauraliseLS = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "binauraliseLS");
     addAndMakeVisible (TBBinauraliseLS.get());
     TBBinauraliseLS->setButtonText (juce::String());
-    TBBinauraliseLS->addListener (this);
-
     TBBinauraliseLS->setBounds (409, 62, 24, 24);
 
     CBdec2normtype = std::make_unique<ComboBoxWithAttachment>(p.parameters, "diffEQ2");
     addAndMakeVisible (CBdec2normtype.get());
     CBdec2normtype->setEditableText (false);
     CBdec2normtype->setJustificationType (juce::Justification::centredLeft);
-    CBdec2normtype->addListener (this);
-
     CBdec2normtype->setBounds (308, 323, 52, 20);
 
     s_decOrder.reset (new juce::Slider ("new slider"));
@@ -149,21 +120,14 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     s_decOrder->setRange (0, 1, 1);
     s_decOrder->setSliderStyle (juce::Slider::LinearVertical);
     s_decOrder->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    s_decOrder->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_decOrder->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    s_decOrder->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_decOrder->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
     s_decOrder->addListener (this);
-
-    s_decOrder->setBounds (384, 185, 40, 80);
+    s_decOrder->setBounds (384, 181, 40, 84);
 
     tb_loadJSON.reset (new juce::TextButton ("new button"));
     addAndMakeVisible (tb_loadJSON.get());
     tb_loadJSON->setButtonText (TRANS ("Import"));
     tb_loadJSON->setConnectedEdges (juce::Button::ConnectedOnRight);
     tb_loadJSON->addListener (this);
-    tb_loadJSON->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff14889e));
-
     tb_loadJSON->setBounds (447, 40, 34, 14);
 
     tb_saveJSON.reset (new juce::TextButton ("new button"));
@@ -171,9 +135,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     tb_saveJSON->setButtonText (TRANS ("Export"));
     tb_saveJSON->setConnectedEdges (juce::Button::ConnectedOnLeft);
     tb_saveJSON->addListener (this);
-    tb_saveJSON->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff224d97));
-    tb_saveJSON->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xff181f9a));
-
     tb_saveJSON->setBounds (481, 40, 34, 14);
 
     CBmasterOrder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
@@ -181,15 +142,12 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBmasterOrder->setEditableText (false);
     CBmasterOrder->setJustificationType (juce::Justification::centredLeft);
     CBmasterOrder->addListener (this);
-
     CBmasterOrder->setBounds (99, 65, 118, 20);
 
     TBenablePreProc = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enablePreProcHRIRs");
     addAndMakeVisible (TBenablePreProc.get());
     TBenablePreProc->setTooltip (TRANS ("Enable HRIR Pre-Processing"));
     TBenablePreProc->setButtonText (juce::String());
-    TBenablePreProc->addListener (this);
-
     TBenablePreProc->setBounds (409, 143, 24, 24);
 
     setSize (656, 365);
@@ -204,7 +162,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 #endif
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* remove slider bit of these sliders */
@@ -277,7 +234,12 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
     fileChooser.setBounds (232, 118, 196, 20);
-
+    StringArray filenames;
+    filenames.add("/Spatial_Audio_Framework/Default");
+    filenames.add(ambi_dec_getSofaFilePath(hAmbi));
+    fileChooser.setRecentlyUsedFilenames(filenames);
+    fileChooser.setFilenameIsEditable(true);
+    
     /* grab current parameter settings */
     TBuseDefaultHRIRs->setToggleState(ambi_dec_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
     s_decOrder->setRange(1, ambi_dec_getMasterDecOrder(hAmbi)+0.0001f, 1);
@@ -605,7 +567,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 168, y = 271, width = 120, height = 30;
-        juce::String text (TRANS ("Cross-over (Hz)"));
+        juce::String text (TRANS ("Cross-over Freq."));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions(15.00f, juce::Font::plain).withStyle ("Bold"));
@@ -794,7 +756,7 @@ void PluginEditor::paint (juce::Graphics& g)
 		Justification::centredLeft, true);
 
     /* label for max ORDER */
-    int x = 419, y = 170, width = 13, height = 30;
+    int x = 417, y = 176, width = 18, height = 30;
     String text = String(CBmasterOrder->getSelectedId());
     Colour fillColour = Colours::white;
     g.setColour (fillColour);

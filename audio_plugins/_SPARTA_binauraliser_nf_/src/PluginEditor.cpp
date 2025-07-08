@@ -32,10 +32,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBsourceDirsPreset->setEditableText (false);
     CBsourceDirsPreset->setJustificationType (juce::Justification::centredLeft);
     CBsourceDirsPreset->setTextWhenNothingSelected (juce::String());
-    CBsourceDirsPreset->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
-    CBsourceDirsPreset->addItem (TRANS ("Default"), 1);
     CBsourceDirsPreset->addListener (this);
-
     CBsourceDirsPreset->setBounds (88, 66, 112, 20);
 
     SL_num_sources = std::make_unique<SliderWithAttachment>(p.parameters, "numSources");
@@ -43,84 +40,58 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
-
     SL_num_sources->setBounds (152, 94, 48, 20);
 
-    label_N_dirs.reset (new juce::Label ("new label",
-                                         juce::String()));
+    label_N_dirs.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_N_dirs.get());
     label_N_dirs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_N_dirs->setJustificationType (juce::Justification::centredLeft);
     label_N_dirs->setEditable (false, false, false);
-    label_N_dirs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_N_dirs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_N_dirs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_N_dirs->setBounds (799, 140, 51, 20);
 
-    label_HRIR_fs.reset (new juce::Label ("new label",
-                                          juce::String()));
+    label_HRIR_fs.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_HRIR_fs.get());
     label_HRIR_fs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_HRIR_fs->setJustificationType (juce::Justification::centredLeft);
     label_HRIR_fs->setEditable (false, false, false);
-    label_HRIR_fs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_HRIR_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_HRIR_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_HRIR_fs->setBounds (799, 164, 51, 20);
 
     TBuseDefaultHRIRs.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBuseDefaultHRIRs.get());
     TBuseDefaultHRIRs->setButtonText (juce::String());
     TBuseDefaultHRIRs->addListener (this);
-
     TBuseDefaultHRIRs->setBounds (876, 61, 32, 24);
 
-    label_DAW_fs.reset (new juce::Label ("new label",
-                                         juce::String()));
+    label_DAW_fs.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_DAW_fs.get());
     label_DAW_fs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_DAW_fs->setJustificationType (juce::Justification::centredLeft);
     label_DAW_fs->setEditable (false, false, false);
-    label_DAW_fs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_DAW_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_DAW_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_DAW_fs->setBounds (853, 164, 51, 20);
 
     TB_showInputs.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_showInputs.get());
     TB_showInputs->setButtonText (juce::String());
     TB_showInputs->addListener (this);
-
     TB_showInputs->setBounds (550, 322, 24, 24);
 
     TB_showOutputs.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_showOutputs.get());
     TB_showOutputs->setButtonText (juce::String());
     TB_showOutputs->addListener (this);
-
     TB_showOutputs->setBounds (672, 322, 24, 24);
 
-    label_N_Tri.reset (new juce::Label ("new label",
-                                        juce::String()));
+    label_N_Tri.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_N_Tri.get());
     label_N_Tri->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_N_Tri->setJustificationType (juce::Justification::centredLeft);
     label_N_Tri->setEditable (false, false, false);
-    label_N_Tri->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_N_Tri->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_N_Tri->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_N_Tri->setBounds (853, 140, 51, 20);
 
     CBinterpMode = std::make_unique<ComboBoxWithAttachment>(p.parameters, "interpMode");
     addAndMakeVisible (CBinterpMode.get());
     CBinterpMode->setEditableText (false);
     CBinterpMode->setJustificationType (juce::Justification::centredLeft);
-    CBinterpMode->addListener (this);
-
     CBinterpMode->setBounds (328, 324, 112, 20);
 
     tb_loadJSON.reset (new juce::TextButton ("new button"));
@@ -128,8 +99,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     tb_loadJSON->setButtonText (TRANS ("Import"));
     tb_loadJSON->setConnectedEdges (juce::Button::ConnectedOnRight);
     tb_loadJSON->addListener (this);
-    tb_loadJSON->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff14889e));
-
     tb_loadJSON->setBounds (140, 40, 34, 14);
 
     tb_saveJSON.reset (new juce::TextButton ("new button"));
@@ -137,66 +106,39 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     tb_saveJSON->setButtonText (TRANS ("Export"));
     tb_saveJSON->setConnectedEdges (juce::Button::ConnectedOnLeft);
     tb_saveJSON->addListener (this);
-    tb_saveJSON->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff224d97));
-    tb_saveJSON->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xff181f9a));
-
     tb_saveJSON->setBounds (174, 40, 34, 14);
 
     s_yaw = std::make_unique<SliderWithAttachment>(p.parameters, "yaw");
     addAndMakeVisible (s_yaw.get());
     s_yaw->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
-    s_yaw->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6e));
-    s_yaw->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_yaw->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_yaw->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_yaw->addListener (this);
-
     s_yaw->setBounds (717, 260, 60, 68);
 
     s_pitch = std::make_unique<SliderWithAttachment>(p.parameters, "pitch");
     addAndMakeVisible (s_pitch.get());
     s_pitch->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
-    s_pitch->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
-    s_pitch->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_pitch->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_pitch->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_pitch->addListener (this);
-
     s_pitch->setBounds (780, 260, 60, 68);
 
     s_roll = std::make_unique<SliderWithAttachment>(p.parameters, "roll");
     addAndMakeVisible (s_roll.get());
     s_roll->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 15);
-    s_roll->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
-    s_roll->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_roll->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_roll->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_roll->addListener (this);
-
     s_roll->setBounds (843, 260, 60, 68);
 
     t_flipYaw = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipYaw");
     addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (juce::String());
-    t_flipYaw->addListener (this);
-
     t_flipYaw->setBounds (749, 329, 23, 24);
 
     t_flipPitch = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipPitch");
     addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (juce::String());
-    t_flipPitch->addListener (this);
-
     t_flipPitch->setBounds (812, 329, 23, 24);
 
     t_flipRoll = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipRoll");
     addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (juce::String());
-    t_flipRoll->addListener (this);
-
     t_flipRoll->setBounds (875, 329, 23, 24);
 
     te_oscport.reset (new juce::TextEditor ("new text editor"));
@@ -207,33 +149,23 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     te_oscport->setScrollbarsShown (true);
     te_oscport->setCaretVisible (false);
     te_oscport->setPopupMenuEnabled (true);
-    te_oscport->setColour (juce::TextEditor::textColourId, juce::Colours::white);
-    te_oscport->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
-    te_oscport->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
     te_oscport->setText (TRANS ("9000"));
-
     te_oscport->setBounds (848, 216, 44, 22);
 
     TBrpyFlag = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "useRollPitchYaw");
     addAndMakeVisible (TBrpyFlag.get());
     TBrpyFlag->setButtonText (juce::String());
-    TBrpyFlag->addListener (this);
-
     TBrpyFlag->setBounds (752, 216, 32, 24);
 
     TBenableRotation = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableRotation");
     addAndMakeVisible (TBenableRotation.get());
     TBenableRotation->setButtonText (juce::String());
-    TBenableRotation->addListener (this);
-
     TBenableRotation->setBounds (832, 191, 32, 24);
 
     TBenablePreProc = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableDiffuseEQ");
     addAndMakeVisible (TBenablePreProc.get());
     TBenablePreProc->setTooltip (TRANS ("Enable HRIR Pre-Processing"));
     TBenablePreProc->setButtonText (juce::String());
-    TBenablePreProc->addListener (this);
-
     TBenablePreProc->setBounds (876, 109, 32, 24);
 
     setSize (920, 362);
@@ -248,7 +180,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 #endif
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* remove slider bit of these sliders */
@@ -307,8 +238,9 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     /* file loader */
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
-    fileChooser.setBounds (718, 89, 180, 20);
+    fileChooser.setBounds (719, 87, 182, 20);
     StringArray filenames;
+    filenames.add("/Spatial_Audio_Framework/Default");
     filenames.add(binauraliser_getSofaFilePath(hBin));
     fileChooser.setRecentlyUsedFilenames(filenames);
     fileChooser.setFilenameIsEditable(true);

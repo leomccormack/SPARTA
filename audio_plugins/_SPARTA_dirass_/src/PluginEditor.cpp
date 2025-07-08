@@ -29,92 +29,66 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (CBbeamType.get());
     CBbeamType->setEditableText (false);
     CBbeamType->setJustificationType (juce::Justification::centredLeft);
-    CBbeamType->addListener (this);
-
     CBbeamType->setBounds (121, 440, 112, 18);
 
     CBchFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBchFormat.get());
     CBchFormat->setEditableText (false);
     CBchFormat->setJustificationType (juce::Justification::centredLeft);
-    CBchFormat->addListener (this);
-
     CBchFormat->setBounds (90, 504, 66, 18);
 
     CBnormScheme = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnormScheme.get());
     CBnormScheme->setEditableText (false);
     CBnormScheme->setJustificationType (juce::Justification::centredLeft);
-    CBnormScheme->addListener (this);
-
     CBnormScheme->setBounds (161, 504, 71, 18);
 
     CB_hfov = std::make_unique<ComboBoxWithAttachment>(p.parameters, "FOVoption");
     addAndMakeVisible (CB_hfov.get());
     CB_hfov->setEditableText (false);
     CB_hfov->setJustificationType (juce::Justification::centredLeft);
-    CB_hfov->addListener (this);
-
     CB_hfov->setBounds (584, 406, 66, 18);
 
     CB_aspectRatio = std::make_unique<ComboBoxWithAttachment>(p.parameters, "ARoption");
     addAndMakeVisible (CB_aspectRatio.get());
     CB_aspectRatio->setEditableText (false);
     CB_aspectRatio->setJustificationType (juce::Justification::centredLeft);
-    CB_aspectRatio->addListener (this);
-
     CB_aspectRatio->setBounds (584, 438, 66, 18);
 
     SLmapAvg = std::make_unique<SliderWithAttachment>(p.parameters, "mapAvg");
     addAndMakeVisible (SLmapAvg.get());
     SLmapAvg->setSliderStyle (juce::Slider::LinearHorizontal);
     SLmapAvg->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
-    SLmapAvg->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    SLmapAvg->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    SLmapAvg->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    SLmapAvg->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    SLmapAvg->addListener (this);
-
     SLmapAvg->setBounds (349, 468, 104, 24);
 
     CBinputOrder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (CBinputOrder.get());
     CBinputOrder->setEditableText (false);
     CBinputOrder->setJustificationType (juce::Justification::centredLeft);
-    CBinputOrder->addListener (this);
-
     CBinputOrder->setBounds (121, 403, 112, 18);
 
     s_minFreq = std::make_unique<SliderWithAttachment>(p.parameters, "minFreq");
     addAndMakeVisible (s_minFreq.get());
     s_minFreq->setSliderStyle (juce::Slider::LinearHorizontal);
     s_minFreq->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
-    s_minFreq->addListener (this);
-
-    s_minFreq->setBounds (592, 469, 58, 24);
+    s_minFreq->setBounds (552, 471, 98, 18);
 
     s_maxFreq = std::make_unique<SliderWithAttachment>(p.parameters, "maxFreq");
     addAndMakeVisible (s_maxFreq.get());
     s_maxFreq->setSliderStyle (juce::Slider::LinearHorizontal);
     s_maxFreq->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
-    s_maxFreq->addListener (this);
-
-    s_maxFreq->setBounds (592, 500, 58, 24);
+    s_maxFreq->setBounds (552, 502, 98, 18);
 
     CBgridOption = std::make_unique<ComboBoxWithAttachment>(p.parameters, "gridOption");
     addAndMakeVisible (CBgridOption.get());
     CBgridOption->setEditableText (false);
     CBgridOption->setJustificationType (juce::Justification::centredLeft);
-    CBgridOption->addListener (this);
-
     CBgridOption->setBounds (121, 472, 112, 18);
 
     CBupscaleOrder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "upscaleOrder");
     addAndMakeVisible (CBupscaleOrder.get());
     CBupscaleOrder->setEditableText (false);
     CBupscaleOrder->setJustificationType (juce::Justification::centredLeft);
-    CBupscaleOrder->addListener (this);
-
     CBupscaleOrder->setBounds (354, 440, 99, 18);
 
     CBdirassMode = std::make_unique<ComboBoxWithAttachment>(p.parameters, "DirASSmode");
@@ -122,15 +96,12 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBdirassMode->setEditableText (false);
     CBdirassMode->setJustificationType (juce::Justification::centredLeft);
     CBdirassMode->addListener (this);
-
     CBdirassMode->setBounds (354, 403, 99, 18);
 
     s_interpWidth = std::make_unique<SliderWithAttachment>(p.parameters, "dispWidth");
     addAndMakeVisible (s_interpWidth.get());
     s_interpWidth->setSliderStyle (juce::Slider::LinearHorizontal);
     s_interpWidth->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
-    s_interpWidth->addListener (this);
-
     s_interpWidth->setBounds (368, 500, 85, 24);
 
     CB_webcam.reset (new juce::ComboBox (juce::String()));
@@ -140,28 +111,24 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CB_webcam->setTextWhenNothingSelected (juce::String());
     CB_webcam->setTextWhenNoChoicesAvailable (juce::String());
     CB_webcam->addListener (this);
-
     CB_webcam->setBounds (434, 38, 92, 17);
 
     TB_greyScale.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_greyScale.get());
     TB_greyScale->setButtonText (juce::String());
     TB_greyScale->addListener (this);
-
     TB_greyScale->setBounds (639, 35, 24, 24);
 
     TB_flipUD.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_flipUD.get());
     TB_flipUD->setButtonText (juce::String());
     TB_flipUD->addListener (this);
-
     TB_flipUD->setBounds (598, 35, 24, 24);
 
     TB_flipLR.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_flipLR.get());
     TB_flipLR->setButtonText (juce::String());
     TB_flipLR->addListener (this);
-
     TB_flipLR->setBounds (550, 35, 24, 24);
 
     setSize (672, 542);
@@ -176,7 +143,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 #endif
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* remove slider bit of these sliders */
@@ -473,7 +439,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 481, y = 465, width = 152, height = 30;
-        juce::String text (TRANS("Min Freq (Hz):"));
+        juce::String text (TRANS("Min Freq:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (14.00f, juce::Font::plain).withStyle ("Bold"));
@@ -483,7 +449,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 481, y = 497, width = 104, height = 30;
-        juce::String text (TRANS("Max Freq (Hz):"));
+        juce::String text (TRANS("Max Freq:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (14.00f, juce::Font::plain).withStyle ("Bold"));
@@ -638,7 +604,7 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == CBdirassMode.get())
     {
-        CBupscaleOrder->setEnabled(dirass_getDiRAssMode(hDir) == REASS_UPSCALE ? true : false);
+        CBupscaleOrder->setEnabled(CBdirassMode->getSelectedId() == REASS_UPSCALE ? true : false);
     }
     else if (comboBoxThatHasChanged == CB_webcam.get())
     {
@@ -720,6 +686,7 @@ void PluginEditor::timerCallback(int timerID)
                 removeChildComponent(&progressbar);
 
             /* Some parameters shouldn't be editable during initialisation*/
+            bool usingUpscale = (CBdirassMode->getSelectedId() == REASS_UPSCALE ? true : false);
             if(dirass_getCodecStatus(hDir)==CODEC_STATUS_INITIALISING){
                 if(CBbeamType->isEnabled())
                     CBbeamType->setEnabled(false);
@@ -751,7 +718,7 @@ void PluginEditor::timerCallback(int timerID)
                     CBinputOrder->setEnabled(true);
                 if(!CBgridOption->isEnabled())
                     CBgridOption->setEnabled(true);
-                if(!CBupscaleOrder->isEnabled())
+                if(!CBupscaleOrder->isEnabled() && usingUpscale)
                     CBupscaleOrder->setEnabled(true);
                 if(!s_interpWidth->isEnabled())
                     s_interpWidth->setEnabled(true);

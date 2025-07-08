@@ -65,6 +65,9 @@ public:
     int getParameterInt(const juce::String& parameterID) const {
         return static_cast<int>(*parameters.getRawParameterValue(parameterID));
     }
+    bool getParameterBool(const juce::String& parameterID) const {
+        return static_cast<bool>(*parameters.getRawParameterValue(parameterID)+0.5f);
+    }
     int getParameterChoice(const juce::String& parameterID) const {
         return static_cast<int>(*parameters.getRawParameterValue(parameterID));
     }
@@ -77,7 +80,11 @@ class SliderWithAttachment : public juce::Slider
 {
 public:
     SliderWithAttachment(juce::AudioProcessorValueTreeState& parameters, const juce::String& paramID)
-        : attachment(parameters, paramID, *this) {}
+        : attachment(parameters, paramID, *this) {
+            auto* param = dynamic_cast<juce::AudioProcessorParameterWithID*>(parameters.getParameter(paramID));
+            if (param != nullptr)
+                setTextValueSuffix(param->getLabel());
+        }
 private:
     juce::AudioProcessorValueTreeState::SliderAttachment attachment;
 };
@@ -106,3 +113,9 @@ public:
 private:
     juce::AudioProcessorValueTreeState::ButtonAttachment attachment;
 };
+
+inline void setSliderAsTextBoxOnly(juce::Slider& slider)
+{
+    slider.setSliderStyle(juce::Slider::LinearBarVertical);
+    slider.setSliderSnapsToMousePosition(false);
+}

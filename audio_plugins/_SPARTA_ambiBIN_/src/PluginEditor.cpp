@@ -31,74 +31,47 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (TBuseDefaultHRIRs.get());
     TBuseDefaultHRIRs->setButtonText (juce::String());
     TBuseDefaultHRIRs->addListener (this);
-
     TBuseDefaultHRIRs->setBounds (613, 60, 27, 24);
 
     CBorderPreset = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (CBorderPreset.get());
     CBorderPreset->setEditableText (false);
     CBorderPreset->setJustificationType (juce::Justification::centredLeft);
-    CBorderPreset->addListener (this);
-
     CBorderPreset->setBounds (136, 63, 104, 18);
 
     CBchFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBchFormat.get());
     CBchFormat->setEditableText (false);
     CBchFormat->setJustificationType (juce::Justification::centredLeft);
-    CBchFormat->addListener (this);
-
     CBchFormat->setBounds (88, 116, 72, 18);
 
     CBnormScheme = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnormScheme.get());
     CBnormScheme->setEditableText (false);
     CBnormScheme->setJustificationType (juce::Justification::centredLeft);
-    CBnormScheme->addListener (this);
-
     CBnormScheme->setBounds (164, 116, 76, 18);
 
     TBmaxRE = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableMaxRE");
     addAndMakeVisible (TBmaxRE.get());
     TBmaxRE->setButtonText (juce::String());
-    TBmaxRE->addListener (this);
-
     TBmaxRE->setBounds (411, 60, 22, 24);
 
     s_yaw = std::make_unique<SliderWithAttachment>(p.parameters, "yaw");
     addAndMakeVisible (s_yaw.get());
     s_yaw->setSliderStyle (juce::Slider::LinearHorizontal);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxAbove, false, 80, 20);
-    s_yaw->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_yaw->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    s_yaw->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_yaw->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_yaw->addListener (this);
-
     s_yaw->setBounds (80, 171, 120, 38);
 
     s_pitch = std::make_unique<SliderWithAttachment>(p.parameters, "pitch");
     addAndMakeVisible (s_pitch.get());
     s_pitch->setSliderStyle (juce::Slider::LinearVertical);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
-    s_pitch->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_pitch->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    s_pitch->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_pitch->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_pitch->addListener (this);
-
     s_pitch->setBounds (208, 137, 96, 112);
 
     s_roll = std::make_unique<SliderWithAttachment>(p.parameters, "roll");
     addAndMakeVisible (s_roll.get());
     s_roll->setSliderStyle (juce::Slider::LinearVertical);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
-    s_roll->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_roll->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    s_roll->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_roll->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_roll->addListener (this);
-
     s_roll->setBounds (328, 137, 96, 112);
 
     te_oscport.reset (new juce::TextEditor ("new text editor"));
@@ -109,125 +82,81 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     te_oscport->setScrollbarsShown (true);
     te_oscport->setCaretVisible (false);
     te_oscport->setPopupMenuEnabled (true);
-    te_oscport->setColour (juce::TextEditor::textColourId, juce::Colours::white);
-    te_oscport->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
-    te_oscport->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x68a3a2a2));
-    te_oscport->setText (juce::String());
-
     te_oscport->setBounds (16, 227, 56, 18);
 
-    label_N_dirs.reset (new juce::Label ("new label",
-                                         juce::String()));
+    label_N_dirs.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_N_dirs.get());
-
     label_N_dirs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle("Regular"));
     label_N_dirs->setJustificationType (juce::Justification::centredLeft);
     label_N_dirs->setEditable (false, false, false);
-    label_N_dirs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_N_dirs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_N_dirs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_N_dirs->setBounds (536, 148, 96, 24);
 
-    label_HRIR_len.reset (new juce::Label ("new label",
-                                           juce::String()));
+    label_HRIR_len.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_HRIR_len.get());
     label_HRIR_len->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle("Regular"));
     label_HRIR_len->setJustificationType (juce::Justification::centredLeft);
     label_HRIR_len->setEditable (false, false, false);
-    label_HRIR_len->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_HRIR_len->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_HRIR_len->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_HRIR_len->setBounds (536, 171, 96, 24);
 
-    label_HRIR_fs.reset (new juce::Label ("new label",
-                                          juce::String()));
+    label_HRIR_fs.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_HRIR_fs.get());
     label_HRIR_fs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle("Regular"));
     label_HRIR_fs->setJustificationType (juce::Justification::centredLeft);
     label_HRIR_fs->setEditable (false, false, false);
-    label_HRIR_fs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_HRIR_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_HRIR_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_HRIR_fs->setBounds (536, 194, 96, 24);
 
-    label_DAW_fs.reset (new juce::Label ("new label",
-                                         juce::String()));
+    label_DAW_fs.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_DAW_fs.get());
     label_DAW_fs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle("Regular"));
     label_DAW_fs->setJustificationType (juce::Justification::centredLeft);
     label_DAW_fs->setEditable (false, false, false);
-    label_DAW_fs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_DAW_fs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_DAW_fs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_DAW_fs->setBounds (536, 217, 96, 24);
 
     t_flipPitch = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipPitch");
     addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (juce::String());
-    t_flipPitch->addListener (this);
-
     t_flipPitch->setBounds (260, 209, 23, 24);
 
     t_flipRoll = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipRoll");
     addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (juce::String());
-    t_flipRoll->addListener (this);
-
     t_flipRoll->setBounds (376, 209, 23, 24);
 
     t_flipYaw = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipYaw");
     addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (juce::String());
-    t_flipYaw->addListener (this);
-
     t_flipYaw->setBounds (128, 209, 23, 24);
 
     TBrpyFlag = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "useRollPitchYaw");
     addAndMakeVisible (TBrpyFlag.get());
     TBrpyFlag->setButtonText (juce::String());
-    TBrpyFlag->addListener (this);
-
     TBrpyFlag->setBounds (59, 187, 24, 24);
 
     TBenableRot = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableRotation");
     addAndMakeVisible (TBenableRot.get());
     TBenableRot->setButtonText (juce::String());
-    TBenableRot->addListener (this);
-
     TBenableRot->setBounds (59, 165, 24, 24);
 
     CBdecoderMethod = std::make_unique<ComboBoxWithAttachment>(p.parameters, "decMethod");
     addAndMakeVisible (CBdecoderMethod.get());
     CBdecoderMethod->setEditableText (false);
     CBdecoderMethod->setJustificationType (juce::Justification::centredLeft);
-    CBdecoderMethod->addListener (this);
-
     CBdecoderMethod->setBounds (88, 90, 152, 18);
 
     TBdiffMatching = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableDiffuseMatching");
     addAndMakeVisible (TBdiffMatching.get());
     TBdiffMatching->setButtonText (juce::String());
-    TBdiffMatching->addListener (this);
-
     TBdiffMatching->setBounds (411, 87, 22, 24);
 
     TBtruncationEQ = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableTruncationEQ");
     addAndMakeVisible (TBtruncationEQ.get());
     TBtruncationEQ->setButtonText (juce::String());
-    TBtruncationEQ->addListener (this);
-
     TBtruncationEQ->setBounds (411, 113, 22, 24);
 
     CBhrirPreProc = std::make_unique<ComboBoxWithAttachment>(p.parameters, "hrirPreproc");
     addAndMakeVisible (CBhrirPreProc.get());
     CBhrirPreProc->setEditableText (false);
     CBhrirPreProc->setJustificationType (juce::Justification::centredLeft);
-    CBhrirPreProc->addListener (this);
-
     CBhrirPreProc->setBounds (520, 113, 113, 18);
 
     setSize (656, 262);
@@ -242,18 +171,23 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 #endif
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* file loader */
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
     fileChooser.setBounds (452, 86, 181, 20);
+    StringArray filenames;
+    filenames.add("/Spatial_Audio_Framework/Default");
+    filenames.add(ambi_bin_getSofaFilePath(hAmbi));
+    fileChooser.setRecentlyUsedFilenames(filenames);
+    fileChooser.setFilenameIsEditable(true);
 
     /* ProgressBar */
     progress = 0.0;
     progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
     progressbar.ProgressBar::setAlwaysOnTop(true);
+    progressbar.setVisible(false);
 
     /* grab current parameter settings */
     TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);

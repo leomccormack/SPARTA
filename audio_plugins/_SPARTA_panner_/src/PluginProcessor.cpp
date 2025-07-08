@@ -417,6 +417,13 @@ void PluginProcessor::loadConfiguration (const File& configFile, int srcOrLs)
         /* update with the new configuration  */
         switch(srcOrLs){
             case 0:{
+                /* Making sure that the internal coordinates above the current numSources (i.e. numSources+1:maxNumSources) are up to date in "parameters" too */
+                /* This is because JUCE won't invoke parameterChanged() if the values are the same in the parameter list */
+                for(int i=panner_getNumSources(hPan); i<num_el; i++){
+                    setParameterValue("srcAzim" + juce::String(i), panner_getSourceAzi_deg(hPan, i));
+                    setParameterValue("srcElev" + juce::String(i), panner_getSourceElev_deg(hPan, i));
+                }
+                
                 /* update with the new configuration  */
                 setParameterValue("numInputs", num_el);
                 for (ValueTree::Iterator it = elements.begin() ; it != elements.end(); ++it){
@@ -431,6 +438,14 @@ void PluginProcessor::loadConfiguration (const File& configFile, int srcOrLs)
             }
             break;
             case 1:{
+                /* Making sure that the internal coordinates above the current numLoudspeakers (i.e. numLoudspeakers+1:maxNumLoudspeakers) are up to date in "parameters" too */
+                /* This is because JUCE won't invoke parameterChanged() if the values are the same in the parameter list */
+                for(int i=panner_getNumLoudspeakers(hPan); i<num_el; i++){
+                    setParameterValue("lsAzim" + juce::String(i), panner_getLoudspeakerAzi_deg(hPan, i));
+                    setParameterValue("lsElev" + juce::String(i), panner_getLoudspeakerElev_deg(hPan, i));
+                }
+                
+                /* update with the new configuration  */
                 setParameterValue("numOutputs", num_el);
                 for (ValueTree::Iterator it = elements.begin() ; it != elements.end(); ++it){
                     if ( !((*it).getProperty("Imaginary"))){

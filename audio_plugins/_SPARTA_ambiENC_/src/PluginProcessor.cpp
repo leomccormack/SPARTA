@@ -91,6 +91,18 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     }
 }
 
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    ambi_enc_setOutputOrder(hAmbi, getParameterChoice("outputOrder")+1);
+    ambi_enc_setChOrder(hAmbi, getParameterChoice("channelOrder")+1);
+    ambi_enc_setNormType(hAmbi, getParameterChoice("normType")+1);
+    ambi_enc_setNumSources(hAmbi, getParameterInt("numSources"));
+    for(int i=0; i<MAX_NUM_INPUTS; i++){
+        ambi_enc_setSourceAzi_deg(hAmbi, i, getParameterFloat("azim" + juce::String(i)));
+        ambi_enc_setSourceElev_deg(hAmbi, i, getParameterFloat("elev" + juce::String(i)));
+    }
+}
+
 PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
@@ -256,6 +268,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             /* Other */
             if(xmlState->hasAttribute("JSONFilePath"))
                 lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
         
         ambi_enc_refreshParams(hAmbi);
@@ -322,6 +338,13 @@ void PluginProcessor::loadConfiguration (const File& configFile)
             for(int j=0; j<num_srcs+num_virtual_srcs; j++)
                 if( channelIDs[j] > virtual_channelIDs[i]-i )
                     channelIDs[j]--;
+        
+        /* Making sure that the internal coordinates above the current numSources (i.e. numSources+1:maxNumSources) are up to date in "parameters" too */
+        /* This is because JUCE won't invoke parameterChanged() if the values are the same in the parameter list */
+        for(int i=ambi_enc_getNumSources(hAmbi); i<num_srcs; i++){
+            setParameterValue("azim" + juce::String(i), ambi_enc_getSourceAzi_deg(hAmbi, i));
+            setParameterValue("elev" + juce::String(i), ambi_enc_getSourceElev_deg(hAmbi, i));
+        }
         
         /* update with the new configuration  */
         setParameterValue("numSources", num_srcs);

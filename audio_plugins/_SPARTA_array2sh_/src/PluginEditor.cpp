@@ -30,136 +30,101 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     presetCB->setEditableText (false);
     presetCB->setJustificationType (juce::Justification::centredLeft);
     presetCB->setTextWhenNothingSelected (juce::String());
-    presetCB->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
-    presetCB->addItem (TRANS ("Default"), 1);
     presetCB->addListener (this);
-
-    presetCB->setBounds (88, 64, 120, 16);
+    presetCB->setBounds (88, 62, 120, 20);
 
     arrayTypeCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "arrayType");
     addAndMakeVisible (arrayTypeCB.get());
     arrayTypeCB->setEditableText (false);
     arrayTypeCB->setJustificationType (juce::Justification::centredLeft);
-    arrayTypeCB->setTextWhenNothingSelected (TRANS ("Spherical"));
-    arrayTypeCB->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     arrayTypeCB->addListener (this);
-
-    arrayTypeCB->setBounds (368, 378, 120, 16);
+    arrayTypeCB->setBounds (368, 374, 120, 20);
 
     QSlider = std::make_unique<SliderWithAttachment>(p.parameters, "numSensors");
     addAndMakeVisible (QSlider.get());
     QSlider->setSliderStyle (juce::Slider::LinearHorizontal);
     QSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
     QSlider->addListener (this);
-
-    QSlider->setBounds (156, 97, 52, 20);
+    QSlider->setBounds (154, 97, 54, 20);
 
     rSlider = std::make_unique<SliderWithAttachment>(p.parameters, "arrayRadius");
     addAndMakeVisible (rSlider.get());
     rSlider->setSliderStyle (juce::Slider::LinearHorizontal);
     rSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
     rSlider->addListener (this);
-
-    rSlider->setBounds (156, 129, 52, 20);
+    rSlider->setBounds (124, 129, 84, 20);
 
     RSlider = std::make_unique<SliderWithAttachment>(p.parameters, "baffleRadius");
     addAndMakeVisible (RSlider.get());
     RSlider->setSliderStyle (juce::Slider::LinearHorizontal);
     RSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
-    RSlider->setColour (juce::Slider::trackColourId, juce::Colour (0xff181f22));
-    RSlider->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff263238));
     RSlider->addListener (this);
-
-    RSlider->setBounds (156, 161, 52, 20);
-
+    RSlider->setBounds (124, 161, 84, 20);
+    
     cSlider = std::make_unique<SliderWithAttachment>(p.parameters, "speedOfSound");
     addAndMakeVisible (cSlider.get());
     cSlider->setSliderStyle (juce::Slider::LinearHorizontal);
     cSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
     cSlider->addListener (this);
-
-    cSlider->setBounds (408, 346, 80, 16);
+    cSlider->setBounds (368, 342, 120, 20);
 
     weightTypeCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "weightType");
     addAndMakeVisible (weightTypeCB.get());
     weightTypeCB->setEditableText (false);
     weightTypeCB->setJustificationType (juce::Justification::centredLeft);
-    weightTypeCB->setTextWhenNothingSelected (TRANS ("Rigid"));
-    weightTypeCB->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     weightTypeCB->addListener (this);
-
-    weightTypeCB->setBounds (368, 410, 120, 16);
+    weightTypeCB->setBounds (368, 406, 120, 20);
 
     filterTypeCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "filterType");
     addAndMakeVisible (filterTypeCB.get());
     filterTypeCB->setEditableText (false);
     filterTypeCB->setJustificationType (juce::Justification::centredLeft);
-    filterTypeCB->setTextWhenNothingSelected (juce::String());
-    filterTypeCB->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     filterTypeCB->addListener (this);
-
-    filterTypeCB->setBounds (640, 276, 128, 16);
+    filterTypeCB->setBounds (640, 274, 128, 20);
 
     regAmountSlider = std::make_unique<SliderWithAttachment>(p.parameters, "maxGain");
     addAndMakeVisible (regAmountSlider.get());
-    regAmountSlider->setRange (0, 80, 0.01);
     regAmountSlider->setSliderStyle (juce::Slider::LinearHorizontal);
-    regAmountSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
-    regAmountSlider->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    regAmountSlider->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
+    regAmountSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 65, 20);
     regAmountSlider->addListener (this);
-
-    regAmountSlider->setBounds (640, 308, 128, 16);
+    regAmountSlider->setBounds (610, 308, 158, 20);
 
     CHOrderingCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CHOrderingCB.get());
     CHOrderingCB->setEditableText (false);
     CHOrderingCB->setJustificationType (juce::Justification::centredLeft);
-    CHOrderingCB->setTextWhenNothingSelected (TRANS ("ACN"));
-    CHOrderingCB->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CHOrderingCB->addListener (this);
-
-    CHOrderingCB->setBounds (640, 377, 128, 16);
+    CHOrderingCB->setBounds (640, 375, 128, 20);
 
     normalisationCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (normalisationCB.get());
     normalisationCB->setEditableText (false);
     normalisationCB->setJustificationType (juce::Justification::centredLeft);
-    normalisationCB->setTextWhenNothingSelected (TRANS ("N3D"));
-    normalisationCB->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     normalisationCB->addListener (this);
-
-    normalisationCB->setBounds (640, 409, 128, 16);
+    normalisationCB->setBounds (640, 407, 128, 20);
 
     gainSlider = std::make_unique<SliderWithAttachment>(p.parameters, "postGain");
     addAndMakeVisible (gainSlider.get());
     gainSlider->setSliderStyle (juce::Slider::LinearHorizontal);
-    gainSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
-    gainSlider->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    gainSlider->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
+    gainSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 65, 20);
     gainSlider->addListener (this);
-
-    gainSlider->setBounds (640, 341, 128, 16);
+    gainSlider->setBounds (610, 341, 158, 20);
 
     textButton.reset (new juce::TextButton ("new button"));
     addAndMakeVisible (textButton.get());
     textButton->setButtonText (TRANS ("Analyse"));
     textButton->addListener (this);
-    textButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff5c68a4));
-
     textButton->setBounds (228, 39, 60, 14);
 
     dispWindow.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (dispWindow.get());
     dispWindow->setEditableText (false);
     dispWindow->setJustificationType (juce::Justification::centredLeft);
-    dispWindow->setTextWhenNothingSelected (TRANS ("Filters"));
-    dispWindow->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     dispWindow->addItem (TRANS ("Filters"), 1);
     dispWindow->addItem (TRANS ("Corr"), 2);
     dispWindow->addItem (TRANS ("L Diff"), 3);
+    dispWindow->setSelectedId(1);
     dispWindow->addListener (this);
-
     dispWindow->setBounds (721, 39, 63, 14);
 
     tb_loadJSON.reset (new juce::TextButton ("new button"));
@@ -167,8 +132,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     tb_loadJSON->setButtonText (TRANS ("Import"));
     tb_loadJSON->setConnectedEdges (juce::Button::ConnectedOnRight);
     tb_loadJSON->addListener (this);
-    tb_loadJSON->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff14889e));
-
     tb_loadJSON->setBounds (148, 39, 34, 14);
 
     tb_saveJSON.reset (new juce::TextButton ("new button"));
@@ -176,26 +139,19 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     tb_saveJSON->setButtonText (TRANS ("Export"));
     tb_saveJSON->setConnectedEdges (juce::Button::ConnectedOnLeft);
     tb_saveJSON->addListener (this);
-    tb_saveJSON->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff224d97));
-    tb_saveJSON->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xff181f9a));
-
     tb_saveJSON->setBounds (182, 39, 34, 14);
 
     CBencodingOrder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "outputOrder");
     addAndMakeVisible (CBencodingOrder.get());
     CBencodingOrder->setEditableText (false);
     CBencodingOrder->setJustificationType (juce::Justification::centredLeft);
-    CBencodingOrder->setTextWhenNothingSelected (TRANS ("Default"));
-    CBencodingOrder->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBencodingOrder->addListener (this);
-
     CBencodingOrder->setBounds (368, 274, 120, 20);
 
     applyDiffEQ = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableDiffEQ");
     addAndMakeVisible (applyDiffEQ.get());
     applyDiffEQ->setButtonText (juce::String());
     applyDiffEQ->addListener (this);
-
     applyDiffEQ->setBounds (466, 309, 23, 24);
 
     setSize (800, 450);
@@ -210,7 +166,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 #endif
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* remove the slider bit of these sliders */
@@ -523,7 +478,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 20, y = 55, width = 67, height = 30;
+        int x = 20, y = 57, width = 67, height = 30;
         juce::String text (TRANS ("Presets: "));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
@@ -544,7 +499,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 20, y = 123, width = 180, height = 30;
-        juce::String text (TRANS ("Array radius (mm):"));
+        juce::String text (TRANS ("Array radius:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (14.00f, juce::Font::plain).withStyle ("Bold"));
@@ -554,7 +509,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 20, y = 155, width = 180, height = 30;
-        juce::String text (TRANS ("Baffle radius (mm):"));
+        juce::String text (TRANS ("Baffle radius:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (14.00f, juce::Font::plain).withStyle ("Bold"));
@@ -575,7 +530,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 240, y = 337, width = 172, height = 30;
-        juce::String text (TRANS ("Speed of Sound (m/s):"));
+        juce::String text (TRANS ("Speed of Sound:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
@@ -615,7 +570,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 520, y = 301, width = 172, height = 30;
-        juce::String text (TRANS ("Max Gain (dB):"));
+        juce::String text (TRANS ("Max Gain:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
@@ -645,7 +600,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 520, y = 334, width = 172, height = 30;
-        juce::String text (TRANS ("Post Gain (dB):"));
+        juce::String text (TRANS ("Post Gain:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
@@ -669,16 +624,6 @@ void PluginEditor::paint (juce::Graphics& g)
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 1);
 
-    }
-
-    {
-        int x = 179, y = 193, width = 24, height = 23;
-        juce::String text (juce::CharPointer_UTF8 ("\xc2\xb0"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
     }
 
     {
@@ -1001,12 +946,12 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     }
     else if (sliderThatWasMoved == RSlider.get())
     {
-        bool changerToo = (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_OMNI) ||
-            (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_CARD) ||
-            (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_DIPOLE) ? true : false; /* is it a rigid array? */
-        if(changerToo){
-            processor.setParameterValue("arrayRadius", (float)RSlider->getValue());
-        }
+//        bool changerToo = (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_OMNI) ||
+//            (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_CARD) ||
+//            (array2sh_getWeightType(hA2sh) == WEIGHT_RIGID_DIPOLE) ? true : false; /* is it a rigid array? */
+//        if(changerToo){
+//            processor.setParameterValue("arrayRadius", (float)RSlider->getValue());
+//        }
         needScreenRefreshFLAG = true;
     }
     else if (sliderThatWasMoved == cSlider.get())
@@ -1072,6 +1017,7 @@ void PluginEditor::timerCallback(int timerID)
             int curOrder = CBencodingOrder->getSelectedId();
             QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
             QSlider->setValue(array2sh_getNumSensors(hA2sh), sendNotification);
+            rSlider->setValue(array2sh_getr(hA2sh)*1e3f, sendNotification);
             RSlider->setValue(array2sh_getR(hA2sh)*1e3f, sendNotification);
             weightTypeCB->setSelectedId(array2sh_getWeightType(hA2sh), sendNotification);
             sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));

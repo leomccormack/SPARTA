@@ -47,18 +47,18 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
                                                                   juce::StringArray{"Soft-Limiting","Tikhonov","Z-style","Z-style (max_rE)"}, 1,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("maxGain", "MaxGain",
-                                                                 juce::NormalisableRange<float>(ARRAY2SH_MAX_GAIN_MIN_VALUE, ARRAY2SH_MAX_GAIN_MAX_VALUE, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("dB")));
+                                                                 juce::NormalisableRange<float>(ARRAY2SH_MAX_GAIN_MIN_VALUE, ARRAY2SH_MAX_GAIN_MAX_VALUE, 0.1f), 15.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(" dB")));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("postGain", "PostGain",
-                                                                 juce::NormalisableRange<float>(ARRAY2SH_POST_GAIN_MIN_VALUE, ARRAY2SH_POST_GAIN_MAX_VALUE, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("dB")));
+                                                                 juce::NormalisableRange<float>(ARRAY2SH_POST_GAIN_MIN_VALUE, ARRAY2SH_POST_GAIN_MAX_VALUE, 0.1f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(" dB")));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("speedOfSound", "SpeedOfSound",
-                                                                 juce::NormalisableRange<float>(ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE, ARRAY2SH_SPEED_OF_SOUND_MAX_VALUE, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("m/s")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("arrayRadius", "ArrayRadius", juce::NormalisableRange<float>(1.0f, 400.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("mm")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("baffleRadius", "BaffleRadius", juce::NormalisableRange<float>(1.0f, 400.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("mm")));
+                                                                 juce::NormalisableRange<float>(ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE, ARRAY2SH_SPEED_OF_SOUND_MAX_VALUE, 0.1f), 343.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(" m/s")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("arrayRadius", "ArrayRadius", juce::NormalisableRange<float>(1.0f, 400.0f, 0.1f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(" mm")));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("baffleRadius", "BaffleRadius", juce::NormalisableRange<float>(1.0f, 400.0f, 0.1f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withLabel(" mm")));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("arrayType", "ArrayType", juce::StringArray{"Spherical","Cylindrical"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("weightType", "WeightType",
@@ -146,6 +146,27 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     for(int i=0; i<MAX_NUM_INPUTS; i++){
         setParameterValue("azim" + juce::String(i), array2sh_getSensorAzi_deg(hA2sh, i));
         setParameterValue("elev" + juce::String(i), array2sh_getSensorElev_deg(hA2sh, i));
+    }
+}
+
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    array2sh_setEncodingOrder(hA2sh,  static_cast<SH_ORDERS>(getParameterChoice("outputOrder")+1));
+    array2sh_setChOrder(hA2sh, getParameterChoice("channelOrder")+1);
+    array2sh_setNormType(hA2sh, getParameterChoice("normType")+1);
+    array2sh_setFilterType(hA2sh, getParameterChoice("filterType")+1);
+    array2sh_setRegPar(hA2sh, getParameterFloat("maxGain"));
+    array2sh_setGain(hA2sh, getParameterFloat("postGain"));
+    array2sh_setc(hA2sh, getParameterFloat("speedOfSound"));
+    array2sh_setr(hA2sh, getParameterFloat("arrayRadius")/1000.0f);
+    array2sh_setR(hA2sh, getParameterFloat("baffleRadius")/1000.0f);
+    array2sh_setArrayType(hA2sh, getParameterChoice("arrayType")+1);
+    array2sh_setWeightType(hA2sh, getParameterChoice("weightType")+1);
+    array2sh_setDiffEQpastAliasing(hA2sh, getParameterBool("enableDiffEQ"));
+    array2sh_setNumSensors(hA2sh, getParameterInt("numSensors"));
+    for(int i=0; i<MAX_NUM_INPUTS; i++){
+        array2sh_setSensorAzi_deg(hA2sh, i, getParameterFloat("azim" + juce::String(i)));
+        array2sh_setSensorElev_deg(hA2sh, i, getParameterFloat("elev" + juce::String(i)));
     }
 }
 
@@ -335,6 +356,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             /* Other */
             if(xmlState->hasAttribute("JSONFilePath"))
                 lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
         
         array2sh_refreshSettings(hA2sh);
@@ -402,7 +427,14 @@ void PluginProcessor::loadConfiguration (const File& configFile)
                 if( channelIDs[j] > virtual_channelIDs[i]-i )
                     channelIDs[j]--;
         
-        /* update with the new configuration  */
+        /* Making sure that the internal coordinates above the current numSensors (i.e. numSensors+1:maxNumSensors) are up to date in "parameters" too */
+        /* This is because JUCE won't invoke parameterChanged() if the values are the same in the parameter list */
+        for(int i=array2sh_getNumSensors(hA2sh); i<num_sensors; i++){
+            setParameterValue("azim" + juce::String(i), array2sh_getSensorAzi_deg(hA2sh, i));
+            setParameterValue("elev" + juce::String(i), array2sh_getSensorElev_deg(hA2sh, i));
+        }
+        
+        /* update internal object with the new configuration  */
         setParameterValue("outputOrder",  (int)(sqrt((double)num_sensors)-0.999) - 1);
         setParameterValue("numSensors", num_sensors);
         for (ValueTree::Iterator it = sensors.begin() ; it != sensors.end(); ++it){

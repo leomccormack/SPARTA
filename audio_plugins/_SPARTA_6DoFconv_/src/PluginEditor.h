@@ -47,7 +47,8 @@ private:
 
     /* Look and Feel */
     SPARTALookAndFeel LAF;
-
+    juce::LookAndFeel_V4 defaultLAF;
+ 
     /* sofa loading */
     std::unique_ptr<juce::FilenameComponent> fileComp;
 

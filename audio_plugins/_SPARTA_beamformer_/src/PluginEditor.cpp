@@ -29,48 +29,30 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (SL_num_beams.get());
     SL_num_beams->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_beams->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
-    SL_num_beams->addListener (this);
-
     SL_num_beams->setBounds (640, 96, 48, 20);
 
     CBoutputFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (juce::Justification::centredLeft);
-    CBoutputFormat->setTextWhenNothingSelected (TRANS ("ACN"));
-    CBoutputFormat->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
-    CBoutputFormat->addListener (this);
-
     CBoutputFormat->setBounds (133, 316, 112, 20);
 
     CBnormalisation = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnormalisation.get());
     CBnormalisation->setEditableText (false);
     CBnormalisation->setJustificationType (juce::Justification::centredLeft);
-    CBnormalisation->setTextWhenNothingSelected (TRANS ("N3D"));
-    CBnormalisation->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
-    CBnormalisation->addListener (this);
-
     CBnormalisation->setBounds (368, 316, 112, 20);
 
     CBorder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (CBorder.get());
     CBorder->setEditableText (false);
     CBorder->setJustificationType (juce::Justification::centredLeft);
-    CBorder->setTextWhenNothingSelected (juce::String());
-    CBorder->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
-    CBorder->addListener (this);
-
     CBorder->setBounds (578, 64, 112, 20);
 
     CBbeamType = std::make_unique<ComboBoxWithAttachment>(p.parameters, "beamType");
     addAndMakeVisible (CBbeamType.get());
     CBbeamType->setEditableText (false);
     CBbeamType->setJustificationType (juce::Justification::centredLeft);
-    CBbeamType->setTextWhenNothingSelected (juce::String());
-    CBbeamType->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
-    CBbeamType->addListener (this);
-
     CBbeamType->setBounds (594, 125, 96, 20);
 
     setSize (708, 356);
@@ -85,7 +67,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 #endif
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* remove slider bit of these sliders */

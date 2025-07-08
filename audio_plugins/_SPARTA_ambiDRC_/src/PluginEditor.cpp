@@ -33,122 +33,61 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (s_ratio.get());
     s_ratio->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_ratio->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-    s_ratio->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
-    s_ratio->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0x66ffffff));
-    s_ratio->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_ratio->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_ratio->setColour (juce::Slider::textBoxHighlightColourId, juce::Colour (0x001111ee));
-    s_ratio->addListener (this);
-
-    s_ratio->setBounds (168, 364, 64, 64);
+    s_ratio->setBounds (168, 354, 64, 74);
 
     s_knee = std::make_unique<SliderWithAttachment>(p.parameters, "knee");
     addAndMakeVisible (s_knee.get());
     s_knee->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_knee->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-    s_knee->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
-    s_knee->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0x66ffffff));
-    s_knee->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_knee->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_knee->setColour (juce::Slider::textBoxHighlightColourId, juce::Colour (0x001111ee));
-    s_knee->addListener (this);
-
-    s_knee->setBounds (240, 364, 64, 64);
+    s_knee->setBounds (240, 354, 64, 74);
 
     s_attack = std::make_unique<SliderWithAttachment>(p.parameters, "attack_ms");
     addAndMakeVisible (s_attack.get());
     s_attack->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attack->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-    s_attack->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
-    s_attack->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0x66ffffff));
-    s_attack->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_attack->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_attack->setColour (juce::Slider::textBoxHighlightColourId, juce::Colour (0x001111ee));
-    s_attack->addListener (this);
-
-    s_attack->setBounds (319, 364, 64, 64);
+    s_attack->setBounds (319, 354, 64, 74);
 
     s_release = std::make_unique<SliderWithAttachment>(p.parameters, "release_ms");
     addAndMakeVisible (s_release.get());
     s_release->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_release->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-    s_release->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
-    s_release->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0x66ffffff));
-    s_release->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_release->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_release->setColour (juce::Slider::textBoxHighlightColourId, juce::Colour (0x001111ee));
-    s_release->addListener (this);
-
-    s_release->setBounds (391, 364, 64, 64);
+    s_release->setBounds (391, 354, 64, 74);
 
     s_outgain = std::make_unique<SliderWithAttachment>(p.parameters, "outGain");
     addAndMakeVisible (s_outgain.get());
     s_outgain->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_outgain->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-    s_outgain->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
-    s_outgain->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0x66ffffff));
-    s_outgain->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_outgain->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_outgain->setColour (juce::Slider::textBoxHighlightColourId, juce::Colour (0x001111ee));
-    s_outgain->addListener (this);
-
-    s_outgain->setBounds (468, 364, 64, 64);
+    s_outgain->setBounds (468, 354, 64, 74);
 
     presetCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (presetCB.get());
     presetCB->setEditableText (false);
     presetCB->setJustificationType (juce::Justification::centredLeft);
-    presetCB->setTextWhenNothingSelected (juce::String());
-    presetCB->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    presetCB->addListener (this);
-
     presetCB->setBounds (72, 296, 120, 16);
 
     CHOrderingCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CHOrderingCB.get());
     CHOrderingCB->setEditableText (false);
     CHOrderingCB->setJustificationType (juce::Justification::centredLeft);
-    CHOrderingCB->setTextWhenNothingSelected (TRANS("ACN"));
-    CHOrderingCB->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CHOrderingCB->addListener (this);
-
     CHOrderingCB->setBounds (288, 296, 80, 16);
 
     normalisationCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (normalisationCB.get());
     normalisationCB->setEditableText (false);
     normalisationCB->setJustificationType (juce::Justification::centredLeft);
-    normalisationCB->setTextWhenNothingSelected (TRANS("N3D"));
-    normalisationCB->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    normalisationCB->addListener (this);
-
     normalisationCB->setBounds (440, 296, 88, 16);
 
     s_ingain = std::make_unique<SliderWithAttachment>(p.parameters, "inGain");
     addAndMakeVisible (s_ingain.get());
     s_ingain->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_ingain->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-    s_ingain->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
-    s_ingain->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0x66ffffff));
-    s_ingain->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_ingain->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_ingain->setColour (juce::Slider::textBoxHighlightColourId, juce::Colour (0x001111ee));
-    s_ingain->addListener (this);
-
-    s_ingain->setBounds (16, 364, 64, 64);
+    s_ingain->setBounds (16, 354, 64, 74);
 
     s_thresh = std::make_unique<SliderWithAttachment>(p.parameters, "threshold");
     addAndMakeVisible (s_thresh.get());
     s_thresh->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_thresh->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-    s_thresh->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0x7fffffff));
-    s_thresh->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0x66ffffff));
-    s_thresh->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_thresh->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_thresh->setColour (juce::Slider::textBoxHighlightColourId, juce::Colour (0x001111ee));
-    s_thresh->addListener (this);
-
-    s_thresh->setBounds (96, 364, 64, 64);
+    s_thresh->setBounds (96, 354, 64, 74);
 
     setSize (550, 440);
 
@@ -159,7 +98,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 #endif
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* Init TF view */
@@ -372,66 +310,6 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 96, y = 341, width = 60, height = 30;
-        juce::String text (TRANS("(dB)"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (12.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 240, y = 341, width = 60, height = 30;
-        juce::String text (TRANS("(dB)"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (12.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 470, y = 341, width = 60, height = 30;
-        juce::String text (TRANS("(dB)"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (12.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 320, y = 341, width = 60, height = 30;
-        juce::String text (TRANS("(ms)"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (12.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 392, y = 341, width = 60, height = 30;
-        juce::String text (TRANS("(ms)"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (12.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 168, y = 341, width = 60, height = 30;
-        juce::String text (TRANS("(X:1)"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (12.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
         int x = 10, y = 320, width = 79, height = 112;
         juce::Colour fillColour = juce::Colour (0x10c7c7c7);
         juce::Colour strokeColour = juce::Colour (0x1fffffff);
@@ -448,16 +326,6 @@ void PluginEditor::paint (juce::Graphics& g)
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 18, y = 341, width = 60, height = 30;
-        juce::String text (TRANS("(dB)"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (12.00f, juce::Font::plain).withStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centred, true);
     }

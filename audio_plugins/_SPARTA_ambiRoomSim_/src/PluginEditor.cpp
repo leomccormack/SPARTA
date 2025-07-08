@@ -30,31 +30,24 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
-
     SL_num_sources->setBounds (173, 303, 48, 20);
 
     CBoutputFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (juce::Justification::centredLeft);
-    CBoutputFormat->addListener (this);
-
     CBoutputFormat->setBounds (316, 247, 76, 20);
 
     CBnormalisation = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnormalisation.get());
     CBnormalisation->setEditableText (false);
     CBnormalisation->setJustificationType (juce::Justification::centredLeft);
-    CBnormalisation->addListener (this);
-
     CBnormalisation->setBounds (398, 247, 76, 20);
 
     CBorder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "outputOrder");
     addAndMakeVisible (CBorder.get());
     CBorder->setEditableText (false);
     CBorder->setJustificationType (juce::Justification::centredLeft);
-    CBorder->addListener (this);
-
     CBorder->setBounds (156, 247, 92, 20);
 
     SL_num_receivers = std::make_unique<SliderWithAttachment>(p.parameters, "numReceivers");
@@ -62,130 +55,71 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     SL_num_receivers->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_receivers->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_receivers->addListener (this);
-
     SL_num_receivers->setBounds (416, 303, 48, 20);
 
     SL_max_reflection_order = std::make_unique<SliderWithAttachment>(p.parameters, "maxReflectionOrder");
     addAndMakeVisible (SL_max_reflection_order.get());
     SL_max_reflection_order->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_max_reflection_order->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
-    SL_max_reflection_order->addListener (this);
-
     SL_max_reflection_order->setBounds (181, 102, 48, 20);
     
     s_attenCoeff_pX = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_pX");
     addAndMakeVisible (s_attenCoeff_pX.get());
     s_attenCoeff_pX->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attenCoeff_pX->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
-    s_attenCoeff_pX->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
-    s_attenCoeff_pX->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_attenCoeff_pX->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_attenCoeff_pX->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_attenCoeff_pX->addListener (this);
-
     s_attenCoeff_pX->setBounds (256, 82, 60, 60);
 
     s_attenCoeff_nX = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_nX");
     addAndMakeVisible (s_attenCoeff_nX.get());
     s_attenCoeff_nX->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attenCoeff_nX->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
-    s_attenCoeff_nX->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
-    s_attenCoeff_nX->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_attenCoeff_nX->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_attenCoeff_nX->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_attenCoeff_nX->addListener (this);
-
     s_attenCoeff_nX->setBounds (256, 148, 60, 60);
 
     s_attenCoeff_nY = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_nY");
     addAndMakeVisible (s_attenCoeff_nY.get());
     s_attenCoeff_nY->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attenCoeff_nY->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
-    s_attenCoeff_nY->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
-    s_attenCoeff_nY->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_attenCoeff_nY->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_attenCoeff_nY->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_attenCoeff_nY->addListener (this);
-
     s_attenCoeff_nY->setBounds (332, 148, 60, 60);
 
     s_attenCoeff_nZ = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_nZ");
     addAndMakeVisible (s_attenCoeff_nZ.get());
     s_attenCoeff_nZ->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attenCoeff_nZ->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
-    s_attenCoeff_nZ->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
-    s_attenCoeff_nZ->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_attenCoeff_nZ->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_attenCoeff_nZ->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_attenCoeff_nZ->addListener (this);
-
     s_attenCoeff_nZ->setBounds (408, 148, 60, 60);
 
     s_attenCoeff_pZ = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_pZ");
     addAndMakeVisible (s_attenCoeff_pZ.get());
     s_attenCoeff_pZ->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attenCoeff_pZ->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
-    s_attenCoeff_pZ->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
-    s_attenCoeff_pZ->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_attenCoeff_pZ->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_attenCoeff_pZ->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_attenCoeff_pZ->addListener (this);
-
     s_attenCoeff_pZ->setBounds (408, 82, 60, 60);
 
     s_attenCoeff_pY = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_pY");
     addAndMakeVisible (s_attenCoeff_pY.get());
     s_attenCoeff_pY->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_attenCoeff_pY->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
-    s_attenCoeff_pY->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
-    s_attenCoeff_pY->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_attenCoeff_pY->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_attenCoeff_pY->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_attenCoeff_pY->addListener (this);
-
     s_attenCoeff_pY->setBounds (332, 82, 60, 60);
 
     s_roomLenZ = std::make_unique<SliderWithAttachment>(p.parameters, "roomZ");
     addAndMakeVisible (s_roomLenZ.get());
     s_roomLenZ->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roomLenZ->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
-    s_roomLenZ->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
-    s_roomLenZ->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_roomLenZ->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_roomLenZ->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_roomLenZ->addListener (this);
-
     s_roomLenZ->setBounds (170, 148, 60, 60);
 
     s_roomLenY = std::make_unique<SliderWithAttachment>(p.parameters, "roomY");
     addAndMakeVisible (s_roomLenY.get());
     s_roomLenY->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roomLenY->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
-    s_roomLenY->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
-    s_roomLenY->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_roomLenY->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_roomLenY->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_roomLenY->addListener (this);
-
     s_roomLenY->setBounds (96, 148, 60, 60);
 
     s_roomLenX = std::make_unique<SliderWithAttachment>(p.parameters, "roomX");
     addAndMakeVisible (s_roomLenX.get());
     s_roomLenX->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     s_roomLenX->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
-    s_roomLenX->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xff315b6d));
-    s_roomLenX->setColour (juce::Slider::rotarySliderOutlineColourId, juce::Colour (0xff5c5d5e));
-    s_roomLenX->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_roomLenX->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_roomLenX->addListener (this);
-
     s_roomLenX->setBounds (21, 148, 60, 60);
 
     TB_enableIMS = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableReflections");
     addAndMakeVisible (TB_enableIMS.get());
     TB_enableIMS->setButtonText (juce::String());
-    TB_enableIMS->addListener (this);
-
     TB_enableIMS->setBounds (206, 65, 26, 26);
 
     setSize (780, 500);
@@ -200,7 +134,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 #endif
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* remove slider bit of these sliders */
