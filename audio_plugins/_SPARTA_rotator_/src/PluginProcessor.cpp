@@ -129,6 +129,26 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("flipQuaternion", rotator_getFlipQuaternion(hRot));
 }
 
+
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    rotator_setOrder(hRot, getParameterChoice("inputOrder")+1);
+    rotator_setChOrder(hRot, getParameterChoice("channelOrder")+1);
+    rotator_setNormType(hRot, getParameterChoice("normType")+1);
+    rotator_setRPYflag(hRot, getParameterBool("useRollPitchYaw"));
+    rotator_setYaw(hRot, getParameterFloat("yaw"));
+    rotator_setPitch(hRot, getParameterFloat("pitch"));
+    rotator_setRoll(hRot, getParameterFloat("roll"));
+    rotator_setQuaternionW(hRot, getParameterFloat("qw"));
+    rotator_setQuaternionX(hRot, getParameterFloat("qx"));
+    rotator_setQuaternionY(hRot, getParameterFloat("qy"));
+    rotator_setQuaternionZ(hRot, getParameterFloat("qz"));
+    rotator_setFlipYaw(hRot, getParameterBool("flipYaw"));
+    rotator_setFlipPitch(hRot, getParameterBool("flipPitch"));
+    rotator_setFlipRoll(hRot, getParameterBool("flipRoll"));
+    rotator_setFlipQuaternion(hRot, getParameterBool("flipQuaternion"));
+}
+
 PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
@@ -355,6 +375,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 osc_port_ID = xmlState->getIntAttribute("OSC_PORT", DEFAULT_OSC_PORT);
                 osc.connect(osc_port_ID);
             }
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
     }
 }

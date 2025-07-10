@@ -69,6 +69,14 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("bypassTransients", decorrelator_getTransientBypassFlag(hDecor));
 }
 
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    decorrelator_setDecorrelationAmount(hDecor, getParameterFloat("decorrelation"));
+    decorrelator_setNumberOfChannels(hDecor, getParameterInt("numChannels"));
+    decorrelator_setLevelCompensationFlag(hDecor, getParameterBool("energyComp"));
+    decorrelator_setTransientBypassFlag(hDecor, getParameterBool("bypassTransients"));
+}
+
 PluginProcessor::PluginProcessor() :
     AudioProcessor(BusesProperties()
         .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
@@ -221,6 +229,9 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
         else if(xmlState->getIntAttribute("VersionCode")>=0x10102){
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
             
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
         
         decorrelator_refreshParams(hDecor);

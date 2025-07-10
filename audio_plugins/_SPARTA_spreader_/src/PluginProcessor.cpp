@@ -94,6 +94,18 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     }
 }
 
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    spreader_setSpreadingMode(hSpr, getParameterChoice("procMode")+1);
+    spreader_setAveragingCoeff(hSpr, getParameterFloat("avgCoeff"));
+    spreader_setNumSources(hSpr, getParameterInt("numInputs"));
+    for(int i=0; i<SPREADER_MAX_NUM_SOURCES; i++){
+        spreader_setSourceAzi_deg(hSpr, i, getParameterFloat("azim" + juce::String(i)));
+        spreader_setSourceElev_deg(hSpr, i, getParameterFloat("elev" + juce::String(i)));
+        spreader_setSourceSpread_deg(hSpr, i, getParameterFloat("spread" + juce::String(i)));
+    }
+    setRefreshWindow(true);
+}
 
 PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
@@ -273,6 +285,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 const char* new_cstring = (const char*)directory.toUTF8();
                 spreader_setSofaFilePath(hSpr, new_cstring);
             }
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
         
         spreader_refreshSettings(hSpr);

@@ -29,38 +29,24 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (s_pitchShiftFactor.get());
     s_pitchShiftFactor->setSliderStyle (juce::Slider::LinearHorizontal);
     s_pitchShiftFactor->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
-    s_pitchShiftFactor->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_pitchShiftFactor->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6e));
-    s_pitchShiftFactor->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_pitchShiftFactor->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_pitchShiftFactor->addListener (this);
-
     s_pitchShiftFactor->setBounds (360, 40, 120, 32);
 
     SL_num_channels = std::make_unique<SliderWithAttachment>(p.parameters, "numChannels");
     addAndMakeVisible (SL_num_channels.get());
     SL_num_channels->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_channels->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
-    SL_num_channels->addListener (this);
-
     SL_num_channels->setBounds (163, 47, 48, 20);
 
     CBfftsize  = std::make_unique<ComboBoxWithAttachment>(p.parameters, "fftOption");
     addAndMakeVisible (CBfftsize.get());
     CBfftsize->setEditableText (false);
     CBfftsize->setJustificationType (juce::Justification::centredLeft);
-    CBfftsize->setTextWhenNothingSelected (juce::String());
-    CBfftsize->addListener (this);
-
     CBfftsize->setBounds (98, 78, 112, 19);
 
     CBoversampling = std::make_unique<ComboBoxWithAttachment>(p.parameters, "oSampOption");
     addAndMakeVisible (CBoversampling.get());
     CBoversampling->setEditableText (false);
     CBoversampling->setJustificationType (juce::Justification::centredLeft);
-    CBoversampling->setTextWhenNothingSelected (juce::String());
-    CBoversampling->addListener (this);
-
     CBoversampling->setBounds (361, 78, 112, 19);
 
     setSize (500, 112);
@@ -68,7 +54,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     hPS = processor.getFXHandle();
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* remove slider bit of these sliders */

@@ -91,7 +91,7 @@ void overlay::paint (juce::Graphics& g)
         float windowWidth = (float)localBounds.getWidth();
         float windowHeight = (float)localBounds.getHeight();
         float vfov = (float)hfov/(float)aspectRatio;
-        if(pmapHeight<1.0f || pmapWidth < 1.0f || pmapHeight > windowHeight || pmapWidth > windowWidth){
+        if(pmapHeight<=1.0f || pmapWidth <= 1.0f || pmapHeight > windowHeight || pmapWidth > windowWidth){
             finishedRefresh = true;
             return;
         }

@@ -29,26 +29,18 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (avgSlider.get());
     avgSlider->setSliderStyle (juce::Slider::LinearHorizontal);
     avgSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
-    avgSlider->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    avgSlider->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6e));
-    avgSlider->addListener (this);
-
     avgSlider->setBounds (80, 473, 118, 24);
 
     CB_CHorder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CB_CHorder.get());
     CB_CHorder->setEditableText (false);
     CB_CHorder->setJustificationType (juce::Justification::centredLeft);
-    CB_CHorder->addListener (this);
-
     CB_CHorder->setBounds (66, 447, 64, 18);
 
     CB_Norm = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CB_Norm.get());
     CB_Norm->setEditableText (false);
     CB_Norm->setJustificationType (juce::Justification::centredLeft);
-    CB_Norm->addListener (this);
-
     CB_Norm->setBounds (131, 447, 68, 18);
 
     slider_anaOrder.reset (new juce::Slider ("new slider"));
@@ -56,12 +48,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     slider_anaOrder->setRange (0, 1, 1);
     slider_anaOrder->setSliderStyle (juce::Slider::LinearVertical);
     slider_anaOrder->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    slider_anaOrder->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    slider_anaOrder->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    slider_anaOrder->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    slider_anaOrder->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
     slider_anaOrder->addListener (this);
-
     slider_anaOrder->setBounds (576, 424, 40, 66);
 
     CBinputTypePreset.reset (new juce::ComboBox ("new combo box"));
@@ -72,23 +59,18 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBinputTypePreset->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBinputTypePreset->addItem (TRANS ("Ideal SH"), 1);
     CBinputTypePreset->addListener (this);
-
     CBinputTypePreset->setBounds (96, 417, 103, 18);
 
     s_minFreq = std::make_unique<SliderWithAttachment>(p.parameters, "minFreq");
     addAndMakeVisible (s_minFreq.get());
     s_minFreq->setSliderStyle (juce::Slider::LinearHorizontal);
     s_minFreq->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
-    s_minFreq->addListener (this);
-
     s_minFreq->setBounds (352, 382, 56, 20);
 
     s_maxFreq = std::make_unique<SliderWithAttachment>(p.parameters, "maxFreq");
     addAndMakeVisible (s_maxFreq.get());
     s_maxFreq->setSliderStyle (juce::Slider::LinearHorizontal);
     s_maxFreq->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
-    s_maxFreq->addListener (this);
-
     s_maxFreq->setBounds (560, 382, 56, 20);
 
     CBmasterOrder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
@@ -96,7 +78,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBmasterOrder->setEditableText (false);
     CBmasterOrder->setJustificationType (juce::Justification::centredLeft);
     CBmasterOrder->addListener (this);
-
     CBmasterOrder->setBounds (96, 382, 103, 18);
 
     CB_webcam.reset (new juce::ComboBox (juce::String()));
@@ -106,28 +87,21 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CB_webcam->setTextWhenNothingSelected (juce::String());
     CB_webcam->setTextWhenNoChoicesAvailable (juce::String());
     CB_webcam->addListener (this);
-
     CB_webcam->setBounds (395, 38, 92, 17);
 
     TB_greyScale.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_greyScale.get());
-    TB_greyScale->setButtonText (juce::String());
     TB_greyScale->addListener (this);
-
     TB_greyScale->setBounds (600, 35, 24, 24);
 
     TB_flipUD.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_flipUD.get());
-    TB_flipUD->setButtonText (juce::String());
     TB_flipUD->addListener (this);
-
     TB_flipUD->setBounds (559, 35, 24, 24);
 
     TB_flipLR.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_flipLR.get());
-    TB_flipLR->setButtonText (juce::String());
     TB_flipLR->addListener (this);
-
     TB_flipLR->setBounds (511, 35, 24, 24);
 
     setSize (634, 514);
@@ -142,7 +116,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 #endif
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* remove slider bit of these sliders */

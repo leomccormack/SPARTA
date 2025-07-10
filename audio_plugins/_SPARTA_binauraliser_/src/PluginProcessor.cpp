@@ -148,6 +148,8 @@ void PluginProcessor::setInternalStateUsingParameterValues()
         binauraliser_setSourceAzi_deg(hBin, i, getParameterFloat("azim" + juce::String(i)));
         binauraliser_setSourceElev_deg(hBin, i, getParameterFloat("elev" + juce::String(i)));
     }
+    
+    setRefreshWindow(true);
 }
 
 PluginProcessor::PluginProcessor() :

@@ -54,7 +54,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     params.push_back(std::make_unique<juce::AudioParameterChoice>("ARoption", "AspectRatio",
                                                                   juce::StringArray{"2:1","16:9","4:3"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("mapAvg", "MapAvg", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("mapAvg", "MapAvg", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.25f));
     
     return { params.begin(), params.end() };
 }
@@ -102,6 +102,20 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("FOVoption", powermap_getDispFOV(hPm)-1);
     setParameterValue("ARoption", powermap_getAspectRatio(hPm)-1);
     setParameterValue("mapAvg", powermap_getPowermapAvgCoeff(hPm));
+}
+
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    powermap_setMasterOrder(hPm, getParameterChoice("inputOrder")+1);
+    powermap_setAnaOrderAllBands(hPm, getParameterChoice("inputOrder")+1);
+    powermap_setPowermapMode(hPm, getParameterChoice("powermapMode")+1);
+    powermap_setCovAvgCoeff(hPm, getParameterFloat("covAvgCoeff"));
+    powermap_setChOrder(hPm, getParameterChoice("channelOrder")+1);
+    powermap_setNormType(hPm, getParameterChoice("normType")+1);
+    powermap_setNumSources(hPm, getParameterInt("numSources"));
+    powermap_setDispFOV(hPm, getParameterChoice("FOVoption")+1);
+    powermap_setAspectRatio(hPm, getParameterChoice("ARoption")+1);
+    powermap_setPowermapAvgCoeff(hPm, getParameterFloat("mapAvg"));
 }
 
 PluginProcessor::PluginProcessor() :
@@ -317,6 +331,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 flipUD = (bool)xmlState->getIntAttribute("flipUD", 0);
             if(xmlState->hasAttribute("greyScale"))
                 greyScale = (bool)xmlState->getIntAttribute("greyScale", 1);
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
         
         powermap_refreshSettings(hPm);
