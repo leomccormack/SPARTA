@@ -29,30 +29,20 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (SL_nChannels.get());
     SL_nChannels->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_nChannels->setTextBoxStyle (juce::Slider::TextBoxLeft, false, 80, 20);
-    SL_nChannels->addListener (this);
-
     SL_nChannels->setBounds (171, 50, 65, 16);
 
     SL_decorAmount = std::make_unique<SliderWithAttachment>(p.parameters, "decorrelation");
     addAndMakeVisible (SL_decorAmount.get());
     SL_decorAmount->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_decorAmount->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
-    SL_decorAmount->addListener (this);
-
     SL_decorAmount->setBounds (128, 73, 108, 18);
 
     tb_compLevel = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "energyComp");
     addAndMakeVisible (tb_compLevel.get());
-    tb_compLevel->setButtonText (juce::String());
-    tb_compLevel->addListener (this);
-
     tb_compLevel->setBounds (393, 47, 23, 24);
 
     tb_bypassTransients = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "bypassTransients");
     addAndMakeVisible (tb_bypassTransients.get());
-    tb_bypassTransients->setButtonText (juce::String());
-    tb_bypassTransients->addListener (this);
-
     tb_bypassTransients->setBounds (393, 72, 23, 24);
 
     setSize (440, 110);
@@ -72,7 +62,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 #endif
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* ProgressBar */

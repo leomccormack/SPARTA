@@ -30,33 +30,26 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBpmap_method->setEditableText (false);
     CBpmap_method->setJustificationType (juce::Justification::centredLeft);
     CBpmap_method->addListener (this);
-
     CBpmap_method->setBounds (106, 512, 112, 20);
 
     CBsourcePreset.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBsourcePreset.get());
     CBsourcePreset->setEditableText (false);
     CBsourcePreset->setJustificationType (juce::Justification::centredLeft);
-    CBsourcePreset->setTextWhenNothingSelected (TRANS("Default"));
-    CBsourcePreset->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    CBsourcePreset->setTextWhenNothingSelected (TRANS("Ideal SH"));
     CBsourcePreset->addListener (this);
-
     CBsourcePreset->setBounds (106, 439, 112, 20);
 
     CBchFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBchFormat.get());
     CBchFormat->setEditableText (false);
     CBchFormat->setJustificationType (juce::Justification::centredLeft);
-    CBchFormat->addListener (this);
-
     CBchFormat->setBounds (80, 472, 66, 20);
 
     CBnormScheme = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnormScheme.get());
     CBnormScheme->setEditableText (false);
     CBnormScheme->setJustificationType (juce::Justification::centredLeft);
-    CBnormScheme->addListener (this);
-
     CBnormScheme->setBounds (151, 472, 67, 20);
 
     s_anaOrder.reset (new juce::Slider ("new slider"));
@@ -64,12 +57,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     s_anaOrder->setRange (0, 1, 1);
     s_anaOrder->setSliderStyle (juce::Slider::LinearVertical);
     s_anaOrder->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    s_anaOrder->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_anaOrder->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    s_anaOrder->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_anaOrder->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
     s_anaOrder->addListener (this);
-
     s_anaOrder->setBounds (608, 552, 40, 80);
 
     s_pmapEQ.reset (new juce::Slider ("new slider"));
@@ -77,62 +65,37 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     s_pmapEQ->setRange (0, 2, 0.01);
     s_pmapEQ->setSliderStyle (juce::Slider::LinearVertical);
     s_pmapEQ->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    s_pmapEQ->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_pmapEQ->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    s_pmapEQ->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_pmapEQ->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
     s_pmapEQ->addListener (this);
-
     s_pmapEQ->setBounds (608, 448, 40, 80);
 
     s_covAvg = std::make_unique<SliderWithAttachment>(p.parameters, "covAvgCoeff");
     addAndMakeVisible (s_covAvg.get());
     s_covAvg->setSliderStyle (juce::Slider::LinearHorizontal);
     s_covAvg->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
-    s_covAvg->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_covAvg->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    s_covAvg->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_covAvg->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_covAvg->addListener (this);
-
     s_covAvg->setBounds (106, 608, 112, 24);
 
     s_Nsources = std::make_unique<SliderWithAttachment>(p.parameters, "numSources");
     addAndMakeVisible (s_Nsources.get());
     s_Nsources->setSliderStyle (juce::Slider::LinearHorizontal);
     s_Nsources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
-    s_Nsources->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_Nsources->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_Nsources->addListener (this);
-
     s_Nsources->setBounds (168, 546, 50, 20);
 
     CB_hfov = std::make_unique<ComboBoxWithAttachment>(p.parameters, "FOVoption");
     addAndMakeVisible (CB_hfov.get());
     CB_hfov->setEditableText (false);
     CB_hfov->setJustificationType (juce::Justification::centredLeft);
-    CB_hfov->addListener (this);
-
     CB_hfov->setBounds (357, 406, 96, 20);
 
     CB_aspectRatio = std::make_unique<ComboBoxWithAttachment>(p.parameters, "ARoption");
     addAndMakeVisible (CB_aspectRatio.get());
     CB_aspectRatio->setEditableText (false);
     CB_aspectRatio->setJustificationType (juce::Justification::centredLeft);
-    CB_aspectRatio->addListener (this);
-
     CB_aspectRatio->setBounds (557, 406, 96, 20);
 
     s_pmapAvg = std::make_unique<SliderWithAttachment>(p.parameters, "mapAvg");
     addAndMakeVisible (s_pmapAvg.get());
     s_pmapAvg->setSliderStyle (juce::Slider::LinearHorizontal);
     s_pmapAvg->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
-    s_pmapAvg->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_pmapAvg->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    s_pmapAvg->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_pmapAvg->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_pmapAvg->addListener (this);
-
     s_pmapAvg->setBounds (106, 576, 112, 24);
 
     CBmasterOrder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
@@ -140,7 +103,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBmasterOrder->setEditableText (false);
     CBmasterOrder->setJustificationType (juce::Justification::centredLeft);
     CBmasterOrder->addListener (this);
-
     CBmasterOrder->setBounds (106, 407, 112, 20);
 
     CB_webcam.reset (new juce::ComboBox (juce::String()));
@@ -150,28 +112,21 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CB_webcam->setTextWhenNothingSelected (juce::String());
     CB_webcam->setTextWhenNoChoicesAvailable (juce::String());
     CB_webcam->addListener (this);
-
     CB_webcam->setBounds (433, 39, 92, 17);
 
     TB_greyScale.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_greyScale.get());
-    TB_greyScale->setButtonText (juce::String());
     TB_greyScale->addListener (this);
-
     TB_greyScale->setBounds (639, 36, 24, 24);
 
     TB_flipUD.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_flipUD.get());
-    TB_flipUD->setButtonText (juce::String());
     TB_flipUD->addListener (this);
-
     TB_flipUD->setBounds (598, 36, 24, 24);
 
     TB_flipLR.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_flipLR.get());
-    TB_flipLR->setButtonText (juce::String());
     TB_flipLR->addListener (this);
-
     TB_flipLR->setBounds (550, 36, 24, 24);
 
     setSize (672, 652);
@@ -186,7 +141,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 #endif
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* remove slider bit of these sliders */

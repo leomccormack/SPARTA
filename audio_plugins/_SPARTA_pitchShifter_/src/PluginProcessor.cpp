@@ -65,8 +65,16 @@ void PluginProcessor::setParameterValuesUsingInternalState()
 {
     setParameterValue("numChannels", pitch_shifter_getNCHrequired(hPS));
     setParameterValue("pitchShiftFactor", pitch_shifter_getPitchShiftFactor(hPS));
-    setParameterValue("fftOption", pitch_shifter_getFFTSizeOption(hPS));
-    setParameterValue("oSampOption", pitch_shifter_getOSampOption(hPS));
+    setParameterValue("fftOption", pitch_shifter_getFFTSizeOption(hPS)-1);
+    setParameterValue("oSampOption", pitch_shifter_getOSampOption(hPS)-1);
+}
+
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    pitch_shifter_setNumChannels(hPS, getParameterInt("numChannels"));
+    pitch_shifter_setPitchShiftFactor(hPS, getParameterFloat("pitchShiftFactor"));
+    pitch_shifter_setFFTSizeOption(hPS, static_cast<PITCH_SHIFTER_FFTSIZE_OPTIONS>(getParameterChoice("fftOption")+1));
+    pitch_shifter_setOSampOption(hPS, static_cast<PITCH_SHIFTER_OSAMP_OPTIONS>(getParameterChoice("oSampOption")+1));
 }
 
 PluginProcessor::PluginProcessor() : 

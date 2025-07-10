@@ -29,76 +29,47 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 {
     TBenablePartConv = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enablePartitionedConv");
     addAndMakeVisible (TBenablePartConv.get());
-    TBenablePartConv->addListener (this);
+    TBenablePartConv->setBounds (261, 121, 24, 24);
 
-    TBenablePartConv->setBounds (261, 121, 26, 26);
-
-    label_hostBlockSize.reset (new juce::Label ("new label",
-                                                juce::String()));
+    label_hostBlockSize.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_hostBlockSize.get());
     label_hostBlockSize->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_hostBlockSize->setJustificationType (juce::Justification::centredLeft);
     label_hostBlockSize->setEditable (false, false, false);
-    label_hostBlockSize->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_hostBlockSize->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_hostBlockSize->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_hostBlockSize->setBounds (451, 45, 60, 20);
 
-    label_NFilters.reset (new juce::Label ("new label",
-                                           juce::String()));
+    label_NFilters.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_NFilters.get());
     label_NFilters->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_NFilters->setJustificationType (juce::Justification::centredLeft);
     label_NFilters->setEditable (false, false, false);
-    label_NFilters->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_NFilters->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_NFilters->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_NFilters->setBounds (237, 99, 48, 20);
 
-    label_filterLength.reset (new juce::Label ("new label",
-                                               juce::String()));
+    label_filterLength.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_filterLength.get());
     label_filterLength->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_filterLength->setJustificationType (juce::Justification::centredLeft);
     label_filterLength->setEditable (false, false, false);
-    label_filterLength->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_filterLength->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_filterLength->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_filterLength->setBounds (451, 72, 60, 20);
 
-    label_hostfs.reset (new juce::Label ("new label",
-                                         juce::String()));
+    label_hostfs.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_hostfs.get());
     label_hostfs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_hostfs->setJustificationType (juce::Justification::centredLeft);
     label_hostfs->setEditable (false, false, false);
-    label_hostfs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_hostfs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_hostfs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_hostfs->setBounds (451, 126, 60, 20);
 
-    label_filterfs.reset (new juce::Label ("new label",
-                                           juce::String()));
+    label_filterfs.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_filterfs.get());
     label_filterfs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Regular"));
     label_filterfs->setJustificationType (juce::Justification::centredLeft);
     label_filterfs->setEditable (false, false, false);
-    label_filterfs->setColour (juce::Label::outlineColourId, juce::Colour (0x68a3a2a2));
-    label_filterfs->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_filterfs->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
     label_filterfs->setBounds (451, 99, 60, 20);
 
     SL_num_inputs = std::make_unique<SliderWithAttachment>(p.parameters, "numInputChannels");
     addAndMakeVisible (SL_num_inputs.get());
     SL_num_inputs->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_inputs->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);
-    SL_num_inputs->addListener (this);
-
     SL_num_inputs->setBounds (237, 46, 48, 20);
 
     setSize (530, 160);
@@ -106,7 +77,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     hMC = processor.getFXHandle();
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* remove slider bit of these sliders */

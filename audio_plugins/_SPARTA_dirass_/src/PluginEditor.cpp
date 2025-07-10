@@ -102,7 +102,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (s_interpWidth.get());
     s_interpWidth->setSliderStyle (juce::Slider::LinearHorizontal);
     s_interpWidth->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
-    s_interpWidth->setBounds (368, 500, 85, 24);
+    s_interpWidth->setBounds (368, 502, 85, 18);
 
     CB_webcam.reset (new juce::ComboBox (juce::String()));
     addAndMakeVisible (CB_webcam.get());

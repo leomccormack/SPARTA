@@ -86,6 +86,17 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("normType", sldoa_getNormType(hSld)-1);
 }
 
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    sldoa_setMasterOrder(hSld, getParameterChoice("inputOrder")+1);
+    sldoa_setAnaOrderAllBands(hSld, getParameterChoice("inputOrder")+1);
+    sldoa_setMinFreq(hSld, getParameterFloat("minFreq"));
+    sldoa_setMaxFreq(hSld, getParameterFloat("maxFreq"));
+    sldoa_setAvg(hSld, getParameterFloat("mapAvg"));
+    sldoa_setChOrder(hSld, getParameterChoice("channelOrder")+1);
+    sldoa_setNormType(hSld, getParameterChoice("normType")+1);
+}
+
 PluginProcessor::PluginProcessor() : 
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
@@ -290,6 +301,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 flipUD = (bool)xmlState->getIntAttribute("flipUD", 0);
             if(xmlState->hasAttribute("greyScale"))
                 greyScale = (bool)xmlState->getIntAttribute("greyScale", 1);
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
         
         sldoa_refreshSettings(hSld);

@@ -29,57 +29,30 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (s_yaw.get());
     s_yaw->setSliderStyle (juce::Slider::LinearHorizontal);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxAbove, false, 80, 20);
-    s_yaw->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_yaw->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6e));
-    s_yaw->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_yaw->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_yaw->addListener (this);
-
     s_yaw->setBounds (176, 80, 120, 32);
 
     s_pitch = std::make_unique<SliderWithAttachment>(p.parameters, "pitch");
     addAndMakeVisible (s_pitch.get());
     s_pitch->setSliderStyle (juce::Slider::LinearVertical);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
-    s_pitch->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_pitch->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    s_pitch->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_pitch->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_pitch->addListener (this);
-    
     s_pitch->setBounds (304, 40, 96, 112);
 
     s_roll = std::make_unique<SliderWithAttachment>(p.parameters, "roll");
     addAndMakeVisible (s_roll.get());
     s_roll->setSliderStyle (juce::Slider::LinearVertical);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
-    s_roll->setColour (juce::Slider::backgroundColourId, juce::Colour (0xff5c5d5e));
-    s_roll->setColour (juce::Slider::trackColourId, juce::Colour (0xff315b6d));
-    s_roll->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_roll->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_roll->addListener (this);
-
     s_roll->setBounds (416, 40, 96, 112);
 
     t_flipYaw = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipYaw");
     addAndMakeVisible (t_flipYaw.get());
-    t_flipYaw->setButtonText (juce::String());
-    t_flipYaw->addListener (this);
-
     t_flipYaw->setBounds (225, 112, 23, 24);
 
     t_flipPitch = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipPitch");
     addAndMakeVisible (t_flipPitch.get());
-    t_flipPitch->setButtonText (juce::String());
-    t_flipPitch->addListener (this);
-
     t_flipPitch->setBounds (356, 112, 23, 24);
 
     t_flipRoll = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipRoll");
     addAndMakeVisible (t_flipRoll.get());
-    t_flipRoll->setButtonText (juce::String());
-    t_flipRoll->addListener (this);
-
     t_flipRoll->setBounds (468, 112, 23, 24);
 
     te_oscport.reset (new juce::TextEditor ("new text editor"));
@@ -90,46 +63,30 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     te_oscport->setScrollbarsShown (true);
     te_oscport->setCaretVisible (false);
     te_oscport->setPopupMenuEnabled (true);
-    te_oscport->setColour (juce::TextEditor::textColourId, juce::Colours::white);
-    te_oscport->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
-    te_oscport->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
     te_oscport->setText (TRANS("9000"));
-
     te_oscport->setBounds (66, 128, 42, 22);
 
     CBoutputFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBoutputFormat.get());
     CBoutputFormat->setEditableText (false);
     CBoutputFormat->setJustificationType (juce::Justification::centredLeft);
-    CBoutputFormat->setTextWhenNothingSelected (TRANS("ACN"));
-    CBoutputFormat->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBoutputFormat->addListener (this);
-
     CBoutputFormat->setBounds (94, 78, 76, 20);
 
     CBnorm = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (CBnorm.get());
     CBnorm->setEditableText (false);
     CBnorm->setJustificationType (juce::Justification::centredLeft);
-    CBnorm->addListener (this);
-
     CBnorm->setBounds (94, 105, 76, 20);
 
     CBorder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (CBorder.get());
     CBorder->setEditableText (false);
     CBorder->setJustificationType (juce::Justification::centredLeft);
-    CBorder->setTextWhenNothingSelected (juce::String());
-    CBorder->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBorder->addListener (this);
-
     CBorder->setBounds (65, 46, 106, 20);
 
     TBrpyFlag = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "useRollPitchYaw");
     addAndMakeVisible (TBrpyFlag.get());
     TBrpyFlag->setButtonText (juce::String());
-    TBrpyFlag->addListener (this);
-
     TBrpyFlag->setBounds (145, 128, 32, 24);
 
     setSize (530, 160);
@@ -137,7 +94,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     hRot = processor.getFXHandle();
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
 	/* fetch current configuration */

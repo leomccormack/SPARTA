@@ -38,11 +38,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("yaw", "Yaw", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("yaw", "Yaw", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.1f), 0.0f,
                                                                  AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("pitch", "Pitch", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("pitch", "Pitch", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.1f), 0.0f,
                                                                  AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("roll", "Roll", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("roll", "Roll", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.1f), 0.0f,
                                                                  AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipYaw", "FlipYaw", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipPitch", "FlipPitch", false));
@@ -141,6 +141,27 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     for(int i=0; i<MAX_NUM_OUTPUTS; i++){
         setParameterValue("lsAzim" + juce::String(i), panner_getLoudspeakerAzi_deg(hPan, i));
         setParameterValue("lsElev" + juce::String(i), panner_getLoudspeakerElev_deg(hPan, i));
+    }
+}
+
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    panner_setYaw(hPan, getParameterFloat("yaw"));
+    panner_setPitch(hPan, getParameterFloat("pitch"));
+    panner_setRoll(hPan, getParameterFloat("roll"));
+    panner_setFlipYaw(hPan, getParameterBool("flipYaw"));
+    panner_setFlipPitch(hPan, getParameterBool("flipPitch"));
+    panner_setFlipRoll(hPan, getParameterBool("flipRoll"));
+    panner_setSpread(hPan, getParameterFloat("spread"));
+    panner_setDTT(hPan, getParameterFloat("roomCoeff"));
+    panner_setNumSources(hPan, getParameterInt("numInputs"));
+    for(int i=0; i<MAX_NUM_INPUTS; i++){
+        panner_setSourceAzi_deg(hPan, i, getParameterFloat("srcAzim" + juce::String(i)));
+        panner_setSourceElev_deg(hPan, i, getParameterFloat("srcElev" + juce::String(i)));
+    }
+    for(int i=0; i<MAX_NUM_OUTPUTS; i++){
+        panner_setLoudspeakerAzi_deg(hPan, i, getParameterFloat("lsAzim" + juce::String(i)));
+        panner_setLoudspeakerElev_deg(hPan, i, getParameterFloat("lsElev" + juce::String(i)));
     }
 }
 
@@ -333,6 +354,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             /* Other */
             if(xmlState->hasAttribute("JSONFilePath"))
                 lastDir = xmlState->getStringAttribute("JSONFilePath", "");
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
 
         panner_refreshSettings(hPan);

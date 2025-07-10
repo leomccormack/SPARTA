@@ -60,6 +60,12 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("numChannels", multiconv_getNumChannels(hMCnv));
 }
 
+void PluginProcessor::setInternalStateUsingParameterValues()
+{
+    multiconv_setEnablePart(hMCnv, getParameterBool("enablePartitionedConv"));
+    multiconv_setNumChannels(hMCnv, getParameterInt("numChannels"));
+}
+
 PluginProcessor::PluginProcessor() :
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
@@ -208,6 +214,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 lastWavDirectory = xmlState->getStringAttribute("LastWavFilePath", "no_file");
             if(lastWavDirectory!="no_file")
                 loadWavFile();
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
 
         //multiconv_refreshParams(hMCnv);

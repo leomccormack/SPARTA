@@ -30,9 +30,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBsourceDirsPreset->setEditableText (false);
     CBsourceDirsPreset->setJustificationType (juce::Justification::centredLeft);
     CBsourceDirsPreset->setTextWhenNothingSelected (juce::String());
-    CBsourceDirsPreset->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBsourceDirsPreset->addListener (this);
-
     CBsourceDirsPreset->setBounds (88, 66, 112, 20);
 
     SL_num_sources = std::make_unique<SliderWithAttachment>(p.parameters, "numInputs");
@@ -40,21 +38,18 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_sources->addListener (this);
-
     SL_num_sources->setBounds (152, 94, 48, 20);
 
     TB_showInputs.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_showInputs.get());
     TB_showInputs->setButtonText (juce::String());
     TB_showInputs->addListener (this);
-
     TB_showInputs->setBounds (672, 317, 24, 24);
 
     TB_showOutputs.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_showOutputs.get());
     TB_showOutputs->setButtonText (juce::String());
     TB_showOutputs->addListener (this);
-
     TB_showOutputs->setBounds (672, 349, 24, 24);
 
     SL_pValue = std::make_unique<SliderWithAttachment>(p.parameters, "roomCoeff");
@@ -62,7 +57,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     SL_pValue->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_pValue->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
     SL_pValue->addListener (this);
-
     SL_pValue->setBounds (309, 351, 48, 18);
 
     CBsLoudspeakerDirsPreset.reset (new juce::ComboBox ("new combo box"));
@@ -70,9 +64,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBsLoudspeakerDirsPreset->setEditableText (false);
     CBsLoudspeakerDirsPreset->setJustificationType (juce::Justification::centredLeft);
     CBsLoudspeakerDirsPreset->setTextWhenNothingSelected (juce::String());
-    CBsLoudspeakerDirsPreset->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
     CBsLoudspeakerDirsPreset->addListener (this);
-
     CBsLoudspeakerDirsPreset->setBounds (788, 66, 112, 20);
 
     SL_num_loudspeakers = std::make_unique<SliderWithAttachment>(p.parameters, "numOutputs");
@@ -80,7 +72,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     SL_num_loudspeakers->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_loudspeakers->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
     SL_num_loudspeakers->addListener (this);
-
     SL_num_loudspeakers->setBounds (860, 94, 40, 20);
 
     tb_loadJSON_src.reset (new juce::TextButton ("new button"));
@@ -88,8 +79,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     tb_loadJSON_src->setButtonText (TRANS ("Import"));
     tb_loadJSON_src->setConnectedEdges (juce::Button::ConnectedOnRight);
     tb_loadJSON_src->addListener (this);
-    tb_loadJSON_src->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff14889e));
-
     tb_loadJSON_src->setBounds (140, 41, 34, 14);
 
     tb_saveJSON_src.reset (new juce::TextButton ("new button"));
@@ -97,9 +86,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     tb_saveJSON_src->setButtonText (TRANS ("Export"));
     tb_saveJSON_src->setConnectedEdges (juce::Button::ConnectedOnLeft);
     tb_saveJSON_src->addListener (this);
-    tb_saveJSON_src->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff224d97));
-    tb_saveJSON_src->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xff181f9a));
-
     tb_saveJSON_src->setBounds (174, 41, 34, 14);
 
     tb_loadJSON_ls.reset (new juce::TextButton ("new button"));
@@ -107,8 +93,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     tb_loadJSON_ls->setButtonText (TRANS ("Import"));
     tb_loadJSON_ls->setConnectedEdges (juce::Button::ConnectedOnRight);
     tb_loadJSON_ls->addListener (this);
-    tb_loadJSON_ls->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff14889e));
-
     tb_loadJSON_ls->setBounds (712, 41, 34, 14);
 
     tb_saveJSON_ls.reset (new juce::TextButton ("new button"));
@@ -116,9 +100,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     tb_saveJSON_ls->setButtonText (TRANS ("Export"));
     tb_saveJSON_ls->setConnectedEdges (juce::Button::ConnectedOnLeft);
     tb_saveJSON_ls->addListener (this);
-    tb_saveJSON_ls->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff224d97));
-    tb_saveJSON_ls->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xff181f9a));
-
     tb_saveJSON_ls->setBounds (746, 41, 34, 14);
 
     SL_spread = std::make_unique<SliderWithAttachment>(p.parameters, "spread");
@@ -126,61 +107,36 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     SL_spread->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_spread->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
     SL_spread->addListener (this);
-
     SL_spread->setBounds (309, 319, 48, 18);
 
     s_yaw = std::make_unique<SliderWithAttachment>(p.parameters, "yaw");
     addAndMakeVisible (s_yaw.get());
     s_yaw->setSliderStyle (juce::Slider::LinearBar);
     s_yaw->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 14);
-    s_yaw->setColour (juce::Slider::trackColourId, juce::Colour (0xff25637e));
-    s_yaw->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_yaw->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_yaw->addListener (this);
-
     s_yaw->setBounds (373, 333, 63, 18);
 
     t_flipYaw = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipYaw");
     addAndMakeVisible (t_flipYaw.get());
-    t_flipYaw->setButtonText (juce::String());
-    t_flipYaw->addListener (this);
-
     t_flipYaw->setBounds (406, 352, 23, 24);
 
     t_flipPitch = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipPitch");
     addAndMakeVisible (t_flipPitch.get());
-    t_flipPitch->setButtonText (juce::String());
-    t_flipPitch->addListener (this);
-
     t_flipPitch->setBounds (473, 352, 23, 24);
 
     t_flipRoll = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipRoll");
     addAndMakeVisible (t_flipRoll.get());
-    t_flipRoll->setButtonText (juce::String());
-    t_flipRoll->addListener (this);
-
     t_flipRoll->setBounds (538, 352, 23, 24);
 
     s_pitch = std::make_unique<SliderWithAttachment>(p.parameters, "pitch");
     addAndMakeVisible (s_pitch.get());
     s_pitch->setSliderStyle (juce::Slider::LinearBar);
     s_pitch->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 14);
-    s_pitch->setColour (juce::Slider::trackColourId, juce::Colour (0xff25637e));
-    s_pitch->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_pitch->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_pitch->addListener (this);
-
     s_pitch->setBounds (440, 333, 63, 18);
 
     s_roll = std::make_unique<SliderWithAttachment>(p.parameters, "roll");
     addAndMakeVisible (s_roll.get());
     s_roll->setSliderStyle (juce::Slider::LinearBar);
     s_roll->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 58, 14);
-    s_roll->setColour (juce::Slider::trackColourId, juce::Colour (0xff25637e));
-    s_roll->setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
-    s_roll->setColour (juce::Slider::textBoxBackgroundColourId, juce::Colour (0x00ffffff));
-    s_roll->addListener (this);
-
     s_roll->setBounds (507, 333, 63, 18);
 
     setSize (920, 386);
@@ -195,7 +151,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 #endif
 
     /* Look and Feel */
-    LAF.setDefaultColours();
     setLookAndFeel(&LAF);
 
     /* remove slider bit from these sliders */
