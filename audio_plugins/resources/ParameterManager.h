@@ -66,7 +66,7 @@ public:
         return static_cast<int>(*parameters.getRawParameterValue(parameterID));
     }
     bool getParameterBool(const juce::String& parameterID) const {
-        return static_cast<bool>(*parameters.getRawParameterValue(parameterID)+0.5f);
+        return static_cast<bool>(*parameters.getRawParameterValue(parameterID));
     }
     int getParameterChoice(const juce::String& parameterID) const {
         return static_cast<int>(*parameters.getRawParameterValue(parameterID));
