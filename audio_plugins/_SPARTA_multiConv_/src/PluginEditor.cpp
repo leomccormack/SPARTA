@@ -66,7 +66,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     label_filterfs->setEditable (false, false, false);
     label_filterfs->setBounds (451, 99, 60, 20);
 
-    SL_num_inputs = std::make_unique<SliderWithAttachment>(p.parameters, "numInputChannels");
+    SL_num_inputs = std::make_unique<SliderWithAttachment>(p.parameters, "numChannels");
     addAndMakeVisible (SL_num_inputs.get());
     SL_num_inputs->setSliderStyle (juce::Slider::LinearHorizontal);
     SL_num_inputs->setTextBoxStyle (juce::Slider::TextBoxRight, false, 55, 20);

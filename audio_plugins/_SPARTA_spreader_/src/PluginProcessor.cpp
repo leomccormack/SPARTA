@@ -44,9 +44,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     params.push_back(std::make_unique<juce::AudioParameterFloat>("avgCoeff", "AvgCoeff", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numInputs", "NumInputs", 1, SPREADER_MAX_NUM_SOURCES, 1, AudioParameterIntAttributes().withAutomatable(false)));
     for(int i=0; i<SPREADER_MAX_NUM_SOURCES; i++){
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("spread" + juce::String(i), "Spread_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 360.0f, 0.01f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.1f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.1f), 0.0f));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("spread" + juce::String(i), "Spread_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 360.0f, 1.0f), 0.0f));
     }
     
     return { params.begin(), params.end() };
