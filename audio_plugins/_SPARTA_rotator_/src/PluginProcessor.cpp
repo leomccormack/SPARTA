@@ -44,11 +44,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 1));
     params.push_back(std::make_unique<juce::AudioParameterBool>("useRollPitchYaw", "UseRollPitchYaw", false));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("yaw", "Yaw", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("pitch", "Pitch", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("roll", "Roll", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("qw", "Qw", juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 0.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("qx", "Qx", juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 0.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("qy", "Qy", juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 0.0f));

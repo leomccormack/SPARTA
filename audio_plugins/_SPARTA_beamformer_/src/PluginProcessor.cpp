@@ -47,9 +47,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     params.push_back(std::make_unique<juce::AudioParameterInt>("numBeams", "NumBeams", 1, MAX_NUM_OUTPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
     for(int i=0; i<MAX_NUM_OUTPUTS; i++){
         params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
-                                                                     AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+                                                                     AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
         params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f,
-                                                                     AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+                                                                     AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     }
     
     return { params.begin(), params.end() };
