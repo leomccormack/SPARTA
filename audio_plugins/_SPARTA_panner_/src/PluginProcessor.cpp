@@ -39,27 +39,27 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
     params.push_back(std::make_unique<juce::AudioParameterFloat>("yaw", "Yaw", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.1f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("pitch", "Pitch", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.1f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("roll", "Roll", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.1f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipYaw", "FlipYaw", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipPitch", "FlipPitch", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipRoll", "FlipRoll", false));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("spread", "Spread", juce::NormalisableRange<float>(PANNER_SPREAD_MIN_VALUE, PANNER_SPREAD_MAX_VALUE, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withAutomatable(false).withLabel(juce::String::fromUTF8(u8"°"))));
+                                                                 AudioParameterFloatAttributes().withAutomatable(false).withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("roomCoeff", "RoomCoeff", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f,
                                                                  AudioParameterFloatAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numInputs", "NumInputs", 1, MAX_NUM_INPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numOutputs", "NumOutputs", 2, MAX_NUM_OUTPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
     for(int i=0; i<MAX_NUM_INPUTS; i++){
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("srcAzim" + juce::String(i), "SrcAzim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("srcElev" + juce::String(i), "SrcElev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("srcAzim" + juce::String(i), "SrcAzim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("srcElev" + juce::String(i), "SrcElev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     }
     for(int i=0; i<MAX_NUM_OUTPUTS; i++){
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("lsAzim" + juce::String(i), "LsAzim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withAutomatable(false).withLabel(juce::String::fromUTF8(u8"°"))));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("lsElev" + juce::String(i), "LsElev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withAutomatable(false).withLabel(juce::String::fromUTF8(u8"°"))));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("lsAzim" + juce::String(i), "LsAzim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withAutomatable(false).withLabel(juce::String::fromUTF8(u8"\u00B0"))));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("lsElev" + juce::String(i), "LsElev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withAutomatable(false).withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     }
     
     return { params.begin(), params.end() };

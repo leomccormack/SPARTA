@@ -56,11 +56,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     params.push_back(std::make_unique<juce::AudioParameterBool>("enableRotation", "EnableRotation", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("useRollPitchYaw", "UseRollPitchYaw", false));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("yaw", "Yaw", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("pitch", "Pitch", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("roll", "Roll", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"°"))));
+                                                                 AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipYaw", "FlipYaw", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipPitch", "FlipPitch", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipRoll", "FlipRoll", false));
