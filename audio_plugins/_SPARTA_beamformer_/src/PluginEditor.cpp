@@ -132,8 +132,6 @@ PluginEditor::~PluginEditor()
 
 void PluginEditor::paint (juce::Graphics& g)
 {
-    g.fillAll (juce::Colours::white);
-
     {
         int x = 0, y = 30, width = 708, height = 163;
         juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
@@ -393,13 +391,13 @@ void PluginEditor::paint (juce::Graphics& g)
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
-                       TRANS("/") + String(beamformer_getNumBeams(hBeam)) + TRANS(")"),
+                       TRANS("/") + String(beamformer_getNSHrequired(hBeam)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
-                       TRANS("/") + String(beamformer_getNSHrequired(hBeam)) + TRANS(")"),
+                       TRANS("/") + String(beamformer_getNumBeams(hBeam)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -439,11 +437,11 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ((processor.getCurrentNumInputs() < beamformer_getNumBeams(hBeam))){
+    else if ((processor.getCurrentNumInputs() < beamformer_getNSHrequired(hBeam))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((processor.getCurrentNumOutputs() < beamformer_getNSHrequired(hBeam))){
+    else if ((processor.getCurrentNumOutputs() < beamformer_getNumBeams(hBeam))){
         currentWarning = k_warning_NoutputCH;
         repaint(0,0,getWidth(),32);
     }
