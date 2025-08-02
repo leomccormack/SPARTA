@@ -196,10 +196,10 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
             setParameterValue("yaw", message[0].getFloat32());
         }
         if (message[1].isFloat32()){
-            setParameterValue("pitch", message[0].getFloat32());
+            setParameterValue("pitch", message[1].getFloat32());
         }
         if (message[2].isFloat32()){
-            setParameterValue("roll", message[0].getFloat32());
+            setParameterValue("roll", message[2].getFloat32());
         }
         return;
     }
