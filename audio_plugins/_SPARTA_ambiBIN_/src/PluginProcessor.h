@@ -27,16 +27,113 @@
 #include "ambi_bin.h"
 #include <string.h>
 #include <thread>
+#include <atomic>
+#include <functional>
+#include <queue>
+
 #define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define DEFAULT_OSC_PORT 9000
 
-typedef enum _TIMERS{
-    TIMER_PROCESSING_RELATED = 1,
-    TIMER_GUI_RELATED
-}TIMERS;
+class ReinitManager : private juce::Thread
+{
+public:
+    ReinitManager() : juce::Thread("ReinitWorker") {}
+
+    void start() {
+        startThread();
+    }
+
+    void stop() {
+        signalThreadShouldExit();
+        waitForThreadToExit(1000);
+    }
+
+    void requestReinit(void* handle) {
+        std::lock_guard<std::mutex> lock(requestMutex);
+        if (!reinitRequested) {
+            this->handle = handle;
+            reinitRequested = true;
+        }
+    }
+
+    bool tryLockForAudio() {
+        return reinitMutex.try_lock();
+    }
+
+    void unlockForAudio() {
+        reinitMutex.unlock();
+    }
+    
+    std::mutex reinitMutex;
+    std::atomic<bool>* getReinitInProgressPtr() { return &reinitInProgress; }
+    
+private:
+    void run() override {
+        while (!threadShouldExit()) {
+            bool shouldReinit = false;
+            {
+                std::lock_guard<std::mutex> lock(requestMutex);
+                if (reinitRequested) {
+                    shouldReinit = true;
+                    reinitRequested = false;
+                }
+            }
+
+            if (shouldReinit && handle != nullptr) {
+                std::unique_lock<std::mutex> lock(reinitMutex);
+                reinitInProgress.store(true, std::memory_order_release);
+                ambi_bin_initCodec(handle);
+                reinitInProgress.store(false, std::memory_order_release);
+            }
+
+            wait(10);
+        }
+    }
+
+    std::mutex requestMutex;
+    std::atomic<bool> reinitInProgress { false };
+    bool reinitRequested = false;
+    void* handle = nullptr;
+};
+
+class DeferredActionQueue
+{
+public:
+    static constexpr int capacity = 128;
+
+    void push(std::function<void()> fn) {
+        int start1, size1, start2, size2;
+        fifo.prepareToWrite(1, start1, size1, start2, size2);
+
+        if (size1 > 0) {
+            buffer[start1] = std::move(fn);
+            fifo.finishedWrite(1);
+        }
+        else if (size2 > 0) {
+            buffer[start2] = std::move(fn);
+            fifo.finishedWrite(1);
+        }
+    }
+
+    void drain() {
+        int start1, size1, start2, size2;
+        fifo.prepareToRead(capacity, start1, size1, start2, size2);
+
+        for (int i = 0; i < size1; i++)
+            buffer[start1 + i]();
+        for (int i = 0; i < size2; i++)
+            buffer[start2 + i]();
+
+        fifo.finishedRead(size1 + size2);
+    }
+
+private:
+    juce::AbstractFifo fifo { capacity };
+    std::function<void()> buffer[capacity];
+};
+
 
 class PluginProcessor  : public AudioProcessor,
-                         public MultiTimer,
                          private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
                          public juce::VST2ClientExtensions,
                          public ParameterManager
@@ -44,9 +141,9 @@ class PluginProcessor  : public AudioProcessor,
 public:
     /* Get functions */
     void* getFXHandle() { return hAmbi; }
-    int getCurrentBlockSize(){ return nHostBlockSize; }
-    int getCurrentNumInputs(){ return nNumInputs; }
-    int getCurrentNumOutputs(){  return nNumOutputs; }
+    int getCurrentBlockSize(){ return nHostBlockSize.load(); }
+    int getCurrentNumInputs(){ return nNumInputs.load(); }
+    int getCurrentNumOutputs(){  return nNumOutputs.load(); }
     
     /* VST CanDo */
     pointer_sized_int handleVstManufacturerSpecific (int32 /*index*/, pointer_sized_int /*value*/, void* /*ptr*/, float /*opt*/) override { return 0; }
@@ -69,40 +166,24 @@ public:
     int getOscPortID(){ return osc_port_ID; }
     bool getOscPortConnected(){ return osc_connected; }
     
+    /* For handling real-time safe parameter updates and internal state reinitialisations */
+    DeferredActionQueue updateQueue;
+    ReinitManager reinitManager;
+    
 private:
-    void* hAmbi;             /* ambi_bin handle */
-    int nNumInputs;          /* current number of input channels */
-    int nNumOutputs;         /* current number of output channels */
-    int nSampleRate;         /* current host sample rate */
-    int nHostBlockSize;      /* typical host block size to expect, in samples */
-    OSCReceiver osc;         /* OSC receiver object */
-    bool osc_connected;      /* flag. 0: not connected, 1: connect to "osc_port_ID"  */
-    int osc_port_ID;         /* port ID */
+    void* hAmbi;                      /* ambi_bin handle */
+    std::atomic<int> nNumInputs;      /* current number of input channels */
+    std::atomic<int> nNumOutputs;     /* current number of output channels */
+    int nSampleRate;                  /* current host sample rate */
+    std::atomic<int> nHostBlockSize;  /* typical host block size to expect, in samples */
+    OSCReceiver osc;                  /* OSC receiver object */
+    bool osc_connected;               /* flag. 0: not connected, 1: connect to "osc_port_ID"  */
+    int osc_port_ID;                  /* port ID */
     
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void parameterChanged(const juce::String& parameterID, float newValue) override;
     void setParameterValuesUsingInternalState();
     void setInternalStateUsingParameterValues();
-    
-    void timerCallback(int timerID) override {
-        switch(timerID){
-            case TIMER_PROCESSING_RELATED:
-                /* reinitialise codec if needed */
-                if(ambi_bin_getCodecStatus(hAmbi) == CODEC_STATUS_NOT_INITIALISED){
-                    try{
-                        std::thread threadInit(ambi_bin_initCodec, hAmbi);
-                        threadInit.detach();
-                    } catch (const std::exception& exception) {
-                        std::cout << "Could not create thread" << exception.what() << std::endl;
-                    }
-                }
-                break;
-                
-            case TIMER_GUI_RELATED:
-                /* handled in PluginEditor; */
-                break;
-        }
-    }
     
     /***************************************************************************\
                                     JUCE Functions

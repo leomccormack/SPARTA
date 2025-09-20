@@ -37,7 +37,7 @@ typedef enum _SPARTA_WARNINGS{
 }SPARTA_WARNINGS;
 
 class PluginEditor  : public AudioProcessorEditor,
-                      public MultiTimer,
+                      public Timer,
                       private FilenameComponentListener,
                       public juce::Button::Listener,
                       public juce::ComboBox::Listener,
@@ -56,7 +56,7 @@ public:
 private:
     PluginProcessor& processor;
     void* hAmbi;
-    void timerCallback(int timerID) override;
+    void timerCallback() override;
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
@@ -74,7 +74,8 @@ private:
     void filenameComponentChanged (FilenameComponent*) override  {
         String directory = fileChooser.getCurrentFile().getFullPathName();
         const char* new_cstring = (const char*)directory.toUTF8();
-        ambi_bin_setSofaFilePath(hAmbi, new_cstring);
+        std::string safeCopy = new_cstring;
+        processor.updateQueue.push([this, safeCopy]() { ambi_bin_setSofaFilePath(hAmbi, safeCopy.c_str()); });
     }
 
     /* warnings */
