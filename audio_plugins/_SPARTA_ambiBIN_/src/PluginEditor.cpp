@@ -725,45 +725,43 @@ void PluginEditor::paint (juce::Graphics& g)
 		Justification::centredLeft, true);
 
     /* display warning message */
-    if (std::unique_lock<std::mutex> reinitLock(processor.reinitManager.reinitMutex, std::try_to_lock); reinitLock.owns_lock()) {
-        g.setColour(Colours::red);
-        g.setFont(juce::FontOptions (11.00f, juce::Font::plain));
-        switch (currentWarning){
-            case k_warning_none:
-                break;
-            case k_warning_frameSize:
-                g.drawText(TRANS("Set frame size to multiple of ") + String(ambi_bin_getFrameSize()),
-                           getBounds().getWidth()-225, 16, 530, 11,
-                           Justification::centredLeft, true);
-                break;
-            case k_warning_supported_fs:
-                g.drawText(TRANS("Sample rate (") + String(ambi_bin_getDAWsamplerate(hAmbi)) + TRANS(") is unsupported"),
-                           getBounds().getWidth()-225, 16, 530, 11,
-                           Justification::centredLeft, true);
-                break;
-            case k_warning_mismatch_fs:
-                g.drawText(TRANS("Sample rate mismatch between DAW/HRIRs"),
-                           getBounds().getWidth()-225, 16, 530, 11,
-                           Justification::centredLeft, true);
-                break;
-            case k_warning_NinputCH:
-                g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
-                           TRANS("/") + String(ambi_bin_getNSHrequired(hAmbi)) + TRANS(")"),
-                           getBounds().getWidth()-225, 16, 530, 11,
-                           Justification::centredLeft, true);
-                break;
-            case k_warning_NoutputCH:
-                g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
-                           TRANS("/") + String(ambi_bin_getNumEars()) + TRANS(")"),
-                           getBounds().getWidth()-225, 16, 530, 11,
-                           Justification::centredLeft, true);
-                break;
-            case k_warning_osc_connection_fail:
-                g.drawText(TRANS("Failed to connect to the selected OSC port"),
-                           getBounds().getWidth()-225, 16, 530, 11,
-                           Justification::centredLeft, true);
-                break;
-        }
+    g.setColour(Colours::red);
+    g.setFont(juce::FontOptions (11.00f, juce::Font::plain));
+    switch (currentWarning){
+        case k_warning_none:
+            break;
+        case k_warning_frameSize:
+            g.drawText(TRANS("Set frame size to multiple of ") + String(ambi_bin_getFrameSize()),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_supported_fs:
+            g.drawText(TRANS("Sample rate (") + String(ambi_bin_getDAWsamplerate(hAmbi)) + TRANS(") is unsupported"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_mismatch_fs:
+            g.drawText(TRANS("Sample rate mismatch between DAW/HRIRs"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NinputCH:
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
+                       TRANS("/") + String(ambi_bin_getNSHrequired(hAmbi)) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_NoutputCH:
+            g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
+                       TRANS("/") + String(ambi_bin_getNumEars()) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_osc_connection_fail:
+            g.drawText(TRANS("Failed to connect to the selected OSC port"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
     }
 }
 
@@ -775,7 +773,7 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
     if (buttonThatWasClicked == TBuseDefaultHRIRs.get())
     {
-        processor.updateQueue.push([this]() { ambi_bin_setUseDefaultHRIRsflag(hAmbi, (int)TBuseDefaultHRIRs->getToggleState()); });
+        ambi_bin_setUseDefaultHRIRsflag(hAmbi, (int)TBuseDefaultHRIRs->getToggleState());
     }
 }
 
@@ -789,52 +787,47 @@ void PluginEditor::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 
 void PluginEditor::timerCallback()
 {
-    /* Only update if we can take the reinitialisation lock */
-    if (std::unique_lock<std::mutex> reinitLock(processor.reinitManager.reinitMutex, std::try_to_lock); reinitLock.owns_lock()) {
-        /* parameters whos values can change internally should be periodically refreshed */
-        TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
-        CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), sendNotification); // processor.getParameterChoice("")
-        CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), sendNotification);
-        label_N_dirs->setText(String(ambi_bin_getNDirs(hAmbi)), dontSendNotification);
-        label_HRIR_len->setText(String(ambi_bin_getHRIRlength(hAmbi)), dontSendNotification);
-        label_HRIR_fs->setText(String(ambi_bin_getHRIRsamplerate(hAmbi)), dontSendNotification);
-        label_DAW_fs->setText(String(ambi_bin_getDAWsamplerate(hAmbi)), dontSendNotification);
-        CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
-        CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
-        
-        /* display warning message, if needed */
-        if ((processor.getCurrentBlockSize() % ambi_bin_getFrameSize()) != 0){
-            currentWarning = k_warning_frameSize;
-            repaint(0,0,getWidth(),32);
-        }
-        else if ( !((ambi_bin_getDAWsamplerate(hAmbi) == 44.1e3) || (ambi_bin_getDAWsamplerate(hAmbi) == 48e3)) ){
-            currentWarning = k_warning_supported_fs;
-            repaint(0,0,getWidth(),32);
-        }
-        else if (ambi_bin_getDAWsamplerate(hAmbi) != ambi_bin_getHRIRsamplerate(hAmbi)){
-            currentWarning = k_warning_mismatch_fs;
-            repaint(0,0,getWidth(),32);
-        }
-        else if ((processor.getCurrentNumInputs() < ambi_bin_getNSHrequired(hAmbi))){
-            currentWarning = k_warning_NinputCH;
-            repaint(0,0,getWidth(),32);
-        }
-        else if ((processor.getCurrentNumOutputs() < ambi_bin_getNumEars())){
-            currentWarning = k_warning_NoutputCH;
-            repaint(0,0,getWidth(),32);
-        }
-        else if(!processor.getOscPortConnected() && ambi_bin_getEnableRotation(hAmbi)){
-            currentWarning = k_warning_osc_connection_fail;
-            repaint(0,0,getWidth(),32);
-        }
-        else if(currentWarning){
-            currentWarning = k_warning_none;
-            repaint(0,0,getWidth(),32);
-        }
+    /* parameters whos values can change internally should be periodically refreshed */
+    TBuseDefaultHRIRs->setToggleState(ambi_bin_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
+    CBchFormat->setSelectedId(ambi_bin_getChOrder(hAmbi), sendNotification); // processor.getParameterChoice("")
+    CBnormScheme->setSelectedId(ambi_bin_getNormType(hAmbi), sendNotification);
+    label_N_dirs->setText(String(ambi_bin_getNDirs(hAmbi)), dontSendNotification);
+    label_HRIR_len->setText(String(ambi_bin_getHRIRlength(hAmbi)), dontSendNotification);
+    label_HRIR_fs->setText(String(ambi_bin_getHRIRsamplerate(hAmbi)), dontSendNotification);
+    label_DAW_fs->setText(String(ambi_bin_getDAWsamplerate(hAmbi)), dontSendNotification);
+    CBchFormat->setItemEnabled(CH_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, ambi_bin_getInputOrderPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
+    
+    /* display warning message, if needed */
+    if ((processor.getCurrentBlockSize() % ambi_bin_getFrameSize()) != 0){
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
     }
-    
-    // TODO: Hitting occasional data races with getCodecStatus(), getProgressBar0_1(), getProgressBarText(). However, the MSVC C compiler does not yet support atomics
-    
+    else if ( !((ambi_bin_getDAWsamplerate(hAmbi) == 44.1e3) || (ambi_bin_getDAWsamplerate(hAmbi) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if (ambi_bin_getDAWsamplerate(hAmbi) != ambi_bin_getHRIRsamplerate(hAmbi)){
+        currentWarning = k_warning_mismatch_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumInputs() < ambi_bin_getNSHrequired(hAmbi))){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumOutputs() < ambi_bin_getNumEars())){
+        currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(!processor.getOscPortConnected() && ambi_bin_getEnableRotation(hAmbi)){
+        currentWarning = k_warning_osc_connection_fail;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
+    }
+        
     /* Progress bar */
     if(ambi_bin_getCodecStatus(hAmbi)==CODEC_STATUS_INITIALISING){
         addAndMakeVisible(progressbar);

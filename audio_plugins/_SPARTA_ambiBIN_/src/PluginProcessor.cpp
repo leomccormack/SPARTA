@@ -71,52 +71,52 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
 void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
     if (parameterID == "inputOrder"){
-        updateQueue.push([this, newValue]() { ambi_bin_setInputOrderPreset(hAmbi, static_cast<SH_ORDERS>(newValue+1.001f)); });
+        ambi_bin_setInputOrderPreset(hAmbi, static_cast<SH_ORDERS>(newValue+1.001f));
     }
     else if (parameterID == "channelOrder"){
-        updateQueue.push([this, newValue]() { ambi_bin_setChOrder(hAmbi, static_cast<int>(newValue+1.001f));  });
+        ambi_bin_setChOrder(hAmbi, static_cast<int>(newValue+1.001f));
     }
     else if (parameterID == "normType"){
-        updateQueue.push([this, newValue]() { ambi_bin_setNormType(hAmbi, static_cast<int>(newValue+1.001f));  });
+        ambi_bin_setNormType(hAmbi, static_cast<int>(newValue+1.001f));
     }
     else if (parameterID == "decMethod"){
-        updateQueue.push([this, newValue]() { ambi_bin_setDecodingMethod(hAmbi, static_cast<AMBI_BIN_DECODING_METHODS>(newValue+1.001f)); });
+        ambi_bin_setDecodingMethod(hAmbi, static_cast<AMBI_BIN_DECODING_METHODS>(newValue+1.001f));
     }
     else if (parameterID == "enableTruncationEQ"){
-        updateQueue.push([this, newValue]() { ambi_bin_setEnableTruncationEQ(hAmbi, static_cast<int>(newValue+0.5f)); });
+        ambi_bin_setEnableTruncationEQ(hAmbi, static_cast<int>(newValue+0.5f));
     }
     else if (parameterID == "hrirPreproc"){
-        updateQueue.push([this, newValue]() { ambi_bin_setHRIRsPreProc(hAmbi, static_cast<AMBI_BIN_PREPROC>(newValue+1.001f)); });
+        ambi_bin_setHRIRsPreProc(hAmbi, static_cast<AMBI_BIN_PREPROC>(newValue+1.001f));
     }
     else if (parameterID == "enableDiffuseMatching"){
-        updateQueue.push([this, newValue]() { ambi_bin_setEnableDiffuseMatching(hAmbi, static_cast<int>(newValue+0.5f)); });
+        ambi_bin_setEnableDiffuseMatching(hAmbi, static_cast<int>(newValue+0.5f));
     }
     else if (parameterID == "enableMaxRE"){
-        updateQueue.push([this, newValue]() { ambi_bin_setEnableMaxRE(hAmbi, static_cast<int>(newValue+0.5f)); });
+        ambi_bin_setEnableMaxRE(hAmbi, static_cast<int>(newValue+0.5f));
     }
     else if (parameterID == "enableRotation"){
-        updateQueue.push([this, newValue]() { ambi_bin_setEnableRotation(hAmbi, static_cast<int>(newValue+0.5f));  });
+        ambi_bin_setEnableRotation(hAmbi, static_cast<int>(newValue+0.5f));
     }
     else if(parameterID == "useRollPitchYaw"){
-        updateQueue.push([this, newValue]() { ambi_bin_setRPYflag(hAmbi, static_cast<int>(newValue+0.5f)); });
+        ambi_bin_setRPYflag(hAmbi, static_cast<int>(newValue+0.5f));
     }
     else if(parameterID == "yaw"){
-        updateQueue.push([this, newValue]() { ambi_bin_setYaw(hAmbi, newValue);  });
+        ambi_bin_setYaw(hAmbi, newValue);
     }
     else if(parameterID == "pitch"){
-        updateQueue.push([this, newValue]() { ambi_bin_setPitch(hAmbi, newValue); });
+        ambi_bin_setPitch(hAmbi, newValue);
     }
     else if(parameterID == "roll"){
-        updateQueue.push([this, newValue]() { ambi_bin_setRoll(hAmbi, newValue); });
+        ambi_bin_setRoll(hAmbi, newValue);
     }
     else if(parameterID == "flipYaw"){
-        updateQueue.push([this, newValue]() { ambi_bin_setFlipYaw(hAmbi, static_cast<int>(newValue+0.5f)); });
+        ambi_bin_setFlipYaw(hAmbi, static_cast<int>(newValue+0.5f));
     }
     else if(parameterID == "flipPitch"){
-        updateQueue.push([this, newValue]() { ambi_bin_setFlipPitch(hAmbi, static_cast<int>(newValue+0.5f)); });
+        ambi_bin_setFlipPitch(hAmbi, static_cast<int>(newValue+0.5f));
     }
     else if(parameterID == "flipRoll"){
-        updateQueue.push([this, newValue]() { ambi_bin_setFlipRoll(hAmbi, static_cast<int>(newValue+0.5f)); });
+        ambi_bin_setFlipRoll(hAmbi, static_cast<int>(newValue+0.5f));
     }
 }
 
@@ -142,22 +142,22 @@ void PluginProcessor::setParameterValuesUsingInternalState()
 
 void PluginProcessor::setInternalStateUsingParameterValues()
 {
-    updateQueue.push([this]() { ambi_bin_setInputOrderPreset(hAmbi, static_cast<SH_ORDERS>(getParameterChoice("inputOrder")+1)); });
-    updateQueue.push([this]() { ambi_bin_setChOrder(hAmbi, getParameterChoice("channelOrder")+1); });
-    updateQueue.push([this]() { ambi_bin_setNormType(hAmbi, getParameterChoice("normType")+1); });
-    updateQueue.push([this]() { ambi_bin_setDecodingMethod(hAmbi, static_cast<AMBI_BIN_DECODING_METHODS>(getParameterChoice("decMethod")+1)); });
-    updateQueue.push([this]() { ambi_bin_setEnableTruncationEQ(hAmbi, getParameterBool("enableTruncationEQ")); });
-    updateQueue.push([this]() { ambi_bin_setHRIRsPreProc(hAmbi, static_cast<AMBI_BIN_PREPROC>(getParameterChoice("hrirPreproc")+1)); });
-    updateQueue.push([this]() { ambi_bin_setEnableDiffuseMatching(hAmbi, getParameterBool("enableDiffuseMatching")); });
-    updateQueue.push([this]() { ambi_bin_setEnableMaxRE(hAmbi, getParameterBool("enableMaxRE")); });
-    updateQueue.push([this]() { ambi_bin_setEnableRotation(hAmbi, getParameterBool("enableRotation")); });
-    updateQueue.push([this]() { ambi_bin_setRPYflag(hAmbi, getParameterBool("useRollPitchYaw")); });
-    updateQueue.push([this]() { ambi_bin_setYaw(hAmbi, getParameterFloat("yaw")); });
-    updateQueue.push([this]() { ambi_bin_setPitch(hAmbi, getParameterFloat("pitch")); });
-    updateQueue.push([this]() { ambi_bin_setRoll(hAmbi, getParameterFloat("roll")); });
-    updateQueue.push([this]() { ambi_bin_setFlipYaw(hAmbi, getParameterBool("flipYaw")); });
-    updateQueue.push([this]() { ambi_bin_setFlipPitch(hAmbi, getParameterBool("flipPitch")); });
-    updateQueue.push([this]() { ambi_bin_setFlipRoll(hAmbi, getParameterBool("flipRoll")); });
+    ambi_bin_setInputOrderPreset(hAmbi, static_cast<SH_ORDERS>(getParameterChoice("inputOrder")+1));
+    ambi_bin_setChOrder(hAmbi, getParameterChoice("channelOrder")+1);
+    ambi_bin_setNormType(hAmbi, getParameterChoice("normType")+1);
+    ambi_bin_setDecodingMethod(hAmbi, static_cast<AMBI_BIN_DECODING_METHODS>(getParameterChoice("decMethod")+1));
+    ambi_bin_setEnableTruncationEQ(hAmbi, getParameterBool("enableTruncationEQ"));
+    ambi_bin_setHRIRsPreProc(hAmbi, static_cast<AMBI_BIN_PREPROC>(getParameterChoice("hrirPreproc")+1));
+    ambi_bin_setEnableDiffuseMatching(hAmbi, getParameterBool("enableDiffuseMatching"));
+    ambi_bin_setEnableMaxRE(hAmbi, getParameterBool("enableMaxRE"));
+    ambi_bin_setEnableRotation(hAmbi, getParameterBool("enableRotation"));
+    ambi_bin_setRPYflag(hAmbi, getParameterBool("useRollPitchYaw"));
+    ambi_bin_setYaw(hAmbi, getParameterFloat("yaw"));
+    ambi_bin_setPitch(hAmbi, getParameterFloat("pitch"));
+    ambi_bin_setRoll(hAmbi, getParameterFloat("roll"));
+    ambi_bin_setFlipYaw(hAmbi, getParameterBool("flipYaw"));
+    ambi_bin_setFlipPitch(hAmbi, getParameterBool("flipPitch"));
+    ambi_bin_setFlipRoll(hAmbi, getParameterBool("flipRoll"));
 }
 
 PluginProcessor::PluginProcessor() :
@@ -176,6 +176,8 @@ PluginProcessor::PluginProcessor() :
     osc_connected = osc.connect(osc_port_ID);
     /* tell the component to listen for OSC messages */
     osc.addListener(this);
+    
+    startTimer(20);
 }
 
 PluginProcessor::~PluginProcessor()
@@ -267,8 +269,6 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    reinitManager.start();
-    
     nHostBlockSize.store(samplesPerBlock);
     nNumInputs.store(jmin(getTotalNumInputChannels(), 256));
     nNumOutputs.store(jmin(getTotalNumOutputChannels(), 256));
@@ -280,24 +280,12 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
 void PluginProcessor::releaseResources()
 {
-    reinitManager.stop();
 }
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     ScopedNoDenormals noDenormals;
-    
-    /* Try to take the reinit lock. If it fails, then the internal state isn't ready yet */
-    if (!reinitManager.tryLockForAudio()) {
-        buffer.clear();
-        return;
-    }
-    
-    /* Apply parameter value updates, and check whether we need to reinitialise the internal state after the current processBlock() call */
-    updateQueue.drain();
-    if(ambi_bin_getCodecStatus(hAmbi) == CODEC_STATUS_NOT_INITIALISED)
-        reinitManager.requestReinit(hAmbi);
-    
+
     /* Apply processing using the current internal state */
     int nCurrentBlockSize = buffer.getNumSamples();
     nHostBlockSize.store(buffer.getNumSamples());
@@ -319,9 +307,6 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     else {
         buffer.clear();
     }
-        
-    /* Release the reinit lock */
-    reinitManager.unlockForAudio();
 }
 
 bool PluginProcessor::hasEditor() const

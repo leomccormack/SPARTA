@@ -74,8 +74,7 @@ private:
     void filenameComponentChanged (FilenameComponent*) override  {
         String directory = fileChooser.getCurrentFile().getFullPathName();
         const char* new_cstring = (const char*)directory.toUTF8();
-        std::string safeCopy = new_cstring;
-        processor.updateQueue.push([this, safeCopy]() { ambi_bin_setSofaFilePath(hAmbi, safeCopy.c_str()); });
+        ambi_bin_setSofaFilePath(hAmbi, new_cstring);
     }
 
     /* warnings */
