@@ -39,7 +39,7 @@ typedef enum _SPARTA_WARNINGS{
 }SPARTA_WARNINGS;
 
 class PluginEditor  : public AudioProcessorEditor,
-                      public MultiTimer,
+                      public Timer,
                       private FilenameComponentListener,
                       public juce::ComboBox::Listener,
                       public juce::Slider::Listener,
@@ -58,7 +58,7 @@ public:
 private:
     PluginProcessor& processor;
     void* hBin;
-    void timerCallback(int timerID) override;
+    void timerCallback() override;
 #ifndef PLUGIN_EDITOR_DISABLE_OPENGL
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;

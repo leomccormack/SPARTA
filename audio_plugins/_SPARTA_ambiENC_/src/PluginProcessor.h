@@ -29,7 +29,10 @@
 #define CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS 1
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
 #include "../../resources/ConfigurationHelper.h"
-#define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */ 
+#include <thread>
+#include <atomic>
+
+#define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #ifndef MIN
 # define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
 #endif
@@ -70,11 +73,11 @@ public:
     VST2ClientExtensions* getVST2ClientExtensions() override {return this;}
     
 private:
-    void* hAmbi;          /* ambi_enc handle */
-    int nNumInputs;       /* current number of input channels */
-    int nNumOutputs;      /* current number of output channels */
-    int nSampleRate;      /* current host sample rate */
-    int nHostBlockSize;   /* typical host block size to expect, in samples */
+    void* hAmbi;                       /* ambi_enc handle */
+    std::atomic<int> nNumInputs;       /* current number of input channels */
+    std::atomic<int> nNumOutputs;      /* current number of output channels */
+    int nSampleRate;                   /* current host sample rate */
+    std::atomic<int> nHostBlockSize;   /* typical host block size to expect, in samples */
     bool refreshWindow;
     File lastDir;
     ValueTree sources {"Sources"};

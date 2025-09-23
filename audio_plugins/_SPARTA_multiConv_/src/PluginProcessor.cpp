@@ -145,7 +145,6 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     nNumInputs =  getTotalNumInputChannels();
     nNumOutputs = getTotalNumOutputChannels();
     nSampleRate = (int)(sampleRate + 0.5);
-    isPlaying = false;
 
 	multiconv_init(hMCnv, nSampleRate, nHostBlockSize);
     AudioProcessor::setLatencySamples(multiconv_getProcessingDelay(hMCnv));

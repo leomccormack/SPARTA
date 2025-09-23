@@ -279,7 +279,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     pluginDescription->setTooltip(TRANS("This plug-in is a linear and time-invariant loudspeaker Ambisonic decoder, which implements a number of different decoder designs. The plug-in employs a dual-decoder approach, whereby different decoding methods may be selected for the low and high frequencies. Additionally, the decoding order may be specified for each individual frequency band, in order to account for imperfect input Ambisonic signals (such as those derived from microphone arrays) or for creative purposes.\n\nAs with most of the SPARTA plugins, the default settings generally represent the \"state-of-the-art\" approach; or at least a configuration that is suitable for the majority of applications. The vast number of configuration options and decoding methods offered by this plug-in are mainly intended for research and educational purposes, but may nevertheless be fun to play around with :-)"));
 
 	/* Specify screen refresh rate */
-    startTimer(TIMER_GUI_RELATED, 40);
+    startTimer(40);
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -878,127 +878,123 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
 }
 
-void PluginEditor::timerCallback(int timerID)
+void PluginEditor::timerCallback()
 {
-    switch(timerID){
-        case TIMER_PROCESSING_RELATED:
-            /* handled in PluginProcessor */
-            break;
+    /* parameters whos values can change internally should be periodically refreshed */
+    TBuseDefaultHRIRs->setToggleState(ambi_dec_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
+    CBchFormat->setSelectedId(ambi_dec_getChOrder(hAmbi), sendNotification);
+    CBnormScheme->setSelectedId(ambi_dec_getNormType(hAmbi), sendNotification);
+    CBchFormat->setItemEnabled(CH_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
+    outputCoordsView_handle->setNCH(ambi_dec_getNumLoudspeakers(hAmbi));
 
-        case TIMER_GUI_RELATED:
-            /* parameters whos values can change internally should be periodically refreshed */
-            TBuseDefaultHRIRs->setToggleState(ambi_dec_getUseDefaultHRIRsflag(hAmbi), dontSendNotification);
-            CBchFormat->setSelectedId(ambi_dec_getChOrder(hAmbi), sendNotification);
-            CBnormScheme->setSelectedId(ambi_dec_getNormType(hAmbi), sendNotification);
-            CBchFormat->setItemEnabled(CH_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
-            CBnormScheme->setItemEnabled(NORM_FUMA, ambi_dec_getMasterDecOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
-            outputCoordsView_handle->setNCH(ambi_dec_getNumLoudspeakers(hAmbi));
+    /* refresh */
+    if (decOrder2dSlider->getRefreshValuesFLAG()) {
+        decOrder2dSlider->repaint();
+        decOrder2dSlider->setRefreshValuesFLAG(false);
+    }
 
-            /* refresh */
-            if (decOrder2dSlider->getRefreshValuesFLAG()) {
-                decOrder2dSlider->repaint();
-                decOrder2dSlider->setRefreshValuesFLAG(false);
-            }
+    /* Progress bar */
+    if(ambi_dec_getCodecStatus(hAmbi)==CODEC_STATUS_INITIALISING){
+        addAndMakeVisible(progressbar);
+        progress = (double)ambi_dec_getProgressBar0_1(hAmbi);
+        char text[PROGRESSBARTEXT_CHAR_LENGTH];
+        ambi_dec_getProgressBarText(hAmbi, (char*)text);
+        progressbar.setTextToDisplay(String(text));
+    }
+    else
+        removeChildComponent(&progressbar);
 
-            /* Progress bar */
-            if(ambi_dec_getCodecStatus(hAmbi)==CODEC_STATUS_INITIALISING){
-                addAndMakeVisible(progressbar);
-                progress = (double)ambi_dec_getProgressBar0_1(hAmbi);
-                char text[PROGRESSBARTEXT_CHAR_LENGTH];
-                ambi_dec_getProgressBarText(hAmbi, (char*)text);
-                progressbar.setTextToDisplay(String(text));
-            }
-            else
-                removeChildComponent(&progressbar);
+    /* Some parameters shouldn't be editable during initialisation*/
+    if(ambi_dec_getCodecStatus(hAmbi)==CODEC_STATUS_INITIALISING){
+        if(TBuseDefaultHRIRs->isEnabled())
+            TBuseDefaultHRIRs->setEnabled(false);
+        if(CBoutputDirsPreset->isEnabled())
+            CBoutputDirsPreset->setEnabled(false);
+        if(SL_num_loudspeakers->isEnabled())
+            SL_num_loudspeakers->setEnabled(false);
+        if(CBdec1method->isEnabled())
+            CBdec1method->setEnabled(false);
+        if(CBdec2method->isEnabled())
+            CBdec2method->setEnabled(false);
+        if(TBdec1EnableMaxrE->isEnabled())
+            TBdec1EnableMaxrE->setEnabled(false);
+        if(TBdec2EnableMaxrE->isEnabled())
+            TBdec2EnableMaxrE->setEnabled(false);
+        if(CBdec1normtype->isEnabled())
+            CBdec1normtype->setEnabled(false);
+        if(CBdec2normtype->isEnabled())
+            CBdec2normtype->setEnabled(false);
+        if(TBBinauraliseLS->isEnabled())
+            TBBinauraliseLS->setEnabled(false);
+        if(s_decOrder->isEnabled())
+            s_decOrder->setEnabled(false);
+        if(tb_loadJSON->isEnabled())
+            tb_loadJSON->setEnabled(false);
+        if(CBmasterOrder->isEnabled())
+            CBmasterOrder->setEnabled(false);
+        if(fileChooser.isEnabled())
+            fileChooser.setEnabled(false);
+        if(outputCoordsView_handle->isEnabled())
+            outputCoordsView_handle->setEnabled(false);
+    }
+    else {
+        if(!TBuseDefaultHRIRs->isEnabled())
+            TBuseDefaultHRIRs->setEnabled(true);
+        if(!CBoutputDirsPreset->isEnabled())
+            CBoutputDirsPreset->setEnabled(true);
+        if(!SL_num_loudspeakers->isEnabled())
+            SL_num_loudspeakers->setEnabled(true);
+        if(!CBdec1method->isEnabled())
+            CBdec1method->setEnabled(true);
+        if(!CBdec2method->isEnabled())
+            CBdec2method->setEnabled(true);
+        if(!TBdec1EnableMaxrE->isEnabled())
+            TBdec1EnableMaxrE->setEnabled(true);
+        if(!TBdec2EnableMaxrE->isEnabled())
+            TBdec2EnableMaxrE->setEnabled(true);
+        if(!CBdec1normtype->isEnabled())
+            CBdec1normtype->setEnabled(true);
+        if(!CBdec2normtype->isEnabled())
+            CBdec2normtype->setEnabled(true);
+        if(!TBBinauraliseLS->isEnabled())
+            TBBinauraliseLS->setEnabled(true);
+        if(!s_decOrder->isEnabled())
+            s_decOrder->setEnabled(true);
+        if(!tb_loadJSON->isEnabled())
+            tb_loadJSON->setEnabled(true);
+        if(!CBmasterOrder->isEnabled())
+            CBmasterOrder->setEnabled(true);
+        if(!fileChooser.isEnabled())
+            fileChooser.setEnabled(true);
+        if(!outputCoordsView_handle->isEnabled())
+            outputCoordsView_handle->setEnabled(true);
+    }
 
-            /* Some parameters shouldn't be editable during initialisation*/
-            if(ambi_dec_getCodecStatus(hAmbi)==CODEC_STATUS_INITIALISING){
-                if(TBuseDefaultHRIRs->isEnabled())
-                    TBuseDefaultHRIRs->setEnabled(false);
-                if(CBoutputDirsPreset->isEnabled())
-                    CBoutputDirsPreset->setEnabled(false);
-                if(SL_num_loudspeakers->isEnabled())
-                    SL_num_loudspeakers->setEnabled(false);
-                if(CBdec1method->isEnabled())
-                    CBdec1method->setEnabled(false);
-                if(CBdec2method->isEnabled())
-                    CBdec2method->setEnabled(false);
-                if(TBdec1EnableMaxrE->isEnabled())
-                    TBdec1EnableMaxrE->setEnabled(false);
-                if(TBdec2EnableMaxrE->isEnabled())
-                    TBdec2EnableMaxrE->setEnabled(false);
-                if(CBdec1normtype->isEnabled())
-                    CBdec1normtype->setEnabled(false);
-                if(CBdec2normtype->isEnabled())
-                    CBdec2normtype->setEnabled(false);
-                if(TBBinauraliseLS->isEnabled())
-                    TBBinauraliseLS->setEnabled(false);
-                if(s_decOrder->isEnabled())
-                    s_decOrder->setEnabled(false);
-                if(tb_loadJSON->isEnabled())
-                    tb_loadJSON->setEnabled(false);
-                if(CBmasterOrder->isEnabled())
-                    CBmasterOrder->setEnabled(false);
-                if(fileChooser.isEnabled())
-                    fileChooser.setEnabled(false);
-            }
-            else {
-                if(!TBuseDefaultHRIRs->isEnabled())
-                    TBuseDefaultHRIRs->setEnabled(true);
-                if(!CBoutputDirsPreset->isEnabled())
-                    CBoutputDirsPreset->setEnabled(true);
-                if(!SL_num_loudspeakers->isEnabled())
-                    SL_num_loudspeakers->setEnabled(true);
-                if(!CBdec1method->isEnabled())
-                    CBdec1method->setEnabled(true);
-                if(!CBdec2method->isEnabled())
-                    CBdec2method->setEnabled(true);
-                if(!TBdec1EnableMaxrE->isEnabled())
-                    TBdec1EnableMaxrE->setEnabled(true);
-                if(!TBdec2EnableMaxrE->isEnabled())
-                    TBdec2EnableMaxrE->setEnabled(true);
-                if(!CBdec1normtype->isEnabled())
-                    CBdec1normtype->setEnabled(true);
-                if(!CBdec2normtype->isEnabled())
-                    CBdec2normtype->setEnabled(true);
-                if(!TBBinauraliseLS->isEnabled())
-                    TBBinauraliseLS->setEnabled(true);
-                if(!s_decOrder->isEnabled())
-                    s_decOrder->setEnabled(true);
-                if(!tb_loadJSON->isEnabled())
-                    tb_loadJSON->setEnabled(true);
-                if(!CBmasterOrder->isEnabled())
-                    CBmasterOrder->setEnabled(true);
-                if(!fileChooser.isEnabled())
-                    fileChooser.setEnabled(true);
-            }
-
-            /* display warning message, if needed */
-            if ((processor.getCurrentBlockSize() % ambi_dec_getFrameSize()) != 0){
-                currentWarning = k_warning_frameSize;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ( !((ambi_dec_getDAWsamplerate(hAmbi) == 44.1e3) || (ambi_dec_getDAWsamplerate(hAmbi) == 48e3)) ){
-                currentWarning = k_warning_supported_fs;
-                repaint(0,0,getWidth(),32);
-            }
-            else if (ambi_dec_getDAWsamplerate(hAmbi) != ambi_dec_getHRIRsamplerate(hAmbi)){
-                currentWarning = k_warning_mismatch_fs;
-                repaint(0,0,getWidth(),32);
-            }
-            else if (processor.getCurrentNumInputs() < ambi_dec_getNSHrequired(hAmbi)){
-                currentWarning = k_warning_NinputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if (processor.getCurrentNumOutputs() <
-                      (ambi_dec_getBinauraliseLSflag(hAmbi) ? 2 : ambi_dec_getNumLoudspeakers(hAmbi)) ){
-                currentWarning = k_warning_NoutputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if(currentWarning){
-                currentWarning = k_warning_none;
-                repaint(0,0,getWidth(),32);
-            }
-            break;
+    /* display warning message, if needed */
+    if ((processor.getCurrentBlockSize() % ambi_dec_getFrameSize()) != 0){
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ( !((ambi_dec_getDAWsamplerate(hAmbi) == 44.1e3) || (ambi_dec_getDAWsamplerate(hAmbi) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if (ambi_dec_getDAWsamplerate(hAmbi) != ambi_dec_getHRIRsamplerate(hAmbi)){
+        currentWarning = k_warning_mismatch_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if (processor.getCurrentNumInputs() < ambi_dec_getNSHrequired(hAmbi)){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if (processor.getCurrentNumOutputs() <
+              (ambi_dec_getBinauraliseLSflag(hAmbi) ? 2 : ambi_dec_getNumLoudspeakers(hAmbi)) ){
+        currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 }

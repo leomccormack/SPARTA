@@ -36,23 +36,23 @@
           file="src/PluginProcessor.h"/>
     <GROUP id="{3747D37E-C7AA-EB0A-121E-F7F975A2BD35}" name="binauraliser_nf">
       <GROUP id="{55B8D0E9-AD84-A5DA-B219-42EA41EAC6A8}" name="Header Files">
-        <FILE id="scIboG" name="_common.h" compile="0" resource="0" file="../../../Spatial_Audio_Framework/examples/include/_common.h"/>
-        <FILE id="WWEGRH" name="binauraliser.h" compile="0" resource="0" file="../../../Spatial_Audio_Framework/examples/include/binauraliser.h"/>
-        <FILE id="lDOlUm" name="binauraliser_internal.h" compile="0" resource="0"
-              file="../../../Spatial_Audio_Framework/examples/src/binauraliser/binauraliser_internal.h"/>
-        <FILE id="LOKsdn" name="binauraliser_nf.h" compile="0" resource="0"
-              file="../../../Spatial_Audio_Framework/examples/include/binauraliser_nf.h"/>
-        <FILE id="uAJS3k" name="binauraliser_nf_internal.h" compile="0" resource="0"
-              file="../../../Spatial_Audio_Framework/examples/src/binauraliser_nf/binauraliser_nf_internal.h"/>
+        <FILE id="mwyJlJ" name="_common.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/include/_common.h"/>
+        <FILE id="tgQ18t" name="binauraliser_nf.h" compile="0" resource="0"
+              file="../../SDKs/Spatial_Audio_Framework/examples/include/binauraliser_nf.h"/>
+        <FILE id="fc0pS1" name="binauraliser.h" compile="0" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/include/binauraliser.h"/>
+        <FILE id="AYlcz9" name="binauraliser_nf_internal.h" compile="0" resource="0"
+              file="../../SDKs/Spatial_Audio_Framework/examples/src/binauraliser_nf/binauraliser_nf_internal.h"/>
+        <FILE id="StMYkW" name="binauraliser_internal.h" compile="0" resource="0"
+              file="../../SDKs/Spatial_Audio_Framework/examples/src/binauraliser/binauraliser_internal.h"/>
       </GROUP>
       <GROUP id="{12365451-557F-C7FA-4FE5-F3D75532E070}" name="Source Files">
-        <FILE id="w4vV5f" name="binauraliser.c" compile="1" resource="0" file="../../../Spatial_Audio_Framework/examples/src/binauraliser/binauraliser.c"/>
-        <FILE id="eOTTMi" name="binauraliser_internal.c" compile="1" resource="0"
-              file="../../../Spatial_Audio_Framework/examples/src/binauraliser/binauraliser_internal.c"/>
-        <FILE id="uMc4OI" name="binauraliser_nf.c" compile="1" resource="0"
-              file="../../../Spatial_Audio_Framework/examples/src/binauraliser_nf/binauraliser_nf.c"/>
-        <FILE id="Zq4xIS" name="binauraliser_nf_internal.c" compile="1" resource="0"
-              file="../../../Spatial_Audio_Framework/examples/src/binauraliser_nf/binauraliser_nf_internal.c"/>
+        <FILE id="ujBRtP" name="binauraliser_internal.c" compile="1" resource="0"
+              file="../../SDKs/Spatial_Audio_Framework/examples/src/binauraliser/binauraliser_internal.c"/>
+        <FILE id="QNIZvO" name="binauraliser.c" compile="1" resource="0" file="../../SDKs/Spatial_Audio_Framework/examples/src/binauraliser/binauraliser.c"/>
+        <FILE id="kp7LIj" name="binauraliser_nf_internal.c" compile="1" resource="0"
+              file="../../SDKs/Spatial_Audio_Framework/examples/src/binauraliser_nf/binauraliser_nf_internal.c"/>
+        <FILE id="QATC2k" name="binauraliser_nf.c" compile="1" resource="0"
+              file="../../SDKs/Spatial_Audio_Framework/examples/src/binauraliser_nf/binauraliser_nf.c"/>
       </GROUP>
     </GROUP>
     <GROUP id="{F121F267-CD9B-175B-9067-12320F48D69E}" name="Spatial_Audio_Framework">

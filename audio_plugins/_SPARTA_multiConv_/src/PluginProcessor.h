@@ -27,6 +27,8 @@
 #include "../../resources/ParameterManager.h"
 #include "multiconv.h"
 #include <string.h>
+#include <atomic>
+
 #define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (beta, alpha etc..) */
 #ifndef MIN
 # define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
@@ -79,12 +81,11 @@ public:
     }
     
 private:
-    void* hMCnv;            /* multiconv handle */
-    int nNumInputs;         /* current number of input channels */
-    int nNumOutputs;        /* current number of output channels */
-    int nSampleRate;        /* current host sample rate */
-    int nHostBlockSize;     /* typical host block size to expect, in samples */
-    bool isPlaying; 
+    void* hMCnv;                         /* multiconv handle */
+    std::atomic<int> nNumInputs;         /* current number of input channels */
+    std::atomic<int> nNumOutputs;        /* current number of output channels */
+    int nSampleRate;                     /* current host sample rate */
+    std::atomic<int> nHostBlockSize;     /* typical host block size to expect, in samples */
     String lastWavDirectory;
     AudioFormatManager formatManager;
     AudioSampleBuffer fileBuffer;

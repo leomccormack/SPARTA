@@ -297,7 +297,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     publicationLink.setJustificationType(Justification::centredLeft);
 
 	/* Specify screen refresh rate */
-    startTimer(TIMER_GUI_RELATED, 40);
+    startTimer(40);
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -1005,166 +1005,158 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
 }
 
-void PluginEditor::timerCallback(int timerID)
+void PluginEditor::timerCallback()
 {
-    switch(timerID){
-        case TIMER_PROCESSING_RELATED:
-            /* handled in PluginProcessor */
-            break;
+    /* parameters whos values can change internally should be periodically refreshed */
+    int curOrder = CBencodingOrder->getSelectedId();
+    QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
+    QSlider->setValue(array2sh_getNumSensors(hA2sh), sendNotification);
+    rSlider->setValue(array2sh_getr(hA2sh)*1e3f, sendNotification);
+    RSlider->setValue(array2sh_getR(hA2sh)*1e3f, sendNotification);
+    weightTypeCB->setSelectedId(array2sh_getWeightType(hA2sh), sendNotification);
+    sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));
+    CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), sendNotification);
+    normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), sendNotification);
+    CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
+    normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
 
-        case TIMER_GUI_RELATED:
-            /* parameters whos values can change internally should be periodically refreshed */
-            int curOrder = CBencodingOrder->getSelectedId();
-            QSlider->setRange((curOrder+1)*(curOrder+1), array2sh_getMaxNumSensors(), 1);
-            QSlider->setValue(array2sh_getNumSensors(hA2sh), sendNotification);
-            rSlider->setValue(array2sh_getr(hA2sh)*1e3f, sendNotification);
-            RSlider->setValue(array2sh_getR(hA2sh)*1e3f, sendNotification);
-            weightTypeCB->setSelectedId(array2sh_getWeightType(hA2sh), sendNotification);
-            sensorCoordsView_handle->setQ(array2sh_getNumSensors(hA2sh));
-            CHOrderingCB->setSelectedId(array2sh_getChOrder(hA2sh), sendNotification);
-            normalisationCB->setSelectedId(array2sh_getNormType(hA2sh), sendNotification);
-            CHOrderingCB->setItemEnabled(CH_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
-            normalisationCB->setItemEnabled(NORM_FUMA, array2sh_getEncodingOrder(hA2sh)==SH_ORDER_FIRST ? true : false);
+    /* check if eval curves have recently been computed */
+    if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_RECENTLY_EVALUATED){
+        needScreenRefreshFLAG = true;
+        array2sh_setEvalStatus(hA2sh, EVAL_STATUS_EVALUATED);
+    }
 
-            /* check if eval curves have recently been computed */
-            if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_RECENTLY_EVALUATED){
-                needScreenRefreshFLAG = true;
-                array2sh_setEvalStatus(hA2sh, EVAL_STATUS_EVALUATED);
-            }
+    /* disable certain sliders if evaluation is ongoing */
+    bool RshouldBeEnabled = array2sh_getWeightType(hA2sh) > WEIGHT_RIGID_DIPOLE ? false : true; /* is it a rigid array? */
+    if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_EVALUATING){
+        if(presetCB->isEnabled())
+            presetCB->setEnabled(false);
+        if(arrayTypeCB->isEnabled())
+            arrayTypeCB->setEnabled(false);
+        if(QSlider->isEnabled())
+            QSlider->setEnabled(false);
+        if(rSlider->isEnabled())
+            rSlider->setEnabled(false);
+        if(RSlider->isEnabled() || !RshouldBeEnabled)
+           RSlider->setEnabled(false);
+        if(cSlider->isEnabled())
+            cSlider->setEnabled(false);
+        if(weightTypeCB->isEnabled())
+            weightTypeCB->setEnabled(false);
+        if(filterTypeCB->isEnabled())
+            filterTypeCB->setEnabled(false);
+        if(regAmountSlider->isEnabled())
+            regAmountSlider->setEnabled(false);
+        if(tb_loadJSON->isEnabled())
+            tb_loadJSON->setEnabled(false);
+        if(CBencodingOrder->isEnabled())
+            CBencodingOrder->setEnabled(false);
+        if(applyDiffEQ->isEnabled())
+            applyDiffEQ->setEnabled(false);
+        if(sensorCoordsVP->isEnabled())
+            sensorCoordsVP->setEnabled(false);
+    }
+    else{
+        if(!presetCB->isEnabled())
+            presetCB->setEnabled(true);
+        if(!arrayTypeCB->isEnabled())
+            arrayTypeCB->setEnabled(true);
+        if(!QSlider->isEnabled())
+            QSlider->setEnabled(true);
+        if(!rSlider->isEnabled())
+            rSlider->setEnabled(true);
+        if(!RSlider->isEnabled() && RshouldBeEnabled)
+            RSlider->setEnabled(true);
+        if(!cSlider->isEnabled())
+            cSlider->setEnabled(true);
+        if(!weightTypeCB->isEnabled())
+            weightTypeCB->setEnabled(true);
+        if(!filterTypeCB->isEnabled())
+            filterTypeCB->setEnabled(true);
+        if(!regAmountSlider->isEnabled())
+            regAmountSlider->setEnabled(true);
+        if(!tb_loadJSON->isEnabled())
+            tb_loadJSON->setEnabled(true);
+        if(!CBencodingOrder->isEnabled())
+            CBencodingOrder->setEnabled(true);
+        if(!applyDiffEQ->isEnabled())
+            applyDiffEQ->setEnabled(true);
+        if(!sensorCoordsVP->isEnabled())
+            sensorCoordsVP->setEnabled(true);
+    }
 
-            /* disable certain sliders if evaluation is ongoing */
-            bool RshouldBeEnabled = array2sh_getWeightType(hA2sh) > WEIGHT_RIGID_DIPOLE ? false : true; /* is it a rigid array? */
-            if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_EVALUATING){
-                if(presetCB->isEnabled())
-                    presetCB->setEnabled(false);
-                if(arrayTypeCB->isEnabled())
-                    arrayTypeCB->setEnabled(false);
-                if(QSlider->isEnabled())
-                    QSlider->setEnabled(false);
-                if(rSlider->isEnabled())
-                    rSlider->setEnabled(false);
-                if(RSlider->isEnabled() || !RshouldBeEnabled)
-                   RSlider->setEnabled(false);
-                if(cSlider->isEnabled())
-                    cSlider->setEnabled(false);
-                if(weightTypeCB->isEnabled())
-                    weightTypeCB->setEnabled(false);
-                if(filterTypeCB->isEnabled())
-                    filterTypeCB->setEnabled(false);
-                if(regAmountSlider->isEnabled())
-                    regAmountSlider->setEnabled(false);
-                if(tb_loadJSON->isEnabled())
-                    tb_loadJSON->setEnabled(false);
-                if(CBencodingOrder->isEnabled())
-                    CBencodingOrder->setEnabled(false);
-                if(applyDiffEQ->isEnabled())
-                    applyDiffEQ->setEnabled(false);
-                if(sensorCoordsVP->isEnabled())
-                    sensorCoordsVP->setEnabled(false);
-            }
-            else{
-                if(!presetCB->isEnabled())
-                    presetCB->setEnabled(true);
-                if(!arrayTypeCB->isEnabled())
-                    arrayTypeCB->setEnabled(true);
-                if(!QSlider->isEnabled())
-                    QSlider->setEnabled(true);
-                if(!rSlider->isEnabled())
-                    rSlider->setEnabled(true);
-                if(!RSlider->isEnabled() && RshouldBeEnabled)
-                    RSlider->setEnabled(true);
-                if(!cSlider->isEnabled())
-                    cSlider->setEnabled(true);
-                if(!weightTypeCB->isEnabled())
-                    weightTypeCB->setEnabled(true);
-                if(!filterTypeCB->isEnabled())
-                    filterTypeCB->setEnabled(true);
-                if(!regAmountSlider->isEnabled())
-                    regAmountSlider->setEnabled(true);
-                if(!tb_loadJSON->isEnabled())
-                    tb_loadJSON->setEnabled(true);
-                if(!CBencodingOrder->isEnabled())
-                    CBencodingOrder->setEnabled(true);
-                if(!applyDiffEQ->isEnabled())
-                    applyDiffEQ->setEnabled(true);
-                if(!sensorCoordsVP->isEnabled())
-                    sensorCoordsVP->setEnabled(true);
-            }
-
-            /* draw magnitude/spatial-correlation/level-difference curves */
-            if (needScreenRefreshFLAG && !array2sh_getReinitSHTmatrixFLAG(hA2sh)){
-                switch(dispID){
-                    default:
-                    case SHOW_EQ:
-                        eqviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
-                        eqviewIncluded->setVisible(true);
-                        cohviewIncluded->setVisible(false);
-                        ldiffviewIncluded->setVisible(false);
-                        eqviewIncluded->repaint();
-                        break;
-                    case SHOW_SPATIAL_COH:
-                        eqviewIncluded->setVisible(false);
-                        ldiffviewIncluded->setVisible(false);
-                        if((array2sh_getEvalStatus(hA2sh) == EVAL_STATUS_EVALUATED)){
-                            cohviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
-                            cohviewIncluded->setVisible(true);
-                            cohviewIncluded->repaint();
-                        }
-                        else
-                            cohviewIncluded->setVisible(false);
-                        break;
-                    case SHOW_LEVEL_DIFF:
-                        eqviewIncluded->setVisible(false);
-                        cohviewIncluded->setVisible(false);
-                        if((array2sh_getEvalStatus(hA2sh) == EVAL_STATUS_EVALUATED)){
-                            ldiffviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
-                            ldiffviewIncluded->setVisible(true);
-                            ldiffviewIncluded->repaint();
-                        }
-                        else
-                            ldiffviewIncluded->setVisible(false);
-                        break;
+    /* draw magnitude/spatial-correlation/level-difference curves */
+    if (needScreenRefreshFLAG && !array2sh_getReinitSHTmatrixFLAG(hA2sh)){
+        switch(dispID){
+            default:
+            case SHOW_EQ:
+                eqviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
+                eqviewIncluded->setVisible(true);
+                cohviewIncluded->setVisible(false);
+                ldiffviewIncluded->setVisible(false);
+                eqviewIncluded->repaint();
+                break;
+            case SHOW_SPATIAL_COH:
+                eqviewIncluded->setVisible(false);
+                ldiffviewIncluded->setVisible(false);
+                if((array2sh_getEvalStatus(hA2sh) == EVAL_STATUS_EVALUATED)){
+                    cohviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
+                    cohviewIncluded->setVisible(true);
+                    cohviewIncluded->repaint();
                 }
-                needScreenRefreshFLAG = false;
-            }
+                else
+                    cohviewIncluded->setVisible(false);
+                break;
+            case SHOW_LEVEL_DIFF:
+                eqviewIncluded->setVisible(false);
+                cohviewIncluded->setVisible(false);
+                if((array2sh_getEvalStatus(hA2sh) == EVAL_STATUS_EVALUATED)){
+                    ldiffviewIncluded->setNumCurves(array2sh_getEncodingOrder(hA2sh)+1);
+                    ldiffviewIncluded->setVisible(true);
+                    ldiffviewIncluded->repaint();
+                }
+                else
+                    ldiffviewIncluded->setVisible(false);
+                break;
+        }
+        needScreenRefreshFLAG = false;
+    }
 
-            /* Progress bar */
-            if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_EVALUATING){
-                addAndMakeVisible(progressbar);
-                progress = (double)array2sh_getProgressBar0_1(hA2sh);
-                char text[PROGRESSBARTEXT_CHAR_LENGTH];
-                array2sh_getProgressBarText(hA2sh, (char*)text);
-                progressbar.setTextToDisplay(String(text));
-            }
-            else
-                removeChildComponent(&progressbar);
+    /* Progress bar */
+    if(array2sh_getEvalStatus(hA2sh)==EVAL_STATUS_EVALUATING){
+        addAndMakeVisible(progressbar);
+        progress = (double)array2sh_getProgressBar0_1(hA2sh);
+        char text[PROGRESSBARTEXT_CHAR_LENGTH];
+        array2sh_getProgressBarText(hA2sh, (char*)text);
+        progressbar.setTextToDisplay(String(text));
+    }
+    else
+        removeChildComponent(&progressbar);
 
-            /* Hide decoding orders that are unsuitable for the current number of sensors */
-            for(int i=1; i<=MAX_SH_ORDER; i++)
-                CBencodingOrder->setItemEnabled(i, (i+1)*(i+1) <= array2sh_getNumSensors(hA2sh) ? true : false);
+    /* Hide decoding orders that are unsuitable for the current number of sensors */
+    for(int i=1; i<=MAX_SH_ORDER; i++)
+        CBencodingOrder->setItemEnabled(i, (i+1)*(i+1) <= array2sh_getNumSensors(hA2sh) ? true : false);
 
-            /* display warning message, if needed */
-            if ((processor.getCurrentBlockSize() % array2sh_getFrameSize()) != 0){
-                currentWarning = k_warning_frameSize;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ( !((array2sh_getSamplingRate(hA2sh) == 44.1e3) || (array2sh_getSamplingRate(hA2sh) == 48e3)) ){
-                currentWarning = k_warning_supported_fs;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ((processor.getCurrentNumInputs() < array2sh_getNumSensors(hA2sh))){
-                currentWarning = k_warning_NinputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ((processor.getCurrentNumOutputs() < array2sh_getNSHrequired(hA2sh))){
-                currentWarning = k_warning_NoutputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if(currentWarning){
-                currentWarning = k_warning_none;
-                repaint(0,0,getWidth(),32);
-            }
-            break;
+    /* display warning message, if needed */
+    if ((processor.getCurrentBlockSize() % array2sh_getFrameSize()) != 0){
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ( !((array2sh_getSamplingRate(hA2sh) == 44.1e3) || (array2sh_getSamplingRate(hA2sh) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumInputs() < array2sh_getNumSensors(hA2sh))){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumOutputs() < array2sh_getNSHrequired(hA2sh))){
+        currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 }
 

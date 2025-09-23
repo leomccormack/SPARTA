@@ -29,6 +29,8 @@
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
 #include "../../resources/ConfigurationHelper.h"
 #include <thread>
+#include <atomic>
+
 #define BUILD_VER_SUFFIX ""  /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #ifndef MIN
 # define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
@@ -37,13 +39,8 @@
 # define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
 #endif
 
-typedef enum _TIMERS{
-    TIMER_PROCESSING_RELATED = 1,
-    TIMER_GUI_RELATED
-}TIMERS;
-
 class PluginProcessor  : public AudioProcessor,
-                         public MultiTimer,
+                         public Timer,
                          public VST2ClientExtensions,
                          public ParameterManager
 {
@@ -78,12 +75,12 @@ public:
     VST2ClientExtensions* getVST2ClientExtensions() override {return this;}
     
 private:
-    void* hPan;           /* panner handle */
-    int nNumInputs;       /* current number of input channels */
-    int nNumOutputs;      /* current number of output channels */
-    int nSampleRate;      /* current host sample rate */
-    int nHostBlockSize;   /* typical host block size to expect, in samples */
-    bool isPlaying;
+    void* hPan;                        /* panner handle */
+    std::atomic<int> nNumInputs;       /* current number of input channels */
+    std::atomic<int> nNumOutputs;      /* current number of output channels */
+    int nSampleRate;                   /* current host sample rate */
+    std::atomic<int> nHostBlockSize;   /* typical host block size to expect, in samples */
+    std::atomic<bool> isPlaying;
     File lastDir;
     ValueTree elements {"SourcesOrLoudspeakers"};
     
@@ -92,23 +89,16 @@ private:
     void setParameterValuesUsingInternalState();
     void setInternalStateUsingParameterValues();
 
-    void timerCallback(int timerID) override
+    void timerCallback() override
     {
-        switch(timerID){
-            case TIMER_PROCESSING_RELATED:
-                /* reinitialise codec if needed */
-                if(panner_getCodecStatus(hPan) == CODEC_STATUS_NOT_INITIALISED){
-                    try{
-                        std::thread threadInit(panner_initCodec, hPan);
-                        threadInit.detach();
-                    } catch (const std::exception& exception) {
-                        std::cout << "Could not create thread" << exception.what() << std::endl;
-                    }
-                }
-                break;
-            case TIMER_GUI_RELATED:
-                /* handled in PluginEditor */
-                break;
+        /* reinitialise codec if needed */
+        if(panner_getCodecStatus(hPan) == CODEC_STATUS_NOT_INITIALISED){
+            try{
+                std::thread threadInit(panner_initCodec, hPan);
+                threadInit.detach();
+            } catch (const std::exception& exception) {
+                std::cout << "Could not create thread" << exception.what() << std::endl;
+            }
         }
     }
     

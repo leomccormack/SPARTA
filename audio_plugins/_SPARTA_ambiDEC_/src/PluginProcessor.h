@@ -27,18 +27,15 @@
 #include "../../resources/ParameterManager.h"
 #include "ambi_dec.h"
 #include <thread>
+#include <atomic>
 #define CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS 1
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
 #include "../../resources/ConfigurationHelper.h"
 #define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */ 
 
-typedef enum _TIMERS{
-    TIMER_PROCESSING_RELATED = 1,
-    TIMER_GUI_RELATED
-}TIMERS;
 
 class PluginProcessor  : public AudioProcessor,
-                         public MultiTimer,
+                         public Timer,
                          public juce::VST2ClientExtensions,
                          public ParameterManager
 {
@@ -67,11 +64,11 @@ public:
     VST2ClientExtensions* getVST2ClientExtensions() override {return this;}
     
 private:
-    void* hAmbi;          /* ambi_dec handle */
-    int nNumInputs;       /* current number of input channels */
-    int nNumOutputs;      /* current number of output channels */
-    int nSampleRate;      /* current host sample rate */
-    int nHostBlockSize;   /* typical host block size to expect, in samples */
+    void* hAmbi;                       /* ambi_dec handle */
+    std::atomic<int> nNumInputs;       /* current number of input channels */
+    std::atomic<int> nNumOutputs;      /* current number of output channels */
+    int nSampleRate;                   /* current host sample rate */
+    std::atomic<int> nHostBlockSize;   /* typical host block size to expect, in samples */
     File lastDir;
     ValueTree loudspeakers {"Loudspeakers"};
     
@@ -80,23 +77,16 @@ private:
     void setParameterValuesUsingInternalState();
     void setInternalStateUsingParameterValues();
 
-    void timerCallback(int timerID) override
+    void timerCallback() override
     {
-        switch(timerID){
-            case TIMER_PROCESSING_RELATED:
-                /* reinitialise codec if needed */
-                if(ambi_dec_getCodecStatus(hAmbi) == CODEC_STATUS_NOT_INITIALISED){
-                    try{
-                        std::thread threadInit(ambi_dec_initCodec, hAmbi);
-                        threadInit.detach();
-                    } catch (const std::exception& exception) {
-                        std::cout << "Could not create thread" << exception.what() << std::endl;
-                    }
-                }
-                break;
-            case TIMER_GUI_RELATED:
-                /* handled in PluginEditor */
-                break;
+        /* reinitialise codec if needed */
+        if(ambi_dec_getCodecStatus(hAmbi) == CODEC_STATUS_NOT_INITIALISED){
+            try{
+                std::thread threadInit(ambi_dec_initCodec, hAmbi);
+                threadInit.detach();
+            } catch (const std::exception& exception) {
+                std::cout << "Could not create thread" << exception.what() << std::endl;
+            }
         }
     }
     

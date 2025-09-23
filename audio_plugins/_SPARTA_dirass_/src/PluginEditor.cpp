@@ -216,7 +216,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     publicationLink.setJustificationType(Justification::centredLeft);
 
 	/* Specify screen refresh rate */
-    startTimer(TIMER_GUI_RELATED, 140);//80); /*ms (40ms = 25 frames per second) */
+    startTimer(140);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -637,122 +637,114 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
 }
 
-void PluginEditor::timerCallback(int timerID)
+void PluginEditor::timerCallback()
 {
-    switch(timerID){
-        case TIMER_PROCESSING_RELATED:
-            /* handled in PluginProcessor */
-            break;
+    /* parameters whos values can change internally should be periodically refreshed */
+    CBchFormat->setSelectedId(dirass_getChOrder(hDir), sendNotification);
+    CBnormScheme->setSelectedId(dirass_getNormType(hDir), sendNotification);
+    CBchFormat->setItemEnabled(CH_FUMA, dirass_getInputOrder(hDir)==SH_ORDER_FIRST ? true : false);
+    CBnormScheme->setItemEnabled(NORM_FUMA, dirass_getInputOrder(hDir)==SH_ORDER_FIRST ? true : false);
+    CBgridOption->setEnabled(processor.getIsPlaying() ? false : true);
+    s_interpWidth->setEnabled(processor.getIsPlaying() ? false : true);
 
-        case TIMER_GUI_RELATED:
-            /* parameters whos values can change internally should be periodically refreshed */
-            CBchFormat->setSelectedId(dirass_getChOrder(hDir), sendNotification);
-            CBnormScheme->setSelectedId(dirass_getNormType(hDir), sendNotification);
-            CBchFormat->setItemEnabled(CH_FUMA, dirass_getInputOrder(hDir)==SH_ORDER_FIRST ? true : false);
-            CBnormScheme->setItemEnabled(NORM_FUMA, dirass_getInputOrder(hDir)==SH_ORDER_FIRST ? true : false);
-            CBgridOption->setEnabled(processor.getIsPlaying() ? false : true);
-            s_interpWidth->setEnabled(processor.getIsPlaying() ? false : true);
+    /* take webcam picture */
+    if(CB_webcam->getSelectedId()>1){
+        handleAsyncUpdate();
+        lastSnapshot.setTransform(AffineTransform()); /*identity*/
+        AffineTransform m_LR, m_UD, m_LR_UD;
+        m_LR = AffineTransform(-1, 0, previewArea.getWidth(), 0, 1, 0).followedBy(AffineTransform::translation(2 * previewArea.getX(),0));    /* flip left/right */
+        m_UD = AffineTransform(1, 0, 0, 0, -1, previewArea.getHeight()).followedBy(AffineTransform::translation(0, 2 * previewArea.getY()));  /* flip up/down */
+        m_LR_UD = m_LR.followedBy(m_UD);  /* flip left/right and up/down */
 
-            /* take webcam picture */
-            if(CB_webcam->getSelectedId()>1){
-                handleAsyncUpdate();
-                lastSnapshot.setTransform(AffineTransform()); /*identity*/
-                AffineTransform m_LR, m_UD, m_LR_UD;
-                m_LR = AffineTransform(-1, 0, previewArea.getWidth(), 0, 1, 0).followedBy(AffineTransform::translation(2 * previewArea.getX(),0));    /* flip left/right */
-                m_UD = AffineTransform(1, 0, 0, 0, -1, previewArea.getHeight()).followedBy(AffineTransform::translation(0, 2 * previewArea.getY()));  /* flip up/down */
-                m_LR_UD = m_LR.followedBy(m_UD);  /* flip left/right and up/down */
+        if (TB_flipLR->getToggleState() && TB_flipUD->getToggleState())
+            lastSnapshot.setTransform(m_LR_UD);
+        else if (TB_flipLR->getToggleState())
+            lastSnapshot.setTransform(m_LR);
+        else if (TB_flipUD->getToggleState())
+            lastSnapshot.setTransform(m_UD);
 
-                if (TB_flipLR->getToggleState() && TB_flipUD->getToggleState())
-                    lastSnapshot.setTransform(m_LR_UD);
-                else if (TB_flipLR->getToggleState())
-                    lastSnapshot.setTransform(m_LR);
-                else if (TB_flipUD->getToggleState())
-                    lastSnapshot.setTransform(m_UD);
+        if (incomingImage.isValid())
+            lastSnapshot.setImage(incomingImage);
+    }
 
-                if (incomingImage.isValid())
-                    lastSnapshot.setImage(incomingImage);
-            }
+    /* Progress bar */
+    if(dirass_getCodecStatus(hDir)==CODEC_STATUS_INITIALISING){
+        addAndMakeVisible(progressbar);
+        progressbar.setAlwaysOnTop(true);
+        progress = (double)dirass_getProgressBar0_1(hDir);
+        char text[PROGRESSBARTEXT_CHAR_LENGTH];
+        dirass_getProgressBarText(hDir, (char*)text);
+        progressbar.setTextToDisplay(String(text));
+    }
+    else
+        removeChildComponent(&progressbar);
 
-            /* Progress bar */
-            if(dirass_getCodecStatus(hDir)==CODEC_STATUS_INITIALISING){
-                addAndMakeVisible(progressbar);
-                progressbar.setAlwaysOnTop(true);
-                progress = (double)dirass_getProgressBar0_1(hDir);
-                char text[PROGRESSBARTEXT_CHAR_LENGTH];
-                dirass_getProgressBarText(hDir, (char*)text);
-                progressbar.setTextToDisplay(String(text));
-            }
-            else
-                removeChildComponent(&progressbar);
+    /* Some parameters shouldn't be editable during initialisation*/
+    bool usingUpscale = (CBdirassMode->getSelectedId() == REASS_UPSCALE ? true : false);
+    if(dirass_getCodecStatus(hDir)==CODEC_STATUS_INITIALISING){
+        if(CBbeamType->isEnabled())
+            CBbeamType->setEnabled(false);
+        if(CBbeamType->isEnabled())
+            CBbeamType->setEnabled(false);
+        if(CB_hfov->isEnabled())
+            CB_hfov->setEnabled(false);
+        if(CB_aspectRatio->isEnabled())
+            CB_aspectRatio->setEnabled(false);
+        if(CBinputOrder->isEnabled())
+            CBinputOrder->setEnabled(false);
+        if(CBgridOption->isEnabled())
+            CBgridOption->setEnabled(false);
+        if(CBupscaleOrder->isEnabled())
+            CBupscaleOrder->setEnabled(false);
+        if(s_interpWidth->isEnabled())
+            s_interpWidth->setEnabled(false);
+    }
+    else{
+        if(!CBbeamType->isEnabled())
+            CBbeamType->setEnabled(true);
+        if(!CBbeamType->isEnabled())
+            CBbeamType->setEnabled(true);
+        if(!CB_hfov->isEnabled())
+            CB_hfov->setEnabled(true);
+        if(!CB_aspectRatio->isEnabled())
+            CB_aspectRatio->setEnabled(true);
+        if(!CBinputOrder->isEnabled())
+            CBinputOrder->setEnabled(true);
+        if(!CBgridOption->isEnabled())
+            CBgridOption->setEnabled(true);
+        if(!CBupscaleOrder->isEnabled() && usingUpscale)
+            CBupscaleOrder->setEnabled(true);
+        if(!s_interpWidth->isEnabled())
+            s_interpWidth->setEnabled(true);
+    }
 
-            /* Some parameters shouldn't be editable during initialisation*/
-            bool usingUpscale = (CBdirassMode->getSelectedId() == REASS_UPSCALE ? true : false);
-            if(dirass_getCodecStatus(hDir)==CODEC_STATUS_INITIALISING){
-                if(CBbeamType->isEnabled())
-                    CBbeamType->setEnabled(false);
-                if(CBbeamType->isEnabled())
-                    CBbeamType->setEnabled(false);
-                if(CB_hfov->isEnabled())
-                    CB_hfov->setEnabled(false);
-                if(CB_aspectRatio->isEnabled())
-                    CB_aspectRatio->setEnabled(false);
-                if(CBinputOrder->isEnabled())
-                    CBinputOrder->setEnabled(false);
-                if(CBgridOption->isEnabled())
-                    CBgridOption->setEnabled(false);
-                if(CBupscaleOrder->isEnabled())
-                    CBupscaleOrder->setEnabled(false);
-                if(s_interpWidth->isEnabled())
-                    s_interpWidth->setEnabled(false);
-            }
-            else{
-                if(!CBbeamType->isEnabled())
-                    CBbeamType->setEnabled(true);
-                if(!CBbeamType->isEnabled())
-                    CBbeamType->setEnabled(true);
-                if(!CB_hfov->isEnabled())
-                    CB_hfov->setEnabled(true);
-                if(!CB_aspectRatio->isEnabled())
-                    CB_aspectRatio->setEnabled(true);
-                if(!CBinputOrder->isEnabled())
-                    CBinputOrder->setEnabled(true);
-                if(!CBgridOption->isEnabled())
-                    CBgridOption->setEnabled(true);
-                if(!CBupscaleOrder->isEnabled() && usingUpscale)
-                    CBupscaleOrder->setEnabled(true);
-                if(!s_interpWidth->isEnabled())
-                    s_interpWidth->setEnabled(true);
-            }
+    /* refresh the powermap display */
+    if ((overlayIncluded != nullptr) && (processor.getIsPlaying())) {
+        float* dirs_deg, *pmap;
+        int nDirs, pmapReady, pmapWidth, hfov;
+        float aspectRatio;
+        pmapReady = dirass_getPmap(hDir, &dirs_deg, &pmap, &nDirs, &pmapWidth, &hfov, &aspectRatio);
+        overlayIncluded->setEnableTransparency(CB_webcam->getSelectedId() > 1 ? true : false);
+        if(pmapReady){
+            overlayIncluded->refreshPowerMap(dirs_deg, pmap, nDirs, pmapWidth, hfov, aspectRatio);
+        }
+        if(overlayIncluded->getFinishedRefresh()){
+            dirass_requestPmapUpdate(hDir);
+        }
+    }
 
-            /* refresh the powermap display */
-            if ((overlayIncluded != nullptr) && (processor.getIsPlaying())) {
-                float* dirs_deg, *pmap;
-                int nDirs, pmapReady, pmapWidth, hfov;
-                float aspectRatio;
-                pmapReady = dirass_getPmap(hDir, &dirs_deg, &pmap, &nDirs, &pmapWidth, &hfov, &aspectRatio);
-                overlayIncluded->setEnableTransparency(CB_webcam->getSelectedId() > 1 ? true : false);
-                if(pmapReady){
-                    overlayIncluded->refreshPowerMap(dirs_deg, pmap, nDirs, pmapWidth, hfov, aspectRatio);
-                }
-                if(overlayIncluded->getFinishedRefresh()){
-                    dirass_requestPmapUpdate(hDir);
-                }
-            }
-
-            /* display warning message, if needed */
-            if ( !((dirass_getSamplingRate(hDir) == 44.1e3) || (dirass_getSamplingRate(hDir) == 48e3)) ){
-                currentWarning = k_warning_supported_fs;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ((processor.getCurrentNumInputs() < dirass_getNSHrequired(hDir))){
-                currentWarning = k_warning_NinputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if(currentWarning){
-                currentWarning = k_warning_none;
-                repaint(0,0,getWidth(),32);
-            }
-            break;
+    /* display warning message, if needed */
+    if ( !((dirass_getSamplingRate(hDir) == 44.1e3) || (dirass_getSamplingRate(hDir) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumInputs() < dirass_getNSHrequired(hDir))){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 }
 

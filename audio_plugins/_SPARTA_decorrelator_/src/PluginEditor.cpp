@@ -85,7 +85,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     pluginDescription->setEnabled(false);
     pluginDescription->setTooltip(TRANS("A basic multi-channel decorrelator plug-in."));
 
-    startTimer(TIMER_GUI_RELATED, 20);
+    startTimer(20);
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -300,46 +300,38 @@ void PluginEditor::buttonClicked (juce::Button* /*buttonThatWasClicked*/)
 {
 }
 
-void PluginEditor::timerCallback(int timerID)
+void PluginEditor::timerCallback()
 {
-    switch(timerID){
-        case TIMER_PROCESSING_RELATED:
-            /* Handled in PluginProcessor */
-            break;
+    /* Progress bar */
+    if(decorrelator_getCodecStatus(hDecor)==CODEC_STATUS_INITIALISING){
+        addAndMakeVisible(progressbar);
+        progress = (double)decorrelator_getProgressBar0_1(hDecor);
+        char text[PROGRESSBARTEXT_CHAR_LENGTH];
+        decorrelator_getProgressBarText(hDecor, (char*)text);
+        progressbar.setTextToDisplay(String(text));
+    }
+    else
+        removeChildComponent(&progressbar);
 
-        case TIMER_GUI_RELATED:
-            /* Progress bar */
-            if(decorrelator_getCodecStatus(hDecor)==CODEC_STATUS_INITIALISING){
-                addAndMakeVisible(progressbar);
-                progress = (double)decorrelator_getProgressBar0_1(hDecor);
-                char text[PROGRESSBARTEXT_CHAR_LENGTH];
-                decorrelator_getProgressBarText(hDecor, (char*)text);
-                progressbar.setTextToDisplay(String(text));
-            }
-            else
-                removeChildComponent(&progressbar);
-
-            /* display warning message, if needed */
-            if ((processor.getCurrentBlockSize() % decorrelator_getFrameSize()) != 0){
-                currentWarning = k_warning_frameSize;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ( !((decorrelator_getDAWsamplerate(hDecor) == 44.1e3) || (decorrelator_getDAWsamplerate(hDecor) == 48e3)) ){
-                currentWarning = k_warning_supported_fs;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ((processor.getCurrentNumInputs() < decorrelator_getNumberOfChannels(hDecor))){
-                currentWarning = k_warning_NinputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ((processor.getCurrentNumOutputs() < decorrelator_getNumberOfChannels(hDecor))){
-                currentWarning = k_warning_NoutputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if(currentWarning){
-                currentWarning = k_warning_none;
-                repaint(0,0,getWidth(),32);
-            }
-            break;
+    /* display warning message, if needed */
+    if ((processor.getCurrentBlockSize() % decorrelator_getFrameSize()) != 0){
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ( !((decorrelator_getDAWsamplerate(hDecor) == 44.1e3) || (decorrelator_getDAWsamplerate(hDecor) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumInputs() < decorrelator_getNumberOfChannels(hDecor))){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumOutputs() < decorrelator_getNumberOfChannels(hDecor))){
+        currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 }
