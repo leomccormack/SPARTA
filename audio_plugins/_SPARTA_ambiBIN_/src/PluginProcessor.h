@@ -27,6 +27,7 @@
 #include "ambi_bin.h"
 #include <string.h>
 #include <thread>
+#include <atomic>
 
 #define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #define DEFAULT_OSC_PORT 9000

@@ -26,9 +26,12 @@
 #include <JuceHeader.h>
 #include "../../resources/ParameterManager.h"
 #include "ambi_roomsim.h"
-#define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1 
+#include <thread>
+#include <atomic>
+#define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
 #include "../../resources/ConfigurationHelper.h"
-#define BUILD_VER_SUFFIX "alpha" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */ 
+
+#define BUILD_VER_SUFFIX "alpha" /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 #ifndef MIN
 # define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
 #endif
@@ -63,11 +66,11 @@ public:
     VST2ClientExtensions* getVST2ClientExtensions() override {return this;}
     
 private:
-    void* hAmbi;          /* ambi_roomsim handle */
-    int nNumInputs;       /* current number of input channels */
-    int nNumOutputs;      /* current number of output channels */
-    int nSampleRate;      /* current host sample rate */
-    int nHostBlockSize;   /* typical host block size to expect, in samples */
+    void* hAmbi;                       /* ambi_roomsim handle */
+    std::atomic<int> nNumInputs;       /* current number of input channels */
+    std::atomic<int> nNumOutputs;      /* current number of output channels */
+    int nSampleRate;                   /* current host sample rate */
+    std::atomic<int> nHostBlockSize;   /* typical host block size to expect, in samples */
     bool refreshWindow;
     
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();

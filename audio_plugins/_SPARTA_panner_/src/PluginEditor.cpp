@@ -290,7 +290,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     pluginDescription->setTooltip(TRANS("A frequency-dependent 3D panner based on the Vector-base Amplitude Panning (VBAP) method, which can offer more consistent loudness when sources are panned in-between the loudspeaker directions when compared to frequency-independent VBAP."));
 
 	/* Specify screen refresh rate */
-    startTimer(TIMER_GUI_RELATED, 40);
+    startTimer(40);
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -881,105 +881,97 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
 }
 
-void PluginEditor::timerCallback(int timerID)
+void PluginEditor::timerCallback()
 {
-    switch(timerID){
-        case TIMER_PROCESSING_RELATED:
-            /* handled in PluginProcessor */
-            break;
+    /* refresh parameters that can change internally */
+    sourceCoordsView_handle->setNCH(panner_getNumSources(hPan));
+    loudspeakerCoordsView_handle->setNCH(panner_getNumLoudspeakers(hPan));
 
-        case TIMER_GUI_RELATED:
-            /* refresh parameters that can change internally */
-            sourceCoordsView_handle->setNCH(panner_getNumSources(hPan));
-            loudspeakerCoordsView_handle->setNCH(panner_getNumLoudspeakers(hPan));
-
-            /* Progress bar */
+    /* Progress bar */
 #if 1
-            if(panner_getCodecStatus(hPan)==CODEC_STATUS_INITIALISING){
-                addAndMakeVisible(progressbar);
-                progress = (double)panner_getProgressBar0_1(hPan);
-                char text[PROGRESSBARTEXT_CHAR_LENGTH];
-                panner_getProgressBarText(hPan, (char*)text);
-                progressbar.setTextToDisplay(String(text));
-            }
-            else
-                removeChildComponent(&progressbar);
+    if(panner_getCodecStatus(hPan)==CODEC_STATUS_INITIALISING){
+        addAndMakeVisible(progressbar);
+        progress = (double)panner_getProgressBar0_1(hPan);
+        char text[PROGRESSBARTEXT_CHAR_LENGTH];
+        panner_getProgressBarText(hPan, (char*)text);
+        progressbar.setTextToDisplay(String(text));
+    }
+    else
+        removeChildComponent(&progressbar);
 #endif
 
-            /* Some parameters shouldn't be editable during initialisation*/
-            if (panner_getCodecStatus(hPan)==CODEC_STATUS_INITIALISING){
-                if(SL_spread->isEnabled())
-                    SL_spread->setEnabled(false);
-                if(CBsourceDirsPreset->isEnabled())
-                    CBsourceDirsPreset->setEnabled(false);
-                if(SL_num_sources->isEnabled())
-                    SL_num_sources->setEnabled(false);
-                if(SL_pValue->isEnabled())
-                    SL_pValue->setEnabled(false);
-                if(CBsLoudspeakerDirsPreset->isEnabled())
-                    CBsLoudspeakerDirsPreset->setEnabled(false);
-                if(SL_num_loudspeakers->isEnabled())
-                    SL_num_loudspeakers->setEnabled(false);
-                if(tb_loadJSON_src->isEnabled())
-                    tb_loadJSON_src->setEnabled(false);
-                if(tb_loadJSON_ls->isEnabled())
-                    tb_loadJSON_ls->setEnabled(false);
-                if(loudspeakerCoordsVP->isEnabled())
-                    loudspeakerCoordsVP->setEnabled(false);
-            }
-            else{
-                if(processor.getIsPlaying())
-                    SL_spread->setEnabled(false);
-                else if(!SL_spread->isEnabled())
-                    SL_spread->setEnabled(true);
-                if(!CBsourceDirsPreset->isEnabled())
-                    CBsourceDirsPreset->setEnabled(true);
-                if(!SL_num_sources->isEnabled())
-                    SL_num_sources->setEnabled(true);
-                if(!SL_pValue->isEnabled())
-                    SL_pValue->setEnabled(true);
-                if(!CBsLoudspeakerDirsPreset->isEnabled())
-                    CBsLoudspeakerDirsPreset->setEnabled(true);
-                if(processor.getIsPlaying())
-                    SL_num_loudspeakers->setEnabled(false);
-                else if(!SL_num_loudspeakers->isEnabled())
-                    SL_num_loudspeakers->setEnabled(true);
-                if(!tb_loadJSON_src->isEnabled())
-                    tb_loadJSON_src->setEnabled(true);
-                if(!tb_loadJSON_ls->isEnabled())
-                    tb_loadJSON_ls->setEnabled(true);
-                if(!loudspeakerCoordsVP->isEnabled())
-                    loudspeakerCoordsVP->setEnabled(true);
-            }
+    /* Some parameters shouldn't be editable during initialisation*/
+    if (panner_getCodecStatus(hPan)==CODEC_STATUS_INITIALISING){
+        if(SL_spread->isEnabled())
+            SL_spread->setEnabled(false);
+        if(CBsourceDirsPreset->isEnabled())
+            CBsourceDirsPreset->setEnabled(false);
+        if(SL_num_sources->isEnabled())
+            SL_num_sources->setEnabled(false);
+        if(SL_pValue->isEnabled())
+            SL_pValue->setEnabled(false);
+        if(CBsLoudspeakerDirsPreset->isEnabled())
+            CBsLoudspeakerDirsPreset->setEnabled(false);
+        if(SL_num_loudspeakers->isEnabled())
+            SL_num_loudspeakers->setEnabled(false);
+        if(tb_loadJSON_src->isEnabled())
+            tb_loadJSON_src->setEnabled(false);
+        if(tb_loadJSON_ls->isEnabled())
+            tb_loadJSON_ls->setEnabled(false);
+        if(loudspeakerCoordsVP->isEnabled())
+            loudspeakerCoordsVP->setEnabled(false);
+    }
+    else{
+        if(processor.getIsPlaying())
+            SL_spread->setEnabled(false);
+        else if(!SL_spread->isEnabled())
+            SL_spread->setEnabled(true);
+        if(!CBsourceDirsPreset->isEnabled())
+            CBsourceDirsPreset->setEnabled(true);
+        if(!SL_num_sources->isEnabled())
+            SL_num_sources->setEnabled(true);
+        if(!SL_pValue->isEnabled())
+            SL_pValue->setEnabled(true);
+        if(!CBsLoudspeakerDirsPreset->isEnabled())
+            CBsLoudspeakerDirsPreset->setEnabled(true);
+        if(processor.getIsPlaying())
+            SL_num_loudspeakers->setEnabled(false);
+        else if(!SL_num_loudspeakers->isEnabled())
+            SL_num_loudspeakers->setEnabled(true);
+        if(!tb_loadJSON_src->isEnabled())
+            tb_loadJSON_src->setEnabled(true);
+        if(!tb_loadJSON_ls->isEnabled())
+            tb_loadJSON_ls->setEnabled(true);
+        if(!loudspeakerCoordsVP->isEnabled())
+            loudspeakerCoordsVP->setEnabled(true);
+    }
 
-            /* refresh pan view */
-            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || processor.getRefreshWindow()){
-                panWindow->refreshPanView();
-                refreshPanViewWindow = false;
-                processor.setRefreshWindow(false);
-            }
+    /* refresh pan view */
+    if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || processor.getRefreshWindow()){
+        panWindow->refreshPanView();
+        refreshPanViewWindow = false;
+        processor.setRefreshWindow(false);
+    }
 
-            /* display warning message, if needed */
-            if ((processor.getCurrentBlockSize() % panner_getFrameSize()) != 0){
-                currentWarning = k_warning_frameSize;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ( !((panner_getDAWsamplerate(hPan) == 44.1e3) || (panner_getDAWsamplerate(hPan) == 48e3)) ){
-                currentWarning = k_warning_supported_fs;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ((processor.getCurrentNumInputs() < panner_getNumSources(hPan))){
-                currentWarning = k_warning_NinputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ((processor.getCurrentNumOutputs() < panner_getNumLoudspeakers(hPan))){
-                currentWarning = k_warning_NoutputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if(currentWarning){
-                currentWarning = k_warning_none;
-                repaint(0,0,getWidth(),32);
-            }
-            break;
+    /* display warning message, if needed */
+    if ((processor.getCurrentBlockSize() % panner_getFrameSize()) != 0){
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ( !((panner_getDAWsamplerate(hPan) == 44.1e3) || (panner_getDAWsamplerate(hPan) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumInputs() < panner_getNumSources(hPan))){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumOutputs() < panner_getNumLoudspeakers(hPan))){
+        currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 }

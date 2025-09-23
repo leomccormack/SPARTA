@@ -219,8 +219,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     progress = 0.0;
     progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
     progressbar.ProgressBar::setAlwaysOnTop(true);
-    progressbar.setColour(ProgressBar::backgroundColourId, Colours::gold);
-    progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
 
     /* source coordinate viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
@@ -289,7 +287,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     pluginDescription->setTooltip(TRANS("A simple HRIR interpolator and convolver. Note that binaural room impulse responses (BRIRs) are not supported!\n"));
 
 	/* Specify screen refresh rate */
-    startTimer(TIMER_GUI_RELATED, 60);
+    startTimer(60);
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -895,111 +893,101 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
 }
 
-void PluginEditor::timerCallback(int timerID)
+void PluginEditor::timerCallback()
 {
-    switch(timerID){
-        case TIMER_PROCESSING_RELATED:
-            /* handled in PluginProcessor */
-            break;
+    /* labels for HRIR details */
+    label_N_dirs->setText(String(binauraliser_getNDirs(hBin)), dontSendNotification);
+    label_HRIR_fs->setText(String(binauraliser_getHRIRsamplerate(hBin)), dontSendNotification);
+    label_DAW_fs->setText(String(binauraliser_getDAWsamplerate(hBin)), dontSendNotification);
+    label_N_Tri->setText(String(binauraliser_getNTriangles(hBin)), dontSendNotification);
 
-        case TIMER_GUI_RELATED:
+    /* parameters whos values can change internally should be periodically refreshed */
+    sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
+    TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
 
-            /* labels for HRIR details */
-            label_N_dirs->setText(String(binauraliser_getNDirs(hBin)), dontSendNotification);
-            label_HRIR_fs->setText(String(binauraliser_getHRIRsamplerate(hBin)), dontSendNotification);
-            label_DAW_fs->setText(String(binauraliser_getDAWsamplerate(hBin)), dontSendNotification);
-            label_N_Tri->setText(String(binauraliser_getNTriangles(hBin)), dontSendNotification);
-
-            /* parameters whos values can change internally should be periodically refreshed */
-            sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
-            TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
-
-            /* Progress bar */
-            if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
-                addAndMakeVisible(progressbar);
-                progress = (double)binauraliser_getProgressBar0_1(hBin);
-                char text[PROGRESSBARTEXT_CHAR_LENGTH];
-                binauraliser_getProgressBarText(hBin, (char*)text);
-                progressbar.setTextToDisplay(String(text));
-            }
-            else
-                removeChildComponent(&progressbar);
-
-            /* disable certain parameters if currently initialising */
-            if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
-                if(CBsourceDirsPreset->isEnabled())
-                   CBsourceDirsPreset->setEnabled(false);
-                if(SL_num_sources->isEnabled())
-                    SL_num_sources->setEnabled(false);
-                if(TBuseDefaultHRIRs->isEnabled())
-                    TBuseDefaultHRIRs->setEnabled(false);
-                if(CBinterpMode->isEnabled())
-                    CBinterpMode->setEnabled(false);
-                if(tb_loadJSON->isEnabled())
-                    tb_loadJSON->setEnabled(false);
-                if(fileChooser.isEnabled())
-                   fileChooser.setEnabled(false);
-                if(sourceCoordsVP->isEnabled())
-                   sourceCoordsVP->setEnabled(false);
-            }
-            else{
-                if(!CBsourceDirsPreset->isEnabled())
-                    CBsourceDirsPreset->setEnabled(true);
-                if(!SL_num_sources->isEnabled())
-                    SL_num_sources->setEnabled(true);
-                if(!TBuseDefaultHRIRs->isEnabled())
-                    TBuseDefaultHRIRs->setEnabled(true);
-                if(!CBinterpMode->isEnabled())
-                    CBinterpMode->setEnabled(true);
-                if(!tb_loadJSON->isEnabled())
-                    tb_loadJSON->setEnabled(true);
-                if(!fileChooser.isEnabled())
-                    fileChooser.setEnabled(true);
-                if(!sourceCoordsVP->isEnabled())
-                    sourceCoordsVP->setEnabled(true);
-            }
-
-            /* refresh pan view */
-            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || processor.getRefreshWindow()){
-                panWindow->refreshPanView();
-                refreshPanViewWindow = false;
-                processor.setRefreshWindow(false);
-            }
-
-            /* display warning message, if needed */
-            if ((processor.getCurrentBlockSize() % binauraliser_getFrameSize()) != 0){
-                currentWarning = k_warning_frameSize;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ( !((binauraliser_getDAWsamplerate(hBin) == 44.1e3) || (binauraliser_getDAWsamplerate(hBin) == 48e3)) ){
-                currentWarning = k_warning_supported_fs;
-                repaint(0,0,getWidth(),32);
-            }
-            else if (binauraliser_getDAWsamplerate(hBin) != binauraliser_getHRIRsamplerate(hBin)){
-                currentWarning = k_warning_mismatch_fs;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ((processor.getCurrentNumInputs() < binauraliser_getNumSources(hBin))){
-                currentWarning = k_warning_NinputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ((processor.getCurrentNumOutputs() < binauraliser_getNumEars())){
-                currentWarning = k_warning_NoutputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if(!processor.getOscPortConnected() && binauraliser_getEnableRotation(hBin)){
-                currentWarning = k_warning_osc_connection_fail;
-                repaint(0,0,getWidth(),32);
-            }
-            else if(currentWarning){
-                currentWarning = k_warning_none;
-                repaint(0,0,getWidth(),32);
-            }
-
-            /* check if OSC port has changed */
-            if (processor.getOscPortID() != te_oscport->getText().getIntValue())
-                processor.setOscPortID(te_oscport->getText().getIntValue());
-
-            break;
+    /* Progress bar */
+    if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
+        addAndMakeVisible(progressbar);
+        progress = (double)binauraliser_getProgressBar0_1(hBin);
+        char text[PROGRESSBARTEXT_CHAR_LENGTH];
+        binauraliser_getProgressBarText(hBin, (char*)text);
+        progressbar.setTextToDisplay(String(text));
     }
+    else
+        removeChildComponent(&progressbar);
+
+    /* disable certain parameters if currently initialising */
+    if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
+        if(CBsourceDirsPreset->isEnabled())
+           CBsourceDirsPreset->setEnabled(false);
+        if(SL_num_sources->isEnabled())
+            SL_num_sources->setEnabled(false);
+        if(TBuseDefaultHRIRs->isEnabled())
+            TBuseDefaultHRIRs->setEnabled(false);
+        if(CBinterpMode->isEnabled())
+            CBinterpMode->setEnabled(false);
+        if(tb_loadJSON->isEnabled())
+            tb_loadJSON->setEnabled(false);
+        if(fileChooser.isEnabled())
+           fileChooser.setEnabled(false);
+        if(sourceCoordsVP->isEnabled())
+           sourceCoordsVP->setEnabled(false);
+    }
+    else{
+        if(!CBsourceDirsPreset->isEnabled())
+            CBsourceDirsPreset->setEnabled(true);
+        if(!SL_num_sources->isEnabled())
+            SL_num_sources->setEnabled(true);
+        if(!TBuseDefaultHRIRs->isEnabled())
+            TBuseDefaultHRIRs->setEnabled(true);
+        if(!CBinterpMode->isEnabled())
+            CBinterpMode->setEnabled(true);
+        if(!tb_loadJSON->isEnabled())
+            tb_loadJSON->setEnabled(true);
+        if(!fileChooser.isEnabled())
+            fileChooser.setEnabled(true);
+        if(!sourceCoordsVP->isEnabled())
+            sourceCoordsVP->setEnabled(true);
+    }
+
+    /* refresh pan view */
+    if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || processor.getRefreshWindow()){
+        panWindow->refreshPanView();
+        refreshPanViewWindow = false;
+        processor.setRefreshWindow(false);
+    }
+
+    /* display warning message, if needed */
+    if ((processor.getCurrentBlockSize() % binauraliser_getFrameSize()) != 0){
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ( !((binauraliser_getDAWsamplerate(hBin) == 44.1e3) || (binauraliser_getDAWsamplerate(hBin) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if (binauraliser_getDAWsamplerate(hBin) != binauraliser_getHRIRsamplerate(hBin)){
+        currentWarning = k_warning_mismatch_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumInputs() < binauraliser_getNumSources(hBin))){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumOutputs() < binauraliser_getNumEars())){
+        currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(!processor.getOscPortConnected() && binauraliser_getEnableRotation(hBin)){
+        currentWarning = k_warning_osc_connection_fail;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
+    }
+
+    /* check if OSC port has changed */
+    if (processor.getOscPortID() != te_oscport->getText().getIntValue())
+        processor.setOscPortID(te_oscport->getText().getIntValue());
 }

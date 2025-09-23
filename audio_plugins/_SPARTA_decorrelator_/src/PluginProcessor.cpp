@@ -88,7 +88,7 @@ PluginProcessor::PluginProcessor() :
     /* Grab defaults */
     setParameterValuesUsingInternalState();
     
-    startTimer(TIMER_PROCESSING_RELATED, 40);
+    startTimer(40);
 }
 
 PluginProcessor::~PluginProcessor()

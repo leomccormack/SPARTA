@@ -315,7 +315,8 @@ public:
     void drawLabel (Graphics& g, Label& label) override
     {
         // Skip styling for labels that belong to ComboBoxes
-        if (auto* combo = dynamic_cast<ComboBox*>(label.getParentComponent())) {
+        auto* combo = dynamic_cast<ComboBox*>(label.getParentComponent());
+        if (combo) {
             LookAndFeel_V4::drawLabel(g, label);
             return;
         }

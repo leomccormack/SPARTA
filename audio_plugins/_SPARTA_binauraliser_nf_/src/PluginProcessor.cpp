@@ -173,7 +173,9 @@ PluginProcessor::PluginProcessor() :
     /* tell the component to listen for OSC messages */
     osc.addListener(this);
     refreshWindow = true;
-    startTimer(TIMER_PROCESSING_RELATED, 80);
+    
+    startTimer(80);
+    
     /* Far field distance threshold plus head room to firmly clear it with UI sliders. */
     nfThresh = binauraliserNF_getNearfieldLimit_m(hBin);
     ffThresh = binauraliserNF_getFarfieldThresh_m(hBin);

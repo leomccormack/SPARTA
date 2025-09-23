@@ -26,6 +26,7 @@
 #include <JuceHeader.h>
 #include "../../resources/ParameterManager.h"
 #include "ambi_drc.h"
+#include <atomic>
 
 #define BUILD_VER_SUFFIX ""
 
@@ -54,11 +55,11 @@ public:
     
 private:
     void* hAmbi;                            /* dynamic range compressor handle */
-    int nNumInputs;                         /* current number of input channels */
-    int nNumOutputs;                        /* current number of output channels */
+    std::atomic<int> nNumInputs;            /* current number of input channels */
+    std::atomic<int> nNumOutputs;           /* current number of output channels */
     int nSampleRate;                        /* current host sample rate */
-    int nHostBlockSize;                     /* typical host block size to expect, in samples */
-    bool isPlaying;
+    std::atomic<int> nHostBlockSize;        /* typical host block size to expect, in samples */
+    std::atomic<bool> isPlaying;
     AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
     AudioPlayHead::CurrentPositionInfo currentPosition;
     

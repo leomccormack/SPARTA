@@ -27,15 +27,11 @@
 #include "../../resources/ParameterManager.h"
 #include "dirass.h"
 #include <thread>
+#include <atomic>
 #define BUILD_VER_SUFFIX ""                 /* String to be added before the version name on the GUI (e.g. beta, alpha etc..) */
 
-typedef enum _TIMERS{
-    TIMER_PROCESSING_RELATED = 1,
-    TIMER_GUI_RELATED
-}TIMERS;
-
 class PluginProcessor  : public AudioProcessor,
-                         public MultiTimer,
+                         public Timer,
                          public VST2ClientExtensions,
                          public ParameterManager
 {
@@ -69,10 +65,10 @@ public:
     
 private:
     void* hDir;                             /* dirass handle */
-    int nNumInputs;                         /* current number of input channels */
+    std::atomic<int> nNumInputs;            /* current number of input channels */
     int nSampleRate;                        /* current host sample rate */
-    int nHostBlockSize;                     /* typical host block size to expect, in samples */
-    bool isPlaying;
+    std::atomic<int> nHostBlockSize;        /* typical host block size to expect, in samples */
+    std::atomic<bool> isPlaying;
     int cameraID;
     bool flipLR, flipUD, greyScale;
     AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
@@ -83,23 +79,16 @@ private:
     void setParameterValuesUsingInternalState();
     void setInternalStateUsingParameterValues();
 
-    void timerCallback(int timerID) override
+    void timerCallback() override
     {
-        switch(timerID){
-            case TIMER_PROCESSING_RELATED:
-                /* reinitialise codec if needed */
-                if(dirass_getCodecStatus(hDir) == CODEC_STATUS_NOT_INITIALISED){
-                    try{
-                        std::thread threadInit(dirass_initCodec, hDir);
-                        threadInit.detach();
-                    } catch (const std::exception& exception) {
-                        std::cout << "Could not create thread" << exception.what() << std::endl;
-                    }
-                }
-                break;
-            case TIMER_GUI_RELATED:
-                /* handled in PluginEditor */
-                break;
+        /* reinitialise codec if needed */
+        if(dirass_getCodecStatus(hDir) == CODEC_STATUS_NOT_INITIALISED){
+            try{
+                std::thread threadInit(dirass_initCodec, hDir);
+                threadInit.detach();
+            } catch (const std::exception& exception) {
+                std::cout << "Could not create thread" << exception.what() << std::endl;
+            }
         }
     }
  
