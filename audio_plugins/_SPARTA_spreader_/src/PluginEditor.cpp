@@ -165,7 +165,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     publicationLink.setJustificationType(Justification::centredLeft);
 
 	/* Specify screen refresh rate */
-    startTimer(TIMER_GUI_RELATED, 40);
+    startTimer(40);
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -549,92 +549,82 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* /*comboBoxThatHasChanged*/)
 {
 }
 
-void PluginEditor::timerCallback(int timerID)
+void PluginEditor::timerCallback()
 {
-    switch(timerID){
-        case TIMER_PROCESSING_RELATED:
-            /* handled in PluginProcessor */
-            break;
+    /* labels for HRIR details */
+    label_N_dirs->setText(String(spreader_getNDirs(hSpr)), dontSendNotification);
+    label_HRIR_fs->setText(String(spreader_getIRsamplerate(hSpr)), dontSendNotification);
+    label_DAW_fs->setText(String(spreader_getDAWsamplerate(hSpr)), dontSendNotification);
+    label_N_CH->setText(String(spreader_getNumOutputs(hSpr)), dontSendNotification);
+    label_IR_length->setText(String(spreader_getIRlength(hSpr)), dontSendNotification);
 
-        case TIMER_GUI_RELATED:
+    /* parameters whos values can change internally should be periodically refreshed */
+    sourceCoordsView_handle->setNCH(spreader_getNumSources(hSpr));
+    TBuseDefaultHRIRs->setToggleState(spreader_getUseDefaultHRIRsflag(hSpr), dontSendNotification);
 
-            /* labels for HRIR details */
-            label_N_dirs->setText(String(spreader_getNDirs(hSpr)), dontSendNotification);
-            label_HRIR_fs->setText(String(spreader_getIRsamplerate(hSpr)), dontSendNotification);
-            label_DAW_fs->setText(String(spreader_getDAWsamplerate(hSpr)), dontSendNotification);
-            label_N_CH->setText(String(spreader_getNumOutputs(hSpr)), dontSendNotification);
-            label_IR_length->setText(String(spreader_getIRlength(hSpr)), dontSendNotification);
+    /* Progress bar */
+    if(spreader_getCodecStatus(hSpr)==CODEC_STATUS_INITIALISING){
+        addAndMakeVisible(progressbar);
+        progress = (double)spreader_getProgressBar0_1(hSpr);
+        char text[PROGRESSBARTEXT_CHAR_LENGTH];
+        spreader_getProgressBarText(hSpr, (char*)text);
+        progressbar.setTextToDisplay(String(text));
+    }
+    else
+        removeChildComponent(&progressbar);
 
-            /* parameters whos values can change internally should be periodically refreshed */
-            sourceCoordsView_handle->setNCH(spreader_getNumSources(hSpr));
-            TBuseDefaultHRIRs->setToggleState(spreader_getUseDefaultHRIRsflag(hSpr), dontSendNotification);
+    /* disable certain parameters if currently initialising */
+    if(spreader_getCodecStatus(hSpr)==CODEC_STATUS_INITIALISING){
+        if(SL_num_sources->isEnabled())
+            SL_num_sources->setEnabled(false);
+        if(TBuseDefaultHRIRs->isEnabled())
+            TBuseDefaultHRIRs->setEnabled(false);
+        if(fileChooser.isEnabled())
+           fileChooser.setEnabled(false);
+        if(sourceCoordsVP->isEnabled())
+           sourceCoordsVP->setEnabled(false);
+    }
+    else{
+        if(!SL_num_sources->isEnabled())
+            SL_num_sources->setEnabled(true);
+        if(!TBuseDefaultHRIRs->isEnabled())
+            TBuseDefaultHRIRs->setEnabled(true);
+        if(!fileChooser.isEnabled())
+            fileChooser.setEnabled(true);
+        if(!sourceCoordsVP->isEnabled())
+            sourceCoordsVP->setEnabled(true);
+    }
 
-            /* Progress bar */
-            if(spreader_getCodecStatus(hSpr)==CODEC_STATUS_INITIALISING){
-                addAndMakeVisible(progressbar);
-                progress = (double)spreader_getProgressBar0_1(hSpr);
-                char text[PROGRESSBARTEXT_CHAR_LENGTH];
-                spreader_getProgressBarText(hSpr, (char*)text);
-                progressbar.setTextToDisplay(String(text));
-            }
-            else
-                removeChildComponent(&progressbar);
+    /* refresh pan view */
+    if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || processor.getRefreshWindow()){
+        panWindow->refreshPanView();
+        refreshPanViewWindow = false;
+        processor.setRefreshWindow(false);
+    }
 
-            /* disable certain parameters if currently initialising */
-            if(spreader_getCodecStatus(hSpr)==CODEC_STATUS_INITIALISING){
-                if(SL_num_sources->isEnabled())
-                    SL_num_sources->setEnabled(false);
-                if(TBuseDefaultHRIRs->isEnabled())
-                    TBuseDefaultHRIRs->setEnabled(false);
-                if(fileChooser.isEnabled())
-                   fileChooser.setEnabled(false);
-                if(sourceCoordsVP->isEnabled())
-                   sourceCoordsVP->setEnabled(false);
-            }
-            else{
-                if(!SL_num_sources->isEnabled())
-                    SL_num_sources->setEnabled(true);
-                if(!TBuseDefaultHRIRs->isEnabled())
-                    TBuseDefaultHRIRs->setEnabled(true);
-                if(!fileChooser.isEnabled())
-                    fileChooser.setEnabled(true);
-                if(!sourceCoordsVP->isEnabled())
-                    sourceCoordsVP->setEnabled(true);
-            }
-
-            /* refresh pan view */
-            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || processor.getRefreshWindow()){
-                panWindow->refreshPanView();
-                refreshPanViewWindow = false;
-                processor.setRefreshWindow(false);
-            }
-
-            /* display warning message, if needed */
-            if ((processor.getCurrentBlockSize() % spreader_getFrameSize()) != 0){
-                currentWarning = k_warning_frameSize;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ( !((spreader_getDAWsamplerate(hSpr) == 44.1e3) || (spreader_getDAWsamplerate(hSpr) == 48e3)) ){
-                currentWarning = k_warning_supported_fs;
-                repaint(0,0,getWidth(),32);
-            }
-            else if (spreader_getDAWsamplerate(hSpr) != spreader_getIRsamplerate(hSpr)){
-                currentWarning = k_warning_mismatch_fs;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ((processor.getCurrentNumInputs() < spreader_getNumSources(hSpr))){
-                currentWarning = k_warning_NinputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ((processor.getCurrentNumOutputs() < spreader_getNumOutputs(hSpr))){
-                currentWarning = k_warning_NoutputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if(currentWarning){
-                currentWarning = k_warning_none;
-                repaint(0,0,getWidth(),32);
-            }
-
-            break;
+    /* display warning message, if needed */
+    if ((processor.getCurrentBlockSize() % spreader_getFrameSize()) != 0){
+        currentWarning = k_warning_frameSize;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ( !((spreader_getDAWsamplerate(hSpr) == 44.1e3) || (spreader_getDAWsamplerate(hSpr) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if (spreader_getDAWsamplerate(hSpr) != spreader_getIRsamplerate(hSpr)){
+        currentWarning = k_warning_mismatch_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumInputs() < spreader_getNumSources(hSpr))){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumOutputs() < spreader_getNumOutputs(hSpr))){
+        currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 }

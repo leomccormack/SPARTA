@@ -27,6 +27,8 @@
 #include "../../resources/ParameterManager.h"
 #include "sldoa.h"
 #include <thread>
+#include <atomic>
+
 #define BUILD_VER_SUFFIX ""
 #ifndef MIN
 # define MIN(a,b) (( (a) < (b) ) ? (a) : (b))
@@ -35,13 +37,8 @@
 # define MAX(a,b) (( (a) > (b) ) ? (a) : (b))
 #endif
 
-typedef enum _TIMERS{
-    TIMER_PROCESSING_RELATED = 1,
-    TIMER_GUI_RELATED
-}TIMERS;
-
 class PluginProcessor  : public AudioProcessor,
-                         public MultiTimer,
+                         public Timer,
                          public VST2ClientExtensions,
                          public ParameterManager
 {
@@ -74,11 +71,11 @@ public:
     bool getGreyScale(){ return greyScale;}
     
 private:
-    void* hSld;           /* handle */
-    int nNumInputs;       /* current number of input channels */
-    int nSampleRate;      /* current host sample rate */
-    int nHostBlockSize;   /* typical host block size to expect, in samples */
-    bool isPlaying;
+    void* hSld;                        /* handle */
+    std::atomic<int> nNumInputs;       /* current number of input channels */
+    int nSampleRate;                   /* current host sample rate */
+    std::atomic<int> nHostBlockSize;   /* typical host block size to expect, in samples */
+    std::atomic<bool> isPlaying;
     int cameraID;
     bool flipLR, flipUD, greyScale;
     AudioPlayHead* playHead; /* Used to determine whether playback is currently ongoing */
@@ -89,23 +86,16 @@ private:
     void setParameterValuesUsingInternalState();
     void setInternalStateUsingParameterValues();
 
-    void timerCallback(int timerID) override
+    void timerCallback() override
     {
-        switch(timerID){
-            case TIMER_PROCESSING_RELATED:
-                /* reinitialise codec if needed */
-                if(sldoa_getCodecStatus(hSld) == CODEC_STATUS_NOT_INITIALISED){
-                    try{
-                        std::thread threadInit(sldoa_initCodec, hSld);
-                        threadInit.detach();
-                    } catch (const std::exception& exception) {
-                        std::cout << "Could not create thread" << exception.what() << std::endl;
-                    }
-                }
-                break;
-            case TIMER_GUI_RELATED:
-                /* handled in PluginEditor */
-                break;
+        /* reinitialise codec if needed */
+        if(sldoa_getCodecStatus(hSld) == CODEC_STATUS_NOT_INITIALISED){
+            try{
+                std::thread threadInit(sldoa_initCodec, hSld);
+                threadInit.detach();
+            } catch (const std::exception& exception) {
+                std::cout << "Could not create thread" << exception.what() << std::endl;
+            }
         }
     }
     

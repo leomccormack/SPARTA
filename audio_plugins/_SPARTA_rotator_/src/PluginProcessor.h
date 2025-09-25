@@ -27,6 +27,8 @@
 #include "../../resources/ParameterManager.h"
 #include "rotator.h"
 #include <string.h>
+#include <atomic>
+
 #define BUILD_VER_SUFFIX "" /* String to be added before the version name on the GUI (beta, alpha etc..) */
 #define DEFAULT_OSC_PORT 9000
 
@@ -64,11 +66,11 @@ public:
     bool getOscPortConnected(){ return osc_connected; }
     
 private:
-    void* hRot;             /* rotator handle */
-    int nNumInputs;         /* current number of input channels */
-    int nNumOutputs;        /* current number of output channels */
-    int nSampleRate;        /* current host sample rate */
-    int nHostBlockSize;     /* typical host block size to expect, in samples */
+    void* hRot;                          /* rotator handle */
+    std::atomic<int> nNumInputs;         /* current number of input channels */
+    std::atomic<int> nNumOutputs;        /* current number of output channels */
+    int nSampleRate;                     /* current host sample rate */
+    std::atomic<int> nHostBlockSize;     /* typical host block size to expect, in samples */
     OSCReceiver osc;
     bool osc_connected;
     int osc_port_ID;

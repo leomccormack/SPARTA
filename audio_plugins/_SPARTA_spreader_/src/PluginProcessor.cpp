@@ -119,7 +119,7 @@ PluginProcessor::PluginProcessor() :
     setParameterValuesUsingInternalState();
 
     refreshWindow = true;
-    startTimer(TIMER_PROCESSING_RELATED, 80);
+    startTimer(80);
 }
 
 PluginProcessor::~PluginProcessor()

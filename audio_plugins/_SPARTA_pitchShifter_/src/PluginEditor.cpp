@@ -75,7 +75,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     pluginDescription->setTooltip(TRANS("A simple multi-channel pitch shifter, based on the phase-vocoder approach."));
 
     /* Specify screen refresh rate */
-    startTimer(TIMER_GUI_RELATED, 40);
+    startTimer(40);
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -297,31 +297,24 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* /*comboBoxThatHasChanged*/)
 {
 }
 
-void PluginEditor::timerCallback(int timerID)
+void PluginEditor::timerCallback()
 {
-    switch(timerID){
-        case TIMER_PROCESSING_RELATED:
-            /* handled in PluginProcessor */
-            break;
+    /* parameters whos values can change internally should be periodically refreshed */
 
-        case TIMER_GUI_RELATED:
-            /* parameters whos values can change internally should be periodically refreshed */
+    /* Progress bar */
+    if(pitch_shifter_getCodecStatus(hPS)==CODEC_STATUS_INITIALISING){
+        addAndMakeVisible(progressbar);
+        progress = (double)pitch_shifter_getProgressBar0_1(hPS);
+        char text[PROGRESSBARTEXT_CHAR_LENGTH];
+        pitch_shifter_getProgressBarText(hPS, (char*)text);
+        progressbar.setTextToDisplay(String(text));
+    }
+    else
+        removeChildComponent(&progressbar);
 
-            /* Progress bar */
-            if(pitch_shifter_getCodecStatus(hPS)==CODEC_STATUS_INITIALISING){
-                addAndMakeVisible(progressbar);
-                progress = (double)pitch_shifter_getProgressBar0_1(hPS);
-                char text[PROGRESSBARTEXT_CHAR_LENGTH];
-                pitch_shifter_getProgressBarText(hPS, (char*)text);
-                progressbar.setTextToDisplay(String(text));
-            }
-            else
-                removeChildComponent(&progressbar);
-
-            /* display warning message, if needed */
-            if ((processor.getCurrentNumInputs() < pitch_shifter_getNCHrequired(hPS))){
-                currentWarning = k_warning_NCH;
-                repaint(0,0,getWidth(),32);
-            }
+    /* display warning message, if needed */
+    if ((processor.getCurrentNumInputs() < pitch_shifter_getNCHrequired(hPS))){
+        currentWarning = k_warning_NCH;
+        repaint(0,0,getWidth(),32);
     }
 }
