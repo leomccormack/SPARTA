@@ -28,8 +28,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     avgSlider = std::make_unique<SliderWithAttachment>(p.parameters, "mapAvg");
     addAndMakeVisible (avgSlider.get());
     avgSlider->setSliderStyle (juce::Slider::LinearHorizontal);
-    avgSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
-    avgSlider->setBounds (80, 473, 118, 24);
+    avgSlider->setTextBoxStyle (juce::Slider::TextBoxRight, false, 75, 20);
+    avgSlider->setBounds (50, 473, 148, 24);
 
     CB_CHorder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CB_CHorder.get());
@@ -49,7 +49,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     slider_anaOrder->setSliderStyle (juce::Slider::LinearVertical);
     slider_anaOrder->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
     slider_anaOrder->addListener (this);
-    slider_anaOrder->setBounds (576, 424, 40, 66);
+    slider_anaOrder->setBounds (576, 426, 40, 68);
 
     CBinputTypePreset.reset (new juce::ComboBox ("new combo box"));
     addAndMakeVisible (CBinputTypePreset.get());
@@ -65,13 +65,13 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (s_minFreq.get());
     s_minFreq->setSliderStyle (juce::Slider::LinearHorizontal);
     s_minFreq->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
-    s_minFreq->setBounds (352, 382, 56, 20);
+    s_minFreq->setBounds (322, 382, 86, 20);
 
     s_maxFreq = std::make_unique<SliderWithAttachment>(p.parameters, "maxFreq");
     addAndMakeVisible (s_maxFreq.get());
     s_maxFreq->setSliderStyle (juce::Slider::LinearHorizontal);
     s_maxFreq->setTextBoxStyle (juce::Slider::TextBoxRight, false, 45, 20);
-    s_maxFreq->setBounds (560, 382, 56, 20);
+    s_maxFreq->setBounds (530, 382, 86, 20);
 
     CBmasterOrder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (CBmasterOrder.get());
@@ -200,7 +200,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     publicationLink.setJustificationType(Justification::centredLeft);
 
 	/* Specify screen refresh rate */
-   startTimer(TIMER_GUI_RELATED, 120);//80); /*ms (40ms = 25 frames per second) */
+   startTimer(120);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
     currentWarning = k_warning_none;
@@ -317,7 +317,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 14, y = 468, width = 112, height = 30;
-        juce::String text (TRANS ("Avg (ms):"));
+        juce::String text (TRANS ("Avg:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (14.00f, juce::Font::plain).withStyle ("Bold"));
@@ -407,7 +407,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 216, y = 376, width = 160, height = 30;
-        juce::String text (TRANS ("Minimum Freq (Hz):"));
+        juce::String text (TRANS ("Minimum Freq:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (14.00f, juce::Font::plain).withStyle ("Bold"));
@@ -417,7 +417,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 422, y = 376, width = 162, height = 30;
-        juce::String text (TRANS ("Maximum Freq (Hz):"));
+        juce::String text (TRANS ("Maximum Freq:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (14.00f, juce::Font::plain).withStyle ("Bold"));
@@ -660,83 +660,75 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     }
 }
 
-void PluginEditor::timerCallback(int timerID)
+void PluginEditor::timerCallback()
 {
-    switch(timerID){
-        case TIMER_PROCESSING_RELATED:
-            /* handled in PluginProcessor */
-            break;
+    /* parameters whos values can change internally should be periodically refreshed */
+    CB_CHorder->setSelectedId(sldoa_getChOrder(hSld), dontSendNotification);
+    CB_Norm->setSelectedId(sldoa_getNormType(hSld), dontSendNotification);
+    CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
+    CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
+    s_maxFreq->setValue(sldoa_getMaxFreq(hSld), sendNotification);
 
-        case TIMER_GUI_RELATED:
-            /* parameters whos values can change internally should be periodically refreshed */
-            CB_CHorder->setSelectedId(sldoa_getChOrder(hSld), dontSendNotification);
-            CB_Norm->setSelectedId(sldoa_getNormType(hSld), dontSendNotification);
-            CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
-            CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
-            s_maxFreq->setValue(sldoa_getMaxFreq(hSld), sendNotification);
+    /* take webcam picture */
+    if(CB_webcam->getSelectedId()>1){
+        handleAsyncUpdate();
+        lastSnapshot.setTransform(AffineTransform()); /*identity*/
+        AffineTransform m_LR, m_UD, m_LR_UD;
+        m_LR = AffineTransform(-1, 0, previewArea.getWidth(), 0, 1, 0).followedBy(AffineTransform::translation(2 * previewArea.getX(),0));    /* flip left/right */
+        m_UD = AffineTransform(1, 0, 0, 0, -1, previewArea.getHeight()).followedBy(AffineTransform::translation(0, 2 * previewArea.getY()));  /* flip up/down */
+        m_LR_UD = m_LR.followedBy(m_UD);  /* flip left/right and up/down */
 
-            /* take webcam picture */
-            if(CB_webcam->getSelectedId()>1){
-                handleAsyncUpdate();
-                lastSnapshot.setTransform(AffineTransform()); /*identity*/
-                AffineTransform m_LR, m_UD, m_LR_UD;
-                m_LR = AffineTransform(-1, 0, previewArea.getWidth(), 0, 1, 0).followedBy(AffineTransform::translation(2 * previewArea.getX(),0));    /* flip left/right */
-                m_UD = AffineTransform(1, 0, 0, 0, -1, previewArea.getHeight()).followedBy(AffineTransform::translation(0, 2 * previewArea.getY()));  /* flip up/down */
-                m_LR_UD = m_LR.followedBy(m_UD);  /* flip left/right and up/down */
+        if (TB_flipLR->getToggleState() && TB_flipUD->getToggleState())
+            lastSnapshot.setTransform(m_LR_UD);
+        else if (TB_flipLR->getToggleState())
+            lastSnapshot.setTransform(m_LR);
+        else if (TB_flipUD->getToggleState())
+            lastSnapshot.setTransform(m_UD);
 
-                if (TB_flipLR->getToggleState() && TB_flipUD->getToggleState())
-                    lastSnapshot.setTransform(m_LR_UD);
-                else if (TB_flipLR->getToggleState())
-                    lastSnapshot.setTransform(m_LR);
-                else if (TB_flipUD->getToggleState())
-                    lastSnapshot.setTransform(m_UD);
+        if (incomingImage.isValid())
+            lastSnapshot.setImage(incomingImage);
+    }
 
-                if (incomingImage.isValid())
-                    lastSnapshot.setImage(incomingImage);
-            }
+    /* Progress bar */
+    if(sldoa_getCodecStatus(hSld)==CODEC_STATUS_INITIALISING){
+        addAndMakeVisible(progressbar);
+        progressbar.setAlwaysOnTop(true);
+        progress = (double)sldoa_getProgressBar0_1(hSld);
+        char text[PROGRESSBARTEXT_CHAR_LENGTH];
+        sldoa_getProgressBarText(hSld, (char*)text);
+        progressbar.setTextToDisplay(String(text));
+    }
+    else
+        removeChildComponent(&progressbar);
 
-            /* Progress bar */
-            if(sldoa_getCodecStatus(hSld)==CODEC_STATUS_INITIALISING){
-                addAndMakeVisible(progressbar);
-                progressbar.setAlwaysOnTop(true);
-                progress = (double)sldoa_getProgressBar0_1(hSld);
-                char text[PROGRESSBARTEXT_CHAR_LENGTH];
-                sldoa_getProgressBarText(hSld, (char*)text);
-                progressbar.setTextToDisplay(String(text));
-            }
-            else
-                removeChildComponent(&progressbar);
+    /* Some parameters shouldn't be editable during initialisation*/
+    if(sldoa_getCodecStatus(hSld)==CODEC_STATUS_INITIALISING){
+        if(CBmasterOrder->isEnabled())
+            CBmasterOrder->setEnabled(false);
+    }
+    else{
+        if(!CBmasterOrder->isEnabled())
+            CBmasterOrder->setEnabled(true);
+    }
 
-            /* Some parameters shouldn't be editable during initialisation*/
-            if(sldoa_getCodecStatus(hSld)==CODEC_STATUS_INITIALISING){
-                if(CBmasterOrder->isEnabled())
-                    CBmasterOrder->setEnabled(false);
-            }
-            else{
-                if(!CBmasterOrder->isEnabled())
-                    CBmasterOrder->setEnabled(true);
-            }
+    /* refresh overlay */
+    if ((overlayIncluded != nullptr) && (processor.getIsPlaying()))
+        overlayIncluded->repaint();
+    if (anaOrder2dSlider->getRefreshValuesFLAG())
+        anaOrder2dSlider->repaint();
 
-            /* refresh overlay */
-            if ((overlayIncluded != nullptr) && (processor.getIsPlaying()))
-                overlayIncluded->repaint();
-            if (anaOrder2dSlider->getRefreshValuesFLAG())
-                anaOrder2dSlider->repaint();
-
-            /* display warning message, if needed */
-            if ( !((sldoa_getSamplingRate(hSld) == 44.1e3) || (sldoa_getSamplingRate(hSld) == 48e3)) ){
-                currentWarning = k_warning_supported_fs;
-                repaint(0,0,getWidth(),32);
-            }
-            else if ((processor.getCurrentNumInputs() < sldoa_getNSHrequired(hSld))){
-                currentWarning = k_warning_NinputCH;
-                repaint(0,0,getWidth(),32);
-            }
-            else if(currentWarning){
-                currentWarning = k_warning_none;
-                repaint(0,0,getWidth(),32);
-            }
-            break;
+    /* display warning message, if needed */
+    if ( !((sldoa_getSamplingRate(hSld) == 44.1e3) || (sldoa_getSamplingRate(hSld) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentNumInputs() < sldoa_getNSHrequired(hSld))){
+        currentWarning = k_warning_NinputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if(currentWarning){
+        currentWarning = k_warning_none;
+        repaint(0,0,getWidth(),32);
     }
 }
 

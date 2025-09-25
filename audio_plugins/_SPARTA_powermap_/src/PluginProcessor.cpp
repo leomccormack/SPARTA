@@ -134,7 +134,7 @@ PluginProcessor::PluginProcessor() :
     cameraID = 1;
     flipLR = flipUD = false;
     greyScale = true;
-    startTimer(TIMER_PROCESSING_RELATED, 40);
+    startTimer(40);
 }
 
 PluginProcessor::~PluginProcessor()

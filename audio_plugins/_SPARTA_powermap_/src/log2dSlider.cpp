@@ -117,7 +117,7 @@ void log2dSlider::paint (Graphics& g)
             if(useIntValues)
                 Yval = MAX((float)Y_values_int[xIdx], min_Y_value)-min_Y_value;
             else
-                Yval = MAX(Y_values[xIdx], min_Y_value)-min_Y_value;
+                Yval = MAX((float)Y_values[xIdx], min_Y_value)-min_Y_value;
             Yval = round_float(Yval, nDecimalPoints);
             float Ylength;
             if(max_Y_value==min_Y_value)

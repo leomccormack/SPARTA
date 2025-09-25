@@ -31,13 +31,13 @@ public:
     log2dSlider (int _width, int _height, float _min_X_value, float _max_X_value, float _min_Y_value, float _max_Y_value, int _nDecimalPoints);
     ~log2dSlider();
 
-    void setDataHandles(float* _X_vector, float* _Y_values, int nPoints){
+    void setDataHandles(float* _X_vector, std::atomic<float>* _Y_values, int nPoints){
         X_vector = _X_vector;
         Y_values = _Y_values;
         num_X_points = nPoints;
         useIntValues = false;
     }
-    void setDataHandlesInt(float* _X_vector, int* _Y_values, int nPoints){
+    void setDataHandlesInt(float* _X_vector, std::atomic<int>* _Y_values, int nPoints){
         X_vector = _X_vector;
         Y_values_int = _Y_values;
         num_X_points = nPoints;
@@ -64,8 +64,8 @@ private:
     int nDecimalPoints;
     bool refreshValues;
     bool useIntValues;
-    int* Y_values_int;
-    float* Y_values;
+    std::atomic<int>* Y_values_int;
+    std::atomic<float>* Y_values;
     float* X_vector;
     int num_X_points;
 

@@ -42,11 +42,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
                                                                   juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("minFreq", "MinFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("Hz")));
+                                                                 AudioParameterFloatAttributes().withLabel(" Hz")));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("maxFreq", "MaxFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("Hz")));
+                                                                 AudioParameterFloatAttributes().withLabel(" Hz")));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("mapAvg", "MapAvg", juce::NormalisableRange<float>(0.0f, 2000.0f, 0.1f), 0.0f,
-                                                                 AudioParameterFloatAttributes().withLabel("ms")));
+                                                                 AudioParameterFloatAttributes().withLabel(" ms")));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
     
@@ -114,7 +114,7 @@ PluginProcessor::PluginProcessor() :
     cameraID = 1;
     flipLR = flipUD = false;
     greyScale = true;
-    startTimer(TIMER_PROCESSING_RELATED, 40);
+    startTimer(40);
 }
 
 PluginProcessor::~PluginProcessor()

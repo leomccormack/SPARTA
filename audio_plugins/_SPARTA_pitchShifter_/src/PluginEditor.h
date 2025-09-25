@@ -32,7 +32,7 @@ typedef enum _SPARTA_WARNINGS{
 }SPARTA_WARNINGS;
 
 class PluginEditor  : public AudioProcessorEditor,
-                      public MultiTimer,
+                      public Timer,
                       public juce::Slider::Listener,
                       public juce::ComboBox::Listener
 {
@@ -48,7 +48,7 @@ public:
 private:
     PluginProcessor& processor;
     void* hPS;
-    void timerCallback(int timerID) override;
+    void timerCallback() override;
     double progress = 0.0;
     ProgressBar progressbar;
 
