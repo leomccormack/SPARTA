@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="lfkRjX" name="sparta_binauraliser_nf" projectType="audioplug"
-              version="0.2.1" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
+              version="0.2.2" bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_binauraliser_nf"
               pluginDesc="sparta_binauraliser_nf" pluginManufacturer="AALTO"
               pluginManufacturerCode="LEOM" pluginCode="BINF" pluginIsSynth="0"
