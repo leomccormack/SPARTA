@@ -200,8 +200,8 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 lastWavDirectory = xmlState->getStringAttribute("LastWavFilePath", "no_file");
             if(xmlState->hasAttribute("usePartitionedConv"))
                 multiconv_setEnablePart(hMCnv, xmlState->getIntAttribute("usePartitionedConv", 1));
-            if(xmlState->hasAttribute("numInputChannels"))
-                multiconv_setNumChannels(hMCnv, xmlState->getIntAttribute("numInputChannels", 1));
+            if(xmlState->hasAttribute("numChannels"))
+                multiconv_setNumChannels(hMCnv, xmlState->getIntAttribute("numChannels", 1));
 
             if(lastWavDirectory!="no_file")
                 loadWavFile();
