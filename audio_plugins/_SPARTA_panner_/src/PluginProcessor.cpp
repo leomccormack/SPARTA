@@ -134,6 +134,7 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("spread", panner_getSpread(hPan));
     setParameterValue("roomCoeff", panner_getDTT(hPan));
     setParameterValue("numInputs", panner_getNumSources(hPan));
+    setParameterValue("numOutputs", panner_getNumLoudspeakers(hPan));
     for(int i=0; i<MAX_NUM_INPUTS; i++){
         setParameterValue("srcAzim" + juce::String(i), panner_getSourceAzi_deg(hPan, i));
         setParameterValue("srcElev" + juce::String(i), panner_getSourceElev_deg(hPan, i));
@@ -155,6 +156,7 @@ void PluginProcessor::setInternalStateUsingParameterValues()
     panner_setSpread(hPan, getParameterFloat("spread"));
     panner_setDTT(hPan, getParameterFloat("roomCoeff"));
     panner_setNumSources(hPan, getParameterInt("numInputs"));
+    panner_setNumLoudspeakers(hPan, getParameterInt("numOutputs"));
     for(int i=0; i<MAX_NUM_INPUTS; i++){
         panner_setSourceAzi_deg(hPan, i, getParameterFloat("srcAzim" + juce::String(i)));
         panner_setSourceElev_deg(hPan, i, getParameterFloat("srcElev" + juce::String(i)));
