@@ -77,10 +77,23 @@ public:
     
     /* OSC */
     void oscMessageReceived(const OSCMessage& message) override;
+    void checkAndUpdateOscStatus(){
+        /* Free up the port if osc is connected and rotation is disabled */
+        if(!binauraliser_getEnableRotation(hBin) && osc_connected){
+            osc_connected = false;
+            osc.disconnect();
+        }
+        /* Try to connect to port if rotation is enabled */
+        else if(binauraliser_getEnableRotation(hBin) && !osc_connected)
+            osc_connected = osc.connect(osc_port_ID);
+    }
     void setOscPortID(int newID){
-        osc.disconnect();
         osc_port_ID = newID;
-        osc_connected = osc.connect(osc_port_ID);
+        if(binauraliser_getEnableRotation(hBin)){
+            if(osc_connected)
+                osc.disconnect();
+            osc_connected = osc.connect(osc_port_ID);
+        }
     }
     int getOscPortID(){ return osc_port_ID; }
     bool getOscPortConnected(){ return osc_connected; }
@@ -99,8 +112,8 @@ private:
     File lastDir;
     ValueTree sources {"Sources"};
     OSCReceiver osc;
-    bool osc_connected;
-    int osc_port_ID;
+    bool osc_connected = false;
+    int osc_port_ID = DEFAULT_OSC_PORT;
     
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void parameterChanged(const juce::String& parameterID, float newValue) override;

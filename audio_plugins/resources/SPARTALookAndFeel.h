@@ -356,13 +356,13 @@ public:
         g.setColour(colourBackground.darker(0.7f));
         g.fillRoundedRectangle(bounds, cornerSize);
 
-        g.setColour(colourAccent);
+        g.setColour(colourAccent.darker(0.3f));
         auto filled = bounds.withWidth((float)width * (float)progress);
         g.fillRoundedRectangle(filled, cornerSize);
 
         if (!textToShow.isEmpty())
         {
-            g.setColour(Colours::black);
+            g.setColour(Colours::white);
             g.setFont(15.0f);
             g.drawText(textToShow, bounds.toNearestInt(), Justification::centred);
         }

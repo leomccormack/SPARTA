@@ -64,7 +64,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     te_oscport->setCaretVisible (false);
     te_oscport->setPopupMenuEnabled (true);
     te_oscport->setText (TRANS("9000"));
-    te_oscport->setBounds (66, 128, 42, 22);
+    te_oscport->setBounds (66, 131, 42, 18);
 
     CBoutputFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CBoutputFormat.get());
@@ -438,29 +438,32 @@ void PluginEditor::paint (juce::Graphics& g)
 		Justification::centredLeft, true);
 
     /* display warning message */
-    g.setColour(Colours::red);
     g.setFont(juce::FontOptions (11.00f, Font::plain));
     switch (currentWarning){
         case k_warning_none:
             break;
         case k_warning_frameSize:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Set frame size to multiple of ") + String(rotator_getFrameSize()),
                        getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(rotator_getNSHrequired(hRot)) + TRANS(")"),
                        getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(rotator_getNSHrequired(hRot)) + TRANS(")"),
                        getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_osc_connection_fail:
+            g.setColour(Colours::red);
             g.drawText(TRANS("OSC failed to connect, or port is already taken"),
                        getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);

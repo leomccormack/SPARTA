@@ -602,31 +602,34 @@ void PluginEditor::paint (juce::Graphics& g)
         Justification::centredLeft, true);
 
     /* display warning message */
-    g.setColour(Colours::red);
     g.setFont(juce::FontOptions (11.00f, Font::plain));
     g.setOpacity(1.0f);
     switch (currentWarning){
         case k_warning_none:
             break;
         case k_warning_frameSize:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Set frame size to multiple of ") + String(ambi_drc_getFrameSize()),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
-        case k_warning_supported_fs:
-            g.drawText(TRANS("Sample rate (") + String(ambi_drc_getSamplerate(hAmbi)) + TRANS(") is unsupported"),
-                       getBounds().getWidth()-225, 5, 530, 11,
-                       Justification::centredLeft, true);
-            break;
         case k_warning_NinputCH:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(ambi_drc_getNSHrequired(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(ambi_drc_getNSHrequired(hAmbi)) + TRANS(")"),
+                       getBounds().getWidth()-225, 5, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_supported_fs:
+            g.setColour(Colours::yellow);
+            g.drawText(TRANS("Sample rate \"") + String(ambi_drc_getSamplerate(hAmbi)) + TRANS("\" is not recommended"),
                        getBounds().getWidth()-225, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -696,16 +699,16 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ( !((ambi_drc_getSamplerate(hAmbi) == 44.1e3) || (ambi_drc_getSamplerate(hAmbi) == 48e3)) ){
-        currentWarning = k_warning_supported_fs;
-        repaint(0,0,getWidth(),32);
-    }
     else if ((processor.getCurrentNumInputs() < ambi_drc_getNSHrequired(hAmbi))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
     else if ((processor.getCurrentNumOutputs() < ambi_drc_getNSHrequired(hAmbi))){
         currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ( !((ambi_drc_getSamplerate(hAmbi) == 44.1e3) || (ambi_drc_getSamplerate(hAmbi) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
     else if(currentWarning){

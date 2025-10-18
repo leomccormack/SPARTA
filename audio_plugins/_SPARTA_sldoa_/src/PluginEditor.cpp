@@ -573,19 +573,20 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     /* display warning message */
-    g.setColour(Colours::red);
     g.setFont(juce::FontOptions (11.00f, Font::plain));
     switch (currentWarning){
         case k_warning_none:
             break;
-        case k_warning_supported_fs:
-            g.drawText(TRANS("Sample rate (") + String(sldoa_getSamplingRate(hSld)) + TRANS(") is unsupported"),
+        case k_warning_NinputCH:
+            g.setColour(Colours::red);
+            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
+                       TRANS("/") + String(sldoa_getNSHrequired(hSld)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
-        case k_warning_NinputCH:
-            g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
-                       TRANS("/") + String(sldoa_getNSHrequired(hSld)) + TRANS(")"),
+        case k_warning_supported_fs:
+            g.setColour(Colours::yellow);
+            g.drawText(TRANS("Sample rate \"") + String(sldoa_getSamplingRate(hSld)) + TRANS("\" is not recommended"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -718,12 +719,12 @@ void PluginEditor::timerCallback()
         anaOrder2dSlider->repaint();
 
     /* display warning message, if needed */
-    if ( !((sldoa_getSamplingRate(hSld) == 44.1e3) || (sldoa_getSamplingRate(hSld) == 48e3)) ){
-        currentWarning = k_warning_supported_fs;
+    if ((processor.getCurrentNumInputs() < sldoa_getNSHrequired(hSld))){
+        currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if ((processor.getCurrentNumInputs() < sldoa_getNSHrequired(hSld))){
-        currentWarning = k_warning_NinputCH;
+    else if ( !((sldoa_getSamplingRate(hSld) == 44.1e3) || (sldoa_getSamplingRate(hSld) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
         repaint(0,0,getWidth(),32);
     }
     else if(currentWarning){
