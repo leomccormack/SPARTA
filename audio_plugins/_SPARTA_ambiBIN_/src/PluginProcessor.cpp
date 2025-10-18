@@ -97,6 +97,7 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
     }
     else if (parameterID == "enableRotation"){
         ambi_bin_setEnableRotation(hAmbi, static_cast<int>(newValue+0.5f));
+        checkAndUpdateOscStatus();
     }
     else if(parameterID == "useRollPitchYaw"){
         ambi_bin_setRPYflag(hAmbi, static_cast<int>(newValue+0.5f));
@@ -139,6 +140,8 @@ void PluginProcessor::setParameterValuesUsingInternalState()
     setParameterValue("flipYaw", ambi_bin_getFlipYaw(hAmbi));
     setParameterValue("flipPitch", ambi_bin_getFlipPitch(hAmbi));
     setParameterValue("flipRoll", ambi_bin_getFlipRoll(hAmbi));
+    
+    checkAndUpdateOscStatus();
 }
 
 void PluginProcessor::setInternalStateUsingParameterValues()
@@ -159,6 +162,8 @@ void PluginProcessor::setInternalStateUsingParameterValues()
     ambi_bin_setFlipYaw(hAmbi, getParameterBool("flipYaw"));
     ambi_bin_setFlipPitch(hAmbi, getParameterBool("flipPitch"));
     ambi_bin_setFlipRoll(hAmbi, getParameterBool("flipRoll"));
+    
+    checkAndUpdateOscStatus();
 }
 
 PluginProcessor::PluginProcessor() :
@@ -169,21 +174,19 @@ PluginProcessor::PluginProcessor() :
 {
 	ambi_bin_create(&hAmbi);
     
+    /* OSC */
+    osc.addListener(this);
+    
     /* Grab defaults */
     setParameterValuesUsingInternalState();
   
-    /* specify here on which UDP port number to receive incoming OSC messages */
-    osc_port_ID = DEFAULT_OSC_PORT;
-    osc_connected = osc.connect(osc_port_ID);
-    /* tell the component to listen for OSC messages */
-    osc.addListener(this);
-    
     startTimer(80);
 }
 
 PluginProcessor::~PluginProcessor()
 {
-    osc.disconnect();
+    if(osc_connected)
+        osc.disconnect();
     osc.removeListener(this);
         
 	ambi_bin_destroy(&hAmbi);

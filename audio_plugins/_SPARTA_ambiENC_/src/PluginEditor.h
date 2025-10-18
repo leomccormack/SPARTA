@@ -29,12 +29,12 @@
 #include "../../resources/SPARTALookAndFeel.h"
 
 typedef enum _SPARTA_WARNINGS{
+    /* Problematic warnings (shown in red) */
     k_warning_none,
     k_warning_frameSize,
     k_warning_NinputCH,
     k_warning_NoutputCH
 }SPARTA_WARNINGS;
-
 
 class PluginEditor  : public AudioProcessorEditor,
                       public Timer,

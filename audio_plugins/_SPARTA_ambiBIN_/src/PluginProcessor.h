@@ -58,10 +58,23 @@ public:
     
     /* OSC */
     void oscMessageReceived(const OSCMessage& message) override;
+    void checkAndUpdateOscStatus(){
+        /* Free up the port if osc is connected and rotation is disabled */
+        if(!ambi_bin_getEnableRotation(hAmbi) && osc_connected){
+            osc_connected = false;
+            osc.disconnect();
+        }
+        /* Try to connect to port if rotation is enabled */
+        else if(ambi_bin_getEnableRotation(hAmbi) && !osc_connected)
+            osc_connected = osc.connect(osc_port_ID);
+    }
     void setOscPortID(int newID){
-        osc.disconnect();
         osc_port_ID = newID;
-        osc_connected = osc.connect(osc_port_ID);
+        if(ambi_bin_getEnableRotation(hAmbi)){
+            if(osc_connected)
+                osc.disconnect();
+            osc_connected = osc.connect(osc_port_ID);
+        }
     }
     int getOscPortID(){ return osc_port_ID; }
     bool getOscPortConnected(){ return osc_connected; }
@@ -73,8 +86,8 @@ private:
     int nSampleRate;                  /* current host sample rate */
     std::atomic<int> nHostBlockSize;  /* typical host block size to expect, in samples */
     OSCReceiver osc;                  /* OSC receiver object */
-    bool osc_connected;               /* flag. 0: not connected, 1: connect to "osc_port_ID"  */
-    int osc_port_ID;                  /* port ID */
+    bool osc_connected = false;
+    int osc_port_ID = DEFAULT_OSC_PORT;
     
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void parameterChanged(const juce::String& parameterID, float newValue) override;

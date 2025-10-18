@@ -27,6 +27,7 @@
 #include "../../resources/SPARTALookAndFeel.h"
 
 typedef enum _SPARTA_WARNINGS{
+    /* Problematic warnings (shown in red) */
     k_warning_none,
     k_warning_sampleRate_missmatch,
     k_warning_nInputs_more_than_64,

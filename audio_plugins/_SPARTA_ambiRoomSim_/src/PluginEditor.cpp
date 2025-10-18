@@ -686,23 +686,25 @@ void PluginEditor::paint (juce::Graphics& g)
 		Justification::centredLeft, true);
 
     /* display warning message */
-    g.setColour(Colours::red);
     g.setFont(juce::FontOptions (11.00f, Font::plain));
     switch (currentWarning){
         case k_warning_none:
             break;
         case k_warning_frameSize:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Set frame size to multiple of ") + String(ambi_roomsim_getFrameSize()),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NinputCH:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(ambi_roomsim_getNumSources(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(ambi_roomsim_getNSHrequired(hAmbi)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,

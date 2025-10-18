@@ -792,40 +792,45 @@ void PluginEditor::paint (juce::Graphics& g)
 		Justification::centredLeft, true);
 
     /* display warning message */
-    g.setColour(Colours::red);
     g.setFont(juce::FontOptions (11.00f, Font::plain));
     switch (currentWarning){
         case k_warning_none:
             break;
         case k_warning_frameSize:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Set frame size to multiple of ") + String(binauraliser_getFrameSize()),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
-        case k_warning_supported_fs:
-            g.drawText(TRANS("Sample rate (") + String(binauraliser_getDAWsamplerate(hBin)) + TRANS(") is unsupported"),
-                       getBounds().getWidth()-225, 16, 530, 11,
-                       Justification::centredLeft, true);
-            break;
-        case k_warning_mismatch_fs:
-            g.drawText(TRANS("Sample rate mismatch between DAW/HRIRs"),
-                       getBounds().getWidth()-225, 16, 530, 11,
-                       Justification::centredLeft, true);
-            break;
         case k_warning_NinputCH:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
                        TRANS("/") + String(binauraliser_getNumSources(hBin)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(binauraliser_getNumEars()) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_osc_connection_fail:
+            g.setColour(Colours::red);
             g.drawText(TRANS("OSC failed to connect, or port is already taken"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_supported_fs:
+            g.setColour(Colours::yellow);
+            g.drawText(TRANS("Sample rate \"") + String(binauraliser_getDAWsamplerate(hBin)) + TRANS("\" is not recommended"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_mismatch_fs:
+            g.setColour(Colours::yellow);
+            g.drawText(TRANS("Resampled HRIRs to match host samplerate"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -978,14 +983,6 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
-    else if ( !((binauraliser_getDAWsamplerate(hBin) == 44.1e3) || (binauraliser_getDAWsamplerate(hBin) == 48e3)) ){
-        currentWarning = k_warning_supported_fs;
-        repaint(0,0,getWidth(),32);
-    }
-    else if (binauraliser_getDAWsamplerate(hBin) != binauraliser_getHRIRsamplerate(hBin)){
-        currentWarning = k_warning_mismatch_fs;
-        repaint(0,0,getWidth(),32);
-    }
     else if ((processor.getCurrentNumInputs() < binauraliser_getNumSources(hBin))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
@@ -996,6 +993,14 @@ void PluginEditor::timerCallback()
     }
     else if(!processor.getOscPortConnected() && binauraliser_getEnableRotation(hBin)){
         currentWarning = k_warning_osc_connection_fail;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ( !((binauraliser_getDAWsamplerate(hBin) == 44.1e3) || (binauraliser_getDAWsamplerate(hBin) == 48e3)) ){
+        currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if (binauraliser_getDAWsamplerate(hBin) != binauraliser_getHRIRsamplerate(hBin)){
+        currentWarning = k_warning_mismatch_fs;
         repaint(0,0,getWidth(),32);
     }
     else if(currentWarning){

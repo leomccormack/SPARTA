@@ -72,6 +72,7 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
     }
     else if (parameterID == "enableRotation"){
         binauraliser_setEnableRotation(hBin, static_cast<int>(newValue+0.5f));
+        checkAndUpdateOscStatus();
     }
     else if(parameterID == "useRollPitchYaw"){
         binauraliser_setRPYflag(hBin, static_cast<int>(newValue+0.5f));
@@ -134,6 +135,8 @@ void PluginProcessor::setParameterValuesUsingInternalState()
         setParameterValue("elev" + juce::String(i), binauraliser_getSourceElev_deg(hBin, i));
         setParameterValue("dist" + juce::String(i), binauraliserNF_getSourceDist_m(hBin, i));
     }
+    
+    checkAndUpdateOscStatus();
 }
 
 void PluginProcessor::setInternalStateUsingParameterValues()
@@ -154,6 +157,8 @@ void PluginProcessor::setInternalStateUsingParameterValues()
         binauraliser_setSourceElev_deg(hBin, i, getParameterFloat("elev" + juce::String(i)));
         binauraliserNF_setSourceDist_m(hBin, i, getParameterFloat("dist" + juce::String(i)));
     }
+    
+    checkAndUpdateOscStatus();
 }
 
 PluginProcessor::PluginProcessor() :
@@ -164,15 +169,11 @@ PluginProcessor::PluginProcessor() :
 {
 	binauraliserNF_create(&hBin);
     
+    /* OSC */
+    osc.addListener(this);
+    
     /* Grab defaults */
     setParameterValuesUsingInternalState();
-    
-    /* specify here on which UDP port number to receive incoming OSC messages */
-    osc_port_ID = DEFAULT_OSC_PORT;
-    osc_connected = osc.connect(osc_port_ID);
-    /* tell the component to listen for OSC messages */
-    osc.addListener(this);
-    refreshWindow = true;
     
     startTimer(80);
     
@@ -185,7 +186,8 @@ PluginProcessor::PluginProcessor() :
 
 PluginProcessor::~PluginProcessor()
 {
-    osc.disconnect();
+    if(osc_connected)
+        osc.disconnect();
     osc.removeListener(this);
     
 	binauraliserNF_destroy(&hBin);

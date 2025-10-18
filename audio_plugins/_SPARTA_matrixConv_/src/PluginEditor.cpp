@@ -413,22 +413,24 @@ void PluginEditor::paint (juce::Graphics& g)
 		Justification::centredLeft, true);
 
     /* display warning message */
-    g.setColour(Colours::red);
     g.setFont(juce::FontOptions (11.00f, Font::plain));
     switch (currentWarning){
         case k_warning_none:
             break;
         case k_warning_sampleRate_missmatch:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Host samplerate does not match filter samplerate"),
                        getBounds().getWidth()-250, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_nInputs_more_than_64:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Number of input channels exceeds VST maximum"),
                        getBounds().getWidth()-250, 5, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_nOutputs_more_than_64:
+            g.setColour(Colours::red);
             g.drawText(TRANS("Number of output channels exceeds VST maximum"),
                        getBounds().getWidth()-250, 5, 530, 11,
                        Justification::centredLeft, true);
