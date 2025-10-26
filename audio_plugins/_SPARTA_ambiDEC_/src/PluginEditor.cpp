@@ -790,6 +790,12 @@ void PluginEditor::paint (juce::Graphics& g)
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
+        case k_warning_busContainsLFE:
+            g.setColour(Colours::yellow);
+            g.drawText(TRANS("LFE channels are not supported by this plugin"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
         case k_warning_supported_fs:
             g.setColour(Colours::yellow);
             g.drawText(TRANS("Sample rate \"") + String(ambi_dec_getDAWsamplerate(hAmbi)) + TRANS("\" is not recommended"),
@@ -984,9 +990,12 @@ void PluginEditor::timerCallback()
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
-    else if (processor.getCurrentNumOutputs() <
-              (ambi_dec_getBinauraliseLSflag(hAmbi) ? 2 : ambi_dec_getNumLoudspeakers(hAmbi)) ){
+    else if (processor.getCurrentNumOutputs() < (ambi_dec_getBinauraliseLSflag(hAmbi) ? 2 : ambi_dec_getNumLoudspeakers(hAmbi)) ){
         currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if (processor.getBusHasLFE()){
+        currentWarning = k_warning_busContainsLFE;
         repaint(0,0,getWidth(),32);
     }
     else if ( !((ambi_dec_getDAWsamplerate(hAmbi) == 44.1e3) || (ambi_dec_getDAWsamplerate(hAmbi) == 48e3)) ){

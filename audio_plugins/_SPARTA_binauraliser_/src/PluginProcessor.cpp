@@ -52,11 +52,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipYaw", "FlipYaw", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipPitch", "FlipPitch", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("flipRoll", "FlipRoll", false));
-    params.push_back(std::make_unique<juce::AudioParameterInt>("numSources", "NumSources", 1, MAX_NUM_INPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numSources", "NumSources", 1, MAX_NUM_INPUTS, binauraliser_defaultNumSources, AudioParameterIntAttributes().withAutomatable(false)));
     for(int i=0; i<MAX_NUM_INPUTS; i++){
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f),
+                                                                     binauraliser_defaultSourceDirections[i][0],
                                                                      AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f,
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f),
+                                                                     binauraliser_defaultSourceDirections[i][1],
                                                                      AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     }
     
@@ -270,6 +272,16 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     
 	binauraliser_init(hBin, nSampleRate);
     AudioProcessor::setLatencySamples(binauraliser_getProcessingDelay());
+    
+    /* Check for the presence of an LFE channel */
+    if (wrapperType == AudioProcessor::wrapperType_AAX){
+        juce::AudioProcessor::BusesLayout layout = getBusesLayout();
+        AudioChannelSet channelSet = layout.getMainInputChannelSet();
+        inputBusHasLFE = false;
+        if(channelSet.getChannelIndexForType (juce::AudioChannelSet::LFE)>=0 || channelSet.getChannelIndexForType (juce::AudioChannelSet::LFE2)>=0){
+            inputBusHasLFE = true;
+        }
+    }
 }
 
 void PluginProcessor::releaseResources()

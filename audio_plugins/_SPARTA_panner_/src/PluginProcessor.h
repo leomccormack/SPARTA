@@ -51,7 +51,7 @@ public:
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
     int getCurrentNumOutputs(){ return nNumOutputs; }
-    bool getBusHasLFE() { return outputBusHasLFE; }
+    bool getBusHasLFE() { return inputBusHasLFE || outputBusHasLFE; }
     
     /* For refreshing window during automation */
     bool refreshWindow;
@@ -84,6 +84,7 @@ private:
     std::atomic<bool> isPlaying;
     File lastDir;
     ValueTree elements {"SourcesOrLoudspeakers"};
+    std::atomic<bool> inputBusHasLFE = false;
     std::atomic<bool> outputBusHasLFE = false;
     
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();

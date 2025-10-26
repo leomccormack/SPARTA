@@ -44,7 +44,7 @@ outputCoordsView::outputCoordsView (PluginProcessor& p, int _maxNCH, int _curren
         aziSliders[i]->addListener (this);
 
         /* create and initialise elevation sliders */
-        elevSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "lsAzim" + juce::String(i));
+        elevSliders[i] = std::make_unique<SliderWithAttachment>(p.parameters, "lsElev" + juce::String(i));
         addAndMakeVisible (elevSliders[i].get());
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);

@@ -45,7 +45,8 @@ public:
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
     int getCurrentNumOutputs(){ return nNumOutputs; }
-    
+    bool getBusHasLFE() { return outputBusHasLFE; }
+
     /* JSON */
     void saveConfigurationToFile (File destination);
     void loadConfiguration (const File& presetFile);
@@ -71,6 +72,7 @@ private:
     std::atomic<int> nHostBlockSize;   /* typical host block size to expect, in samples */
     File lastDir;
     ValueTree loudspeakers {"Loudspeakers"};
+    std::atomic<bool> outputBusHasLFE = false;
     
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void parameterChanged(const juce::String& parameterID, float newValue) override;

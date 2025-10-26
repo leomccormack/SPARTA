@@ -247,6 +247,16 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
     ambi_dec_init(hAmbi, nSampleRate);
     AudioProcessor::setLatencySamples(ambi_dec_getProcessingDelay());
+    
+    /* Check for the presence of an LFE channel */
+    if (wrapperType == AudioProcessor::wrapperType_AAX){
+        juce::AudioProcessor::BusesLayout layout = getBusesLayout();
+        AudioChannelSet channelSet = layout.getMainOutputChannelSet();
+        outputBusHasLFE = false;
+        if(channelSet.getChannelIndexForType (juce::AudioChannelSet::LFE)>=0 || channelSet.getChannelIndexForType (juce::AudioChannelSet::LFE2)>=0){
+            outputBusHasLFE = true;
+        }
+    }
 }
 
 void PluginProcessor::releaseResources()
