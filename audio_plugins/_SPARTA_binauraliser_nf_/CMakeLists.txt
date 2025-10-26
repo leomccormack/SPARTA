@@ -19,6 +19,8 @@ juce_add_plugin(${PROJECT_NAME}
     FORMATS                     ${BUILD_PLUGIN_FORMATS}      # ( VST AAX Unity VST3 AU AUv3 Standalone )
     PRODUCT_NAME                "${PROJECT_NAME}"
     LV2URI                      "http://AALTO.${PROJECT_NAME}.${PROJECT_VERSION}"
+    VST3_CATEGORIES             Spatial
+    AAX_CATEGORY                SoundField
 )
 
 # Generates "JuceHeader.h", and adds its path to the include paths of the target
@@ -44,6 +46,7 @@ PUBLIC
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0
+    JucePlugin_AAXDisableDefaultSettingsChunks=1
 )
 
 # Link with saf example, and the required juce modules

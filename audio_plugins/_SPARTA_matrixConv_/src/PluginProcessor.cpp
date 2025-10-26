@@ -209,6 +209,9 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             setParameterValuesUsingInternalState();
         }
         else if(xmlState->getIntAttribute("VersionCode")>=0x10101){
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            
+            /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
             if(xmlState->hasAttribute("LastWavFilePath"))
                 lastWavDirectory = xmlState->getStringAttribute("LastWavFilePath", "no_file");
 

@@ -6,15 +6,14 @@
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ARSA"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
-              pluginAUExportPrefix="sparta_ambiENCAU" pluginRTASCategory=""
-              aaxIdentifier="com.yourcompany.sparta" pluginAAXCategory="2"
-              buildVST3="0" buildRTAS="0" buildAAX="0" pluginManufacturerEmail="support@yourcompany.com"
-              companyName="Aalto" companyEmail="leo.t.mccormack@gmail.com"
-              userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
+              pluginRTASCategory="" buildVST3="0" buildRTAS="0" buildAAX="1"
+              pluginManufacturerEmail="support@yourcompany.com" companyName="Aalto"
+              companyEmail="leo.t.mccormack@gmail.com" userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
               buildAUv3="0" pluginIsMidiEffectPlugin="0" displaySplashScreen="0"
               reportAppUsage="0" splashScreenColour="Dark" buildStandalone="0"
-              enableIAA="0" companyCopyright="Aalto" pluginFormats="buildVST"
-              jucerFormatVersion="1">
+              enableIAA="0" companyCopyright="Aalto" pluginFormats="buildAAX,buildVST"
+              jucerFormatVersion="1" defines="JucePlugin_AAXDisableDefaultSettingsChunks=1&#10;"
+              pluginAAXCategory="512" pluginVST3Category="Spatial">
   <MAINGROUP id="imnfnp" name="sparta_ambiRoomSim">
     <FILE id="nUdCOW" name="ParameterManager.h" compile="0" resource="0"
           file="../resources/ParameterManager.h"/>

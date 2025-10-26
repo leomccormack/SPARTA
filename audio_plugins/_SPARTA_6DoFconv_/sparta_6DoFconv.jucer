@@ -2,10 +2,11 @@
 
 <JUCERPROJECT id="qn48N9" name="sparta_6DoFconv" projectType="audioplug" jucerFormatVersion="1"
               companyName="Aalto" companyCopyright="Aalto" bundleIdentifier="com.AALTO.SPARTA"
-              pluginFormats="buildVST" pluginManufacturer="AALTO" pluginAAXCategory="2"
-              userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS"
+              pluginFormats="buildAAX,buildVST" pluginManufacturer="AALTO"
+              userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS&#10;&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;../../../../../SDKs/NatNetSDK/include&#10;../../../src/NatNetTools"
               companyEmail="rapolas.daugintis@gmail.com" pluginManufacturerCode="RAPD"
-              pluginCode="TVCN" displaySplashScreen="1" version="1.1.2" headerPath="C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;../../../../../SDKs/NatNetSDK/include&#10;../../../src/NatNetTools">
+              pluginCode="TVCN" displaySplashScreen="1" version="1.1.2" pluginVST3Category="Spatial"
+              pluginAAXCategory="512" defines="JucePlugin_AAXDisableDefaultSettingsChunks=1&#10;">
   <MAINGROUP id="IbvuHL" name="sparta_6DoFconv">
     <FILE id="F6UktL" name="SPARTALookAndFeel.h" compile="0" resource="0"
           file="../resources/SPARTALookAndFeel.h"/>
