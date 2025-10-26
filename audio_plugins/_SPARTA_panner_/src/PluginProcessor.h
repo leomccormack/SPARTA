@@ -51,6 +51,7 @@ public:
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
     int getCurrentNumOutputs(){ return nNumOutputs; }
+    bool getBusHasLFE() { return outputBusHasLFE; }
     
     /* For refreshing window during automation */
     bool refreshWindow;
@@ -83,6 +84,7 @@ private:
     std::atomic<bool> isPlaying;
     File lastDir;
     ValueTree elements {"SourcesOrLoudspeakers"};
+    std::atomic<bool> outputBusHasLFE = false;
     
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void parameterChanged(const juce::String& parameterID, float newValue) override;
@@ -112,6 +114,7 @@ public:
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
+    void processBlockBypassed (juce::AudioBuffer<float>&, juce::MidiBuffer&) override {}
     
     juce::AudioProcessorEditor* createEditor() override;
     bool hasEditor() const override;

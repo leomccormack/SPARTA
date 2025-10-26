@@ -23,6 +23,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#if JucePlugin_Build_AAX && !JucePlugin_AAXDisableDefaultSettingsChunks
+# error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
+#endif
+
 static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     switch(format){
         case juce::AudioProcessor::wrapperType_VST:  /* fall through */
@@ -39,38 +43,44 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
     params.push_back(std::make_unique<juce::AudioParameterChoice>("outputOrder", "OutputOrder",
-                                                                  juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0,
+                                                                  juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 2,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 1));
     params.push_back(std::make_unique<juce::AudioParameterBool>("enableReflections", "EnableReflections", true));
-    params.push_back(std::make_unique<juce::AudioParameterInt>("maxReflectionOrder", "MaxReflectionOrder", 0, 7, 1));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_pX", "WallAbsCoeff (x+)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.341055f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_nX", "WallAbsCoeff (x-)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.431295f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_pY", "WallAbsCoeff (y+)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.351295f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_nY", "WallAbsCoeff (y-)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.344335f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_pZ", "WallAbsCoeff (z+)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.401775f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_nZ", "WallAbsCoeff (z-)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.482095f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("roomX", "RoomWidth (x)", juce::NormalisableRange<float>(0.5f, 20.0f, 0.01f), 9.1f,
+    params.push_back(std::make_unique<juce::AudioParameterInt>("maxReflectionOrder", "MaxReflectionOrder", 0, 7, 3));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_pX", "WallAbsCoeff (x+)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f),
+                                                                 ambi_roomsim_default_abs_wall[0]));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_nX", "WallAbsCoeff (x-)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f),
+                                                                 ambi_roomsim_default_abs_wall[1]));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_pY", "WallAbsCoeff (y+)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f),
+                                                                 ambi_roomsim_default_abs_wall[2]));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_nY", "WallAbsCoeff (y-)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f),
+                                                                 ambi_roomsim_default_abs_wall[3]));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_pZ", "WallAbsCoeff (z+)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f),
+                                                                 ambi_roomsim_default_abs_wall[4]));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("wallAbsCoeff_nZ", "WallAbsCoeff (z-)", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f),
+                                                                 ambi_roomsim_default_abs_wall[5]));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("roomX", "RoomWidth (x)", juce::NormalisableRange<float>(0.5f, 20.0f, 0.01f), ambi_roomsim_default_room_dims[0],
                                                                  AudioParameterFloatAttributes().withLabel("m")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("roomY", "RoomDepth (y)", juce::NormalisableRange<float>(0.5f, 20.0f, 0.01f), 8.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("roomY", "RoomDepth (y)", juce::NormalisableRange<float>(0.5f, 20.0f, 0.01f), ambi_roomsim_default_room_dims[1],
                                                                  AudioParameterFloatAttributes().withLabel("m")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("roomZ", "RoomHeight (z)", juce::NormalisableRange<float>(0.5f, 6.0f, 0.01f), 3.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("roomZ", "RoomHeight (z)", juce::NormalisableRange<float>(0.5f, 6.0f, 0.01f), ambi_roomsim_default_room_dims[2],
                                                                  AudioParameterFloatAttributes().withLabel("m")));
-    params.push_back(std::make_unique<juce::AudioParameterInt>("numSources", "NumSources", 1, ROOM_SIM_MAX_NUM_SOURCES, 1,
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numSources", "NumSources", 1, ROOM_SIM_MAX_NUM_SOURCES, ambi_roomsim_defaultNumSources,
                                                                AudioParameterIntAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterInt>("numReceivers", "NumReceivers", 1, ROOM_SIM_MAX_NUM_RECEIVERS, 1,
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numReceivers", "NumReceivers", 1, ROOM_SIM_MAX_NUM_RECEIVERS, ambi_roomsim_defaultNumReceivers,
                                                                AudioParameterIntAttributes().withAutomatable(false)));
     for(int i=0; i<ROOM_SIM_MAX_NUM_SOURCES; i++){
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceX" + juce::String(i), "SourceX_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel("m")));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceY" + juce::String(i), "SourceY_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel("m")));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceZ" + juce::String(i), "SourceZ_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 6.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel("m")));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceX" + juce::String(i), "SourceX_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), ambi_roomsim_defaultSourcePositions[i][0], AudioParameterFloatAttributes().withLabel("m")));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceY" + juce::String(i), "SourceY_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), ambi_roomsim_defaultSourcePositions[i][1], AudioParameterFloatAttributes().withLabel("m")));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceZ" + juce::String(i), "SourceZ_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 6.0f, 0.01f), ambi_roomsim_defaultSourcePositions[i][2], AudioParameterFloatAttributes().withLabel("m")));
     }
     
     for(int i=0; i<ROOM_SIM_MAX_NUM_RECEIVERS; i++){
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("receiverX" + juce::String(i), "ReceiverX_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel("m")));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("receiverY" + juce::String(i), "ReceiverY_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel("m")));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("receiverZ" + juce::String(i), "ReceiverZ_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 6.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel("m")));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("receiverX" + juce::String(i), "ReceiverX_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), ambi_roomsim_defaultReceiverPositions[i][0], AudioParameterFloatAttributes().withLabel("m")));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("receiverY" + juce::String(i), "ReceiverY_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), ambi_roomsim_defaultReceiverPositions[i][1], AudioParameterFloatAttributes().withLabel("m")));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("receiverZ" + juce::String(i), "ReceiverZ_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 6.0f, 0.01f), ambi_roomsim_defaultReceiverPositions[i][2], AudioParameterFloatAttributes().withLabel("m")));
     }
 
     return { params.begin(), params.end() };

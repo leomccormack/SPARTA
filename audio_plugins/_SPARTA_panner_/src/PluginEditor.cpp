@@ -759,6 +759,12 @@ void PluginEditor::paint (juce::Graphics& g)
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
+        case k_warning_busContainsLFE:
+            g.setColour(Colours::yellow);
+            g.drawText(TRANS("LFE channels are not supported by this plugin"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
         case k_warning_supported_fs:
             g.setColour(Colours::yellow);
             g.drawText(TRANS("Sample rate \"") + String(panner_getDAWsamplerate(hPan)) + TRANS("\" is not recommended"),
@@ -967,6 +973,10 @@ void PluginEditor::timerCallback()
     }
     else if ((processor.getCurrentNumOutputs() < panner_getNumLoudspeakers(hPan))){
         currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if (processor.getBusHasLFE()){
+        currentWarning = k_warning_busContainsLFE;
         repaint(0,0,getWidth(),32);
     }
     else if ( !((panner_getDAWsamplerate(hPan) == 44.1e3) || (panner_getDAWsamplerate(hPan) == 48e3)) ){

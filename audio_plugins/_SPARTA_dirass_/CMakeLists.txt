@@ -21,6 +21,8 @@ juce_add_plugin(${PROJECT_NAME}
     LV2URI                      "http://AALTO.${PROJECT_NAME}.${PROJECT_VERSION}"
     CAMERA_PERMISSION_ENABLED   TRUE
     CAMERA_PERMISSION_TEXT      "This app requires access to the Camera to support the AcousticCamera option"
+    VST3_CATEGORIES             Spatial
+    AAX_CATEGORY                SoundField
 )   
 
 # Generates "JuceHeader.h", and adds its path to the include paths of the target
@@ -44,6 +46,7 @@ PUBLIC
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0
+    JucePlugin_AAXDisableDefaultSettingsChunks=1
 )
  
 # Link with saf example, and the required juce modules

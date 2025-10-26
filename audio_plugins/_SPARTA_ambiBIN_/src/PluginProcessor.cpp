@@ -23,6 +23,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#if JucePlugin_Build_AAX && !JucePlugin_AAXDisableDefaultSettingsChunks
+# error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
+#endif
+
 static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     switch(format){
         case juce::AudioProcessor::wrapperType_VST:  /* fall through */
@@ -46,14 +50,14 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     params.push_back(std::make_unique<juce::AudioParameterChoice>("decMethod", "DecMethod",
                                                                   juce::StringArray{"Least-Squares (LS)","LS with Ambi-Diff-EQ","Spatial Resampling (SPR)","Time-alignment (TA)","Magnitude-LS"}, 4,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterBool>("enableTruncationEQ", "EnableTruncationEQ", false,
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableTruncationEQ", "EnableTruncationEQ", true,
                                                                 AudioParameterBoolAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("hrirPreproc", "HRIRPreproc",
                                                                   juce::StringArray{"Off","Diffuse-field EQ","Phase Simplification","EQ & Phase"}, 1,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterBool>("enableDiffuseMatching", "EnableDiffuseMatching", false,
                                                                 AudioParameterBoolAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE", "EnableMaxRE", false, AudioParameterBoolAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE", "EnableMaxRE", true, AudioParameterBoolAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterBool>("enableRotation", "EnableRotation", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("useRollPitchYaw", "UseRollPitchYaw", false));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("yaw", "Yaw", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,

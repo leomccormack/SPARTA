@@ -23,6 +23,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#if JucePlugin_Build_AAX && !JucePlugin_AAXDisableDefaultSettingsChunks
+# error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
+#endif
+
 static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     switch(format){
         case juce::AudioProcessor::wrapperType_VST:  /* fall through */
@@ -42,27 +46,27 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
                                                                   juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
-    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
-    params.push_back(std::make_unique<juce::AudioParameterChoice>("decMethod1", "DecMethod1", juce::StringArray{"SAD","MMD","EPAD","AllRAD"}, 0,
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 1));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("decMethod1", "DecMethod1", juce::StringArray{"SAD","MMD","EPAD","AllRAD"}, 4,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterChoice>("decMethod2", "DecMethod2", juce::StringArray{"SAD","MMD","EPAD","AllRAD"}, 0,
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("decMethod2", "DecMethod2", juce::StringArray{"SAD","MMD","EPAD","AllRAD"}, 4,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE1", "EnableMaxRE1", false));
-    params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE2", "EnableMaxRE2", false));
-    params.push_back(std::make_unique<juce::AudioParameterChoice>("diffEQ1", "DiffEQ1", juce::StringArray{"AP", "EP"}, 0,
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE1", "EnableMaxRE1", true));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enableMaxRE2", "EnableMaxRE2", true));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("diffEQ1", "DiffEQ1", juce::StringArray{"AP", "EP"}, 1,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterChoice>("diffEQ2", "DiffEQ2", juce::StringArray{"AP","EP"}, 0,
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("diffEQ2", "DiffEQ2", juce::StringArray{"AP","EP"}, 1,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("transitionFreq", "TransitionFreq", juce::NormalisableRange<float>(500.0f, 2000.0f, 1.0f), 800.0f,
                                                                  AudioParameterFloatAttributes().withLabel(" Hz")));
     params.push_back(std::make_unique<juce::AudioParameterBool>("binauraliseLS", "BinauraliseLS", false, AudioParameterBoolAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterBool>("enablePreProcHRIRs", "EnableDiffuseFieldEQ", false,
+    params.push_back(std::make_unique<juce::AudioParameterBool>("enablePreProcHRIRs", "EnableDiffuseFieldEQ", true,
                                                                 AudioParameterBoolAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterInt>("numLoudspeakers", "NumLoudspeakers", 4, MAX_NUM_OUTPUTS, 1,
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numLoudspeakers", "NumLoudspeakers", 4, MAX_NUM_OUTPUTS, ambi_dec_defaultNumLoudspeakers,
                                                                AudioParameterIntAttributes().withAutomatable(false)));
     for(int i=0; i<MAX_NUM_OUTPUTS; i++){
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withAutomatable(false).withLabel(juce::String::fromUTF8(u8"\u00B0"))));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withAutomatable(false).withLabel(juce::String::fromUTF8(u8"\u00B0"))));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), ambi_dec_defaultLoudspeakerDirections[i][0], AudioParameterFloatAttributes().withAutomatable(false).withLabel(juce::String::fromUTF8(u8"\u00B0"))));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-90.0f, 90.0f, 0.01f), ambi_dec_defaultLoudspeakerDirections[i][1], AudioParameterFloatAttributes().withAutomatable(false).withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     }
     
     return { params.begin(), params.end() };
