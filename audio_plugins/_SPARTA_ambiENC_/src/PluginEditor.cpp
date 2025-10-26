@@ -453,6 +453,12 @@ void PluginEditor::paint (juce::Graphics& g)
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
+        case k_warning_busContainsLFE:
+            g.setColour(Colours::yellow);
+            g.drawText(TRANS("LFE channels are not supported by this plugin"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
     }
 }
 
@@ -550,6 +556,10 @@ void PluginEditor::timerCallback()
     }
     else if ((processor.getCurrentNumOutputs() < ambi_enc_getNSHrequired(hAmbi))){
         currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if (processor.getBusHasLFE()){
+        currentWarning = k_warning_busContainsLFE;
         repaint(0,0,getWidth(),32);
     }
     else if(currentWarning){

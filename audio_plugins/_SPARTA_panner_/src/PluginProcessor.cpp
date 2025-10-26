@@ -258,6 +258,14 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     /* Check for the presence of an LFE channel */
     if (wrapperType == AudioProcessor::wrapperType_AAX){
         juce::AudioProcessor::BusesLayout layout = getBusesLayout();
+        AudioChannelSet channelSet = layout.getMainInputChannelSet();
+        inputBusHasLFE = false;
+        if(channelSet.getChannelIndexForType (juce::AudioChannelSet::LFE)>=0 || channelSet.getChannelIndexForType (juce::AudioChannelSet::LFE2)>=0){
+            inputBusHasLFE = true;
+        }
+    }
+    if (wrapperType == AudioProcessor::wrapperType_AAX){
+        juce::AudioProcessor::BusesLayout layout = getBusesLayout();
         AudioChannelSet channelSet = layout.getMainOutputChannelSet();
         outputBusHasLFE = false;
         if(channelSet.getChannelIndexForType (juce::AudioChannelSet::LFE)>=0 || channelSet.getChannelIndexForType (juce::AudioChannelSet::LFE2)>=0){
