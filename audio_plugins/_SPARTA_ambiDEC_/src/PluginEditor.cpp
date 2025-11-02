@@ -186,6 +186,20 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBsourcePreset->addItem(TRANS("DTU mic"), MIC_PRESET_DTU_MIC);
 
     /* add loudspeaker preset options */
+    if(processor.wrapperType == AudioProcessor::wrapperType_AAX){
+//        CBoutputDirsPreset->addItem (TRANS("ProTools Stereo"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_STEREO);
+//        CBoutputDirsPreset->addItem (TRANS("ProTools LCR"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_LCR);
+//        CBoutputDirsPreset->addItem (TRANS("ProTools Quad"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_QUAD);
+        CBoutputDirsPreset->addItem (TRANS("ProTools 5.0"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_5_0);
+        CBoutputDirsPreset->addItem (TRANS("ProTools 5.0.2"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_5_0_2);
+        CBoutputDirsPreset->addItem (TRANS("ProTools 5.0.4"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_5_0_4);
+        CBoutputDirsPreset->addItem (TRANS("ProTools 7.0"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_7_0);
+        CBoutputDirsPreset->addItem (TRANS("ProTools 7.0.2"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_7_0_2);
+        CBoutputDirsPreset->addItem (TRANS("ProTools 7.0.4"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_7_0_4);
+        CBoutputDirsPreset->addItem (TRANS("ProTools 7.0.6"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_7_0_6);
+        CBoutputDirsPreset->addItem (TRANS("ProTools 9.0.4"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_9_0_4);
+        CBoutputDirsPreset->addItem (TRANS("ProTools 9.0.6"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_9_0_6);
+    }
     CBoutputDirsPreset->addItem (TRANS("5.x"), LOUDSPEAKER_ARRAY_PRESET_5PX);
     CBoutputDirsPreset->addItem (TRANS("7.x"), LOUDSPEAKER_ARRAY_PRESET_7PX);
     CBoutputDirsPreset->addItem (TRANS("8.x"), LOUDSPEAKER_ARRAY_PRESET_8PX);

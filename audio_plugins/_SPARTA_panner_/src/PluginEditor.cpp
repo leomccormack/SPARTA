@@ -168,6 +168,20 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     SL_num_loudspeakers->setSliderSnapsToMousePosition(false);
 
     /* add source preset options */
+    if(processor.wrapperType == AudioProcessor::wrapperType_AAX){
+        CBsourceDirsPreset->addItem (TRANS("ProTools Stereo"), SOURCE_CONFIG_PRESET_PROTOOLS_STEREO);
+        CBsourceDirsPreset->addItem (TRANS("ProTools LCR"), SOURCE_CONFIG_PRESET_PROTOOLS_LCR);
+        CBsourceDirsPreset->addItem (TRANS("ProTools Quad"), SOURCE_CONFIG_PRESET_PROTOOLS_QUAD);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 5.0"), SOURCE_CONFIG_PRESET_PROTOOLS_5_0);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 5.0.2"), SOURCE_CONFIG_PRESET_PROTOOLS_5_0_2);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 5.0.4"), SOURCE_CONFIG_PRESET_PROTOOLS_5_0_4);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 7.0"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 7.0.2"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0_2);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 7.0.4"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0_4);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 7.0.6"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0_6);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 9.0.4"), SOURCE_CONFIG_PRESET_PROTOOLS_9_0_4);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 9.0.6"), SOURCE_CONFIG_PRESET_PROTOOLS_9_0_6);
+    }
     CBsourceDirsPreset->addItem (TRANS("Mono"), SOURCE_CONFIG_PRESET_MONO);
     CBsourceDirsPreset->addItem (TRANS("Stereo"), SOURCE_CONFIG_PRESET_STEREO);
     CBsourceDirsPreset->addItem (TRANS("5.x"), SOURCE_CONFIG_PRESET_5PX);
@@ -180,18 +194,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBsourceDirsPreset->addItem (TRANS("13.x"), SOURCE_CONFIG_PRESET_13PX);
     CBsourceDirsPreset->addItem (TRANS("22.x"), SOURCE_CONFIG_PRESET_22PX);
     //CBsourceDirsPreset->addItem (TRANS("9+10+3.2"), SOURCE_CONFIG_ARRAY_PRESET_22P2_9_10_3);
-    CBsourceDirsPreset->addItem (TRANS("ProTools Stereo"), SOURCE_CONFIG_PRESET_PROTOOLS_STEREO);
-    CBsourceDirsPreset->addItem (TRANS("ProTools LCR"), SOURCE_CONFIG_PRESET_PROTOOLS_LCR);
-    CBsourceDirsPreset->addItem (TRANS("ProTools Quad"), SOURCE_CONFIG_PRESET_PROTOOLS_QUAD);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 5.0"), SOURCE_CONFIG_PRESET_PROTOOLS_5_0);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 5.0.2"), SOURCE_CONFIG_PRESET_PROTOOLS_5_0_2);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 5.0.4"), SOURCE_CONFIG_PRESET_PROTOOLS_5_0_4);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 7.0"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 7.0.2"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0_2);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 7.0.4"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0_4);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 7.0.6"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0_6);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 9.0.4"), SOURCE_CONFIG_PRESET_PROTOOLS_9_0_4);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 9.0.6"), SOURCE_CONFIG_PRESET_PROTOOLS_9_0_6);
     CBsourceDirsPreset->addItem (TRANS("Aalto MCC"), SOURCE_CONFIG_PRESET_AALTO_MCC);
     CBsourceDirsPreset->addItem (TRANS("Aalto MCC-subset"), SOURCE_CONFIG_PRESET_AALTO_MCC_SUBSET);
     CBsourceDirsPreset->addItem (TRANS("Aalto Apaja"), SOURCE_CONFIG_PRESET_AALTO_APAJA);
@@ -210,6 +212,20 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBsourceDirsPreset->addItem (TRANS("SphCov (64)"), SOURCE_CONFIG_PRESET_SPH_COV_64);
 
     /* add Loudspeaker preset options */
+    if(processor.wrapperType == AudioProcessor::wrapperType_AAX){
+        CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools Stereo"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_STEREO);
+        CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools LCR"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_LCR);
+        CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools Quad"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_QUAD);
+        CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 5.0"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_5_0);
+        CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 5.0.2"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_5_0_2);
+        CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 5.0.4"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_5_0_4);
+        CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 7.0"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_7_0);
+        CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 7.0.2"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_7_0_2);
+        CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 7.0.4"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_7_0_4);
+        CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 7.0.6"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_7_0_6);
+        CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 9.0.4"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_9_0_4);
+        CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 9.0.6"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_9_0_6);
+    }
     CBsLoudspeakerDirsPreset->addItem (TRANS("Stereo"), LOUDSPEAKER_ARRAY_PRESET_STEREO);
     CBsLoudspeakerDirsPreset->addItem (TRANS("5.x"), LOUDSPEAKER_ARRAY_PRESET_5PX);
     CBsLoudspeakerDirsPreset->addItem (TRANS("7.x"), LOUDSPEAKER_ARRAY_PRESET_7PX);
@@ -221,18 +237,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBsLoudspeakerDirsPreset->addItem (TRANS("13.x"), LOUDSPEAKER_ARRAY_PRESET_13PX);
     CBsLoudspeakerDirsPreset->addItem (TRANS("22.x"), LOUDSPEAKER_ARRAY_PRESET_22PX);
     CBsLoudspeakerDirsPreset->addItem (TRANS("9+10+3.2"), LOUDSPEAKER_ARRAY_PRESET_22P2_9_10_3);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools Stereo"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_STEREO);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools LCR"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_LCR);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools Quad"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_QUAD);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 5.0"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_5_0);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 5.0.2"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_5_0_2);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 5.0.4"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_5_0_4);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 7.0"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_7_0);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 7.0.2"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_7_0_2);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 7.0.4"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_7_0_4);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 7.0.6"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_7_0_6);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 9.0.4"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_9_0_4);
-    CBsLoudspeakerDirsPreset->addItem (TRANS("ProTools 9.0.6"), LOUDSPEAKER_ARRAY_PRESET_PROTOOLS_9_0_6);
     CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto MCC"), LOUDSPEAKER_ARRAY_PRESET_AALTO_MCC);
     CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto MCC-subset"), LOUDSPEAKER_ARRAY_PRESET_AALTO_MCC_SUBSET);
     CBsLoudspeakerDirsPreset->addItem (TRANS("Aalto Apaja"), LOUDSPEAKER_ARRAY_PRESET_AALTO_APAJA);

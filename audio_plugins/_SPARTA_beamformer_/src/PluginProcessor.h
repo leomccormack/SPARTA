@@ -45,6 +45,7 @@ public:
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
     int getCurrentNumOutputs(){ return nNumOutputs; }
+    bool getBusHasLFE() { return inputBusHasLFE; }
     
     /* For refreshing window during automation */
     void setRefreshWindow(bool newState) { refreshWindow = newState; }
@@ -68,6 +69,7 @@ private:
     int nSampleRate;                   /* current host sample rate */
     std::atomic<int> nHostBlockSize;   /* typical host block size to expect, in samples */
     bool refreshWindow;
+    std::atomic<bool> inputBusHasLFE = false;
     
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void parameterChanged(const juce::String& parameterID, float newValue) override;

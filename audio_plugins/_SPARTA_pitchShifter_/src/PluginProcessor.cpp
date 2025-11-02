@@ -23,6 +23,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#if JucePlugin_Build_AAX && !JucePlugin_AAXDisableDefaultSettingsChunks
+# error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
+#endif
+
 static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     switch(format){
         case juce::AudioProcessor::wrapperType_VST:  /* fall through */
@@ -37,9 +41,10 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
 juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    
     params.push_back(std::make_unique<juce::AudioParameterInt>("numChannels", "NumChannels", 1, MAX_NUM_INPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("pitchShiftFactor", "PitchShiftFactor", juce::NormalisableRange<float>(PITCH_SHIFTER_MIN_SHIFT_FACTOR, PITCH_SHIFTER_MAX_SHIFT_FACTOR, 0.01f), 1.0f));
-    params.push_back(std::make_unique<juce::AudioParameterChoice>("fftOption", "FFTOption", juce::StringArray{"512", "1024", "2048", "4096", "8192", "16384"}, 1, AudioParameterChoiceAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("fftOption", "FFTOption", juce::StringArray{"512", "1024", "2048", "4096", "8192", "16384"}, 3, AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("oSampOption", "OSampOption", juce::StringArray{"2", "4", "8", "16", "32"}, 1, AudioParameterChoiceAttributes().withAutomatable(false)));
     
     return { params.begin(), params.end() };

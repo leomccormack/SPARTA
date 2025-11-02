@@ -23,6 +23,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#if JucePlugin_Build_AAX && !JucePlugin_AAXDisableDefaultSettingsChunks
+# error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
+#endif
+
 static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     switch(format){
         case juce::AudioProcessor::wrapperType_VST:  /* fall through */
@@ -37,29 +41,28 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
 juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
-    
-    
+
     params.push_back(std::make_unique<juce::AudioParameterChoice>("inputOrder", "InputOrder",
                                                                   juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("DirASSmode", "DirASSmode",
-                                                                  juce::StringArray{"Off","Nearest","Upscale"}, 0,
+                                                                  juce::StringArray{"Off","Nearest","Upscale"}, 2,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("beamType", "BeamType",
-                                                                  juce::StringArray{"Cardioid","Hyper-Cardioid","Max-EV"}, 0,
+                                                                  juce::StringArray{"Cardioid","Hyper-Cardioid","Max-EV"}, 1,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("gridOption", "GridOption",
-                                                                  juce::StringArray{"T-design: 6","T-design: 12","T-design: 24","T-design: 48","T-design: 94","T-design: 180","G-sphere: 362","T-design: 480","G-sphere: 642","G-sphere: 812","G-sphere: 1002","G-sphere: 1442"}, 0,
+                                                                  juce::StringArray{"T-design: 6","T-design: 12","T-design: 24","T-design: 48","T-design: 94","T-design: 180","G-sphere: 362","T-design: 480","G-sphere: 642","G-sphere: 812","G-sphere: 1002","G-sphere: 1442"}, 8,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("upscaleOrder", "UpscaleOrder",
-                                                                  juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order","11th order","12th order","13th order","14th order","15th order","16th order","17th order","18th order","19th order","20th order"}, 0,
+                                                                  juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order","11th order","12th order","13th order","14th order","15th order","16th order","17th order","18th order","19th order","20th order"}, 9,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("minFreq", "MinFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 0.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("minFreq", "MinFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 100.0f,
                                                                  AudioParameterFloatAttributes().withLabel(" Hz")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("maxFreq", "MaxFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 0.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("maxFreq", "MaxFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 8000.0f,
                                                                  AudioParameterFloatAttributes().withLabel(" Hz")));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
-    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 1));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("FOVoption", "FOV",
                                                                   juce::StringArray{"360","180","90","60"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
@@ -67,7 +70,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
                                                                   juce::StringArray{"2:1","16:9","4:3"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("mapAvg", "MapAvg", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.2f));
-    params.push_back(std::make_unique<juce::AudioParameterInt>("dispWidth", "DispWidth", 64, 256, 1, AudioParameterIntAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("dispWidth", "DispWidth", 64, 256, 120, AudioParameterIntAttributes().withAutomatable(false)));
 
     return { params.begin(), params.end() };
 }
