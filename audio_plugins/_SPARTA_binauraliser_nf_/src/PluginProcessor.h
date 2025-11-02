@@ -52,7 +52,8 @@ public:
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
     int getCurrentNumOutputs(){ return nNumOutputs; }
-    
+    bool getBusHasLFE() { return inputBusHasLFE; }
+
     /* For refreshing window during automation */
     bool refreshWindow;
     void setRefreshWindow(bool newState) { refreshWindow = newState; }
@@ -114,7 +115,8 @@ private:
     OSCReceiver osc;
     bool osc_connected = false;
     int osc_port_ID = DEFAULT_OSC_PORT;
-    
+    std::atomic<bool> inputBusHasLFE = false;
+
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void parameterChanged(const juce::String& parameterID, float newValue) override;
     void setParameterValuesUsingInternalState();

@@ -23,6 +23,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#if JucePlugin_Build_AAX && !JucePlugin_AAXDisableDefaultSettingsChunks
+# error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
+#endif
+
 static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     switch(format){
         case juce::AudioProcessor::wrapperType_VST:  /* fall through */
@@ -37,7 +41,8 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
 juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("decorrelation", "Decorrelation", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
+    
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("decorrelation", "Decorrelation", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 1.0f));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numChannels", "NumChannels", 1, MAX_NUM_INPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterBool>("energyComp", "EnergyCompensation", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>("bypassTransients", "BypassTransients", false));

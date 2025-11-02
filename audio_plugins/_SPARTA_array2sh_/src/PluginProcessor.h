@@ -46,7 +46,8 @@ public:
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
     int getCurrentNumOutputs(){ return nNumOutputs; }
-    
+    bool getBusHasLFE() { return inputBusHasLFE; }
+
     /* JSON */
     void saveConfigurationToFile (File destination);
     void loadConfiguration (const File& presetFile);
@@ -65,14 +66,15 @@ public:
     VST2ClientExtensions* getVST2ClientExtensions() override {return this;}
     
 private:
-    void* hA2sh;           /* array2sh handle */
+    void* hA2sh;                        /* array2sh handle */
     std::atomic<int> nNumInputs;        /* current number of input channels */
     std::atomic<int> nNumOutputs;       /* current number of output channels */
     int nSampleRate;                    /* current host sample rate */
     std::atomic<int> nHostBlockSize;    /* typical host block size to expect, in samples */
     File lastDir;
     ValueTree sensors {"Sensors"};
-    
+    std::atomic<bool> inputBusHasLFE = false;
+
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void parameterChanged(const juce::String& parameterID, float newValue) override;
     void setParameterValuesUsingInternalState();

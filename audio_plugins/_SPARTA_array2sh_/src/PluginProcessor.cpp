@@ -23,6 +23,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#if JucePlugin_Build_AAX && !JucePlugin_AAXDisableDefaultSettingsChunks
+# error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
+#endif
+
 static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     switch(format){
         case juce::AudioProcessor::wrapperType_VST:  /* fall through */
@@ -55,21 +59,21 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     params.push_back(std::make_unique<juce::AudioParameterFloat>("speedOfSound", "SpeedOfSound",
                                                                  juce::NormalisableRange<float>(ARRAY2SH_SPEED_OF_SOUND_MIN_VALUE, ARRAY2SH_SPEED_OF_SOUND_MAX_VALUE, 0.1f), 343.0f,
                                                                  AudioParameterFloatAttributes().withLabel(" m/s")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("arrayRadius", "ArrayRadius", juce::NormalisableRange<float>(1.0f, 400.0f, 0.1f), 0.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("arrayRadius", "ArrayRadius", juce::NormalisableRange<float>(1.0f, 400.0f, 0.1f), 20.0f,
                                                                  AudioParameterFloatAttributes().withLabel(" mm")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("baffleRadius", "BaffleRadius", juce::NormalisableRange<float>(1.0f, 400.0f, 0.1f), 0.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("baffleRadius", "BaffleRadius", juce::NormalisableRange<float>(1.0f, 400.0f, 0.1f), 20.0f,
                                                                  AudioParameterFloatAttributes().withLabel(" mm")));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("arrayType", "ArrayType", juce::StringArray{"Spherical","Cylindrical"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("weightType", "WeightType",
-                                                                  juce::StringArray{"Rigid-Omni","Rigid-Card","Rigid-Dipole","Open-Omni","Open-Card","Open-Dipole"}, 0,
+                                                                  juce::StringArray{"Rigid-Omni","Rigid-Card","Rigid-Dipole","Open-Omni","Open-Card","Open-Dipole"}, 4,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterBool>("enableDiffEQ", "EnableDiffEQ", true,
                                                                 AudioParameterBoolAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterInt>("numSensors", "NumSensors", 4, MAX_NUM_INPUTS, 1, AudioParameterIntAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("numSensors", "NumSensors", 4, MAX_NUM_INPUTS, array2sh_defaultNumSensors, AudioParameterIntAttributes().withAutomatable(false)));
     for(int i=0; i<MAX_NUM_INPUTS; i++){
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-360.0f, 360.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
-        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f, AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-360.0f, 360.0f, 0.01f), array2sh_defaultSensorsDirections[i][0], AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
+        params.push_back(std::make_unique<juce::AudioParameterFloat>("elev" + juce::String(i), "Elev_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), array2sh_defaultSensorsDirections[i][1], AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     }
     
     return { params.begin(), params.end() };
@@ -250,6 +254,16 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
     array2sh_init(hA2sh, nSampleRate);
     AudioProcessor::setLatencySamples(array2sh_getProcessingDelay());
+    
+    /* Check for the presence of an LFE channel */
+    if (wrapperType == AudioProcessor::wrapperType_AAX){
+        juce::AudioProcessor::BusesLayout layout = getBusesLayout();
+        AudioChannelSet channelSet = layout.getMainInputChannelSet();
+        inputBusHasLFE = false;
+        if(channelSet.getChannelIndexForType (juce::AudioChannelSet::LFE)>=0 || channelSet.getChannelIndexForType (juce::AudioChannelSet::LFE2)>=0){
+            inputBusHasLFE = true;
+        }
+    }
 }
 
 void PluginProcessor::releaseResources()

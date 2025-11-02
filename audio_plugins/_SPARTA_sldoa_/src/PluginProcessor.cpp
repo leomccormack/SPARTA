@@ -23,6 +23,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#if JucePlugin_Build_AAX && !JucePlugin_AAXDisableDefaultSettingsChunks
+# error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
+#endif
+
 static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     switch(format){
         case juce::AudioProcessor::wrapperType_VST:  /* fall through */
@@ -41,14 +45,14 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     params.push_back(std::make_unique<juce::AudioParameterChoice>("inputOrder", "InputOrder",
                                                                   juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("minFreq", "MinFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 0.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("minFreq", "MinFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 500.0f,
                                                                  AudioParameterFloatAttributes().withLabel(" Hz")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("maxFreq", "MaxFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 0.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("maxFreq", "MaxFreq", juce::NormalisableRange<float>(0.0f, 24e3f, 0.1f), 5000.0f,
                                                                  AudioParameterFloatAttributes().withLabel(" Hz")));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("mapAvg", "MapAvg", juce::NormalisableRange<float>(0.0f, 2000.0f, 0.1f), 0.0f,
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("mapAvg", "MapAvg", juce::NormalisableRange<float>(0.0f, 2000.0f, 0.1f), 500.0f,
                                                                  AudioParameterFloatAttributes().withLabel(" ms")));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
-    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("normType", "NormType", juce::StringArray{"N3D", "SN3D", "FuMa"}, 1));
     
     return { params.begin(), params.end() };
 }

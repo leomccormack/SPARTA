@@ -23,6 +23,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#if JucePlugin_Build_AAX && !JucePlugin_AAXDisableDefaultSettingsChunks
+# error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
+#endif
+
 static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     switch(format){
         case juce::AudioProcessor::wrapperType_VST:  /* fall through */
@@ -37,7 +41,7 @@ static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
 juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
-    
+
     params.push_back(std::make_unique<juce::AudioParameterChoice>("inputOrder", "InputOrder",
                                                                   juce::StringArray{"1st order","2nd order","3rd order","4th order","5th order","6th order","7th order","8th order","9th order","10th order"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterChoice>("channelOrder", "ChannelOrder", juce::StringArray{"ACN", "FuMa"}, 0));
@@ -49,7 +53,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
                                                                  AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("roll", "Roll", juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f), 0.0f,
                                                                  AudioParameterFloatAttributes().withLabel(juce::String::fromUTF8(u8"\u00B0"))));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("qw", "Qw", juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("qw", "Qw", juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 1.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("qx", "Qx", juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 0.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("qy", "Qy", juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 0.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("qz", "Qz", juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 0.0f));

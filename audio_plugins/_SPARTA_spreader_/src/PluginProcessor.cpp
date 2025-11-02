@@ -21,7 +21,11 @@
 */
 
 #include "PluginProcessor.h"
-#include "PluginEditor.h" 
+#include "PluginEditor.h"
+
+#if JucePlugin_Build_AAX && !JucePlugin_AAXDisableDefaultSettingsChunks
+# error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
+#endif
 
 static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     switch(format){
@@ -39,9 +43,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
 
     params.push_back(std::make_unique<juce::AudioParameterChoice>("procMode", "ProcMode",
-                                                                  juce::StringArray{"Basic","OM","EVD"}, 0,
+                                                                  juce::StringArray{"Basic","OM","EVD"}, 1,
                                                                   AudioParameterChoiceAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("avgCoeff", "AvgCoeff", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("avgCoeff", "AvgCoeff", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.85f));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numInputs", "NumInputs", 1, SPREADER_MAX_NUM_SOURCES, 1, AudioParameterIntAttributes().withAutomatable(false)));
     for(int i=0; i<SPREADER_MAX_NUM_SOURCES; i++){
         params.push_back(std::make_unique<juce::AudioParameterFloat>("azim" + juce::String(i), "Azim_" + juce::String(i+1), juce::NormalisableRange<float>(-180.0f, 180.0f, 0.1f), 0.0f));

@@ -185,6 +185,20 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     SL_num_sources->setSliderSnapsToMousePosition(false);
 
     /* add source preset options */
+    if(processor.wrapperType == AudioProcessor::wrapperType_AAX){
+        CBsourceDirsPreset->addItem (TRANS("ProTools Stereo"), SOURCE_CONFIG_PRESET_PROTOOLS_STEREO);
+        CBsourceDirsPreset->addItem (TRANS("ProTools LCR"), SOURCE_CONFIG_PRESET_PROTOOLS_LCR);
+        CBsourceDirsPreset->addItem (TRANS("ProTools Quad"), SOURCE_CONFIG_PRESET_PROTOOLS_QUAD);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 5.0"), SOURCE_CONFIG_PRESET_PROTOOLS_5_0);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 5.0.2"), SOURCE_CONFIG_PRESET_PROTOOLS_5_0_2);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 5.0.4"), SOURCE_CONFIG_PRESET_PROTOOLS_5_0_4);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 7.0"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 7.0.2"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0_2);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 7.0.4"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0_4);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 7.0.6"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0_6);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 9.0.4"), SOURCE_CONFIG_PRESET_PROTOOLS_9_0_4);
+        CBsourceDirsPreset->addItem (TRANS("ProTools 9.0.6"), SOURCE_CONFIG_PRESET_PROTOOLS_9_0_6);
+    }
     CBsourceDirsPreset->addItem (TRANS("Mono"), SOURCE_CONFIG_PRESET_MONO);
     CBsourceDirsPreset->addItem (TRANS("Stereo"), SOURCE_CONFIG_PRESET_STEREO);
     CBsourceDirsPreset->addItem (TRANS("5.x"), SOURCE_CONFIG_PRESET_5PX);
@@ -197,18 +211,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     CBsourceDirsPreset->addItem (TRANS("13.x"), SOURCE_CONFIG_PRESET_13PX);
     CBsourceDirsPreset->addItem (TRANS("22.x"), SOURCE_CONFIG_PRESET_22PX);
     CBsourceDirsPreset->addItem (TRANS("9+10+3.2"), SOURCE_CONFIG_PRESET_22P2_9_10_3);
-    CBsourceDirsPreset->addItem (TRANS("ProTools Stereo"), SOURCE_CONFIG_PRESET_PROTOOLS_STEREO);
-    CBsourceDirsPreset->addItem (TRANS("ProTools LCR"), SOURCE_CONFIG_PRESET_PROTOOLS_LCR);
-    CBsourceDirsPreset->addItem (TRANS("ProTools Quad"), SOURCE_CONFIG_PRESET_PROTOOLS_QUAD);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 5.0"), SOURCE_CONFIG_PRESET_PROTOOLS_5_0);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 5.0.2"), SOURCE_CONFIG_PRESET_PROTOOLS_5_0_2);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 5.0.4"), SOURCE_CONFIG_PRESET_PROTOOLS_5_0_4);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 7.0"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 7.0.2"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0_2);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 7.0.4"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0_4);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 7.0.6"), SOURCE_CONFIG_PRESET_PROTOOLS_7_0_6);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 9.0.4"), SOURCE_CONFIG_PRESET_PROTOOLS_9_0_4);
-    CBsourceDirsPreset->addItem (TRANS("ProTools 9.0.6"), SOURCE_CONFIG_PRESET_PROTOOLS_9_0_6);
     CBsourceDirsPreset->addItem (TRANS("Aalto MCC"), SOURCE_CONFIG_PRESET_AALTO_MCC);
     CBsourceDirsPreset->addItem (TRANS("Aalto MCC-subset"), SOURCE_CONFIG_PRESET_AALTO_MCC_SUBSET);
     CBsourceDirsPreset->addItem (TRANS("Aalto Apaja"), SOURCE_CONFIG_PRESET_AALTO_APAJA);

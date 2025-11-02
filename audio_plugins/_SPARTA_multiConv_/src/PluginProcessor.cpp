@@ -23,6 +23,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#if JucePlugin_Build_AAX && !JucePlugin_AAXDisableDefaultSettingsChunks
+# error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
+#endif
+
 static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
     switch(format){
         case juce::AudioProcessor::wrapperType_VST:  /* fall through */

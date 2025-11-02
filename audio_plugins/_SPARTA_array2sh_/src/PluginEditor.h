@@ -43,7 +43,8 @@ typedef enum _SPARTA_WARNINGS{
     k_warning_NoutputCH,
     
     /* Less severe warnings (shown in yellow) */
-    k_warning_supported_fs,
+    k_warning_busContainsLFE,
+    k_warning_supported_fs
 }SPARTA_WARNINGS;
 
 class PluginEditor  : public AudioProcessorEditor,
