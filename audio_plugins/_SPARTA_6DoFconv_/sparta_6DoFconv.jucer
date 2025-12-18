@@ -310,7 +310,7 @@
         <MODULEPATH id="juce_osc" path="../../SDKs/JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
-    <XCODE_MAC targetFolder="make/MacOSX/Xcode" extraDefs="SAF_USE_APPLE_ACCELERATE&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;SAF_ENABLE_NETCDF&#10;"
+    <XCODE_MAC targetFolder="make/MacOSX/Xcode" extraDefs="SAF_USE_APPLE_ACCELERATE_LP64&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;SAF_ENABLE_NETCDF&#10;"
                extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra&#10;-Wno-strict-prototypes"
                xcodeValidArchs="arm64,x86_64" userNotes="&#10;&#10;-L/usr/local/lib -lsaf_mkl_custom"
                externalLibraries="hdf5_hl&#13;hdf5&#13;netcdf&#13;z">
@@ -339,6 +339,7 @@
         <MODULEPATH id="juce_gui_extra" path="../../SDKs/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules"/>
         <MODULEPATH id="juce_osc" path="../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="../../SDKs/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <LINUX_MAKE targetFolder="make/LinuxMakefile" extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_ENABLE_SOFA_READER_MODULE"
@@ -365,6 +366,7 @@
         <MODULEPATH id="juce_gui_extra" path="../../SDKs/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules"/>
         <MODULEPATH id="juce_osc" path="../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="../../SDKs/JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
@@ -375,6 +377,8 @@
     <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
             useGlobalPath="0"/>
     <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors_headless" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="0"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>

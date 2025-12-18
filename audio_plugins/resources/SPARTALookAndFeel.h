@@ -8,6 +8,7 @@ public:
     Colour colourAccent = Colour(70, 180, 220);
     Colour colourThumb  = Colour(140, 190, 225);
     Colour colourOutline = Colour(200, 240, 255);
+    const float cornerSize = 1.0f;
 
     void drawLinearSlider (Graphics& g, int x, int y, int width, int height,
                            float sliderPos, float /*minSliderPos*/, float /*maxSliderPos*/,
@@ -152,7 +153,6 @@ public:
                                               .withTrimmedTop(paddingY)
                                               .withTrimmedBottom(paddingY);
 
-        float cornerSize = 6.0f;
         Colour fill = colourBackground.darker(0.8f);
         Colour outline = colourOutline.withAlpha(0.75f);
 
@@ -170,9 +170,9 @@ public:
         }
 
         g.setColour(fill);
-        g.fillRoundedRectangle(squareBounds, cornerSize);
+        g.fillRoundedRectangle(squareBounds, 2*cornerSize);
         g.setColour(outline);
-        g.drawRoundedRectangle(squareBounds, cornerSize, 1.2f);
+        g.drawRoundedRectangle(squareBounds, 2*cornerSize, 1.2f);
 
         // Draw tick if toggled
         if (button.getToggleState())
@@ -184,99 +184,11 @@ public:
         }
     }
 
-    void drawComboBox (juce::Graphics& g, int width, int height, bool /*isButtonDown*/,
-                       int buttonX, int buttonY, int buttonW, int buttonH, juce::ComboBox& box) override
-    {
-        bool isActive = box.isPopupActive();
-
-        auto background = colourBackground.darker(0.8f);
-
-        auto outline = isActive ? colourAccent
-                                 : colourOutline.withAlpha(0.75f);
-
-        g.setColour(background);
-        g.fillRoundedRectangle(0.0f, 0.0f, (float)width, (float)height, 4.0f);
-
-        g.setColour(outline);
-        g.drawRoundedRectangle(0.5f, 0.5f, (float)width - 1.0f, (float)height - 1.0f, 4.0f, 1.0f);
-
-        // Dropdown arrow
-        juce::Path arrow;
-        float cx = (float)(buttonX + buttonW * 0.5f);
-        float cy = (float)(buttonY + buttonH * 0.5f);
-        float chevronSize = 5.0f;
-
-        arrow.startNewSubPath(cx - chevronSize, cy - 2.0f);
-        arrow.lineTo(cx, cy + 2.5f);
-        arrow.lineTo(cx + chevronSize, cy - 2.0f);
-
-        // Actual arrow fill
-        g.setColour(outline);
-        g.strokePath(arrow, juce::PathStrokeType(1.8f));
-    }
-    
-    void drawPopupMenuItemWithOptions(Graphics& g, const Rectangle<int>& area,
-                                      bool isHighlighted, const PopupMenu::Item& item,
-                                      const PopupMenu::Options&) override
-    {
-        if (item.isSeparator)
-        {
-            g.setColour(colourOutline.withAlpha(0.3f));
-            g.drawLine(area.getX() + 4.0f, area.getCentreY(), area.getRight() - 4.0f, area.getCentreY());
-            return;
-        }
-
-        Colour textCol = item.colour.isTransparent() ? colourThumb : item.colour;
-
-        if (!item.isEnabled)
-            textCol = textCol.withAlpha(0.4f);
-
-        if (item.isTicked && isHighlighted)
-        {
-            g.setColour(colourAccent.withAlpha(0.2f));
-            g.fillRect(area);
-            textCol = Colours::white;
-        }
-        else if (isHighlighted)
-        {
-            g.setColour(colourAccent.withAlpha(0.2f));
-            g.fillRect(area);
-            textCol = colourAccent;
-        }
-        else if (item.isTicked)
-        {
-            g.setColour(colourAccent.withAlpha(0.1f));
-            g.fillRect(area);
-            textCol = Colours::white;
-        }
-
-        g.setColour(textCol);
-        g.setFont(14.0f);
-        g.drawText(item.text, area.reduced(4), Justification::centredLeft, true);
-    }
-    
-    void drawPopupMenuBackground (juce::Graphics& g, int width, int height) override
-    {
-        float cornerRadius = 3.0f;
-        auto area = juce::Rectangle<float>(0, 0, width, height).reduced(1,1);
-        
-        g.fillAll (juce::Colours::black);
-
-        juce::ColourGradient gradient (colourBackground.darker(0.4f), 0, 0,
-                                       colourBackground.darker(0.98f), 0, (float)height, false);
-        g.setGradientFill(gradient);
-        g.fillRoundedRectangle(area, cornerRadius);
-
-        g.setColour(colourAccent);
-        g.drawRoundedRectangle(area, cornerRadius, 1.0f);
-    }
-
     void drawButtonBackground (juce::Graphics& g, juce::Button& button,
                                const juce::Colour& /*backgroundColour*/,
                                bool isHovered, bool isPressed) override
     {
         auto bounds = button.getLocalBounds().reduced(1, 1).toFloat();
-        float cornerSize = 3.0f;
 
         juce::Colour fill = colourBackground.darker(0.8f);
         juce::Colour outline = colourOutline.withAlpha(0.75f);
@@ -329,8 +241,6 @@ public:
             }
         }
         
-        float cornerSize = 3.0f;
-
         g.setColour(colourBackground.darker(0.8f));
         g.fillRoundedRectangle(label.getLocalBounds().reduced(1, 1).toFloat(), cornerSize);
 
@@ -351,7 +261,6 @@ public:
                           const String& textToShow) override
     {
         auto bounds = Rectangle<float>(0, 0, (float)width, (float)height).reduced(1.0f);
-        float cornerSize = 3.0f;
 
         g.setColour(colourBackground.darker(0.7f));
         g.fillRoundedRectangle(bounds, cornerSize);
@@ -374,11 +283,39 @@ public:
     void drawTextEditorOutline (Graphics& g, int width, int height, TextEditor& editor) override
     {
         auto bounds = Rectangle<float>(0, 0, (float)width, (float)height).reduced(0.5f);
-        float cornerSize = 3.0f;
 
         Colour outlineCol = editor.hasKeyboardFocus(true) ? colourAccent
                                                           : colourOutline.withAlpha(0.6f);
         g.setColour(outlineCol);
         g.drawRoundedRectangle(bounds, cornerSize, 1.4f);
+    }
+
+    void drawComboBox (juce::Graphics& g, int width, int height, bool isButtonDown,
+                       int /*buttonX*/, int /*buttonY*/, int /*buttonW*/, int /*buttonH*/,
+                       juce::ComboBox& /*box*/) override
+    {
+        auto bounds = juce::Rectangle<float>(0, 0, (float)width, (float)height);
+
+        juce::Colour fill = colourBackground.darker(0.8f);
+        juce::Colour outline = colourOutline.withAlpha(0.7f);
+
+        if (isButtonDown)
+        {
+            fill = colourAccent.darker(0.25f);
+            outline = colourAccent;
+        }
+
+        g.setColour(fill);
+        g.fillRoundedRectangle(bounds.reduced(1.0f), cornerSize);
+
+        g.setColour(outline);
+        g.drawRoundedRectangle(bounds.reduced(1.0f), cornerSize, 1.2f);
+        
+        Rectangle<int> arrowZone (width - 24, 0, 16, height);
+        Path path;
+        path.startNewSubPath ((float) arrowZone.getX() + 3.0f, (float) arrowZone.getCentreY() - 2.0f);
+        path.lineTo ((float) arrowZone.getCentreX(), (float) arrowZone.getCentreY() + 3.0f);
+        path.lineTo ((float) arrowZone.getRight() - 3.0f, (float) arrowZone.getCentreY() - 2.0f);
+        g.strokePath (path, PathStrokeType (2.0f));
     }
 };

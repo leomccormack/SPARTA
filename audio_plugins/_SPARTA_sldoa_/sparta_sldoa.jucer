@@ -290,7 +290,7 @@
     </VS2017>
     <XCODE_MAC targetFolder="make/MacOSX/Xcode/" vstFolder="../../../SDKs/VST3 SDK"
                extraFrameworks="QTKit" extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra&#10;-Wno-strict-prototypes"
-               extraDefs="SAF_USE_APPLE_ACCELERATE" xcodeValidArchs="arm64,x86_64"
+               extraDefs="SAF_USE_APPLE_ACCELERATE_LP64" xcodeValidArchs="arm64,x86_64"
                cameraPermissionNeeded="1" cameraPermissionText="This app requires access to the Camera to support the &quot;AcousticCamera&quot; option">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_sldoad"
@@ -317,6 +317,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_audio_devices" path="../../SDKs/JUCE/modules/"/>
         <MODULEPATH id="juce_audio_basics" path="../../SDKs/JUCE/modules/"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="../../SDKs/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
@@ -326,6 +327,8 @@
     <MODULES id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_processors_headless" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="0"/>
     <MODULES id="juce_core" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_cryptography" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
