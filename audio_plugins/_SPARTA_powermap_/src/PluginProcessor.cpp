@@ -123,16 +123,14 @@ void PluginProcessor::setInternalStateUsingParameterValues()
 }
 
 PluginProcessor::PluginProcessor() :
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
     ParameterManager(*this, createParameterLayout())
 {
     powermap_create(&hPm);
     isPlaying = false;
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
+    addParameterListeners(this);
     
     /* camera default settings */
     cameraID = 1;
@@ -143,6 +141,7 @@ PluginProcessor::PluginProcessor() :
 
 PluginProcessor::~PluginProcessor()
 {
+    removeParameterListeners(this);
     powermap_destroy(&hPm);
 }
 
@@ -199,6 +198,11 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
     nHostBlockSize = samplesPerBlock;
     nSampleRate = (int)(sampleRate + 0.5);
     nNumInputs = getTotalNumInputChannels();

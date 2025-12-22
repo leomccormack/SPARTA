@@ -44,7 +44,8 @@ class PluginProcessor  : public AudioProcessor,
                          public Timer,
                          private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
                          public VST2ClientExtensions,
-                         public ParameterManager
+                         public ParameterManager,
+                         public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     /* Get functions */
@@ -102,9 +103,9 @@ public:
     float ffThresh;       /* far field distance threshold where near field filters disengage */
     float ffHeadroom;     /* headroom above the far field threshold to easily disable with the UI */
     float upperDistRange; /* ffThresh * ffHeadroom */
-
     
 private:
+    bool firstInit = true;
     void* hBin;                        /* binauraliser handle */
     std::atomic<int> nNumInputs;       /* current number of input channels */
     std::atomic<int> nNumOutputs;      /* current number of output channels */

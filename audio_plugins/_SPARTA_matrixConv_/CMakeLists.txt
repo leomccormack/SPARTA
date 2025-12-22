@@ -21,6 +21,7 @@ juce_add_plugin(${PROJECT_NAME}
     LV2URI                      "http://AALTO.${PROJECT_NAME}.${PROJECT_VERSION}"
     VST3_CATEGORIES             Spatial
     AAX_CATEGORY                SoundField
+    DISABLE_AAX_MULTI_MONO      TRUE
 )   
 
 # Generates "JuceHeader.h", and adds its path to the include paths of the target

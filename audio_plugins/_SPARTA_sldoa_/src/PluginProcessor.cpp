@@ -102,17 +102,15 @@ void PluginProcessor::setInternalStateUsingParameterValues()
 }
 
 PluginProcessor::PluginProcessor() : 
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
     ParameterManager(*this, createParameterLayout())
 {
-	nSampleRate = 48000;
-	sldoa_create(&hSld);
+    nSampleRate = 48000;
+    sldoa_create(&hSld);
     isPlaying = false;
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
+    addParameterListeners(this);
     
     /* camera default settings */
     cameraID = 1;
@@ -123,7 +121,8 @@ PluginProcessor::PluginProcessor() :
 
 PluginProcessor::~PluginProcessor()
 {
-	sldoa_destroy(&hSld);
+    removeParameterListeners(this);
+    sldoa_destroy(&hSld);
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
@@ -179,11 +178,16 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
     nHostBlockSize = samplesPerBlock;
     nNumInputs =  getTotalNumInputChannels();
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false; 
-	sldoa_init(hSld, nSampleRate);
+    sldoa_init(hSld, nSampleRate);
 
     //AudioProcessor::setLatencySamples(sldoa_getProcessingDelay());
 }
@@ -197,7 +201,7 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
 {
     ScopedNoDenormals noDenormals;
     
-	int nCurrentBlockSize = buffer.getNumSamples();
+    int nCurrentBlockSize = buffer.getNumSamples();
     nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
     float* const* bufferData = buffer.getArrayOfWritePointers();
  

@@ -292,7 +292,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     pluginDescription->setEnabled(false);
     pluginDescription->setTooltip(TRANS("This plug-in is a linear and time-invariant loudspeaker Ambisonic decoder, which implements a number of different decoder designs. The plug-in employs a dual-decoder approach, whereby different decoding methods may be selected for the low and high frequencies. Additionally, the decoding order may be specified for each individual frequency band, in order to account for imperfect input Ambisonic signals (such as those derived from microphone arrays) or for creative purposes.\n\nAs with most of the SPARTA plugins, the default settings generally represent the \"state-of-the-art\" approach; or at least a configuration that is suitable for the majority of applications. The vast number of configuration options and decoding methods offered by this plug-in are mainly intended for research and educational purposes, but may nevertheless be fun to play around with :-)"));
 
-	/* Specify screen refresh rate */
+    /* Specify screen refresh rate */
     startTimer(40);
 
     /* warnings */
@@ -763,11 +763,11 @@ void PluginEditor::paint (juce::Graphics& g)
                     juce::Justification::centredLeft, true);
     }
 
-	g.setColour(Colours::white);
-	g.setFont(juce::FontOptions(11.00f, Font::plain));
-	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		185, 16, 530, 11,
-		Justification::centredLeft, true);
+    g.setColour(Colours::white);
+    g.setFont(juce::FontOptions(11.00f, Font::plain));
+    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
+        185, 16, 530, 11,
+        Justification::centredLeft, true);
 
     /* label for max ORDER */
     int x = 417, y = 176, width = 18, height = 30;
@@ -844,7 +844,7 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == CBsourcePreset.get())
     {
         ambi_dec_setSourcePreset(hAmbi, CBsourcePreset->getSelectedId());
-		decOrder2dSlider->setRefreshValuesFLAG(true);
+        decOrder2dSlider->setRefreshValuesFLAG(true);
     }
     else if (comboBoxThatHasChanged == CBmasterOrder.get())
     {
@@ -861,7 +861,7 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == s_decOrder.get())
     {
         ambi_dec_setDecOrderAllBands(hAmbi, (int)s_decOrder->getValue());
-		decOrder2dSlider->setRefreshValuesFLAG(true);
+        decOrder2dSlider->setRefreshValuesFLAG(true);
     }
 }
 

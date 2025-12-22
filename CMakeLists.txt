@@ -43,6 +43,7 @@ option(JUCE_BUILD_EXAMPLES "Build JUCE Examples" OFF)
 # Disable SAF tests, but enable SAF examples:
 option(SAF_BUILD_TESTS    "Build SAF unit tests." OFF)
 option(SAF_BUILD_EXAMPLES "Build SAF examples."   ON)
+option(SAF_ENABLE_SOFA_READER_MODULE "Required for binaural output plugins."   ON)
 
 # Add JUCE, Spatial_Audio_Framework, and VST2_SDK to the project
 add_subdirectory(SDKs) 

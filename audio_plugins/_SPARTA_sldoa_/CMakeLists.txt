@@ -23,6 +23,7 @@ juce_add_plugin(${PROJECT_NAME}
     CAMERA_PERMISSION_TEXT      "This app requires access to the Camera to support the AcousticCamera option"
     VST3_CATEGORIES             Spatial
     AAX_CATEGORY                SoundField
+    DISABLE_AAX_MULTI_MONO      TRUE
 )   
 
 # Generates "JuceHeader.h", and adds its path to the include paths of the target

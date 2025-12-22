@@ -109,21 +109,20 @@ void PluginProcessor::setInternalStateUsingParameterValues()
 }
 
 PluginProcessor::PluginProcessor() :
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
     ParameterManager(*this, createParameterLayout())
 {
-	ambi_enc_create(&hAmbi);
+    ambi_enc_create(&hAmbi);
+    addParameterListeners(this);
     refreshWindow = true;
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
 }
 
 PluginProcessor::~PluginProcessor()
 {
-	ambi_enc_destroy(&hAmbi);
+    removeParameterListeners(this);
+    ambi_enc_destroy(&hAmbi);
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
@@ -179,12 +178,17 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
     nHostBlockSize = samplesPerBlock;
     nNumInputs =  jmin(getTotalNumInputChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), 256);
     nSampleRate = (int)(sampleRate + 0.5);
 
-	ambi_enc_init(hAmbi, nSampleRate);
+    ambi_enc_init(hAmbi, nSampleRate);
     AudioProcessor::setLatencySamples(ambi_enc_getProcessingDelay());
     
     /* Check for the presence of an LFE channel */

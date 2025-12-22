@@ -154,16 +154,14 @@ void PluginProcessor::setInternalStateUsingParameterValues()
 }
 
 PluginProcessor::PluginProcessor() :
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
     ParameterManager(*this, createParameterLayout())
 {
-	nSampleRate = 48000;
-	rotator_create(&hRot);
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
+    nSampleRate = 48000;
+    rotator_create(&hRot);
+    addParameterListeners(this);
 
     /* specify here on which UDP port number to receive incoming OSC messages */
     osc_port_ID = DEFAULT_OSC_PORT;
@@ -177,7 +175,8 @@ PluginProcessor::~PluginProcessor()
     osc.disconnect();
     osc.removeListener(this);
     
-	rotator_destroy(&hRot);
+    removeParameterListeners(this);
+    rotator_destroy(&hRot);
 }
 
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
@@ -274,12 +273,17 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
     nHostBlockSize = samplesPerBlock;
     nNumInputs =  jmin(getTotalNumInputChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), 256);
     nSampleRate = (int)(sampleRate + 0.5);
 
-	rotator_init(hRot, (float)sampleRate);
+    rotator_init(hRot, (float)sampleRate);
 }
 
 void PluginProcessor::releaseResources()

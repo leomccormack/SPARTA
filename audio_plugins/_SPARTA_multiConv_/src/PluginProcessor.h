@@ -39,7 +39,8 @@
 
 class PluginProcessor  : public AudioProcessor,
                          public VST2ClientExtensions,
-                         public ParameterManager
+                         public ParameterManager,
+                         public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     /* Set/Get functions */
@@ -81,6 +82,7 @@ public:
     }
     
 private:
+    bool firstInit = true;
     void* hMCnv;                         /* multiconv handle */
     std::atomic<int> nNumInputs;         /* current number of input channels */
     std::atomic<int> nNumOutputs;        /* current number of output channels */

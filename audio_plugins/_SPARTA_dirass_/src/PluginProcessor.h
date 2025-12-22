@@ -33,12 +33,13 @@
 class PluginProcessor  : public AudioProcessor,
                          public Timer,
                          public VST2ClientExtensions,
-                         public ParameterManager
+                         public ParameterManager,
+                         public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     /* Get functions */
     void* getFXHandle() { return hDir; }
-	bool getIsPlaying() { return isPlaying; }
+    bool getIsPlaying() { return isPlaying; }
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
     
@@ -64,6 +65,7 @@ public:
     bool getGreyScale(){ return greyScale;}
     
 private:
+    bool firstInit = true;
     void* hDir;                             /* dirass handle */
     std::atomic<int> nNumInputs;            /* current number of input channels */
     int nSampleRate;                        /* current host sample rate */

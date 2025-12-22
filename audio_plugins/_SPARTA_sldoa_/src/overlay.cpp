@@ -108,42 +108,42 @@ void overlay::paint (Graphics& g)
             }
         }
 
-		/* DRAW THE GRID ON TOP */
-		int numGridLinesX = 8;
-		int numGridLinesY = numGridLinesX / 2;
-		g.setColour(Colours::white);
-		g.setOpacity(0.8f);
+        /* DRAW THE GRID ON TOP */
+        int numGridLinesX = 8;
+        int numGridLinesY = numGridLinesX / 2;
+        g.setColour(Colours::white);
+        g.setOpacity(0.8f);
 
-		g.drawLine(0.0f, height / 2.0f, width, height / 2.0f, 1.0f);
-		g.drawLine(width / 2.0f, 0, width / 2.0f, height, 1.0f);
+        g.drawLine(0.0f, height / 2.0f, width, height / 2.0f, 1.0f);
+        g.drawLine(width / 2.0f, 0, width / 2.0f, height, 1.0f);
 
-		for (int i = 0; i <= numGridLinesX; i++) {
-			g.setOpacity(0.25f);
-			g.drawLine((float)i*width / (float)numGridLinesX, 0, (float)i*width / (float)numGridLinesX, height, 1.0f);
-			g.setOpacity(0.75f);
-			if (i <= numGridLinesX / 2) {
-				g.drawText(String((int)(360 / 2 - i * 360 / numGridLinesX)) + "\xc2\xb0",
-					(float)i*width / (float)numGridLinesX, height / 2, 40, 20, Justification::centred, true);
-			}
-			else {
-				g.drawText(String((int)(360 / 2 - i * 360 / numGridLinesX)) + "\xc2\xb0",
-					(float)i*width / (float)numGridLinesX - 40, height / 2, 40, 20, Justification::centred, true);
-			}
-		}
+        for (int i = 0; i <= numGridLinesX; i++) {
+            g.setOpacity(0.25f);
+            g.drawLine((float)i*width / (float)numGridLinesX, 0, (float)i*width / (float)numGridLinesX, height, 1.0f);
+            g.setOpacity(0.75f);
+            if (i <= numGridLinesX / 2) {
+                g.drawText(String((int)(360 / 2 - i * 360 / numGridLinesX)) + "\xc2\xb0",
+                    (float)i*width / (float)numGridLinesX, height / 2, 40, 20, Justification::centred, true);
+            }
+            else {
+                g.drawText(String((int)(360 / 2 - i * 360 / numGridLinesX)) + "\xc2\xb0",
+                    (float)i*width / (float)numGridLinesX - 40, height / 2, 40, 20, Justification::centred, true);
+            }
+        }
 
-		for (int i = 0; i <= numGridLinesY; i++) {
-			g.setOpacity(0.25f);
-			g.drawLine(0, (float)i*height / (float)numGridLinesY, width, (float)i*height / (float)numGridLinesY, 1.0f);
-			g.setOpacity(0.75f);
-			if (i <= numGridLinesY / 2) {
-				g.drawText(String((int)(180 / 2 - i * 180 / numGridLinesY)) + "\xc2\xb0",
-					width / 2.0f, (float)i*height / (float)numGridLinesY, 40, 20, Justification::centred, true);
-			}
-			else {
-				g.drawText(String((int)(180 / 2 - i * 180 / numGridLinesY)) + "\xc2\xb0",
-					width / 2.0f, (float)i*height / (float)numGridLinesY - 20, 40, 20, Justification::centred, true);
-			}
-		}
+        for (int i = 0; i <= numGridLinesY; i++) {
+            g.setOpacity(0.25f);
+            g.drawLine(0, (float)i*height / (float)numGridLinesY, width, (float)i*height / (float)numGridLinesY, 1.0f);
+            g.setOpacity(0.75f);
+            if (i <= numGridLinesY / 2) {
+                g.drawText(String((int)(180 / 2 - i * 180 / numGridLinesY)) + "\xc2\xb0",
+                    width / 2.0f, (float)i*height / (float)numGridLinesY, 40, 20, Justification::centred, true);
+            }
+            else {
+                g.drawText(String((int)(180 / 2 - i * 180 / numGridLinesY)) + "\xc2\xb0",
+                    width / 2.0f, (float)i*height / (float)numGridLinesY - 20, 40, 20, Justification::centred, true);
+            }
+        }
         hasFinishedDrawing = true;
     }
 }

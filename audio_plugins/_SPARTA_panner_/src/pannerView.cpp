@@ -47,7 +47,7 @@ pannerView::pannerView (PluginProcessor& p, int _width, int _height) : processor
     }
     showInputs = true;
     showOutputs = true;
-	sourceIconIsClicked = false;
+    sourceIconIsClicked = false;
 }
 
 pannerView::~pannerView()

@@ -176,13 +176,11 @@ PluginProcessor::PluginProcessor() :
         .withOutput("Output", AudioChannelSet::discreteChannels(2), true)),
     ParameterManager(*this, createParameterLayout())
 {
-	ambi_bin_create(&hAmbi);
+    ambi_bin_create(&hAmbi);
+    addParameterListeners(this);
     
     /* OSC */
     osc.addListener(this);
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
   
     startTimer(80);
 }
@@ -192,8 +190,9 @@ PluginProcessor::~PluginProcessor()
     if(osc_connected)
         osc.disconnect();
     osc.removeListener(this);
-        
-	ambi_bin_destroy(&hAmbi);
+
+    removeParameterListeners(this);
+    ambi_bin_destroy(&hAmbi);
 }
 
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
@@ -277,12 +276,17 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
     nHostBlockSize.store(samplesPerBlock);
     nNumInputs.store(jmin(getTotalNumInputChannels(), 256));
     nNumOutputs.store(jmin(getTotalNumOutputChannels(), 256));
     nSampleRate = (int)(sampleRate + 0.5);
 
-	ambi_bin_init(hAmbi, nSampleRate);
+    ambi_bin_init(hAmbi, nSampleRate);
     AudioProcessor::setLatencySamples(ambi_bin_getProcessingDelay());
 }
 

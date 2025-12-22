@@ -153,15 +153,13 @@ void PluginProcessor::setInternalStateUsingParameterValues()
 }
 
 PluginProcessor::PluginProcessor() : 
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
     ParameterManager(*this, createParameterLayout())
 {
     dirass_create(&hDir);
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
+    addParameterListeners(this);
 
     isPlaying = false;
     
@@ -175,6 +173,7 @@ PluginProcessor::PluginProcessor() :
 
 PluginProcessor::~PluginProcessor()
 {
+    removeParameterListeners(this);
     dirass_destroy(&hDir);
 }
 
@@ -231,6 +230,11 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
     nHostBlockSize = samplesPerBlock;
     nSampleRate = (int)(sampleRate + 0.5);
     nNumInputs = getTotalNumInputChannels();

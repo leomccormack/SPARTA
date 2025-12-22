@@ -88,19 +88,17 @@ PluginProcessor::PluginProcessor() :
         .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
     ParameterManager(*this, createParameterLayout())
 {
-	decorrelator_create(&hDecor);
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
+    decorrelator_create(&hDecor);
+    addParameterListeners(this);
     
     startTimer(40);
 }
 
 PluginProcessor::~PluginProcessor()
 {
-	decorrelator_destroy(&hDecor);
+    removeParameterListeners(this);
+    decorrelator_destroy(&hDecor);
 }
-
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
 {
@@ -155,12 +153,17 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
     nHostBlockSize = samplesPerBlock;
     nNumInputs =  jmin(getTotalNumInputChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), 256);
     nSampleRate = (int)(sampleRate + 0.5);
 
-	decorrelator_init(hDecor, nSampleRate);
+    decorrelator_init(hDecor, nSampleRate);
     AudioProcessor::setLatencySamples(decorrelator_getProcessingDelay());
 }
 

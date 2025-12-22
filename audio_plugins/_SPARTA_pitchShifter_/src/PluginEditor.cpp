@@ -263,11 +263,11 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     /* display version/date built */
-	g.setColour(Colours::white);
-	g.setFont(juce::FontOptions (11.00f, Font::plain));
-	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		190, 16, 530, 11,
-		Justification::centredLeft, true);
+    g.setColour(Colours::white);
+    g.setFont(juce::FontOptions (11.00f, Font::plain));
+    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
+        190, 16, 530, 11,
+        Justification::centredLeft, true);
 
     /* display warning message */
     g.setFont(juce::FontOptions (11.00f, Font::plain));
@@ -286,7 +286,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
 void PluginEditor::resized()
 {
-	repaint();
+    repaint();
 }
 
 void PluginEditor::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)

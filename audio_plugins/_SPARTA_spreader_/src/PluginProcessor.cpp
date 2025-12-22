@@ -112,15 +112,13 @@ void PluginProcessor::setInternalStateUsingParameterValues()
 }
 
 PluginProcessor::PluginProcessor() :
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
     ParameterManager(*this, createParameterLayout())
 {
-	spreader_create(&hSpr);
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
+    spreader_create(&hSpr);
+    addParameterListeners(this);
 
     refreshWindow = true;
     startTimer(80);
@@ -128,7 +126,8 @@ PluginProcessor::PluginProcessor() :
 
 PluginProcessor::~PluginProcessor()
 {
-	spreader_destroy(&hSpr);
+    removeParameterListeners(this);
+    spreader_destroy(&hSpr);
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
@@ -184,12 +183,17 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-	nHostBlockSize = samplesPerBlock;
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
+    nHostBlockSize = samplesPerBlock;
     nNumInputs =  jmin(getTotalNumInputChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), 256);
-	nSampleRate = (int)(sampleRate + 0.5);
+    nSampleRate = (int)(sampleRate + 0.5);
     
-	spreader_init(hSpr, nSampleRate);
+    spreader_init(hSpr, nSampleRate);
     AudioProcessor::setLatencySamples(spreader_getProcessingDelay());
 }
 

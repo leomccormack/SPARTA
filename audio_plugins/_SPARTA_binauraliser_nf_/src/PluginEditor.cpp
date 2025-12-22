@@ -305,7 +305,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     pluginDescription->setEnabled(false);
     pluginDescription->setTooltip(TRANS("A simple HRIR interpolator and convolver with optional near field distance filtering to simulate sources at close range. Currently, the only interpolation option is \"Triangular\", which also relies on phase-simplification of the HRIRs. This simplification involves estimating the ITDs for all the HRIRs, removing the phase from the HRTFs, but then re-introducing the phase as IPDs per frequency-bin. This greatly simplifies the HRIR interpolation process and reduces the computational complexity considerably, but it should be known to the user that this is not the same as direct convolution; although, it should be perceptually very close to direct convolution in the majority of cases. However, this also means that binaural room impuslse responses (BRIRs) are not supported by the plug-in!\n"));
 
-	/* Specify screen refresh rate */
+    /* Specify screen refresh rate */
     startTimer(40);
 
     /* warnings */
@@ -799,11 +799,11 @@ void PluginEditor::paint (juce::Graphics& g)
                     juce::Justification::centredLeft, true);
     }
 
-	g.setColour(Colours::white);
-	g.setFont(juce::FontOptions (11.00f, Font::plain));
-	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		235, 16, 530, 11,
-		Justification::centredLeft, true);
+    g.setColour(Colours::white);
+    g.setFont(juce::FontOptions (11.00f, Font::plain));
+    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
+        235, 16, 530, 11,
+        Justification::centredLeft, true);
 
     /* display warning message */
     g.setFont(juce::FontOptions (11.00f, Font::plain));

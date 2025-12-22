@@ -163,18 +163,16 @@ void PluginProcessor::setInternalStateUsingParameterValues()
 }
 
 PluginProcessor::PluginProcessor() :
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(2), true)),
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(2), true)),
     ParameterManager(*this, createParameterLayout())
 {
-	binauraliser_create(&hBin);
+    binauraliser_create(&hBin);
+    addParameterListeners(this);
     
     /* OSC */
     osc.addListener(this);
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
     
     startTimer(80);
 }
@@ -185,6 +183,7 @@ PluginProcessor::~PluginProcessor()
         osc.disconnect();
     osc.removeListener(this);
     
+    removeParameterListeners(this);
     binauraliser_destroy(&hBin);
 }
 
@@ -269,12 +268,17 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-	nHostBlockSize = samplesPerBlock;
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
+    nHostBlockSize = samplesPerBlock;
     nNumInputs =  jmin(getTotalNumInputChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), 256);
-	nSampleRate = (int)(sampleRate + 0.5);
+    nSampleRate = (int)(sampleRate + 0.5);
     
-	binauraliser_init(hBin, nSampleRate);
+    binauraliser_init(hBin, nSampleRate);
     AudioProcessor::setLatencySamples(binauraliser_getProcessingDelay());
     
     /* Check for the presence of an LFE channel */

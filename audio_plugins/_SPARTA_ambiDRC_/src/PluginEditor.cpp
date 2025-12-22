@@ -110,7 +110,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     float* freqVector = ambi_drc_getFreqVector(hAmbi, &numFreqPoints);
     TFviewIncluded->setFreqVector(freqVector, numFreqPoints);
 
-	/* fetch current configuration */
+    /* fetch current configuration */
     CHOrderingCB->setSelectedId(ambi_drc_getChOrder(hAmbi), dontSendNotification);
     normalisationCB->setSelectedId(ambi_drc_getNormType(hAmbi), dontSendNotification);
     CHOrderingCB->setItemEnabled(CH_FUMA, ambi_drc_getInputPreset(hAmbi)==SH_ORDER_FIRST ? true : false);
@@ -595,9 +595,9 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     /* banner text */
-	g.setColour(Colours::white);
-	g.setFont(juce::FontOptions (11.00f, Font::plain));
-	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
+    g.setColour(Colours::white);
+    g.setFont(juce::FontOptions (11.00f, Font::plain));
+    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
         185, 16, 530, 11,
         Justification::centredLeft, true);
 
@@ -659,7 +659,7 @@ void PluginEditor::paint (juce::Graphics& g)
                (int) ((float)TFviewIncluded->getHeight()/2.0f) - textWidth/2,
                textWidth, 57, Justification::centred);
 
-	textWidth = 118;
+    textWidth = 118;
     g.drawText(TRANS("Gain Reduction (dB)"), -36,
                (int) ((float)TFviewIncluded->getHeight()/2.0f) - textWidth/2,
                textWidth, 1084, Justification::centred);
@@ -669,7 +669,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
 void PluginEditor::resized()
 {
-	repaint();
+    repaint();
 }
 
 void PluginEditor::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)

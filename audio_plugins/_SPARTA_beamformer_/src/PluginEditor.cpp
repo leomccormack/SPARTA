@@ -110,7 +110,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     pluginDescription->setEnabled(false);
     pluginDescription->setTooltip(TRANS("A simple beamforming plug-in using Ambisonic signals as input; offering a variety of different static beam-pattern options.\n"));
 
-	/* Specify screen refresh rate */
+    /* Specify screen refresh rate */
     startTimer(40);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
@@ -372,11 +372,11 @@ void PluginEditor::paint (juce::Graphics& g)
 
     }
     
-	g.setColour(Colours::white);
-	g.setFont(juce::FontOptions(11.00f, Font::plain));
-	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		200, 16, 530, 11,
-		Justification::centredLeft, true);
+    g.setColour(Colours::white);
+    g.setFont(juce::FontOptions(11.00f, Font::plain));
+    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
+        200, 16, 530, 11,
+        Justification::centredLeft, true);
 
     /* display warning message */
     g.setFont(juce::FontOptions(11.00f, Font::plain));

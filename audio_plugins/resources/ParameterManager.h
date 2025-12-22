@@ -20,61 +20,89 @@
  ==============================================================================
 */
 
+#pragma once
 #include <JuceHeader.h>
 
-class ParameterManager : public juce::AudioProcessorValueTreeState::Listener
+class ParameterManager
 {
 public:
     ParameterManager(juce::AudioProcessor& processor, juce::AudioProcessorValueTreeState::ParameterLayout layout)
         : parameters(processor, nullptr, "Parameters", std::move(layout))
     {
         for(int i = 0; i < parameters.state.getNumChildren(); i++) {
-            auto paramID = parameters.state.getChild(i).getProperty("id").toString();
-            parameters.addParameterListener(paramID, this);
+            auto child = parameters.state.getChild(i);
+            if(child.hasProperty("id"))
+                parameterIDs.push_back(child.getProperty("id").toString());
         }
     }
-    ~ParameterManager(){
-        for(int i = 0; i < parameters.state.getNumChildren(); i++) {
-            auto paramID = parameters.state.getChild(i).getProperty("id").toString();
-            parameters.removeParameterListener(paramID, this);
+    ~ParameterManager() {}
+    
+    void addParameterListeners(juce::AudioProcessorValueTreeState::Listener* listener) {
+        if(!listener)
+            return;
+        for(auto& paramID : parameterIDs) {
+            if(paramID.isEmpty())
+                continue;
+            if(auto* p = parameters.getParameter(paramID))
+                if(dynamic_cast<juce::RangedAudioParameter*>(p) != nullptr)
+                    parameters.addParameterListener(paramID, listener);
+        }
+    }
+
+    void removeParameterListeners(juce::AudioProcessorValueTreeState::Listener* listener) {
+        if(!listener)
+            return;
+        for(auto& paramID : parameterIDs) {
+            if(paramID.isEmpty())
+                continue;
+            if(auto* p = parameters.getParameter(paramID))
+                if(dynamic_cast<juce::RangedAudioParameter*>(p) != nullptr)
+                    parameters.removeParameterListener(paramID, listener);
         }
     }
     
     // Sets
-    void setParameterValue(const juce::String& parameterID, float newValue){
-        auto* param = parameters.getParameter(parameterID);
-        param->setValueNotifyingHost(param->convertTo0to1(newValue));
+    void setParameterValue(const juce::String& parameterID, float newValue) {
+        if(auto* param = parameters.getParameter(parameterID))
+            param->setValueNotifyingHost(param->convertTo0to1(newValue));
     }
-    void setParameterValue(const juce::String& parameterID, double newValue){
-        auto* param = parameters.getParameter(parameterID);
-        param->setValueNotifyingHost(param->convertTo0to1(static_cast<float>(newValue)));
+
+    void setParameterValue(const juce::String& parameterID, double newValue) {
+        setParameterValue(parameterID, static_cast<float>(newValue));
     }
-    void setParameterValue(const juce::String& parameterID, int newValue){
-        auto* param = parameters.getParameter(parameterID);
-        param->setValueNotifyingHost(param->convertTo0to1(static_cast<float>(newValue)));
+
+    void setParameterValue(const juce::String& parameterID, int newValue) {
+        setParameterValue(parameterID, static_cast<float>(newValue));
     }
-    void setParameterValue(const juce::String& parameterID, bool newValue){
-        auto* param = parameters.getParameter(parameterID);
-        param->setValueNotifyingHost(param->convertTo0to1(static_cast<float>(newValue)));
+
+    void setParameterValue(const juce::String& parameterID, bool newValue) {
+        setParameterValue(parameterID, newValue ? 1.0f : 0.0f);
     }
 
     // Gets
     float getParameterFloat(const juce::String& parameterID) const {
-        return *parameters.getRawParameterValue(parameterID);
+        if(auto* v = parameters.getRawParameterValue(parameterID))
+            return *v;
+        return 0.0f;
     }
+
     int getParameterInt(const juce::String& parameterID) const {
-        return static_cast<int>(*parameters.getRawParameterValue(parameterID));
+        return static_cast<int>(getParameterFloat(parameterID));
     }
+
     bool getParameterBool(const juce::String& parameterID) const {
-        return static_cast<bool>(*parameters.getRawParameterValue(parameterID));
+        return getParameterFloat(parameterID) != 0.0f;
     }
+
     int getParameterChoice(const juce::String& parameterID) const {
-        return static_cast<int>(*parameters.getRawParameterValue(parameterID));
+        return static_cast<int>(getParameterFloat(parameterID));
     }
 
     juce::AudioProcessorValueTreeState parameters;
+    
+private:
+    std::vector<juce::String> parameterIDs;
 };
-
 
 class SliderWithAttachment : public juce::Slider
 {
@@ -82,7 +110,7 @@ public:
     SliderWithAttachment(juce::AudioProcessorValueTreeState& parameters, const juce::String& paramID)
         : attachment(parameters, paramID, *this) {
             auto* param = dynamic_cast<juce::AudioProcessorParameterWithID*>(parameters.getParameter(paramID));
-            if (param != nullptr)
+            if(param != nullptr)
                 setTextValueSuffix(param->getLabel());
         }
 private:
@@ -93,9 +121,9 @@ class ComboBoxWithAttachment : public juce::ComboBox
 {
 public:
     ComboBoxWithAttachment(juce::AudioProcessorValueTreeState& parameters, const juce::String& paramID) {
-        if (auto* param = dynamic_cast<juce::AudioParameterChoice*>(parameters.getParameter(paramID))) {
+        if(auto* param = dynamic_cast<juce::AudioParameterChoice*>(parameters.getParameter(paramID))) {
             const auto& choices = param->choices;
-            for (int i = 0; i < choices.size(); i++)
+            for(int i = 0; i < choices.size(); i++)
                 addItem(choices[i], i + 1);
             setSelectedId(param->getIndex() + 1, juce::dontSendNotification);
         }

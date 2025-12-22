@@ -68,17 +68,17 @@ enum {
     k_qy,
     k_qz,
 
-	k_yaw,
-	k_pitch,
-	k_roll,
+    k_yaw,
+    k_pitch,
+    k_roll,
 
     k_room_size_x,
     k_room_size_y,
     k_room_size_z,
 
-	k_param_workaround, // needed to ensure that when a parameter is set by the host, the "setParameter()" method is called
+    k_param_workaround, // needed to ensure that when a parameter is set by the host, the "setParameter()" method is called
 
-	k_NumOfParameters
+    k_NumOfParameters
 };
 
 /**
@@ -175,19 +175,19 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     
-	juce::AudioParameterFloat* receiver_coordinate_x;
-	juce::AudioParameterFloat* receiver_coordinate_y;
-	juce::AudioParameterFloat* receiver_coordinate_z;
-	juce::AudioParameterFloat* receiver_quaternion_w;
-	juce::AudioParameterFloat* receiver_quaternion_x;
-	juce::AudioParameterFloat* receiver_quaternion_y;
-	juce::AudioParameterFloat* receiver_quaternion_z;
-	juce::AudioParameterFloat* receiver_yaw;
-	juce::AudioParameterFloat* receiver_pitch;
-	juce::AudioParameterFloat* receiver_roll;
-	juce::AudioParameterFloat* room_size_x;
-	juce::AudioParameterFloat* room_size_y;
-	juce::AudioParameterFloat* room_size_z;
+    juce::AudioParameterFloat* receiver_coordinate_x;
+    juce::AudioParameterFloat* receiver_coordinate_y;
+    juce::AudioParameterFloat* receiver_coordinate_z;
+    juce::AudioParameterFloat* receiver_quaternion_w;
+    juce::AudioParameterFloat* receiver_quaternion_x;
+    juce::AudioParameterFloat* receiver_quaternion_y;
+    juce::AudioParameterFloat* receiver_quaternion_z;
+    juce::AudioParameterFloat* receiver_yaw;
+    juce::AudioParameterFloat* receiver_pitch;
+    juce::AudioParameterFloat* receiver_roll;
+    juce::AudioParameterFloat* room_size_x;
+    juce::AudioParameterFloat* room_size_y;
+    juce::AudioParameterFloat* room_size_z;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)

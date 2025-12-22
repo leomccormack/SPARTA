@@ -8,7 +8,7 @@ public:
     Colour colourAccent = Colour(70, 180, 220);
     Colour colourThumb  = Colour(140, 190, 225);
     Colour colourOutline = Colour(200, 240, 255);
-    const float cornerSize = 1.0f;
+    const float cornerSize = 2.0f;
 
     void drawLinearSlider (Graphics& g, int x, int y, int width, int height,
                            float sliderPos, float /*minSliderPos*/, float /*maxSliderPos*/,

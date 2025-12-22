@@ -215,7 +215,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     publicationLink.setBounds(getBounds().getWidth()-80, 4, 80, 12);
     publicationLink.setJustificationType(Justification::centredLeft);
 
-	/* Specify screen refresh rate */
+    /* Specify screen refresh rate */
     startTimer(140);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
@@ -559,11 +559,11 @@ void PluginEditor::paint (juce::Graphics& g)
 
     }
 
-	g.setColour(Colours::white);
-	g.setFont(juce::FontOptions (11.00f, Font::plain));
-	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		170, 16, 530, 11,
-		Justification::centredLeft, true);
+    g.setColour(Colours::white);
+    g.setFont(juce::FontOptions (11.00f, Font::plain));
+    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
+        170, 16, 530, 11,
+        Justification::centredLeft, true);
 
     /* display warning message */
     g.setFont(juce::FontOptions (11.00f, Font::plain));

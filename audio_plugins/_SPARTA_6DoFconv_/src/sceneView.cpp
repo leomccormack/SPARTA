@@ -49,14 +49,14 @@ sceneView::~sceneView()
 
 void sceneView::paint (juce::Graphics& g)
 {
-	// Screen graphics axis directon:
-	// X from left to right
-	// Y from top to bottom
-	//
-	// Listener axis directions:
-	// X from right to left
-	// Y from bottom to top (top view)
-	// Z from bottom to top (side view)
+    // Screen graphics axis directon:
+    // X from left to right
+    // Y from top to bottom
+    //
+    // Listener axis directions:
+    // X from right to left
+    // Y from bottom to top (top view)
+    // Z from bottom to top (side view)
 
     Rectangle<float> lstIcon;
 

@@ -205,7 +205,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     pluginDescription->setEnabled(false);
     pluginDescription->setTooltip(TRANS("This is a shoebox room simulator based on the image source method. It supports multiple sources and Ambisonic receivers. Due to the 64 channel limit, the number of receivers is order-dependent; e.g.: up to 16x FOA, 4x 3rd order, or 1x 7th-order receivers."));
 
-	/* Specify screen refresh rate */
+    /* Specify screen refresh rate */
     startTimer(80);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
@@ -679,11 +679,11 @@ void PluginEditor::paint (juce::Graphics& g)
                     juce::Justification::centredLeft, true);
     }
 
-	g.setColour(Colours::white);
-	g.setFont(juce::FontOptions (11.00f, Font::plain));
-	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		220, 16, 530, 11,
-		Justification::centredLeft, true);
+    g.setColour(Colours::white);
+    g.setFont(juce::FontOptions (11.00f, Font::plain));
+    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
+        220, 16, 530, 11,
+        Justification::centredLeft, true);
 
     /* display warning message */
     g.setFont(juce::FontOptions (11.00f, Font::plain));

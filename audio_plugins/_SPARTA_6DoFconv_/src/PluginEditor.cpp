@@ -186,7 +186,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     setSize (860, 502);
 
-	hVst = ownerFilter;
+    hVst = ownerFilter;
     hTVC = hVst->getFXHandle();
     hRot = hVst->getFXHandle_rot();
 
@@ -215,7 +215,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_source_y->setEnabled(false);
     SL_source_z->setEnabled(false);
 
-	/* fetch current configuration *///////////////////////////////////////////////////////////////////////////////////
+    /* fetch current configuration *///////////////////////////////////////////////////////////////////////////////////
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
     CBviewMode->addItem(TRANS("Top View"), TOP_VIEW+1); /* must start from 1... */
     CBviewMode->addItem(TRANS("Side View"), SIDE_VIEW+1);
@@ -833,11 +833,11 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     /* display version/date built */
-	g.setColour(Colours::white);
-	g.setFont(juce::FontOptions(11.00f, Font::plain));
-	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		200, 16, 530, 11,
-		Justification::centredLeft, true);
+    g.setColour(Colours::white);
+    g.setFont(juce::FontOptions(11.00f, Font::plain));
+    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
+        200, 16, 530, 11,
+        Justification::centredLeft, true);
 
     /* display warning message */
     g.setColour(Colours::red);
@@ -865,7 +865,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
 void PluginEditor::resized()
 {
-	repaint();
+    repaint();
 }
 
 void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
@@ -1111,16 +1111,16 @@ void PluginEditor::refreshCoords()
     SL_source_z->setRange(tvconv_getSourcePosition(hTVC, 2), tvconv_getSourcePosition(hTVC, 2)+1, 0.1);
     SL_source_z->setValue(tvconv_getSourcePosition(hTVC, 2));
 
-	// Notify the host about the room size
-	hVst->room_size_x->beginChangeGesture();
-	hVst->room_size_x->setValueNotifyingHost(tvconv_getMaxDimension(hTVC, 0) - tvconv_getMinDimension(hTVC, 0));
-	hVst->room_size_x->endChangeGesture();
-	hVst->room_size_y->beginChangeGesture();
-	hVst->room_size_y->setValueNotifyingHost(tvconv_getMaxDimension(hTVC, 1) - tvconv_getMinDimension(hTVC, 1));
-	hVst->room_size_y->endChangeGesture();
-	hVst->room_size_z->beginChangeGesture();
-	hVst->room_size_z->setValueNotifyingHost(tvconv_getMaxDimension(hTVC, 2) - tvconv_getMinDimension(hTVC, 2));
-	hVst->room_size_z->endChangeGesture();
+    // Notify the host about the room size
+    hVst->room_size_x->beginChangeGesture();
+    hVst->room_size_x->setValueNotifyingHost(tvconv_getMaxDimension(hTVC, 0) - tvconv_getMinDimension(hTVC, 0));
+    hVst->room_size_x->endChangeGesture();
+    hVst->room_size_y->beginChangeGesture();
+    hVst->room_size_y->setValueNotifyingHost(tvconv_getMaxDimension(hTVC, 1) - tvconv_getMinDimension(hTVC, 1));
+    hVst->room_size_y->endChangeGesture();
+    hVst->room_size_z->beginChangeGesture();
+    hVst->room_size_z->setValueNotifyingHost(tvconv_getMaxDimension(hTVC, 2) - tvconv_getMinDimension(hTVC, 2));
+    hVst->room_size_z->endChangeGesture();
 }
 
 

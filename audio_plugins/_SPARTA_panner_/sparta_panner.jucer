@@ -13,7 +13,7 @@
               reportAppUsage="0" splashScreenColour="Dark" buildStandalone="0"
               enableIAA="0" companyCopyright="Aalto" pluginFormats="buildAAX,buildVST"
               jucerFormatVersion="1" defines="JucePlugin_AAXDisableDefaultSettingsChunks=1&#10;"
-              pluginAAXCategory="512" pluginVST3Category="Spatial">
+              pluginAAXCategory="512" pluginVST3Category="Spatial" pluginCharacteristicsValue="pluginAAXDisableMultiMono">
   <MAINGROUP id="imnfnp" name="sparta_panner">
     <FILE id="K8vueL" name="ParameterManager.h" compile="0" resource="0"
           file="../resources/ParameterManager.h"/>

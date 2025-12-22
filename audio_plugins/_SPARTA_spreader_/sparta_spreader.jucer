@@ -13,7 +13,8 @@
               buildAUv3="0" pluginIsMidiEffectPlugin="0" displaySplashScreen="0"
               reportAppUsage="0" splashScreenColour="Dark" buildStandalone="0"
               enableIAA="0" companyCopyright="Aalto" pluginFormats="buildAAX,buildVST"
-              jucerFormatVersion="1" pluginVST3Category="Spatial" defines="JucePlugin_AAXDisableDefaultSettingsChunks=1&#10;">
+              jucerFormatVersion="1" pluginVST3Category="Spatial" defines="JucePlugin_AAXDisableDefaultSettingsChunks=1&#10;"
+              pluginCharacteristicsValue="pluginAAXDisableMultiMono">
   <MAINGROUP id="imnfnp" name="sparta_spreader">
     <FILE id="wF4Dnt" name="ParameterManager.h" compile="0" resource="0"
           file="../resources/ParameterManager.h"/>

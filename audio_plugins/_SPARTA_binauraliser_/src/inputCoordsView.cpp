@@ -58,8 +58,8 @@ inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentN
         elevSliders[i]->setSliderSnapsToMousePosition(false);
     }
 
-	/* Get and display current settings */
-	resized();
+    /* Get and display current settings */
+    resized();
 }
 
 inputCoordsView::~inputCoordsView()

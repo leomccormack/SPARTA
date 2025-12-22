@@ -107,21 +107,20 @@ void PluginProcessor::setInternalStateUsingParameterValues()
 }
 
 PluginProcessor::PluginProcessor() :
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
     ParameterManager(*this, createParameterLayout())
 {
-	nSampleRate = 48000;
-	ambi_drc_create(&hAmbi);
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
+    nSampleRate = 48000;
+    ambi_drc_create(&hAmbi);
+    addParameterListeners(this);
 }
 
 PluginProcessor::~PluginProcessor()
 {
-	ambi_drc_destroy(&hAmbi);
+    removeParameterListeners(this);
+    ambi_drc_destroy(&hAmbi);
 }
 
 
@@ -178,13 +177,18 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
     nHostBlockSize = samplesPerBlock;
     nNumInputs =  jmin(getTotalNumInputChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), 256);
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
 
-	ambi_drc_init(hAmbi, nSampleRate);
+    ambi_drc_init(hAmbi, nSampleRate);
     AudioProcessor::setLatencySamples(ambi_drc_getProcessingDelay());
 }
 

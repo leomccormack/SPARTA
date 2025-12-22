@@ -60,7 +60,7 @@ inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentN
         elevSliders[i]->setSliderSnapsToMousePosition(false);
     }
 
-	resized();
+    resized();
 }
 
 inputCoordsView::~inputCoordsView()

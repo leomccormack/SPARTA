@@ -33,11 +33,11 @@ public:
     ~outputCoordsView() override;
 
     void setNCH(int newNCH){
-		newNCH = newNCH > MAX_NUM_CHANNELS ? MAX_NUM_CHANNELS : newNCH;
-		if (newNCH != currentNCH) {
-			currentNCH = newNCH;
-			resized();
-		}
+        newNCH = newNCH > MAX_NUM_CHANNELS ? MAX_NUM_CHANNELS : newNCH;
+        if (newNCH != currentNCH) {
+            currentNCH = newNCH;
+            resized();
+        }
     }
 
     void paint (juce::Graphics& g) override;

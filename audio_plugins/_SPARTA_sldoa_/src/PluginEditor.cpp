@@ -165,7 +165,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     progressbar.setColour(ProgressBar::backgroundColourId, Colours::gold);
     progressbar.setColour(ProgressBar::foregroundColourId, Colours::white);
 
-	/* fetch current configuration */
+    /* fetch current configuration */
     CB_CHorder->setSelectedId(sldoa_getChOrder(hSld), sendNotification);
     CB_Norm->setSelectedId(sldoa_getNormType(hSld), sendNotification);
     slider_anaOrder->setRange(1, sldoa_getMasterOrder(hSld), 1);
@@ -199,7 +199,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     publicationLink.setBounds(getBounds().getWidth()-80, 4, 80, 12);
     publicationLink.setJustificationType(Justification::centredLeft);
 
-	/* Specify screen refresh rate */
+    /* Specify screen refresh rate */
    startTimer(120);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
@@ -549,11 +549,11 @@ void PluginEditor::paint (juce::Graphics& g)
 
     }
     
-	g.setColour(Colours::white);
-	g.setFont(juce::FontOptions (11.00f, Font::plain));
-	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		166, 16, 530, 11,
-		Justification::centredLeft, true);
+    g.setColour(Colours::white);
+    g.setFont(juce::FontOptions (11.00f, Font::plain));
+    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
+        166, 16, 530, 11,
+        Justification::centredLeft, true);
 
     Colour strokeColour = Colour (0x86a3a4a5);
     g.setColour (strokeColour);

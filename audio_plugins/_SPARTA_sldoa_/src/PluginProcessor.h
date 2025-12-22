@@ -40,7 +40,8 @@
 class PluginProcessor  : public AudioProcessor,
                          public Timer,
                          public VST2ClientExtensions,
-                         public ParameterManager
+                         public ParameterManager,
+                         public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     /* Get functions */
@@ -71,6 +72,7 @@ public:
     bool getGreyScale(){ return greyScale;}
     
 private:
+    bool firstInit = true;
     void* hSld;                        /* handle */
     std::atomic<int> nNumInputs;       /* current number of input channels */
     int nSampleRate;                   /* current host sample rate */

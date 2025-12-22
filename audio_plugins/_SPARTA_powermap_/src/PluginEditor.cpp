@@ -180,7 +180,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     /* Overlay */
     previewArea.setBounds(13, 60, 646, 323);
-	lastSnapshot.setBounds(previewArea);
+    lastSnapshot.setBounds(previewArea);
     overlayIncluded.reset (new overlay(p));
     addAndMakeVisible (overlayIncluded.get());
     overlayIncluded->setAlwaysOnTop(true);
@@ -245,7 +245,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     publicationLink.setBounds(getBounds().getWidth()-80, 4, 80, 12);
     publicationLink.setJustificationType(Justification::centredLeft);
 
-	/* Specify screen refresh rate */
+    /* Specify screen refresh rate */
     startTimer(140);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
@@ -761,11 +761,11 @@ void PluginEditor::paint (juce::Graphics& g)
 
     }
 
-	g.setColour(Colours::white);
-	g.setFont(juce::FontOptions (11.00f, Font::plain));
-	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		195, 16, 530, 11,
-		Justification::centredLeft, true);
+    g.setColour(Colours::white);
+    g.setFont(juce::FontOptions (11.00f, Font::plain));
+    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
+        195, 16, 530, 11,
+        Justification::centredLeft, true);
 
     /* label for max ORDER */
     int x = 641, y = 540, width = 21, height = 30;
@@ -800,16 +800,16 @@ void PluginEditor::paint (juce::Graphics& g)
 void PluginEditor::resized()
 {
     if (overlayIncluded != nullptr){
-		if (cameraPreviewComp.get() != nullptr) {
-			cameraPreviewComp->setBounds(overlayIncluded->getBounds());
-			cameraPreviewComp->setVisible(false);
-		}
-		lastSnapshot.setBounds(overlayIncluded->getBounds());
+        if (cameraPreviewComp.get() != nullptr) {
+            cameraPreviewComp->setBounds(overlayIncluded->getBounds());
+            cameraPreviewComp->setVisible(false);
+        }
+        lastSnapshot.setBounds(overlayIncluded->getBounds());
         overlayIncluded->setAlwaysOnTop(true);
         overlayIncluded->setBounds(previewArea);
         overlayIncluded->resized();
     }
-	repaint();
+    repaint();
 }
 
 void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
@@ -822,8 +822,8 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == CBsourcePreset.get())
     {
         powermap_setSourcePreset(hPm, CBsourcePreset->getSelectedId());
-		anaOrder2dSlider->setRefreshValuesFLAG(true);
-		pmapEQ2dSlider->setRefreshValuesFLAG(true);
+        anaOrder2dSlider->setRefreshValuesFLAG(true);
+        pmapEQ2dSlider->setRefreshValuesFLAG(true);
     }
     else if (comboBoxThatHasChanged == CBmasterOrder.get())
     {
@@ -849,12 +849,12 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == s_anaOrder.get())
     {
         powermap_setAnaOrderAllBands(hPm, (int)(s_anaOrder->getValue()+0.5));
-		anaOrder2dSlider->setRefreshValuesFLAG(true);
+        anaOrder2dSlider->setRefreshValuesFLAG(true);
     }
     else if (sliderThatWasMoved == s_pmapEQ.get())
     {
         powermap_setPowermapEQAllBands(hPm, (s_pmapEQ->getValue()));
-		pmapEQ2dSlider->setRefreshValuesFLAG(true);
+        pmapEQ2dSlider->setRefreshValuesFLAG(true);
     }
 }
 
@@ -999,14 +999,14 @@ void PluginEditor::cameraDeviceOpenResult (CameraDevice* device, const String& /
 
 void PluginEditor::updateCameraList()
 {
-	CB_webcam->clear();
-	CB_webcam->addItem("No camera", 1);
-	CB_webcam->addSeparator();
+    CB_webcam->clear();
+    CB_webcam->addItem("No camera", 1);
+    CB_webcam->addSeparator();
 
-	auto cameras = CameraDevice::getAvailableDevices();
+    auto cameras = CameraDevice::getAvailableDevices();
 
-	for (int i = 0; i < cameras.size(); ++i)
-		CB_webcam->addItem(cameras[i], i + 2);
+    for (int i = 0; i < cameras.size(); ++i)
+        CB_webcam->addItem(cameras[i], i + 2);
     CB_webcam->setSelectedId(1);
 }
 

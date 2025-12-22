@@ -174,15 +174,13 @@ void PluginProcessor::setInternalStateUsingParameterValues()
 }
 
 PluginProcessor::PluginProcessor() : 
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
     ParameterManager(*this, createParameterLayout())
 {
-	panner_create(&hPan);
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
+    panner_create(&hPan);
+    addParameterListeners(this);
     
     refreshWindow = true;
     startTimer(80); 
@@ -190,7 +188,8 @@ PluginProcessor::PluginProcessor() :
 
 PluginProcessor::~PluginProcessor()
 {
-	panner_destroy(&hPan);
+    removeParameterListeners(this);
+    panner_destroy(&hPan);
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
@@ -246,13 +245,18 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
     nHostBlockSize = samplesPerBlock;
     nNumInputs =  jmin(getTotalNumInputChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), 256);
     nSampleRate = (int)(sampleRate + 0.5);
     isPlaying = false;
 
-	panner_init(hPan, nSampleRate);
+    panner_init(hPan, nSampleRate);
     AudioProcessor::setLatencySamples(panner_getProcessingDelay());
 
     /* Check for the presence of an LFE channel */

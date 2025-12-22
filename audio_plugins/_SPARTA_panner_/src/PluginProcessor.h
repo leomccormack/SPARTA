@@ -42,12 +42,13 @@
 class PluginProcessor  : public AudioProcessor,
                          public Timer,
                          public VST2ClientExtensions,
-                         public ParameterManager
+                         public ParameterManager,
+                         public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     /* Get functions */
     void* getFXHandle() { return hPan; }
-	bool getIsPlaying() { return isPlaying; }
+    bool getIsPlaying() { return isPlaying; }
     int getCurrentBlockSize(){ return nHostBlockSize; }
     int getCurrentNumInputs(){ return nNumInputs; }
     int getCurrentNumOutputs(){ return nNumOutputs; }
@@ -76,6 +77,7 @@ public:
     VST2ClientExtensions* getVST2ClientExtensions() override {return this;}
     
 private:
+    bool firstInit = true;
     void* hPan;                        /* panner handle */
     std::atomic<int> nNumInputs;       /* current number of input channels */
     std::atomic<int> nNumOutputs;      /* current number of output channels */

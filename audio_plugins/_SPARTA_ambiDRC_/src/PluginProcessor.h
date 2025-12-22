@@ -32,7 +32,8 @@
 
 class PluginProcessor  : public AudioProcessor,
                          public juce::VST2ClientExtensions,
-                         public ParameterManager
+                         public ParameterManager,
+                         public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     /* Get functions */
@@ -54,6 +55,7 @@ public:
     VST2ClientExtensions* getVST2ClientExtensions() override {return this;}
     
 private:
+    bool firstInit = true;
     void* hAmbi;                            /* dynamic range compressor handle */
     std::atomic<int> nNumInputs;            /* current number of input channels */
     std::atomic<int> nNumOutputs;           /* current number of output channels */

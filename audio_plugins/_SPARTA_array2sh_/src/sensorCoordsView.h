@@ -33,11 +33,11 @@ public:
     ~sensorCoordsView() override;
 
     void setQ(int newQ){
-		newQ = newQ > MAX_NUM_CHANNELS ? MAX_NUM_CHANNELS : newQ;
-		if (newQ != currentQ) {
-			currentQ = newQ;
-			resized();
-		}
+        newQ = newQ > MAX_NUM_CHANNELS ? MAX_NUM_CHANNELS : newQ;
+        if (newQ != currentQ) {
+            currentQ = newQ;
+            resized();
+        }
     }
 
     void paint (juce::Graphics& g) override;

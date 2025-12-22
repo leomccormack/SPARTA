@@ -83,23 +83,22 @@ void PluginProcessor::setInternalStateUsingParameterValues()
 }
 
 PluginProcessor::PluginProcessor() : 
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
     ParameterManager(*this, createParameterLayout())
 {
-	nSampleRate = 48000; 
-	pitch_shifter_create(&hPS);
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
+    nSampleRate = 48000; 
+    pitch_shifter_create(&hPS);
+    addParameterListeners(this);
     
     startTimer(80);
 }
 
 PluginProcessor::~PluginProcessor()
 {
-	pitch_shifter_destroy(&hPS);
+    removeParameterListeners(this);
+    pitch_shifter_destroy(&hPS);
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
@@ -155,12 +154,17 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
     nHostBlockSize = samplesPerBlock;
     nNumInputs =  getTotalNumInputChannels();
     nNumOutputs = getTotalNumOutputChannels();
     nSampleRate = (int)(sampleRate + 0.5);
 
-	pitch_shifter_init(hPS, (float)sampleRate);
+    pitch_shifter_init(hPS, (float)sampleRate);
     AudioProcessor::setLatencySamples(pitch_shifter_getProcessingDelay(hPS));
 }
 

@@ -120,21 +120,20 @@ void PluginProcessor::setInternalStateUsingParameterValues()
 }
 
 PluginProcessor::PluginProcessor() :
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
     ParameterManager(*this, createParameterLayout())
 {
-	beamformer_create(&hBeam);
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
+    beamformer_create(&hBeam);
+    addParameterListeners(this);
     refreshWindow = true;
 }
 
 PluginProcessor::~PluginProcessor()
 {
-	beamformer_destroy(&hBeam);
+    removeParameterListeners(this);
+    beamformer_destroy(&hBeam);
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
@@ -190,12 +189,17 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
     nHostBlockSize = samplesPerBlock;
     nNumInputs =  jmin(getTotalNumInputChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), 256);
     nSampleRate = (int)(sampleRate + 0.5);
 
-	beamformer_init(hBeam, nSampleRate);
+    beamformer_init(hBeam, nSampleRate);
     AudioProcessor::setLatencySamples(beamformer_getProcessingDelay());
     
     /* Check for the presence of an LFE channel */

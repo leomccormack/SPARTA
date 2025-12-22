@@ -71,8 +71,8 @@ inputCoordsView::inputCoordsView (PluginProcessor& p, int _maxNCH, int _currentN
         distSliders[i]->setBounds(left+tbhpad+tbw+tbhpad+tbw+tbhpad, tbvpad + i*sensorEdit_height, tbw, tbh);
     }
 
-	/* Get and display current settings */
-	resized();
+    /* Get and display current settings */
+    resized();
 }
 
 inputCoordsView::~inputCoordsView()

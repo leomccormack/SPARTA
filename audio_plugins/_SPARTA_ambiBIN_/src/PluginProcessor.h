@@ -33,10 +33,11 @@
 #define DEFAULT_OSC_PORT 9000
 
 class PluginProcessor  : public AudioProcessor,
+                         public Timer,
                          private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
                          public juce::VST2ClientExtensions,
                          public ParameterManager,
-                         public Timer
+                         public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     /* Get functions */
@@ -80,6 +81,7 @@ public:
     bool getOscPortConnected(){ return osc_connected; }
     
 private:
+    bool firstInit = true;
     void* hAmbi;                      /* ambi_bin handle */
     std::atomic<int> nNumInputs;      /* current number of input channels */
     std::atomic<int> nNumOutputs;     /* current number of output channels */

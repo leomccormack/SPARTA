@@ -108,10 +108,10 @@ void TFview::paint (Graphics& g)
         }
     }
 
-	/* Draw wIdx line */
-	g.setColour(Colours::black);
-	g.setOpacity(1.0f);
-	g.drawLine(0.0f, height, width, height, 2.0f);
+    /* Draw wIdx line */
+    g.setColour(Colours::black);
+    g.setOpacity(1.0f);
+    g.drawLine(0.0f, height, width, height, 2.0f);
 
     /* draw frequency guide lines on top */
     g.setColour(Colours::white);
@@ -140,14 +140,14 @@ void TFview::paint (Graphics& g)
                    (float)i*(float)width/(float)AMBI_DRC_NUM_DISPLAY_SECONDS, (float)height, 1.0f);
     }
 
-	/* Draw scroll line */
+    /* Draw scroll line */
     int wIdx = ambi_drc_getGainTFwIdx(hAmbi);
-	float linePos = (float)wIdx*(width / (float)AMBI_DRC_NUM_DISPLAY_TIME_SLOTS);
-	g.setColour(Colours::white);
-	g.setOpacity(1.0f);
-	g.drawLine(linePos, 0, linePos, height, 1);
-	g.setColour(Colour(0x7dffffff));
-	g.drawRect(0, 0, width, height, 1);
+    float linePos = (float)wIdx*(width / (float)AMBI_DRC_NUM_DISPLAY_TIME_SLOTS);
+    g.setColour(Colours::white);
+    g.setOpacity(1.0f);
+    g.drawLine(linePos, 0, linePos, height, 1);
+    g.setColour(Colour(0x7dffffff));
+    g.drawRect(0, 0, width, height, 1);
 }
 
 void TFview::resized()

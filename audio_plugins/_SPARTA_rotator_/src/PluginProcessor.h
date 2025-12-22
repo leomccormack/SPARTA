@@ -35,7 +35,8 @@
 class PluginProcessor  : public AudioProcessor,
                          private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
                          public VST2ClientExtensions,
-                         public ParameterManager
+                         public ParameterManager,
+                         public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     /* Get functions */
@@ -54,7 +55,7 @@ public:
         return 0;
     }
     VST2ClientExtensions* getVST2ClientExtensions() override {return this;}
-	
+    
     /* OSC */
     void oscMessageReceived(const OSCMessage& message) override;
     void setOscPortID(int newID){
@@ -66,6 +67,7 @@ public:
     bool getOscPortConnected(){ return osc_connected; }
     
 private:
+    bool firstInit = true;
     void* hRot;                          /* rotator handle */
     std::atomic<int> nNumInputs;         /* current number of input channels */
     std::atomic<int> nNumOutputs;        /* current number of output channels */

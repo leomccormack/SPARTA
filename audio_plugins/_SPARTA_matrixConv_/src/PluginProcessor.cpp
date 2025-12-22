@@ -71,25 +71,24 @@ void PluginProcessor::setInternalStateUsingParameterValues()
 }
 
 PluginProcessor::PluginProcessor() :
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
     ParameterManager(*this, createParameterLayout())
 {
-	nSampleRate = 48000;
+    nSampleRate = 48000;
     nHostBlockSize = -1;
     formatManager.registerBasicFormats();
     durationInSeconds = 0.0f; 
     lastWavDirectory = TRANS("no_file");
-	matrixconv_create(&hMCnv);
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
+    matrixconv_create(&hMCnv);
+    addParameterListeners(this);
 }
 
 PluginProcessor::~PluginProcessor()
 {
-	matrixconv_destroy(&hMCnv);
+    removeParameterListeners(this);
+    matrixconv_destroy(&hMCnv);
 }
 
 void PluginProcessor::setCurrentProgram (int /*index*/)
@@ -145,12 +144,17 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
     nHostBlockSize = samplesPerBlock;
     nNumInputs =  getTotalNumInputChannels();
     nNumOutputs = getTotalNumOutputChannels();
     nSampleRate = (int)(sampleRate + 0.5);
 
-	matrixconv_init(hMCnv, nSampleRate, nHostBlockSize);
+    matrixconv_init(hMCnv, nSampleRate, nHostBlockSize);
     AudioProcessor::setLatencySamples(matrixconv_getProcessingDelay(hMCnv));
 }
 

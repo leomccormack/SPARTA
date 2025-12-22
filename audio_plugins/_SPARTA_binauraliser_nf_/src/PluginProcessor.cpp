@@ -166,18 +166,16 @@ void PluginProcessor::setInternalStateUsingParameterValues()
 }
 
 PluginProcessor::PluginProcessor() :
-	AudioProcessor(BusesProperties()
-		.withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-	    .withOutput("Output", AudioChannelSet::discreteChannels(2), true)),
+    AudioProcessor(BusesProperties()
+        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
+        .withOutput("Output", AudioChannelSet::discreteChannels(2), true)),
     ParameterManager(*this, createParameterLayout())
 {
-	binauraliserNF_create(&hBin);
+    binauraliserNF_create(&hBin);
+    addParameterListeners(this);
     
     /* OSC */
     osc.addListener(this);
-    
-    /* Grab defaults */
-    setParameterValuesUsingInternalState();
     
     startTimer(80);
     
@@ -194,7 +192,8 @@ PluginProcessor::~PluginProcessor()
         osc.disconnect();
     osc.removeListener(this);
     
-	binauraliserNF_destroy(&hBin);
+    removeParameterListeners(this);
+    binauraliserNF_destroy(&hBin);
 }
 
 void PluginProcessor::oscMessageReceived(const OSCMessage& message)
@@ -278,12 +277,17 @@ void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-	nHostBlockSize = samplesPerBlock;
+    if(firstInit){
+        /* Need to grab defaults */
+        setParameterValuesUsingInternalState();
+        firstInit = false;
+    }
+    nHostBlockSize = samplesPerBlock;
     nNumInputs =  jmin(getTotalNumInputChannels(), 256);
     nNumOutputs = jmin(getTotalNumOutputChannels(), 256);
-	nSampleRate = (int)(sampleRate + 0.5);
+    nSampleRate = (int)(sampleRate + 0.5);
     
-	binauraliserNF_init(hBin, nSampleRate);
+    binauraliserNF_init(hBin, nSampleRate);
     AudioProcessor::setLatencySamples(binauraliser_getProcessingDelay());
     
     /* Check for the presence of an LFE channel */

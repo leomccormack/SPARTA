@@ -170,7 +170,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     pluginDescription->setEnabled(false);
     pluginDescription->setTooltip(TRANS("A simple Ambisonic encoder which takes input signals (up to 64 channels) and encodes them into Ambisonic signals at specified directions. Essentially, these Ambisonic signals describe a synthetic sound scene, where the spatial resolution of this encoding is determined by the transform order. Unlike Ambisonic signals derived from microphone arrays, the output Ambisonic signals from this plugin are considered to be perfect/\"ideal\"; i.e. without sensor noise or spatial aliasing (which is an order-dependent phenomenon determined by the physical design of the array), which results in order-dependent frequency limits above/below which the Ambisonic signals do not exhibit the correct patterns or are corrupted by excessive noise."));
 
-	/* Specify screen refresh rate */
+    /* Specify screen refresh rate */
     startTimer(40);//80); /*ms (40ms = 25 frames per second) */
 
     /* warnings */
@@ -436,11 +436,11 @@ void PluginEditor::paint (juce::Graphics& g)
 
     }
 
-	g.setColour(Colours::white);
-	g.setFont(juce::FontOptions(11.00f, Font::plain));
-	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		185, 16, 530, 11,
-		Justification::centredLeft, true);
+    g.setColour(Colours::white);
+    g.setFont(juce::FontOptions(11.00f, Font::plain));
+    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
+        185, 16, 530, 11,
+        Justification::centredLeft, true);
 
     /* display warning message */
     g.setFont(juce::FontOptions(11.00f, Font::plain));
