@@ -31,7 +31,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (TBuseDefaultHRIRs.get());
     TBuseDefaultHRIRs->setButtonText (juce::String());
     TBuseDefaultHRIRs->addListener (this);
-    TBuseDefaultHRIRs->setBounds (613, 60, 27, 24);
+    TBuseDefaultHRIRs->setBounds (613, 60, 24, 24);
 
     CBorderPreset = std::make_unique<ComboBoxWithAttachment>(p.parameters, "inputOrder");
     addAndMakeVisible (CBorderPreset.get());
@@ -54,7 +54,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     TBmaxRE = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableMaxRE");
     addAndMakeVisible (TBmaxRE.get());
     TBmaxRE->setButtonText (juce::String());
-    TBmaxRE->setBounds (411, 60, 22, 24);
+    TBmaxRE->setBounds (411, 60, 24, 24);
 
     s_yaw = std::make_unique<SliderWithAttachment>(p.parameters, "yaw");
     addAndMakeVisible (s_yaw.get());
@@ -89,43 +89,43 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     label_N_dirs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle("Regular"));
     label_N_dirs->setJustificationType (juce::Justification::centredLeft);
     label_N_dirs->setEditable (false, false, false);
-    label_N_dirs->setBounds (536, 148, 96, 24);
+    label_N_dirs->setBounds (566, 148, 66, 24);
 
     label_HRIR_len.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_HRIR_len.get());
     label_HRIR_len->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle("Regular"));
     label_HRIR_len->setJustificationType (juce::Justification::centredLeft);
     label_HRIR_len->setEditable (false, false, false);
-    label_HRIR_len->setBounds (536, 171, 96, 24);
+    label_HRIR_len->setBounds (566, 171, 66, 24);
 
     label_HRIR_fs.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_HRIR_fs.get());
     label_HRIR_fs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle("Regular"));
     label_HRIR_fs->setJustificationType (juce::Justification::centredLeft);
     label_HRIR_fs->setEditable (false, false, false);
-    label_HRIR_fs->setBounds (536, 194, 96, 24);
+    label_HRIR_fs->setBounds (566, 194, 66, 24);
 
     label_DAW_fs.reset (new juce::Label ("new label", juce::String()));
     addAndMakeVisible (label_DAW_fs.get());
     label_DAW_fs->setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle("Regular"));
     label_DAW_fs->setJustificationType (juce::Justification::centredLeft);
     label_DAW_fs->setEditable (false, false, false);
-    label_DAW_fs->setBounds (536, 217, 96, 24);
+    label_DAW_fs->setBounds (566, 217, 66, 24);
 
     t_flipPitch = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipPitch");
     addAndMakeVisible (t_flipPitch.get());
     t_flipPitch->setButtonText (juce::String());
-    t_flipPitch->setBounds (260, 209, 23, 24);
+    t_flipPitch->setBounds (260, 209, 24, 24);
 
     t_flipRoll = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipRoll");
     addAndMakeVisible (t_flipRoll.get());
     t_flipRoll->setButtonText (juce::String());
-    t_flipRoll->setBounds (376, 209, 23, 24);
+    t_flipRoll->setBounds (376, 209, 24, 24);
 
     t_flipYaw = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "flipYaw");
     addAndMakeVisible (t_flipYaw.get());
     t_flipYaw->setButtonText (juce::String());
-    t_flipYaw->setBounds (128, 209, 23, 24);
+    t_flipYaw->setBounds (128, 209, 24, 24);
 
     TBrpyFlag = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "useRollPitchYaw");
     addAndMakeVisible (TBrpyFlag.get());
@@ -146,12 +146,12 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     TBdiffMatching = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableDiffuseMatching");
     addAndMakeVisible (TBdiffMatching.get());
     TBdiffMatching->setButtonText (juce::String());
-    TBdiffMatching->setBounds (411, 87, 22, 24);
+    TBdiffMatching->setBounds (411, 87, 24, 24);
 
     TBtruncationEQ = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableTruncationEQ");
     addAndMakeVisible (TBtruncationEQ.get());
     TBtruncationEQ->setButtonText (juce::String());
-    TBtruncationEQ->setBounds (411, 113, 22, 24);
+    TBtruncationEQ->setBounds (411, 113, 24, 24);
 
     CBhrirPreProc = std::make_unique<ComboBoxWithAttachment>(p.parameters, "hrirPreproc");
     addAndMakeVisible (CBhrirPreProc.get());
@@ -261,6 +261,7 @@ PluginEditor::~PluginEditor()
     CBhrirPreProc = nullptr;
 
     setLookAndFeel(nullptr);
+    stopTimer();
 }
 
 void PluginEditor::paint (juce::Graphics& g)
@@ -548,7 +549,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 452, y = 144, width = 132, height = 30;
-        juce::String text (TRANS ("Num dirs:"));
+        juce::String text (TRANS ("Num Directions:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (13.00f, juce::Font::plain).withStyle("Bold"));
@@ -558,7 +559,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 452, y = 168, width = 132, height = 30;
-        juce::String text (TRANS ("HRIR length:"));
+        juce::String text (TRANS ("HRIR Length:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (13.00f, juce::Font::plain).withStyle("Bold"));
@@ -568,7 +569,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 452, y = 192, width = 132, height = 30;
-        juce::String text (TRANS ("HRIR fs:"));
+        juce::String text (TRANS ("HRIR Samplerate:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (13.00f, juce::Font::plain).withStyle("Bold"));
@@ -710,7 +711,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 452, y = 216, width = 132, height = 30;
-        juce::String text (TRANS ("DAW fs:"));
+        juce::String text (TRANS ("DAW Samplerate:"));
         juce::Colour fillColour = juce::Colours::white;
         g.setColour (fillColour);
         g.setFont (juce::FontOptions (13.00f, juce::Font::plain).withStyle("Bold"));

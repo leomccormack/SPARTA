@@ -27,18 +27,7 @@
 # error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
 #endif
 
-static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
-    switch(format){
-        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
-        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
-        case juce::AudioProcessor::wrapperType_AAX:
-            return 64;
-        default:
-            return MAX_NUM_CHANNELS;
-    }
-}
-
-juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
@@ -82,74 +71,24 @@ void PluginProcessor::setInternalStateUsingParameterValues()
     pitch_shifter_setOSampOption(hPS, static_cast<PITCH_SHIFTER_OSAMP_OPTIONS>(getParameterChoice("oSampOption")+1));
 }
 
-PluginProcessor::PluginProcessor() : 
-    AudioProcessor(BusesProperties()
-        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
-    ParameterManager(*this, createParameterLayout())
+PluginProcessor::PluginProcessor()
+    : PluginProcessorBase(
+        BusesProperties()
+            .withInput("Input", AudioChannelSet::discreteChannels(64), true)
+            .withOutput("Output", AudioChannelSet::discreteChannels(64), true),
+        createParameterLayout())
 {
     nSampleRate = 48000; 
     pitch_shifter_create(&hPS);
     addParameterListeners(this);
-    
     startTimer(80);
 }
 
 PluginProcessor::~PluginProcessor()
 {
+    stopTimer();
     removeParameterListeners(this);
     pitch_shifter_destroy(&hPS);
-}
-
-void PluginProcessor::setCurrentProgram (int /*index*/)
-{
-}
-
-const String PluginProcessor::getName() const
-{
-    return JucePlugin_Name;
-}
-
-double PluginProcessor::getTailLengthSeconds() const
-{
-    return 0.0;
-}
-
-int PluginProcessor::getNumPrograms()
-{
-    return 1;
-}
-
-int PluginProcessor::getCurrentProgram()
-{
-    return 0;
-}
-
-const String PluginProcessor::getProgramName (int /*index*/)
-{
-    return String();
-}
-
-bool PluginProcessor::acceptsMidi() const
-{
-   #if JucePlugin_WantsMidiInput
-    return true;
-   #else
-    return false;
-   #endif
-}
-
-bool PluginProcessor::producesMidi() const
-{
-   #if JucePlugin_ProducesMidiOutput
-    return true;
-   #else
-    return false;
-   #endif
-}
-
-void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
-{
 }
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -168,10 +107,6 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     AudioProcessor::setLatencySamples(pitch_shifter_getProcessingDelay(hPS));
 }
 
-void PluginProcessor::releaseResources()
-{
-}
-
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     ScopedNoDenormals noDenormals;
@@ -182,11 +117,6 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     float* const* bufferData = buffer.getArrayOfWritePointers();
 
     pitch_shifter_process(hPS, bufferData, bufferData, nNumInputs, nNumOutputs, nCurrentBlockSize);
-}
-
-bool PluginProcessor::hasEditor() const
-{
-    return true; 
 }
 
 AudioProcessorEditor* PluginProcessor::createEditor()
@@ -223,7 +153,13 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             setParameterValuesUsingInternalState();
         }
         else if(xmlState->getIntAttribute("VersionCode")>=0x10101){
+            removeParameterListeners(this);
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            addParameterListeners(this);
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
         }
         
         pitch_shifter_refreshParams(hPS);

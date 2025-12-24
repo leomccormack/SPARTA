@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_ambiDEC" projectType="audioplug" version="1.7.2"
+<JUCERPROJECT id="lfkRjX" name="sparta_ambiDEC" projectType="audioplug" version="1.7.3"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_ambiDEC" pluginDesc="sparta_ambiDEC"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="ADOA"
@@ -18,6 +18,8 @@
   <MAINGROUP id="imnfnp" name="sparta_ambiDEC">
     <FILE id="Fq6CJw" name="ParameterManager.h" compile="0" resource="0"
           file="../resources/ParameterManager.h"/>
+    <FILE id="NmF58L" name="PluginProcessorBase.h" compile="0" resource="0"
+          file="../resources/PluginProcessorBase.h"/>
     <FILE id="tE5xtN" name="ConfigurationHelper.h" compile="0" resource="0"
           file="../resources/ConfigurationHelper.h"/>
     <FILE id="OFqITh" name="SPARTALookAndFeel.h" compile="0" resource="0"
@@ -300,12 +302,10 @@
                extraDefs="SAF_USE_APPLE_ACCELERATE_LP64&#10;SAF_ENABLE_SOFA_READER_MODULE"
                xcodeValidArchs="arm64,x86_64">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_ambiDECd"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
                        osxArchitecture="64BitIntel" osxCompatibility="11.0 SDK" enablePluginBinaryCopyStep="1"
                        macOSDeploymentTarget="11.0"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="sparta_ambiDEC"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
                        osxArchitecture="64BitIntel" osxCompatibility="11.0 SDK" enablePluginBinaryCopyStep="1"
                        linkTimeOptimisation="1" macOSDeploymentTarget="11.0"/>
       </CONFIGURATIONS>
@@ -329,10 +329,9 @@
     <LINUX_MAKE targetFolder="make/LinuxMakefile" extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom_lp64 -lsaf_ipp_custom&#10;-Wl,-rpath,/usr/local/lib"
                 extraCompilerFlags="-pedantic" extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_USE_INTEL_IPP&#10;SAF_ENABLE_SOFA_READER_MODULE">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_ambiDEC_debug" linkTimeOptimisation="1"
-                       headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../SDKs/VST2_SDK&#10;/opt/intel/oneapi/mkl/latest/include&#10;/opt/intel/oneapi/ipp/latest/include"/>
+        <CONFIGURATION isDebug="1" name="Debug" linkTimeOptimisation="1" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../SDKs/VST2_SDK&#10;/opt/intel/oneapi/mkl/latest/include&#10;/opt/intel/oneapi/ipp/latest/include"/>
         <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../SDKs/VST2_SDK&#10;/opt/intel/oneapi/mkl/latest/include&#10;/opt/intel/oneapi/ipp/latest/include"
-                       linkTimeOptimisation="1" targetName="sparta_ambiDEC"/>
+                       linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules/"/>
@@ -354,8 +353,8 @@
     <LINUX_MAKE targetFolder="make/LinuxMakefileRaspberryPI" extraDefs="SAF_USE_OPEN_BLAS_AND_LAPACKE&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;"
                 extraLinkerFlags="-L/usr/lib/arm-linux-gnueabihf -lopenblas  -llapacke -lnetcdf">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_ambiDEC_debug" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf&#10;"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="sparta_ambiDEC" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf&#10;"/>
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf&#10;"/>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include&#10;/usr/include/arm-linux-gnueabihf&#10;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules/"/>

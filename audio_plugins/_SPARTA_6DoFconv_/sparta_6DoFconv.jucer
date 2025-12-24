@@ -5,7 +5,7 @@
               pluginFormats="buildAAX,buildVST" pluginManufacturer="AALTO"
               userNotes="_CRT_SECURE_NO_WARNINGS&#10;_WINSOCK_DEPRECATED_NO_WARNINGS&#10;&#10;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include&#10;../../../../../SDKs/NatNetSDK/include&#10;../../../src/NatNetTools"
               companyEmail="rapolas.daugintis@gmail.com" pluginManufacturerCode="RAPD"
-              pluginCode="TVCN" displaySplashScreen="1" version="1.1.2" pluginVST3Category="Spatial"
+              pluginCode="TVCN" displaySplashScreen="1" version="1.1.3" pluginVST3Category="Spatial"
               pluginAAXCategory="512" defines="JucePlugin_AAXDisableDefaultSettingsChunks=1&#10;"
               pluginCharacteristicsValue="pluginAAXDisableMultiMono">
   <MAINGROUP id="IbvuHL" name="sparta_6DoFconv">
@@ -316,10 +316,10 @@
                xcodeValidArchs="arm64,x86_64" userNotes="&#10;&#10;-L/usr/local/lib -lsaf_mkl_custom"
                externalLibraries="hdf5_hl&#13;hdf5&#13;netcdf&#13;z">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_6DoFconv_debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
                        osxCompatibility="11.0 SDK" osxArchitecture="64BitIntel" macOSDeploymentTarget="11.0"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="sparta_6DoFconv" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
                        osxCompatibility="11.0 SDK" osxArchitecture="64BitIntel" userNotes="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
                        linkTimeOptimisation="1" enablePluginBinaryCopyStep="1" macOSDeploymentTarget="11.0"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"/>
@@ -347,9 +347,9 @@
                 extraCompilerFlags="-pedantic" extraLinkerFlags="-L/usr/lib -lsaf_mkl_custom_lp64&#10;-Wl,-rpath,/usr/lib"
                 userNotes="-L/lib/x86_64-linux-gnu -lnetcdf">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="sparta_6DoFconv_debug" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include"
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include"
                        linkTimeOptimisation="1"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="sparta_6DoFconv" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include"/>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;~/intel/compilers_and_libraries/linux/mkl/include&#10;../../../../SDKs/VST2_SDK&#10;/usr/include"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../SDKs/JUCE/modules"/>

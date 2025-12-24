@@ -73,20 +73,20 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (SL_transitionFreq.get());
     SL_transitionFreq->setRange (500, 2000, 0.1);
     SL_transitionFreq->setSliderStyle (juce::Slider::LinearHorizontal);
-    SL_transitionFreq->setTextBoxStyle (juce::Slider::TextBoxAbove, false, 60, 20);
+    SL_transitionFreq->setTextBoxStyle (juce::Slider::TextBoxAbove, false, 80, 20);
     SL_transitionFreq->setBounds (168, 305, 112, 40);
 
     CBdec1method = std::make_unique<ComboBoxWithAttachment>(p.parameters, "decMethod1");
     addAndMakeVisible (CBdec1method.get());
     CBdec1method->setEditableText (false);
     CBdec1method->setJustificationType (juce::Justification::centredLeft);
-    CBdec1method->setBounds (24, 297, 116, 20);
+    CBdec1method->setBounds (24, 297, 120, 20);
 
     CBdec2method = std::make_unique<ComboBoxWithAttachment>(p.parameters, "decMethod2");
     addAndMakeVisible (CBdec2method.get());
     CBdec2method->setEditableText (false);
     CBdec2method->setJustificationType (juce::Justification::centredLeft);
-    CBdec2method->setBounds (308, 297, 116, 20);
+    CBdec2method->setBounds (308, 297, 120, 20);
 
     TBdec1EnableMaxrE = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableMaxRE1");
     addAndMakeVisible (TBdec1EnableMaxrE.get());

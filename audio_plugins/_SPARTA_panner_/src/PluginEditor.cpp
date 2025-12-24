@@ -959,9 +959,9 @@ void PluginEditor::timerCallback()
             loudspeakerCoordsVP->setEnabled(false);
     }
     else{
-        if(processor.getIsPlaying())
-            SL_spread->setEnabled(false);
-        else if(!SL_spread->isEnabled())
+//        if(processor.getIsPlaying())
+//            SL_spread->setEnabled(false);
+        if(!SL_spread->isEnabled())
             SL_spread->setEnabled(true);
         if(!CBsourceDirsPreset->isEnabled())
             CBsourceDirsPreset->setEnabled(true);
@@ -971,8 +971,8 @@ void PluginEditor::timerCallback()
             SL_pValue->setEnabled(true);
         if(!CBsLoudspeakerDirsPreset->isEnabled())
             CBsLoudspeakerDirsPreset->setEnabled(true);
-        if(processor.getIsPlaying())
-            SL_num_loudspeakers->setEnabled(false);
+//        if(processor.getIsPlaying())
+//            SL_num_loudspeakers->setEnabled(false);
         else if(!SL_num_loudspeakers->isEnabled())
             SL_num_loudspeakers->setEnabled(true);
         if(!tb_loadJSON_src->isEnabled())

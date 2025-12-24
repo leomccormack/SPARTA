@@ -27,18 +27,7 @@
 # error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
 #endif
 
-static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
-    switch(format){
-        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
-        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
-        case juce::AudioProcessor::wrapperType_AAX:
-            return 64;
-        default:
-            return MAX_NUM_CHANNELS;
-    }
-}
-
-juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
@@ -168,73 +157,23 @@ void PluginProcessor::setInternalStateUsingParameterValues()
     }
 }
 
-PluginProcessor::PluginProcessor() :
-    AudioProcessor(BusesProperties()
-        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
-    ParameterManager(*this, createParameterLayout())
+PluginProcessor::PluginProcessor()
+    : PluginProcessorBase(
+        BusesProperties()
+            .withInput("Input", AudioChannelSet::discreteChannels(64), true)
+            .withOutput("Output", AudioChannelSet::discreteChannels(64), true),
+        createParameterLayout())
 {
     ambi_dec_create(&hAmbi);
     addParameterListeners(this);
-    
     startTimer(80);
 }
 
 PluginProcessor::~PluginProcessor()
 {
+    stopTimer();
     removeParameterListeners(this);
     ambi_dec_destroy(&hAmbi);
-}
-
-void PluginProcessor::setCurrentProgram (int  /*index*/)
-{
-}
-
-const String PluginProcessor::getName() const
-{
-    return JucePlugin_Name;
-}
-
-double PluginProcessor::getTailLengthSeconds() const
-{
-    return 0.0;
-}
-
-int PluginProcessor::getNumPrograms()
-{
-    return 0;
-}
-
-int PluginProcessor::getCurrentProgram()
-{
-    return 0;
-}
-
-const String PluginProcessor::getProgramName (int /*index*/)
-{
-    return String();
-}
-
-bool PluginProcessor::acceptsMidi() const
-{
-   #if JucePlugin_WantsMidiInput
-    return true;
-   #else
-    return false;
-   #endif
-}
-
-bool PluginProcessor::producesMidi() const
-{
-   #if JucePlugin_ProducesMidiOutput
-    return true;
-   #else
-    return false;
-   #endif
-}
-
-void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
-{
 }
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -263,10 +202,6 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     }
 }
 
-void PluginProcessor::releaseResources()
-{
-}
-
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     ScopedNoDenormals noDenormals;
@@ -289,11 +224,6 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     }
     else
         buffer.clear();
-}
-
-bool PluginProcessor::hasEditor() const
-{
-    return true; 
 }
 
 AudioProcessorEditor* PluginProcessor::createEditor()
@@ -379,7 +309,13 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             setParameterValuesUsingInternalState();
         }
         else if(xmlState->getIntAttribute("VersionCode")>=0x10701){
+            removeParameterListeners(this);
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            addParameterListeners(this);
+            
+            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
+            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
+            setInternalStateUsingParameterValues();
             
             /* Now for the other DSP object parameters (that have no JUCE parameter counterpart) */
             for(int band=0; band<ambi_dec_getNumberOfBands(); band++)
@@ -396,10 +332,6 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             /* Other */
             if(xmlState->hasAttribute("JSONFilePath"))
                 lastDir = xmlState->getStringAttribute("JSONFilePath", "");
-            
-            /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
-            /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
-            setInternalStateUsingParameterValues();
         }
         
         ambi_dec_refreshSettings(hAmbi);

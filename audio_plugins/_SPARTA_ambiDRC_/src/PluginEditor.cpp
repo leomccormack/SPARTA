@@ -63,19 +63,19 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible (presetCB.get());
     presetCB->setEditableText (false);
     presetCB->setJustificationType (juce::Justification::centredLeft);
-    presetCB->setBounds (72, 296, 120, 16);
+    presetCB->setBounds (72, 295, 120, 20);
 
     CHOrderingCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
     addAndMakeVisible (CHOrderingCB.get());
     CHOrderingCB->setEditableText (false);
     CHOrderingCB->setJustificationType (juce::Justification::centredLeft);
-    CHOrderingCB->setBounds (288, 296, 80, 16);
+    CHOrderingCB->setBounds (288, 295, 80, 20);
 
     normalisationCB = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
     addAndMakeVisible (normalisationCB.get());
     normalisationCB->setEditableText (false);
     normalisationCB->setJustificationType (juce::Justification::centredLeft);
-    normalisationCB->setBounds (440, 296, 88, 16);
+    normalisationCB->setBounds (440, 295, 88, 20);
 
     s_ingain = std::make_unique<SliderWithAttachment>(p.parameters, "inGain");
     addAndMakeVisible (s_ingain.get());

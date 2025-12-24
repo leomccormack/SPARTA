@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lfkRjX" name="sparta_dirass" projectType="audioplug" version="1.2.2"
+<JUCERPROJECT id="lfkRjX" name="sparta_dirass" projectType="audioplug" version="1.2.3"
               bundleIdentifier="com.AALTO.SPARTA" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="0" pluginName="sparta_dirass" pluginDesc="sparta_dirass"
               pluginManufacturer="AALTO" pluginManufacturerCode="LEOM" pluginCode="DRAS"
@@ -18,6 +18,8 @@
   <MAINGROUP id="imnfnp" name="sparta_dirass">
     <FILE id="wgW3Lo" name="ParameterManager.h" compile="0" resource="0"
           file="../resources/ParameterManager.h"/>
+    <FILE id="GN9wpa" name="PluginProcessorBase.h" compile="0" resource="0"
+          file="../resources/PluginProcessorBase.h"/>
     <FILE id="OpxoU0" name="SPARTALookAndFeel.h" compile="0" resource="0"
           file="../resources/SPARTALookAndFeel.h"/>
     <FILE id="oWOjKT" name="overlay.cpp" compile="1" resource="0" file="src/overlay.cpp"/>
@@ -292,12 +294,10 @@
                extraDefs="SAF_USE_APPLE_ACCELERATE_LP64" xcodeValidArchs="arm64,x86_64"
                cameraPermissionNeeded="1" cameraPermissionText="This app requires access to the Camera to support the &quot;AcousticCamera&quot; option">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_dirass_debug"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
                        osxArchitecture="64BitIntel" osxCompatibility="11.0 SDK" enablePluginBinaryCopyStep="1"
                        macOSDeploymentTarget="11.0"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="sparta_dirass"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
                        osxArchitecture="64BitIntel" osxCompatibility="11.0 SDK" enablePluginBinaryCopyStep="1"
                        linkTimeOptimisation="1" macOSDeploymentTarget="11.0"/>
       </CONFIGURATIONS>
