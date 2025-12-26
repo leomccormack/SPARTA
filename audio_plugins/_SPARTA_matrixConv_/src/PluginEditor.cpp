@@ -149,261 +149,62 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
 PluginEditor::~PluginEditor()
 {
-    TBenablePartConv = nullptr;
-    label_hostBlockSize = nullptr;
-    label_NFilters = nullptr;
-    label_filterLength = nullptr;
-    label_hostfs = nullptr;
-    label_filterfs = nullptr;
-    SL_num_inputs = nullptr;
-    label_MatrixNInputs = nullptr;
-    label_MatrixNoutputs = nullptr;
-    label_NOutputs = nullptr;
-
+    stopTimer();
     setLookAndFeel(nullptr);
 }
 
 void PluginEditor::paint (juce::Graphics& g)
 {
-    g.fillAll (juce::Colours::white);
+    using namespace ColoursUI;
 
+    /* Background gradients */
+    drawVerticalGradient(g, {0,  30, 530, 65}, bgDark1, bgDark2);
+    drawVerticalGradient(g, {0,  95, 530, 89}, bgDark2, bgDark1);
+
+    /* Top rounded bar */
     {
-        int x = 0, y = 30, width = 530, height = 65;
-        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
-        g.setGradientFill (juce::ColourGradient (fillColour1,
-                                             8.0f - 0.0f + x,
-                                             32.0f - 30.0f + y,
-                                             fillColour2,
-                                             8.0f - 0.0f + x,
-                                             88.0f - 30.0f + y,
-                                             false));
-        g.fillRect (x, y, width, height);
+        juce::Rectangle<float> r { 1.f, 2.f, 528.f, 31.f };
+        g.setGradientFill(juce::ColourGradient(bgDark2,
+                                               r.getX(), r.getBottom(),
+                                               bgDark1,
+                                               r.getRight(), r.getY(),
+                                               false));
+        g.fillRoundedRectangle(r, 5.f);
+        g.setColour(borderGrey);
+        g.drawRoundedRectangle(r, 5.f, 2.f);
     }
 
-    {
-        int x = 0, y = 95, width = 530, height = 89;
-        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
-        g.setGradientFill (juce::ColourGradient (fillColour1,
-                                             8.0f - 0.0f + x,
-                                             184.0f - 95.0f + y,
-                                             fillColour2,
-                                             8.0f - 0.0f + x,
-                                             136.0f - 95.0f + y,
-                                             false));
-        g.fillRect (x, y, width, height);
-    }
+    /* Panels  */
+    drawPanel(g, {  8, 39, 288,137}, panelFill,      panelStrokeLight);
+    drawPanel(g, {  8, 39, 288, 81}, panelFillLight, panelStrokeLight);
+    drawPanel(g, {304, 40, 216, 29}, panelFill,      panelStrokeLight);
+    drawPanel(g, {304, 68, 216,108}, panelFill,      panelStrokeLight);
 
-    {
-        int x = 8, y = 39, width = 288, height = 137;
-        juce::Colour fillColour = juce::Colour (0x10c7c7c7);
-        juce::Colour strokeColour = juce::Colour (0x1fffffff);
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
+    /* Borders */
+    g.setColour(borderGrey);
+    g.drawRect({0,   0, 532, 2}, 2);
+    g.drawRect({0,   0,   2,184}, 2);
+    g.drawRect({528, 0,   2,184}, 2);
+    g.drawRect({0, 182, 532, 2}, 2);
 
-    }
+    /* Title */
+    drawLabel(g, {16, 1,100,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {92,  1,124,32}, "MatrixConv", 18.f, juce::Justification::centredLeft, juce::Colour(0xffe9ff00));
 
-    {
-        int x = 8, y = 39, width = 288, height = 81;
-        juce::Colour fillColour = juce::Colour (0x08c7c7c7);
-        juce::Colour strokeColour = juce::Colour (0x1fffffff);
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
+    /* Left‑side labels */
+    drawLabel(g, {16, 40,224,30}, "Number of Input Channels:", 15.f);
+    drawLabel(g, {16, 92,232,30}, "Enable Partitioned Convolution:", 15.f);
+    drawLabel(g, {16,118,232,31}, "Number of Output Channels:", 15.f);
+    drawLabel(g, {16,144,232,30}, "Number of Filters in .wav File:", 15.f);
 
-    }
+    /* Right‑side labels */
+    drawLabel(g, {312, 39,115,30}, "Matrix:", 15.f);
+    drawLabel(g, {436, 40,115,30}, "x",      18.f, juce::Justification::centredLeft);
 
-    {
-        int x = 304, y = 40, width = 216, height = 29;
-        juce::Colour fillColour = juce::Colour (0x10c7c7c7);
-        juce::Colour strokeColour = juce::Colour (0x1fffffff);
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        float x = 1.0f, y = 2.0f, width = 528.0f, height = 31.0f;
-        juce::Colour fillColour1 = juce::Colour (0xff041518), fillColour2 = juce::Colour (0xff19313f);
-        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        g.setGradientFill (juce::ColourGradient (fillColour1,
-                                             0.0f - 1.0f + x,
-                                             32.0f - 2.0f + y,
-                                             fillColour2,
-                                             528.0f - 1.0f + x,
-                                             32.0f - 2.0f + y,
-                                             false));
-        g.fillRoundedRectangle (x, y, width, height, 5.000f);
-        g.setColour (strokeColour);
-        g.drawRoundedRectangle (x, y, width, height, 5.000f, 2.000f);
-    }
-
-    {
-        int x = 304, y = 68, width = 216, height = 108;
-        juce::Colour fillColour = juce::Colour (0x10c7c7c7);
-        juce::Colour strokeColour = juce::Colour (0x1fffffff);
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        int x = 16, y = 1, width = 100, height = 32;
-        juce::String text (TRANS ("SPARTA|"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (18.80f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 92, y = 1, width = 124, height = 32;
-        juce::String text (TRANS ("MatrixConv"));
-        juce::Colour fillColour = juce::Colour (0xffe9ff00);
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (18.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 0, y = 0, width = 532, height = 2;
-        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 2);
-
-    }
-
-    {
-        int x = 0, y = 0, width = 2, height = 184;
-        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 2);
-
-    }
-
-    {
-        int x = 528, y = 0, width = 2, height = 184;
-        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 2);
-
-    }
-
-    {
-        int x = 0, y = 182, width = 532, height = 2;
-        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 2);
-
-    }
-
-    {
-        int x = 312, y = 66, width = 115, height = 30;
-        juce::String text (TRANS ("Host Block Size:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 16, y = 144, width = 232, height = 30;
-        juce::String text (TRANS ("Number of Filters in .wav File:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 312, y = 92, width = 200, height = 30;
-        juce::String text (TRANS ("Filter Length (s):"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 312, y = 118, width = 128, height = 30;
-        juce::String text (TRANS ("Filter Samplerate:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 312, y = 144, width = 144, height = 30;
-        juce::String text (TRANS ("Host Samplerate:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 16, y = 92, width = 232, height = 30;
-        juce::String text (TRANS ("Enable Partitioned Convolution:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 16, y = 40, width = 224, height = 30;
-        juce::String text (TRANS ("Number of Input Channels:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 16, y = 118, width = 232, height = 31;
-        juce::String text (TRANS ("Number of Output Channels:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 312, y = 39, width = 115, height = 30;
-        juce::String text (TRANS ("Matrix:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 436, y = 40, width = 115, height = 30;
-        juce::String text (TRANS ("x"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions (18.00f, juce::Font::plain).withStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
+    drawLabel(g, {312, 66,115,30}, "Host Block Size:", 15.f);
+    drawLabel(g, {312, 92,200,30}, "Filter Length (s):", 15.f);
+    drawLabel(g, {312,118,128,30}, "Filter Samplerate:", 15.f);
+    drawLabel(g, {312,144,144,30}, "Host Samplerate:",   15.f);
 
     /* display version/date built */
     g.setColour(Colours::white);

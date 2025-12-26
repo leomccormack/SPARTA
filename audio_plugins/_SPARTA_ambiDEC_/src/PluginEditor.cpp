@@ -301,474 +301,88 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
 PluginEditor::~PluginEditor()
 {
-    CBoutputDirsPreset = nullptr;
-    SL_num_loudspeakers = nullptr;
-    TBuseDefaultHRIRs = nullptr;
-    CBsourcePreset = nullptr;
-    CBchFormat = nullptr;
-    CBnormScheme = nullptr;
-    SL_transitionFreq = nullptr;
-    CBdec1method = nullptr;
-    CBdec2method = nullptr;
-    TBdec1EnableMaxrE = nullptr;
-    TBdec2EnableMaxrE = nullptr;
-    CBdec1normtype = nullptr;
-    TBBinauraliseLS = nullptr;
-    CBdec2normtype = nullptr;
-    s_decOrder = nullptr;
-    tb_loadJSON = nullptr;
-    tb_saveJSON = nullptr;
-    CBmasterOrder = nullptr;
-    TBenablePreProc = nullptr;
-
+    stopTimer();
     setLookAndFeel(nullptr);
-    outputCoordsVP = nullptr;
-    decOrder2dSlider = nullptr;
 }
 
 void PluginEditor::paint (juce::Graphics& g)
 {
-    g.fillAll (juce::Colours::white);
+    using namespace ColoursUI;
 
+    g.fillAll(juce::Colours::white);
+
+    /* Background gradients */
+    drawVerticalGradient(g, {0, 30, 656, 163}, bgDark1, bgDark2);
+    drawVerticalGradient(g, {0,193, 656, 172}, bgDark2, bgDark1);
+
+    /* Top rounded bar */
     {
-        int x = 0, y = 30, width = 656, height = 163;
-        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
-        g.setGradientFill (juce::ColourGradient (fillColour1,
-                                             8.0f - 0.0f + x,
-                                             32.0f - 30.0f + y,
-                                             fillColour2,
-                                             8.0f - 0.0f + x,
-                                             96.0f - 30.0f + y,
-                                             false));
-        g.fillRect (x, y, width, height);
+        juce::Rectangle<float> r { 1.f, 1.f, 654.f, 32.f };
+        g.setGradientFill(juce::ColourGradient(bgDark2,
+                                               r.getX(), r.getBottom(),
+                                               bgDark1,
+                                               r.getRight(), r.getY(),
+                                               false));
+        g.fillRoundedRectangle(r, 5.f);
+        g.setColour(borderGrey);
+        g.drawRoundedRectangle(r, 5.f, 2.f);
     }
 
-    {
-        float x = 1.0f, y = 1.0f, width = 654.0f, height = 32.0f;
-        juce::Colour fillColour1 = juce::Colour (0xff041518), fillColour2 = juce::Colour (0xff19313f);
-        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        g.setGradientFill (juce::ColourGradient (fillColour1,
-                                             0.0f - 1.0f + x,
-                                             32.0f - 1.0f + y,
-                                             fillColour2,
-                                             656.0f - 1.0f + x,
-                                             24.0f - 1.0f + y,
-                                             false));
-        g.fillRoundedRectangle (x, y, width, height, 5.000f);
-        g.setColour (strokeColour);
-        g.drawRoundedRectangle (x, y, width, height, 5.000f, 2.000f);
-    }
+    /* Panels */
+    drawPanel(g, {12,  58, 213,111}, panelFill,      panelStroke);
+    drawPanel(g, {12,  58, 213, 33}, panelFillLight, panelStrokeLight);
+    drawPanel(g, {152,272,145, 81}, panelFill,      panelStroke);
+    drawPanel(g, {296,272,140, 81}, panelFill,      panelStroke);
+    drawPanel(g, {446,121,196,232}, panelFill,      panelStroke);
+    drawPanel(g, {224, 58,212,111}, panelFill,      panelStroke);
+    drawPanel(g, {446, 58,196, 64}, panelFill,      panelStroke);
+    drawPanel(g, {12, 168,424,105}, panelFill,      panelStroke);
+    drawPanel(g, {12, 272,141, 81}, panelFill,      panelStroke);
 
-    {
-        int x = 0, y = 193, width = 656, height = 172;
-        juce::Colour fillColour1 = juce::Colour (0xff19313f), fillColour2 = juce::Colour (0xff041518);
-        g.setGradientFill (juce::ColourGradient (fillColour1,
-                                             8.0f - 0.0f + x,
-                                             360.0f - 193.0f + y,
-                                             fillColour2,
-                                             8.0f - 0.0f + x,
-                                             304.0f - 193.0f + y,
-                                             false));
-        g.fillRect (x, y, width, height);
-    }
+    /* Borders */
+    g.setColour(borderGrey);
+    g.drawRect({0,   0, 656, 2}, 2);
+    g.drawRect({0,   0,   2,365}, 2);
+    g.drawRect({654, 0,   2,365}, 2);
+    g.drawRect({0, 363, 656, 2}, 2);
 
-    {
-        int x = 0, y = 0, width = 656, height = 2;
-        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 2);
+    /* Labels */
+    drawLabel(g, {455, 58,  67, 30}, "Presets:", 15.f);
+    drawLabel(g, {499,122, 105, 28}, juce::CharPointer_UTF8 ("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
+    drawLabel(g, {455, 86, 169, 30}, "Number of Outputs:", 14.5f);
+    drawLabel(g, {164, 32, 149, 30}, "Decoding Settings", 15.f);
+    drawLabel(g, {524, 32, 113, 30}, "Outputs", 15.f);
+    drawLabel(g, {232, 87, 165, 30}, "Use Default HRIR set:", 14.5f);
+    drawLabel(g, {19,  90, 132, 30}, "Mic Preset:", 14.5f);
+    drawLabel(g, {19, 140, 132, 30}, "Normalisation:", 14.5f);
+    drawLabel(g, {232, 58, 189, 30}, "Binauralise Loudspeakers:", 14.5f);
+    drawLabel(g, {51, 270,  96, 30}, "Decoder 1", 15.f);
+    drawLabel(g, {168,271, 120, 30}, "Cross-over Freq.", 15.f);
+    drawLabel(g, {339,270,  96, 30}, "Decoder 2", 15.f);
+    drawLabel(g, {82, 317,  96, 30}, "max_rE:", 10.f);
+    drawLabel(g, {366,317,  96, 30}, "max_rE:", 10.f);
+    drawLabel(g, {19, 165, 261, 30}, "Decoding Order Per Frequency Band", 15.f);
+    drawLabel(g, {19, 247,  37, 30}, "100", 12.f);
+    drawLabel(g, {174,247,  37, 30}, "1k", 12.f);
+    drawLabel(g, {328,247,  37, 30}, "10k", 12.f);
+    drawLabel(g, {210,247,  93, 30}, "Frequency (Hz)", 12.f);
+    drawLabel(g, {371,247,  37, 30}, "20k", 12.f);
+    drawLabel(g, {419,239,  13, 30}, "1", 15.f);
+    drawLabel(g, {19,  58, 132, 30}, "Max Order:", 14.5f);
+    drawLabel(g, {232,139, 194, 30}, "Apply Diffuse-field EQ:", 14.5f);
+    drawLabel(g, {19, 115, 132, 30}, "Channel Order:", 14.5f);
 
-    }
-
-    {
-        int x = 12, y = 58, width = 213, height = 111;
-        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
-        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        int x = 12, y = 58, width = 213, height = 33;
-        juce::Colour fillColour = juce::Colour (0x08f4f4f4);
-        juce::Colour strokeColour = juce::Colour (0x35a0a0a0);
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        int x = 152, y = 272, width = 145, height = 81;
-        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
-        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        int x = 296, y = 272, width = 140, height = 81;
-        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
-        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        int x = 446, y = 121, width = 196, height = 232;
-        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
-        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        int x = 224, y = 58, width = 212, height = 111;
-        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
-        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        int x = 446, y = 58, width = 196, height = 64;
-        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
-        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        int x = 455, y = 58, width = 67, height = 30;
-        juce::String text (TRANS ("Presets: "));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 12, y = 168, width = 424, height = 105;
-        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
-        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        int x = 499, y = 122, width = 105, height = 28;
-        juce::String text (juce::CharPointer_UTF8 ("Azi\xc2\xb0   #   Elev\xc2\xb0"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 455, y = 86, width = 169, height = 30;
-        juce::String text (TRANS ("Number of Outputs:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(14.50f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 164, y = 32, width = 149, height = 30;
-        juce::String text (TRANS ("Decoding Settings"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 524, y = 32, width = 113, height = 30;
-        juce::String text (TRANS ("Outputs"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 232, y = 87, width = 165, height = 30;
-        juce::String text (TRANS ("Use Default HRIR set:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(14.50f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 19, y = 90, width = 132, height = 30;
-        juce::String text (TRANS ("Mic Preset:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(14.50f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 19, y = 140, width = 132, height = 30;
-        juce::String text (TRANS ("Normalisation:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(14.50f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 232, y = 58, width = 189, height = 30;
-        juce::String text (TRANS ("Binauralise Loudspeakers:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(14.50f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 12, y = 272, width = 141, height = 81;
-        juce::Colour fillColour = juce::Colour (0x10f4f4f4);
-        juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
-
-    {
-        int x = 51, y = 270, width = 96, height = 30;
-        juce::String text (TRANS ("Decoder 1"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 168, y = 271, width = 120, height = 30;
-        juce::String text (TRANS ("Cross-over Freq."));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 339, y = 270, width = 96, height = 30;
-        juce::String text (TRANS ("Decoder 2"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 82, y = 317, width = 96, height = 30;
-        juce::String text (TRANS ("max_rE:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(10.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 19, y = 165, width = 261, height = 30;
-        juce::String text (TRANS ("Decoding Order Per Frequency Band"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 19, y = 247, width = 37, height = 30;
-        juce::String text (TRANS ("100"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(12.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 174, y = 247, width = 37, height = 30;
-        juce::String text (TRANS ("1k"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(12.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 328, y = 247, width = 37, height = 30;
-        juce::String text (TRANS ("10k"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(12.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 210, y = 247, width = 93, height = 30;
-        juce::String text (TRANS ("Frequency (Hz)"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(12.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 371, y = 247, width = 37, height = 30;
-        juce::String text (TRANS ("20k"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(12.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 366, y = 317, width = 96, height = 30;
-        juce::String text (TRANS ("max_rE:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(10.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 419, y = 239, width = 13, height = 30;
-        juce::String text (TRANS ("1"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(15.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 19, y = 58, width = 132, height = 30;
-        juce::String text (TRANS ("Max Order:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(14.50f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 16, y = 1, width = 100, height = 32;
-        juce::String text (TRANS ("SPARTA|"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(18.80f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 92, y = 1, width = 112, height = 32;
-        juce::String text (TRANS ("AmbiDEC"));
-        juce::Colour fillColour = juce::Colour (0xff00d8df);
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(18.00f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 0, y = 0, width = 2, height = 365;
-        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 2);
-
-    }
-
-    {
-        int x = 654, y = 0, width = 2, height = 365;
-        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 2);
-
-    }
-
-    {
-        int x = 0, y = 363, width = 656, height = 2;
-        juce::Colour strokeColour = juce::Colour (0xffb9b9b9);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 2);
-
-    }
-
-    {
-        int x = 232, y = 139, width = 194, height = 30;
-        juce::String text (TRANS ("Apply Diffuse-field EQ:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(14.50f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 19, y = 115, width = 132, height = 30;
-        juce::String text (TRANS ("Channel Order:"));
-        juce::Colour fillColour = juce::Colours::white;
-        g.setColour (fillColour);
-        g.setFont (juce::FontOptions(14.50f, juce::Font::plain).withStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
+    /* Title */
+    drawLabel(g, {16, 1, 100, 32}, "SPARTA|", 18.8f);
+    drawLabel(g, {92, 1, 112, 32}, "AmbiDEC", 18.f,
+              juce::Justification::centredLeft, accentCyan);
 
     g.setColour(Colours::white);
     g.setFont(juce::FontOptions(11.00f, Font::plain));
     g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
         185, 16, 530, 11,
         Justification::centredLeft, true);
-
+    
     /* label for max ORDER */
     int x = 417, y = 176, width = 18, height = 30;
     String text = String(CBmasterOrder->getSelectedId());

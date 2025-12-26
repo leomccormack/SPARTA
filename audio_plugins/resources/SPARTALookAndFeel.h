@@ -1,5 +1,42 @@
 #pragma once
 
+namespace ColoursUI {
+    const juce::Colour bgDark1          { 0xff12242e }; //const juce::Colour bgDark1   { 0xff142833 };
+    const juce::Colour bgDark2          { 0xff041316 }; //const juce::Colour bgDark2   { 0xff041518 };
+    const juce::Colour panelFill        { 0x0ef4f4f4 }; //const juce::Colour panelFill { 0x10f4f4f4 };
+    const juce::Colour panelFillLight   { 0x07f4f4f4 }; //const juce::Colour panelFillLight { 0x08f4f4f4 };
+    const juce::Colour panelStroke { 0x67a0a0a0 };
+    const juce::Colour panelStrokeLight { 0x35a0a0a0 };
+    const juce::Colour textWhite { juce::Colours::white };
+    const juce::Colour borderGrey { 0xffb9b9b9 };
+    const juce::Colour accentCyan { 0xff00d8df };
+    const juce::Colour accentOrange { 0xffdf8400 }; 
+}
+
+inline void drawPanel(juce::Graphics& g, juce::Rectangle<int> r, juce::Colour fill, juce::Colour stroke, int thickness = 1)
+{
+    g.setColour(fill);
+    g.fillRect(r);
+    g.setColour(stroke);
+    g.drawRect(r, thickness);
+}
+
+inline void drawVerticalGradient(juce::Graphics& g, juce::Rectangle<int> r, juce::Colour top, juce::Colour bottom)
+{
+    g.setGradientFill(juce::ColourGradient(top, r.getX(), r.getY(), bottom, r.getX(), r.getBottom(), false));
+    g.fillRect(r);
+}
+
+inline void drawLabel(juce::Graphics& g, juce::Rectangle<int> r, const juce::String& text, float size,
+                      juce::Justification just = juce::Justification::centredLeft, juce::Colour colour = ColoursUI::textWhite,
+                      juce::Font::FontStyleFlags style = juce::Font::bold)
+{
+    g.setColour(colour);
+    g.setFont(juce::FontOptions(size, style));
+    g.drawText(text, r, just, true);
+}
+
+
 class SPARTALookAndFeel : public juce::LookAndFeel_V4
 {
 public:
