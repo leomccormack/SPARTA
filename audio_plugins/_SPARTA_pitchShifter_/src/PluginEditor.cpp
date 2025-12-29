@@ -91,34 +91,12 @@ void PluginEditor::paint (juce::Graphics& g)
 {
     using namespace ColoursUI;
 
-    /* Background gradients */
-    drawVerticalGradient(g, {0, 30, 530, 40}, bgDark1, bgDark2);
-    drawVerticalGradient(g, {0, 70, 498, 42}, bgDark2, bgDark1);
-
-    /* Top rounded bar */
-    {
-        juce::Rectangle<float> r { 1.f, 2.f, 498.f, 31.f };
-        g.setGradientFill(juce::ColourGradient(bgDark2,
-                                               r.getX(), r.getBottom(),
-                                               bgDark1,
-                                               r.getRight(), r.getY(),
-                                               false));
-        g.fillRoundedRectangle(r, 5.f);
-        g.setColour(borderGrey);
-        g.drawRoundedRectangle(r, 5.f, 2.f);
-    }
+    drawPluginBackgroundAndBanner(g, getBounds());
 
     /* Panels */
     drawPanel(g, {10, 71,476,33}, panelFill,      panelStrokeLight);
     drawPanel(g, {10, 40,213,32}, panelFill,      panelStrokeLight);
     drawPanel(g, {222,40,264,32}, panelFill,      panelStrokeLight);
-
-    /* Borders */
-    g.setColour(borderGrey);
-    g.drawRect({0,   0, 532, 2}, 2);
-    g.drawRect({0,   0,   2,120}, 2);
-    g.drawRect({498, 3,   6,117}, 2);
-    g.drawRect({0, 110, 512, 2}, 2);
 
     /* Labels */
     drawLabel(g, {16, 41,152,30}, "Number of Channels:", 15.f);

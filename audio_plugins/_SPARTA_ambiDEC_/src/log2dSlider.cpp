@@ -69,7 +69,7 @@ void log2dSlider::paint (Graphics& g)
 {
     /* background */
     int x = 0, y = 0;
-    Colour fillColour1 = Colour (0x11ffffff), fillColour2 = Colour (0x425b5b5b);
+    Colour fillColour1 = Colour (0x11B2B2B2), fillColour2 = Colour (0x42404040);
     Colour strokeColour = Colour (0xe1999999);
     g.setGradientFill (ColourGradient (fillColour1,
                                        0.0f,

@@ -23,7 +23,7 @@
 #include "anaview.h"
 
 const int border_pixels_top = 10;
-const int border_pixels_bottom = 35;
+const int border_pixels_bottom = 37;
 const int border_pixels_left = 45;
 const int border_pixels_right = 10;
 const String xlabel = String("Frequency (Hz)");

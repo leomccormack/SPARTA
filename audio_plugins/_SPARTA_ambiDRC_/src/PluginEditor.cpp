@@ -153,40 +153,16 @@ void PluginEditor::paint (juce::Graphics& g)
 {
     using namespace ColoursUI;
 
-    g.fillAll(juce::Colours::white);
-
-    /* Background gradients */
-    drawVerticalGradient(g, {0, 235, 550, 205}, bgDark2, bgDark1);
-    drawVerticalGradient(g, {0,  30, 550, 205}, bgDark1, bgDark2);
-
-    /* Top rounded bar */
-    {
-        juce::Rectangle<float> r { 1.f, 2.f, 548.f, 31.f };
-        g.setGradientFill(juce::ColourGradient(bgDark2,
-                                               r.getX(), r.getBottom(),
-                                               bgDark1,
-                                               r.getRight(), r.getY(),
-                                               false));
-        g.fillRoundedRectangle(r, 5.f);
-        g.setColour(borderGrey);
-        g.drawRoundedRectangle(r, 5.f, 2.f);
-    }
-
+    drawPluginBackgroundAndBanner(g, getBounds());
+    
     /* Panels */
-    drawPanel(g, {10,  38, 530,244}, panelFill,      panelStroke);
-    drawPanel(g, {88, 320, 224,112}, panelFill,      panelStroke);
-    drawPanel(g, {311,320, 151,112}, panelFill,      panelStroke);
-    drawPanel(g, {461,320,  79,112}, panelFill,      panelStroke);
-    drawPanel(g, {10, 320,  79,112}, panelFill,      panelStroke);
+    drawPanelRect(g, {10,  38, 530,244}, panelFill,      panelStroke);
+    drawPanel(g, {88, 320, 224,114}, panelFill,      panelStroke);
+    drawPanel(g, {311,320, 151,114}, panelFill,      panelStroke);
+    drawPanel(g, {461,320,  79,114}, panelFill,      panelStroke);
+    drawPanel(g, {10, 320,  79,114}, panelFill,      panelStroke);
     drawPanel(g, {10, 288, 530, 33}, panelFill,      panelStroke);
     drawPanel(g, {10, 288, 193, 33}, panelFillLight, panelStrokeLight);
-
-    /* Borders */
-    g.setColour(borderGrey);
-    g.drawRect({0,   0, 550, 2}, 2);
-    g.drawRect({0,   0,   2,440}, 2);
-    g.drawRect({548, 0,   2,440}, 2);
-    g.drawRect({0, 438, 550, 2}, 2);
 
     /* Labels */
     drawLabel(g, {96,  325, 60, 30}, "Thresh.", 15.f, juce::Justification::centred);
@@ -289,7 +265,7 @@ void PluginEditor::paint (juce::Graphics& g)
                (int) ((float)TFviewIncluded->getHeight()/2.0f) - textWidth/2,
                textWidth, 57, Justification::centred);
 
-    textWidth = 118;
+    textWidth = 114;
     g.drawText(TRANS("Gain Reduction (dB)"), -36,
                (int) ((float)TFviewIncluded->getHeight()/2.0f) - textWidth/2,
                textWidth, 1084, Justification::centred);

@@ -216,36 +216,14 @@ void PluginEditor::paint (juce::Graphics& g)
 {
     using namespace ColoursUI;
 
-    /* Background gradients */
-    drawVerticalGradient(g, {0,  30, 634,242}, bgDark1, bgDark2);
-    drawVerticalGradient(g, {0, 272, 634,242}, bgDark2, bgDark1);
-
-    /* Top rounded bar */
-    {
-        juce::Rectangle<float> r { 1.f, 2.f, 632.f, 31.f };
-        g.setGradientFill(juce::ColourGradient(bgDark2,
-                                               r.getX(), r.getBottom(),
-                                               bgDark1,
-                                               r.getRight(), r.getY(),
-                                               false));
-        g.fillRoundedRectangle(r, 5.f);
-        g.setColour(borderGrey);
-        g.drawRoundedRectangle(r, 5.f, 2.f);
-    }
+    drawPluginBackgroundAndBanner(g, getBounds());
 
     /* Panels */
-    drawPanel(g, { 12,  59,608,303}, panelFill,      panelStroke);
+    drawPanelRect(g, { 12,  59,608,303}, panelFill,      panelStroke);
     drawPanel(g, {  8, 374,197,128}, panelFill,      panelStroke);
     drawPanel(g, {204, 374,422, 34}, panelFill,      panelStroke);
     drawPanel(g, {204, 407,422, 95}, panelFill,      panelStroke);
     drawPanel(g, {  8, 374,197, 34}, panelFillLight, panelStrokeLight);
-
-    /* Borders */
-    g.setColour(borderGrey);
-    g.drawRect({0,   0, 636, 2}, 2);
-    g.drawRect({0,   0,   2,514}, 2);
-    g.drawRect({632, 0,   2,514}, 2);
-    g.drawRect({0, 512, 636, 2}, 2);
 
     /* Left‑side labels */
     drawLabel(g, {14,376,104,30}, "Max Order:", 14.f);

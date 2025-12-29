@@ -334,40 +334,16 @@ void PluginEditor::paint (juce::Graphics& g)
 {
     using namespace ColoursUI;
 
-    /* Background gradients */
-    drawVerticalGradient(g, {0,  30, 920,178}, bgDark1, bgDark2);
-    drawVerticalGradient(g, {0, 208, 920,178}, bgDark2, bgDark1);
-
-    /* Top rounded bar */
-    {
-        juce::Rectangle<float> r { 1.f, 2.f, 918.f, 31.f };
-        g.setGradientFill(juce::ColourGradient(bgDark2,
-                                               r.getX(), r.getBottom(),
-                                               bgDark1,
-                                               r.getRight(), r.getY(),
-                                               false));
-        g.fillRoundedRectangle(r, 5.f);
-        g.setColour(borderGrey);
-        g.drawRoundedRectangle(r, 5.f, 2.f);
-    }
+    drawPluginBackgroundAndBanner(g, getBounds());
 
     /* Panels */
     drawPanel(g, {366,308,211, 68}, panelFill,      panelStroke);
-    drawPanel(g, {366,308,211, 68}, panelFillLight, panelStroke);
     drawPanel(g, {220,308,147, 68}, panelFill,      panelStroke);
     drawPanel(g, { 12, 58,196, 64}, panelFillLight, panelStroke);
-    drawPanel(g, {220, 58,480,240}, panelFillLight, panelStroke);
     drawPanel(g, { 12,121,196,255}, panelFill,        panelStroke);
     drawPanel(g, {576,308,124, 68}, panelFill,      panelStroke);
     drawPanel(g, {712, 58,196, 64}, panelFill,      panelStroke);
     drawPanel(g, {712,121,196,255}, panelFill,      panelStroke);
-
-    /* Borders */
-    g.setColour(borderGrey);
-    g.drawRect({0,   0, 922, 2}, 2);
-    g.drawRect({0,   0,   2,386}, 2);
-    g.drawRect({918, 0,   2,386}, 2);
-    g.drawRect({0, 384, 922, 2}, 2);
 
     /* Section titles */
     drawLabel(g, {84,  32,113,30}, "Inputs",         15.f);

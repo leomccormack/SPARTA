@@ -9,16 +9,57 @@ namespace ColoursUI {
     const juce::Colour panelStrokeLight { 0x35a0a0a0 };
     const juce::Colour textWhite { juce::Colours::white };
     const juce::Colour borderGrey { 0xffb9b9b9 };
+    const juce::Colour borderGreyDarker { borderGrey.darker(0.2f) };
     const juce::Colour accentCyan { 0xff00d8df };
     const juce::Colour accentOrange { 0xffdf8400 }; 
 }
 
-inline void drawPanel(juce::Graphics& g, juce::Rectangle<int> r, juce::Colour fill, juce::Colour stroke, int thickness = 1)
+inline void drawPanelRect(juce::Graphics& g,
+                          juce::Rectangle<float> r,
+                          juce::Colour fill,
+                          juce::Colour stroke,
+                          float thickness = 1)
 {
     g.setColour(fill);
     g.fillRect(r);
+
+    auto topTint    = fill.withAlpha(0.0f);
+    auto bottomTint = fill.withAlpha(0.03f);
+    g.setGradientFill(juce::ColourGradient{
+        topTint,
+        0.0f, (float)r.getY(),
+        bottomTint,
+        0.0f, (float)r.getBottom(),
+        false
+    });
+    g.fillRect(r);
     g.setColour(stroke);
     g.drawRect(r, thickness);
+}
+
+inline void drawPanel(juce::Graphics& g,
+                      juce::Rectangle<float> r,
+                      juce::Colour fill,
+                      juce::Colour stroke,
+                      float thickness = 1,
+                      float cornerSize = 5.0f)
+{
+    juce::Rectangle<float> rr = r.reduced(2.0f, 2.0f);
+    g.setColour(fill);
+    g.fillRoundedRectangle(rr, cornerSize);
+
+    auto topTint    = fill.withAlpha(0.0f);
+    auto bottomTint = fill.withAlpha(0.03f);
+    g.setGradientFill(juce::ColourGradient{
+        topTint,
+        0.0f, (float)r.getY(),
+        bottomTint,
+        0.0f, (float)r.getBottom(),
+        false
+    });
+    g.fillRoundedRectangle(rr, cornerSize);
+    g.setColour(stroke);
+    g.drawRoundedRectangle(rr, cornerSize, thickness);
 }
 
 inline void drawVerticalGradient(juce::Graphics& g, juce::Rectangle<int> r, juce::Colour top, juce::Colour bottom)
@@ -34,6 +75,81 @@ inline void drawLabel(juce::Graphics& g, juce::Rectangle<int> r, const juce::Str
     g.setColour(colour);
     g.setFont(juce::FontOptions(size, style));
     g.drawText(text, r, just, true);
+}
+
+inline void drawPluginBackgroundAndBanner(juce::Graphics& g,
+                                          juce::Rectangle<int> bounds)
+{
+    using namespace ColoursUI;
+    
+    const int w = bounds.getWidth();
+    const int h = bounds.getHeight();
+    const float cornerSize = 12.0f;
+    auto bgNewDark1 = bgDark1.brighter(0.06f);
+    auto bgNewDark2 = bgDark2.darker(0.3f);
+    
+    g.fillAll(borderGreyDarker);
+
+    /* Vertical gradient */
+    {
+        juce::ColourGradient grad(bgNewDark1, 0.f, 30.f,
+                                  bgNewDark1, 0.f, float(h), false);
+
+        grad.addColour(0.0, bgNewDark1);
+        grad.addColour(0.1, bgDark1);
+        grad.addColour(0.3, bgDark2);
+        grad.addColour(0.5, bgNewDark2);
+        grad.addColour(0.7, bgDark2);
+        grad.addColour(0.9, bgDark1);
+        grad.addColour(1.0, bgNewDark1);
+
+        g.setGradientFill(grad);
+        g.fillRoundedRectangle({0, 0, (float)w, (float)h}, cornerSize);
+    }
+    
+    /* Bottom right radial gradient */
+    {
+        const float diameter = (float) juce::jmax(bounds.getWidth(), bounds.getHeight());
+        const float cx = (float) bounds.getRight();
+        const float cy = (float) bounds.getBottom();
+
+        juce::Colour baseColour = Colours::black;
+        juce::Colour centre = baseColour.withAlpha(0.25f);
+        juce::Colour edge   = baseColour.withAlpha(0.0f);
+
+        juce::ColourGradient radial(
+            centre, cx, cy,
+            edge,   cx, cy + diameter * 0.5f,
+            true
+        );
+
+        g.setGradientFill(radial);
+        g.fillEllipse(cx - diameter * 0.5f,
+                      cy - diameter * 0.5f,
+                      diameter,
+                      diameter);
+    }
+    
+    /* Top banner */
+    {
+        juce::Rectangle<float> r {1.f, 1.f, float(w - 2), 32.f};
+        g.setGradientFill(juce::ColourGradient(bgDark2,
+                                               r.getX(), r.getBottom(),
+                                               bgDark1,
+                                               r.getRight(), r.getY(),
+                                               false));
+        
+        juce::Path p;
+        p.addRoundedRectangle(r.getX(), r.getY(), r.getWidth(), r.getHeight(), 12.0f, 12.0f, true, true, false, false);
+        g.fillPath(p);
+        g.setColour(borderGreyDarker);
+        g.strokePath(p, juce::PathStrokeType(2.0f));
+    }
+
+    /* Outer border */
+    g.setColour(borderGreyDarker);
+    g.drawRoundedRectangle({1, 1, (float)w-2, (float)h-2}, 12.0f, 2.0f);
+    g.drawRoundedRectangle({0, 0, (float)w, (float)h}, 11.0f, 3.0f);
 }
 
 

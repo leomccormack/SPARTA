@@ -222,22 +222,7 @@ void PluginEditor::paint (juce::Graphics& g)
 {
     using namespace ColoursUI;
 
-    /* Background gradients */
-    drawVerticalGradient(g, {0, 321, 780, 177}, bgDark2, bgDark1);
-    drawVerticalGradient(g, {0,  33, 780, 295}, bgDark1, bgDark2);
-
-    /* Top rounded bar */
-    {
-        juce::Rectangle<float> r { 1.f, 2.f, 778.f, 31.f };
-        g.setGradientFill(juce::ColourGradient(bgDark2,
-                                               r.getX(), r.getBottom(),
-                                               bgDark1,
-                                               r.getRight(), r.getY(),
-                                               false));
-        g.fillRoundedRectangle(r, 5.f);
-        g.setColour(borderGrey);
-        g.drawRoundedRectangle(r, 5.f, 2.f);
-    }
+    drawPluginBackgroundAndBanner(g, getBounds());
 
     /* Panels */
     drawPanel(g, {12,  58, 468,158}, panelFill,      panelStroke);
@@ -248,13 +233,6 @@ void PluginEditor::paint (juce::Graphics& g)
     drawPanel(g, {12, 297, 220, 31}, panelFillLight, panelStroke);
     drawPanel(g, {252,297, 220,191}, panelFill,      panelStroke);
     drawPanel(g, {252,297, 220, 31}, panelFillLight, panelStroke);
-
-    /* Borders */
-    g.setColour(borderGrey);
-    g.drawRect({0,   0, 780, 2}, 2);
-    g.drawRect({0, 498, 780, 2}, 2);
-    g.drawRect({0,   0,   2,500}, 2);
-    g.drawRect({778, 0,   2,500}, 2);
 
     /* Section titles */
     drawLabel(g, {200, 33,  96,30}, "Room Settings", 15.f);

@@ -313,22 +313,7 @@ void PluginEditor::paint (juce::Graphics& g)
 {
     using namespace ColoursUI;
 
-    /* Background gradients */
-    drawVerticalGradient(g, {0, 240, 800, 210}, bgDark2, bgDark1);
-    drawVerticalGradient(g, {0,  30, 800, 210}, bgDark1, bgDark2);
-
-    /* Top rounded bar */
-    {
-        juce::Rectangle<float> r { 1.f, 2.f, 798.f, 31.f };
-        g.setGradientFill(juce::ColourGradient(bgDark2,
-                                               r.getX(), r.getBottom(),
-                                               bgDark1,
-                                               r.getRight(), r.getY(),
-                                               false));
-        g.fillRoundedRectangle(r, 5.f);
-        g.setColour(borderGrey);
-        g.drawRoundedRectangle(r, 5.f, 2.f);
-    }
+    drawPluginBackgroundAndBanner(g, getBounds());
 
     /* Panels */
     drawPanel(g, {12,  56, 204,  32}, panelFill,      panelStroke);
@@ -340,13 +325,6 @@ void PluginEditor::paint (juce::Graphics& g)
     drawPanel(g, {228, 264, 279, 38}, panelFillLight, panelStroke);
     drawPanel(g, {12,  87, 204,106}, panelFill,      panelStroke);
     drawPanel(g, {12, 192, 204,244}, panelFill,      panelStroke);
-
-    /* Borders */
-    g.setColour(borderGrey);
-    g.drawRect({0,   0, 802, 2}, 2);
-    g.drawRect({0, 448, 802, 2}, 2);
-    g.drawRect({0,   0,   2,450}, 2);
-    g.drawRect({798, 0,   2,450}, 2);
 
     /* Section titles */
     drawLabel(g, {92,  30,  88,30}, "Inputs",            15.f);
@@ -373,7 +351,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {520,401,172,30}, "Normalisation:",   15.f);
 
     /* Source coordinates */
-    drawLabel(g, {75, 193,101,30}, juce::CharPointer_UTF8("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
+    drawLabel(g, {71, 193,101,30}, juce::CharPointer_UTF8("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
 
     /* Title */
     drawLabel(g, {16, 1, 100,32}, "SPARTA|", 18.8f);

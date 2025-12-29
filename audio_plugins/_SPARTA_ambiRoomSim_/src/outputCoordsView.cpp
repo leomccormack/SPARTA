@@ -120,7 +120,7 @@ void outputCoordsView::paint (juce::Graphics& g)
 
 void outputCoordsView::resized()
 {
-    setSize (sensorEdit_width, sensorEdit_height*currentNCH);
+    setSize (sensorEdit_width, sensorEdit_height*currentNCH+1);
     repaint();
 }
 

@@ -141,35 +141,13 @@ void PluginEditor::paint (juce::Graphics& g)
 {
     using namespace ColoursUI;
 
-    /* Background gradients */
-    drawVerticalGradient(g, {0, 30, 530, 65}, bgDark1, bgDark2);
-    drawVerticalGradient(g, {0, 95, 530, 65}, bgDark2, bgDark1);
+    drawPluginBackgroundAndBanner(g, getBounds());
 
-    /* Top rounded bar */
-    {
-        juce::Rectangle<float> r { 1.f, 2.f, 528.f, 31.f };
-        g.setGradientFill(juce::ColourGradient(bgDark2,
-                                               r.getX(), r.getBottom(),
-                                               bgDark1,
-                                               r.getRight(), r.getY(),
-                                               false));
-        g.fillRoundedRectangle(r, 5.f);
-        g.setColour(borderGrey);
-        g.drawRoundedRectangle(r, 5.f, 2.f);
-    }
-
-    /* Panels (MatrixConv-style grey theme) */
+    /* Panels */
     drawPanel(g, {10, 40,167,32}, panelFill,      panelStrokeLight);
     drawPanel(g, {10, 71,167,57}, panelFill,      panelStrokeLight);
     drawPanel(g, {10,127,167,25}, panelFill,      panelStrokeLight);
     drawPanel(g, {176,40,344,112}, panelFill,     panelStrokeLight);
-
-    /* Borders */
-    g.setColour(borderGrey);
-    g.drawRect({0,   0, 532, 2}, 2);
-    g.drawRect({0,   0,   2,160}, 2);
-    g.drawRect({528, 0,   2,160}, 2);
-    g.drawRect({0, 158, 532, 2}, 2);
 
     /* Labels: left column */
     drawLabel(g, {16, 39,91,35}, "Order:", 15.f);

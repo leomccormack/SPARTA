@@ -127,22 +127,7 @@ void PluginEditor::paint (juce::Graphics& g)
 {
     using namespace ColoursUI;
 
-    /* Background gradients */
-    drawVerticalGradient(g, {0,  30, 708,163}, bgDark1, bgDark2);
-    drawVerticalGradient(g, {0, 193, 708,163}, bgDark2, bgDark1);
-
-    /* Top rounded bar */
-    {
-        juce::Rectangle<float> r { 1.f, 2.f, 706.f, 31.f };
-        g.setGradientFill(juce::ColourGradient(bgDark2,
-                                               r.getX(), r.getBottom(),
-                                               bgDark1,
-                                               r.getRight(), r.getY(),
-                                               false));
-        g.fillRoundedRectangle(r, 5.f);
-        g.setColour(borderGrey);
-        g.drawRoundedRectangle(r, 5.f, 2.f);
-    }
+    drawPluginBackgroundAndBanner(g, getBounds());
 
     /* Panels */
     drawPanel(g, {500,  58,196, 32}, panelFillLight, panelStroke);
@@ -150,23 +135,16 @@ void PluginEditor::paint (juce::Graphics& g)
     drawPanel(g, {12,   58,480,240}, panelFill,      panelStroke);
     drawPanel(g, {500, 152,196,194}, panelFill,      panelStroke);
     drawPanel(g, {12,  306,480, 40}, panelFill,      panelStroke);
-    drawPanel(g, {500,  58,196, 32}, panelFill,      panelStroke); // overlay
+    drawPanel(g, {500,  58,196, 32}, panelFill,      panelStroke);
     drawPanel(g, {12,   58,204, 32}, panelFill,      panelStroke);
     drawPanel(g, {12,   58,204, 32}, panelFillLight, panelStroke);
-
-    /* Borders */
-    g.setColour(borderGrey);
-    g.drawRect({0,   0, 710, 2}, 2);
-    g.drawRect({0,   0,   2,356}, 2);
-    g.drawRect({706, 0,   2,356}, 2);
-    g.drawRect({0, 354, 710, 2}, 2);
 
     /* Section titles */
     drawLabel(g, {552, 32,108,30}, "Beam Settings",    15.f);
     drawLabel(g, {197, 32,163,30}, "Steering Window",  15.f);
 
     /* Beam settings */
-    drawLabel(g, {508, 60, 67,30}, "Order:",           15.f);
+    drawLabel(g, {508, 59, 67,30}, "Order:",           15.f);
     drawLabel(g, {508, 90,180,30}, "Number of Beams:", 14.5f);
     drawLabel(g, {508,120,124,30}, "Beam Type:",       14.5f);
 
@@ -179,7 +157,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {92,  1,132,32}, "Beamformer", 18.f, juce::Justification::centredLeft, juce::Colour(0xff4fd1ff));
 
     /* Azi° # Elev° label */
-    drawLabel(g, {554,154,108,28}, juce::CharPointer_UTF8("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
+    drawLabel(g, {555,154,108,28}, juce::CharPointer_UTF8("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
     
     g.setColour(Colours::white);
     g.setFont(juce::FontOptions(11.00f, Font::plain));

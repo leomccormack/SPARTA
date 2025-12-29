@@ -244,34 +244,15 @@ PluginEditor::~PluginEditor()
 void PluginEditor::paint (juce::Graphics& g)
 {
     using namespace ColoursUI;
-
-    /* Background gradients */
-    drawVerticalGradient(g, {0, 146, getWidth(), 116}, bgDark2, bgDark1);
-    drawVerticalGradient(g, {0,  30, getWidth(), 116}, bgDark1, bgDark2);
     
-    /* Borders */
-    g.setColour(juce::Colour(0xffb9b9b9));
-    g.drawRect({0, 0, 656, 2}, 2);
-    g.drawRect({654, 0, 2, 262}, 2);
-    g.drawRect({0, 0, 2, 262}, 2);
-    g.drawRect({0, 260, 656, 2}, 2);
-
-    /* Top rounded bar */
-    {
-        juce::Rectangle<float> r { 1.f, 2.f, 654.f, 31.f };
-        g.setGradientFill(juce::ColourGradient(bgDark2, r.getX(), r.getBottom(),
-                                               bgDark1, r.getRight(), r.getY(), false));
-        g.fillRoundedRectangle(r, 5.f);
-        g.setColour(juce::Colour(0xffb9b9b9));
-        g.drawRoundedRectangle(r, 5.f, 2.f);
-    }
+    drawPluginBackgroundAndBanner(g, getBounds());
 
     /* Panels */
     drawPanel(g, {12,  58, 237,  82}, panelFill, panelStroke);
     drawPanel(g, {12,  58, 237,  29}, panelFillLight, panelStrokeLight);
-    drawPanel(g, {12, 139, 424, 112}, panelFill, panelStroke);
+    drawPanel(g, {12, 139, 428, 112}, panelFill, panelStroke);
     drawPanel(g, {12, 164,  73,  87}, panelFillLight, panelStrokeLight);
-    drawPanel(g, {248, 58, 188, 82}, panelFill, panelStroke);
+    drawPanel(g, {248, 58, 192, 82}, panelFill, panelStroke);
     drawPanel(g, {445, 58, 196, 82}, panelFill, panelStroke);
     drawPanel(g, {445,139, 196,112}, panelFill, panelStroke);
 

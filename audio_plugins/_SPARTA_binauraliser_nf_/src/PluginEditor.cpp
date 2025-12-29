@@ -322,22 +322,7 @@ void PluginEditor::paint (juce::Graphics& g)
 {
     using namespace ColoursUI;
 
-    /* Background gradients */
-    drawVerticalGradient(g, {0,  30, 920,163}, bgDark1, bgDark2);
-    drawVerticalGradient(g, {0, 193, 920,167}, bgDark2, bgDark1);
-
-    /* Top rounded bar */
-    {
-        juce::Rectangle<float> r { 1.f, 2.f, 918.f, 31.f };
-        g.setGradientFill(juce::ColourGradient(bgDark2,
-                                               r.getX(), r.getBottom(),
-                                               bgDark1,
-                                               r.getRight(), r.getY(),
-                                               false));
-        g.fillRoundedRectangle(r, 5.f);
-        g.setColour(borderGrey);
-        g.drawRoundedRectangle(r, 5.f, 2.f);
-    }
+    drawPluginBackgroundAndBanner(g, getBounds());
 
     /* Panels */
     drawPanel(g, {712,188,196,165}, panelFill,      panelStroke);
@@ -349,13 +334,6 @@ void PluginEditor::paint (juce::Graphics& g)
     drawPanel(g, {712,135,196, 54}, panelFill,      panelStroke);
     drawPanel(g, {214,312,233, 41}, panelFill,      panelStroke);
     drawPanel(g, {712,243,196,110}, panelFillLight, panelStroke);
-
-    /* Borders */
-    g.setColour(borderGrey);
-    g.drawRect({0,   0, 922, 2}, 2);
-    g.drawRect({0,   0,   2,360}, 2);
-    g.drawRect({918, 0,   2,360}, 2);
-    g.drawRect({0, 360, 920, 2}, 2);
 
     /* Section titles */
     drawLabel(g, {84,  32,113,30}, "Inputs",         15.f);
@@ -386,7 +364,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {831,326,63,30}, "+/-", 13.f, juce::Justification::centred);
 
     /* Interpolation + visibility */
-    drawLabel(g, {222,319,132,30}, "Interp. Mode:", 15.f);
+    drawLabel(g, {222,319,132,30}, "Interpolate:", 15.f);
     drawLabel(g, {457,319,132,30}, "Show Inputs:",  14.5f);
     drawLabel(g, {582,319,122,30}, "Show HRIRs:",   14.5f);
 
