@@ -34,7 +34,7 @@ This repository contains the following audio plug-ins:
 
 [![Github All Releases](https://img.shields.io/github/downloads/leomccormack/SPARTA/total.svg)]()
 
-[The plug-in suite may be downloaded from here](https://github.com/leomccormack/SPARTA/releases/latest) [Mac OSX (10.10 or higher), Linux (x86_64), and Windows (x86_64)].
+[The plug-in suite may be downloaded from here](https://github.com/leomccormack/SPARTA/releases/latest) [MacOS (12.0 or higher), Linux (x86_64), and Windows (x86_64)].
 
 ## Building the plug-ins yourself
 
