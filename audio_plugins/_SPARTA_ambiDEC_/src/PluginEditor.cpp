@@ -324,7 +324,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     /* Labels */
     drawLabel(g, {455, 58,  67, 30}, "Presets:", 15.f);
-    drawLabel(g, {499,122, 105, 28}, juce::CharPointer_UTF8 ("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
+    drawLabel(g, {501,122, 105, 28}, juce::CharPointer_UTF8 ("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
     drawLabel(g, {455, 86, 169, 30}, "Number of Outputs:", 14.5f);
     drawLabel(g, {164, 32, 149, 30}, "Decoding Settings", 15.f);
     drawLabel(g, {524, 32, 113, 30}, "Outputs", 15.f);
@@ -349,9 +349,8 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {19, 115, 132, 30}, "Channel Order:", 14.5f);
 
     /* Title */
-    drawLabel(g, {16, 1, 100, 32}, "SPARTA|", 18.8f);
-    drawLabel(g, {92, 1, 112, 32}, "AmbiDEC", 18.f,
-              juce::Justification::centredLeft, accentCyan);
+    drawLabel(g, {16, 1, 100, 32}, "SPARTA|", 18.f);
+    drawLabel(g, {92, 1, 112, 32}, "AmbiDEC", 18.f, juce::Justification::centredLeft, accentCyan);
 
     g.setColour(Colours::white);
     g.setFont(juce::FontOptions(11.00f, Font::plain));

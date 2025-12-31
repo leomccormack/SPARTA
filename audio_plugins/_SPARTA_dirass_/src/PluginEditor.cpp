@@ -266,7 +266,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {624,32, 29,30}, "GS:", 11.f);
 
     /* Title */
-    drawLabel(g, {16,1,100,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {16,1,100,32}, "SPARTA|", 18.f);
     drawLabel(g, {92,1,112,32}, "DirASS", 18.f, juce::Justification::centredLeft, juce::Colour(0xffb0a6e7));
 
     g.setColour(Colours::white);

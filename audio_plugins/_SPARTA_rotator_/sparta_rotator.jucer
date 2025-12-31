@@ -15,6 +15,12 @@
               jucerFormatVersion="1" pluginVST3Category="Spatial" pluginAAXCategory="512"
               defines="JucePlugin_AAXDisableDefaultSettingsChunks=1&#10;" pluginCharacteristicsValue="pluginAAXDisableMultiMono">
   <MAINGROUP id="imnfnp" name="sparta_rotator">
+    <GROUP id="{3CCB8340-68C9-3CA7-D634-55FE747A88FD}" name="Fonts">
+      <FILE id="dPHTdx" name="Inter-Bold.ttf" compile="0" resource="1" file="../resources/Fonts/Inter-Bold.ttf"/>
+      <FILE id="P5sO6b" name="Inter-Regular.ttf" compile="0" resource="1"
+            file="../resources/Fonts/Inter-Regular.ttf"/>
+      <FILE id="uQg9BT" name="LICENSE.txt" compile="0" resource="1" file="../resources/Fonts/LICENSE.txt"/>
+    </GROUP>
     <FILE id="pSnAnT" name="ParameterManager.h" compile="0" resource="0"
           file="../resources/ParameterManager.h"/>
     <FILE id="KkgJv6" name="PluginProcessorBase.h" compile="0" resource="0"

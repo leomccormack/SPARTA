@@ -372,7 +372,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {720,106,160,30}, "Apply Diffuse-Field EQ:", 15.f);
 
     /* Title */
-    drawLabel(g, {16, 1,100,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {16, 1,100,32}, "SPARTA|", 18.f);
     drawLabel(g, {92,  1,112,32}, "Binauraliser", 18.f, juce::Justification::centredLeft, juce::Colour(0xffff73f9));
     drawLabel(g, {189,1,25,32}, "NF", 18.80f, juce::Justification::centredLeft, juce::Colour(0xffffb873));
 

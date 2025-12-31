@@ -106,7 +106,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {230,71,96,35}, "Oversampling:",   15.f);
 
     /* Title */
-    drawLabel(g, {16,1,100,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {16,1,100,32}, "SPARTA|", 18.f);
     drawLabel(g, {92,1,124,32}, "PitchShifter", 18.f, juce::Justification::centredLeft, juce::Colour(0xff8dff86));
 
     /* display version/date built */

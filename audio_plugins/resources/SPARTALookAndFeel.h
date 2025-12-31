@@ -68,12 +68,28 @@ inline void drawVerticalGradient(juce::Graphics& g, juce::Rectangle<int> r, juce
     g.fillRect(r);
 }
 
-inline void drawLabel(juce::Graphics& g, juce::Rectangle<int> r, const juce::String& text, float size,
-                      juce::Justification just = juce::Justification::centredLeft, juce::Colour colour = ColoursUI::textWhite,
+inline void drawLabel(juce::Graphics& g, juce::Rectangle<int> r, const juce::String& text,
+                      float size, juce::Justification just = juce::Justification::centredLeft,
+                      juce::Colour colour = ColoursUI::textWhite,
                       juce::Font::FontStyleFlags style = juce::Font::bold)
 {
     g.setColour(colour);
-    g.setFont(juce::FontOptions(size, style));
+
+    static auto interRegular = juce::Typeface::createSystemTypefaceFor(
+        BinaryData::InterRegular_ttf,
+        BinaryData::InterRegular_ttfSize
+    );
+
+    static auto interBold = juce::Typeface::createSystemTypefaceFor(
+        BinaryData::InterBold_ttf,
+        BinaryData::InterBold_ttfSize
+    );
+
+    juce::FontOptions font = juce::FontOptions(
+        (style & juce::Font::bold) ? interBold : interRegular
+    ).withHeight(size).withKerningFactor(0.03f);
+    
+    g.setFont(font);
     g.drawText(text, r, just, true);
 }
 
@@ -163,6 +179,21 @@ public:
     Colour colourOutline = Colour(200, 240, 255);
     const float disabledAlpha = 0.35f;
     const float cornerSize = 3.0f;
+    
+    juce::Typeface::Ptr getTypefaceForFont(const juce::Font& font) override
+    {
+        static auto interRegular = juce::Typeface::createSystemTypefaceFor(
+            BinaryData::InterRegular_ttf,
+            BinaryData::InterRegular_ttfSize
+        );
+
+        static auto interBold = juce::Typeface::createSystemTypefaceFor(
+            BinaryData::InterBold_ttf,
+            BinaryData::InterBold_ttfSize
+        );
+
+        return font.isBold() ? interBold : interRegular;
+    }
 
     void drawLinearSlider (Graphics& g, int x, int y, int width, int height,
                            float sliderPos, float /*minSliderPos*/, float /*maxSliderPos*/,

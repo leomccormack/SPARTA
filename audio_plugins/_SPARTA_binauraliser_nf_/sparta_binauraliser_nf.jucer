@@ -16,6 +16,12 @@
               pluginAAXCategory="512" defines="JucePlugin_AAXDisableDefaultSettingsChunks=1&#10;"
               pluginCharacteristicsValue="pluginAAXDisableMultiMono">
   <MAINGROUP id="imnfnp" name="sparta_binauraliser_nf">
+    <GROUP id="{2935DAD9-5D78-69FC-7EDF-0E397EB81563}" name="Fonts">
+      <FILE id="onbyNB" name="Inter-Bold.ttf" compile="0" resource="1" file="../resources/Fonts/Inter-Bold.ttf"/>
+      <FILE id="JfR1Ke" name="Inter-Regular.ttf" compile="0" resource="1"
+            file="../resources/Fonts/Inter-Regular.ttf"/>
+      <FILE id="bC9uLl" name="LICENSE.txt" compile="0" resource="1" file="../resources/Fonts/LICENSE.txt"/>
+    </GROUP>
     <FILE id="ZXRVdb" name="ParameterManager.h" compile="0" resource="0"
           file="../resources/ParameterManager.h"/>
     <FILE id="THCx60" name="PluginProcessorBase.h" compile="0" resource="0"

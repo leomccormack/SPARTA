@@ -30,6 +30,10 @@ if (BUILD_PLUGIN_FORMAT_STANDALONE)
     message("--  Building Standalone versions")
 endif()
 
+juce_add_binary_data (GUI_fonts SOURCES
+    resources/Fonts/Inter-Bold.ttf
+    resources/Fonts/Inter-Regular.ttf)
+
 # Add the SPARTA plugins to the build tree
 add_subdirectory(_SPARTA_ambiDRC_)
 add_subdirectory(_SPARTA_ambiENC_)
@@ -63,3 +67,4 @@ if(SAF_ENABLE_SOFA_READER_MODULE)
 else()
     message(STATUS "  Note: disabling the plug-ins which rely on the saf_sofa_reader module.")
 endif()
+

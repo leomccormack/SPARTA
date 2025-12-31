@@ -9,6 +9,12 @@
               pluginAAXCategory="512" defines="JucePlugin_AAXDisableDefaultSettingsChunks=1&#10;"
               pluginCharacteristicsValue="pluginAAXDisableMultiMono">
   <MAINGROUP id="IbvuHL" name="sparta_6DoFconv">
+    <GROUP id="{DDA24F51-B3B0-31BE-E3C0-9D73619474CF}" name="Fonts">
+      <FILE id="Sl3CmH" name="Inter-Bold.ttf" compile="0" resource="1" file="../resources/Fonts/Inter-Bold.ttf"/>
+      <FILE id="dWhGvE" name="Inter-Regular.ttf" compile="0" resource="1"
+            file="../resources/Fonts/Inter-Regular.ttf"/>
+      <FILE id="CV4nq5" name="LICENSE.txt" compile="0" resource="1" file="../resources/Fonts/LICENSE.txt"/>
+    </GROUP>
     <FILE id="F6UktL" name="SPARTALookAndFeel.h" compile="0" resource="0"
           file="../resources/SPARTALookAndFeel.h"/>
     <FILE id="J0lg3N" name="PluginEditor.cpp" compile="1" resource="0"

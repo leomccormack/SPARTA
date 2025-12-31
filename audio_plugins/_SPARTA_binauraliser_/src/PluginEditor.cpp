@@ -367,11 +367,11 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {720,106,160,30}, "Apply Diffuse-Field EQ:", 15.f);
 
     /* Title */
-    drawLabel(g, {16, 1,100,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {16, 1,100,32}, "SPARTA|", 18.f);
     drawLabel(g, {92,  1,112,32}, "Binauraliser", 18.f, juce::Justification::centredLeft, juce::Colour(0xffff73f9));
 
     /* Azi° # Elev° label */
-    drawLabel(g, {67,122,108,28}, juce::CharPointer_UTF8("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
+    drawLabel(g, {68,122,108,28}, juce::CharPointer_UTF8("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
 
     g.setColour(Colours::white);
     g.setFont(juce::FontOptions (11.00f, Font::plain));

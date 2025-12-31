@@ -243,7 +243,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {256,241,145,30}, "Format:",            15.f);
  
     /* Title */
-    drawLabel(g, {16, 1, 100,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {16, 1, 100,32}, "SPARTA|", 18.f);
     drawLabel(g, {92,  1, 148,32}, "AmbiRoomSim", 18.f, juce::Justification::centredLeft, juce::Colour(0xffffda2b));
 
     /* Room dimensions */

@@ -72,56 +72,19 @@ sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x1
 The plug-ins may be built with CMake (version 3.15 or higher):
  ```
  mkdir build
- cmake -S . -B build -DSAF_ENABLE_SOFA_READER_MODULE=1 
+ cmake -S . -B build
  cd build
  make
  ```
  
 Or for Visual Studio 2022 users (using x64 Native Tools Command Prompt as **administrator**; and also e.g., building LV2 and VST3 versions):
 ```
-cmake -S . -B build -G "Visual Studio 17" -DSAF_ENABLE_SOFA_READER_MODULE=1 -DBUILD_PLUGIN_FORMAT_LV2=1 -DBUILD_PLUGIN_FORMAT_VST3=1
+cmake -S . -B build -G "Visual Studio 17" -DBUILD_PLUGIN_FORMAT_LV2=1 -DBUILD_PLUGIN_FORMAT_VST3=1
 cd build
 msbuild ALL_BUILD.vcxproj /p:Configuration=Release /m
 ```
 
-## Building the plug-ins via the included scripts (**deprecated**)
-
-**MacOSX/Linux users** may run the following bash script via the Terminal to build all of the plugins:
-
-```
-./build-plugins.sh all
-# Note: MacOSX users may need to first install and enable Xcode Command Line Tools:
-xcode-select --install 
-sudo xcode-select -s /Applications/Xcode.app/Contents/Developer 
-```
-
-**Windows users** may instead run the following batch script via the "x64 Developer Command Prompt for VS.exe":
-
-```
-build-plugins.bat <path/to/Projucer.exe>
-```
-
-### Additional scripts and options for MacOSX/Linux users
-
-The repository also includes the following install scripts:
-```
-./install-juce.sh      # builds a GPLv3 version of the Projucer App and copies it into "SDKs"
-./install-vst2_sdk.sh  # downloads, unzips, and places the VST2_SDK into "SDKs"
-```
-
-The build.plugins.sh script also supports many additional options:
-```
-./build-plugins.sh --help    # help information
-./build-plugins.sh projuce   # generates Linux makefiles and IDE project files for all plugins
-./build-plugins.sh clean     # cleans all plugins 
-./build-plugins.sh build     # builds all plugins
-./build-plugins.sh all       # projuces, cleans, and then builds all plugins
-./build-plugins.sh _SPARTA_ambiBIN_ all       # projuces+cleans+builds sparta_ambiBIN.vst
-./build-plugins.sh _SPARTA_ambiENC_ build     # builds "sparta_ambiENC.vst"
-./build-plugins.sh _SPARTA_array2sh_ projucer # opens "sparta_array2sh.jucer" with Projucer
-```
-
-## Building the plug-ins without scripts or CMake (for development/debugging in an IDE)
+## Building the plug-ins via Projucer (**deprecated**)
 
 You may also manually open each .jucer file with the Projucer App and click "Save Project". This will generate Visual Studio (2017) solution files, Xcode project files, Linux Makefiles (amd64), and Raspberry Pi Linux Makefiles (ARM), which are placed in:
 

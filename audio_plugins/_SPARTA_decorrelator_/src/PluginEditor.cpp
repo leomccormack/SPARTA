@@ -113,7 +113,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {266,43,158,30}, "Compensate Level:",   14.5f);
 
     /* Title */
-    drawLabel(g, {16, 1,196,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {16, 1,196,32}, "SPARTA|", 18.f);
     drawLabel(g, {92,  1,184,32}, "Decorrelator", 18.f, juce::Justification::centredLeft, juce::Colour(0xffbeffba));
 
     g.setColour(Colours::white);

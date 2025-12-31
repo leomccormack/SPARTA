@@ -317,7 +317,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {458,400,132,30}, "Aspect Ratio:",   15.f);
 
     /* Title */
-    drawLabel(g, {16,1,100,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {16,1,100,32}, "SPARTA|", 18.f);
     drawLabel(g, {92,1,112,32}, "PowerMap", 18.f, juce::Justification::centredLeft, juce::Colour(0xfffffc08));
 
     g.setColour(Colours::white);

@@ -153,11 +153,11 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {263,311,145,30}, "Normalisation:",   15.f);
 
     /* Title */
-    drawLabel(g, {16, 1,100,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {16, 1,100,32}, "SPARTA|", 18.f);
     drawLabel(g, {92,  1,132,32}, "Beamformer", 18.f, juce::Justification::centredLeft, juce::Colour(0xff4fd1ff));
 
     /* Azi° # Elev° label */
-    drawLabel(g, {555,154,108,28}, juce::CharPointer_UTF8("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
+    drawLabel(g, {556,154,108,28}, juce::CharPointer_UTF8("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
     
     g.setColour(Colours::white);
     g.setFont(juce::FontOptions(11.00f, Font::plain));

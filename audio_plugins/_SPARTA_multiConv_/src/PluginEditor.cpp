@@ -136,7 +136,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawPanel(g, {304, 39, 216,112}, panelFill,      panelStrokeLight);
 
     /* Title */
-    drawLabel(g, {16, 1,100,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {16, 1,100,32}, "SPARTA|", 18.f);
     drawLabel(g, {92,  1,124,32}, "MultiConv", 18.f, juce::Justification::centredLeft, juce::Colour(0xff7deeff));
 
     /* Left‑side labels */

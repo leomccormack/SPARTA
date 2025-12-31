@@ -211,7 +211,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {722,274,118,30}, "DAW Samplerate:",     15.f);
 
     /* Title */
-    drawLabel(g, {16,1,100,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {16,1,100,32}, "SPARTA|", 18.f);
     drawLabel(g, {92,1,112,32}, "Spreader", 18.f, juce::Justification::centredLeft, juce::Colour(0xfffff973));
 
     g.setColour(Colours::white);

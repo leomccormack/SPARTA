@@ -15,6 +15,12 @@
               jucerFormatVersion="1" defines="JucePlugin_AAXDisableDefaultSettingsChunks=1&#10;"
               pluginAAXCategory="512" pluginVST3Category="Spatial" pluginCharacteristicsValue="pluginAAXDisableMultiMono">
   <MAINGROUP id="imnfnp" name="sparta_ambiRoomSim">
+    <GROUP id="{ECEB1C75-E07A-2385-B3D1-F8EAD958E23D}" name="Fonts">
+      <FILE id="jzq0Dx" name="Inter-Bold.ttf" compile="0" resource="1" file="../resources/Fonts/Inter-Bold.ttf"/>
+      <FILE id="FtpJ4w" name="Inter-Regular.ttf" compile="0" resource="1"
+            file="../resources/Fonts/Inter-Regular.ttf"/>
+      <FILE id="W4d62x" name="LICENSE.txt" compile="0" resource="1" file="../resources/Fonts/LICENSE.txt"/>
+    </GROUP>
     <FILE id="nUdCOW" name="ParameterManager.h" compile="0" resource="0"
           file="../resources/ParameterManager.h"/>
     <FILE id="R1KKoD" name="PluginProcessorBase.h" compile="0" resource="0"

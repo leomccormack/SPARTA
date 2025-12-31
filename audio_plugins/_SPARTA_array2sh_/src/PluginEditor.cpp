@@ -354,7 +354,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {71, 193,101,30}, juce::CharPointer_UTF8("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
 
     /* Title */
-    drawLabel(g, {16, 1, 100,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {16, 1, 100,32}, "SPARTA|", 18.f);
     drawLabel(g, {92,  1, 112,32}, "Array2SH", 18.f, juce::Justification::centredLeft, juce::Colour(0xffe9ff00));
 
     /* Analysis instructions */

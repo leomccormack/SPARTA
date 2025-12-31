@@ -374,11 +374,11 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {495,350,63,26}, "+/-", 13.f, juce::Justification::centred);
 
     /* Azi° # Elev° labels */
-    drawLabel(g, {66,122,108,28}, juce::CharPointer_UTF8("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
-    drawLabel(g, {767,122,108,28}, juce::CharPointer_UTF8("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
+    drawLabel(g, {68,122,108,28}, juce::CharPointer_UTF8("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
+    drawLabel(g, {769,122,108,28}, juce::CharPointer_UTF8("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
 
     /* Title */
-    drawLabel(g, {16,1,100,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {16,1,100,32}, "SPARTA|", 18.f);
     drawLabel(g, {92,1,112,32}, "Panner", 18.f, juce::Justification::centredLeft, juce::Colour(0xff0eff00));
 
     g.setColour(Colours::white);

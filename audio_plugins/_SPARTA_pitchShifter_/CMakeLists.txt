@@ -49,6 +49,7 @@ PUBLIC
 target_link_libraries(${PROJECT_NAME} 
 PRIVATE 
     saf_example_pitch_shifter
+    GUI_fonts
     juce::juce_recommended_config_flags
     juce::juce_recommended_lto_flags
     juce::juce_audio_plugin_client

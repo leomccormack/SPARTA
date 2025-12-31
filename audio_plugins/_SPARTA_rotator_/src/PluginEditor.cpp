@@ -170,7 +170,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {448,125,63,30}, "+/-", 15.f, juce::Justification::centred);
 
     /* Title */
-    drawLabel(g, {16,1,100,32}, "SPARTA|", 18.8f);
+    drawLabel(g, {16,1,100,32}, "SPARTA|", 18.f);
     drawLabel(g, {92,1,112,32}, "Rotator", 18.f, juce::Justification::centredLeft, juce::Colour(0xff86fbff));
 
     /* display version/date built */
