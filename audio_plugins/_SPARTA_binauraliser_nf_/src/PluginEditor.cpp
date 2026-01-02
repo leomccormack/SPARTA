@@ -364,7 +364,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {831,326,63,30}, "+/-", 13.f, juce::Justification::centred);
 
     /* Interpolation + visibility */
-    drawLabel(g, {222,319,132,30}, "Interpolate:", 15.f);
+    drawLabel(g, {222,319,132,30}, "Interpolation:", 14.5f);
     drawLabel(g, {457,319,132,30}, "Show Inputs:",  14.5f);
     drawLabel(g, {582,319,122,30}, "Show HRIRs:",   14.5f);
 

@@ -247,7 +247,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     /* file loader */
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
-    fileChooser.setBounds (232, 118, 196, 20);
+    fileChooser.setBounds (232, 118, 197, 20);
     StringArray filenames;
     filenames.add("/Spatial_Audio_Framework/Default");
     filenames.add(ambi_dec_getSofaFilePath(hAmbi));
@@ -324,7 +324,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     /* Labels */
     drawLabel(g, {455, 58,  67, 30}, "Presets:", 15.f);
-    drawLabel(g, {501,122, 105, 28}, juce::CharPointer_UTF8 ("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
+    drawLabel(g, {502,122, 105, 28}, juce::CharPointer_UTF8 ("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
     drawLabel(g, {455, 86, 169, 30}, "Number of Outputs:", 14.5f);
     drawLabel(g, {164, 32, 149, 30}, "Decoding Settings", 15.f);
     drawLabel(g, {524, 32, 113, 30}, "Outputs", 15.f);

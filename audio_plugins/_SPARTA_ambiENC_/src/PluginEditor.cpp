@@ -205,7 +205,7 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {231,311,145,30}, "Channel Order:",     15.f);
     drawLabel(g, {471,311,145,30}, "Normalisation:",     15.f);
     drawLabel(g, {20,  60,  67, 30}, "Order:",           15.f);
-    drawLabel(g, {67, 154, 108, 28}, juce::CharPointer_UTF8 ("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
+    drawLabel(g, {68, 154, 108, 28}, juce::CharPointer_UTF8 ("Azi\xc2\xb0   #   Elev\xc2\xb0"), 15.f);
 
     /* Title */
     drawLabel(g, {16, 1, 100,32}, "SPARTA|", 18.f);

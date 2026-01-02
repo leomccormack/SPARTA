@@ -323,11 +323,11 @@
                externalLibraries="hdf5_hl&#13;hdf5&#13;netcdf&#13;z">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
-                       osxCompatibility="11.0 SDK" osxArchitecture="64BitIntel" macOSDeploymentTarget="11.0"
+                       osxCompatibility="12.0 SDK" osxArchitecture="64BitIntel" macOSDeploymentTarget="12.0"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"/>
         <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
-                       osxCompatibility="11.0 SDK" osxArchitecture="64BitIntel" userNotes="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
-                       linkTimeOptimisation="1" enablePluginBinaryCopyStep="1" macOSDeploymentTarget="11.0"
+                       osxCompatibility="12.0 SDK" osxArchitecture="64BitIntel" userNotes="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/include"
+                       linkTimeOptimisation="1" enablePluginBinaryCopyStep="1" macOSDeploymentTarget="12.0"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/MacOSX/lib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

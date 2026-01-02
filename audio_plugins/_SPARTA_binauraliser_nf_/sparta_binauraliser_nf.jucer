@@ -324,11 +324,11 @@
                xcodeValidArchs="arm64,x86_64">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
-                       osxArchitecture="64BitIntel" osxCompatibility="11.0 SDK" enablePluginBinaryCopyStep="1"
-                       macOSDeploymentTarget="11.0"/>
+                       osxArchitecture="64BitIntel" osxCompatibility="12.0 SDK" enablePluginBinaryCopyStep="1"
+                       macOSDeploymentTarget="12.0"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK"
-                       osxArchitecture="64BitIntel" osxCompatibility="11.0 SDK" enablePluginBinaryCopyStep="1"
-                       linkTimeOptimisation="0" macOSDeploymentTarget="11.0"/>
+                       osxArchitecture="64BitIntel" osxCompatibility="12.0 SDK" enablePluginBinaryCopyStep="1"
+                       linkTimeOptimisation="0" macOSDeploymentTarget="12.0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules/"/>
