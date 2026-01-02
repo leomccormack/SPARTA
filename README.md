@@ -1,6 +1,6 @@
 # SPARTA
 
-Spatial Audio Real-Time Applications (SPARTA) [1]. A collection of VST, VST3, AU, LV2 and AAX audio plug-ins for spatial audio production, reproduction and visualisation. Developed using [JUCE](https://github.com/WeAreROLI/JUCE/) and the [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework).
+A collection of open-source VST, VST3, AU, LV2 and AAX audio plug-ins for the production and playback of spatial sound scenes. Developed using [JUCE](https://github.com/WeAreROLI/JUCE/) and the [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework).
 
 ![](sparta_screenshot.png)
 
