@@ -1,6 +1,6 @@
 # SPARTA
 
-Spatial Audio Real-Time Applications (SPARTA) [1]. A collection of VST/LV2 audio plug-ins for spatial audio production, reproduction and visualisation. Developed using [JUCE](https://github.com/WeAreROLI/JUCE/) and the [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework).
+Spatial Audio Real-Time Applications (SPARTA) [1]. A collection of VST, VST3, AU, LV2 and AAX audio plug-ins for spatial audio production, reproduction and visualisation. Developed using [JUCE](https://github.com/WeAreROLI/JUCE/) and the [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework).
 
 ![](sparta_screenshot.png)
 
@@ -77,9 +77,9 @@ The plug-ins may be built with CMake (version 3.15 or higher):
  make
  ```
  
-Or for Visual Studio 2022 users (using x64 Native Tools Command Prompt as **administrator**; and also e.g., building LV2 and VST3 versions):
+Or for Visual Studio 2022 users (using x64 Native Tools Command Prompt as **administrator**; and also e.g., building LV2 and AAX versions):
 ```
-cmake -S . -B build -G "Visual Studio 17" -DBUILD_PLUGIN_FORMAT_LV2=1 -DBUILD_PLUGIN_FORMAT_VST3=1
+cmake -S . -B build -G "Visual Studio 17" -DBUILD_PLUGIN_FORMAT_LV2=1 -DBUILD_PLUGIN_FORMAT_AAX=1
 cd build
 msbuild ALL_BUILD.vcxproj /p:Configuration=Release /m
 ```
@@ -105,6 +105,7 @@ Suggestions and contributions to the code are both welcomed and encouraged. Feel
 * **Archontis Politis** -  algorithm design
 * **Ville Pulkki** - algorithm design
 * **Marc Lavallée** - bash scripter
+* **Janani Fernandez** - current maintainer of the project 
 
 ## License
 
