@@ -322,7 +322,7 @@ void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
     sourceCoordsView_handle->setNCH(ambi_enc_getNumSources(hAmbi));
-    CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hAmbi), dontSendNotification);
+    CBoutputFormat->setSelectedId(ambi_enc_getChOrder(hAmbi), sendNotification);
     CBnormalisation->setSelectedId(ambi_enc_getNormType(hAmbi), sendNotification);
     CBoutputFormat->setItemEnabled(CH_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
     CBnormalisation->setItemEnabled(NORM_FUMA, ambi_enc_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);

@@ -368,8 +368,8 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 void PluginEditor::timerCallback()
 {
     /* parameters whos values can change internally should be periodically refreshed */
-    CB_CHorder->setSelectedId(sldoa_getChOrder(hSld), dontSendNotification);
-    CB_Norm->setSelectedId(sldoa_getNormType(hSld), dontSendNotification);
+    CB_CHorder->setSelectedId(sldoa_getChOrder(hSld), sendNotification);
+    CB_Norm->setSelectedId(sldoa_getNormType(hSld), sendNotification);
     CB_CHorder->setItemEnabled(CH_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
     CB_Norm->setItemEnabled(NORM_FUMA, sldoa_getMasterOrder(hSld)==SH_ORDER_FIRST ? true : false);
     s_maxFreq->setValue(sldoa_getMaxFreq(hSld), sendNotification);
