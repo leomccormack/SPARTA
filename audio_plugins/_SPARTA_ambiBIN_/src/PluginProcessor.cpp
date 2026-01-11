@@ -210,7 +210,7 @@ void PluginProcessor::oscMessageReceived(const OSCMessage& message)
     }
 }
 
-void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
     if(firstInit){
         /* Need to grab defaults */
@@ -224,33 +224,19 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
     ambi_bin_init(hAmbi, nSampleRate);
     AudioProcessor::setLatencySamples(ambi_bin_getProcessingDelay());
+
+    if(!blockAdapter)
+        blockAdapter = std::make_unique<BlockAdapter>();
+    blockAdapter->configure(ambi_bin_getFrameSize(), nNumInputs, nNumOutputs, nHostBlockSize);
 }
 
-void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
+void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& /*midiMessages*/)
 {
-    ScopedNoDenormals noDenormals;
+    juce::ScopedNoDenormals noDenormals;
 
-    /* Apply processing using the current internal state */
-    int nCurrentBlockSize = buffer.getNumSamples();
-    nHostBlockSize.store(buffer.getNumSamples());
-    nNumInputs.store(jmin(getTotalNumInputChannels(), buffer.getNumChannels(), 256));
-    nNumOutputs.store(jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), 256));
-    float* const* bufferData = buffer.getArrayOfWritePointers();
-    float* pFrameData[256];
-    int frameSize = ambi_bin_getFrameSize();
-
-    if((nCurrentBlockSize % frameSize == 0)){ /* divisible by frame size */
-        for (int frame = 0; frame < nCurrentBlockSize/frameSize; frame++) {
-            for (int ch = 0; ch < jmin(buffer.getNumChannels(), 256); ch++)
-                pFrameData[ch] = &bufferData[ch][frame*frameSize];
-
-            /* perform processing */
-            ambi_bin_process(hAmbi, pFrameData, pFrameData, nNumInputs, nNumOutputs, frameSize);
-        }
-    }
-    else {
-        buffer.clear();
-    }
+    blockAdapter->processBlock (buffer, [this] (const float* const* inFrame, float* const* outFrame, int numIns, int numOuts, int frameSize) {
+            ambi_bin_process(hAmbi, inFrame, outFrame, numIns, numOuts, frameSize);
+        });
 }
 
 AudioProcessorEditor* PluginProcessor::createEditor()

@@ -290,12 +290,6 @@ void PluginEditor::paint (juce::Graphics& g)
     switch (currentWarning){
         case k_warning_none:
             break;
-        case k_warning_frameSize:
-            g.setColour(Colours::red);
-            g.drawText(TRANS("Set frame size to multiple of ") + String(ambi_roomsim_getFrameSize()),
-                       getBounds().getWidth()-225, 16, 530, 11,
-                       Justification::centredLeft, true);
-            break;
         case k_warning_NinputCH:
             g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
@@ -307,6 +301,12 @@ void PluginEditor::paint (juce::Graphics& g)
             g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of output channels (") + String(processor.getTotalNumOutputChannels()) +
                        TRANS("/") + String(ambi_roomsim_getNSHrequired(hAmbi)) + TRANS(")"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_frameSize:
+            g.setColour(Colours::yellow);
+            g.drawText(TRANS("Set host block size to \"") + String(ambi_roomsim_getFrameSize()) + TRANS("\" for lowest latency"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -359,16 +359,16 @@ void PluginEditor::timerCallback()
     panWindow->refreshPanView();
 
     /* display warning message, if needed */
-    if ((processor.getCurrentBlockSize() % ambi_roomsim_getFrameSize()) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((processor.getCurrentNumInputs() < ambi_roomsim_getNumSources(hAmbi))){
+    if ((processor.getCurrentNumInputs() < ambi_roomsim_getNumSources(hAmbi))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
     else if ((processor.getCurrentNumOutputs() < ambi_roomsim_getNSHrequired(hAmbi))){
         currentWarning = k_warning_NoutputCH;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentBlockSize() != ambi_roomsim_getFrameSize())){
+        currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
     else if(currentWarning){

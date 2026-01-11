@@ -127,12 +127,6 @@ void PluginEditor::paint (juce::Graphics& g)
     switch (currentWarning){
         case k_warning_none:
             break;
-        case k_warning_frameSize:
-            g.setColour(Colours::red);
-            g.drawText(TRANS("Set frame size to multiple of ") + String(decorrelator_getFrameSize()),
-                       getBounds().getWidth()-225, 4, 530, 11,
-                       Justification::centredLeft, true);
-            break;
         case k_warning_NinputCH:
             g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
@@ -150,6 +144,12 @@ void PluginEditor::paint (juce::Graphics& g)
         case k_warning_supported_fs:
             g.setColour(Colours::yellow);
             g.drawText(TRANS("Sample rate \"") + String(decorrelator_getDAWsamplerate(hDecor)) + TRANS("\" is not recommended"),
+                       getBounds().getWidth()-225, 4, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_frameSize:
+            g.setColour(Colours::yellow);
+            g.drawText(TRANS("Set host block size to \"") + String(decorrelator_getFrameSize()) + TRANS("\" for lowest latency"),
                        getBounds().getWidth()-225, 4, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -183,11 +183,7 @@ void PluginEditor::timerCallback()
         removeChildComponent(&progressbar);
 
     /* display warning message, if needed */
-    if ((processor.getCurrentBlockSize() % decorrelator_getFrameSize()) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((processor.getCurrentNumInputs() < decorrelator_getNumberOfChannels(hDecor))){
+    if ((processor.getCurrentNumInputs() < decorrelator_getNumberOfChannels(hDecor))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -197,6 +193,10 @@ void PluginEditor::timerCallback()
     }
     else if ( !((decorrelator_getDAWsamplerate(hDecor) == 44.1e3) || (decorrelator_getDAWsamplerate(hDecor) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentBlockSize() != decorrelator_getFrameSize())){
+        currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
     else if(currentWarning){

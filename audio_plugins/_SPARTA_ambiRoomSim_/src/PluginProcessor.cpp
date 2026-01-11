@@ -27,18 +27,7 @@
 # error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
 #endif
 
-static int getMaxNumChannelsForFormat(AudioProcessor::WrapperType format) {
-    switch(format){
-        case juce::AudioProcessor::wrapperType_VST:  /* fall through */
-        case juce::AudioProcessor::wrapperType_VST3: /* fall through */
-        case juce::AudioProcessor::wrapperType_AAX:
-            return 64;
-        default:
-            return MAX_NUM_CHANNELS;
-    }
-}
-
-juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
@@ -232,11 +221,12 @@ void PluginProcessor::setInternalStateUsingParameterValues()
     }
 }
 
-PluginProcessor::PluginProcessor() : 
-    AudioProcessor(BusesProperties()
-        .withInput("Input", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)
-        .withOutput("Output", AudioChannelSet::discreteChannels(getMaxNumChannelsForFormat(juce::PluginHostType::getPluginLoadedAs())), true)),
-    ParameterManager(*this, createParameterLayout())
+PluginProcessor::PluginProcessor()
+    : PluginProcessorBase(
+        BusesProperties()
+            .withInput("Input", AudioChannelSet::discreteChannels(64), true)
+            .withOutput("Output", AudioChannelSet::discreteChannels(64), true),
+        createParameterLayout())
 {
     ambi_roomsim_create(&hAmbi);
     addParameterListeners(this);
@@ -248,57 +238,6 @@ PluginProcessor::~PluginProcessor()
 {
     removeParameterListeners(this);
     ambi_roomsim_destroy(&hAmbi);
-}
-
-void PluginProcessor::setCurrentProgram (int /*index*/)
-{
-}
-
-const String PluginProcessor::getName() const
-{
-    return JucePlugin_Name;
-}
-
-double PluginProcessor::getTailLengthSeconds() const
-{
-    return 0.0;
-}
-
-int PluginProcessor::getNumPrograms()
-{
-    return 0;
-}
-
-int PluginProcessor::getCurrentProgram()
-{
-    return 0;
-}
-
-const String PluginProcessor::getProgramName (int /*index*/)
-{
-    return String();
-}
-
-bool PluginProcessor::acceptsMidi() const
-{
-   #if JucePlugin_WantsMidiInput
-    return true;
-   #else
-    return false;
-   #endif
-}
-
-bool PluginProcessor::producesMidi() const
-{
-   #if JucePlugin_ProducesMidiOutput
-    return true;
-   #else
-    return false;
-   #endif
-}
-
-void PluginProcessor::changeProgramName (int /*index*/, const String& /*newName*/)
-{
 }
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -315,39 +254,19 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
     ambi_roomsim_init(hAmbi, nSampleRate);
     AudioProcessor::setLatencySamples(ambi_roomsim_getProcessingDelay());
-}
-
-void PluginProcessor::releaseResources()
-{
+    
+    if(!blockAdapter)
+        blockAdapter = std::make_unique<BlockAdapter>();
+    blockAdapter->configure(ambi_roomsim_getFrameSize(), nNumInputs, nNumOutputs, nHostBlockSize);
 }
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     ScopedNoDenormals noDenormals;
     
-    int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
-    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), 256);
-    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), 256);
-    float* const* bufferData = buffer.getArrayOfWritePointers();
-    float* pFrameData[256];
-    int frameSize = ambi_roomsim_getFrameSize();
-
-    if((nCurrentBlockSize % frameSize == 0)){ /* divisible by frame size */
-        for (int frame = 0; frame < nCurrentBlockSize/frameSize; frame++) {
-            for (int ch = 0; ch < jmin(buffer.getNumChannels(), 256); ch++)
-                pFrameData[ch] = &bufferData[ch][frame*frameSize];
-
-            /* perform processing */
-            ambi_roomsim_process(hAmbi, pFrameData, pFrameData, nNumInputs, nNumOutputs, frameSize);
-        }
-    }
-    else
-        buffer.clear(); 
-}
-
-bool PluginProcessor::hasEditor() const
-{
-    return true; 
+    blockAdapter->processBlock (buffer, [this] (const float* const* inFrame, float* const* outFrame, int numIns, int numOuts, int frameSize) {
+            ambi_roomsim_process(hAmbi, inFrame, outFrame, numIns, numOuts, frameSize);
+        });
 }
 
 AudioProcessorEditor* PluginProcessor::createEditor()
@@ -413,7 +332,9 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             setParameterValuesUsingInternalState();
         }
         else if (xmlState->getIntAttribute("VersionCode")>=0x10101){
+            removeParameterListeners(this);
             parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            addParameterListeners(this);
             
             /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
             /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */

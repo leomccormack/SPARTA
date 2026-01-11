@@ -213,12 +213,6 @@ void PluginEditor::paint (juce::Graphics& g)
     switch (currentWarning){
         case k_warning_none:
             break;
-        case k_warning_frameSize:
-            g.setColour(Colours::red);
-            g.drawText(TRANS("Set frame size to multiple of ") + String(ambi_drc_getFrameSize()),
-                       getBounds().getWidth()-225, 16, 530, 11,
-                       Justification::centredLeft, true);
-            break;
         case k_warning_NinputCH:
             g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
@@ -237,6 +231,12 @@ void PluginEditor::paint (juce::Graphics& g)
             g.setColour(Colours::yellow);
             g.drawText(TRANS("Sample rate \"") + String(ambi_drc_getSamplerate(hAmbi)) + TRANS("\" is not recommended"),
                        getBounds().getWidth()-225, 5, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_frameSize:
+            g.setColour(Colours::yellow);
+            g.drawText(TRANS("Set host block size to \"") + String(ambi_drc_getFrameSize()) + TRANS("\" for lowest latency"),
+                       getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
     }
@@ -301,11 +301,7 @@ void PluginEditor::timerCallback()
     }
 
     /* display warning message, if needed */
-    if ((processor.getCurrentBlockSize() % ambi_drc_getFrameSize()) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((processor.getCurrentNumInputs() < ambi_drc_getNSHrequired(hAmbi))){
+    if ((processor.getCurrentNumInputs() < ambi_drc_getNSHrequired(hAmbi))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -315,6 +311,10 @@ void PluginEditor::timerCallback()
     }
     else if ( !((ambi_drc_getSamplerate(hAmbi) == 44.1e3) || (ambi_drc_getSamplerate(hAmbi) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentBlockSize() != ambi_drc_getFrameSize())){
+        currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
     else if(currentWarning){

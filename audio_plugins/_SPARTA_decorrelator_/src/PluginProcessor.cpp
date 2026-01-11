@@ -104,30 +104,19 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
     decorrelator_init(hDecor, nSampleRate);
     AudioProcessor::setLatencySamples(decorrelator_getProcessingDelay());
+    
+    if(!blockAdapter)
+        blockAdapter = std::make_unique<BlockAdapter>();
+    blockAdapter->configure(decorrelator_getFrameSize(), nNumInputs, nNumOutputs, nHostBlockSize);
 }
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     ScopedNoDenormals noDenormals;
     
-    int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
-    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), 256);
-    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), 256);
-    float* const* bufferData = buffer.getArrayOfWritePointers();
-    float* pFrameData[256];
-    int frameSize = decorrelator_getFrameSize();
-
-    if((nCurrentBlockSize % frameSize == 0)){ /* divisible by frame size */
-        for (int frame = 0; frame < nCurrentBlockSize/frameSize; frame++) {
-            for (int ch = 0; ch < jmin(buffer.getNumChannels(), 256); ch++)
-                pFrameData[ch] = &bufferData[ch][frame*frameSize];
-
-            /* perform processing */
-            decorrelator_process(hDecor, pFrameData, pFrameData, nNumInputs, nNumOutputs, frameSize);
-        }
-    }
-    else
-        buffer.clear();
+    blockAdapter->processBlock (buffer, [this] (const float* const* inFrame, float* const* outFrame, int numIns, int numOuts, int frameSize) {
+            decorrelator_process(hDecor, inFrame, outFrame, numIns, numOuts, frameSize);
+        });
 }
 
 AudioProcessorEditor* PluginProcessor::createEditor()

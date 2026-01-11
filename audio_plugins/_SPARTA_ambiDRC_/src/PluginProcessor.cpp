@@ -128,18 +128,15 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
     ambi_drc_init(hAmbi, nSampleRate);
     AudioProcessor::setLatencySamples(ambi_drc_getProcessingDelay());
+    
+    if(!blockAdapter)
+        blockAdapter = std::make_unique<BlockAdapter>();
+    blockAdapter->configure(ambi_drc_getFrameSize(), nNumInputs, nNumOutputs, nHostBlockSize);
 }
 
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     ScopedNoDenormals noDenormals;
-    
-    int nCurrentBlockSize = nHostBlockSize = buffer.getNumSamples();
-    nNumInputs = jmin(getTotalNumInputChannels(), buffer.getNumChannels(), 256);
-    nNumOutputs = jmin(getTotalNumOutputChannels(), buffer.getNumChannels(), 256);
-    float* const* bufferData = buffer.getArrayOfWritePointers();
-    float* pFrameData[256];
-    int frameSize = ambi_drc_getFrameSize();
 
     /* check whether the playhead is moving */
     playHead = getPlayHead();
@@ -148,18 +145,9 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
     else
         isPlaying = false;
 
-    /* process one frame at a time: */
-    if((nCurrentBlockSize % frameSize == 0)){ /* divisible by frame size */
-        for (int frame = 0; frame < nCurrentBlockSize/frameSize; frame++) {
-            for (int ch = 0; ch < jmin(buffer.getNumChannels(), 256); ch++)
-                pFrameData[ch] = &bufferData[ch][frame*frameSize];
-
-            /* perform processing */
-            ambi_drc_process(hAmbi, pFrameData, pFrameData, nNumInputs < nNumOutputs ? nNumInputs : nNumOutputs, frameSize);
-        }
-    }
-    else
-        buffer.clear(); 
+    blockAdapter->processBlock (buffer, [this] (const float* const* inFrame, float* const* outFrame, int numIns, int numOuts, int frameSize) {
+            ambi_drc_process(hAmbi, inFrame, outFrame, numIns < numOuts ? numIns : numOuts, frameSize);
+        });
 }
 
 AudioProcessorEditor* PluginProcessor::createEditor()

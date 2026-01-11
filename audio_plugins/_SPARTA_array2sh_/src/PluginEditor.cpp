@@ -382,12 +382,6 @@ void PluginEditor::paint (juce::Graphics& g)
     switch (currentWarning){
         case k_warning_none:
             break;
-        case k_warning_frameSize:
-            g.setColour(Colours::red);
-            g.drawText(TRANS("Set frame size to multiple of ") + String(array2sh_getFrameSize()),
-                       getBounds().getWidth()-225, 16, 530, 11,
-                       Justification::centredLeft, true);
-            break;
         case k_warning_NinputCH:
             g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
@@ -411,6 +405,12 @@ void PluginEditor::paint (juce::Graphics& g)
         case k_warning_supported_fs:
             g.setColour(Colours::yellow);
             g.drawText(TRANS("Sample rate \"") + String(array2sh_getSamplingRate(hA2sh)) + TRANS("\" is not recommended"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_frameSize:
+            g.setColour(Colours::yellow);
+            g.drawText(TRANS("Set host block size to \"") + String(array2sh_getFrameSize()) + TRANS("\" for lowest latency"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -689,11 +689,7 @@ void PluginEditor::timerCallback()
         CBencodingOrder->setItemEnabled(i, (i+1)*(i+1) <= array2sh_getNumSensors(hA2sh) ? true : false);
 
     /* display warning message, if needed */
-    if ((processor.getCurrentBlockSize() % array2sh_getFrameSize()) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if ((processor.getCurrentNumInputs() < array2sh_getNumSensors(hA2sh))){
+    if ((processor.getCurrentNumInputs() < array2sh_getNumSensors(hA2sh))){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -707,6 +703,10 @@ void PluginEditor::timerCallback()
     }
     else if ( !((array2sh_getSamplingRate(hA2sh) == 44.1e3) || (array2sh_getSamplingRate(hA2sh) == 48e3)) ){
         currentWarning = k_warning_supported_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentBlockSize() != array2sh_getFrameSize())){
+        currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
     else if(currentWarning){

@@ -373,12 +373,6 @@ void PluginEditor::paint (juce::Graphics& g)
     switch (currentWarning){
         case k_warning_none:
             break;
-        case k_warning_frameSize:
-            g.setColour(Colours::red);
-            g.drawText(TRANS("Set frame size to multiple of ") + String(ambi_dec_getFrameSize()),
-                       getBounds().getWidth()-225, 16, 530, 11,
-                       Justification::centredLeft, true);
-            break;
         case k_warning_NinputCH:
             g.setColour(Colours::red);
             g.drawText(TRANS("Insufficient number of input channels (") + String(processor.getTotalNumInputChannels()) +
@@ -408,6 +402,12 @@ void PluginEditor::paint (juce::Graphics& g)
         case k_warning_mismatch_fs:
             g.setColour(Colours::yellow);
             g.drawText(TRANS("Resampled HRIRs to match host samplerate"),
+                       getBounds().getWidth()-225, 16, 530, 11,
+                       Justification::centredLeft, true);
+            break;
+        case k_warning_frameSize:
+            g.setColour(Colours::yellow);
+            g.drawText(TRANS("Set host block size to \"") + String(ambi_dec_getFrameSize()) + TRANS("\" for lowest latency"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -585,11 +585,7 @@ void PluginEditor::timerCallback()
     }
 
     /* display warning message, if needed */
-    if ((processor.getCurrentBlockSize() % ambi_dec_getFrameSize()) != 0){
-        currentWarning = k_warning_frameSize;
-        repaint(0,0,getWidth(),32);
-    }
-    else if (processor.getCurrentNumInputs() < ambi_dec_getNSHrequired(hAmbi)){
+    if (processor.getCurrentNumInputs() < ambi_dec_getNSHrequired(hAmbi)){
         currentWarning = k_warning_NinputCH;
         repaint(0,0,getWidth(),32);
     }
@@ -607,6 +603,10 @@ void PluginEditor::timerCallback()
     }
     else if (ambi_dec_getBinauraliseLSflag(hAmbi) && (ambi_dec_getDAWsamplerate(hAmbi) != ambi_dec_getHRIRsamplerate(hAmbi))){
         currentWarning = k_warning_mismatch_fs;
+        repaint(0,0,getWidth(),32);
+    }
+    else if ((processor.getCurrentBlockSize() != ambi_dec_getFrameSize())){
+        currentWarning = k_warning_frameSize;
         repaint(0,0,getWidth(),32);
     }
     else if(currentWarning){

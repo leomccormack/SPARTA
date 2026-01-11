@@ -24,6 +24,130 @@
 
 #include "ParameterManager.h"
 
+class BlockAdapter
+{
+public:
+    BlockAdapter() = default;
+
+    void configure(int frameSize, int numInputs, int numOutputs, int hostBlockSize) {
+        mFrameSize  = frameSize;
+        mNumInputs  = numInputs;
+        mNumOutputs = numOutputs;
+        mHostBlockSize = hostBlockSize;
+        usingLowDelay = (mHostBlockSize % mFrameSize == 0); /* in this case we can skip the FIFO buffering, since block size is a multiple of the processing framesize */
+
+        if(!usingLowDelay){
+            inBuffers  = std::make_unique<float[]>(mNumInputs  * mFrameSize);
+            outBuffers = std::make_unique<float[]>(mNumOutputs * mFrameSize);
+            inBuffersPtrs  = std::make_unique<float*[]>(mNumInputs);
+            outBuffersPtrs = std::make_unique<float*[]>(mNumOutputs);
+            for(int ch = 0; ch < mNumInputs; ch++)
+                inBuffersPtrs[ch] = inBuffers.get() + ch * mFrameSize;
+            for(int ch = 0; ch < mNumOutputs; ch++)
+                outBuffersPtrs[ch] = outBuffers.get() + ch * mFrameSize;
+        }
+        else{
+            inBuffers = nullptr;
+            outBuffers = nullptr;
+            inBuffersPtrs = nullptr;
+            outBuffersPtrs = nullptr;
+        }
+        
+        reset();
+    }
+
+    void reset() noexcept {
+        inPos = outPos = availableOut = 0;
+        if(inBuffers)
+            std::fill(inBuffers.get(), inBuffers.get() + mNumInputs * mFrameSize, 0.0f);
+        if(outBuffers)
+            std::fill(outBuffers.get(), outBuffers.get() + mNumOutputs * mFrameSize, 0.0f);
+    }
+
+    bool isUsingLowDelay() const noexcept { return usingLowDelay; }
+
+    template <typename ProcessFn>
+    void processBlock(juce::AudioBuffer<float>& buffer, ProcessFn&& processFrame) noexcept {
+        if(usingLowDelay)
+            processBlockInternalLowDelay(buffer, processFrame);
+        else
+            processBlockInternal(buffer, processFrame);
+    }
+
+private:
+    template <typename ProcessFn>
+    void processBlockInternalLowDelay(juce::AudioBuffer<float>& buffer, ProcessFn&& processFrame) noexcept {
+        const int numSamples = buffer.getNumSamples();
+        float* const* bufferData = buffer.getArrayOfWritePointers();
+        float* pFrameData[256];
+        
+        if((numSamples % mHostBlockSize == 0)){ /* divisible by frame size */
+            for (int frame = 0; frame < numSamples/mFrameSize; frame++) {
+                for (int ch = 0; ch < jmin(buffer.getNumChannels(), 256); ch++)
+                    pFrameData[ch] = &bufferData[ch][frame*mFrameSize];
+
+                /* perform processing */
+                processFrame(pFrameData, pFrameData, mNumInputs, mNumOutputs, mFrameSize);
+            }
+        }
+        else {
+            buffer.clear();
+        }
+    }
+
+    template <typename ProcessFn>
+    void processBlockInternal(juce::AudioBuffer<float>& buffer, ProcessFn&& processFrame) noexcept
+    {
+        const int numSamples = buffer.getNumSamples();
+        const float* const* inHost = buffer.getArrayOfReadPointers();
+        float* const* outHost = buffer.getArrayOfWritePointers();
+
+        const int hostChans = buffer.getNumChannels();
+        if(hostChans > mNumOutputs)
+            buffer.clear(mNumOutputs, numSamples);
+
+        for(int n = 0; n < numSamples; n++) {
+            for(int ch = 0; ch < mNumInputs; ch++)
+                inBuffersPtrs[ch][inPos] = inHost[ch][n];
+            inPos++;
+
+            if(inPos == mFrameSize){
+                processFrame(inBuffersPtrs.get(), outBuffersPtrs.get(), mNumInputs, mNumOutputs, mFrameSize);
+                inPos = 0;
+                outPos = 0;
+                availableOut = mFrameSize;
+            }
+
+            if(availableOut > 0){
+                for(int ch = 0; ch < mNumOutputs; ch++)
+                    outHost[ch][n] = outBuffersPtrs[ch][outPos];
+                outPos++;
+                availableOut--;
+            }
+            else {
+                for(int ch = 0; ch < mNumOutputs; ch++)
+                    outHost[ch][n] = 0.0f;
+            }
+        }
+    }
+
+private:
+    int mFrameSize = 0;
+    int mNumInputs = 0;
+    int mNumOutputs = 0;
+    int mHostBlockSize = 0;
+    bool usingLowDelay = false;
+
+    int inPos = 0;
+    int outPos = 0;
+    int availableOut = 0;
+
+    std::unique_ptr<float[]>  inBuffers;
+    std::unique_ptr<float[]>  outBuffers;
+    std::unique_ptr<float*[]> inBuffersPtrs;
+    std::unique_ptr<float*[]> outBuffersPtrs;
+};
+
 class PluginProcessorBase  : public juce::AudioProcessor,
                              public juce::VST2ClientExtensions,
                              public ParameterManager,
@@ -71,6 +195,7 @@ protected:
     std::atomic<int> nNumOutputs {0};
     int nSampleRate = 0;
     std::atomic<int> nHostBlockSize {0};
+    std::unique_ptr<BlockAdapter> blockAdapter;
 
     /* These functions must be implemented in the derived class */
     virtual void parameterChanged(const juce::String&, float) override = 0;
@@ -83,3 +208,5 @@ protected:
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessorBase)
 };
+
+
