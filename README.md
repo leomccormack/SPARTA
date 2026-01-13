@@ -1,6 +1,6 @@
 # SPARTA
 
-A collection of open-source VST, VST3, AU, LV2 and AAX audio plug-ins for the production and playback of spatial sound scenes. Developed using [JUCE](https://github.com/WeAreROLI/JUCE/) and the [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework).
+A collection of open-source VST, VST3, AU, LV2 and AAX audio plug-ins for the production and playback of spatial sound scenes [1]. Developed using [JUCE](https://github.com/WeAreROLI/JUCE/) and the [Spatial_Audio_Framework](https://github.com/leomccormack/Spatial_Audio_Framework).
 
 ![](sparta_screenshot.png)
 
@@ -48,12 +48,13 @@ git submodule update --init --recursive
 
 ## Prerequisites 
 
-The [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip) should be placed in the 'SDKs' folder like so:
+All of the major audio plugin SDKs are bundled inside of JUCE, with the exception of VST2.
+In order to build VST2 versions of the plugins, the [VST2_SDK](https://web.archive.org/web/20181016150224/https://download.steinberg.net/sdk_downloads/vstsdk3610_11_06_2018_build_37.zip) must be placed in the 'SDKs' folder like so:
 ```
 SDKs/VST2_SDK
 ```
 
-By default, **MacOS** users require no additional dependencies.
+By default, **MacOS** users require no other additional dependencies.
 
 By default, **Linux and Windows (x86_64/amd64)** users need to install [Intel oneAPI](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html) (MKL and IPP) and run the **install-safmkl**.sh/.bat and **install-safipp**.sh/.bat scripts found in SDKs/Spatial_Audio_Framework/scripts. Whereas, **Raspberry Pi (ARM)** users instead require OpenBLAS and LAPACKE libraries:
 ``` 
@@ -77,16 +78,16 @@ The plug-ins may be built with CMake (version 3.15 or higher):
  make
  ```
  
-Or for Visual Studio 2022 users (using x64 Native Tools Command Prompt as **administrator**; and also e.g., building LV2 and AAX versions):
+Or for Visual Studio 2022 users (using x64 Native Tools Command Prompt as **administrator**; e.g., also building LV2 and AAX versions):
 ```
-cmake -S . -B build -G "Visual Studio 17" -DBUILD_PLUGIN_FORMAT_LV2=1 -DBUILD_PLUGIN_FORMAT_AAX=1
+cmake -S . -B build -G "Visual Studio 17" -DSAF_PERFORMANCE_LIB=SAF_USE_INTEL_MKL_LP64 -DBUILD_PLUGIN_FORMAT_LV2=1 -DBUILD_PLUGIN_FORMAT_AAX=1
 cd build
 msbuild ALL_BUILD.vcxproj /p:Configuration=Release /m
 ```
 
 ## Building the plug-ins via Projucer (**deprecated**)
 
-You may also manually open each .jucer file with the Projucer App and click "Save Project". This will generate Visual Studio (2017) solution files, Xcode project files, Linux Makefiles (amd64), and Raspberry Pi Linux Makefiles (ARM), which are placed in:
+You may also manually open each .jucer file with the Projucer App and click "Save Project". This will generate Visual Studio solution files, Xcode project files, Linux Makefiles (amd64), and Raspberry Pi Linux Makefiles (ARM), which are placed in:
 
 ```
 audio_plugins/_SPARTA_X_/make/
