@@ -38,16 +38,6 @@ PathEditView::PathEditView(PluginProcessor& p)
     BT_removePath->addListener(this);
 
     /* Path controls with labels */
-    LB_enable.reset(new juce::Label("lbEn", "Enable:"));
-    addAndMakeVisible(LB_enable.get());
-    LB_enable->setColour(juce::Label::textColourId, juce::Colours::white);
-    LB_enable->setFont(juce::FontOptions(12.0f));
-    TB_pathEnable.reset(new juce::ToggleButton("enable"));
-    addAndMakeVisible(TB_pathEnable.get());
-    TB_pathEnable->setButtonText(juce::String());
-    TB_pathEnable->addListener(this);
-
-    LB_loop.reset(new juce::Label("lbLoop", "Loop:"));
     addAndMakeVisible(LB_loop.get());
     LB_loop->setColour(juce::Label::textColourId, juce::Colours::white);
     LB_loop->setFont(juce::FontOptions(12.0f));
@@ -114,7 +104,8 @@ PathEditView::PathEditView(PluginProcessor& p)
     /* Tooltips */
     sourceSelector->setTooltip("Select the source or receiver whose path to edit");
     pathSelector->setTooltip("Select which path to edit for this source/receiver");
-    TB_pathEnable->setTooltip("Enable path automation for this path. When ON, clicking in the room adds keyframes.");
+    RB_moveSR->setTooltip("Move sources/receivers in the room. Path automation is disabled.");
+    RB_drawPath->setTooltip("Draw/edit the motion path for this source/receiver. Clicking in the room adds keyframes.");
     TB_pathLoop->setTooltip("When ON, this path loops back to the start time.");
     SL_pathStartTime->setTooltip("Timeline position where this path begins.");
     SL_pathEndTime->setTooltip("Timeline position where this path ends.");
@@ -141,10 +132,11 @@ void PathEditView::resized()
     BT_removePath->setBounds(r.getX() + lblW + ctrlW - btnW, y, btnW, 22);
     y += 26;
 
-    /* Enable */
-    LB_enable->setBounds(r.getX(), y, lblW, 20);
-    TB_pathEnable->setBounds(r.getX() + lblW, y, ctrlW, 20);
-    y += 22;
+    /* Interaction mode frame: title + two stacked radio buttons */
+    int frameH = 56;
+    RB_moveSR->setBounds(r.getX() + 12, y + 20, ctrlW - 12, 18);
+    RB_drawPath->setBounds(r.getX() + 12, y + 38, ctrlW - 12, 18);
+    y += frameH + 2;
 
     /* Loop */
     LB_loop->setBounds(r.getX(), y, lblW, 20);
@@ -220,8 +212,9 @@ void PathEditView::refresh()
         auto& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex, selectedPathIndex);
         SL_pathStartTime->setValue(path.startTime, juce::dontSendNotification);
         SL_pathEndTime->setValue(path.endTime, juce::dontSendNotification);
-        TB_pathEnable->setToggleState(path.enabled, juce::dontSendNotification);
         TB_pathLoop->setToggleState(path.loop, juce::dontSendNotification);
+        RB_drawPath->setToggleState(path.enabled, juce::dontSendNotification);
+        RB_moveSR->setToggleState(!path.enabled, juce::dontSendNotification);
     }
 
     updateKeyframeTable();
@@ -310,9 +303,9 @@ void PathEditView::buttonClicked(juce::Button* button)
         return;
     }
 
-    if (button == TB_pathEnable.get()) {
+    if (button == RB_drawPath.get() || button == RB_moveSR.get()) {
         PathData& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex, selectedPathIndex);
-        path.enabled = TB_pathEnable->getToggleState();
+        path.enabled = RB_drawPath->getToggleState();
         processor.markPathDirty();
         return;
     }
@@ -388,4 +381,15 @@ void PathEditView::updateKeyframeTable()
     keyframeList->repaint();
 }
 
-void PathEditView::paint(juce::Graphics& /*g*/) {}
+void PathEditView::paint(juce::Graphics& g)
+{
+    using namespace ColoursUI;
+
+    /* Frame around the interaction-mode radio buttons (placed below the
+       source/path selector rows, matching the layout in resized()). */
+    auto r = getLocalBounds().reduced(6, 8);
+    int frameY = r.getY() + 50;
+    drawPanel(g, {(float)r.getX(), (float)frameY, (float)r.getWidth(), 56.0f},
+              panelFill, panelStroke);
+    drawLabel(g, {r.getX() + 8, frameY - 2, 150, 20}, "Interaction mode:", 12.f);
+}
