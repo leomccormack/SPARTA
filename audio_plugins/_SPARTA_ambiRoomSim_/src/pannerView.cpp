@@ -249,6 +249,10 @@ void pannerView::drawPathOnView(juce::Graphics& g, const PathData& path,
     }
 }
 
+/* Projects one of a keyframe's spline handles into screen space for the
+   given view. The in/out handles sit at P - mIn/3 and P + mOut/3 (one third
+   of the tangent, matching the cubic Bezier control points of the Hermite
+   segment). */
 void pannerView::getHandleScreenPos(const Keyframe& kf, bool isIn, bool isTopView,
                                     float view_x, float view_y, float scale,
                                     float room_w, float room_h, float& px, float& py) const
@@ -268,6 +272,8 @@ void pannerView::getHandleScreenPos(const Keyframe& kf, bool isIn, bool isTopVie
                    : view_y + room_h - scale * hz;
 }
 
+/* Draws a line + small square marker from each keyframe to its in/out
+   handles, so the user can grab them to reshape the spline. */
 void pannerView::drawPathHandlesOnView(juce::Graphics& g, const PathData& path,
                                        float view_x, float view_y,
                                        float scale, float room_w, float room_h,
@@ -292,6 +298,9 @@ void pannerView::drawPathHandlesOnView(juce::Graphics& g, const PathData& path,
     }
 }
 
+/* Whether the currently selected path exists and is enabled. Returns true
+   when nothing is selected or the index is out of range, so unrelated
+   interactions are never blocked; a disabled path is treated as locked. */
 bool pannerView::isCurrentPathEnabled() const
 {
     if (editingObjectIdx < 0) return true;
