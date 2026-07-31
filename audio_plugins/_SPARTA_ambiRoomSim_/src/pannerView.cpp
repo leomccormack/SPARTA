@@ -629,36 +629,39 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
         room_dims_pixels[2] = room_dims_m[2]*scale;
 
         PathBank& pb = processor.getPathBank();
-        auto& path = editingIsReceiver ? pb.getReceiverPath(editingObjectIdx, editingPathIdx)
-                                       : pb.getSourcePath(editingObjectIdx, editingPathIdx);
-        if (dragHandleKeyframeIdx >= 0 && (size_t)dragHandleKeyframeIdx < path.keyframes.size()) {
-            auto& kf = path.keyframes[dragHandleKeyframeIdx];
-            float outX, outY, outZ;
-            if (topOrSideView == TOP_VIEW) {
-                view_x = 27.0f; view_y = 12.0f;
-                pixelToSourceCoords((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2,
-                    view_x, view_y, scale, room_dims_pixels[1], room_dims_pixels[0], true,
-                    outX, outY, outZ);
-                float dtx = 3.0f * (outX - kf.x);
-                float dty = 3.0f * (outY - kf.y);
-                if (dragHandleIsIn) { kf.txIn = -dtx; kf.tyIn = -dty; }
-                else                { kf.txOut = dtx; kf.tyOut = dty; }
-            } else {
-                view_x = 27.0f; view_y = 240.0f;
-                pixelToSourceCoords((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2,
-                    view_x, view_y, scale, room_dims_pixels[1], room_dims_pixels[2], false,
-                    outX, outY, outZ);
-                float dty = 3.0f * (outY - kf.y);
-                float dtz = 3.0f * (outZ - kf.z);
-                if (dragHandleIsIn) { kf.tyIn = -dty; kf.tzIn = -dtz; }
-                else                { kf.tyOut = dty; kf.tzOut = dtz; }
+        {
+            const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
+            auto& path = editingIsReceiver ? pb.getReceiverPath(editingObjectIdx, editingPathIdx)
+                                           : pb.getSourcePath(editingObjectIdx, editingPathIdx);
+            if (dragHandleKeyframeIdx >= 0 && (size_t)dragHandleKeyframeIdx < path.keyframes.size()) {
+                auto& kf = path.keyframes[dragHandleKeyframeIdx];
+                float outX, outY, outZ;
+                if (topOrSideView == TOP_VIEW) {
+                    view_x = 27.0f; view_y = 12.0f;
+                    pixelToSourceCoords((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2,
+                        view_x, view_y, scale, room_dims_pixels[1], room_dims_pixels[0], true,
+                        outX, outY, outZ);
+                    float dtx = 3.0f * (outX - kf.x);
+                    float dty = 3.0f * (outY - kf.y);
+                    if (dragHandleIsIn) { kf.txIn = -dtx; kf.tyIn = -dty; }
+                    else                { kf.txOut = dtx; kf.tyOut = dty; }
+                } else {
+                    view_x = 27.0f; view_y = 240.0f;
+                    pixelToSourceCoords((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2,
+                        view_x, view_y, scale, room_dims_pixels[1], room_dims_pixels[2], false,
+                        outX, outY, outZ);
+                    float dty = 3.0f * (outY - kf.y);
+                    float dtz = 3.0f * (outZ - kf.z);
+                    if (dragHandleIsIn) { kf.tyIn = -dty; kf.tzIn = -dtz; }
+                    else                { kf.tyOut = dty; kf.tzOut = dtz; }
+                }
+                /* Keep the curve smooth (mirror the opposite handle) unless Shift is held */
+                if (!e.mods.isShiftDown()) {
+                    if (dragHandleIsIn) { kf.txOut = -kf.txIn; kf.tyOut = -kf.tyIn; kf.tzOut = -kf.tzIn; }
+                    else                { kf.txIn = -kf.txOut; kf.tyIn = -kf.tyOut; kf.tzIn = -kf.tzOut; }
+                }
+                processor.markPathDirty();
             }
-            /* Keep the curve smooth (mirror the opposite handle) unless Shift is held */
-            if (!e.mods.isShiftDown()) {
-                if (dragHandleIsIn) { kf.txOut = -kf.txIn; kf.tyOut = -kf.tyIn; kf.tzOut = -kf.tzIn; }
-                else                { kf.txIn = -kf.txOut; kf.tyIn = -kf.tyOut; kf.tzIn = -kf.tzOut; }
-            }
-            processor.markPathDirty();
         }
         return;
     }
@@ -676,26 +679,29 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
         room_dims_pixels[2] = room_dims_m[2]*scale;
 
         PathBank& pb = processor.getPathBank();
-        auto& path = dragPathIsReceiver ? pb.getReceiverPath(dragPathObjIdx, dragPathIdx)
-                                        : pb.getSourcePath(dragPathObjIdx, dragPathIdx);
-        if (dragKeyframeIdx >= 0 && (size_t)dragKeyframeIdx < path.keyframes.size()) {
-            auto& kf = path.keyframes[dragKeyframeIdx];
-            float outX, outY, outZ;
-            if (topOrSideView == TOP_VIEW) {
-                view_x = 27.0f; view_y = 12.0f;
-                pixelToSourceCoords((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2,
-                    view_x, view_y, scale, room_dims_pixels[1], room_dims_pixels[0], true,
-                    outX, outY, outZ);
-                kf.x = outX; kf.y = outY; kf.z = outZ;
-            } else {
-                view_x = 27.0f; view_y = 240.0f;
-                pixelToSourceCoords((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2,
-                    view_x, view_y, scale, room_dims_pixels[1], room_dims_pixels[2], false,
-                    outX, outY, outZ);
-                kf.y = outY; kf.z = outZ;
+        {
+            const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
+            auto& path = dragPathIsReceiver ? pb.getReceiverPath(dragPathObjIdx, dragPathIdx)
+                                            : pb.getSourcePath(dragPathObjIdx, dragPathIdx);
+            if (dragKeyframeIdx >= 0 && (size_t)dragKeyframeIdx < path.keyframes.size()) {
+                auto& kf = path.keyframes[dragKeyframeIdx];
+                float outX, outY, outZ;
+                if (topOrSideView == TOP_VIEW) {
+                    view_x = 27.0f; view_y = 12.0f;
+                    pixelToSourceCoords((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2,
+                        view_x, view_y, scale, room_dims_pixels[1], room_dims_pixels[0], true,
+                        outX, outY, outZ);
+                    kf.x = outX; kf.y = outY; kf.z = outZ;
+                } else {
+                    view_x = 27.0f; view_y = 240.0f;
+                    pixelToSourceCoords((float)e.getPosition().getX()-2, (float)e.getPosition().getY()-2,
+                        view_x, view_y, scale, room_dims_pixels[1], room_dims_pixels[2], false,
+                        outX, outY, outZ);
+                    kf.y = outY; kf.z = outZ;
+                }
+                path.recomputeDefaultTangent(dragKeyframeIdx);
+                processor.markPathDirty();
             }
-            path.recomputeDefaultTangent(dragKeyframeIdx);
-            processor.markPathDirty();
         }
         return;
     }

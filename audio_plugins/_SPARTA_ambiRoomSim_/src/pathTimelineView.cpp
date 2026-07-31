@@ -206,20 +206,23 @@ void pathTimelineView::mouseDrag(const juce::MouseEvent& e)
     if (!isDraggingKeyframe) return;
 
     PathBank& pb = processor.getPathBank();
-    PathData& path = dragIsReceiver
-                         ? pb.getReceiverPath(dragObjectIdx, dragPathIdx)
-                         : pb.getSourcePath(dragObjectIdx, dragPathIdx);
+    {
+        const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
+        PathData& path = dragIsReceiver
+                             ? pb.getReceiverPath(dragObjectIdx, dragPathIdx)
+                             : pb.getSourcePath(dragObjectIdx, dragPathIdx);
 
-    double maxTime = path.endTime;
-    if (maxTime <= 0.0) maxTime = 10.0;
+        double maxTime = path.endTime;
+        if (maxTime <= 0.0) maxTime = 10.0;
 
-    double newTime = xToTime((float)e.getPosition().getX(), maxTime);
-    newTime -= path.startTime;
-    if (newTime < 0.0) newTime = 0.0;
-    if (dragKeyframeIdx >= 0 && (size_t)dragKeyframeIdx < path.keyframes.size())
-        path.keyframes[dragKeyframeIdx].timeSeconds = newTime;
+        double newTime = xToTime((float)e.getPosition().getX(), maxTime);
+        newTime -= path.startTime;
+        if (newTime < 0.0) newTime = 0.0;
+        if (dragKeyframeIdx >= 0 && (size_t)dragKeyframeIdx < path.keyframes.size())
+            path.keyframes[dragKeyframeIdx].timeSeconds = newTime;
 
-    processor.markPathDirty();
+        processor.markPathDirty();
+    }
     repaint();
 }
 
