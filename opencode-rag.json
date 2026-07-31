@@ -3,7 +3,8 @@
     "provider": "ollama",
     "baseUrl": "http://127.0.0.1:11434/api",
     "model": "qwen3-embedding:0.6b",
-    "timeoutMs": 120000
+    "timeoutMs": 120000,
+    "vectorDimension": 1024
   },
   "indexing": {
     "includeExtensions": [

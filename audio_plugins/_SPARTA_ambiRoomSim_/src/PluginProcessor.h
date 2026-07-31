@@ -67,7 +67,12 @@ public:
     /* Path automation */
     PathBank& getPathBank() { return pathBank; }
     juce::SpinLock& getPathLock() { return pathLock; }
-    void markPathDirty() { pathDirty = true; }
+    void markPathDirty(bool notifyHost = true) {
+        pathDirty = true;
+        if (notifyHost)
+            updateHostDisplay(juce::AudioProcessorListener::ChangeDetails{}
+                                  .withNonParameterStateChanged(true));
+    }
     double getCurrentHostTime() const { return currentHostTime; }
     
     /* Hide internal setParameterValue when automation is pushing (to suppress parameterChanged re-entry) */
