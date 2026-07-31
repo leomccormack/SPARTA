@@ -38,6 +38,7 @@ PathEditView::PathEditView(PluginProcessor& p)
     BT_removePath->addListener(this);
 
     /* Path controls with labels */
+    LB_loop.reset(new juce::Label("lbLoop", "Loop:"));
     addAndMakeVisible(LB_loop.get());
     LB_loop->setColour(juce::Label::textColourId, juce::Colours::white);
     LB_loop->setFont(juce::FontOptions(12.0f));
@@ -104,8 +105,6 @@ PathEditView::PathEditView(PluginProcessor& p)
     /* Tooltips */
     sourceSelector->setTooltip("Select the source or receiver whose path to edit");
     pathSelector->setTooltip("Select which path to edit for this source/receiver");
-    RB_moveSR->setTooltip("Move sources/receivers in the room. Path automation is disabled.");
-    RB_drawPath->setTooltip("Draw/edit the motion path for this source/receiver. Clicking in the room adds keyframes.");
     TB_pathLoop->setTooltip("When ON, this path loops back to the start time.");
     SL_pathStartTime->setTooltip("Timeline position where this path begins.");
     SL_pathEndTime->setTooltip("Timeline position where this path ends.");
