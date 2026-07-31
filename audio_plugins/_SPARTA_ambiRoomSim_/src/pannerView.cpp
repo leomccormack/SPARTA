@@ -414,7 +414,9 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
         float kfSize = 5.0f;
         float view_x, view_y;
 
-        /* Check handles of the selected (enabled) path first */
+        /* 1) Spline handles of the selected (enabled) path take first
+              priority, so fine control points can be grabbed even when they
+              overlap a keyframe marker. */
         if (editingObjectIdx >= 0 && isCurrentPathEnabled()) {
             const PathData* sp = nullptr;
             if (editingIsReceiver && editingPathIdx < pb.getNumReceiverPaths(editingObjectIdx))
@@ -446,7 +448,8 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
             }
         }
 
-        /* Check for click on existing keyframe diamond */
+        /* 2) Keyframe nodes. Only nodes of enabled paths are grabbable;
+              disabled paths are locked and their nodes are not drawn. */
 
         /* Check top view first */
         view_x = 27.0f; view_y = 12.0f;
