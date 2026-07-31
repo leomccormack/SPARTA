@@ -547,16 +547,23 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
             }
         }
 
-        /* 3) Source/receiver icons are not draggable in this mode: remember
-              that the press landed on one (in either view) so mouseUp does
-              not create a keyframe for it. */
+        /* 3) Source/receiver icons. While the selected path is enabled the
+              room is in path-editing mode and only its nodes are editable,
+              so pressing an icon is just remembered (mouseUp must not create
+              a keyframe under it). With the path disabled (or nothing
+              selected) the icons become draggable again, exactly as in
+              Move mode. */
+        bool iconsDraggable = !(editingObjectIdx >= 0 && isCurrentPathEnabled());
         view_x = 27.0f; view_y = 12.0f;
         for (int src = 0; src < ambi_roomsim_getNumSources(hAmbi); ++src) {
             float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
             float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getSourceX(hAmbi, src));
             srcIcon.setBounds((int)(point_x-iconRadius), (int)(point_y-iconRadius), (int)iconWidth, (int)iconWidth);
             if (srcIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-                mouseDownOnIcon = true;
+                if (!iconsDraggable) { mouseDownOnIcon = true; return; }
+                sourceIconIsClicked = true;
+                indexOfClickedIcon = src;
+                topOrSideView = TOP_VIEW;
                 return;
             }
         }
@@ -565,7 +572,10 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
             float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getReceiverX(hAmbi, rec));
             recIcon.setBounds((int)(point_x-iconRadius), (int)(point_y-iconRadius), (int)iconWidth, (int)iconWidth);
             if (recIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-                mouseDownOnIcon = true;
+                if (!iconsDraggable) { mouseDownOnIcon = true; return; }
+                receiverIconIsClicked = true;
+                indexOfClickedIcon = rec;
+                topOrSideView = TOP_VIEW;
                 return;
             }
         }
@@ -575,7 +585,10 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
             float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getSourceZ(hAmbi, src));
             srcIcon.setBounds((int)(point_x-iconRadius), (int)(point_y-iconRadius), (int)iconWidth, (int)iconWidth);
             if (srcIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-                mouseDownOnIcon = true;
+                if (!iconsDraggable) { mouseDownOnIcon = true; return; }
+                sourceIconIsClicked = true;
+                indexOfClickedIcon = src;
+                topOrSideView = SIDE_VIEW;
                 return;
             }
         }
@@ -584,7 +597,10 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
             float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getReceiverZ(hAmbi, rec));
             recIcon.setBounds((int)(point_x-iconRadius), (int)(point_y-iconRadius), (int)iconWidth, (int)iconWidth);
             if (recIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-                mouseDownOnIcon = true;
+                if (!iconsDraggable) { mouseDownOnIcon = true; return; }
+                receiverIconIsClicked = true;
+                indexOfClickedIcon = rec;
+                topOrSideView = SIDE_VIEW;
                 return;
             }
         }
