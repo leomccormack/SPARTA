@@ -25,10 +25,15 @@
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
 
+/* The two 2D projections of the room shown side by side: top-down (x,y) and
+   side (y,z). */
 #define TOP_VIEW ( 0 )
 #define SIDE_VIEW ( 1 )
 #define NUM_VIEW_POINTS ( 2 )
 
+/* Room-view interaction modes. Move drags the source/receiver icons to
+   reposition them; AddKeyframe edits the selected object's path by clicking
+   to add keyframes, dragging keyframe nodes and dragging spline handles. */
 enum class InteractionMode { Move, AddKeyframe };
 
 class pannerView  : public Component
@@ -49,6 +54,8 @@ public:
     void setScrubTime(double t) { scrubTime = t; }
     InteractionMode getInteractionMode() const { return interactionMode; }
 
+    /* Selects which object/path the room view edits. Called on every timer
+       tick so the room view stays in sync with the Path Controls panel. */
     void setEditingObject(int index, bool isReceiver, int pathIdx) {
         editingObjectIdx = index; editingIsReceiver = isReceiver; editingPathIdx = pathIdx;
     }
@@ -63,15 +70,22 @@ public:
     void mouseUp (const juce::MouseEvent& e) override;
 
 private:
+    /* Draws the path curve (via PathData::evaluate) and its keyframe markers
+       for one view. Skips disabled paths. */
     void drawPathOnView(juce::Graphics& g, const PathData& path, float view_x, float view_y,
                         float scale, float room_w, float room_h,
                         bool isTopView, bool isReceiver);
+    /* Draws the in/out spline handles of the selected path's keyframes. */
     void drawPathHandlesOnView(juce::Graphics& g, const PathData& path, float view_x, float view_y,
                                float scale, float room_w, float room_h,
                                bool isTopView, bool isReceiver);
+    /* Projects one of a keyframe's handle points (P - mIn/3 or P + mOut/3)
+       into screen space for the given view. */
     void getHandleScreenPos(const Keyframe& kf, bool isIn, bool isTopView,
                             float view_x, float view_y, float scale,
                             float room_w, float room_h, float& px, float& py) const;
+    /* Whether the currently selected path exists and is enabled. Disabled
+       paths are locked and block all room-view editing. */
     bool isCurrentPathEnabled() const;
     void pixelToSourceCoords(float px, float py, float view_x, float view_y,
                              float scale, float room_w, float room_h,
@@ -91,9 +105,11 @@ private:
     /* Keyframe/path editing state */
     InteractionMode interactionMode = InteractionMode::Move;
     double scrubTime = 0.0;
+    /* The object/path currently selected in the Path Controls panel. */
     int editingObjectIdx = -1;
     bool editingIsReceiver = false;
     int editingPathIdx = 0;
+    /* Active drag of a keyframe node (draggingKeyframe). */
     bool draggingKeyframe = false;
     int dragKeyframeIdx = -1;
     int dragPathObjIdx = -1;
@@ -101,12 +117,13 @@ private:
     int dragPathIdx = 0;
     float dragStartX, dragStartY;
 
-    /* Spline handle editing state */
+    /* Active drag of a spline handle (draggingHandle). */
     bool draggingHandle = false;
     int dragHandleKeyframeIdx = -1;
     bool dragHandleIsIn = false;
 
-    /* True when mouseDown landed on a source/receiver icon (not draggable) */
+    /* True when mouseDown landed on a source/receiver icon (not draggable,
+       so mouseUp must not create a keyframe there). */
     bool mouseDownOnIcon = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (pannerView)
