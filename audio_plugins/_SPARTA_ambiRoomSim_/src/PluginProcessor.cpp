@@ -60,6 +60,16 @@ static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout
                                                                AudioParameterIntAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numReceivers", "NumReceivers", 1, ROOM_SIM_MAX_NUM_RECEIVERS, ambi_roomsim_defaultNumReceivers,
                                                                AudioParameterIntAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("pathEnable", "PathEnable", false,
+                                                                 AudioParameterBoolAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("pathLoop", "PathLoop", false,
+                                                                AudioParameterBoolAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("pathTimeOffset", "PathTimeOffset",
+                                                                 juce::NormalisableRange<float>(-3600.0f, 3600.0f, 0.01f), 0.0f,
+                                                                 AudioParameterFloatAttributes().withAutomatable(false)));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>("pathTimeMode", "PathTimeMode",
+                                                                  juce::StringArray{"Seconds", "Bars (PPQ)"}, 0,
+                                                                  AudioParameterChoiceAttributes().withAutomatable(false)));
     for(int i=0; i<ROOM_SIM_MAX_NUM_SOURCES; i++){
         params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceX" + juce::String(i), "SourceX_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), ambi_roomsim_defaultSourcePositions[i][0], AudioParameterFloatAttributes().withLabel("m")));
         params.push_back(std::make_unique<juce::AudioParameterFloat>("sourceY" + juce::String(i), "SourceY_" + juce::String(i+1), juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f), ambi_roomsim_defaultSourcePositions[i][1], AudioParameterFloatAttributes().withLabel("m")));
@@ -127,35 +137,47 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
     }
     for(int i=0; i<ROOM_SIM_MAX_NUM_SOURCES; i++){
         if(parameterID == "sourceX" + juce::String(i)){
-            ambi_roomsim_setSourceX(hAmbi, i, newValue);
-            setRefreshWindow(true);
+            if (!isApplyingFromAutomation()) {
+                ambi_roomsim_setSourceX(hAmbi, i, newValue);
+                setRefreshWindow(true);
+            }
             return;
         }
         else if(parameterID == "sourceY" + juce::String(i)){
-            ambi_roomsim_setSourceY(hAmbi, i, newValue);
-            setRefreshWindow(true);
+            if (!isApplyingFromAutomation()) {
+                ambi_roomsim_setSourceY(hAmbi, i, newValue);
+                setRefreshWindow(true);
+            }
             return;
         }
         else if(parameterID == "sourceZ" + juce::String(i)){
-            ambi_roomsim_setSourceZ(hAmbi, i, newValue);
-            setRefreshWindow(true);
+            if (!isApplyingFromAutomation()) {
+                ambi_roomsim_setSourceZ(hAmbi, i, newValue);
+                setRefreshWindow(true);
+            }
             return;
         }
     }
     for(int i=0; i<ROOM_SIM_MAX_NUM_RECEIVERS; i++){
         if(parameterID == "receiverX" + juce::String(i)){
-            ambi_roomsim_setReceiverX(hAmbi, i, newValue);
-            setRefreshWindow(true);
+            if (!isApplyingFromAutomation()) {
+                ambi_roomsim_setReceiverX(hAmbi, i, newValue);
+                setRefreshWindow(true);
+            }
             return;
         }
         else if(parameterID == "receiverY" + juce::String(i)){
-            ambi_roomsim_setReceiverY(hAmbi, i, newValue);
-            setRefreshWindow(true);
+            if (!isApplyingFromAutomation()) {
+                ambi_roomsim_setReceiverY(hAmbi, i, newValue);
+                setRefreshWindow(true);
+            }
             return;
         }
         else if(parameterID == "receiverZ" + juce::String(i)){
-            ambi_roomsim_setReceiverZ(hAmbi, i, newValue);
-            setRefreshWindow(true);
+            if (!isApplyingFromAutomation()) {
+                ambi_roomsim_setReceiverZ(hAmbi, i, newValue);
+                setRefreshWindow(true);
+            }
             return;
         }
     }
@@ -263,10 +285,80 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
     ScopedNoDenormals noDenormals;
-    
+
+    bool pathOn = getParameterBool("pathEnable");
+    if (pathOn) {
+        if (pathDirty.exchange(false)) {
+            const juce::SpinLock::ScopedTryLockType tl(pathLock);
+            if (tl.isLocked())
+                pathSnapshot = pathBank;
+        }
+
+        double t = 0.0;
+        if (auto* ph = getPlayHead()) {
+            if (auto pos = ph->getPosition()) {
+                t = (getParameterChoice("pathTimeMode") == 0)
+                        ? pos->getTimeInSeconds().orFallback(0.0)
+                        : pos->getPpqPosition().orFallback(0.0);
+            }
+        }
+        t += getParameterFloat("pathTimeOffset");
+        currentHostTime.store(t);
+
+        int numSrc = ambi_roomsim_getNumSources(hAmbi);
+        for (int i = 0; i < numSrc; ++i)
+            for (int p = 0; p < pathSnapshot.getNumSourcePaths(i); ++p)
+                applyPath(i, pathSnapshot.getSourcePath(i, p), t, "source");
+        int numRec = ambi_roomsim_getNumReceivers(hAmbi);
+        for (int i = 0; i < numRec; ++i)
+            for (int p = 0; p < pathSnapshot.getNumReceiverPaths(i); ++p)
+                applyPath(i, pathSnapshot.getReceiverPath(i, p), t, "receiver");
+    }
+
     blockAdapter->processBlock (buffer, [this] (const float* const* inFrame, float* const* outFrame, int numIns, int numOuts, int frameSize) {
             ambi_roomsim_process(hAmbi, inFrame, outFrame, numIns, numOuts, frameSize);
         });
+}
+
+void PluginProcessor::applyPath(int index, const PathData& path, double t, const char* prefix)
+{
+    if (!path.enabled || path.keyframes.empty())
+        return;
+
+    float x=0, y=0, z=0;
+    path.evaluate(t, x, y, z);
+
+    juce::String idX = juce::String(prefix) + "X" + juce::String(index);
+    juce::String idY = juce::String(prefix) + "Y" + juce::String(index);
+    juce::String idZ = juce::String(prefix) + "Z" + juce::String(index);
+
+    float rX = ambi_roomsim_getRoomDimX(hAmbi);
+    float rY = ambi_roomsim_getRoomDimY(hAmbi);
+    float rZ = ambi_roomsim_getRoomDimZ(hAmbi);
+    x = juce::jlimit(0.0f, rX, x);
+    y = juce::jlimit(0.0f, rY, y);
+    z = juce::jlimit(0.0f, rZ, z);
+
+    setApplyingFromAutomation(true);
+
+    if (strcmp(prefix, "source") == 0) {
+        ambi_roomsim_setSourceX(hAmbi, index, x);
+        ambi_roomsim_setSourceY(hAmbi, index, y);
+        ambi_roomsim_setSourceZ(hAmbi, index, z);
+    } else {
+        ambi_roomsim_setReceiverX(hAmbi, index, x);
+        ambi_roomsim_setReceiverY(hAmbi, index, y);
+        ambi_roomsim_setReceiverZ(hAmbi, index, z);
+    }
+
+    auto* pX = parameters.getParameter(idX);
+    auto* pY = parameters.getParameter(idY);
+    auto* pZ = parameters.getParameter(idZ);
+    if (pX) pX->setValue(pX->convertTo0to1(x));
+    if (pY) pY->setValue(pY->convertTo0to1(y));
+    if (pZ) pZ->setValue(pZ->convertTo0to1(z));
+
+    setApplyingFromAutomation(false);
 }
 
 AudioProcessorEditor* PluginProcessor::createEditor()
@@ -277,6 +369,8 @@ AudioProcessorEditor* PluginProcessor::createEditor()
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
     juce::ValueTree state = parameters.copyState();
+    state.removeChild(state.getChildWithName("PATHS"), nullptr);
+    state.addChild(pathBank.toValueTree(), -1, nullptr);
     std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
     xmlState->setTagName("AMBIROOMSIMPLUGINSETTINGS");
     xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10101
@@ -332,13 +426,20 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             setParameterValuesUsingInternalState();
         }
         else if (xmlState->getIntAttribute("VersionCode")>=0x10101){
+            juce::ValueTree state = juce::ValueTree::fromXml(*xmlState);
             removeParameterListeners(this);
-            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            parameters.replaceState(state);
             addParameterListeners(this);
             
             /* Many hosts will also trigger parameterChanged() for all parameters after calling setStateInformation() */
             /* However, some hosts do not. Therefore, it is better to ensure that the internal state is always up-to-date by calling: */
             setInternalStateUsingParameterValues();
+
+            /* Restore path keyframe data */
+            if (state.getChildWithName("PATHS").isValid()) {
+                pathBank.fromValueTree(state.getChildWithName("PATHS"));
+                markPathDirty();
+            }
         }
     
         ambi_roomsim_refreshParams(hAmbi);

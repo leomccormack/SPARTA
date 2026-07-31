@@ -29,6 +29,8 @@
 #define SIDE_VIEW ( 1 )
 #define NUM_VIEW_POINTS ( 2 )
 
+enum class InteractionMode { Move, AddKeyframe };
+
 class pannerView  : public Component
 {
 public:
@@ -43,6 +45,17 @@ public:
         return receiverIconIsClicked;
     }
 
+    void setInteractionMode(InteractionMode mode) { interactionMode = mode; }
+    void setScrubTime(double t) { scrubTime = t; }
+    InteractionMode getInteractionMode() const { return interactionMode; }
+
+    void setEditingObject(int index, bool isReceiver, int pathIdx) {
+        editingObjectIdx = index; editingIsReceiver = isReceiver; editingPathIdx = pathIdx;
+    }
+    int getEditingObjectIndex() const { return editingObjectIdx; }
+    bool getEditingIsReceiver() const { return editingIsReceiver; }
+    int getEditingPathIndex() const { return editingPathIdx; }
+
     void paint (juce::Graphics& g) override;
     void resized() override;
     void mouseDown (const juce::MouseEvent& e) override;
@@ -50,6 +63,20 @@ public:
     void mouseUp (const juce::MouseEvent& e) override;
 
 private:
+    void drawPathOnView(juce::Graphics& g, const PathData& path, float view_x, float view_y,
+                        float scale, float room_w, float room_h,
+                        bool isTopView, bool isReceiver);
+    void drawPathHandlesOnView(juce::Graphics& g, const PathData& path, float view_x, float view_y,
+                               float scale, float room_w, float room_h,
+                               bool isTopView, bool isReceiver);
+    void getHandleScreenPos(const Keyframe& kf, bool isIn, bool isTopView,
+                            float view_x, float view_y, float scale,
+                            float room_w, float room_h, float& px, float& py) const;
+    bool isCurrentPathEnabled() const;
+    void pixelToSourceCoords(float px, float py, float view_x, float view_y,
+                             float scale, float room_w, float room_h,
+                             bool isTopView, float& outX, float& outY, float& outZ) const;
+
     PluginProcessor& processor;
     void* hAmbi;
     int width;
@@ -60,6 +87,27 @@ private:
     bool receiverIconIsClicked;
     int indexOfClickedIcon;
     int topOrSideView;
+
+    /* Keyframe/path editing state */
+    InteractionMode interactionMode = InteractionMode::Move;
+    double scrubTime = 0.0;
+    int editingObjectIdx = -1;
+    bool editingIsReceiver = false;
+    int editingPathIdx = 0;
+    bool draggingKeyframe = false;
+    int dragKeyframeIdx = -1;
+    int dragPathObjIdx = -1;
+    bool dragPathIsReceiver = false;
+    int dragPathIdx = 0;
+    float dragStartX, dragStartY;
+
+    /* Spline handle editing state */
+    bool draggingHandle = false;
+    int dragHandleKeyframeIdx = -1;
+    bool dragHandleIsIn = false;
+
+    /* True when mouseDown landed on a source/receiver icon (not draggable) */
+    bool mouseDownOnIcon = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (pannerView)
 };

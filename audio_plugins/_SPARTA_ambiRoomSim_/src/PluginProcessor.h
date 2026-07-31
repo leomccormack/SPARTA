@@ -26,6 +26,7 @@
 #include <JuceHeader.h>
 #include "../../resources/PluginProcessorBase.h"
 #include "ambi_roomsim.h"
+#include "pathAutomation.h"
 #include <thread>
 #include <atomic>
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
@@ -62,10 +63,29 @@ public:
     /* For refreshing window during automation */ 
     void setRefreshWindow(bool newState) { refreshWindow = newState; }
     bool getRefreshWindow() { return refreshWindow; }
+
+    /* Path automation */
+    PathBank& getPathBank() { return pathBank; }
+    juce::SpinLock& getPathLock() { return pathLock; }
+    void markPathDirty() { pathDirty = true; }
+    double getCurrentHostTime() const { return currentHostTime; }
+    
+    /* Hide internal setParameterValue when automation is pushing (to suppress parameterChanged re-entry) */
+    void setApplyingFromAutomation(bool v) { applyingFromAutomation.store(v); }
+    bool isApplyingFromAutomation() const { return applyingFromAutomation.load(); }
     
 private:
     void* hAmbi;                       /* ambi_roomsim handle */
     bool refreshWindow;
+
+    /* Path automation members */
+    PathBank pathBank;
+    juce::SpinLock pathLock;
+    std::atomic<bool> pathDirty{false};
+    PathBank pathSnapshot;
+    mutable std::atomic<double> currentHostTime{0.0};
+    std::atomic<bool> applyingFromAutomation{false};
+    void applyPath(int index, const PathData& path, double t, const char* prefix);
     
     /* For syncing parameter values between the JUCE parameter tree and the internal DSP object */
     void setParameterValuesUsingInternalState();

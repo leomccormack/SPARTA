@@ -1,0 +1,159 @@
+{
+  "embedding": {
+    "provider": "ollama",
+    "baseUrl": "http://127.0.0.1:11434/api",
+    "model": "qwen3-embedding:0.6b",
+    "timeoutMs": 120000
+  },
+  "indexing": {
+    "includeExtensions": [
+      ".ts",
+      ".tsx",
+      ".js",
+      ".jsx",
+      ".mjs",
+      ".cjs",
+      ".py",
+      ".java",
+      ".go",
+      ".md",
+      ".mdx",
+      ".c",
+      ".h",
+      ".cpp",
+      ".cc",
+      ".cxx",
+      ".hpp",
+      ".hxx",
+      ".cs",
+      ".aspx",
+      ".razor",
+      ".cshtml",
+      ".json",
+      ".html",
+      ".htm",
+      ".css",
+      ".xml",
+      ".csproj",
+      ".sln",
+      ".rs",
+      ".rb",
+      ".kt",
+      ".kts",
+      ".swift",
+      ".tex",
+      ".pdf",
+      ".docx",
+      ".doc",
+      ".xls",
+      ".xlsx",
+      ".sh",
+      ".bash",
+      ".zsh",
+      ".png",
+      ".php",
+      ".ps1",
+      ".psm1",
+      ".psd1",
+      ".ini",
+      ".cfg",
+      ".yaml",
+      ".yml",
+      ".toml",
+      ".sql",
+      ".ssl",
+      ".jpg",
+      ".jpeg",
+      ".gif",
+      ".bmp",
+      ".svg",
+      ".webp",
+      "dockerfile",
+      "containerfile",
+      ".dockerfile",
+      ".containerfile"
+    ],
+    "excludeDirs": [
+      "node_modules",
+      ".git",
+      ".opencode",
+      "dist",
+      "build",
+      "__pycache__",
+      ".venv",
+      ".claude",
+      ".github",
+      "memory:",
+      "wasm",
+      ".commandcode",
+      ".agents",
+      "graphify-out",
+      ".vscode",
+      ".vs",
+      ".idea",
+      ".next",
+      ".nuxt",
+      ".turbo",
+      ".angular",
+      ".svelte-kit",
+      ".gradle",
+      ".dart_tool",
+      ".cache"
+    ],
+    "chunkOverlap": 0,
+    "minFileSizeBytes": 0,
+    "concurrency": 8,
+    "embedBatchSize": 100
+  },
+  "vectorStore": {
+    "path": "./.opencode/rag_db"
+  },
+  "retrieval": {
+    "topK": 20,
+    "minScore": 0.35,
+    "hybridSearch": {
+      "enabled": true,
+      "keywordWeight": 0.4
+    }
+  },
+  "openCode": {
+    "enabled": true,
+    "maxContextChunks": 10,
+    "readOverride": true,
+    "autoIndex": {
+      "enabled": false,
+      "debounceMs": 2000,
+      "intervalMs": 300000,
+      "watcher": "chokidar"
+    }
+  },
+  "imageDescription": {
+    "enabled": true,
+    "provider": "ollama",
+    "model": "minicpm-v4.6:latest",
+    "baseUrl": "http://127.0.0.1:11434/api",
+    "timeoutMs": 60000,
+    "think": false,
+    "numCtx": 2048
+  },
+  "description": {
+    "enabled": true,
+    "provider": "ollama",
+    "baseUrl": "http://127.0.0.1:11434/api",
+    "model": "qwen2.5:3b",
+    "think": false,
+    "numCtx": 4096,
+    "timeoutMs": 60000,
+    "maxContentChars": 4000
+  },
+  "wikiMode": {
+    "enabled": true
+  },
+  "mcp": {
+    "enabled": false
+  },
+  "logging": {
+    "level": "info",
+    "logFilePath": "./.opencode/opencode-rag.log"
+  }
+}
