@@ -64,7 +64,7 @@ void PluginEditor::resized()
     int mainH = h - timelineH;
 
     const int roomX = 488, roomY = 52, roomW = 280;
-    const int frameH = 52, framePad = 8;
+    const int frameH = 56, framePad = 8;
 
     /* Room settings: left column */
     if (roomSettingsView)
@@ -100,7 +100,7 @@ void PluginEditor::paint (juce::Graphics& g)
     int mainH = timelineY;
 
     const int roomX = 488, roomY = 52, roomW = 280;
-    const int frameH = 52, framePad = 8;
+    const int frameH = 56, framePad = 8;
 
     /* Draw the "Room View" label and panel */
     drawPanel(g, {488, 52, 280, (float)(timelineY - 52)}, panelFill, panelStroke);

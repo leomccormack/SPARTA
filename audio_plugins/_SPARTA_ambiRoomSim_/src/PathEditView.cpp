@@ -244,12 +244,15 @@ void PathEditView::resyncTimeFromSliders()
                                     : pb.getNumSourcePaths(selectedSourceIndex);
     if (selectedPathIndex >= nPaths) selectedPathIndex = nPaths - 1;
     if (selectedPathIndex >= 0) {
-        PathData& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex, selectedPathIndex);
-        path.startTime = start;
-        path.endTime = end;
-        if (path.keyframes.size() >= 2) {
-            double dur = end - start;
-            PathData::redistributeTimes(path, dur);
+        {
+            const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
+            PathData& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex, selectedPathIndex);
+            path.startTime = start;
+            path.endTime = end;
+            if (path.keyframes.size() >= 2) {
+                double dur = end - start;
+                PathData::redistributeTimes(path, dur);
+            }
         }
         LB_durationVal->setText("Duration: " + juce::String(end - start, 1) + "s",
                                  juce::dontSendNotification);
@@ -263,9 +266,12 @@ void PathEditView::buttonClicked(juce::Button* button)
     PathBank& pb = processor.getPathBank();
 
     if (button == BT_addPath.get()) {
-        int newIdx = selectedIsReceiver ? pb.addReceiverPath(selectedSourceIndex)
-                                        : pb.addSourcePath(selectedSourceIndex);
-        selectedPathIndex = newIdx;
+        {
+            const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
+            int newIdx = selectedIsReceiver ? pb.addReceiverPath(selectedSourceIndex)
+                                            : pb.addSourcePath(selectedSourceIndex);
+            selectedPathIndex = newIdx;
+        }
         processor.markPathDirty();
         refresh();
         return;
@@ -275,10 +281,13 @@ void PathEditView::buttonClicked(juce::Button* button)
         int nPaths = selectedIsReceiver ? pb.getNumReceiverPaths(selectedSourceIndex)
                                         : pb.getNumSourcePaths(selectedSourceIndex);
         if (nPaths <= 1) return;
-        if (selectedIsReceiver)
-            pb.removeReceiverPath(selectedSourceIndex, selectedPathIndex);
-        else
-            pb.removeSourcePath(selectedSourceIndex, selectedPathIndex);
+        {
+            const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
+            if (selectedIsReceiver)
+                pb.removeReceiverPath(selectedSourceIndex, selectedPathIndex);
+            else
+                pb.removeSourcePath(selectedSourceIndex, selectedPathIndex);
+        }
         selectedPathIndex = juce::jmax(0, selectedPathIndex - 1);
         processor.markPathDirty();
         refresh();
@@ -286,17 +295,23 @@ void PathEditView::buttonClicked(juce::Button* button)
     }
 
     if (button == BT_pathClear.get()) {
-        PathData& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex, selectedPathIndex);
-        path.keyframes.clear();
-        path.enabled = false;
+        {
+            const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
+            PathData& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex, selectedPathIndex);
+            path.keyframes.clear();
+            path.enabled = false;
+        }
         processor.markPathDirty();
         updateKeyframeTable();
         return;
     }
 
     if (button == TB_pathLoop.get()) {
-        PathData& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex, selectedPathIndex);
-        path.loop = TB_pathLoop->getToggleState();
+        {
+            const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
+            PathData& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex, selectedPathIndex);
+            path.loop = TB_pathLoop->getToggleState();
+        }
         processor.markPathDirty();
         return;
     }
@@ -304,14 +319,17 @@ void PathEditView::buttonClicked(juce::Button* button)
     if (button == BT_deleteNode.get()) {
         int sel = keyframeList->getSelectedRow();
         if (sel < 0) return;
-        PathData& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex, selectedPathIndex);
-        if ((size_t)sel >= path.keyframes.size()) return;
-        path.keyframes.erase(path.keyframes.begin() + sel);
-        if (path.keyframes.size() >= 2) {
-            double dur = path.endTime - path.startTime;
-            PathData::redistributeTimes(path, dur);
-        } else if (path.keyframes.empty()) {
-            path.enabled = false;
+        {
+            const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
+            PathData& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex, selectedPathIndex);
+            if ((size_t)sel >= path.keyframes.size()) return;
+            path.keyframes.erase(path.keyframes.begin() + sel);
+            if (path.keyframes.size() >= 2) {
+                double dur = path.endTime - path.startTime;
+                PathData::redistributeTimes(path, dur);
+            } else if (path.keyframes.empty()) {
+                path.enabled = false;
+            }
         }
         processor.markPathDirty();
         updateKeyframeTable();

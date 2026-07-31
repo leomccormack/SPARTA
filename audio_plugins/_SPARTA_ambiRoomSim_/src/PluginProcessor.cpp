@@ -370,7 +370,15 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
     juce::ValueTree state = parameters.copyState();
     state.removeChild(state.getChildWithName("PATHS"), nullptr);
-    state.addChild(pathBank.toValueTree(), -1, nullptr);
+
+    /* The audio thread copies pathBank into pathSnapshot under pathLock, so
+       the live bank must be serialized under the same lock to avoid a data
+       race with processBlock() while the host is saving. */
+    {
+        const juce::SpinLock::ScopedLockType sl(pathLock);
+        state.addChild(pathBank.toValueTree(), -1, nullptr);
+    }
+
     std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
     xmlState->setTagName("AMBIROOMSIMPLUGINSETTINGS");
     xmlState->setAttribute("VersionCode", JucePlugin_VersionCode); // added since 0x10101
@@ -437,7 +445,10 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 
             /* Restore path keyframe data */
             if (state.getChildWithName("PATHS").isValid()) {
-                pathBank.fromValueTree(state.getChildWithName("PATHS"));
+                {
+                    const juce::SpinLock::ScopedLockType sl(pathLock);
+                    pathBank.fromValueTree(state.getChildWithName("PATHS"));
+                }
                 markPathDirty();
             }
         }
