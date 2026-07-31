@@ -131,12 +131,6 @@ void PathEditView::resized()
     BT_removePath->setBounds(r.getX() + lblW + ctrlW - btnW, y, btnW, 22);
     y += 26;
 
-    /* Interaction mode frame: title + two stacked radio buttons */
-    int frameH = 56;
-    RB_moveSR->setBounds(r.getX() + 12, y + 20, ctrlW - 12, 18);
-    RB_drawPath->setBounds(r.getX() + 12, y + 38, ctrlW - 12, 18);
-    y += frameH + 2;
-
     /* Loop */
     LB_loop->setBounds(r.getX(), y, lblW, 20);
     TB_pathLoop->setBounds(r.getX() + lblW, y, ctrlW, 20);
@@ -212,8 +206,6 @@ void PathEditView::refresh()
         SL_pathStartTime->setValue(path.startTime, juce::dontSendNotification);
         SL_pathEndTime->setValue(path.endTime, juce::dontSendNotification);
         TB_pathLoop->setToggleState(path.loop, juce::dontSendNotification);
-        RB_drawPath->setToggleState(path.enabled, juce::dontSendNotification);
-        RB_moveSR->setToggleState(!path.enabled, juce::dontSendNotification);
     }
 
     updateKeyframeTable();
@@ -299,13 +291,6 @@ void PathEditView::buttonClicked(juce::Button* button)
         path.enabled = false;
         processor.markPathDirty();
         updateKeyframeTable();
-        return;
-    }
-
-    if (button == RB_drawPath.get() || button == RB_moveSR.get()) {
-        PathData& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex, selectedPathIndex);
-        path.enabled = RB_drawPath->getToggleState();
-        processor.markPathDirty();
         return;
     }
 
