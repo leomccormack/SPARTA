@@ -545,8 +545,9 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
             }
         }
 
-        /* Source/receiver icons are not draggable: remember that the press
-           landed on one so mouseUp does not create a keyframe for it */
+        /* 3) Source/receiver icons are not draggable in this mode: remember
+              that the press landed on one (in either view) so mouseUp does
+              not create a keyframe for it. */
         view_x = 27.0f; view_y = 12.0f;
         for (int src = 0; src < ambi_roomsim_getNumSources(hAmbi); ++src) {
             float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
@@ -595,6 +596,11 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
     Point<float> point;
     float view_x, view_y;
 
+    /* Dragging a spline handle: convert the cursor position to room
+       coordinates and set the tangent of the grabbed keyframe. The handle is
+       at P + m/3, so the tangent is m = 3 * (cursor - P); the incoming
+       handle mirrors this sign. Only the two axes visible in the current
+       view are updated (x/y in the top view, y/z in the side view). */
     if (draggingHandle && interactionMode == InteractionMode::AddKeyframe) {
         room_dims_m[0] = ambi_roomsim_getRoomDimX(hAmbi);
         room_dims_m[1] = ambi_roomsim_getRoomDimY(hAmbi);
@@ -639,6 +645,9 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
         return;
     }
 
+    /* Dragging a keyframe node: move it to the cursor position and reset
+       its tangents to the Catmull-Rom default so the curve stays smooth
+       through the node after the move. */
     if (draggingKeyframe && interactionMode == InteractionMode::AddKeyframe) {
         room_dims_m[0] = ambi_roomsim_getRoomDimX(hAmbi);
         room_dims_m[1] = ambi_roomsim_getRoomDimY(hAmbi);
@@ -723,6 +732,9 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
 
 void pannerView::mouseUp (const juce::MouseEvent& e)
 {
+    /* Release over the room in AddKeyframe mode: if the press was not on a
+       keyframe, handle or source/receiver icon, drop a new keyframe on the
+       selected path at the cursor position. */
     if (interactionMode == InteractionMode::AddKeyframe && !draggingKeyframe && !draggingHandle
         && !mouseDownOnIcon && editingObjectIdx >= 0) {
         float room_dims_m[3];
@@ -746,7 +758,7 @@ void pannerView::mouseUp (const juce::MouseEvent& e)
                 PathBank& pb = processor.getPathBank();
                 juce::SpinLock::ScopedLockType sl(processor.getPathLock());
 
-                /* Ensure at least one path exists */
+                /* Ensure at least one path exists for the selected object */
                 int nPaths = editingIsReceiver ? pb.getNumReceiverPaths(editingObjectIdx)
                                                : pb.getNumSourcePaths(editingObjectIdx);
                 bool newlyCreated = (nPaths == 0);
@@ -780,6 +792,7 @@ void pannerView::mouseUp (const juce::MouseEvent& e)
         }
     }
 
+    /* End any active drag and reset the per-press flags. */
     if (draggingHandle) {
         draggingHandle = false;
         dragHandleKeyframeIdx = -1;
