@@ -291,9 +291,9 @@ void pannerView::drawPathHandlesOnView(juce::Graphics& g, const PathData& path,
             g.setColour(col.withAlpha(0.6f));
             g.drawLine(px, py, hx, hy, 1.0f);
             g.setColour(col.brighter(0.8f));
-            g.fillRect(hx - 2.5f, hy - 2.5f, 5.0f, 5.0f);
+            g.fillRect(hx - 1.5f, hy - 1.5f, 3.0f, 3.0f);
             g.setColour(Colours::white);
-            g.drawRect(hx - 2.5f, hy - 2.5f, 5.0f, 5.0f);
+            g.drawRect(hx - 1.5f, hy - 1.5f, 3.0f, 3.0f);
         }
     }
 }
@@ -657,8 +657,8 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
                 }
                 /* Keep the curve smooth (mirror the opposite handle) unless Shift is held */
                 if (!e.mods.isShiftDown()) {
-                    if (dragHandleIsIn) { kf.txOut = -kf.txIn; kf.tyOut = -kf.tyIn; kf.tzOut = -kf.tzIn; }
-                    else                { kf.txIn = -kf.txOut; kf.tyIn = -kf.tyOut; kf.tzIn = -kf.tzOut; }
+                    if (dragHandleIsIn) { kf.txOut = kf.txIn;  kf.tyOut = kf.tyIn;  kf.tzOut = kf.tzIn; }
+                    else                { kf.txIn  = kf.txOut; kf.tyIn  = kf.tyOut; kf.tzIn  = kf.tzOut; }
                 }
                 processor.markPathDirty();
             }
