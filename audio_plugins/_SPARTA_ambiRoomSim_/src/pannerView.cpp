@@ -300,7 +300,8 @@ void pannerView::drawPathHandlesOnView(juce::Graphics& g, const PathData& path,
 
 /* Whether the currently selected path exists and is enabled. Returns true
    when nothing is selected or the index is out of range, so unrelated
-   interactions are never blocked; a disabled path is treated as locked. */
+   interactions are never blocked; Move-mode icon dragging is gated on the
+   path being disabled. */
 bool pannerView::isCurrentPathEnabled() const
 {
     if (editingObjectIdx < 0) return true;
@@ -354,8 +355,9 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
     room_dims_pixels[2] = room_dims_m[2]*scale;
 
     if (interactionMode == InteractionMode::Move) {
-        /* The selected path is locked while disabled: block icon dragging */
-        if (!isCurrentPathEnabled()) return;
+        /* While the path is enabled only its nodes are edited, so icon
+           dragging is blocked; a disabled path leaves icons draggable. */
+        if (isCurrentPathEnabled()) return;
 
         /* Existing mouseDown logic: select and drag source/receiver icons */
 
