@@ -1,5 +1,7 @@
 #include "pathAutomation.h"
 
+/* Serialises a keyframe (time, position and both tangent handles) into a
+   ValueTree so the whole path bank can be saved with the plugin state. */
 juce::ValueTree Keyframe::toValueTree() const
 {
     juce::ValueTree vt("KF");
@@ -16,6 +18,9 @@ juce::ValueTree Keyframe::toValueTree() const
     return vt;
 }
 
+/* Reads a keyframe back from a ValueTree. Tangent properties may be absent
+   in state saved by older versions; they default to zero there and are
+   replaced by PathData::recomputeDefaultTangents() on load. */
 Keyframe Keyframe::fromValueTree(const juce::ValueTree& vt)
 {
     Keyframe kf;
@@ -32,6 +37,14 @@ Keyframe Keyframe::fromValueTree(const juce::ValueTree& vt)
     return kf;
 }
 
+/* Evaluates the cubic Hermite spline at host time t and writes the room
+   position (metres) into outX/outY/outZ.
+
+   Within the [startTime, endTime] window the position is interpolated
+   segment by segment; each segment is a cubic Hermite curve built from the
+   keyframe positions and their stored in/out tangents (see the basis
+   functions h00..h11 below). Outside the window the curve clamps to its
+   first/last keyframe, or wraps modulo the window when loop is enabled. */
 void PathData::evaluate(double t, float& outX, float& outY, float& outZ) const
 {
     size_t n = keyframes.size();
@@ -43,6 +56,7 @@ void PathData::evaluate(double t, float& outX, float& outY, float& outZ) const
         return;
     }
 
+    /* Handle out-of-window queries: wrap (loop) or clamp to the ends. */
     if (t < startTime || t > endTime) {
         if (loop && endTime > startTime) {
             double span = endTime - startTime;
@@ -62,6 +76,7 @@ void PathData::evaluate(double t, float& outX, float& outY, float& outZ) const
         }
     }
 
+    /* Locate the segment containing t. */
     double rel = t - startTime;
     double T0 = keyframes.front().timeSeconds;
     double Tn = keyframes.back().timeSeconds;
@@ -86,6 +101,7 @@ void PathData::evaluate(double t, float& outX, float& outY, float& outZ) const
     const auto& k0 = keyframes[i];
     const auto& k1 = keyframes[i + 1];
 
+    /* Normalised position within the segment [k0, k1]. */
     double span = k1.timeSeconds - k0.timeSeconds;
     double u = (span > 1e-9) ? (rel - k0.timeSeconds) / span : 0.0;
     if (u < 0.0) u = 0.0;
@@ -93,6 +109,7 @@ void PathData::evaluate(double t, float& outX, float& outY, float& outZ) const
     double u2 = u * u;
     double u3 = u2 * u;
 
+    /* Cubic Hermite basis functions. */
     double h00 = 2.0 * u3 - 3.0 * u2 + 1.0;
     double h10 = u3 - 2.0 * u2 + u;
     double h01 = -2.0 * u3 + 3.0 * u2;
@@ -108,6 +125,9 @@ double PathData::duration() const
     return endTime - startTime;
 }
 
+/* Evenly re-times the keyframes so they span totalDuration. Used after
+   adding/removing a keyframe; the room-space shape (positions + tangents)
+   is unaffected because tangents are stored as u-derivatives. */
 void PathData::redistributeTimes(PathData& path, double totalDuration)
 {
     int n = (int)path.keyframes.size();
@@ -117,6 +137,11 @@ void PathData::redistributeTimes(PathData& path, double totalDuration)
         path.keyframes[i].timeSeconds = (double)i * step;
 }
 
+/* Resets the tangents of one keyframe to the Catmull-Rom default
+   (dx,dy,dz) = (next - prev)/2, where prev/next are the neighbouring
+   keyframes (clamped to the keyframe itself at the path ends). With the
+   same default applied everywhere, the Hermite spline reproduces the
+   classic smooth-through-all-points Catmull-Rom curve. */
 void PathData::recomputeDefaultTangent(int index)
 {
     int n = (int)keyframes.size();
