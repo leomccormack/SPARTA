@@ -16,7 +16,8 @@ typedef enum _SPARTA_WARNINGS{
 }SPARTA_WARNINGS;
 
 class PluginEditor  : public AudioProcessorEditor,
-                       public Timer
+                       public Timer,
+                       public juce::Button::Listener
 {
 public:
     PluginEditor (PluginProcessor& p);
@@ -25,6 +26,7 @@ public:
     void timerCallback() override;
     void paint (juce::Graphics& g) override;
     void resized() override;
+    void buttonClicked(juce::Button* buttonThatWasClicked) override;
 
 private:
     PluginProcessor& processor;

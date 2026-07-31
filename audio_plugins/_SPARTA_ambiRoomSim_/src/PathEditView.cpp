@@ -365,15 +365,4 @@ void PathEditView::updateKeyframeTable()
     keyframeList->repaint();
 }
 
-void PathEditView::paint(juce::Graphics& g)
-{
-    using namespace ColoursUI;
-
-    /* Frame around the interaction-mode radio buttons (placed below the
-       source/path selector rows, matching the layout in resized()). */
-    auto r = getLocalBounds().reduced(6, 8);
-    int frameY = r.getY() + 50;
-    drawPanel(g, {(float)r.getX(), (float)frameY, (float)r.getWidth(), 56.0f},
-              panelFill, panelStroke);
-    drawLabel(g, {r.getX() + 8, frameY - 2, 150, 20}, "Interaction mode:", 12.f);
-}
+void PathEditView::paint(juce::Graphics& /*g*/) {}

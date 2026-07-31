@@ -48,8 +48,6 @@ private:
     std::unique_ptr<juce::Label> LB_path;
     std::unique_ptr<juce::TextButton> BT_addPath;
     std::unique_ptr<juce::TextButton> BT_removePath;
-    std::unique_ptr<juce::ToggleButton> RB_moveSR;
-    std::unique_ptr<juce::ToggleButton> RB_drawPath;
     std::unique_ptr<juce::ToggleButton> TB_pathLoop;
     std::unique_ptr<juce::Label> LB_loop;
     std::unique_ptr<juce::Slider> SL_pathStartTime;
