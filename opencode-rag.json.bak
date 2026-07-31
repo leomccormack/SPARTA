@@ -155,8 +155,5 @@
   "logging": {
     "level": "info",
     "logFilePath": "./.opencode/opencode-rag.log"
-  },
-  "chunking": {
-    "nodeTypes": {}
   }
 }

@@ -116,6 +116,7 @@ ALWAYS use OpenCodeRAG tools before reading or editing:
 - **Images via describe** — `describe_image(filePath)` — never read raw bytes
 - **Recall quirks** — `recall_quirks(query)` when you hit a known pitfall
 - **Add quirks** — `add_quirk(content)` when you discover a non-obvious fact
+- **Fix quirks** — `update_quirk(id, ...)` / `delete_quirk(id)` when a stored quirk is outdated or wrong
 
 If no results, run `opencode-rag index`.
 
@@ -127,6 +128,7 @@ If no results, run `opencode-rag index`.
 5. User asks about an image or visual asset → `describe_image(filePath)` to retrieve its generated description, then optionally `search_semantic` for related code
 6. You encounter an error or need to recall a known pitfall → `recall_quirks(query)`
 7. You discover a non-obvious fact or workaround → `add_quirk(content)` to persist it for future sessions
+8. A recalled quirk is outdated or wrong → `update_quirk(id, ...)` to fix it, or `delete_quirk(id)` if it no longer applies
 
 ### Proactive triggers — you MUST call these tools when
 - User asks about code behavior, architecture, or implementation details
@@ -143,7 +145,7 @@ If no results, run `opencode-rag index`.
 - Answering code questions without calling `search_semantic` first (you guess at behavior)
 - Using `grep`/`glob` when `search_semantic` would find the answer faster
 - Treating image files as text — use `describe_image` instead of reading raw bytes
-- Using `npx opencode-rag quirk` shell commands instead of the built-in `add_quirk` / `recall_quirks` tools (the tools are faster, already loaded in-process, and go through the trust monitor)
+- Using `npx opencode-rag quirk` shell commands instead of the built-in quirk tools (`add_quirk` / `recall_quirks` / `update_quirk` / `delete_quirk`) (the tools are faster, already loaded in-process, and go through the trust monitor)
 
 ### MANDATORY quirk capture rules — you MUST call `add_quirk` when
 - A build, test, or type-check command fails and you resolve it
@@ -151,5 +153,8 @@ If no results, run `opencode-rag index`.
 - You learn an environment-specific requirement (OS, tool version, etc.)
 - You make a design decision that future sessions should remember
 - You resolve a gotcha that cost more than one attempt
+
+### MANDATORY quirk hygiene — you MUST call `update_quirk` or `delete_quirk` when
+- A stored quirk is outdated, wrong, or has been fixed — update it or delete it instead of adding a contradicting duplicate
 - NEVER finish a coding session without adding quirks for resolved errors.
 <!-- END opencode-rag -->

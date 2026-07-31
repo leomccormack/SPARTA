@@ -41,6 +41,8 @@ private:
     std::unique_ptr<PathEditView> pathEditView;
     std::unique_ptr<pannerView> panWindow;
     std::unique_ptr<pathTimelineView> pathTimeline;
+    std::unique_ptr<juce::ToggleButton> RB_moveSR;
+    std::unique_ptr<juce::ToggleButton> RB_drawPath;
 
     SPARTA_WARNINGS currentWarning;
     SharedResourcePointer<TooltipWindow> tipWindow;
