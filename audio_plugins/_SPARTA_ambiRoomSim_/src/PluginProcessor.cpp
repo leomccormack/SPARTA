@@ -449,7 +449,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                     const juce::SpinLock::ScopedLockType sl(pathLock);
                     pathBank.fromValueTree(state.getChildWithName("PATHS"));
                 }
-                markPathDirty();
+                markPathDirty(false);
             }
         }
     
