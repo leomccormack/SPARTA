@@ -335,6 +335,9 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
         }
         t += getParameterFloat("pathTimeOffset");
         currentHostTime.store(t);
+        /* Remember the furthest position seen so newly created paths can
+           default their end time to the track length. */
+        noteHostTime(t);
 
         int numSrc = ambi_roomsim_getNumSources(hAmbi);
         for (int i = 0; i < numSrc; ++i)

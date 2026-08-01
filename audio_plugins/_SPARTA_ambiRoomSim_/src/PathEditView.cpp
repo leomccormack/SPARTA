@@ -56,7 +56,6 @@ PathEditView::PathEditView(PluginProcessor& p)
     SL_pathEndTime->setValue(10.0);
     SL_pathEndTime->addListener(this);
     SL_pathEndTime->setColour(juce::Slider::textBoxTextColourId, juce::Colours::white);
-
     /* Duration info */
     LB_durationVal.reset(new juce::Label("durVal", "Duration: 10.0s"));
     addAndMakeVisible(LB_durationVal.get());
@@ -160,6 +159,16 @@ void PathEditView::refresh()
 
     /* Sync sliders and toggles from the current path data */
     auto& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex);
+
+    /* Keep the End slider able to reach the track end (the range grows with
+       the track length instead of being capped at the initial 300 s). */
+    double trackEnd = processor.getTrackEndTime();
+    double endMax = juce::jmax(300.0, path.endTime, trackEnd);
+    if (endMax > SL_pathEndTime->getMaximum())
+        SL_pathEndTime->setRange(0.1, endMax, 0.1);
+    if (path.startTime > SL_pathStartTime->getMaximum())
+        SL_pathStartTime->setRange(0.0, juce::jmax(300.0, path.startTime), 0.1);
+
     SL_pathStartTime->setValue(path.startTime, juce::dontSendNotification);
     SL_pathEndTime->setValue(path.endTime, juce::dontSendNotification);
     TB_pathLoop->setToggleState(path.loop, juce::dontSendNotification);

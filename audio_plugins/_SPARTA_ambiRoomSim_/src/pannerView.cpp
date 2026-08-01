@@ -779,7 +779,10 @@ void pannerView::mouseUp (const juce::MouseEvent& e)
                     return;                /* disabled path is locked: block keyframe creation */
                 if (path.keyframes.empty()) {
                     path.startTime = 0.0;
-                    path.endTime = 10.0;
+                    /* Default a fresh path to span the whole track; fall
+                       back to 10 s if no transport position is known yet. */
+                    double trackEnd = processor.getTrackEndTime();
+                    path.endTime = (trackEnd > 0.0) ? trackEnd : 10.0;
                 }
                 path.keyframes.push_back({0.0, outX, outY, outZ});
                 double dur = path.endTime - path.startTime;

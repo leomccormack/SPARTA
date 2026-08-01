@@ -78,6 +78,16 @@ public:
         }
     }
     double getCurrentHostTime() const { return currentHostTime; }
+
+    /* Track end length: the highest host time the transport has reached.
+       JUCE's AudioPlayHead has no track-length field, so the plugin
+       remembers the furthest position seen (playback or scrub) as the
+       default end time for newly created paths. */
+    double getTrackEndTime() const { return maxHostTime.load(); }
+    void noteHostTime(double t) {
+        double m = maxHostTime.load();
+        while (t > m && !maxHostTime.compare_exchange_weak(m, t)) {}
+    }
     
     /* Hide internal setParameterValue when automation is pushing (to suppress parameterChanged re-entry) */
     void setApplyingFromAutomation(bool v) { applyingFromAutomation.store(v); }
@@ -93,6 +103,7 @@ private:
     std::atomic<bool> pathDirty{false};
     PathBank pathSnapshot;
     mutable std::atomic<double> currentHostTime{0.0};
+    mutable std::atomic<double> maxHostTime{0.0};
     std::atomic<bool> applyingFromAutomation{false};
     void applyPath(int index, const PathData& path, double t, const char* prefix);
     /* Diagnostic: traces path-bank serialization to a file when the
