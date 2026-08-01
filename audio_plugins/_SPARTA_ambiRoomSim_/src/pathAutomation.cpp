@@ -50,12 +50,13 @@ Keyframe Keyframe::fromValueTree(const juce::ValueTree& vt)
    functions h00..h11 below). Outside the window the curve clamps to its
    first/last keyframe, or wraps modulo the window when loop is enabled.
 
-   Pauses: when a keyframe has a non-zero stopTime, the object holds that
-   keyframe's position for stopTime seconds after reaching it. Because each
-   pause delays everything that follows, the effective time of keyframe i is
-   timeSeconds[i] + (sum of stopTime for all earlier keyframes). The pause
-   window itself spans [effTime_i, effTime_i + stopTime_i]; within it the
-   position is the keyframe's own. */
+   Pauses are baked into the timeline: a keyframe's timeSeconds is the real
+   wall-clock time at which the object arrives at that node, and stopTime is
+   how long it then holds there before moving on. Every edit that changes a
+   stopTime shifts the timeSeconds of all later keyframes and the path
+   endTime by the same amount (see PathEditView::cellEdited), so here the
+   pause window is simply [timeSeconds_k, timeSeconds_k + stopTime_k] and the
+   segment that follows runs from the end of that pause to the next node. */
 void PathData::evaluate(double t, float& outX, float& outY, float& outZ) const
 {
     size_t n = keyframes.size();
@@ -67,18 +68,12 @@ void PathData::evaluate(double t, float& outX, float& outY, float& outZ) const
         return;
     }
 
-    /* Pauses extend the path: the total pause time is added to the loop
-       period (or clamp end) so wrapping lands back on the same keyframe
-       phase. */
-    double totalStop = 0.0;
-    for (auto& kf : keyframes) totalStop += kf.stopTime;
-
     /* Handle out-of-window queries: wrap (loop) or clamp to the ends. */
-    double loopSpan = (endTime - startTime) + totalStop;
-    if (t < startTime || t > startTime + loopSpan) {
-        if (loop && loopSpan > 0.0) {
-            t = startTime + std::fmod(t - startTime, loopSpan);
-            if (t < startTime) t += loopSpan;
+    if (t < startTime || t > endTime) {
+        if (loop && endTime > startTime) {
+            double span = endTime - startTime;
+            t = startTime + std::fmod(t - startTime, span);
+            if (t < startTime) t += span;
         } else {
             if (t <= startTime) {
                 outX = keyframes.front().x;
@@ -93,64 +88,58 @@ void PathData::evaluate(double t, float& outX, float& outY, float& outZ) const
         }
     }
 
-    /* Effective keyframe times: each keyframe is delayed by the accumulated
-       stopTime of every earlier keyframe. While the host time sits inside a
-       pause window the object stays put at that keyframe. */
     double rel = t - startTime;
-    double cumStop = 0.0;
 
     for (size_t k = 0; k < n; ++k) {
-        double effTime = keyframes[k].timeSeconds + cumStop;
-        double pauseEnd = effTime + keyframes[k].stopTime;
+        const auto& kf = keyframes[k];
 
-        if (rel < effTime) {
-            /* Before this keyframe (only possible for the first one, since
-               previous pauses+segments fill all earlier time). */
+        /* Arrival time of this node (already includes all earlier pauses). */
+        if (rel < kf.timeSeconds) {
+            /* Before the first node. */
             if (k == 0) {
                 outX = keyframes.front().x;
                 outY = keyframes.front().y;
                 outZ = keyframes.front().z;
-                return;
+            } else {
+                outX = keyframes[k - 1].x;
+                outY = keyframes[k - 1].y;
+                outZ = keyframes[k - 1].z;
             }
-            break;
-        }
-
-        if (rel < pauseEnd) {
-            /* Inside the pause window: hold the keyframe position. */
-            outX = keyframes[k].x;
-            outY = keyframes[k].y;
-            outZ = keyframes[k].z;
             return;
         }
 
-        if (k + 1 < n) {
-            /* Segment from keyframe k to k+1. Its effective start is the end
-               of k's pause; its end is keyframe k+1's effective time. */
-            double nextEff = keyframes[k + 1].timeSeconds + cumStop + keyframes[k].stopTime;
-            if (rel < nextEff) {
-                const auto& k0 = keyframes[k];
-                const auto& k1 = keyframes[k + 1];
-
-                double span = k1.timeSeconds - k0.timeSeconds;
-                double u = (span > 1e-9) ? (rel - pauseEnd) / span : 0.0;
-                if (u < 0.0) u = 0.0;
-                else if (u > 1.0) u = 1.0;
-                double u2 = u * u;
-                double u3 = u2 * u;
-
-                double h00 = 2.0 * u3 - 3.0 * u2 + 1.0;
-                double h10 = u3 - 2.0 * u2 + u;
-                double h01 = -2.0 * u3 + 3.0 * u2;
-                double h11 = u3 - u2;
-
-                outX = (float)(h00 * k0.x + h10 * k0.txOut + h01 * k1.x + h11 * k1.txIn);
-                outY = (float)(h00 * k0.y + h10 * k0.tyOut + h01 * k1.y + h11 * k1.tyIn);
-                outZ = (float)(h00 * k0.z + h10 * k0.tzOut + h01 * k1.z + h11 * k1.tzIn);
-                return;
-            }
+        /* Inside this node's pause window: hold its position. */
+        if (rel < kf.timeSeconds + kf.stopTime) {
+            outX = kf.x;
+            outY = kf.y;
+            outZ = kf.z;
+            return;
         }
 
-        cumStop += keyframes[k].stopTime;
+        /* Segment from this node to the next: the motion runs from the end
+           of the pause until the next node's arrival time. */
+        if (k + 1 < n && rel < keyframes[k + 1].timeSeconds) {
+            const auto& k0 = kf;
+            const auto& k1 = keyframes[k + 1];
+
+            double motionStart = k0.timeSeconds + k0.stopTime;
+            double span = k1.timeSeconds - motionStart;
+            double u = (span > 1e-9) ? (rel - motionStart) / span : 0.0;
+            if (u < 0.0) u = 0.0;
+            else if (u > 1.0) u = 1.0;
+            double u2 = u * u;
+            double u3 = u2 * u;
+
+            double h00 = 2.0 * u3 - 3.0 * u2 + 1.0;
+            double h10 = u3 - 2.0 * u2 + u;
+            double h01 = -2.0 * u3 + 3.0 * u2;
+            double h11 = u3 - u2;
+
+            outX = (float)(h00 * k0.x + h10 * k0.txOut + h01 * k1.x + h11 * k1.txIn);
+            outY = (float)(h00 * k0.y + h10 * k0.tyOut + h01 * k1.y + h11 * k1.tyIn);
+            outZ = (float)(h00 * k0.z + h10 * k0.tzOut + h01 * k1.z + h11 * k1.tzIn);
+            return;
+        }
     }
 
     /* Past the last keyframe (or the pause that follows it): clamp. */
@@ -166,14 +155,29 @@ double PathData::duration() const
 
 /* Evenly re-times the keyframes so they span totalDuration. Used after
    adding/removing a keyframe; the room-space shape (positions + tangents)
-   is unaffected because tangents are stored as u-derivatives. */
+   is unaffected because tangents are stored as u-derivatives.
+
+   Pauses are baked into the timeline: each keyframe's timeSeconds already
+   includes the stopTime of every earlier keyframe. So only the MOTION time
+   (totalDuration minus the total pause time) is redistributed evenly; the
+   pause offsets are then re-applied so the baked times stay consistent. */
 void PathData::redistributeTimes(PathData& path, double totalDuration)
 {
     int n = (int)path.keyframes.size();
     if (n <= 1) return;
-    double step = totalDuration / (double)(n - 1);
+
+    double totalStop = 0.0;
     for (int i = 0; i < n; ++i)
-        path.keyframes[i].timeSeconds = (double)i * step;
+        totalStop += path.keyframes[i].stopTime;
+
+    double motionTime = juce::jmax(0.0, totalDuration - totalStop);
+    double step = motionTime / (double)(n - 1);
+
+    double cumStop = 0.0;
+    for (int i = 0; i < n; ++i) {
+        path.keyframes[i].timeSeconds = (double)i * step + cumStop;
+        cumStop += path.keyframes[i].stopTime;
+    }
 }
 
 /* Resets the tangents of one keyframe to the Catmull-Rom default

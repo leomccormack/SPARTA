@@ -394,7 +394,23 @@ void PathEditView::cellEdited(int columnId, int row, const juce::String& text)
             case colX:    kf.x = (float)v; break;
             case colY:    kf.y = (float)v; break;
             case colZ:    kf.z = (float)v; break;
-            case colStop: kf.stopTime = (float)juce::jmax(0.0, v); break;
+            case colStop: {
+                /* The pause is baked into the timeline: changing a node's
+                   stop time shifts the arrival time of every later node (and
+                   the path end time) by the same delta, so the path still
+                   ends where the user left it and following nodes stay
+                   consistent with their displayed times. */
+                double oldStop = kf.stopTime;
+                double newStop = juce::jmax(0.0, v);
+                double delta = newStop - oldStop;
+                kf.stopTime = (float)newStop;
+                if (delta != 0.0) {
+                    for (int j = row + 1; j < (int)path.keyframes.size(); ++j)
+                        path.keyframes[j].timeSeconds += delta;
+                    path.endTime += delta;
+                }
+                break;
+            }
             default: break;
         }
     }

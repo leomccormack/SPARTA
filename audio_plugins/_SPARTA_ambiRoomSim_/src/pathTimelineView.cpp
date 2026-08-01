@@ -19,37 +19,10 @@ void pathTimelineView::setScrubTime(double t)
     repaint();
 }
 
-/* A keyframe with a stopTime pauses the path when it is reached, so every
-   later keyframe is delayed by that pause. The effective (wall-clock) time
-   of keyframe k is its nominal timeSeconds plus the sum of the stopTime of
-   all earlier keyframes. */
-static double cumStopBefore(const PathData& path, int k)
-{
-    double total = 0.0;
-    for (int i = 0; i < k; ++i)
-        total += path.keyframes[i].stopTime;
-    return total;
-}
-
-static double effectiveKeyframeTime(const PathData& path, int k)
-{
-    return path.keyframes[k].timeSeconds + cumStopBefore(path, k);
-}
-
-/* Total pause time of a path, which extends the path's effective end. */
-static double totalStopTime(const PathData& path)
-{
-    double total = 0.0;
-    for (auto& kf : path.keyframes)
-        total += kf.stopTime;
-    return total;
-}
-
-/* Effective (wall-clock) end of the path, including all pauses. */
-static double effectiveEndTime(const PathData& path)
-{
-    return path.endTime + totalStopTime(path);
-}
+/* The pause model is "baked": a keyframe's timeSeconds already includes the
+   stopTime of every earlier keyframe (editing a stop time shifts all later
+   keyframes and the path endTime). So the timeline simply uses the stored
+   timeSeconds / endTime directly — no extra adjustment is applied here. */
 
 void pathTimelineView::rebuildRows()
 {
@@ -112,9 +85,8 @@ void pathTimelineView::paint(juce::Graphics& g)
         auto& path = row.isReceiver
                          ? pb.getReceiverPath(row.objIdx)
                          : pb.getSourcePath(row.objIdx);
-        /* Pauses extend the path, so the ruler must cover the effective
-           end (endTime + all stop times). */
-        double end = effectiveEndTime(path);
+        /* endTime already includes all pauses (they are baked in). */
+        double end = path.endTime;
         if (end > maxTime) maxTime = end;
     }
     if (maxTime <= 0.0) maxTime = 10.0;
@@ -159,7 +131,7 @@ void pathTimelineView::paint(juce::Graphics& g)
 
         /* Draw a thin bar from startTime to the effective end. */
         float sx = timeToX(path.startTime, maxTime);
-        float ex = timeToX(effectiveEndTime(path), maxTime);
+        float ex = timeToX(path.endTime, maxTime);
         float ky = rulerHeight + r * rowHeight + rowHeight / 2.0f;
         g.setColour(col.withAlpha(0.2f * colAlpha));
         g.fillRect(sx, ky - 2.0f, ex - sx, 4.0f);
@@ -167,7 +139,7 @@ void pathTimelineView::paint(juce::Graphics& g)
         for (size_t k = 0; k < path.keyframes.size(); ++k) {
             /* Keyframes sit at their effective time, i.e. after all earlier
                pauses have been added. */
-            float kx = timeToX(path.startTime + effectiveKeyframeTime(path, (int)k), maxTime);
+            float kx = timeToX(path.startTime + path.keyframes[k].timeSeconds, maxTime);
 
             Path diamond;
             diamond.startNewSubPath(kx, ky - keyframeSize / 2.0f);
@@ -203,7 +175,7 @@ void pathTimelineView::mouseDown(const juce::MouseEvent& e)
         auto& path = row.isReceiver
                          ? pb.getReceiverPath(row.objIdx)
                          : pb.getSourcePath(row.objIdx);
-        double end = effectiveEndTime(path);
+        double end = path.endTime;
         if (end > maxTime) maxTime = end;
     }
     if (maxTime <= 0.0) maxTime = 10.0;
@@ -216,7 +188,7 @@ void pathTimelineView::mouseDown(const juce::MouseEvent& e)
         if (!path.enabled) continue;
         float ky = rulerHeight + r * rowHeight + rowHeight / 2.0f;
         for (size_t k = 0; k < path.keyframes.size(); ++k) {
-            float kx = timeToX(path.startTime + effectiveKeyframeTime(path, (int)k), maxTime);
+            float kx = timeToX(path.startTime + path.keyframes[k].timeSeconds, maxTime);
             juce::Rectangle<float> hit(kx - 5, ky - 5, 10, 10);
             if (hit.contains(e.getPosition().toFloat())) {
                 isDraggingKeyframe = true;
@@ -246,16 +218,14 @@ void pathTimelineView::mouseDrag(const juce::MouseEvent& e)
                              ? pb.getReceiverPath(dragObjectIdx)
                              : pb.getSourcePath(dragObjectIdx);
 
-        double maxTime = effectiveEndTime(path);
+        double maxTime = path.endTime;
         if (maxTime <= 0.0) maxTime = 10.0;
 
-        /* The pointer position is in the effective (wall-clock) timeline.
-           Convert it back to the nominal keyframe time by subtracting the
-           pauses of all earlier keyframes, so dragging stays consistent
-           with how the path actually plays. */
+        /* The pointer position is the keyframe's stored time directly:
+           timeSeconds already includes all earlier pauses (baked-in model),
+           and the timeline draws nodes at their stored times. */
         double newTime = xToTime((float)e.getPosition().getX(), maxTime);
         newTime -= path.startTime;
-        newTime -= cumStopBefore(path, dragKeyframeIdx);
         if (newTime < 0.0) newTime = 0.0;
         if (dragKeyframeIdx >= 0 && (size_t)dragKeyframeIdx < path.keyframes.size())
             path.keyframes[dragKeyframeIdx].timeSeconds = newTime;

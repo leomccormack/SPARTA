@@ -29,7 +29,10 @@ struct Keyframe {
 
     /* Hold the object at this keyframe's position for stopTime seconds
        after it arrives (a pause), before continuing along the next segment.
-       Segments keep their original duration; the pause simply delays them. */
+       The pause is baked into the timeline: editing stopTime shifts the
+       timeSeconds of all following keyframes (and the path endTime) by the
+       same amount, so timeSeconds is the real arrival time including all
+       earlier pauses. */
     float stopTime = 0.0f;
 
     /* Cubic Hermite spline tangents (in metres, as u-derivatives).
