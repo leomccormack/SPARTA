@@ -73,3 +73,6 @@ ipch/
 *.tlog
 *.log
 build/
+
+# Local agent tooling & wiki (not part of the project)
+.opencode/
