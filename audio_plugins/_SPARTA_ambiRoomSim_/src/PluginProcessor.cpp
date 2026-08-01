@@ -23,9 +23,40 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#include <cstdio>
+#include <cstdlib>
+
 #if JucePlugin_Build_AAX && !JucePlugin_AAXDisableDefaultSettingsChunks
 # error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
 #endif
+
+/* Diagnostic aid for state persistence debugging. When the environment
+   variable SPARTA_AMB_ROOMSIM_STATE_LOG points at a writable file, every
+   getStateInformation/setStateInformation call appends a line summarising
+   the path bank so a lost-path bug can be attributed to the save side or
+   the restore side. No-op when the variable is unset. */
+void PluginProcessor::logPathState(const char* where) const
+{
+    const char* logPath = std::getenv("SPARTA_AMB_ROOMSIM_STATE_LOG");
+    if (logPath == nullptr || logPath[0] == '\0')
+        return;
+
+    FILE* f = std::fopen(logPath, "a");
+    if (f == nullptr)
+        return;
+    int nSrcPaths = 0, nRecPaths = 0, nKeyframes = 0;
+    for (int i = 0; i < ROOM_SIM_MAX_NUM_SOURCES; ++i) {
+        if (pathBank.getSourcePath(i).enabled) ++nSrcPaths;
+        nKeyframes += (int)pathBank.getSourcePath(i).keyframes.size();
+    }
+    for (int i = 0; i < ROOM_SIM_MAX_NUM_RECEIVERS; ++i) {
+        if (pathBank.getReceiverPath(i).enabled) ++nRecPaths;
+        nKeyframes += (int)pathBank.getReceiverPath(i).keyframes.size();
+    }
+    std::fprintf(f, "[%s] srcPaths=%d recPaths=%d keyframes=%d version=%d\n",
+                 where, nSrcPaths, nRecPaths, nKeyframes, pathBank.getStateVersion());
+    std::fclose(f);
+}
 
 static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
@@ -307,12 +338,10 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
 
         int numSrc = ambi_roomsim_getNumSources(hAmbi);
         for (int i = 0; i < numSrc; ++i)
-            for (int p = 0; p < pathSnapshot.getNumSourcePaths(i); ++p)
-                applyPath(i, pathSnapshot.getSourcePath(i, p), t, "source");
+            applyPath(i, pathSnapshot.getSourcePath(i), t, "source");
         int numRec = ambi_roomsim_getNumReceivers(hAmbi);
         for (int i = 0; i < numRec; ++i)
-            for (int p = 0; p < pathSnapshot.getNumReceiverPaths(i); ++p)
-                applyPath(i, pathSnapshot.getReceiverPath(i, p), t, "receiver");
+            applyPath(i, pathSnapshot.getReceiverPath(i), t, "receiver");
     }
 
     blockAdapter->processBlock (buffer, [this] (const float* const* inFrame, float* const* outFrame, int numIns, int numOuts, int frameSize) {
@@ -369,7 +398,10 @@ AudioProcessorEditor* PluginProcessor::createEditor()
 void PluginProcessor::getStateInformation (MemoryBlock& destData)
 {
     juce::ValueTree state = parameters.copyState();
-    state.removeChild(state.getChildWithName("PATHS"), nullptr);
+    /* Remove any PATHS children that may have leaked into the parameter tree
+       from an earlier setStateInformation (see setStateInformation). */
+    while (state.getChildWithName("PATHS").isValid())
+        state.removeChild(state.getChildWithName("PATHS"), nullptr);
 
     /* The audio thread copies pathBank into pathSnapshot under pathLock, so
        the live bank must be serialized under the same lock to avoid a data
@@ -377,6 +409,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     {
         const juce::SpinLock::ScopedLockType sl(pathLock);
         state.addChild(pathBank.toValueTree(), -1, nullptr);
+        logPathState("save");
     }
 
     std::unique_ptr<juce::XmlElement> xmlState(state.createXml());
@@ -436,6 +469,27 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
         else if (xmlState->getIntAttribute("VersionCode")>=0x10101){
             juce::ValueTree state = juce::ValueTree::fromXml(*xmlState);
             removeParameterListeners(this);
+            /* IMPORTANT: do NOT let the PATHS node become a child of the
+               parameter tree. Ardour may restore the plugin state multiple
+               times (session load, undo, template, re-activation); if PATHS
+               is left inside the parameter tree, every subsequent
+               getStateInformation() would stack another PATHS node on top
+               of the previous one, and setStateInformation would then read
+               an OLDER stacked section instead of the latest path data.
+
+               States saved by older builds may already contain several
+               stacked PATHS nodes; pick the newest one (highest version)
+               so the latest path data wins over stale sections. */
+            juce::ValueTree incomingPaths;
+            for (int i = 0; i < state.getNumChildren(); ++i) {
+                auto child = state.getChild(i);
+                if (!child.hasType("PATHS")) continue;
+                if (!incomingPaths.isValid()
+                    || (int)child.getProperty("version", 0)
+                           > (int)incomingPaths.getProperty("version", 0))
+                    incomingPaths = child;
+            }
+            state.removeChild(incomingPaths, nullptr);
             parameters.replaceState(state);
             addParameterListeners(this);
             
@@ -444,12 +498,25 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
             setInternalStateUsingParameterValues();
 
             /* Restore path keyframe data */
-            if (state.getChildWithName("PATHS").isValid()) {
+            if (incomingPaths.isValid()) {
+                bool applied = false;
                 {
                     const juce::SpinLock::ScopedLockType sl(pathLock);
-                    pathBank.fromValueTree(state.getChildWithName("PATHS"));
+                    int incomingVersion = incomingPaths.getProperty("version", 0);
+                    /* Guard against the host re-applying an OLDER snapshot
+                       (Ardour undo/template/undo of a parameter change) over
+                       newer in-memory edits. A fresh instance starts at
+                       version 0, so any saved state still applies on load. */
+                    if (incomingVersion >= pathBank.getStateVersion()) {
+                        pathBank.fromValueTree(incomingPaths);
+                        applied = true;
+                    }
+                    logPathState("restore");
                 }
-                markPathDirty(false);
+                /* Refresh the audio-thread snapshot WITHOUT re-flagging the
+                   host dirty right after a restore. */
+                if (applied)
+                    markPathDirty(false);
             }
         }
     

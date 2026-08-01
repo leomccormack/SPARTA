@@ -69,9 +69,13 @@ public:
     juce::SpinLock& getPathLock() { return pathLock; }
     void markPathDirty(bool notifyHost = true) {
         pathDirty = true;
-        if (notifyHost)
+        if (notifyHost) {
+            /* Bump the bank version so a stale host snapshot (undo/template)
+               cannot overwrite these newer edits on a later restore. */
+            pathBank.bumpStateVersion();
             updateHostDisplay(juce::AudioProcessorListener::ChangeDetails{}
                                   .withNonParameterStateChanged(true));
+        }
     }
     double getCurrentHostTime() const { return currentHostTime; }
     
@@ -91,6 +95,9 @@ private:
     mutable std::atomic<double> currentHostTime{0.0};
     std::atomic<bool> applyingFromAutomation{false};
     void applyPath(int index, const PathData& path, double t, const char* prefix);
+    /* Diagnostic: traces path-bank serialization to a file when the
+       SPARTA_AMB_ROOMSIM_STATE_LOG env var points at a log path. */
+    void logPathState(const char* where) const;
     
     /* For syncing parameter values between the JUCE parameter tree and the internal DSP object */
     void setParameterValuesUsingInternalState();

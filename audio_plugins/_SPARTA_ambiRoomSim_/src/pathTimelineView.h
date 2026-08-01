@@ -25,14 +25,12 @@ private:
     bool isDraggingKeyframe = false;
     int dragObjectIdx = -1;
     bool dragIsReceiver = false;
-    int dragPathIdx = 0;
     int dragKeyframeIdx = -1;
 
     struct RowInfo {
         juce::String label;
         int objIdx;
         bool isReceiver;
-        int pathIdx;
     };
     juce::Array<RowInfo> rows;
     void rebuildRows();

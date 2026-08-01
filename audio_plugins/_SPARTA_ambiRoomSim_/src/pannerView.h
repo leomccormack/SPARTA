@@ -54,14 +54,13 @@ public:
     void setScrubTime(double t) { scrubTime = t; }
     InteractionMode getInteractionMode() const { return interactionMode; }
 
-    /* Selects which object/path the room view edits. Called on every timer
+    /* Selects which object the room view edits. Called on every timer
        tick so the room view stays in sync with the Path Controls panel. */
-    void setEditingObject(int index, bool isReceiver, int pathIdx) {
-        editingObjectIdx = index; editingIsReceiver = isReceiver; editingPathIdx = pathIdx;
+    void setEditingObject(int index, bool isReceiver) {
+        editingObjectIdx = index; editingIsReceiver = isReceiver;
     }
     int getEditingObjectIndex() const { return editingObjectIdx; }
     bool getEditingIsReceiver() const { return editingIsReceiver; }
-    int getEditingPathIndex() const { return editingPathIdx; }
 
     void paint (juce::Graphics& g) override;
     void resized() override;
@@ -71,12 +70,15 @@ public:
 
 private:
     /* Draws the path curve (via PathData::evaluate) and its keyframe markers
-       for one view. Skips disabled paths. */
-    void drawPathOnView(juce::Graphics& g, const PathData& path, float view_x, float view_y,
+       for one view. Every path is drawn; disabled paths are dimmed so they
+       stay visible but clearly inactive. */
+    void drawPathOnView(juce::Graphics& g, const PathData& path, int objIdx,
+                        float view_x, float view_y,
                         float scale, float room_w, float room_h,
                         bool isTopView, bool isReceiver);
     /* Draws the in/out spline handles of the selected path's keyframes. */
-    void drawPathHandlesOnView(juce::Graphics& g, const PathData& path, float view_x, float view_y,
+    void drawPathHandlesOnView(juce::Graphics& g, const PathData& path, int objIdx,
+                               float view_x, float view_y,
                                float scale, float room_w, float room_h,
                                bool isTopView, bool isReceiver);
     /* Projects one of a keyframe's handle points (P - mIn/3 or P + mOut/3)
@@ -105,16 +107,14 @@ private:
     /* Keyframe/path editing state */
     InteractionMode interactionMode = InteractionMode::Move;
     double scrubTime = 0.0;
-    /* The object/path currently selected in the Path Controls panel. */
+    /* The object currently selected in the Path Controls panel. */
     int editingObjectIdx = -1;
     bool editingIsReceiver = false;
-    int editingPathIdx = 0;
     /* Active drag of a keyframe node (draggingKeyframe). */
     bool draggingKeyframe = false;
     int dragKeyframeIdx = -1;
     int dragPathObjIdx = -1;
     bool dragPathIsReceiver = false;
-    int dragPathIdx = 0;
     float dragStartX, dragStartY;
 
     /* Active drag of a spline handle (draggingHandle). */

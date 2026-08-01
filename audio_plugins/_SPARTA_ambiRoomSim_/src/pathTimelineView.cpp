@@ -26,18 +26,14 @@ void pathTimelineView::rebuildRows()
     int nSrc = ambi_roomsim_getNumSources(hAmbi);
     int nRec = ambi_roomsim_getNumReceivers(hAmbi);
     for (int i = 0; i < nSrc; ++i) {
-        for (int p = 0; p < pb.getNumSourcePaths(i); ++p) {
-            auto& path = pb.getSourcePath(i, p);
-            if (path.enabled && !path.keyframes.empty())
-                rows.add({ "S" + juce::String(i + 1) + ".P" + juce::String(p + 1), i, false, p });
-        }
+        auto& path = pb.getSourcePath(i);
+        if (!path.keyframes.empty())
+            rows.add({ "S" + juce::String(i + 1), i, false });
     }
     for (int i = 0; i < nRec; ++i) {
-        for (int p = 0; p < pb.getNumReceiverPaths(i); ++p) {
-            auto& path = pb.getReceiverPath(i, p);
-            if (path.enabled && !path.keyframes.empty())
-                rows.add({ "R" + juce::String(i + 1) + ".P" + juce::String(p + 1), i, true, p });
-        }
+        auto& path = pb.getReceiverPath(i);
+        if (!path.keyframes.empty())
+            rows.add({ "R" + juce::String(i + 1), i, true });
     }
 }
 
@@ -82,8 +78,8 @@ void pathTimelineView::paint(juce::Graphics& g)
     PathBank& pb = processor.getPathBank();
     for (auto& row : rows) {
         auto& path = row.isReceiver
-                         ? pb.getReceiverPath(row.objIdx, row.pathIdx)
-                         : pb.getSourcePath(row.objIdx, row.pathIdx);
+                         ? pb.getReceiverPath(row.objIdx)
+                         : pb.getSourcePath(row.objIdx);
         if (path.endTime > maxTime) maxTime = path.endTime;
     }
     if (maxTime <= 0.0) maxTime = 10.0;
@@ -112,11 +108,12 @@ void pathTimelineView::paint(juce::Graphics& g)
     for (int r = 0; r < rows.size(); ++r) {
         auto row = rows[r];
         auto& path = row.isReceiver
-                         ? pb.getReceiverPath(row.objIdx, row.pathIdx)
-                         : pb.getSourcePath(row.objIdx, row.pathIdx);
-        juce::Colour col = row.isReceiver ? juce::Colours::magenta : juce::Colours::orange;
+                         ? pb.getReceiverPath(row.objIdx)
+                         : pb.getSourcePath(row.objIdx);
+        juce::Colour col = getPathColour(row.isReceiver, row.objIdx);
+        const float colAlpha = path.enabled ? 1.0f : 0.30f;
 
-        g.setColour(col);
+        g.setColour(col.withAlpha(colAlpha));
         g.setFont(9.0f);
         g.drawText(row.label, 0, rulerHeight + r * rowHeight,
                    labelWidth - 2, rowHeight, juce::Justification::centredRight);
@@ -129,7 +126,7 @@ void pathTimelineView::paint(juce::Graphics& g)
         float sx = timeToX(path.startTime, maxTime);
         float ex = timeToX(path.endTime, maxTime);
         float ky = rulerHeight + r * rowHeight + rowHeight / 2.0f;
-        g.setColour(col.withAlpha(0.2f));
+        g.setColour(col.withAlpha(0.2f * colAlpha));
         g.fillRect(sx, ky - 2.0f, ex - sx, 4.0f);
 
         for (size_t k = 0; k < path.keyframes.size(); ++k) {
@@ -143,9 +140,9 @@ void pathTimelineView::paint(juce::Graphics& g)
             diamond.lineTo(kx - keyframeSize / 2.0f, ky);
             diamond.closeSubPath();
 
-            g.setColour(col.withAlpha(0.9f));
+            g.setColour(col.withAlpha(0.9f * colAlpha));
             g.fillPath(diamond);
-            g.setColour(col.brighter(0.4f));
+            g.setColour(col.brighter(0.4f).withAlpha(colAlpha));
             g.strokePath(diamond, juce::PathStrokeType(1.0f));
         }
     }
@@ -168,8 +165,8 @@ void pathTimelineView::mouseDown(const juce::MouseEvent& e)
     PathBank& pb = processor.getPathBank();
     for (auto& row : rows) {
         auto& path = row.isReceiver
-                         ? pb.getReceiverPath(row.objIdx, row.pathIdx)
-                         : pb.getSourcePath(row.objIdx, row.pathIdx);
+                         ? pb.getReceiverPath(row.objIdx)
+                         : pb.getSourcePath(row.objIdx);
         if (path.endTime > maxTime) maxTime = path.endTime;
     }
     if (maxTime <= 0.0) maxTime = 10.0;
@@ -177,8 +174,9 @@ void pathTimelineView::mouseDown(const juce::MouseEvent& e)
     for (int r = 0; r < rows.size(); ++r) {
         auto row = rows[r];
         auto& path = row.isReceiver
-                         ? pb.getReceiverPath(row.objIdx, row.pathIdx)
-                         : pb.getSourcePath(row.objIdx, row.pathIdx);
+                         ? pb.getReceiverPath(row.objIdx)
+                         : pb.getSourcePath(row.objIdx);
+        if (!path.enabled) continue;
         float ky = rulerHeight + r * rowHeight + rowHeight / 2.0f;
         for (size_t k = 0; k < path.keyframes.size(); ++k) {
             float kx = timeToX(path.startTime + path.keyframes[k].timeSeconds, maxTime);
@@ -187,7 +185,6 @@ void pathTimelineView::mouseDown(const juce::MouseEvent& e)
                 isDraggingKeyframe = true;
                 dragObjectIdx = row.objIdx;
                 dragIsReceiver = row.isReceiver;
-                dragPathIdx = row.pathIdx;
                 dragKeyframeIdx = (int)k;
                 return;
             }
@@ -209,8 +206,8 @@ void pathTimelineView::mouseDrag(const juce::MouseEvent& e)
     {
         const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
         PathData& path = dragIsReceiver
-                             ? pb.getReceiverPath(dragObjectIdx, dragPathIdx)
-                             : pb.getSourcePath(dragObjectIdx, dragPathIdx);
+                             ? pb.getReceiverPath(dragObjectIdx)
+                             : pb.getSourcePath(dragObjectIdx);
 
         double maxTime = path.endTime;
         if (maxTime <= 0.0) maxTime = 10.0;

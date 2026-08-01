@@ -75,37 +75,6 @@ audio_plugins/resources/
 - Submodules use SSH URLs — if `git submodule update --init` fails with
   "Permission denied", the submodules need SSH credentials or a URL override.
 
-## Build quirks (this environment)
-
-- **Submodule init**: SSH URLs fail without keys. Override to HTTPS:
-  ```sh
-  git config --local submodule.SDKs/Spatial_Audio_Framework.url https://github.com/leomccormack/Spatial_Audio_Framework.git
-  git config --local submodule.SDKs/JUCE.url https://github.com/juce-framework/JUCE.git
-  git submodule update --init --depth=1
-  ```
-- **LTO segfault**: `juce::juce_recommended_lto_flags` injects `-flto` which crashes
-  the linker (`ld` segfault during LTRANS). Fix: remove `juce::juce_recommended_lto_flags`
-  from `target_link_libraries` in the plugin's `CMakeLists.txt`. This means editing
-  every `_SPARTA_*` CMakeLists.txt to drop that line.
-- **`juce_lv2_helper` segfault**: After linking the LV2 `.so` successfully,
-  `juce_lv2_helper` crashes with segfault when generating `ui.ttl`. Workaround:
-  manually link the `.so` (run the link command from the build output verbatim),
-  then copy a known-good `ui.ttl` from a previous install (it's a static template
-  that doesn't change between builds for the same plugin).
-- **LAPACKE not installed**: `liblapacke-dev` is not available on this system.
-  Build it from source: download LAPACK 3.12.0, `cmake -DLAPACKE=ON`, `make lapacke`.
-  **QUIRK — never put required libs in `/tmp`**: it gets wiped, breaking the build.
-  Keep the build under the repo's `lib/` (gitignored) at
-  `lib/lapack-3.12.0/build/` and point CMake at it
-  (`-DLAPACKE_LIBRARY=/path/to/SPARTA/lib/lapack-3.12.0/build/lib/liblapacke.a`).
-  Symlink the headers (`lapacke.h`, `lapack.h`, `lapacke_mangling.h`, `lapacke_utils.h`,
-  `lapacke_config.h`) into `SDKs/Spatial_Audio_Framework/framework/include/` so the
-  `#include "lapacke.h"` in `saf_externals.h` resolves.
-- **Constructor `setSize()` crashes**: Calling `setSize()` early in a JUCE
-  `AudioProcessorEditor` constructor triggers `resized()` before child components
-  are constructed. Always guard `resized()` with null checks, or move `setSize()`
-  to the end of the constructor after all components are created.
-
 <!-- BEGIN opencode-rag -->
 ## Code Navigation
 

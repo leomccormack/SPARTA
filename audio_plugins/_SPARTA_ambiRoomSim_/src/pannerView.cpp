@@ -84,16 +84,15 @@ void pannerView::paint (juce::Graphics& g)
     g.drawText("x",  view_x + room_dims_pixels[1]+12.0f, view_y+room_dims_pixels[0]/2.0f-5.0f, 10, 10, Justification::centred, true);
 
     /* Source paths + icons */
-    g.setColour(Colours::orange);
     PathBank& pb = processor.getPathBank();
     for(int src=0; src<ambi_roomsim_getNumSources(hAmbi); src++){
-        for (int p = 0; p < pb.getNumSourcePaths(src); ++p)
-            drawPathOnView(g, pb.getSourcePath(src, p), view_x, view_y, scale,
-                           room_dims_pixels[1], room_dims_pixels[0], true, false);
+        drawPathOnView(g, pb.getSourcePath(src), src, view_x, view_y, scale,
+                       room_dims_pixels[1], room_dims_pixels[0], true, false);
         float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
         float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getSourceX(hAmbi, src));
         srcIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
         tmpIcon.setBounds(point_x-iconRadius*3, point_y-iconRadius, iconWidth*3, iconWidth);
+        g.setColour(Colours::orange);
         g.setOpacity(0.7f);
         g.fillEllipse(srcIcon);
         g.setOpacity(0.8f);
@@ -101,15 +100,14 @@ void pannerView::paint (juce::Graphics& g)
     }
 
     /* Receiver paths + icons */
-    g.setColour(Colours::magenta);
     for(int rec=0; rec<ambi_roomsim_getNumReceivers(hAmbi); rec++){
-        for (int p = 0; p < pb.getNumReceiverPaths(rec); ++p)
-            drawPathOnView(g, pb.getReceiverPath(rec, p), view_x, view_y, scale,
-                           room_dims_pixels[1], room_dims_pixels[0], true, true);
+        drawPathOnView(g, pb.getReceiverPath(rec), rec, view_x, view_y, scale,
+                       room_dims_pixels[1], room_dims_pixels[0], true, true);
         float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getReceiverY(hAmbi, rec));
         float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getReceiverX(hAmbi, rec));
         recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
         tmpIcon.setBounds(point_x-iconRadius*3, point_y-iconRadius, iconWidth*3, iconWidth);
+        g.setColour(Colours::magenta);
         g.setOpacity(0.7f);
         g.fillEllipse(recIcon);
         g.setOpacity(0.8f);
@@ -145,14 +143,13 @@ void pannerView::paint (juce::Graphics& g)
 
     /* Source icons */
     g.setFont(10.0f);
-    g.setColour(Colours::orange);
     for(int src=0; src<ambi_roomsim_getNumSources(hAmbi); src++){
-        for (int p = 0; p < pb.getNumSourcePaths(src); ++p)
-            drawPathOnView(g, pb.getSourcePath(src, p), view_x, view_y, scale,
-                           room_dims_pixels[1], room_dims_pixels[2], false, false);
+        drawPathOnView(g, pb.getSourcePath(src), src, view_x, view_y, scale,
+                       room_dims_pixels[1], room_dims_pixels[2], false, false);
         float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
         float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getSourceZ(hAmbi, src));
         srcIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        g.setColour(Colours::orange);
         g.setOpacity(0.7f);
         g.fillEllipse(srcIcon);
         g.setOpacity(0.8f);
@@ -160,14 +157,13 @@ void pannerView::paint (juce::Graphics& g)
     }
 
     /* Receiver icons */
-    g.setColour(Colours::magenta);
     for(int rec=0; rec<ambi_roomsim_getNumReceivers(hAmbi); rec++){
-        for (int p = 0; p < pb.getNumReceiverPaths(rec); ++p)
-            drawPathOnView(g, pb.getReceiverPath(rec, p), view_x, view_y, scale,
-                           room_dims_pixels[1], room_dims_pixels[2], false, true);
+        drawPathOnView(g, pb.getReceiverPath(rec), rec, view_x, view_y, scale,
+                       room_dims_pixels[1], room_dims_pixels[2], false, true);
         float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getReceiverY(hAmbi, rec));
         float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getReceiverZ(hAmbi, rec));
         recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+        g.setColour(Colours::magenta);
         g.setOpacity(0.7f);
         g.fillEllipse(recIcon);
         g.setOpacity(0.8f);
@@ -177,29 +173,33 @@ void pannerView::paint (juce::Graphics& g)
     /* Draw spline handles for the selected (enabled) path */
     if (editingObjectIdx >= 0 && isCurrentPathEnabled()) {
         const PathData* sp = nullptr;
-        if (editingIsReceiver && editingPathIdx < pb.getNumReceiverPaths(editingObjectIdx))
-            sp = &pb.getReceiverPath(editingObjectIdx, editingPathIdx);
-        else if (!editingIsReceiver && editingPathIdx < pb.getNumSourcePaths(editingObjectIdx))
-            sp = &pb.getSourcePath(editingObjectIdx, editingPathIdx);
+        if (editingIsReceiver)
+            sp = &pb.getReceiverPath(editingObjectIdx);
+        else
+            sp = &pb.getSourcePath(editingObjectIdx);
         if (sp != nullptr) {
             view_x = 27.0f; view_y = 12.0f;
-            drawPathHandlesOnView(g, *sp, view_x, view_y, scale,
+            drawPathHandlesOnView(g, *sp, editingObjectIdx, view_x, view_y, scale,
                                   room_dims_pixels[1], room_dims_pixels[0], true, editingIsReceiver);
             view_x = 27.0f; view_y = 240.0f;
-            drawPathHandlesOnView(g, *sp, view_x, view_y, scale,
+            drawPathHandlesOnView(g, *sp, editingObjectIdx, view_x, view_y, scale,
                                   room_dims_pixels[1], room_dims_pixels[2], false, editingIsReceiver);
         }
     }
 }
 
 void pannerView::drawPathOnView(juce::Graphics& g, const PathData& path,
+                                int objIdx,
                                 float view_x, float view_y,
                                 float scale, float room_w, float room_h,
                                 bool isTopView, bool isReceiver)
 {
-    if (!path.enabled || path.keyframes.size() < 2) return;
+    if (path.keyframes.size() < 2) return;
 
-    juce::Colour col = isReceiver ? Colours::magenta : Colours::orange;
+    /* Every path is drawn so switching sources/receivers never hides them.
+       Disabled paths are dimmed to show they are inactive. */
+    juce::Colour col = getPathColour(isReceiver, objIdx);
+    const float colAlpha = path.enabled ? 1.0f : 0.30f;
 
     /* Draw the path curve */
     double T0 = path.keyframes.front().timeSeconds;
@@ -218,7 +218,7 @@ void pannerView::drawPathOnView(juce::Graphics& g, const PathData& path,
         else
             py = view_y + room_h - scale * z;
         if (s > 0) {
-            g.setColour(col.withAlpha(0.35f));
+            g.setColour(col.withAlpha(0.35f * colAlpha));
             g.drawLine(px0, py0, px, py, 1.0f);
         }
         px0 = px; py0 = py;
@@ -242,9 +242,9 @@ void pannerView::drawPathOnView(juce::Graphics& g, const PathData& path,
         diamond.lineTo(kx, ky + kfSize);
         diamond.lineTo(kx - kfSize, ky);
         diamond.closeSubPath();
-        g.setColour(col.withAlpha(0.9f));
+        g.setColour(col.withAlpha(0.9f * colAlpha));
         g.fillPath(diamond);
-        g.setColour(col.brighter(0.5f));
+        g.setColour(col.brighter(0.5f).withAlpha(colAlpha));
         g.strokePath(diamond, PathStrokeType(1.0f));
     }
 }
@@ -275,11 +275,12 @@ void pannerView::getHandleScreenPos(const Keyframe& kf, bool isIn, bool isTopVie
 /* Draws a line + small square marker from each keyframe to its in/out
    handles, so the user can grab them to reshape the spline. */
 void pannerView::drawPathHandlesOnView(juce::Graphics& g, const PathData& path,
+                                       int objIdx,
                                        float view_x, float view_y,
                                        float scale, float room_w, float room_h,
                                        bool isTopView, bool isReceiver)
 {
-    juce::Colour col = isReceiver ? Colours::magenta : Colours::orange;
+    juce::Colour col = getPathColour(isReceiver, objIdx);
     float px, py, hx, hy;
     for (size_t k = 0; k < path.keyframes.size(); ++k) {
         const auto& kf = path.keyframes[k];
@@ -304,14 +305,11 @@ void pannerView::drawPathHandlesOnView(juce::Graphics& g, const PathData& path,
    path being disabled. */
 bool pannerView::isCurrentPathEnabled() const
 {
-    if (editingObjectIdx < 0) return true;
+    if (editingObjectIdx < 0) return false;
     PathBank& pb = processor.getPathBank();
-    if (editingIsReceiver) {
-        if (editingPathIdx >= pb.getNumReceiverPaths(editingObjectIdx)) return true;
-        return pb.getReceiverPath(editingObjectIdx, editingPathIdx).enabled;
-    }
-    if (editingPathIdx >= pb.getNumSourcePaths(editingObjectIdx)) return true;
-    return pb.getSourcePath(editingObjectIdx, editingPathIdx).enabled;
+    if (editingIsReceiver)
+        return pb.getReceiverPath(editingObjectIdx).enabled;
+    return pb.getSourcePath(editingObjectIdx).enabled;
 }
 
 void pannerView::pixelToSourceCoords(float px, float py,
@@ -363,18 +361,11 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
 
         /* TOP VIEW */
         float view_x = 27.0f; float view_y = 12.0f;
-        for(int src=0; src<ambi_roomsim_getNumSources(hAmbi); src++){
-            float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
-            float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getSourceX(hAmbi, src));
-            srcIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
-            if(srcIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-                sourceIconIsClicked = true;
-                indexOfClickedIcon = src;
-                topOrSideView = TOP_VIEW;
-                return;
-            }
-        }
-        for(int rec=0; rec<ambi_roomsim_getNumReceivers(hAmbi); rec++){
+        /* Receivers are painted on top of sources and, within each type, the
+           last icon drawn is the topmost. Hit-test front-to-back so the
+           visible icon is the one grabbed (overlapping icons previously
+           grabbed the hidden source instead of the receiver). */
+        for(int rec=ambi_roomsim_getNumReceivers(hAmbi)-1; rec>=0; rec--){
             float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getReceiverY(hAmbi, rec));
             float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getReceiverX(hAmbi, rec));
             recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
@@ -385,27 +376,38 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
                 return;
             }
         }
-
-        /* SIDE VIEW */
-        view_x = 27.0f; view_y = 240.0f;
-        for(int src=0; src<ambi_roomsim_getNumSources(hAmbi); src++){
+        for(int src=ambi_roomsim_getNumSources(hAmbi)-1; src>=0; src--){
             float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
-            float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getSourceZ(hAmbi, src));
+            float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getSourceX(hAmbi, src));
             srcIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
             if(srcIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
                 sourceIconIsClicked = true;
                 indexOfClickedIcon = src;
-                topOrSideView = SIDE_VIEW;
+                topOrSideView = TOP_VIEW;
                 return;
             }
         }
-        for(int rec=0; rec<ambi_roomsim_getNumReceivers(hAmbi); rec++){
+
+        /* SIDE VIEW */
+        view_x = 27.0f; view_y = 240.0f;
+        for(int rec=ambi_roomsim_getNumReceivers(hAmbi)-1; rec>=0; rec--){
             float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getReceiverY(hAmbi, rec));
             float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getReceiverZ(hAmbi, rec));
             recIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
             if(recIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
                 receiverIconIsClicked = true;
                 indexOfClickedIcon = rec;
+                topOrSideView = SIDE_VIEW;
+                return;
+            }
+        }
+        for(int src=ambi_roomsim_getNumSources(hAmbi)-1; src>=0; src--){
+            float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
+            float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getSourceZ(hAmbi, src));
+            srcIcon.setBounds(point_x-iconRadius, point_y-iconRadius, iconWidth, iconWidth);
+            if(srcIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
+                sourceIconIsClicked = true;
+                indexOfClickedIcon = src;
                 topOrSideView = SIDE_VIEW;
                 return;
             }
@@ -421,10 +423,10 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
               overlap a keyframe marker. */
         if (editingObjectIdx >= 0 && isCurrentPathEnabled()) {
             const PathData* sp = nullptr;
-            if (editingIsReceiver && editingPathIdx < pb.getNumReceiverPaths(editingObjectIdx))
-                sp = &pb.getReceiverPath(editingObjectIdx, editingPathIdx);
-            else if (!editingIsReceiver && editingPathIdx < pb.getNumSourcePaths(editingObjectIdx))
-                sp = &pb.getSourcePath(editingObjectIdx, editingPathIdx);
+            if (editingIsReceiver)
+                sp = &pb.getReceiverPath(editingObjectIdx);
+            else
+                sp = &pb.getSourcePath(editingObjectIdx);
             if (sp != nullptr) {
                 for (int view = 0; view < 2; ++view) {
                     bool isTop = (view == 0);
@@ -453,96 +455,85 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
         /* 2) Keyframe nodes. Only nodes of enabled paths are grabbable;
               disabled paths are locked and their nodes are not drawn. */
 
-        /* Check top view first */
+        /* Check top view first. Receiver paths are painted over source
+           paths, so their nodes are hit-tested first (front-to-back). */
         view_x = 27.0f; view_y = 12.0f;
-        for (int src = 0; src < ambi_roomsim_getNumSources(hAmbi); ++src) {
-            for (int pi = 0; pi < pb.getNumSourcePaths(src); ++pi) {
-                auto& path = pb.getSourcePath(src, pi);
-                if (!path.enabled) continue;
-                for (size_t k = 0; k < path.keyframes.size(); ++k) {
-                    auto& kf = path.keyframes[k];
-                    float kx = view_x + room_dims_pixels[1] - scale * kf.y;
-                    float ky = view_y + room_dims_pixels[0] - scale * kf.x;
-                    if (fabs(e.getMouseDownX() - kx) < kfSize + 3 && fabs(e.getMouseDownY() - ky) < kfSize + 3) {
-                        draggingKeyframe = true;
-                        dragKeyframeIdx = (int)k;
-                        dragPathObjIdx = src;
-                        dragPathIsReceiver = false;
-                        dragPathIdx = pi;
-                        dragStartX = e.getMouseDownX();
-                        dragStartY = e.getMouseDownY();
-                        topOrSideView = TOP_VIEW;
-                        return;
-                    }
+        for (int rec = ambi_roomsim_getNumReceivers(hAmbi)-1; rec >= 0; --rec) {
+            auto& path = pb.getReceiverPath(rec);
+            if (!path.enabled) continue;
+            for (size_t k = 0; k < path.keyframes.size(); ++k) {
+                auto& kf = path.keyframes[k];
+                float kx = view_x + room_dims_pixels[1] - scale * kf.y;
+                float ky = view_y + room_dims_pixels[0] - scale * kf.x;
+                if (fabs(e.getMouseDownX() - kx) < kfSize + 3 && fabs(e.getMouseDownY() - ky) < kfSize + 3) {
+                    draggingKeyframe = true;
+                    dragKeyframeIdx = (int)k;
+                    dragPathObjIdx = rec;
+                    dragPathIsReceiver = true;
+                    dragStartX = e.getMouseDownX();
+                    dragStartY = e.getMouseDownY();
+                    topOrSideView = TOP_VIEW;
+                    return;
                 }
             }
         }
-        for (int rec = 0; rec < ambi_roomsim_getNumReceivers(hAmbi); ++rec) {
-            for (int pi = 0; pi < pb.getNumReceiverPaths(rec); ++pi) {
-                auto& path = pb.getReceiverPath(rec, pi);
-                if (!path.enabled) continue;
-                for (size_t k = 0; k < path.keyframes.size(); ++k) {
-                    auto& kf = path.keyframes[k];
-                    float kx = view_x + room_dims_pixels[1] - scale * kf.y;
-                    float ky = view_y + room_dims_pixels[0] - scale * kf.x;
-                    if (fabs(e.getMouseDownX() - kx) < kfSize + 3 && fabs(e.getMouseDownY() - ky) < kfSize + 3) {
-                        draggingKeyframe = true;
-                        dragKeyframeIdx = (int)k;
-                        dragPathObjIdx = rec;
-                        dragPathIsReceiver = true;
-                        dragPathIdx = pi;
-                        dragStartX = e.getMouseDownX();
-                        dragStartY = e.getMouseDownY();
-                        topOrSideView = TOP_VIEW;
-                        return;
-                    }
+        for (int src = ambi_roomsim_getNumSources(hAmbi)-1; src >= 0; --src) {
+            auto& path = pb.getSourcePath(src);
+            if (!path.enabled) continue;
+            for (size_t k = 0; k < path.keyframes.size(); ++k) {
+                auto& kf = path.keyframes[k];
+                float kx = view_x + room_dims_pixels[1] - scale * kf.y;
+                float ky = view_y + room_dims_pixels[0] - scale * kf.x;
+                if (fabs(e.getMouseDownX() - kx) < kfSize + 3 && fabs(e.getMouseDownY() - ky) < kfSize + 3) {
+                    draggingKeyframe = true;
+                    dragKeyframeIdx = (int)k;
+                    dragPathObjIdx = src;
+                    dragPathIsReceiver = false;
+                    dragStartX = e.getMouseDownX();
+                    dragStartY = e.getMouseDownY();
+                    topOrSideView = TOP_VIEW;
+                    return;
                 }
             }
         }
 
         /* Check side view */
         view_x = 27.0f; view_y = 240.0f;
-        for (int src = 0; src < ambi_roomsim_getNumSources(hAmbi); ++src) {
-            for (int pi = 0; pi < pb.getNumSourcePaths(src); ++pi) {
-                auto& path = pb.getSourcePath(src, pi);
-                if (!path.enabled) continue;
-                for (size_t k = 0; k < path.keyframes.size(); ++k) {
-                    auto& kf = path.keyframes[k];
-                    float kx = view_x + room_dims_pixels[1] - scale * kf.y;
-                    float ky = view_y + room_dims_pixels[2] - scale * kf.z;
-                    if (fabs(e.getMouseDownX() - kx) < kfSize + 3 && fabs(e.getMouseDownY() - ky) < kfSize + 3) {
-                        draggingKeyframe = true;
-                        dragKeyframeIdx = (int)k;
-                        dragPathObjIdx = src;
-                        dragPathIsReceiver = false;
-                        dragPathIdx = pi;
-                        dragStartX = e.getMouseDownX();
-                        dragStartY = e.getMouseDownY();
-                        topOrSideView = SIDE_VIEW;
-                        return;
-                    }
+        for (int rec = ambi_roomsim_getNumReceivers(hAmbi)-1; rec >= 0; --rec) {
+            auto& path = pb.getReceiverPath(rec);
+            if (!path.enabled) continue;
+            for (size_t k = 0; k < path.keyframes.size(); ++k) {
+                auto& kf = path.keyframes[k];
+                float kx = view_x + room_dims_pixels[1] - scale * kf.y;
+                float ky = view_y + room_dims_pixels[2] - scale * kf.z;
+                if (fabs(e.getMouseDownX() - kx) < kfSize + 3 && fabs(e.getMouseDownY() - ky) < kfSize + 3) {
+                    draggingKeyframe = true;
+                    dragKeyframeIdx = (int)k;
+                    dragPathObjIdx = rec;
+                    dragPathIsReceiver = true;
+                    dragStartX = e.getMouseDownX();
+                    dragStartY = e.getMouseDownY();
+                    topOrSideView = SIDE_VIEW;
+                    return;
                 }
             }
         }
-        for (int rec = 0; rec < ambi_roomsim_getNumReceivers(hAmbi); ++rec) {
-            for (int pi = 0; pi < pb.getNumReceiverPaths(rec); ++pi) {
-                auto& path = pb.getReceiverPath(rec, pi);
-                if (!path.enabled) continue;
-                for (size_t k = 0; k < path.keyframes.size(); ++k) {
-                    auto& kf = path.keyframes[k];
-                    float kx = view_x + room_dims_pixels[1] - scale * kf.y;
-                    float ky = view_y + room_dims_pixels[2] - scale * kf.z;
-                    if (fabs(e.getMouseDownX() - kx) < kfSize + 3 && fabs(e.getMouseDownY() - ky) < kfSize + 3) {
-                        draggingKeyframe = true;
-                        dragKeyframeIdx = (int)k;
-                        dragPathObjIdx = rec;
-                        dragPathIsReceiver = true;
-                        dragPathIdx = pi;
-                        dragStartX = e.getMouseDownX();
-                        dragStartY = e.getMouseDownY();
-                        topOrSideView = SIDE_VIEW;
-                        return;
-                    }
+        for (int src = ambi_roomsim_getNumSources(hAmbi)-1; src >= 0; --src) {
+            auto& path = pb.getSourcePath(src);
+            if (!path.enabled) continue;
+            for (size_t k = 0; k < path.keyframes.size(); ++k) {
+                auto& kf = path.keyframes[k];
+                float kx = view_x + room_dims_pixels[1] - scale * kf.y;
+                float ky = view_y + room_dims_pixels[2] - scale * kf.z;
+                if (fabs(e.getMouseDownX() - kx) < kfSize + 3 && fabs(e.getMouseDownY() - ky) < kfSize + 3) {
+                    draggingKeyframe = true;
+                    dragKeyframeIdx = (int)k;
+                    dragPathObjIdx = src;
+                    dragPathIsReceiver = false;
+                    dragStartX = e.getMouseDownX();
+                    dragStartY = e.getMouseDownY();
+                    topOrSideView = SIDE_VIEW;
+                    return;
                 }
             }
         }
@@ -555,19 +546,7 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
               Move mode. */
         bool iconsDraggable = !(editingObjectIdx >= 0 && isCurrentPathEnabled());
         view_x = 27.0f; view_y = 12.0f;
-        for (int src = 0; src < ambi_roomsim_getNumSources(hAmbi); ++src) {
-            float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
-            float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getSourceX(hAmbi, src));
-            srcIcon.setBounds((int)(point_x-iconRadius), (int)(point_y-iconRadius), (int)iconWidth, (int)iconWidth);
-            if (srcIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
-                if (!iconsDraggable) { mouseDownOnIcon = true; return; }
-                sourceIconIsClicked = true;
-                indexOfClickedIcon = src;
-                topOrSideView = TOP_VIEW;
-                return;
-            }
-        }
-        for (int rec = 0; rec < ambi_roomsim_getNumReceivers(hAmbi); ++rec) {
+        for (int rec = ambi_roomsim_getNumReceivers(hAmbi)-1; rec >= 0; --rec) {
             float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getReceiverY(hAmbi, rec));
             float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getReceiverX(hAmbi, rec));
             recIcon.setBounds((int)(point_x-iconRadius), (int)(point_y-iconRadius), (int)iconWidth, (int)iconWidth);
@@ -579,20 +558,20 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
                 return;
             }
         }
-        view_x = 27.0f; view_y = 240.0f;
-        for (int src = 0; src < ambi_roomsim_getNumSources(hAmbi); ++src) {
+        for (int src = ambi_roomsim_getNumSources(hAmbi)-1; src >= 0; --src) {
             float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
-            float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getSourceZ(hAmbi, src));
+            float point_y = view_y + room_dims_pixels[0] - scale*(ambi_roomsim_getSourceX(hAmbi, src));
             srcIcon.setBounds((int)(point_x-iconRadius), (int)(point_y-iconRadius), (int)iconWidth, (int)iconWidth);
             if (srcIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
                 if (!iconsDraggable) { mouseDownOnIcon = true; return; }
                 sourceIconIsClicked = true;
                 indexOfClickedIcon = src;
-                topOrSideView = SIDE_VIEW;
+                topOrSideView = TOP_VIEW;
                 return;
             }
         }
-        for (int rec = 0; rec < ambi_roomsim_getNumReceivers(hAmbi); ++rec) {
+        view_x = 27.0f; view_y = 240.0f;
+        for (int rec = ambi_roomsim_getNumReceivers(hAmbi)-1; rec >= 0; --rec) {
             float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getReceiverY(hAmbi, rec));
             float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getReceiverZ(hAmbi, rec));
             recIcon.setBounds((int)(point_x-iconRadius), (int)(point_y-iconRadius), (int)iconWidth, (int)iconWidth);
@@ -600,6 +579,18 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
                 if (!iconsDraggable) { mouseDownOnIcon = true; return; }
                 receiverIconIsClicked = true;
                 indexOfClickedIcon = rec;
+                topOrSideView = SIDE_VIEW;
+                return;
+            }
+        }
+        for (int src = ambi_roomsim_getNumSources(hAmbi)-1; src >= 0; --src) {
+            float point_x = view_x + room_dims_pixels[1] - scale*(ambi_roomsim_getSourceY(hAmbi, src));
+            float point_y = view_y + room_dims_pixels[2] - scale*(ambi_roomsim_getSourceZ(hAmbi, src));
+            srcIcon.setBounds((int)(point_x-iconRadius), (int)(point_y-iconRadius), (int)iconWidth, (int)iconWidth);
+            if (srcIcon.expanded(4, 4).contains(e.getMouseDownPosition())){
+                if (!iconsDraggable) { mouseDownOnIcon = true; return; }
+                sourceIconIsClicked = true;
+                indexOfClickedIcon = src;
                 topOrSideView = SIDE_VIEW;
                 return;
             }
@@ -631,8 +622,8 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
         PathBank& pb = processor.getPathBank();
         {
             const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
-            auto& path = editingIsReceiver ? pb.getReceiverPath(editingObjectIdx, editingPathIdx)
-                                           : pb.getSourcePath(editingObjectIdx, editingPathIdx);
+            auto& path = editingIsReceiver ? pb.getReceiverPath(editingObjectIdx)
+                                           : pb.getSourcePath(editingObjectIdx);
             if (dragHandleKeyframeIdx >= 0 && (size_t)dragHandleKeyframeIdx < path.keyframes.size()) {
                 auto& kf = path.keyframes[dragHandleKeyframeIdx];
                 float outX, outY, outZ;
@@ -681,8 +672,8 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
         PathBank& pb = processor.getPathBank();
         {
             const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
-            auto& path = dragPathIsReceiver ? pb.getReceiverPath(dragPathObjIdx, dragPathIdx)
-                                            : pb.getSourcePath(dragPathObjIdx, dragPathIdx);
+            auto& path = dragPathIsReceiver ? pb.getReceiverPath(dragPathObjIdx)
+                                            : pb.getSourcePath(dragPathObjIdx);
             if (dragKeyframeIdx >= 0 && (size_t)dragKeyframeIdx < path.keyframes.size()) {
                 auto& kf = path.keyframes[dragKeyframeIdx];
                 float outX, outY, outZ;
@@ -782,25 +773,9 @@ void pannerView::mouseUp (const juce::MouseEvent& e)
                 PathBank& pb = processor.getPathBank();
                 juce::SpinLock::ScopedLockType sl(processor.getPathLock());
 
-                /* Ensure at least one path exists for the selected object */
-                int nPaths = editingIsReceiver ? pb.getNumReceiverPaths(editingObjectIdx)
-                                               : pb.getNumSourcePaths(editingObjectIdx);
-                bool newlyCreated = (nPaths == 0);
-                if (nPaths == 0) {
-                    if (editingIsReceiver)
-                        pb.addReceiverPath(editingObjectIdx);
-                    else
-                        pb.addSourcePath(editingObjectIdx);
-                    nPaths = editingIsReceiver ? pb.getNumReceiverPaths(editingObjectIdx)
-                                               : pb.getNumSourcePaths(editingObjectIdx);
-                }
-
-                int pi = (editingPathIdx < nPaths) ? editingPathIdx : 0;
-                PathData& path = editingIsReceiver ? pb.getReceiverPath(editingObjectIdx, pi)
-                                                   : pb.getSourcePath(editingObjectIdx, pi);
-                if (newlyCreated)
-                    path.enabled = true;   /* a brand new path drawn in the room is enabled */
-                else if (!path.enabled)
+                PathData& path = editingIsReceiver ? pb.getReceiverPath(editingObjectIdx)
+                                                   : pb.getSourcePath(editingObjectIdx);
+                if (!path.enabled)
                     return;                /* disabled path is locked: block keyframe creation */
                 if (path.keyframes.empty()) {
                     path.startTime = 0.0;
@@ -809,7 +784,7 @@ void pannerView::mouseUp (const juce::MouseEvent& e)
                 path.keyframes.push_back({0.0, outX, outY, outZ});
                 double dur = path.endTime - path.startTime;
                 PathData::redistributeTimes(path, dur);
-                path.recomputeDefaultTangents();
+                path.recomputeDefaultTangent((int)path.keyframes.size() - 1);
                 processor.markPathDirty();
                 return;
             }

@@ -2,9 +2,21 @@
 
 #include <JuceHeader.h>
 #include <array>
+#include <cmath>
 #include <string>
 #include <vector>
 #include "ambi_roomsim.h"
+
+/* A stable colour per path, shared by the room view and the timeline so the
+   same path always looks the same. Source paths start from a warm hue and
+   receiver paths from a cool hue; each object index shifts the hue so
+   neighbouring objects are easy to tell apart. */
+inline juce::Colour getPathColour(bool isReceiver, int objIdx)
+{
+    const float baseHue = isReceiver ? 0.80f : 0.10f;
+    const float hue = std::fmod(baseHue + objIdx * 0.20f, 1.0f);
+    return juce::Colour::fromHSV(hue, 0.70f, 0.95f, 1.0f);
+}
 
 /* A single point on a path. The path is a cubic Hermite spline that passes
    through every keyframe; each keyframe also carries a pair of tangent
@@ -14,6 +26,11 @@ struct Keyframe {
     double timeSeconds = 0.0;
     /* Position in the room, in metres. */
     float x = 0.0f, y = 0.0f, z = 0.0f;
+
+    /* Hold the object at this keyframe's position for stopTime seconds
+       after it arrives (a pause), before continuing along the next segment.
+       Segments keep their original duration; the pause simply delays them. */
+    float stopTime = 0.0f;
 
     /* Cubic Hermite spline tangents (in metres, as u-derivatives).
        The in/out handles are drawn at P - mIn/3 and P + mOut/3. */
@@ -26,7 +43,7 @@ struct Keyframe {
 
 /* One motion path for a single source or receiver. When enabled, the path
    drives the object's position through its keyframes as the host time
-   advances. Multiple paths can coexist per object; only one plays at a time. */
+   advances. Exactly one path exists per source/receiver. */
 struct PathData {
     std::vector<Keyframe> keyframes;
     /* Whether the path drives the object position. Disabled paths are
@@ -57,30 +74,31 @@ struct PathData {
     static PathData fromValueTree(const juce::ValueTree& vt);
 };
 
-/* Container for the paths of all sources and receivers. Always keeps at
-   least one (possibly empty) path per object. */
+/* Container for the single path of every source and receiver. */
 class PathBank {
 public:
     PathBank();
 
     void clear();
 
-    int getNumSourcePaths(int index) const;
-    PathData& getSourcePath(int index, int pathIdx);
-    const PathData& getSourcePath(int index, int pathIdx) const;
-    int addSourcePath(int index);
-    void removeSourcePath(int index, int pathIdx);
+    PathData& getSourcePath(int index);
+    const PathData& getSourcePath(int index) const;
 
-    int getNumReceiverPaths(int index) const;
-    PathData& getReceiverPath(int index, int pathIdx);
-    const PathData& getReceiverPath(int index, int pathIdx) const;
-    int addReceiverPath(int index);
-    void removeReceiverPath(int index, int pathIdx);
+    PathData& getReceiverPath(int index);
+    const PathData& getReceiverPath(int index) const;
 
     juce::ValueTree toValueTree() const;
     void fromValueTree(const juce::ValueTree& vt);
 
+    /* Monotonic version of the path bank, bumped on every mutation (see
+       markPathDirty). Saved with the state and compared on restore so that
+       a host re-applying an OLDER snapshot (Ardour undo/template/undo of a
+       parameter change) cannot clobber newer in-memory edits. */
+    int getStateVersion() const { return stateVersion; }
+    void bumpStateVersion() { ++stateVersion; }
+
 private:
-    std::array<std::vector<PathData>, ROOM_SIM_MAX_NUM_SOURCES> sources;
-    std::array<std::vector<PathData>, ROOM_SIM_MAX_NUM_RECEIVERS> receivers;
+    std::array<PathData, ROOM_SIM_MAX_NUM_SOURCES> sources;
+    std::array<PathData, ROOM_SIM_MAX_NUM_RECEIVERS> receivers;
+    int stateVersion = 0;
 };

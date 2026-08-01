@@ -1,7 +1,8 @@
 #include "pathAutomation.h"
 
-/* Serialises a keyframe (time, position and both tangent handles) into a
-   ValueTree so the whole path bank can be saved with the plugin state. */
+/* Serialises a keyframe (time, position, pause duration and both tangent
+   handles) into a ValueTree so the whole path bank can be saved with the
+   plugin state. */
 juce::ValueTree Keyframe::toValueTree() const
 {
     juce::ValueTree vt("KF");
@@ -9,6 +10,7 @@ juce::ValueTree Keyframe::toValueTree() const
     vt.setProperty("x", x, nullptr);
     vt.setProperty("y", y, nullptr);
     vt.setProperty("z", z, nullptr);
+    vt.setProperty("st", stopTime, nullptr);
     vt.setProperty("txIn", txIn, nullptr);
     vt.setProperty("tyIn", tyIn, nullptr);
     vt.setProperty("tzIn", tzIn, nullptr);
@@ -20,7 +22,8 @@ juce::ValueTree Keyframe::toValueTree() const
 
 /* Reads a keyframe back from a ValueTree. Tangent properties may be absent
    in state saved by older versions; they default to zero there and are
-   replaced by PathData::recomputeDefaultTangents() on load. */
+   replaced by PathData::recomputeDefaultTangents() on load. The pause
+   (stopTime) property is also optional and defaults to 0 (no pause). */
 Keyframe Keyframe::fromValueTree(const juce::ValueTree& vt)
 {
     Keyframe kf;
@@ -28,6 +31,7 @@ Keyframe Keyframe::fromValueTree(const juce::ValueTree& vt)
     kf.x = vt.getProperty("x", 0.0f);
     kf.y = vt.getProperty("y", 0.0f);
     kf.z = vt.getProperty("z", 0.0f);
+    kf.stopTime = vt.getProperty("st", 0.0f);
     kf.txIn = vt.getProperty("txIn", 0.0f);
     kf.tyIn = vt.getProperty("tyIn", 0.0f);
     kf.tzIn = vt.getProperty("tzIn", 0.0f);
@@ -44,7 +48,14 @@ Keyframe Keyframe::fromValueTree(const juce::ValueTree& vt)
    segment by segment; each segment is a cubic Hermite curve built from the
    keyframe positions and their stored in/out tangents (see the basis
    functions h00..h11 below). Outside the window the curve clamps to its
-   first/last keyframe, or wraps modulo the window when loop is enabled. */
+   first/last keyframe, or wraps modulo the window when loop is enabled.
+
+   Pauses: when a keyframe has a non-zero stopTime, the object holds that
+   keyframe's position for stopTime seconds after reaching it. Because each
+   pause delays everything that follows, the effective time of keyframe i is
+   timeSeconds[i] + (sum of stopTime for all earlier keyframes). The pause
+   window itself spans [effTime_i, effTime_i + stopTime_i]; within it the
+   position is the keyframe's own. */
 void PathData::evaluate(double t, float& outX, float& outY, float& outZ) const
 {
     size_t n = keyframes.size();
@@ -56,12 +67,18 @@ void PathData::evaluate(double t, float& outX, float& outY, float& outZ) const
         return;
     }
 
+    /* Pauses extend the path: the total pause time is added to the loop
+       period (or clamp end) so wrapping lands back on the same keyframe
+       phase. */
+    double totalStop = 0.0;
+    for (auto& kf : keyframes) totalStop += kf.stopTime;
+
     /* Handle out-of-window queries: wrap (loop) or clamp to the ends. */
-    if (t < startTime || t > endTime) {
-        if (loop && endTime > startTime) {
-            double span = endTime - startTime;
-            t = startTime + std::fmod(t - startTime, span);
-            if (t < startTime) t += span;
+    double loopSpan = (endTime - startTime) + totalStop;
+    if (t < startTime || t > startTime + loopSpan) {
+        if (loop && loopSpan > 0.0) {
+            t = startTime + std::fmod(t - startTime, loopSpan);
+            if (t < startTime) t += loopSpan;
         } else {
             if (t <= startTime) {
                 outX = keyframes.front().x;
@@ -76,48 +93,70 @@ void PathData::evaluate(double t, float& outX, float& outY, float& outZ) const
         }
     }
 
-    /* Locate the segment containing t. */
+    /* Effective keyframe times: each keyframe is delayed by the accumulated
+       stopTime of every earlier keyframe. While the host time sits inside a
+       pause window the object stays put at that keyframe. */
     double rel = t - startTime;
-    double T0 = keyframes.front().timeSeconds;
-    double Tn = keyframes.back().timeSeconds;
+    double cumStop = 0.0;
 
-    if (rel <= T0) {
-        outX = keyframes.front().x;
-        outY = keyframes.front().y;
-        outZ = keyframes.front().z;
-        return;
+    for (size_t k = 0; k < n; ++k) {
+        double effTime = keyframes[k].timeSeconds + cumStop;
+        double pauseEnd = effTime + keyframes[k].stopTime;
+
+        if (rel < effTime) {
+            /* Before this keyframe (only possible for the first one, since
+               previous pauses+segments fill all earlier time). */
+            if (k == 0) {
+                outX = keyframes.front().x;
+                outY = keyframes.front().y;
+                outZ = keyframes.front().z;
+                return;
+            }
+            break;
+        }
+
+        if (rel < pauseEnd) {
+            /* Inside the pause window: hold the keyframe position. */
+            outX = keyframes[k].x;
+            outY = keyframes[k].y;
+            outZ = keyframes[k].z;
+            return;
+        }
+
+        if (k + 1 < n) {
+            /* Segment from keyframe k to k+1. Its effective start is the end
+               of k's pause; its end is keyframe k+1's effective time. */
+            double nextEff = keyframes[k + 1].timeSeconds + cumStop + keyframes[k].stopTime;
+            if (rel < nextEff) {
+                const auto& k0 = keyframes[k];
+                const auto& k1 = keyframes[k + 1];
+
+                double span = k1.timeSeconds - k0.timeSeconds;
+                double u = (span > 1e-9) ? (rel - pauseEnd) / span : 0.0;
+                if (u < 0.0) u = 0.0;
+                else if (u > 1.0) u = 1.0;
+                double u2 = u * u;
+                double u3 = u2 * u;
+
+                double h00 = 2.0 * u3 - 3.0 * u2 + 1.0;
+                double h10 = u3 - 2.0 * u2 + u;
+                double h01 = -2.0 * u3 + 3.0 * u2;
+                double h11 = u3 - u2;
+
+                outX = (float)(h00 * k0.x + h10 * k0.txOut + h01 * k1.x + h11 * k1.txIn);
+                outY = (float)(h00 * k0.y + h10 * k0.tyOut + h01 * k1.y + h11 * k1.tyIn);
+                outZ = (float)(h00 * k0.z + h10 * k0.tzOut + h01 * k1.z + h11 * k1.tzIn);
+                return;
+            }
+        }
+
+        cumStop += keyframes[k].stopTime;
     }
-    if (rel >= Tn) {
-        outX = keyframes.back().x;
-        outY = keyframes.back().y;
-        outZ = keyframes.back().z;
-        return;
-    }
 
-    size_t i;
-    for (i = 0; i < n - 1; ++i)
-        if (keyframes[i + 1].timeSeconds >= rel) break;
-
-    const auto& k0 = keyframes[i];
-    const auto& k1 = keyframes[i + 1];
-
-    /* Normalised position within the segment [k0, k1]. */
-    double span = k1.timeSeconds - k0.timeSeconds;
-    double u = (span > 1e-9) ? (rel - k0.timeSeconds) / span : 0.0;
-    if (u < 0.0) u = 0.0;
-    else if (u > 1.0) u = 1.0;
-    double u2 = u * u;
-    double u3 = u2 * u;
-
-    /* Cubic Hermite basis functions. */
-    double h00 = 2.0 * u3 - 3.0 * u2 + 1.0;
-    double h10 = u3 - 2.0 * u2 + u;
-    double h01 = -2.0 * u3 + 3.0 * u2;
-    double h11 = u3 - u2;
-
-    outX = (float)(h00 * k0.x + h10 * k0.txOut + h01 * k1.x + h11 * k1.txIn);
-    outY = (float)(h00 * k0.y + h10 * k0.tyOut + h01 * k1.y + h11 * k1.tyIn);
-    outZ = (float)(h00 * k0.z + h10 * k0.tzOut + h01 * k1.z + h11 * k1.tzIn);
+    /* Past the last keyframe (or the pause that follows it): clamp. */
+    outX = keyframes.back().x;
+    outY = keyframes.back().y;
+    outZ = keyframes.back().z;
 }
 
 double PathData::duration() const
@@ -208,92 +247,50 @@ PathBank::PathBank()
 void PathBank::clear()
 {
     for (int i = 0; i < ROOM_SIM_MAX_NUM_SOURCES; ++i) {
-        sources[i].clear();
-        sources[i].push_back(PathData());
-        sources[i].back().name = "Path 1";
+        sources[i] = PathData();
+        sources[i].name = "Path 1";
     }
     for (int i = 0; i < ROOM_SIM_MAX_NUM_RECEIVERS; ++i) {
-        receivers[i].clear();
-        receivers[i].push_back(PathData());
-        receivers[i].back().name = "Path 1";
+        receivers[i] = PathData();
+        receivers[i].name = "Path 1";
     }
+    stateVersion = 0;
 }
 
-int PathBank::getNumSourcePaths(int index) const
+PathData& PathBank::getSourcePath(int index)
 {
-    return (int)sources[index].size();
+    return sources[index];
 }
 
-PathData& PathBank::getSourcePath(int index, int pathIdx)
+const PathData& PathBank::getSourcePath(int index) const
 {
-    return sources[index][pathIdx];
+    return sources[index];
 }
 
-const PathData& PathBank::getSourcePath(int index, int pathIdx) const
+PathData& PathBank::getReceiverPath(int index)
 {
-    return sources[index][pathIdx];
+    return receivers[index];
 }
 
-int PathBank::addSourcePath(int index)
+const PathData& PathBank::getReceiverPath(int index) const
 {
-    PathData pd;
-    int n = (int)sources[index].size();
-    pd.name = "Path " + std::to_string(n + 1);
-    sources[index].push_back(std::move(pd));
-    return (int)sources[index].size() - 1;
-}
-
-void PathBank::removeSourcePath(int index, int pathIdx)
-{
-    sources[index].erase(sources[index].begin() + pathIdx);
-}
-
-int PathBank::getNumReceiverPaths(int index) const
-{
-    return (int)receivers[index].size();
-}
-
-PathData& PathBank::getReceiverPath(int index, int pathIdx)
-{
-    return receivers[index][pathIdx];
-}
-
-const PathData& PathBank::getReceiverPath(int index, int pathIdx) const
-{
-    return receivers[index][pathIdx];
-}
-
-int PathBank::addReceiverPath(int index)
-{
-    PathData pd;
-    int n = (int)receivers[index].size();
-    pd.name = "Path " + std::to_string(n + 1);
-    receivers[index].push_back(std::move(pd));
-    return (int)receivers[index].size() - 1;
-}
-
-void PathBank::removeReceiverPath(int index, int pathIdx)
-{
-    receivers[index].erase(receivers[index].begin() + pathIdx);
+    return receivers[index];
 }
 
 juce::ValueTree PathBank::toValueTree() const
 {
     juce::ValueTree vt("PATHS");
+    vt.setProperty("version", stateVersion, nullptr);
     for (int i = 0; i < ROOM_SIM_MAX_NUM_SOURCES; ++i) {
-        if (sources[i].empty()) continue;
         juce::ValueTree srcVt("SOURCE");
         srcVt.setProperty("index", i, nullptr);
-        for (auto& path : sources[i])
-            srcVt.addChild(path.toValueTree(), -1, nullptr);
+        srcVt.addChild(sources[i].toValueTree(), -1, nullptr);
         vt.addChild(srcVt, -1, nullptr);
     }
     for (int i = 0; i < ROOM_SIM_MAX_NUM_RECEIVERS; ++i) {
-        if (receivers[i].empty()) continue;
         juce::ValueTree recVt("RECEIVER");
         recVt.setProperty("index", i, nullptr);
-        for (auto& path : receivers[i])
-            recVt.addChild(path.toValueTree(), -1, nullptr);
+        recVt.addChild(receivers[i].toValueTree(), -1, nullptr);
         vt.addChild(recVt, -1, nullptr);
     }
     return vt;
@@ -303,28 +300,47 @@ void PathBank::fromValueTree(const juce::ValueTree& vt)
 {
     if (!vt.hasType("PATHS")) return;
     clear();
+    /* Older states without the version property are treated as version 0:
+       they still apply on a fresh load, but can never overwrite edits made
+       after them. */
+    stateVersion = vt.getProperty("version", 0);
+
+    /* States saved before the one-path-per-object simplification may contain
+       several PATH children per SOURCE/RECEIVER. Pick the most useful one:
+       the first enabled path, else the first path that has keyframes, else
+       the first path. */
+    const auto pickPath = [] (const juce::ValueTree& node) -> PathData {
+        PathData enabledPath;
+        bool haveEnabled = false;
+        PathData fallback;
+        for (int p = 0; p < node.getNumChildren(); ++p) {
+            auto pathChild = node.getChild(p);
+            if (!pathChild.hasType("PATH")) continue;
+            PathData pd = PathData::fromValueTree(pathChild);
+            if (!haveEnabled && pd.enabled) {
+                enabledPath = pd;
+                haveEnabled = true;
+            }
+            if (fallback.keyframes.empty() && !pd.keyframes.empty())
+                fallback = pd;
+        }
+        if (haveEnabled) return enabledPath;
+        if (!fallback.keyframes.empty()) return fallback;
+        for (int p = 0; p < node.getNumChildren(); ++p) {
+            auto pathChild = node.getChild(p);
+            if (pathChild.hasType("PATH"))
+                return PathData::fromValueTree(pathChild);
+        }
+        return PathData();
+    };
+
     for (int i = 0; i < vt.getNumChildren(); ++i) {
         auto child = vt.getChild(i);
         int idx = child.getProperty("index", -1);
         if (idx < 0) continue;
-        if (child.hasType("SOURCE") && idx < ROOM_SIM_MAX_NUM_SOURCES) {
-            sources[idx].clear();
-            for (int p = 0; p < child.getNumChildren(); ++p) {
-                auto pathChild = child.getChild(p);
-                if (pathChild.hasType("PATH"))
-                    sources[idx].push_back(PathData::fromValueTree(pathChild));
-            }
-            if (sources[idx].empty())
-                sources[idx].push_back(PathData());
-        } else if (child.hasType("RECEIVER") && idx < ROOM_SIM_MAX_NUM_RECEIVERS) {
-            receivers[idx].clear();
-            for (int p = 0; p < child.getNumChildren(); ++p) {
-                auto pathChild = child.getChild(p);
-                if (pathChild.hasType("PATH"))
-                    receivers[idx].push_back(PathData::fromValueTree(pathChild));
-            }
-            if (receivers[idx].empty())
-                receivers[idx].push_back(PathData());
-        }
+        if (child.hasType("SOURCE") && idx < ROOM_SIM_MAX_NUM_SOURCES)
+            sources[idx] = pickPath(child);
+        else if (child.hasType("RECEIVER") && idx < ROOM_SIM_MAX_NUM_RECEIVERS)
+            receivers[idx] = pickPath(child);
     }
 }

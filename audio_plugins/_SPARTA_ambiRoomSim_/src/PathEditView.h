@@ -4,11 +4,21 @@
 #include "PluginProcessor.h"
 #include "../../resources/SPARTALookAndFeel.h"
 
+/* Column IDs for the editable keyframe table. */
+enum PathEditColumnId {
+    colIndex = 1,
+    colTime,
+    colX,
+    colY,
+    colZ,
+    colStop
+};
+
 class PathEditView  : public Component,
                        public juce::ComboBox::Listener,
                        public juce::Button::Listener,
                        public juce::Slider::Listener,
-                       public juce::ListBoxModel
+                       public juce::TableListBoxModel
 {
 public:
     PathEditView(PluginProcessor& p);
@@ -20,17 +30,32 @@ public:
 
     int getSelectedSourceIndex() const { return selectedSourceIndex; }
     bool getSelectedIsReceiver() const { return selectedIsReceiver; }
-    int getSelectedPathIndex() const { return selectedPathIndex; }
 
     void comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged) override;
     void buttonClicked(juce::Button* buttonThatWasClicked) override;
     void sliderValueChanged(juce::Slider* sliderThatWasMoved) override;
 
+    /* TableListBoxModel */
     int getNumRows() override;
-    void paintListBoxItem(int rowNumber, juce::Graphics& g,
-                          int width, int height, bool rowIsSelected) override;
+    void paintRowBackground(juce::Graphics& g, int rowNumber, int width,
+                            int height, bool rowIsSelected) override;
+    void paintCell(juce::Graphics& g, int rowNumber, int columnId,
+                   int width, int height, bool rowIsSelected) override;
+    juce::Component* refreshComponentForCell(int rowNumber, int columnId,
+                                             bool isRowSelected,
+                                             juce::Component* existingComponentToUpdate) override;
+
+    /* Called by the inline cell editors when the user commits an edit. */
+    void cellEdited(int columnId, int row, const juce::String& text);
+
+    /* Called by the inline cell editors while a cell editor is open; the
+       ~80ms timer refresh skips the table while editing so the TextEditor
+       is never disturbed. */
+    void setCellEditing(bool isEditing) { isCellEditing = isEditing; }
 
 private:
+    bool isCellEditing = false;
+    juce::String getCellText(int row, int columnId) const;
     void updateKeyframeTable();
 
     PluginProcessor& processor;
@@ -38,16 +63,11 @@ private:
 
     int selectedSourceIndex = 0;
     bool selectedIsReceiver = false;
-    int selectedPathIndex = 0;
 
     void resyncTimeFromSliders();
 
     std::unique_ptr<juce::ComboBox> sourceSelector;
     std::unique_ptr<juce::Label> LB_source;
-    std::unique_ptr<juce::ComboBox> pathSelector;
-    std::unique_ptr<juce::Label> LB_path;
-    std::unique_ptr<juce::TextButton> BT_addPath;
-    std::unique_ptr<juce::TextButton> BT_removePath;
     std::unique_ptr<juce::ToggleButton> TB_pathLoop;
     std::unique_ptr<juce::Label> LB_loop;
     std::unique_ptr<juce::Slider> SL_pathStartTime;
@@ -57,8 +77,7 @@ private:
     std::unique_ptr<juce::Label> LB_durationVal;
     std::unique_ptr<juce::TextButton> BT_pathClear;
     std::unique_ptr<juce::TextButton> BT_deleteNode;
-    std::unique_ptr<juce::Label> LB_kfHeader;
-    std::unique_ptr<juce::ListBox> keyframeList;
+    std::unique_ptr<juce::TableListBox> keyframeList;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PathEditView)
 };

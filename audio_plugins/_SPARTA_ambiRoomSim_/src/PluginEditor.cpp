@@ -17,7 +17,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     panWindow.reset (new pannerView(p, 600, 600));
     addAndMakeVisible (panWindow.get());
-    panWindow->setInteractionMode(InteractionMode::AddKeyframe);
+    /* Start in Move mode: matches the "Move S/R" radio checked below. */
+    panWindow->setInteractionMode(InteractionMode::Move);
 
     pathTimeline.reset (new pathTimelineView(p));
     addAndMakeVisible (pathTimeline.get());
@@ -136,8 +137,7 @@ void PluginEditor::timerCallback()
     if (pathEditView) {
         panWindow->setEditingObject(
             pathEditView->getSelectedSourceIndex(),
-            pathEditView->getSelectedIsReceiver(),
-            pathEditView->getSelectedPathIndex());
+            pathEditView->getSelectedIsReceiver());
         double t = processor.getCurrentHostTime();
         panWindow->setScrubTime(t);
         pathTimeline->setScrubTime(t);
@@ -149,17 +149,17 @@ void PluginEditor::timerCallback()
         PathBank& pb = processor.getPathBank();
         int obj = pathEditView->getSelectedSourceIndex();
         bool isRec = pathEditView->getSelectedIsReceiver();
-        int pIdx = pathEditView->getSelectedPathIndex();
         bool enabled = false;
-        if (obj >= 0) {
-            int n = isRec ? pb.getNumReceiverPaths(obj) : pb.getNumSourcePaths(obj);
-            if (pIdx >= 0 && pIdx < n) {
-                PathData& path = isRec ? pb.getReceiverPath(obj, pIdx) : pb.getSourcePath(obj, pIdx);
-                enabled = path.enabled;
-            }
-        }
+        if (obj >= 0)
+            enabled = isRec ? pb.getReceiverPath(obj).enabled
+                            : pb.getSourcePath(obj).enabled;
         RB_drawPath->setToggleState(enabled, juce::dontSendNotification);
         RB_moveSR->setToggleState(!enabled, juce::dontSendNotification);
+        /* Keep the room view's interaction mode in lockstep with the radios
+           (selection changes can enable/disable a path without a click). */
+        if (panWindow)
+            panWindow->setInteractionMode(enabled ? InteractionMode::AddKeyframe
+                                                  : InteractionMode::Move);
     }
 
     if (panWindow)
@@ -185,22 +185,22 @@ void PluginEditor::timerCallback()
 
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
-    /* Interaction mode: "Draw Path" enables the selected path, "Move S/R"
-       disables it. */
+    /* Interaction mode: "Draw Path" enables the selected path and switches
+       the room view to path editing; "Move S/R" disables it and returns to
+       icon dragging. */
     if (buttonThatWasClicked == RB_drawPath.get()
         || buttonThatWasClicked == RB_moveSR.get()) {
+        bool drawPath = RB_drawPath->getToggleState();
+        panWindow->setInteractionMode(drawPath ? InteractionMode::AddKeyframe
+                                               : InteractionMode::Move);
         PathBank& pb = processor.getPathBank();
         int obj = pathEditView->getSelectedSourceIndex();
         bool isRec = pathEditView->getSelectedIsReceiver();
-        int pIdx = pathEditView->getSelectedPathIndex();
         juce::SpinLock::ScopedLockType sl(processor.getPathLock());
         if (obj >= 0) {
-            int n = isRec ? pb.getNumReceiverPaths(obj) : pb.getNumSourcePaths(obj);
-            if (pIdx >= 0 && pIdx < n) {
-                PathData& path = isRec ? pb.getReceiverPath(obj, pIdx) : pb.getSourcePath(obj, pIdx);
-                path.enabled = RB_drawPath->getToggleState();
-                processor.markPathDirty();
-            }
+            PathData& path = isRec ? pb.getReceiverPath(obj) : pb.getSourcePath(obj);
+            path.enabled = drawPath;
+            processor.markPathDirty();
         }
     }
 }
