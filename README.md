@@ -65,8 +65,28 @@ Note, however, that alternative performance libraries may also be used, with mor
 **Linux (x86_64/amd64 and ARM)** users must also install the following libraries required by JUCE:
 
 ```
-sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x11proto-xext-dev libcurl4-openssl-dev libasound2-dev
+sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.1-dev libgtk-3-dev x11proto-xext-dev libcurl4-openssl-dev libasound2-dev
 ```
+
+### Important: MKL threading in plugin hosts
+
+When SPARTA is linked against Intel MKL's **threaded** layer (the default when
+building with `SAF_USE_INTEL_MKL_LP64` and a dynamically dispatched `libmkl_rt.so`),
+several plugins (e.g. **AmbiBIN**, **AmbiDEC**) call MKL LAPACK routines (SVD /
+`gesvd`, `geqrf`) during HRIR preparation / diffuse-field EQ. Inside a real-time
+plugin host such as **Ardour**, MKL's OpenMP thread team can deadlock or crash
+with a `SIGSEGV` inside `libmkl_intel_thread.so`.
+
+**Fix:** force the sequential MKL threading layer so no OpenMP threads are spawned:
+
+```
+export MKL_THREADING_LAYER=SEQUENTIAL
+```
+
+For Ardour specifically, this line has been added to `/usr/bin/ardour` (and to
+`/etc/environment` for GUI sessions). Alternatively, rebuild SAF against the
+sequential MKL libraries (`libmkl_intel_lp64` + `libmkl_sequential` +
+`libmkl_core`) which avoids the dependency on the dispatcher entirely.
 
 ## Building the plug-ins via CMake (**recommended**)
 
