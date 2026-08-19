@@ -13,7 +13,7 @@ This repository contains the following audio plug-ins:
 * **AmbiDEC** - A frequency-dependent loudspeaker Ambisonic decoder (up to 10th order) with user specifiable loudspeaker directions (up to 128), which may be optionally imported via JSON configuration files. Includes: All-Round (AllRAD), Energy-Preserving (EPAD), Spatial (SAD), and Mode-Matching (MMD) Ambisonic decoding options. The loudspeaker signals may also be binauralised for headphone playback.
 * **AmbiDRC** - A frequency-dependent dynamic range compressor for ambisonic signals (up to 10th order). 
 * **AmbiENC** - An Ambisonic encoder/panner (up to 10th order), with support for up to 128 input channels; the directions for which may also be imported via JSON configuration files. 
-* **AmbiRoomSim** - An Ambisonic encoder that also includes room reflections based on the image-source method using a shoebox room model. Multiple sources and multiple receivers are supported up to 128 channels (e.g. 32x 1st-order, 8x 3rd-order, or 2x 7th order receivers).
+* **AmbiRoomSim** - An Ambisonic encoder that also includes room reflections based on the image-source method using a shoebox room model. Multiple sources and multiple receivers are supported up to 128 channels (e.g. 32x 1st-order, 8x 3rd-order, or 2x 7th order receivers). Multiple automation paths per source with spline curves can be used to move the sources or receivers around.
 * **Array2SH** - A microphone array spatial encoder (up to 10th order), with presets for several commercially available A-format and higher-order microphone arrays. The plug-in can also present objective evaluation metrics for the currently selected configuration.
 * **Beamformer** - A spherical harmonic domain beamforming plug-in with multiple beamforming strategies (up to 128 output beams).  
 * **Binauraliser** - A binaural panner (up to 128 input channels) with a built-in SOFA loader and head-tracking support via OSC messages.
@@ -65,8 +65,28 @@ Note, however, that alternative performance libraries may also be used, with mor
 **Linux (x86_64/amd64 and ARM)** users must also install the following libraries required by JUCE:
 
 ```
-sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.0-dev libgtk-3-dev x11proto-xext-dev libcurl4-openssl-dev libasound2-dev
+sudo apt-get install x11proto-xinerama-dev libwebkit2gtk-4.1-dev libgtk-3-dev x11proto-xext-dev libcurl4-openssl-dev libasound2-dev
 ```
+
+### Important: MKL threading in plugin hosts
+
+When SPARTA is linked against Intel MKL's **threaded** layer (the default when
+building with `SAF_USE_INTEL_MKL_LP64` and a dynamically dispatched `libmkl_rt.so`),
+several plugins (e.g. **AmbiBIN**, **AmbiDEC**) call MKL LAPACK routines (SVD /
+`gesvd`, `geqrf`) during HRIR preparation / diffuse-field EQ. Inside a real-time
+plugin host such as **Ardour**, MKL's OpenMP thread team can deadlock or crash
+with a `SIGSEGV` inside `libmkl_intel_thread.so`.
+
+**Fix:** force the sequential MKL threading layer so no OpenMP threads are spawned:
+
+```
+export MKL_THREADING_LAYER=SEQUENTIAL
+```
+
+For Ardour specifically, this line has been added to `/usr/bin/ardour` (and to
+`/etc/environment` for GUI sessions). Alternatively, rebuild SAF against the
+sequential MKL libraries (`libmkl_intel_lp64` + `libmkl_sequential` +
+`libmkl_core`) which avoids the dependency on the dispatcher entirely.
 
 ## Building the plug-ins via CMake (**recommended**)
 

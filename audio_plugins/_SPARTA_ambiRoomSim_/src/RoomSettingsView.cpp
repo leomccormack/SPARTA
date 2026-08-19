@@ -1,0 +1,211 @@
+#include "RoomSettingsView.h"
+
+RoomSettingsView::RoomSettingsView(PluginProcessor& p)
+    : processor(p)
+{
+    hAmbi = processor.getFXHandle();
+
+    SL_num_sources = std::make_unique<SliderWithAttachment>(p.parameters, "numSources");
+    addAndMakeVisible (SL_num_sources.get());
+    SL_num_sources->setSliderStyle (juce::Slider::LinearHorizontal);
+    SL_num_sources->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
+    SL_num_sources->addListener (this);
+    SL_num_sources->setBounds (173, 303, 48, 20);
+
+    CBoutputFormat = std::make_unique<ComboBoxWithAttachment>(p.parameters, "channelOrder");
+    addAndMakeVisible (CBoutputFormat.get());
+    CBoutputFormat->setEditableText (false);
+    CBoutputFormat->setJustificationType (juce::Justification::centredLeft);
+    CBoutputFormat->setBounds (316, 247, 76, 20);
+
+    CBnormalisation = std::make_unique<ComboBoxWithAttachment>(p.parameters, "normType");
+    addAndMakeVisible (CBnormalisation.get());
+    CBnormalisation->setEditableText (false);
+    CBnormalisation->setJustificationType (juce::Justification::centredLeft);
+    CBnormalisation->setBounds (398, 247, 76, 20);
+
+    CBorder = std::make_unique<ComboBoxWithAttachment>(p.parameters, "outputOrder");
+    addAndMakeVisible (CBorder.get());
+    CBorder->setEditableText (false);
+    CBorder->setJustificationType (juce::Justification::centredLeft);
+    CBorder->setBounds (156, 247, 92, 20);
+
+    SL_num_receivers = std::make_unique<SliderWithAttachment>(p.parameters, "numReceivers");
+    addAndMakeVisible (SL_num_receivers.get());
+    SL_num_receivers->setSliderStyle (juce::Slider::LinearHorizontal);
+    SL_num_receivers->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
+    SL_num_receivers->addListener (this);
+    SL_num_receivers->setBounds (416, 303, 48, 20);
+
+    SL_max_reflection_order = std::make_unique<SliderWithAttachment>(p.parameters, "maxReflectionOrder");
+    addAndMakeVisible (SL_max_reflection_order.get());
+    SL_max_reflection_order->setSliderStyle (juce::Slider::LinearHorizontal);
+    SL_max_reflection_order->setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
+    SL_max_reflection_order->setBounds (181, 102, 48, 20);
+
+    s_attenCoeff_pX = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_pX");
+    addAndMakeVisible (s_attenCoeff_pX.get());
+    s_attenCoeff_pX->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    s_attenCoeff_pX->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
+    s_attenCoeff_pX->setBounds (256, 82, 60, 60);
+
+    s_attenCoeff_nX = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_nX");
+    addAndMakeVisible (s_attenCoeff_nX.get());
+    s_attenCoeff_nX->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    s_attenCoeff_nX->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
+    s_attenCoeff_nX->setBounds (256, 148, 60, 60);
+
+    s_attenCoeff_nY = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_nY");
+    addAndMakeVisible (s_attenCoeff_nY.get());
+    s_attenCoeff_nY->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    s_attenCoeff_nY->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
+    s_attenCoeff_nY->setBounds (332, 148, 60, 60);
+
+    s_attenCoeff_nZ = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_nZ");
+    addAndMakeVisible (s_attenCoeff_nZ.get());
+    s_attenCoeff_nZ->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    s_attenCoeff_nZ->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
+    s_attenCoeff_nZ->setBounds (408, 148, 60, 60);
+
+    s_attenCoeff_pZ = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_pZ");
+    addAndMakeVisible (s_attenCoeff_pZ.get());
+    s_attenCoeff_pZ->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    s_attenCoeff_pZ->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
+    s_attenCoeff_pZ->setBounds (408, 82, 60, 60);
+
+    s_attenCoeff_pY = std::make_unique<SliderWithAttachment>(p.parameters, "wallAbsCoeff_pY");
+    addAndMakeVisible (s_attenCoeff_pY.get());
+    s_attenCoeff_pY->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    s_attenCoeff_pY->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
+    s_attenCoeff_pY->setBounds (332, 82, 60, 60);
+
+    s_roomLenZ = std::make_unique<SliderWithAttachment>(p.parameters, "roomZ");
+    addAndMakeVisible (s_roomLenZ.get());
+    s_roomLenZ->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    s_roomLenZ->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
+    s_roomLenZ->setBounds (170, 148, 60, 60);
+
+    s_roomLenY = std::make_unique<SliderWithAttachment>(p.parameters, "roomY");
+    addAndMakeVisible (s_roomLenY.get());
+    s_roomLenY->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    s_roomLenY->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
+    s_roomLenY->setBounds (96, 148, 60, 60);
+
+    s_roomLenX = std::make_unique<SliderWithAttachment>(p.parameters, "roomX");
+    addAndMakeVisible (s_roomLenX.get());
+    s_roomLenX->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    s_roomLenX->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 16);
+    s_roomLenX->setBounds (21, 148, 60, 60);
+
+    TB_enableIMS = std::make_unique<ToggleButtonWithAttachment>(p.parameters, "enableReflections");
+    addAndMakeVisible (TB_enableIMS.get());
+    TB_enableIMS->setButtonText (juce::String());
+    TB_enableIMS->setBounds (206, 65, 26, 26);
+
+    /* remove slider bit of these sliders */
+    SL_num_sources->setColour(Slider::trackColourId, Colours::transparentBlack);
+    SL_num_sources->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    SL_num_sources->setSliderSnapsToMousePosition(false);
+    SL_num_receivers->setColour(Slider::trackColourId, Colours::transparentBlack);
+    SL_num_receivers->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    SL_num_receivers->setSliderSnapsToMousePosition(false);
+    SL_max_reflection_order->setColour(Slider::trackColourId, Colours::transparentBlack);
+    SL_max_reflection_order->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    SL_max_reflection_order->setSliderSnapsToMousePosition(false);
+
+    /* source coordinates viewport */
+    sourceCoordsVP.reset (new Viewport ("new viewport"));
+    addAndMakeVisible (sourceCoordsVP.get());
+    sourceCoordsView_handle = new inputCoordsView(p, ROOM_SIM_MAX_NUM_SOURCES, ambi_roomsim_getNumSources(hAmbi));
+    sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
+    sourceCoordsVP->setScrollBarsShown (true, false);
+    sourceCoordsVP->setAlwaysOnTop(true);
+    sourceCoordsVP->setBounds(16, 352, 212, 32*4+2);
+    sourceCoordsView_handle->setNCH(ambi_roomsim_getNumSources(hAmbi));
+
+    /* receiver coordinates viewport */
+    receiverCoordsVP.reset (new Viewport ("new viewport"));
+    addAndMakeVisible (receiverCoordsVP.get());
+    receiverCoordsView_handle = new outputCoordsView(p, ROOM_SIM_MAX_NUM_RECEIVERS, ambi_roomsim_getNumReceivers(hAmbi));
+    receiverCoordsVP->setViewedComponent (receiverCoordsView_handle);
+    receiverCoordsVP->setScrollBarsShown (true, false);
+    receiverCoordsVP->setAlwaysOnTop(true);
+    receiverCoordsVP->setBounds(256, 352, 212, 32*4+2);
+    receiverCoordsView_handle->setNCH(ambi_roomsim_getNumReceivers(hAmbi));
+
+    /* grab current parameter settings */
+    CBoutputFormat->setSelectedId(ambi_roomsim_getChOrder(hAmbi), sendNotificationAsync);
+    CBnormalisation->setSelectedId(ambi_roomsim_getNormType(hAmbi), sendNotificationAsync);
+    CBoutputFormat->setItemEnabled(CH_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
+    CBnormalisation->setItemEnabled(NORM_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
+
+    refreshPanViewWindow = true;
+}
+
+RoomSettingsView::~RoomSettingsView() {}
+
+void RoomSettingsView::refresh()
+{
+    sourceCoordsView_handle->setNCH(ambi_roomsim_getNumSources(hAmbi));
+    receiverCoordsView_handle->setNCH(ambi_roomsim_getNumReceivers(hAmbi));
+    CBoutputFormat->setSelectedId(ambi_roomsim_getChOrder(hAmbi), sendNotificationAsync);
+    CBnormalisation->setSelectedId(ambi_roomsim_getNormType(hAmbi), sendNotificationAsync);
+    CBoutputFormat->setItemEnabled(CH_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
+    CBnormalisation->setItemEnabled(NORM_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
+}
+
+void RoomSettingsView::paint(juce::Graphics& g)
+{
+    using namespace ColoursUI;
+
+    drawPanel(g, {12,  58, 468,158}, panelFill,      panelStroke);
+    drawPanel(g, {12,  58, 232,158}, panelFillLight, panelStroke);
+    drawPanel(g, {12, 297, 220,191}, panelFill,      panelStroke);
+    drawPanel(g, {12, 241, 468, 31}, panelFill,      panelStroke);
+    drawPanel(g, {12, 297, 220, 31}, panelFillLight, panelStroke);
+    drawPanel(g, {252,297, 220,191}, panelFill,      panelStroke);
+    drawPanel(g, {252,297, 220, 31}, panelFillLight, panelStroke);
+
+    drawLabel(g, {200, 33,  96,30}, "Room Settings", 15.f);
+    drawLabel(g, {21, 241,153,30}, "SH Encoding Order:", 15.f);
+    drawLabel(g, {256,241,145,30}, "Format:",            15.f);
+    drawLabel(g, {16, 1, 100,32}, "SPARTA|", 18.f);
+    drawLabel(g, {92,  1, 148,32}, "AmbiRoomSim", 18.f, juce::Justification::centredLeft, juce::Colour(0xffffda2b));
+    drawLabel(g, {23, 124, 60,30}, "Width",  15.f, juce::Justification::centred);
+    drawLabel(g, {95, 124, 60,30}, "Depth",  15.f, juce::Justification::centred);
+    drawLabel(g, {167,124, 60,30}, "Height", 15.f, juce::Justification::centred);
+    drawLabel(g, {192,217,137,30}, "Receiver Settings", 15.f);
+    drawLabel(g, {256,57, 60,30}, "Atten. X", 15.f, juce::Justification::centred);
+    drawLabel(g, {304,81, 24,30}, "+",        15.f, juce::Justification::centred);
+    drawLabel(g, {304,145,24,30}, "-",        15.f, juce::Justification::centred);
+    drawLabel(g, {332,57, 60,30}, "Atten. Y", 15.f, juce::Justification::centred);
+    drawLabel(g, {380,81, 24,30}, "+",        15.f, juce::Justification::centred);
+    drawLabel(g, {380,145,24,30}, "-",        15.f, juce::Justification::centred);
+    drawLabel(g, {408,57, 60,30}, "Atten. Z", 15.f, juce::Justification::centred);
+    drawLabel(g, {456,81, 24,30}, "+",        15.f, juce::Justification::centred);
+    drawLabel(g, {456,145,24,30}, "-",        15.f, juce::Justification::centred);
+    drawLabel(g, {56, 272,137,30}, "Source Coordinates", 15.f);
+    drawLabel(g, {24, 323,200,30}, "#        x            y             z", 15.f);
+    drawLabel(g, {21, 297,153,30}, "Number of Sources:", 15.f);
+    drawLabel(g, {288,272,152,30}, "Receiver Coordinates", 15.f);
+    drawLabel(g, {264,323,200,30}, "#        x            y             z", 15.f);
+    drawLabel(g, {261,297,155,30}, "Number of Receivers:", 15.f);
+    drawLabel(g, {20, 63,169,30}, "Enable Image Sources:", 14.5f);
+    drawLabel(g, {20, 95,169,30}, "Max Reflection Order:", 14.5f);
+
+    g.setColour(Colours::white);
+    g.setFont(juce::FontOptions (11.00f, Font::plain));
+    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
+        220, 16, 530, 11,
+        Justification::centredLeft, true);
+}
+
+void RoomSettingsView::resized() {}
+
+void RoomSettingsView::sliderValueChanged(juce::Slider* sliderThatWasMoved)
+{
+    if (sliderThatWasMoved == SL_num_sources.get() || sliderThatWasMoved == SL_num_receivers.get())
+        refreshPanViewWindow = true;
+}
+
+void RoomSettingsView::comboBoxChanged(juce::ComboBox* /*comboBoxThatHasChanged*/) {}

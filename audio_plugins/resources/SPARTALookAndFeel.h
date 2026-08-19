@@ -340,6 +340,7 @@ public:
     void drawToggleButton (Graphics& g, ToggleButton& button, bool isHovered, bool /*isPressed*/) override
     {
         auto bounds = button.getLocalBounds().toFloat().reduced(4.0f);
+        const bool hasText = button.getButtonText().isNotEmpty();
 
         // Make it a square based on the shortest dimension
         float size = jmin(bounds.getWidth(), bounds.getHeight());
@@ -349,6 +350,11 @@ public:
                                               .withTrimmedRight(paddingX)
                                               .withTrimmedTop(paddingY)
                                               .withTrimmedBottom(paddingY);
+
+        // Buttons with a label get the checkbox on the left so the text can sit
+        // to its right instead of being hidden under the centred square.
+        if (hasText)
+            squareBounds = squareBounds.withX(bounds.getX());
 
         Colour fill = colourBackground.darker(0.8f);
         Colour outline = colourOutline.withAlpha(0.75f);
@@ -381,6 +387,17 @@ public:
             g.setColour(colourThumb.brighter(0.5f));
             if (! button.isEnabled()) g.setOpacity(disabledAlpha);
             g.fillPath(tick, placement.getTransformToFit(tick.getBounds(), squareBounds.reduced(3.0f)));
+        }
+
+        // Draw the label to the right of the checkbox
+        if (hasText)
+        {
+            Rectangle<int> textBounds((int) squareBounds.getRight() + 8,
+                                      button.getLocalBounds().getY(),
+                                      button.getLocalBounds().getRight() - (int) squareBounds.getRight() - 8,
+                                      button.getLocalBounds().getHeight());
+            ::drawLabel(g, textBounds, button.getButtonText(), 12.0f,
+                        juce::Justification::centredLeft);
         }
     }
 

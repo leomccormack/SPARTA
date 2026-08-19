@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-project(sparta_ambiRoomSim VERSION 1.1.3)
+project(sparta_ambiRoomSim VERSION 1.2.0)
 message(STATUS "  ${PROJECT_NAME}")
 
 # juce helper function to create a library, which is configured as a JUCE plugin
@@ -41,6 +41,15 @@ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/inputCoordsView.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/outputCoordsView.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/outputCoordsView.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pathAutomation.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pathAutomation.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pathTimelineView.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pathTimelineView.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/waveformCapture.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/RoomSettingsView.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/RoomSettingsView.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/PathEditView.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/PathEditView.cpp
 )
 
 # Add any extra JUCE-specific pre-processor definitions
@@ -58,7 +67,6 @@ PRIVATE
     saf_example_ambi_roomsim
     GUI_fonts
     juce::juce_recommended_config_flags
-    juce::juce_recommended_lto_flags
     juce::juce_audio_plugin_client
     juce::juce_audio_utils
 )

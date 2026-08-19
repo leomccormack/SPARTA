@@ -24,38 +24,33 @@
 
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
-#include "inputCoordsView.h"
-#include "outputCoordsView.h"
 #include "pannerView.h"
+#include "pathTimelineView.h"
+#include "RoomSettingsView.h"
+#include "PathEditView.h"
 #include "../../resources/SPARTALookAndFeel.h"
 
 typedef enum _SPARTA_WARNINGS{
-    /* Problematic warnings (shown in red) */
     k_warning_none,
     k_warning_NinputCH,
     k_warning_NoutputCH,
-    
-    /* Less severe warnings (shown in yellow) */
     k_warning_frameSize
 }SPARTA_WARNINGS;
 
 class PluginEditor  : public AudioProcessorEditor,
-                      public Timer,
-                      public juce::Slider::Listener,
-                      public juce::ComboBox::Listener,
-                      public juce::Button::Listener
+                       public Timer,
+                       public juce::Button::Listener,
+                       public juce::FilenameComponentListener
 {
 public:
     PluginEditor (PluginProcessor& p);
     ~PluginEditor() override;
 
     void timerCallback() override;
-
     void paint (juce::Graphics& g) override;
     void resized() override;
-    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
-    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
-    void buttonClicked (juce::Button* buttonThatWasClicked) override;
+    void buttonClicked(juce::Button* buttonThatWasClicked) override;
+    void filenameComponentChanged(juce::FilenameComponent*) override;
 
 private:
     PluginProcessor& processor;
@@ -64,45 +59,21 @@ private:
     std::unique_ptr<OpenGLGraphicsContextCustomShader> shader;
     OpenGLContext openGLContext;
 #endif
-
-    /* Look and Feel */
     SPARTALookAndFeel LAF;
 
-    /* source coordinates viewport */
-    std::unique_ptr<Viewport> sourceCoordsVP;
-    inputCoordsView* sourceCoordsView_handle;
-
-    /* receiver coordinates viewport */
-    std::unique_ptr<Viewport> receiverCoordsVP;
-    outputCoordsView* receiverCoordsView_handle;
-
-    /* panning window */
+    std::unique_ptr<RoomSettingsView> roomSettingsView;
+    std::unique_ptr<PathEditView> pathEditView;
     std::unique_ptr<pannerView> panWindow;
-    bool refreshPanViewWindow;
+    std::unique_ptr<pathTimelineView> pathTimeline;
+    std::unique_ptr<juce::ToggleButton> RB_moveSR;
+    std::unique_ptr<juce::ToggleButton> RB_drawPath;
+    juce::FilenameComponent trackChooser{"Track", juce::File(), true, false, false,
+                                         "*.wav;*.aiff;*.aif;*.mp3", juce::String(),
+                                         "Load track file..."};
 
-    /* warnings */
     SPARTA_WARNINGS currentWarning;
-
-    /* tooltips */
     SharedResourcePointer<TooltipWindow> tipWindow;
-    std::unique_ptr<juce::ComboBox> pluginDescription; /* Dummy combo box to provide plugin description tooltip */
-
-    std::unique_ptr<SliderWithAttachment> SL_num_sources;
-    std::unique_ptr<ComboBoxWithAttachment> CBoutputFormat;
-    std::unique_ptr<ComboBoxWithAttachment> CBnormalisation;
-    std::unique_ptr<ComboBoxWithAttachment> CBorder;
-    std::unique_ptr<SliderWithAttachment> SL_num_receivers;
-    std::unique_ptr<SliderWithAttachment> SL_max_reflection_order;
-    std::unique_ptr<SliderWithAttachment> s_attenCoeff_pX;
-    std::unique_ptr<SliderWithAttachment> s_attenCoeff_nX;
-    std::unique_ptr<SliderWithAttachment> s_attenCoeff_nY;
-    std::unique_ptr<SliderWithAttachment> s_attenCoeff_nZ;
-    std::unique_ptr<SliderWithAttachment> s_attenCoeff_pZ;
-    std::unique_ptr<SliderWithAttachment> s_attenCoeff_pY;
-    std::unique_ptr<SliderWithAttachment> s_roomLenZ;
-    std::unique_ptr<SliderWithAttachment> s_roomLenY;
-    std::unique_ptr<SliderWithAttachment> s_roomLenX;
-    std::unique_ptr<ToggleButtonWithAttachment> TB_enableIMS;
+    std::unique_ptr<juce::ComboBox> pluginDescription;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

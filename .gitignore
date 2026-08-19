@@ -73,3 +73,7 @@ ipch/
 *.tlog
 *.log
 build/
+.opencode/
+AGENTS.md
+opencode-rag.json
+.cache/
