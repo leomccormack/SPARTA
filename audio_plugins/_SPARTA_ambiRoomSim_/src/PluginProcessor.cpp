@@ -103,10 +103,6 @@ static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout
                                                                AudioParameterIntAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterInt>("numReceivers", "NumReceivers", 1, ROOM_SIM_MAX_NUM_RECEIVERS, ambi_roomsim_defaultNumReceivers,
                                                                AudioParameterIntAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterBool>("pathEnable", "PathEnable", false,
-                                                                 AudioParameterBoolAttributes().withAutomatable(false)));
-    params.push_back(std::make_unique<juce::AudioParameterBool>("pathLoop", "PathLoop", false,
-                                                                AudioParameterBoolAttributes().withAutomatable(false)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("pathTimeOffset", "PathTimeOffset",
                                                                  juce::NormalisableRange<float>(-3600.0f, 3600.0f, 0.01f), 0.0f,
                                                                  AudioParameterFloatAttributes().withAutomatable(false)));
@@ -364,21 +360,18 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
         waveformCapture.addSamples(waveMixBuffer.getReadPointer(0), buffer.getNumSamples());
     }
 
-    bool pathOn = getParameterBool("pathEnable");
-    if (pathOn) {
-        if (pathDirty.exchange(false)) {
-            const juce::SpinLock::ScopedTryLockType tl(pathLock);
-            if (tl.isLocked())
-                pathSnapshot = pathBank;
-        }
-
-        int numSrc = ambi_roomsim_getNumSources(hAmbi);
-        for (int i = 0; i < numSrc; ++i)
-            applyPath(i, pathSnapshot.getSourcePath(i), t, "source");
-        int numRec = ambi_roomsim_getNumReceivers(hAmbi);
-        for (int i = 0; i < numRec; ++i)
-            applyPath(i, pathSnapshot.getReceiverPath(i), t, "receiver");
+    if (pathDirty.exchange(false)) {
+        const juce::SpinLock::ScopedTryLockType tl(pathLock);
+        if (tl.isLocked())
+            pathSnapshot = pathBank;
     }
+
+    int numSrc = ambi_roomsim_getNumSources(hAmbi);
+    for (int i = 0; i < numSrc; ++i)
+        applyPath(i, pathSnapshot.getSourcePath(i), t, "source");
+    int numRec = ambi_roomsim_getNumReceivers(hAmbi);
+    for (int i = 0; i < numRec; ++i)
+        applyPath(i, pathSnapshot.getReceiverPath(i), t, "receiver");
 
     blockAdapter->processBlock (buffer, [this] (const float* const* inFrame, float* const* outFrame, int numIns, int numOuts, int frameSize) {
             ambi_roomsim_process(hAmbi, inFrame, outFrame, numIns, numOuts, frameSize);
@@ -534,6 +527,15 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                     incomingPaths = child;
             }
             state.removeChild(incomingPaths, nullptr);
+            // Strip legacy dead params (pathEnable / pathLoop) removed in fix
+            for (int i = state.getNumChildren(); i-- > 0; ) {
+                auto c = state.getChild(i);
+                if (c.hasProperty("id")) {
+                    auto id = c.getProperty("id").toString();
+                    if (id == "pathEnable" || id == "pathLoop")
+                        state.removeChild(c, nullptr);
+                }
+            }
             parameters.replaceState(state);
             addParameterListeners(this);
             
