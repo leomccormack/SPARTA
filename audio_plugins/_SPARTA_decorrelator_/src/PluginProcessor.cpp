@@ -140,7 +140,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     /* Load */
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-    if (xmlState != nullptr && xmlState->hasTagName("BINAURALISERNFPLUGINSETTINGS")){
+    if (xmlState != nullptr && xmlState->hasTagName("DECORRELATORPLUGINSETTINGS")){
         if(!xmlState->hasAttribute("VersionCode")){ // pre-0x10102
             if(xmlState->hasAttribute("NCHANNELS"))
                 decorrelator_setNumberOfChannels(hDecor, xmlState->getIntAttribute("NCHANNELS", 2));
