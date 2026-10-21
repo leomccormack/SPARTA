@@ -15,6 +15,11 @@ lib/
 cmake-build-debug/
 cmake-build-release/
 
+# Stray in-source CMake artefacts (CMake was accidentally run in the repo root)
+/CMakeCache.txt
+/CMakeFiles/
+/cmake_install.cmake
+
 # User-specific files
 *.suo
 *.user
