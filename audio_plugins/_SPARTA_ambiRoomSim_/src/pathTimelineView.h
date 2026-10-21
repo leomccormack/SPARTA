@@ -7,21 +7,33 @@
 class pathTimelineView  : public Component
 {
 public:
-    pathTimelineView(PluginProcessor& p);
+    pathTimelineView (PluginProcessor& p);
     ~pathTimelineView() override;
 
+    /* Live host position (the red playhead). */
     void setScrubTime(double t);
+    /* Preview position (the amber line). When the preview is active the
+       room view shows the objects at this position instead of their live
+       position. */
+    void setPreviewTime(double t, bool active);
+    bool isPreviewActive() const { return previewActive; }
+    double getPreviewTime() const { return previewTime; }
 
-    void paint(juce::Graphics& g) override;
+    /* Called when the user clicks the timeline to preview a position. */
+    std::function<void(double)> onPreviewRequested;
+
+    void paint (juce::Graphics& g) override;
     void resized() override;
-    void mouseDown(const juce::MouseEvent& e) override;
-    void mouseDrag(const juce::MouseEvent& e) override;
-    void mouseUp(const juce::MouseEvent& e) override;
+    void mouseDown (const juce::MouseEvent& e) override;
+    void mouseDrag (const juce::MouseEvent& e) override;
+    void mouseUp (const juce::MouseEvent& e) override;
 
 private:
     PluginProcessor& processor;
     void* hAmbi;
     double scrubTime = 0.0;
+    double previewTime = 0.0;
+    bool previewActive = false;
     bool isDraggingKeyframe = false;
     int dragObjectIdx = -1;
     bool dragIsReceiver = false;
@@ -35,8 +47,6 @@ private:
     juce::Array<RowInfo> rows;
     void rebuildRows();
 
-    juce::Rectangle<float> getRowBounds(int rowIdx) const;
-    int getRowForY(float y) const;
     float getRowsMaxY() const;
     double getTimelineMaxTime() const;
     float timeToX(double t, double maxTime) const;

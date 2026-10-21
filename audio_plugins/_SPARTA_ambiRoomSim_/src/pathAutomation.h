@@ -44,6 +44,11 @@ struct Keyframe {
     static Keyframe fromValueTree(const juce::ValueTree& vt);
 };
 
+/* Maximum number of keyframes that a single path may hold. The limit keeps
+   the keyframe buffers of a fixed size, so that the copy of the path bank
+   that the audio thread makes never has to allocate memory. */
+static constexpr int MAX_KEYFRAMES_PER_PATH = 64;
+
 /* One motion path for a single source or receiver. When enabled, the path
    drives the object's position through its keyframes as the host time
    advances. Exactly one path exists per source/receiver. */
@@ -57,16 +62,17 @@ struct PathData {
     /* Start/end of the path window, in seconds. */
     double startTime = 0.0;
     double endTime = 10.0;
-    /* Display name shown in the path selector. */
-    std::string name;
 
     /* Sample the spline at time t (host seconds); writes the resulting
        room position (metres) into outX/outY/outZ. Outside the window the
        path clamps to its ends, or wraps when loop is enabled. */
     void evaluate(double t, float& outX, float& outY, float& outZ) const;
     double duration() const;
-    /* Evenly redistribute keyframe times across totalDuration. */
-    static void redistributeTimes(PathData& path, double totalDuration);
+    /* Scales the keyframe times proportionally when the path duration
+       changes from oldDuration to newDuration. The pauses (stopTime) are
+       kept as they are, only the time spent moving is scaled, so the
+       relative timing of the nodes survives stretching the path. */
+    static void scaleTimes(PathData& path, double oldDuration, double newDuration);
     /* Reset every keyframe's tangents to the Catmull-Rom default that
        reproduces the classic smooth-through-all-points curve. */
     void recomputeDefaultTangents();
@@ -90,18 +96,19 @@ public:
     PathData& getReceiverPath(int index);
     const PathData& getReceiverPath(int index) const;
 
-    juce::ValueTree toValueTree() const;
+    /* Serialises the bank. The version is passed in (rather than stored
+       here) because it is bumped by the processor whenever the bank is
+       edited, and it has to be readable while the bank is being edited. */
+    juce::ValueTree toValueTree(int version) const;
     void fromValueTree(const juce::ValueTree& vt);
 
-    /* Monotonic version of the path bank, bumped on every mutation (see
-       markPathDirty). Saved with the state and compared on restore so that
-       a host re-applying an OLDER snapshot (Ardour undo/template/undo of a
-       parameter change) cannot clobber newer in-memory edits. */
-    int getStateVersion() const { return stateVersion; }
-    void bumpStateVersion() { ++stateVersion; }
+    /* Reserves room for n keyframes in every path. The audio thread copies
+       the bank whenever it is edited; reserving the capacity up-front means
+       that this copy never allocates memory (which would be a real-time
+       violation). */
+    void reserveKeyframeCapacity(int n);
 
 private:
     std::array<PathData, ROOM_SIM_MAX_NUM_SOURCES> sources;
     std::array<PathData, ROOM_SIM_MAX_NUM_RECEIVERS> receivers;
-    int stateVersion = 0;
 };

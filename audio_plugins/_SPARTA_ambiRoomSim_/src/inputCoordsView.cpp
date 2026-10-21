@@ -125,6 +125,21 @@ void inputCoordsView::resized()
     repaint();
 }
 
+void inputCoordsView::refresh()
+{
+    /* The position of a source may be driven by a motion path, in which case
+       it does not come from the parameter but straight from the DSP. The
+       fields are therefore updated from the current position, without
+       notifying the parameter attachment (which would write the value back
+       to the parameter). */
+    for (int i = 0; i < currentNCH && i < maxNCH; ++i)
+    {
+        xSliders[(size_t)i]->setValue(ambi_roomsim_getSourceX(hAmbi, i), juce::dontSendNotification);
+        ySliders[(size_t)i]->setValue(ambi_roomsim_getSourceY(hAmbi, i), juce::dontSendNotification);
+        zSliders[(size_t)i]->setValue(ambi_roomsim_getSourceZ(hAmbi, i), juce::dontSendNotification);
+    }
+}
+
 void inputCoordsView::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
 }

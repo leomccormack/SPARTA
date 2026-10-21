@@ -40,6 +40,13 @@ public:
         }
     }
 
+    /* Updates the coordinate fields with the current position of the
+       sources. The position does not necessarily come from the parameter
+       (a motion path drives it directly), so the fields are updated from
+       the DSP state. The parameter is not touched (the fields would
+       otherwise write the value back to it). */
+    void refresh();
+
     void paint (juce::Graphics& g) override;
     void resized() override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;

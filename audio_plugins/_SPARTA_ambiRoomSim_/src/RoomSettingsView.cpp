@@ -148,6 +148,8 @@ void RoomSettingsView::refresh()
 {
     sourceCoordsView_handle->setNCH(ambi_roomsim_getNumSources(hAmbi));
     receiverCoordsView_handle->setNCH(ambi_roomsim_getNumReceivers(hAmbi));
+    sourceCoordsView_handle->refresh();
+    receiverCoordsView_handle->refresh();
     CBoutputFormat->setSelectedId(ambi_roomsim_getChOrder(hAmbi), sendNotificationAsync);
     CBnormalisation->setSelectedId(ambi_roomsim_getNormType(hAmbi), sendNotificationAsync);
     CBoutputFormat->setItemEnabled(CH_FUMA, ambi_roomsim_getOutputOrder(hAmbi)==SH_ORDER_FIRST ? true : false);
@@ -194,10 +196,12 @@ void RoomSettingsView::paint(juce::Graphics& g)
     drawLabel(g, {20, 95,169,30}, "Max Reflection Order:", 14.5f);
 
     g.setColour(Colours::white);
-    g.setFont(juce::FontOptions (11.00f, Font::plain));
-    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-        220, 16, 530, 11,
-        Justification::centredLeft, true);
+    g.setFont(juce::FontOptions (10.00f, Font::plain));
+    /* The version string has to stay inside this column (the panel is only
+       480 pixels wide), otherwise it is clipped. */
+    g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", ") + __DATE__ + TRANS(" "),
+        248, 14, 224, 12,
+        Justification::centredRight, true);
 }
 
 void RoomSettingsView::resized() {}

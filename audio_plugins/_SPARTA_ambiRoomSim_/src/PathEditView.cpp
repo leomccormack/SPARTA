@@ -56,6 +56,34 @@ PathEditView::PathEditView(PluginProcessor& p)
     SL_pathEndTime->setValue(10.0);
     SL_pathEndTime->addListener(this);
     SL_pathEndTime->setColour(juce::Slider::textBoxTextColourId, juce::Colours::white);
+
+    /* Time base: the unit in which the path times are expressed. It follows
+       the host position (seconds or PPQ), so that a path can be aligned with
+       a musical timeline. */
+    LB_timeBase.reset(new juce::Label("tbLabel", "Time:"));
+    addAndMakeVisible(LB_timeBase.get());
+    LB_timeBase->setColour(juce::Label::textColourId, juce::Colours::white);
+    LB_timeBase->setFont(juce::FontOptions(12.0f));
+
+    CB_timeBase = std::make_unique<ComboBoxWithAttachment>(p.parameters, "pathTimeMode");
+    addAndMakeVisible(CB_timeBase.get());
+    CB_timeBase->setEditableText (false);
+    CB_timeBase->setJustificationType(juce::Justification::centredLeft);
+    CB_timeBase->setTooltip("The time base of the path times: seconds, or bars (PPQ).");
+
+    /* Time offset: shifts the whole path relative to the host position. */
+    LB_offset.reset(new juce::Label("offLabel", "Offset:"));
+    addAndMakeVisible(LB_offset.get());
+    LB_offset->setColour(juce::Label::textColourId, juce::Colours::white);
+    LB_offset->setFont(juce::FontOptions(12.0f));
+
+    SL_pathOffset = std::make_unique<SliderWithAttachment>(p.parameters, "pathTimeOffset");
+    addAndMakeVisible(SL_pathOffset.get());
+    SL_pathOffset->setSliderStyle (juce::Slider::LinearHorizontal);
+    SL_pathOffset->setTextBoxStyle (juce::Slider::TextBoxRight, false, 50, 20);
+    SL_pathOffset->setColour(juce::Slider::textBoxTextColourId, juce::Colours::white);
+    SL_pathOffset->setTooltip("Shifts the path relative to the host position.");
+
     /* Duration info */
     LB_durationVal.reset(new juce::Label("durVal", "Duration: 10.0s"));
     addAndMakeVisible(LB_durationVal.get());
@@ -106,8 +134,13 @@ void PathEditView::resized()
 
     /* Loop */
     LB_loop->setBounds(r.getX(), y, lblW, 20);
-    TB_pathLoop->setBounds(r.getX() + lblW, y, ctrlW, 20);
+    TB_pathLoop->setBounds(r.getX() + lblW, y, 30, 20);
     y += 24;
+
+    /* Time base */
+    LB_timeBase->setBounds(r.getX(), y, lblW, 22);
+    CB_timeBase->setBounds(r.getX() + lblW, y, ctrlW, 22);
+    y += 26;
 
     /* Start time */
     LB_startTime->setBounds(r.getX(), y, lblW, 22);
@@ -117,7 +150,12 @@ void PathEditView::resized()
     /* End time */
     LB_endTime->setBounds(r.getX(), y, lblW, 22);
     SL_pathEndTime->setBounds(r.getX() + lblW, y, ctrlW, 22);
-    y += 22;
+    y += 26;
+
+    /* Time offset */
+    LB_offset->setBounds(r.getX(), y, lblW, 22);
+    SL_pathOffset->setBounds(r.getX() + lblW, y, ctrlW, 22);
+    y += 26;
 
     /* Duration info */
     LB_durationVal->setBounds(r.getX() + lblW, y, ctrlW, 18);
@@ -147,15 +185,30 @@ void PathEditView::refresh()
     int nSrc = ambi_roomsim_getNumSources(hAmbi);
     int nRec = ambi_roomsim_getNumReceivers(hAmbi);
 
-    /* Populate source selector */
-    sourceSelector->clear(juce::dontSendNotification);
-    for (int i = 0; i < nSrc; ++i)
-        sourceSelector->addItem("S" + juce::String(i + 1), i + 1);
-    for (int i = 0; i < nRec; ++i)
-        sourceSelector->addItem("R" + juce::String(i + 1), nSrc + i + 1);
+    /* Populate the source selector. The list is only rebuilt when the
+       number of sources/receivers changed: clearing it on every refresh
+       (every 80 ms) closes the drop-down while the user is using it. */
+    if (nSrc != lastNumSources || nRec != lastNumReceivers)
+    {
+        lastNumSources = nSrc;
+        lastNumReceivers = nRec;
+        sourceSelector->clear(juce::dontSendNotification);
+        for (int i = 0; i < nSrc; ++i)
+            sourceSelector->addItem("S" + juce::String(i + 1), i + 1);
+        for (int i = 0; i < nRec; ++i)
+            sourceSelector->addItem("R" + juce::String(i + 1), nSrc + i + 1);
+    }
     int selId = selectedIsReceiver ? nSrc + selectedSourceIndex + 1 : selectedSourceIndex + 1;
     if (selId >= 1 && selId <= nSrc + nRec)
         sourceSelector->setSelectedId(selId, juce::dontSendNotification);
+    else
+    {
+        /* The selected object no longer exists (e.g. the number of sources
+           was reduced): fall back to the first source. */
+        selectedIsReceiver = false;
+        selectedSourceIndex = 0;
+        sourceSelector->setSelectedId(1, juce::dontSendNotification);
+    }
 
     /* Sync sliders and toggles from the current path data */
     auto& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex);
@@ -164,15 +217,25 @@ void PathEditView::refresh()
        the track length instead of being capped at the initial 300 s). */
     double trackEnd = processor.getTrackEndTime();
     double endMax = juce::jmax(300.0, path.endTime, trackEnd);
+    double startMax = juce::jmax(300.0, path.startTime, trackEnd);
+
+    isSyncingFromPath = true;
     if (endMax > SL_pathEndTime->getMaximum())
         SL_pathEndTime->setRange(0.1, endMax, 0.1);
-    double startMax = juce::jmax(300.0, path.startTime, trackEnd);
     if (startMax > SL_pathStartTime->getMaximum())
         SL_pathStartTime->setRange(0.0, startMax, 0.1);
 
     SL_pathStartTime->setValue(path.startTime, juce::dontSendNotification);
     SL_pathEndTime->setValue(path.endTime, juce::dontSendNotification);
     TB_pathLoop->setToggleState(path.loop, juce::dontSendNotification);
+    isSyncingFromPath = false;
+
+    /* The path times follow the time base of the host position (seconds or
+       PPQ), so the labels have to say which one is in use. */
+    const juce::String unit = processor.getTimeUnitLabel();
+    keyframeList->getHeader().setColumnName(colTime, "Time [" + unit + "]");
+    SL_pathStartTime->setTooltip("Timeline position where this path begins (" + unit + ").");
+    SL_pathEndTime->setTooltip("Timeline position where this path ends (" + unit + ").");
 
     updateKeyframeTable();
 }
@@ -195,6 +258,9 @@ void PathEditView::comboBoxChanged(juce::ComboBox* combo)
 
 void PathEditView::resyncTimeFromSliders()
 {
+    if (isSyncingFromPath)
+        return;
+
     double start = SL_pathStartTime->getValue();
     double end = SL_pathEndTime->getValue();
     if (end <= start) {
@@ -203,24 +269,36 @@ void PathEditView::resyncTimeFromSliders()
            thumb to the old max while path.endTime keeps the larger value,
            and the two disagree for the rest of the session). */
         end = start + 0.1;
+        isSyncingFromPath = true;   /* the range change notifies the slider */
         if (end > SL_pathEndTime->getMaximum())
             SL_pathEndTime->setRange(0.1, end, 0.1);
         SL_pathEndTime->setValue(end, juce::dontSendNotification);
+        isSyncingFromPath = false;
     }
     {
         const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
         PathData& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex);
+        const double oldDuration = path.endTime - path.startTime;
         path.startTime = start;
         path.endTime = end;
-        if (path.keyframes.size() >= 2) {
-            double dur = end - start;
-            PathData::redistributeTimes(path, dur);
-        }
+        /* The keyframe times are relative to the start of the path, so
+           changing the start time alone does not affect them; a change of
+           the duration scales them proportionally (the pauses are kept). */
+        if (path.keyframes.size() >= 2)
+            PathData::scaleTimes(path, oldDuration, end - start);
     }
-    LB_durationVal->setText("Duration: " + juce::String(end - start, 1) + "s",
+    LB_durationVal->setText("Duration: " + juce::String(end - start, 1) + " " +
+                             processor.getTimeUnitLabel(),
                              juce::dontSendNotification);
-    processor.markPathDirty();
+    /* The host is notified once, when the slider gesture ends. */
+    processor.markPathDirty(false);
     updateKeyframeTable();
+}
+
+void PathEditView::sliderDragEnded(juce::Slider* slider)
+{
+    if (slider == SL_pathStartTime.get() || slider == SL_pathEndTime.get())
+        processor.markPathDirty();
 }
 
 void PathEditView::buttonClicked(juce::Button* button)
@@ -257,12 +335,10 @@ void PathEditView::buttonClicked(juce::Button* button)
             PathData& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex);
             if ((size_t)sel >= path.keyframes.size()) return;
             path.keyframes.erase(path.keyframes.begin() + sel);
-            if (path.keyframes.size() >= 2) {
-                double dur = path.endTime - path.startTime;
-                PathData::redistributeTimes(path, dur);
-            } else if (path.keyframes.empty()) {
+            /* The remaining nodes keep their timing: the path is simply
+               shorter now. */
+            if (path.keyframes.empty())
                 path.enabled = false;
-            }
         }
         processor.markPathDirty();
         updateKeyframeTable();
@@ -396,11 +472,26 @@ void PathEditView::cellEdited(int columnId, int row, const juce::String& text)
     {
         const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
         auto& kf = path.keyframes[row];
+        const float roomX = ambi_roomsim_getRoomDimX(hAmbi);
+        const float roomY = ambi_roomsim_getRoomDimY(hAmbi);
+        const float roomZ = ambi_roomsim_getRoomDimZ(hAmbi);
         switch (columnId) {
-            case colTime: kf.timeSeconds = v; break;
-            case colX:    kf.x = (float)v; break;
-            case colY:    kf.y = (float)v; break;
-            case colZ:    kf.z = (float)v; break;
+            case colTime: {
+                /* The keyframe times have to stay inside the path window and
+                   in ascending order, otherwise the object would never
+                   reach (or would skip) some of the nodes. */
+                const double dur = juce::jmax(0.0, path.endTime - path.startTime);
+                double lo = 0.0, hi = dur;
+                if (row > 0)
+                    lo = path.keyframes[row - 1].timeSeconds;
+                if (row + 1 < (int)path.keyframes.size())
+                    hi = path.keyframes[row + 1].timeSeconds;
+                kf.timeSeconds = juce::jlimit(lo, juce::jmax(lo, hi), v);
+                break;
+            }
+            case colX:    kf.x = (float)juce::jlimit(0.0, (double)roomX, v); break;
+            case colY:    kf.y = (float)juce::jlimit(0.0, (double)roomY, v); break;
+            case colZ:    kf.z = (float)juce::jlimit(0.0, (double)roomZ, v); break;
             case colStop: {
                 /* The pause is baked into the timeline: changing a node's
                    stop time shifts the arrival time of every later node (and
@@ -428,7 +519,8 @@ void PathEditView::cellEdited(int columnId, int row, const juce::String& text)
 void PathEditView::updateKeyframeTable()
 {
     PathData& path = currentPath(processor, selectedIsReceiver, selectedSourceIndex);
-    LB_durationVal->setText("Duration: " + juce::String(path.endTime - path.startTime, 1) + "s",
+    LB_durationVal->setText("Duration: " + juce::String(path.endTime - path.startTime, 1) + " " +
+                             processor.getTimeUnitLabel(),
                              juce::dontSendNotification);
 
     /* While the user is typing in a cell, do not touch the table: an

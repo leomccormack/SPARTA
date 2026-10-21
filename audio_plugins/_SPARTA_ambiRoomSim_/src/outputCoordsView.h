@@ -40,6 +40,10 @@ public:
         }
     }
 
+    /* Updates the coordinate fields with the current position of the
+       receivers (see inputCoordsView::refresh()). */
+    void refresh();
+
     void paint (juce::Graphics& g) override;
     void resized() override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;

@@ -1,21 +1,21 @@
 /*
  ==============================================================================
  
- This file is part of SPARTA; a suite of spatial audio plug-ins.
- Copyright (c) 2018 - Leo McCormack.
+  This file is part of SPARTA; a suite of spatial audio plug-ins.
+  Copyright (c) 2018 - Leo McCormack.
  
- SPARTA is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+  SPARTA is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
  
- SPARTA is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  SPARTA is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
  
- You should have received a copy of the GNU General Public License
- along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with SPARTA.  If not, see <http://www.gnu.org/licenses/>.
  
  ==============================================================================
 */
@@ -67,6 +67,7 @@ private:
     std::unique_ptr<pathTimelineView> pathTimeline;
     std::unique_ptr<juce::ToggleButton> RB_moveSR;
     std::unique_ptr<juce::ToggleButton> RB_drawPath;
+    std::unique_ptr<juce::ToggleButton> TB_preview;
     juce::FilenameComponent trackChooser{"Track", juce::File(), true, false, false,
                                          "*.wav;*.aiff;*.aif;*.mp3", juce::String(),
                                          "Load track file..."};
@@ -74,6 +75,14 @@ private:
     SPARTA_WARNINGS currentWarning;
     SharedResourcePointer<TooltipWindow> tipWindow;
     std::unique_ptr<juce::ComboBox> pluginDescription;
+
+    /* Preview position: while it is active the room view shows the objects
+       at the position they will have at previewTime, instead of their live
+       position. */
+    double previewTime = 0.0;
+    bool previewActive = false;
+    void setPreview (double t, bool active);
+    void updatePreviewButton();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

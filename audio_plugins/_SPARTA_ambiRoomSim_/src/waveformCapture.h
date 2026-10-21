@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 #include <atomic>
+#include <limits>
 #include <vector>
 
 /* Ring buffer of peak (min/max) pairs used to draw the waveform strip below
@@ -40,8 +41,8 @@ public:
         std::fill(maxPeaks.begin(), maxPeaks.end(), 0.0f);
         samplesIntoBucket = 0;
         writeBucket = 0;
-        curMin = 0.0f;
-        curMax = 0.0f;
+        curMin = std::numeric_limits<float>::max();
+        curMax = std::numeric_limits<float>::lowest();
         active = true;
     }
 
@@ -59,8 +60,12 @@ public:
                 maxPeaks[writeBucket] = curMax;
                 writeBucket = (writeBucket + 1) % numBuckets;
                 samplesIntoBucket = 0;
-                curMin = 0.0f;
-                curMax = 0.0f;
+                /* The extremes start at +/- infinity (and not at 0), otherwise
+                   a bucket that only holds positive (or only negative)
+                   samples would be reported as spanning zero, which makes the
+                   drawn waveform far too loud. */
+                curMin = std::numeric_limits<float>::max();
+                curMax = std::numeric_limits<float>::lowest();
             }
         }
     }
@@ -77,8 +82,8 @@ private:
     int samplesPerBucket = 0;
     int samplesIntoBucket = 0;
     int writeBucket = 0;
-    float curMin = 0.0f;
-    float curMax = 0.0f;
+    float curMin = std::numeric_limits<float>::max();
+    float curMax = std::numeric_limits<float>::lowest();
     std::atomic<bool> active{false};
     std::vector<float> minPeaks;
     std::vector<float> maxPeaks;

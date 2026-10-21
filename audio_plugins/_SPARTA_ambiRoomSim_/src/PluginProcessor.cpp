@@ -25,6 +25,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <limits>
 
 #if JucePlugin_Build_AAX && !JucePlugin_AAXDisableDefaultSettingsChunks
 # error "AAX Default Settings Chunk is enabled. This may override parameter defaults."
@@ -46,7 +47,7 @@ void PluginProcessor::logPathState(const char* where) const
     if (f == nullptr)
         return;
     int nSrcPaths = 0, nRecPaths = 0, nKeyframes = 0;
-    std::fprintf(f, "[%s] version=%d\n", where, pathBank.getStateVersion());
+    std::fprintf(f, "[%s] version=%d\n", where, pathStateVersion.load());
     for (int i = 0; i < ROOM_SIM_MAX_NUM_SOURCES; ++i) {
         const auto& p = pathBank.getSourcePath(i);
         if (p.enabled) {
@@ -293,7 +294,29 @@ PluginProcessor::PluginProcessor()
     addParameterListeners(this);
     
     trackFormatManager.registerBasicFormats();
+    cachePositionParameters();
+    /* Reserve the keyframe buffers of both the live bank and the snapshot
+       that the audio thread uses, so that the copy it makes whenever a path
+       is edited never has to allocate memory on the audio thread. */
+    pathBank.reserveKeyframeCapacity(MAX_KEYFRAMES_PER_PATH);
+    pathSnapshot.reserveKeyframeCapacity(MAX_KEYFRAMES_PER_PATH);
     refreshWindow = true;
+}
+
+void PluginProcessor::cachePositionParameters()
+{
+    for (int i = 0; i < ROOM_SIM_MAX_NUM_SOURCES; ++i)
+    {
+        sourceParams[(size_t)i].x = parameters.getParameter("sourceX" + juce::String(i));
+        sourceParams[(size_t)i].y = parameters.getParameter("sourceY" + juce::String(i));
+        sourceParams[(size_t)i].z = parameters.getParameter("sourceZ" + juce::String(i));
+    }
+    for (int i = 0; i < ROOM_SIM_MAX_NUM_RECEIVERS; ++i)
+    {
+        receiverParams[(size_t)i].x = parameters.getParameter("receiverX" + juce::String(i));
+        receiverParams[(size_t)i].y = parameters.getParameter("receiverY" + juce::String(i));
+        receiverParams[(size_t)i].z = parameters.getParameter("receiverZ" + juce::String(i));
+    }
 }
 
 PluginProcessor::~PluginProcessor()
@@ -318,7 +341,10 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     AudioProcessor::setLatencySamples(ambi_roomsim_getProcessingDelay());
     
     waveformCapture.prepare(nSampleRate);
-    waveMixBuffer.setSize(1, samplesPerBlock, false, false, true);
+    /* The scratch buffer for the mono mix is a little larger than the
+       announced block size, so that a host that hands us a bigger block
+       than it announced does not lose (or overrun) any samples. */
+    waveMixBuffer.setSize(1, jmax(samplesPerBlock, 4096), false, false, true);
 
     if(!blockAdapter)
         blockAdapter = std::make_unique<BlockAdapter>();
@@ -350,45 +376,56 @@ void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*mid
         waveformCapture.reset();
     lastWaveHostTime = t;
 
-    /* Mono-mix the input into the waveform capture ring (peak buckets). */
+    /* Mono-mix the input into the waveform capture ring (peak buckets).
+       Note: the host is allowed to hand us a block that is larger than the
+       one prepareToPlay() was called with, so the number of samples that are
+       mixed is limited by the size of the scratch buffer. */
     {
         const juce::SpinLock::ScopedLockType sl(waveLock);
+        const int numSamples = jmin(buffer.getNumSamples(), waveMixBuffer.getNumSamples());
         waveMixBuffer.clear();
         int numCh = jmin(buffer.getNumChannels(), nNumInputs.load());
         for (int ch = 0; ch < numCh; ++ch)
-            waveMixBuffer.addFrom(0, 0, buffer, ch, 0, buffer.getNumSamples(), 1.0f / (float)jmax(1, numCh));
-        waveformCapture.addSamples(waveMixBuffer.getReadPointer(0), buffer.getNumSamples());
+            waveMixBuffer.addFrom(0, 0, buffer, ch, 0, numSamples, 1.0f / (float)jmax(1, numCh));
+        waveformCapture.addSamples(waveMixBuffer.getReadPointer(0), numSamples);
     }
 
-    if (pathDirty.exchange(false)) {
+    /* Refresh the audio-thread snapshot of the path bank. A try-lock is used
+       so that the audio thread never blocks on the UI thread; when the lock
+       is contended the snapshot is simply refreshed on the next block (the
+       counter is only advanced once the copy has actually been made, so no
+       edit can be lost). */
+    if (pathEditCounter.load(std::memory_order_acquire) != pathSnapshotCounter)
+    {
         const juce::SpinLock::ScopedTryLockType tl(pathLock);
         if (tl.isLocked())
+        {
             pathSnapshot = pathBank;
+            pathSnapshotCounter = pathEditCounter.load(std::memory_order_acquire);
+        }
     }
 
     int numSrc = ambi_roomsim_getNumSources(hAmbi);
     for (int i = 0; i < numSrc; ++i)
-        applyPath(i, pathSnapshot.getSourcePath(i), t, "source");
+        applyPath(i, pathSnapshot.getSourcePath(i), t, false);
     int numRec = ambi_roomsim_getNumReceivers(hAmbi);
     for (int i = 0; i < numRec; ++i)
-        applyPath(i, pathSnapshot.getReceiverPath(i), t, "receiver");
+        applyPath(i, pathSnapshot.getReceiverPath(i), t, true);
 
     blockAdapter->processBlock (buffer, [this] (const float* const* inFrame, float* const* outFrame, int numIns, int numOuts, int frameSize) {
             ambi_roomsim_process(hAmbi, inFrame, outFrame, numIns, numOuts, frameSize);
         });
 }
 
-void PluginProcessor::applyPath(int index, const PathData& path, double t, const char* prefix)
+void PluginProcessor::applyPath(int index, const PathData& path, double t, bool isReceiver)
 {
     if (!path.enabled || path.keyframes.empty())
+        return;
+    if (index < 0 || index >= (isReceiver ? ROOM_SIM_MAX_NUM_RECEIVERS : ROOM_SIM_MAX_NUM_SOURCES))
         return;
 
     float x=0, y=0, z=0;
     path.evaluate(t, x, y, z);
-
-    juce::String idX = juce::String(prefix) + "X" + juce::String(index);
-    juce::String idY = juce::String(prefix) + "Y" + juce::String(index);
-    juce::String idZ = juce::String(prefix) + "Z" + juce::String(index);
 
     float rX = ambi_roomsim_getRoomDimX(hAmbi);
     float rY = ambi_roomsim_getRoomDimY(hAmbi);
@@ -397,9 +434,16 @@ void PluginProcessor::applyPath(int index, const PathData& path, double t, const
     y = juce::jlimit(0.0f, rY, y);
     z = juce::jlimit(0.0f, rZ, z);
 
-    setApplyingFromAutomation(true);
+    /* The flag makes parameterChanged() ignore the mirrored parameter write
+       below, so the DSP is not updated twice. It is reset by the guard even
+       if something throws in between. */
+    struct AutomationGuard {
+        PluginProcessor& p;
+        explicit AutomationGuard (PluginProcessor& proc) : p(proc) { p.setApplyingFromAutomation(true); }
+        ~AutomationGuard() { p.setApplyingFromAutomation(false); }
+    } guard(*this);
 
-    if (strcmp(prefix, "source") == 0) {
+    if (!isReceiver) {
         ambi_roomsim_setSourceX(hAmbi, index, x);
         ambi_roomsim_setSourceY(hAmbi, index, y);
         ambi_roomsim_setSourceZ(hAmbi, index, z);
@@ -409,14 +453,16 @@ void PluginProcessor::applyPath(int index, const PathData& path, double t, const
         ambi_roomsim_setReceiverZ(hAmbi, index, z);
     }
 
-    auto* pX = parameters.getParameter(idX);
-    auto* pY = parameters.getParameter(idY);
-    auto* pZ = parameters.getParameter(idZ);
-    if (pX) pX->setValue(pX->convertTo0to1(x));
-    if (pY) pY->setValue(pY->convertTo0to1(y));
-    if (pZ) pZ->setValue(pZ->convertTo0to1(z));
-
-    setApplyingFromAutomation(false);
+    /* Mirror the position onto the host parameters, so that the coordinate
+       fields in the GUI follow the object while it moves. The parameter
+       value is written directly (not via setValueNotifyingHost) because
+       this runs on the audio thread: the host must not be notified of (or
+       record) a parameter change for every single block. */
+    const PositionParams& pp = isReceiver ? receiverParams[(size_t)index]
+                                         : sourceParams[(size_t)index];
+    if (pp.x != nullptr) pp.x->setValue(pp.x->convertTo0to1(x));
+    if (pp.y != nullptr) pp.y->setValue(pp.y->convertTo0to1(y));
+    if (pp.z != nullptr) pp.z->setValue(pp.z->convertTo0to1(z));
 }
 
 AudioProcessorEditor* PluginProcessor::createEditor()
@@ -437,7 +483,7 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
        race with processBlock() while the host is saving. */
     {
         const juce::SpinLock::ScopedLockType sl(pathLock);
-        state.addChild(pathBank.toValueTree(), -1, nullptr);
+        state.addChild(pathBank.toValueTree(pathStateVersion.load()), -1, nullptr);
         logPathState("save");
     }
 
@@ -553,8 +599,17 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                        (Ardour undo/template/undo of a parameter change) over
                        newer in-memory edits. A fresh instance starts at
                        version 0, so any saved state still applies on load. */
-                    if (incomingVersion >= pathBank.getStateVersion()) {
+                    if (incomingVersion >= pathStateVersion.load()) {
                         pathBank.fromValueTree(incomingPaths);
+                        pathStateVersion.store(incomingVersion);
+                        /* Make sure the snapshot can hold the restored paths
+                           without having to allocate on the audio thread. */
+                        int maxKf = 0;
+                        for (int i = 0; i < ROOM_SIM_MAX_NUM_SOURCES; ++i)
+                            maxKf = jmax(maxKf, (int)pathBank.getSourcePath(i).keyframes.size());
+                        for (int i = 0; i < ROOM_SIM_MAX_NUM_RECEIVERS; ++i)
+                            maxKf = jmax(maxKf, (int)pathBank.getReceiverPath(i).keyframes.size());
+                        pathSnapshot.reserveKeyframeCapacity(maxKf);
                         applied = true;
                     }
                     logPathState("restore");
@@ -562,7 +617,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                         if (logPath[0] != '\0')
                             if (FILE* f = std::fopen(logPath, "a")) {
                                 std::fprintf(f, "    incomingVersion=%d currentVersion=%d %s\n",
-                                             incomingVersion, pathBank.getStateVersion(),
+                                             incomingVersion, pathStateVersion.load(),
                                              applied ? "-> APPLIED" : "-> REJECTED (stale)");
                                 std::fclose(f);
                             }
@@ -570,7 +625,7 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
                 /* Refresh the audio-thread snapshot WITHOUT re-flagging the
                    host dirty right after a restore. */
                 if (applied)
-                    markPathDirty(false);
+                    refreshPathSnapshot();
             }
         }
 
@@ -615,8 +670,14 @@ void PluginProcessor::loadTrackFile(const juce::File& file)
         if (trackWaveform.filePath == file.getFullPathName()
             && (trackWaveform.valid || trackLoading.load()))
             return;
-        /* Remember the request so the UI can show it while decoding. */
+        /* Remember the request so the UI can show it while decoding. The
+           previously decoded waveform is invalidated: it belongs to another
+           file, and saving it together with the new file path would restore
+           a mismatched pair. */
         trackWaveform.filePath = file.getFullPathName();
+        trackWaveform.valid = false;
+        trackWaveform.minPeaks.clear();
+        trackWaveform.maxPeaks.clear();
     }
 
     const int token = ++loadToken;
@@ -658,7 +719,11 @@ void PluginProcessor::decodeTrack(const juce::File& file, int token)
     juce::AudioBuffer<float> chunk(reader->numChannels, 4096);
     int64 pos = 0, bucket = 0;
     int into = 0;
-    float cmin = 0.0f, cmax = 0.0f;
+    /* The bucket extremes start at +/- infinity (and not at 0), otherwise a
+       bucket that only holds positive (or only negative) samples would be
+       reported as spanning zero and the drawn waveform would be far too
+       loud. */
+    float cmin = std::numeric_limits<float>::max(), cmax = std::numeric_limits<float>::lowest();
     while (pos < reader->lengthInSamples) {
         int n = (int)jmin((int64)chunk.getNumSamples(), reader->lengthInSamples - pos);
         reader->read(&chunk, 0, n, pos, true, true);
@@ -672,7 +737,9 @@ void PluginProcessor::decodeTrack(const juce::File& file, int token)
             if (++into >= samplesPerBucket) {
                 out.minPeaks[(size_t)bucket] = cmin;
                 out.maxPeaks[(size_t)bucket] = cmax;
-                cmin = 0.0f; cmax = 0.0f; into = 0;
+                cmin = std::numeric_limits<float>::max();
+                cmax = std::numeric_limits<float>::lowest();
+                into = 0;
                 if (++bucket >= WaveformCapture::numBuckets)
                     bucket = WaveformCapture::numBuckets - 1;
             }

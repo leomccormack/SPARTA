@@ -124,6 +124,18 @@ void outputCoordsView::resized()
     repaint();
 }
 
+void outputCoordsView::refresh()
+{
+    /* See inputCoordsView::refresh(): the position of a receiver may be
+       driven by a motion path, so the fields follow the DSP state. */
+    for (int i = 0; i < currentNCH && i < maxNCH; ++i)
+    {
+        xSliders[(size_t)i]->setValue(ambi_roomsim_getReceiverX(hAmbi, i), juce::dontSendNotification);
+        ySliders[(size_t)i]->setValue(ambi_roomsim_getReceiverY(hAmbi, i), juce::dontSendNotification);
+        zSliders[(size_t)i]->setValue(ambi_roomsim_getReceiverZ(hAmbi, i), juce::dontSendNotification);
+    }
+}
+
 void outputCoordsView::sliderValueChanged (juce::Slider* /*sliderThatWasMoved*/)
 {
 }

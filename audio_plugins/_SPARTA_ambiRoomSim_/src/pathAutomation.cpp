@@ -153,29 +153,30 @@ double PathData::duration() const
     return endTime - startTime;
 }
 
-/* Evenly re-times the keyframes so they span totalDuration. Used after
-   adding/removing a keyframe; the room-space shape (positions + tangents)
-   is unaffected because tangents are stored as u-derivatives.
-
-   Pauses are baked into the timeline: each keyframe's timeSeconds already
-   includes the stopTime of every earlier keyframe. So only the MOTION time
-   (totalDuration minus the total pause time) is redistributed evenly; the
-   pause offsets are then re-applied so the baked times stay consistent. */
-void PathData::redistributeTimes(PathData& path, double totalDuration)
+/* Scales the keyframe times proportionally when the duration of the path
+   changes. Only the time spent moving is scaled; the pauses (stopTime) are
+   kept, so the relative timing of the nodes survives stretching or
+   squeezing the path. (Redistributing the nodes evenly would move every
+   node of the path each time its duration was changed, which made the
+   carefully placed timings of the user disappear.) */
+void PathData::scaleTimes(PathData& path, double oldDuration, double newDuration)
 {
-    int n = (int)path.keyframes.size();
-    if (n <= 1) return;
+    const int n = (int)path.keyframes.size();
+    if (n < 2)
+        return;
 
     double totalStop = 0.0;
     for (int i = 0; i < n; ++i)
         totalStop += path.keyframes[i].stopTime;
 
-    double motionTime = juce::jmax(0.0, totalDuration - totalStop);
-    double step = motionTime / (double)(n - 1);
+    const double oldMotion = juce::jmax(1e-6, oldDuration - totalStop);
+    const double newMotion = juce::jmax(0.0, newDuration - totalStop);
+    const double ratio = newMotion / oldMotion;
 
     double cumStop = 0.0;
     for (int i = 0; i < n; ++i) {
-        path.keyframes[i].timeSeconds = (double)i * step + cumStop;
+        const double motionTime = juce::jmax(0.0, path.keyframes[i].timeSeconds - cumStop);
+        path.keyframes[i].timeSeconds = motionTime * ratio + cumStop;
         cumStop += path.keyframes[i].stopTime;
     }
 }
@@ -215,7 +216,6 @@ juce::ValueTree PathData::toValueTree() const
     vt.setProperty("loop", loop, nullptr);
     vt.setProperty("startTime", startTime, nullptr);
     vt.setProperty("endTime", endTime, nullptr);
-    vt.setProperty("name", juce::String(name), nullptr);
     for (auto& kf : keyframes)
         vt.addChild(kf.toValueTree(), -1, nullptr);
     return vt;
@@ -228,7 +228,6 @@ PathData PathData::fromValueTree(const juce::ValueTree& vt)
     path.loop = vt.getProperty("loop", false);
     path.startTime = vt.getProperty("startTime", 0.0);
     path.endTime = vt.getProperty("endTime", 10.0);
-    path.name = vt.getProperty("name", "").toString().toStdString();
     bool hasTangents = false;
     for (int i = 0; i < vt.getNumChildren(); ++i) {
         auto child = vt.getChild(i);
@@ -250,41 +249,48 @@ PathBank::PathBank()
 
 void PathBank::clear()
 {
-    for (int i = 0; i < ROOM_SIM_MAX_NUM_SOURCES; ++i) {
+    for (int i = 0; i < ROOM_SIM_MAX_NUM_SOURCES; ++i)
         sources[i] = PathData();
-        sources[i].name = "Path 1";
-    }
-    for (int i = 0; i < ROOM_SIM_MAX_NUM_RECEIVERS; ++i) {
+    for (int i = 0; i < ROOM_SIM_MAX_NUM_RECEIVERS; ++i)
         receivers[i] = PathData();
-        receivers[i].name = "Path 1";
-    }
-    stateVersion = 0;
+}
+
+void PathBank::reserveKeyframeCapacity(int n)
+{
+    for (int i = 0; i < ROOM_SIM_MAX_NUM_SOURCES; ++i)
+        sources[i].keyframes.reserve((size_t)jmax(0, n));
+    for (int i = 0; i < ROOM_SIM_MAX_NUM_RECEIVERS; ++i)
+        receivers[i].keyframes.reserve((size_t)jmax(0, n));
 }
 
 PathData& PathBank::getSourcePath(int index)
 {
-    return sources[index];
+    jassert(0 <= index && index < ROOM_SIM_MAX_NUM_SOURCES);
+    return sources[juce::jlimit(0, ROOM_SIM_MAX_NUM_SOURCES - 1, index)];
 }
 
 const PathData& PathBank::getSourcePath(int index) const
 {
-    return sources[index];
+    jassert(0 <= index && index < ROOM_SIM_MAX_NUM_SOURCES);
+    return sources[juce::jlimit(0, ROOM_SIM_MAX_NUM_SOURCES - 1, index)];
 }
 
 PathData& PathBank::getReceiverPath(int index)
 {
-    return receivers[index];
+    jassert(0 <= index && index < ROOM_SIM_MAX_NUM_RECEIVERS);
+    return receivers[juce::jlimit(0, ROOM_SIM_MAX_NUM_RECEIVERS - 1, index)];
 }
 
 const PathData& PathBank::getReceiverPath(int index) const
 {
-    return receivers[index];
+    jassert(0 <= index && index < ROOM_SIM_MAX_NUM_RECEIVERS);
+    return receivers[juce::jlimit(0, ROOM_SIM_MAX_NUM_RECEIVERS - 1, index)];
 }
 
-juce::ValueTree PathBank::toValueTree() const
+juce::ValueTree PathBank::toValueTree(int version) const
 {
     juce::ValueTree vt("PATHS");
-    vt.setProperty("version", stateVersion, nullptr);
+    vt.setProperty("version", version, nullptr);
     for (int i = 0; i < ROOM_SIM_MAX_NUM_SOURCES; ++i) {
         juce::ValueTree srcVt("SOURCE");
         srcVt.setProperty("index", i, nullptr);
@@ -304,10 +310,6 @@ void PathBank::fromValueTree(const juce::ValueTree& vt)
 {
     if (!vt.hasType("PATHS")) return;
     clear();
-    /* Older states without the version property are treated as version 0:
-       they still apply on a fresh load, but can never overwrite edits made
-       after them. */
-    stateVersion = vt.getProperty("version", 0);
 
     /* States saved before the one-path-per-object simplification may contain
        several PATH children per SOURCE/RECEIVER. Pick the most useful one:

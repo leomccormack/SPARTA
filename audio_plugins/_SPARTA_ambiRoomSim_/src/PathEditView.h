@@ -34,6 +34,7 @@ public:
     void comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged) override;
     void buttonClicked(juce::Button* buttonThatWasClicked) override;
     void sliderValueChanged(juce::Slider* sliderThatWasMoved) override;
+    void sliderDragEnded(juce::Slider* sliderThatWasMoved) override;
 
     /* TableListBoxModel */
     int getNumRows() override;
@@ -55,6 +56,12 @@ public:
 
 private:
     bool isCellEditing = false;
+    /* Set while the sliders are updated from the path data, so that the
+       resulting change notification does not trigger another update. */
+    bool isSyncingFromPath = false;
+    /* Number of sources/receivers the object selector was last built for
+       (the list is only rebuilt when one of them changes). */
+    int lastNumSources = -1, lastNumReceivers = -1;
     juce::String getCellText(int row, int columnId) const;
     void updateKeyframeTable();
 
@@ -70,10 +77,14 @@ private:
     std::unique_ptr<juce::Label> LB_source;
     std::unique_ptr<juce::ToggleButton> TB_pathLoop;
     std::unique_ptr<juce::Label> LB_loop;
+    std::unique_ptr<juce::ComboBox> CB_timeBase;
+    std::unique_ptr<juce::Label> LB_timeBase;
     std::unique_ptr<juce::Slider> SL_pathStartTime;
     std::unique_ptr<juce::Label> LB_startTime;
     std::unique_ptr<juce::Slider> SL_pathEndTime;
     std::unique_ptr<juce::Label> LB_endTime;
+    std::unique_ptr<juce::Slider> SL_pathOffset;
+    std::unique_ptr<juce::Label> LB_offset;
     std::unique_ptr<juce::Label> LB_durationVal;
     std::unique_ptr<juce::TextButton> BT_pathClear;
     std::unique_ptr<juce::TextButton> BT_deleteNode;

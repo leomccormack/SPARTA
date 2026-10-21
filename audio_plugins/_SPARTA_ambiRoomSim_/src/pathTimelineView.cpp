@@ -1,12 +1,12 @@
 #include "pathTimelineView.h"
 
 static constexpr float rowHeight = 20.0f;
-static constexpr float rulerHeight = 24.0f;
+static constexpr float rulerHeight = 22.0f;
 static constexpr float labelWidth = 44.0f;
 static constexpr float keyframeSize = 7.0f;
-static constexpr float stripHeight = 46.0f;
+static constexpr float stripHeight = 42.0f;
 
-pathTimelineView::pathTimelineView(PluginProcessor& p)
+pathTimelineView::pathTimelineView (PluginProcessor& p)
     : processor(p)
 {
     hAmbi = processor.getFXHandle();
@@ -20,6 +20,13 @@ void pathTimelineView::setScrubTime(double t)
     repaint();
 }
 
+void pathTimelineView::setPreviewTime(double t, bool active)
+{
+    previewTime = t;
+    previewActive = active;
+    repaint();
+}
+
 /* The pause model is "baked": a keyframe's timeSeconds already includes the
    stopTime of every earlier keyframe (editing a stop time shifts all later
    keyframes and the path endTime). So the timeline simply uses the stored
@@ -28,33 +35,19 @@ void pathTimelineView::setScrubTime(double t)
 void pathTimelineView::rebuildRows()
 {
     rows.clear();
-    PathBank& pb = processor.getPathBank();
+    const PathBank& pb = processor.getPathBank();
     int nSrc = ambi_roomsim_getNumSources(hAmbi);
     int nRec = ambi_roomsim_getNumReceivers(hAmbi);
     for (int i = 0; i < nSrc; ++i) {
-        auto& path = pb.getSourcePath(i);
+        const auto& path = pb.getSourcePath(i);
         if (!path.keyframes.empty())
             rows.add({ "S" + juce::String(i + 1), i, false });
     }
     for (int i = 0; i < nRec; ++i) {
-        auto& path = pb.getReceiverPath(i);
+        const auto& path = pb.getReceiverPath(i);
         if (!path.keyframes.empty())
             rows.add({ "R" + juce::String(i + 1), i, true });
     }
-}
-
-juce::Rectangle<float> pathTimelineView::getRowBounds(int rowIdx) const
-{
-    auto area = getLocalBounds().toFloat();
-    float y = rulerHeight + rowIdx * rowHeight;
-    return { area.getX() + labelWidth, y, area.getWidth() - labelWidth, rowHeight };
-}
-
-int pathTimelineView::getRowForY(float y) const
-{
-    if (y < rulerHeight || y >= getRowsMaxY()) return -1;
-    int idx = (int)((y - rulerHeight) / rowHeight);
-    return (idx >= 0 && idx < rows.size()) ? idx : -1;
 }
 
 float pathTimelineView::getRowsMaxY() const
@@ -84,11 +77,10 @@ double pathTimelineView::xToTime(float x, double maxTime) const
 double pathTimelineView::getTimelineMaxTime() const
 {
     double maxTime = 0.0;
-    PathBank& pb = processor.getPathBank();
+    const PathBank& pb = processor.getPathBank();
     for (auto& row : rows) {
-        auto& path = row.isReceiver
-                         ? pb.getReceiverPath(row.objIdx)
-                         : pb.getSourcePath(row.objIdx);
+        const auto& path = row.isReceiver ? pb.getReceiverPath(row.objIdx)
+                                          : pb.getSourcePath(row.objIdx);
         /* endTime already includes all pauses (they are baked in). */
         double end = path.endTime;
         if (end > maxTime) maxTime = end;
@@ -103,12 +95,13 @@ double pathTimelineView::getTimelineMaxTime() const
 
 void pathTimelineView::paint(juce::Graphics& g)
 {
-    rebuildRows();
-
     auto area = getLocalBounds().toFloat();
     g.fillAll(juce::Colour(0xff1a2e3a));
 
-    PathBank& pb = processor.getPathBank();
+    const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
+    rebuildRows();
+
+    const PathBank& pb = processor.getPathBank();
     double maxTime = getTimelineMaxTime();
 
     double step = maxTime <= 5.0 ? 1.0 : (maxTime <= 20.0 ? 2.0 : 5.0);
@@ -116,10 +109,6 @@ void pathTimelineView::paint(juce::Graphics& g)
 
     g.setColour(juce::Colours::white);
     g.setFont(10.0f);
-
-    /* Start the title at the second gridline so it clears the "0.0" tick. */
-    g.drawText("Path Timeline", timeToX(step, maxTime), 0, timeWidth, rulerHeight,
-               juce::Justification::centredLeft);
 
     g.setColour(juce::Colour(0x55ffffff));
     g.drawHorizontalLine((int)rulerHeight, area.getX(), area.getRight());
@@ -129,9 +118,20 @@ void pathTimelineView::paint(juce::Graphics& g)
         g.setOpacity(0.3f);
         g.drawVerticalLine((int)x, rulerHeight, area.getBottom());
         g.setOpacity(0.7f);
-        g.drawText(juce::String(t, 1), x - 8, 0, 30, rulerHeight,
-                   juce::Justification::centredLeft);
+        /* The last label is right-aligned, so that it is not cut off by the
+           edge of the panel, and the first one is moved to the right of the
+           grid line, so that it does not cover the label column. */
+        if (x + 34.0f > area.getRight())
+            g.drawText(juce::String(t, 1), (int)(x - 26.0f), 0, 30, rulerHeight,
+                       juce::Justification::centredRight);
+        else if (x - 8.0f < labelWidth + 4.0f)
+            g.drawText(juce::String(t, 1), (int)(x + 2.0f), 0, 30, rulerHeight,
+                       juce::Justification::centredLeft);
+        else
+            g.drawText(juce::String(t, 1), x - 8, 0, 30, rulerHeight,
+                       juce::Justification::centredLeft);
     }
+    g.setOpacity(1.0f);
 
     /* Keyframe rows are clipped to the top region so many-row banks never
        spill over the waveform strip. */
@@ -142,9 +142,8 @@ void pathTimelineView::paint(juce::Graphics& g)
 
     for (int r = 0; r < rows.size(); ++r) {
         auto row = rows[r];
-        auto& path = row.isReceiver
-                         ? pb.getReceiverPath(row.objIdx)
-                         : pb.getSourcePath(row.objIdx);
+        auto& path = row.isReceiver ? pb.getReceiverPath(row.objIdx)
+                                    : pb.getSourcePath(row.objIdx);
         juce::Colour col = getPathColour(row.isReceiver, row.objIdx);
         const float colAlpha = path.enabled ? 1.0f : 0.30f;
 
@@ -186,6 +185,18 @@ void pathTimelineView::paint(juce::Graphics& g)
     g.restoreState();
 
     paintWaveformStrip(g, maxTime, rowsMaxY);
+
+    /* The preview position (amber) and the live playhead (red). */
+    if (previewActive) {
+        float pvx = timeToX(previewTime, maxTime);
+        g.setColour(juce::Colours::orange.withAlpha(0.9f));
+        g.drawVerticalLine((int)pvx, rulerHeight, area.getBottom());
+        /* The label goes into the (empty) label column, so that it does not
+           cover the time axis labels. */
+        g.setFont(9.0f);
+        g.drawText("PREVIEW", 2, 2, (int)labelWidth - 4, rulerHeight - 4,
+                   juce::Justification::centredLeft);
+    }
 
     float px = timeToX(scrubTime, maxTime);
     g.setColour(juce::Colours::red);
@@ -229,7 +240,8 @@ void pathTimelineView::paintWaveformStrip(juce::Graphics& g, double maxTime, flo
                 if (b0 >= numBuckets) continue;
                 if (b1 >= numBuckets) b1 = numBuckets - 1;
                 if (b1 < b0) b1 = b0;
-                float mn = 1.0f, mx = -1.0f;
+                float mn = std::numeric_limits<float>::max();
+                float mx = std::numeric_limits<float>::lowest();
                 for (int b = b0; b <= b1; ++b) {
                     mn = jmin(mn, track.minPeaks[(size_t)b]);
                     mx = jmax(mx, track.maxPeaks[(size_t)b]);
@@ -275,7 +287,8 @@ void pathTimelineView::paintWaveformStrip(juce::Graphics& g, double maxTime, flo
             if (offHi >= numBuckets) offHi = numBuckets - 1;
             if (offHi < offLo) continue;
 
-            float mn = 1.0f, mx = -1.0f;
+            float mn = std::numeric_limits<float>::max();
+            float mx = std::numeric_limits<float>::lowest();
             for (int o = offLo; o <= offHi; ++o) {
                 int idx = writeBucket - 1 - o;
                 idx %= numBuckets;
@@ -301,69 +314,88 @@ void pathTimelineView::resized() {}
 void pathTimelineView::mouseDown(const juce::MouseEvent& e)
 {
     auto area = getLocalBounds().toFloat();
-    rebuildRows();
+    double previewRequest = -1.0;
+    {
+        const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
+        rebuildRows();
 
-    PathBank& pb = processor.getPathBank();
-    double maxTime = getTimelineMaxTime();
+        const PathBank& pb = processor.getPathBank();
+        double maxTime = getTimelineMaxTime();
 
-    float rowsMaxY = getRowsMaxY();
-    for (int r = 0; r < rows.size(); ++r) {
-        auto row = rows[r];
-        auto& path = row.isReceiver
-                         ? pb.getReceiverPath(row.objIdx)
-                         : pb.getSourcePath(row.objIdx);
-        if (!path.enabled) continue;
-        float ky = rulerHeight + r * rowHeight + rowHeight / 2.0f;
-        if (ky + keyframeSize / 2.0f >= rowsMaxY) continue;
-        for (size_t k = 0; k < path.keyframes.size(); ++k) {
-            float kx = timeToX(path.startTime + path.keyframes[k].timeSeconds, maxTime);
-            juce::Rectangle<float> hit(kx - 5, ky - 5, 10, 10);
-            if (hit.contains(e.getPosition().toFloat())) {
-                isDraggingKeyframe = true;
-                dragObjectIdx = row.objIdx;
-                dragIsReceiver = row.isReceiver;
-                dragKeyframeIdx = (int)k;
-                return;
+        float rowsMaxY = getRowsMaxY();
+        for (int r = 0; r < rows.size(); ++r) {
+            auto row = rows[r];
+            auto& path = row.isReceiver ? pb.getReceiverPath(row.objIdx)
+                                        : pb.getSourcePath(row.objIdx);
+            if (!path.enabled) continue;
+            float ky = rulerHeight + r * rowHeight + rowHeight / 2.0f;
+            if (ky + keyframeSize / 2.0f >= rowsMaxY) continue;
+            for (size_t k = 0; k < path.keyframes.size(); ++k) {
+                float kx = timeToX(path.startTime + path.keyframes[k].timeSeconds, maxTime);
+                juce::Rectangle<float> hit(kx - 5, ky - 5, 10, 10);
+                if (hit.contains(e.getPosition().toFloat())) {
+                    isDraggingKeyframe = true;
+                    dragObjectIdx = row.objIdx;
+                    dragIsReceiver = row.isReceiver;
+                    dragKeyframeIdx = (int)k;
+                    return;
+                }
             }
         }
+
+        /* Clicking a row or the waveform strip previews that position; the
+           ruler does not (it is used to read the time axis). */
+        float y = (float)e.getPosition().getY();
+        if (y >= rulerHeight)
+            previewRequest = xToTime((float)e.getPosition().getX(), maxTime);
     }
 
-    /* Clicking a row or the waveform strip scrubs; the ruler does not. */
-    float y = (float)e.getPosition().getY();
-    if (y >= rulerHeight) {
-        double t = xToTime((float)e.getPosition().getX(), maxTime);
-        setScrubTime(t);
-    }
+    /* The callback is called without holding the path lock: it ends up in
+       the editor, which may need the lock itself. */
+    if (previewRequest >= 0.0 && onPreviewRequested)
+        onPreviewRequested(previewRequest);
 }
 
 void pathTimelineView::mouseDrag(const juce::MouseEvent& e)
 {
     if (!isDraggingKeyframe) return;
 
+    const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
     PathBank& pb = processor.getPathBank();
-    {
-        const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
-        PathData& path = dragIsReceiver
-                             ? pb.getReceiverPath(dragObjectIdx)
-                             : pb.getSourcePath(dragObjectIdx);
+    if (dragObjectIdx < 0)
+        return;
+    PathData& path = dragIsReceiver ? pb.getReceiverPath(dragObjectIdx)
+                                    : pb.getSourcePath(dragObjectIdx);
+    if (dragKeyframeIdx < 0 || (size_t)dragKeyframeIdx >= path.keyframes.size())
+        return;
 
-        double maxTime = getTimelineMaxTime();
+    double maxTime = getTimelineMaxTime();
 
-        /* The pointer position is the keyframe's stored time directly:
-           timeSeconds already includes all earlier pauses (baked-in model),
-           and the timeline draws nodes at their stored times. */
-        double newTime = xToTime((float)e.getPosition().getX(), maxTime);
-        newTime -= path.startTime;
-        if (newTime < 0.0) newTime = 0.0;
-        if (dragKeyframeIdx >= 0 && (size_t)dragKeyframeIdx < path.keyframes.size())
-            path.keyframes[dragKeyframeIdx].timeSeconds = newTime;
+    /* The pointer position is the keyframe's stored time directly:
+       timeSeconds already includes all earlier pauses (baked-in model),
+       and the timeline draws nodes at their stored times. */
+    double newTime = xToTime((float)e.getPosition().getX(), maxTime);
+    newTime -= path.startTime;
 
-        processor.markPathDirty();
-    }
+    /* The keyframes have to stay in ascending order and inside the path
+       window, otherwise the object would never reach (or would skip) some
+       of the nodes. */
+    double lo = 0.0, hi = path.endTime - path.startTime;
+    if (dragKeyframeIdx > 0)
+        lo = path.keyframes[dragKeyframeIdx - 1].timeSeconds;
+    if (dragKeyframeIdx + 1 < (int)path.keyframes.size())
+        hi = path.keyframes[dragKeyframeIdx + 1].timeSeconds;
+    path.keyframes[dragKeyframeIdx].timeSeconds = juce::jlimit(lo, juce::jmax(lo, hi), newTime);
+
+    /* The host is notified once, when the gesture ends (see mouseUp). */
+    processor.markPathDirty(false);
     repaint();
 }
 
 void pathTimelineView::mouseUp(const juce::MouseEvent& /*e*/)
 {
-    isDraggingKeyframe = false;
+    if (isDraggingKeyframe) {
+        isDraggingKeyframe = false;
+        processor.markPathDirty();
+    }
 }

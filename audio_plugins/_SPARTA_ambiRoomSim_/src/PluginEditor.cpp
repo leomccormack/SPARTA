@@ -1,5 +1,16 @@
 #include "PluginEditor.h"
 
+/* Layout constants of the editor (see resized() and paint()). */
+static constexpr int editorWidth  = 1050;
+/* The height is dictated by the room settings panel on the left, which
+   needs ~490 pixels, plus the timeline panel at the bottom. */
+static constexpr int editorHeight = 640;
+static constexpr int timelineHeight = 140;   /* bottom panel */
+static constexpr int timelineHeaderHeight = 24;
+static constexpr int roomX = 488, roomY = 52, roomW = 280;
+static constexpr int frameH = 56, framePad = 8;
+static constexpr int controlsX = 780, controlsW = 260;
+
 PluginEditor::PluginEditor (PluginProcessor& p)
     : AudioProcessorEditor(p), processor(p)
 {
@@ -22,6 +33,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     pathTimeline.reset (new pathTimelineView(p));
     addAndMakeVisible (pathTimeline.get());
+    /* Clicking the timeline previews the path at that position. */
+    pathTimeline->onPreviewRequested = [this] (double t) { setPreview(t, true); };
 
     /* Loaded reference track: shows the full-track waveform in the timeline
        strip, auto-restored from plugin state on initialization. */
@@ -31,6 +44,14 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     TrackWaveform savedTrack = processor.getTrackWaveformSnapshot();
     if (savedTrack.filePath.isNotEmpty())
         trackChooser.setCurrentFile(savedTrack.filePath, false);
+
+    /* Preview toggle: switches the room view between the live positions and
+       the position that is being previewed on the timeline. */
+    TB_preview.reset (new juce::ToggleButton ("Preview"));
+    addAndMakeVisible (TB_preview.get());
+    TB_preview->setTooltip("Show the objects at the position they will have at the previewed time (click the timeline to preview).");
+    TB_preview->addListener (this);
+    TB_preview->setToggleState (false, juce::dontSendNotification);
 
     pathEditView = std::make_unique<PathEditView>(p);
     addAndMakeVisible (pathEditView.get());
@@ -56,7 +77,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     pluginDescription->setEnabled(false);
     pluginDescription->setTooltip(TRANS("This is a shoebox room simulator based on the image source method."));
 
-    setSize (1050, 560);
+    setSize (editorWidth, editorHeight);
     startTimer(80);
     currentWarning = k_warning_none;
 }
@@ -70,11 +91,7 @@ PluginEditor::~PluginEditor()
 void PluginEditor::resized()
 {
     int w = getWidth(), h = getHeight();
-    int timelineH = 120;
-    int mainH = h - timelineH;
-
-    const int roomX = 488, roomY = 52, roomW = 280;
-    const int frameH = 56, framePad = 8;
+    int mainH = h - timelineHeight;
 
     /* Room settings: left column */
     if (roomSettingsView)
@@ -92,14 +109,16 @@ void PluginEditor::resized()
 
     /* Path controls: right column */
     if (pathEditView)
-        pathEditView->setBounds(780, 52, 260, mainH - 52);
+        pathEditView->setBounds(controlsX, roomY, controlsW, mainH - roomY);
 
-    /* Timeline strip: full width at bottom */
+    /* Timeline panel: full width at bottom. The top strip of the panel
+       holds the title, the preview switch and the reference-track chooser,
+       so that none of them overlaps the time axis. */
     if (pathTimeline)
-        pathTimeline->setBounds(0, mainH, w, timelineH);
-
-    /* Reference-track chooser in the top-right of the timeline panel. */
-    trackChooser.setBounds(w - 400, mainH + 3, 390, 20);
+        pathTimeline->setBounds(0, mainH + timelineHeaderHeight, w, timelineHeight - timelineHeaderHeight);
+    if (TB_preview)
+        TB_preview->setBounds(w - 430, mainH + 3, 95, 18);
+    trackChooser.setBounds(w - 325, mainH + 2, 315, 20);
 }
 
 void PluginEditor::paint (juce::Graphics& g)
@@ -109,15 +128,12 @@ void PluginEditor::paint (juce::Graphics& g)
     g.fillAll(bgDark1);
 
     int h = getHeight();
-    int timelineY = h - 120;
+    int timelineY = h - timelineHeight;
     int mainH = timelineY;
 
-    const int roomX = 488, roomY = 52, roomW = 280;
-    const int frameH = 56, framePad = 8;
-
     /* Draw the "Room View" label and panel */
-    drawPanel(g, {488, 52, 280, (float)(timelineY - 52)}, panelFill, panelStroke);
-    drawLabel(g, {580, 28, 163, 30}, "Room View", 15.f);
+    drawPanel(g, {roomX, roomY, roomW, (float)(mainH - roomY)}, panelFill, panelStroke);
+    drawLabel(g, {roomX + (roomW - 163) / 2, 28, 163, 30}, "Room View", 15.f);
 
     /* Interaction mode frame below the room */
     int panH = mainH - roomY - frameH - framePad;
@@ -126,19 +142,54 @@ void PluginEditor::paint (juce::Graphics& g)
     drawLabel(g, {roomX + 8, frameY - 2, 180, 20}, "Interaction mode:", 12.f);
 
     /* Draw the "Path Controls" label and panel */
-    drawPanel(g, {780, 52, 260, (float)(timelineY - 52)}, panelFill, panelStroke);
-    drawLabel(g, {870, 28, 163, 30}, "Path Controls", 15.f);
+    drawPanel(g, {controlsX, roomY, controlsW, (float)(mainH - roomY)}, panelFill, panelStroke);
+    drawLabel(g, {controlsX + (controlsW - 163) / 2, 28, 163, 30}, "Path Controls", 15.f);
 
     /* Draw the Timeline panel across the full bottom */
-    drawPanel(g, {0, (float)timelineY, (float)getWidth(), 120}, panelFill, panelStroke);
-    drawLabel(g, {200, timelineY + 2, 163, 30}, "Path Timeline", 15.f);
+    drawPanel(g, {0, (float)timelineY, (float)getWidth(), timelineHeight}, panelFill, panelStroke);
+    drawLabel(g, {12, timelineY + 1, 163, 24}, "Path Timeline", 15.f);
 
-    /* Version */
-    g.setColour(Colours::white);
-    g.setFont(juce::FontOptions (11.00f, Font::plain));
-    g.drawText(TRANS("Version ") + JucePlugin_VersionString + BUILD_VER_SUFFIX,
-        16, getHeight() - 16, 200, 11,
-        Justification::centredLeft, true);
+    /* Warning banner: the state is evaluated in timerCallback(). */
+    if (currentWarning != k_warning_none)
+    {
+        juce::String msg;
+        switch (currentWarning)
+        {
+            case k_warning_NinputCH:
+                msg = "Not enough input channels for the current number of sources";
+                break;
+            case k_warning_NoutputCH:
+                msg = "Not enough output channels for the selected Ambisonic order";
+                break;
+            case k_warning_frameSize:
+                msg = "The host block size does not match the processing frame size";
+                break;
+            default: break;
+        }
+        g.setColour(juce::Colour(0xffffb74d));
+        g.fillRoundedRectangle((float)roomX, 2.0f, (float)(getWidth() - roomX - 4), 22.0f, 4.0f);
+        g.setColour(juce::Colours::black);
+        g.setFont(juce::FontOptions (11.0f, Font::bold));
+        g.drawText(msg, roomX + 8, 2, getWidth() - roomX - 20, 22,
+                   Justification::centredLeft, true);
+    }
+}
+
+void PluginEditor::setPreview (double t, bool active)
+{
+    previewTime = t;
+    previewActive = active;
+    if (panWindow)
+        panWindow->setPreviewTime(previewTime, previewActive);
+    if (pathTimeline)
+        pathTimeline->setPreviewTime(previewTime, previewActive);
+    updatePreviewButton();
+}
+
+void PluginEditor::updatePreviewButton()
+{
+    if (TB_preview)
+        TB_preview->setToggleState(previewActive, juce::dontSendNotification);
 }
 
 void PluginEditor::timerCallback()
@@ -162,9 +213,11 @@ void PluginEditor::timerCallback()
         int obj = pathEditView->getSelectedSourceIndex();
         bool isRec = pathEditView->getSelectedIsReceiver();
         bool enabled = false;
-        if (obj >= 0)
+        if (obj >= 0) {
+            const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
             enabled = isRec ? pb.getReceiverPath(obj).enabled
-                            : pb.getSourcePath(obj).enabled;
+                             : pb.getSourcePath(obj).enabled;
+        }
         RB_drawPath->setToggleState(enabled, juce::dontSendNotification);
         RB_moveSR->setToggleState(!enabled, juce::dontSendNotification);
         /* Keep the room view's interaction mode in lockstep with the radios
@@ -197,6 +250,12 @@ void PluginEditor::timerCallback()
 
 void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
+    /* Preview switch: back to the live positions. */
+    if (buttonThatWasClicked == TB_preview.get()) {
+        setPreview(previewTime, TB_preview->getToggleState());
+        return;
+    }
+
     /* Interaction mode: "Draw Path" enables the selected path and switches
        the room view to path editing; "Move S/R" disables it and returns to
        icon dragging. */
@@ -208,12 +267,14 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         PathBank& pb = processor.getPathBank();
         int obj = pathEditView->getSelectedSourceIndex();
         bool isRec = pathEditView->getSelectedIsReceiver();
-        juce::SpinLock::ScopedLockType sl(processor.getPathLock());
-        if (obj >= 0) {
-            PathData& path = isRec ? pb.getReceiverPath(obj) : pb.getSourcePath(obj);
-            path.enabled = drawPath;
-            processor.markPathDirty();
+        {
+            const juce::SpinLock::ScopedLockType sl(processor.getPathLock());
+            if (obj >= 0) {
+                PathData& path = isRec ? pb.getReceiverPath(obj) : pb.getSourcePath(obj);
+                path.enabled = drawPath;
+            }
         }
+        processor.markPathDirty();
     }
 }
 
